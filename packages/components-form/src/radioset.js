@@ -9,22 +9,20 @@
  */
 import { Box, Node } from '@pres/components-core'
 
-/**
- * RadioSet
- */
-export function RadioSet(options) {
-  if (!(this instanceof Node)) {
-    return new RadioSet(options)
+export class RadioSet extends Box {
+  /**
+   * RadioSet
+   */
+  constructor(options = {}) {
+    super(options)
+    if (!(this instanceof Node)) return new RadioSet(options)
+    // Possibly inherit parent's style.
+    // options.style = this.parent.style;
+    this.type = 'radio-set'
   }
-  options = options || {}
-  // Possibly inherit parent's style.
-  // options.style = this.parent.style;
-  Box.call(this, options)
 }
 
-RadioSet.prototype.__proto__ = Box.prototype
 
-RadioSet.prototype.type = 'radio-set'
 
 
 

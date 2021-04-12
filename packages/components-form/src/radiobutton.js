@@ -7,50 +7,42 @@
 /**
  * Modules
  */
-import { Node     } from  '@pres/components-core'
-import { Checkbox } from  './checkbox'
+import { Node }     from '@pres/components-core'
+import { Checkbox } from './checkbox'
 
-/**
- * RadioButton
- */
-export function RadioButton(options) {
-  const self = this
-
-  if (!(this instanceof Node)) {
-    return new RadioButton(options)
-  }
-
-  options = options || {}
-
-  Checkbox.call(this, options)
-
-  this.on('check', function () {
-    let el = self
-    while (el = el.parent) {
-      if (el.type === 'radio-set'
-        || el.type === 'form') break
-    }
-    el = el || self.parent
-    el.forDescendants(function (el) {
-      if (el.type !== 'radio-button' || el === self) {
-        return
+export class RadioButton extends Checkbox {
+  /**
+   * RadioButton
+   */
+  constructor(options = {}) {
+    super(options)
+    const self = this
+    if (!(this instanceof Node)) return new RadioButton(options)
+    this.on('check', function () {
+      let el = self
+      while (el = el.parent) {
+        if (el.type === 'radio-set'
+          || el.type === 'form') break
       }
-      el.uncheck()
+      el = el || self.parent
+      el.forDescendants(function (el) {
+        if (el.type !== 'radio-button' || el === self) {
+          return
+        }
+        el.uncheck()
+      })
     })
-  })
+    this.type = 'radio-button'
+    this.toggle = RadioButton.prototype.check
+  }
+  render() {
+    this.clearPos(true)
+    this.setContent('(' + (this.checked ? '*' : ' ') + ') ' + this.text, true)
+    return this._render()
+  }
 }
 
-RadioButton.prototype.__proto__ = Checkbox.prototype
 
-RadioButton.prototype.type = 'radio-button'
-
-RadioButton.prototype.render = function () {
-  this.clearPos(true)
-  this.setContent('(' + (this.checked ? '*' : ' ') + ') ' + this.text, true)
-  return this._render()
-}
-
-RadioButton.prototype.toggle = RadioButton.prototype.check
 
 
 

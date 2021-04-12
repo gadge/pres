@@ -9,20 +9,18 @@
  */
 import { Box, Node } from '@pres/components-core'
 
-/**
- * Input
- */
-export function Input(options) {
-  if (!(this instanceof Node)) {
-    return new Input(options)
+export class Input extends Box {
+  /**
+   * Input
+   */
+  constructor(options = {}) {
+    super(options)
+    if (!(this instanceof Node)) return new Input(options)
+    this.type = 'input'
   }
-  options = options || {}
-  Box.call(this, options)
 }
 
-Input.prototype.__proto__ = Box.prototype
 
-Input.prototype.type = 'input'
 
 
 
