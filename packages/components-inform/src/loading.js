@@ -8,8 +8,8 @@
  * Modules
  */
 import { Node } from '@pres/components-core'
-import { Box } from '@pres/components-core'
-const Text = require('../../components-text/src/text')
+import { Box }  from '@pres/components-core'
+import { Text }     from '@pres/components-text'
 
 /**
  * Loading

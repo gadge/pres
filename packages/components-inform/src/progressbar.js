@@ -4,19 +4,16 @@
  * https://github.com/chjj/blessed
  */
 
-/**
- * Modules
- */
-import { Node } from '@pres/components-core'
-const Input = require('./input')
+import { Node }  from '@pres/components-core'
+import { Input } from '@pres/components-form'
 
 /**
  * ProgressBar
  */
-export function  ProgressBar(options) {
+export function ProgressBar(options) {
   const self = this
 
-  if (!(this instanceof Node)) {  return new ProgressBar(options) }
+  if (!(this instanceof Node)) { return new ProgressBar(options) }
 
   options = options || {}
 
