@@ -20,7 +20,8 @@
     "@pres/program": "^0.0.4",
     "@pres/util-colors": "^0.0.4",
     "@pres/util-helpers": "^0.0.4",
-    "@pres/util-unicode": "^0.0.4"
+    "@pres/util-unicode": "^0.0.4",
+    "@pres/components-node": "^0.0.4"
   },
   "repository": {
     "type": "git",

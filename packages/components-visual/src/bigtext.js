@@ -10,7 +10,7 @@ export class BigText extends Box {
   /**
    * BigText
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(options)
     if (!(this instanceof Node)) { return new BigText(options) }
     options = options || {}

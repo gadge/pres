@@ -17,7 +17,7 @@ export class Textarea extends Input {
   /**
    * Textarea
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions(options))
     const self = this
     if (!(this instanceof Node)) { return new Textarea(options) }

@@ -15,7 +15,7 @@ export class Listbar extends Box {
   /**
    * Listbar / HorizontalList
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(options)
     const self = this
     if (!(this instanceof Node)) return new Listbar(options)

@@ -3,7 +3,8 @@ import * as helpers$1 from '@pres/util-helpers';
 import * as unicode$1 from '@pres/util-unicode';
 import { assign } from '@ject/mixin';
 import assert from 'assert';
-import { EventEmitter } from '@pres/events';
+import { Node, _Screen } from '@pres/components-node';
+export { Node } from '@pres/components-node';
 import { Program } from '@pres/program';
 import util from 'util';
 
@@ -12,9 +13,9 @@ import util from 'util';
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-const nextTick$3 = global.setImmediate || process.nextTick.bind(process);
-class Screen$1 extends Node {
-  constructor(_options) {
+global.setImmediate || process.nextTick.bind(process);
+class Screen extends Node {
+  constructor(_options = {}) {
     super(_options);
     this.type = 'screen';
     this._destroy = this.destroy;
@@ -155,10 +156,11 @@ class Screen$1 extends Node {
       };
 
       this.cursorReset = this.resetCursor;
-      return new Screen$1(_options);
+      return new Screen(_options);
     }
 
-    Screen$1.configSingleton(this);
+    _Screen.configSingleton(this);
+
     _options = _options || {};
 
     if (_options.rsety && _options.listen) {
@@ -401,52 +403,6 @@ class Screen$1 extends Node {
     return this.focusPush(el);
   }
 
-  static configSingleton(screen) {
-    if (!Screen$1.global) {
-      Screen$1.global = screen;
-    }
-
-    if (!~Screen$1.instances.indexOf(screen)) {
-      Screen$1.instances.push(screen);
-      screen.index = Screen$1.total;
-      Screen$1.total++;
-    }
-
-    if (Screen$1._bound) return;
-    Screen$1._bound = true;
-    process.on('uncaughtException', Screen$1._exceptionHandler = function (err) {
-      if (process.listeners('uncaughtException').length > 1) {
-        return;
-      }
-
-      Screen$1.instances.slice().forEach(function (screen) {
-        screen.destroy();
-      });
-      err = err || new Error('Uncaught Exception.');
-      console.error(err.stack ? err.stack + '' : err + '');
-      nextTick$3(function () {
-        process.exit(1);
-      });
-    });
-    ['SIGTERM', 'SIGINT', 'SIGQUIT'].forEach(function (signal) {
-      const name = '_' + signal.toLowerCase() + 'Handler';
-      process.on(signal, Screen$1[name] = function () {
-        if (process.listeners(signal).length > 1) {
-          return;
-        }
-
-        nextTick$3(function () {
-          process.exit(0);
-        });
-      });
-    });
-    process.on('exit', Screen$1._exitHandler = function () {
-      Screen$1.instances.slice().forEach(function (screen) {
-        screen.destroy();
-      });
-    });
-  }
-
   setTerminal(terminal) {
     const entered = !!this.program.isAlt;
 
@@ -610,26 +566,28 @@ class Screen$1 extends Node {
 
   destroy() {
     this.leave();
-    const index = Screen$1.instances.indexOf(this);
+
+    const index = _Screen.instances.indexOf(this);
 
     if (~index) {
-      Screen$1.instances.splice(index, 1);
-      Screen$1.total--;
-      Screen$1.global = Screen$1.instances[0];
+      _Screen.instances.splice(index, 1);
 
-      if (Screen$1.total === 0) {
-        Screen$1.global = null;
-        process.removeListener('uncaughtException', Screen$1._exceptionHandler);
-        process.removeListener('SIGTERM', Screen$1._sigtermHandler);
-        process.removeListener('SIGINT', Screen$1._sigintHandler);
-        process.removeListener('SIGQUIT', Screen$1._sigquitHandler);
-        process.removeListener('exit', Screen$1._exitHandler);
-        delete Screen$1._exceptionHandler;
-        delete Screen$1._sigtermHandler;
-        delete Screen$1._sigintHandler;
-        delete Screen$1._sigquitHandler;
-        delete Screen$1._exitHandler;
-        delete Screen$1._bound;
+      _Screen.total--;
+      _Screen.global = _Screen.instances[0];
+
+      if (_Screen.total === 0) {
+        _Screen.global = null;
+        process.removeListener('uncaughtException', _Screen._exceptionHandler);
+        process.removeListener('SIGTERM', _Screen._sigtermHandler);
+        process.removeListener('SIGINT', _Screen._sigintHandler);
+        process.removeListener('SIGQUIT', _Screen._sigquitHandler);
+        process.removeListener('exit', _Screen._exitHandler);
+        delete _Screen._exceptionHandler;
+        delete _Screen._sigtermHandler;
+        delete _Screen._sigintHandler;
+        delete _Screen._sigquitHandler;
+        delete _Screen._exitHandler;
+        delete _Screen._bound;
       }
 
       this.destroyed = true;
@@ -2311,9 +2269,6 @@ class Screen$1 extends Node {
  * Angle Table
  */
 
-Screen$1.global = null;
-Screen$1.total = 0;
-Screen$1.instances = [];
 const angles = {
   '\u2518': true,
   // '┘'
@@ -2446,263 +2401,6 @@ Object.keys(angleTable).forEach(function (key) {
   angleTable[parseInt(key, 2)] = angleTable[key];
   delete angleTable[key];
 });
-
-/**
- * node.js - base abstract node for blessed
- * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
- * https://github.com/chjj/blessed
- */
-class Node extends EventEmitter {
-  /**
-   * Node
-   */
-  constructor(options = {}) {
-    var _options$children;
-
-    super(options);
-    this.type = 'node';
-    const self = this;
-    if (!(this instanceof Node)) return new Node(options);
-    this.options = options;
-    this.screen = this.screen || options.screen;
-
-    if (!this.screen) {
-      if (this.type === 'screen') {
-        this.screen = this;
-      } else if (Screen$1.total === 1) {
-        this.screen = Screen$1.global;
-      } else if (options.parent) {
-        this.screen = options.parent;
-
-        while (this.screen && this.screen.type !== 'screen') {
-          this.screen = this.screen.parent;
-        }
-      } else if (Screen$1.total) {
-        // This _should_ work in most cases as long as the element is appended
-        // synchronously after the screen's creation. Throw error if not.
-        this.screen = Screen$1.instances[Screen$1.instances.length - 1];
-        process.nextTick(function () {
-          if (!self.parent) {
-            throw new Error('Element (' + self.type + ')' + ' was not appended synchronously after the' + ' screen\'s creation. Please set a `parent`' + ' or `screen` option in the element\'s constructor' + ' if you are going to use multiple screens and' + ' append the element later.');
-          }
-        });
-      } else {
-        throw new Error('No active screen.');
-      }
-    }
-
-    this.parent = options.parent || null;
-    this.children = [];
-    this.$ = this._ = this.data = {};
-    this.uid = Node.uid++;
-    this.index = this.index != null ? this.index : -1;
-
-    if (this.type !== 'screen') {
-      this.detached = true;
-    }
-
-    if (this.parent) {
-      this.parent.append(this);
-    }
-
-    ((_options$children = options.children) !== null && _options$children !== void 0 ? _options$children : []).forEach(this.append.bind(this));
-  }
-
-  insert(element, i) {
-    const self = this;
-
-    if (element.screen && element.screen !== this.screen) {
-      throw new Error('Cannot switch a node\'s screen.');
-    }
-
-    element.detach();
-    element.parent = this;
-    element.screen = this.screen;
-
-    if (i === 0) {
-      this.children.unshift(element);
-    } else if (i === this.children.length) {
-      this.children.push(element);
-    } else {
-      this.children.splice(i, 0, element);
-    }
-
-    element.emit('reparent', this);
-    this.emit('adopt', element);
-
-    (function emit(el) {
-      const n = el.detached !== self.detached;
-      el.detached = self.detached;
-      if (n) el.emit('attach');
-      el.children.forEach(emit);
-    })(element);
-
-    if (!this.screen.focused) {
-      this.screen.focused = element;
-    }
-  }
-
-  prepend(element) {
-    this.insert(element, 0);
-  }
-
-  append(element) {
-    this.insert(element, this.children.length);
-  }
-
-  insertBefore(element, other) {
-    const i = this.children.indexOf(other);
-    if (~i) this.insert(element, i);
-  }
-
-  insertAfter(element, other) {
-    const i = this.children.indexOf(other);
-    if (~i) this.insert(element, i + 1);
-  }
-
-  remove(element) {
-    if (element.parent !== this) return;
-    let i = this.children.indexOf(element);
-    if (!~i) return;
-    element.clearPos();
-    element.parent = null;
-    this.children.splice(i, 1);
-    i = this.screen.clickable.indexOf(element);
-    if (~i) this.screen.clickable.splice(i, 1);
-    i = this.screen.keyable.indexOf(element);
-    if (~i) this.screen.keyable.splice(i, 1);
-    element.emit('reparent', null);
-    this.emit('remove', element);
-
-    (function emit(el) {
-      const n = el.detached !== true;
-      el.detached = true;
-      if (n) el.emit('detach');
-      el.children.forEach(emit);
-    })(element);
-
-    if (this.screen.focused === element) {
-      this.screen.rewindFocus();
-    }
-  }
-
-  detach() {
-    if (this.parent) this.parent.remove(this);
-  }
-
-  free() {}
-
-  destroy() {
-    this.detach();
-    this.forDescendants(function (el) {
-      el.free();
-      el.destroyed = true;
-      el.emit('destroy');
-    }, this);
-  }
-
-  forDescendants(iter, s) {
-    if (s) iter(this);
-    this.children.forEach(function emit(el) {
-      iter(el);
-      el.children.forEach(emit);
-    });
-  }
-
-  forAncestors(iter, s) {
-    let el = this;
-    if (s) iter(this);
-
-    while (el = el.parent) {
-      iter(el);
-    }
-  }
-
-  collectDescendants(s) {
-    const out = [];
-    this.forDescendants(function (el) {
-      out.push(el);
-    }, s);
-    return out;
-  }
-
-  collectAncestors(s) {
-    const out = [];
-    this.forAncestors(function (el) {
-      out.push(el);
-    }, s);
-    return out;
-  }
-
-  emitDescendants() {
-    const args = Array.prototype.slice(arguments);
-    let iter;
-
-    if (typeof args[args.length - 1] === 'function') {
-      iter = args.pop();
-    }
-
-    return this.forDescendants(function (el) {
-      if (iter) iter(el);
-      el.emit.apply(el, args);
-    }, true);
-  }
-
-  emitAncestors() {
-    const args = Array.prototype.slice(arguments);
-    let iter;
-
-    if (typeof args[args.length - 1] === 'function') {
-      iter = args.pop();
-    }
-
-    return this.forAncestors(function (el) {
-      if (iter) iter(el);
-      el.emit.apply(el, args);
-    }, true);
-  }
-
-  hasDescendant(target) {
-    return function find(el) {
-      for (let i = 0; i < el.children.length; i++) {
-        if (el.children[i] === target) {
-          return true;
-        }
-
-        if (find(el.children[i]) === true) {
-          return true;
-        }
-      }
-
-      return false;
-    }(this);
-  }
-
-  hasAncestor(target) {
-    let el = this;
-
-    while (el = el.parent) {
-      if (el === target) return true;
-    }
-
-    return false;
-  }
-
-  get(name, value) {
-    if (this.data.hasOwnProperty(name)) {
-      return this.data[name];
-    }
-
-    return value;
-  }
-
-  set(name, value) {
-    return this.data[name] = value;
-  }
-
-} // Node.prototype.__proto__ = EventEmitter.prototype
-
-Node.uid = 0;
 
 /**
  * scrollablebox.js - scrollable box element for blessed
@@ -5678,84 +5376,388 @@ class Box extends Element$1 {
 }
 
 /**
- * scrollabletext.js - scrollable text element for blessed
+ * terminal.js - term.js terminal element for blessed
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-class ScrollableText extends ScrollableBox {
+/**
+ * Modules
+ */
+
+const nextTick$1 = global.setImmediate || process.nextTick.bind(process);
+
+const parseOptions = options => {
+  options.scrollable = false;
+  return options;
+};
+
+class Terminal extends Box {
   /**
-   * ScrollableText
+   * Terminal
    */
   constructor(options = {}) {
-    options.alwaysScroll = true;
-    super(options);
-    this.type = 'scrollable-text';
-    if (!(this instanceof Node)) return new ScrollableText(options);
+    super(parseOptions(options));
+
+    if (!(this instanceof Node)) {
+      return new Terminal(options);
+    } // XXX Workaround for all motion
+
+
+    if (this.screen.program.tmux && this.screen.program.tmuxVersion >= 2) {
+      this.screen.program.enableMouse();
+    }
+
+    this.handler = options.handler;
+    this.shell = options.shell || process.env.SHELL || 'sh';
+    this.args = options.args || [];
+    this.cursor = this.options.cursor;
+    this.cursorBlink = this.options.cursorBlink;
+    this.screenKeys = this.options.screenKeys;
+    this.style = this.style || {};
+    this.style.bg = this.style.bg || 'default';
+    this.style.fg = this.style.fg || 'default';
+    this.termName = options.terminal || options.term || process.env.TERM || 'xterm';
+    this.bootstrap();
+    this.type = 'terminal';
+    this.setScroll = Terminal.prototype.scrollTo;
   }
 
-}
-
-/**
- * log.js - log element for blessed
- * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
- * https://github.com/chjj/blessed
- */
-const nextTick$1 = global.setImmediate || process.nextTick.bind(process);
-class Log$1 extends ScrollableText {
-  /**
-   * Log
-   */
-  constructor(options = {}) {
-    super(options);
-    this.type = 'log';
-    this.log = this.add;
-    this._scroll = this.scroll;
+  bootstrap() {
     const self = this;
-    if (!(this instanceof Node)) return new Log$1(options);
-    this.scrollback = options.scrollback != null ? options.scrollback : Infinity;
-    this.scrollOnInput = options.scrollOnInput;
-    this.on('set content', function () {
-      if (!self._userScrolled || self.scrollOnInput) {
-        nextTick$1(function () {
-          self.setScrollPerc(100);
-          self._userScrolled = false;
-          self.screen.render();
-        });
+    const element = {
+      // window
+      get document() {
+        return element;
+      },
+
+      navigator: {
+        userAgent: 'node.js'
+      },
+
+      // document
+      get defaultView() {
+        return element;
+      },
+
+      get documentElement() {
+        return element;
+      },
+
+      createElement: function () {
+        return element;
+      },
+
+      // element
+      get ownerDocument() {
+        return element;
+      },
+
+      addEventListener: function () {},
+      removeEventListener: function () {},
+      getElementsByTagName: function () {
+        return [element];
+      },
+      getElementById: function () {
+        return element;
+      },
+      parentNode: null,
+      offsetParent: null,
+      appendChild: function () {},
+      removeChild: function () {},
+      setAttribute: function () {},
+      getAttribute: function () {},
+      style: {},
+      focus: function () {},
+      blur: function () {},
+      console: console
+    };
+    element.parentNode = element;
+    element.offsetParent = element;
+    this.term = require('term.js')({
+      termName: this.termName,
+      cols: this.width - this.iwidth,
+      rows: this.height - this.iheight,
+      context: element,
+      document: element,
+      body: element,
+      parent: element,
+      cursorBlink: this.cursorBlink,
+      screenKeys: this.screenKeys
+    });
+
+    this.term.refresh = function () {
+      self.screen.render();
+    };
+
+    this.term.keyDown = function () {};
+
+    this.term.keyPress = function () {};
+
+    this.term.open(element); // Emits key sequences in html-land.
+    // Technically not necessary here.
+    // In reality if we wanted to be neat, we would overwrite the keyDown and
+    // keyPress methods with our own node.js-keys->terminal-keys methods, but
+    // since all the keys are already coming in as escape sequences, we can just
+    // send the input directly to the handler/socket (see below).
+    // this.term.on('data', function(data) {
+    //   self.handler(data);
+    // });
+    // Incoming keys and mouse inputs.
+    // NOTE: Cannot pass mouse events - coordinates will be off!
+
+    this.screen.program.input.on('data', this._onData = function (data) {
+      if (self.screen.focused === self && !self._isMouse(data)) {
+        self.handler(data);
       }
     });
-    this._scroll = Log$1.prototype.scroll;
-  }
+    this.onScreenEvent('mouse', function (data) {
+      if (self.screen.focused !== self) return;
+      if (data.x < self.aleft + self.ileft) return;
+      if (data.y < self.atop + self.itop) return;
+      if (data.x > self.aleft - self.ileft + self.width) return;
+      if (data.y > self.atop - self.itop + self.height) return;
 
-  // log() { return this.add() }
-  add() {
-    const args = Array.prototype.slice.call(arguments);
+      if (self.term.x10Mouse || self.term.vt200Mouse || self.term.normalMouse || self.term.mouseEvents || self.term.utfMouse || self.term.sgrMouse || self.term.urxvtMouse) ; else {
+        return;
+      }
 
-    if (typeof args[0] === 'object') {
-      args[0] = util.inspect(args[0], true, 20, true);
+      let b = data.raw[0];
+      const x = data.x - self.aleft,
+            y = data.y - self.atop;
+      let s;
+
+      if (self.term.urxvtMouse) {
+        if (self.screen.program.sgrMouse) {
+          b += 32;
+        }
+
+        s = '\x1b[' + b + ';' + (x + 32) + ';' + (y + 32) + 'M';
+      } else if (self.term.sgrMouse) {
+        if (!self.screen.program.sgrMouse) {
+          b -= 32;
+        }
+
+        s = '\x1b[<' + b + ';' + x + ';' + y + (data.action === 'mousedown' ? 'M' : 'm');
+      } else {
+        if (self.screen.program.sgrMouse) {
+          b += 32;
+        }
+
+        s = '\x1b[M' + String.fromCharCode(b) + String.fromCharCode(x + 32) + String.fromCharCode(y + 32);
+      }
+
+      self.handler(s);
+    });
+    this.on('focus', function () {
+      self.term.focus();
+    });
+    this.on('blur', function () {
+      self.term.blur();
+    });
+    this.term.on('title', function (title) {
+      self.title = title;
+      self.emit('title', title);
+    });
+    this.term.on('passthrough', function (data) {
+      self.screen.program.flush();
+
+      self.screen.program._owrite(data);
+    });
+    this.on('resize', function () {
+      nextTick$1(function () {
+        self.term.resize(self.width - self.iwidth, self.height - self.iheight);
+      });
+    });
+    this.once('render', function () {
+      self.term.resize(self.width - self.iwidth, self.height - self.iheight);
+    });
+    this.on('destroy', function () {
+      self.kill();
+      self.screen.program.input.removeListener('data', self._onData);
+    });
+
+    if (this.handler) {
+      return;
     }
 
-    const text = util.format.apply(util, args);
-    this.emit('log', text);
-    const ret = this.pushLine(text);
+    this.pty = require('pty.js').fork(this.shell, this.args, {
+      name: this.termName,
+      cols: this.width - this.iwidth,
+      rows: this.height - this.iheight,
+      cwd: process.env.HOME,
+      env: this.options.env || process.env
+    });
+    this.on('resize', function () {
+      nextTick$1(function () {
+        try {
+          self.pty.resize(self.width - self.iwidth, self.height - self.iheight);
+        } catch (e) {}
+      });
+    });
 
-    if (this._clines.fake.length > this.scrollback) {
-      this.shiftLine(0, this.scrollback / 3 | 0);
+    this.handler = function (data) {
+      self.pty.write(data);
+      self.screen.render();
+    };
+
+    this.pty.on('data', function (data) {
+      self.write(data);
+      self.screen.render();
+    });
+    this.pty.on('exit', function (code) {
+      self.emit('exit', code || null);
+    });
+    this.onScreenEvent('keypress', function () {
+      self.screen.render();
+    });
+
+    this.screen._listenKeys(this);
+  }
+
+  write(data) {
+    return this.term.write(data);
+  }
+
+  render() {
+    const ret = this._render();
+
+    if (!ret) return;
+    this.dattr = this.sattr(this.style);
+    const xi = ret.xi + this.ileft,
+          xl = ret.xl - this.iright,
+          yi = ret.yi + this.itop,
+          yl = ret.yl - this.ibottom;
+    let cursor;
+    const scrollback = this.term.lines.length - (yl - yi);
+
+    for (let y = Math.max(yi, 0); y < yl; y++) {
+      const line = this.screen.lines[y];
+      if (!line || !this.term.lines[scrollback + y - yi]) break;
+
+      if (y === yi + this.term.y && this.term.cursorState && this.screen.focused === this && (this.term.ydisp === this.term.ybase || this.term.selectMode) && !this.term.cursorHidden) {
+        cursor = xi + this.term.x;
+      } else {
+        cursor = -1;
+      }
+
+      for (let x = Math.max(xi, 0); x < xl; x++) {
+        if (!line[x] || !this.term.lines[scrollback + y - yi][x - xi]) break;
+        line[x][0] = this.term.lines[scrollback + y - yi][x - xi][0];
+
+        if (x === cursor) {
+          if (this.cursor === 'line') {
+            line[x][0] = this.dattr;
+            line[x][1] = '\u2502';
+            continue;
+          } else if (this.cursor === 'underline') {
+            line[x][0] = this.dattr | 2 << 18;
+          } else if (this.cursor === 'block' || !this.cursor) {
+            line[x][0] = this.dattr | 8 << 18;
+          }
+        }
+
+        line[x][1] = this.term.lines[scrollback + y - yi][x - xi][1]; // default foreground = 257
+
+        if ((line[x][0] >> 9 & 0x1ff) === 257) {
+          line[x][0] &= ~(0x1ff << 9);
+          line[x][0] |= (this.dattr >> 9 & 0x1ff) << 9;
+        } // default background = 256
+
+
+        if ((line[x][0] & 0x1ff) === 256) {
+          line[x][0] &= ~0x1ff;
+          line[x][0] |= this.dattr & 0x1ff;
+        }
+      }
+
+      line.dirty = true;
     }
 
     return ret;
   }
 
-  scroll(offset, always) {
-    if (offset === 0) return this._scroll(offset, always);
-    this._userScrolled = true;
+  _isMouse(buf) {
+    let s = buf;
 
-    const ret = this._scroll(offset, always);
-
-    if (this.getScrollPerc() === 100) {
-      this._userScrolled = false;
+    if (Buffer.isBuffer(s)) {
+      if (s[0] > 127 && s[1] === undefined) {
+        s[0] -= 128;
+        s = '\x1b' + s.toString('utf-8');
+      } else {
+        s = s.toString('utf-8');
+      }
     }
 
-    return ret;
+    return buf[0] === 0x1b && buf[1] === 0x5b && buf[2] === 0x4d || /^\x1b\[M([\x00\u0020-\uffff]{3})/.test(s) || /^\x1b\[(\d+;\d+;\d+)M/.test(s) || /^\x1b\[<(\d+;\d+;\d+)([mM])/.test(s) || /^\x1b\[<(\d+;\d+;\d+;\d+)&w/.test(s) || /^\x1b\[24([0135])~\[(\d+),(\d+)\]\r/.test(s) || /^\x1b\[(O|I)/.test(s);
+  }
+
+  scrollTo(offset) {
+    this.term.ydisp = offset;
+    return this.emit('scroll');
+  }
+
+  getScroll() {
+    return this.term.ydisp;
+  }
+
+  scroll(offset) {
+    this.term.scrollDisp(offset);
+    return this.emit('scroll');
+  }
+
+  resetScroll() {
+    this.term.ydisp = 0;
+    this.term.ybase = 0;
+    return this.emit('scroll');
+  }
+
+  getScrollHeight() {
+    return this.term.rows - 1;
+  }
+
+  getScrollPerc() {
+    return this.term.ydisp / this.term.ybase * 100;
+  }
+
+  setScrollPerc(i) {
+    return this.setScroll(i / 100 * this.term.ybase | 0);
+  }
+
+  screenshot(xi, xl, yi, yl) {
+    xi = 0 + (xi || 0);
+
+    if (xl != null) {
+      xl = 0 + (xl || 0);
+    } else {
+      xl = this.term.lines[0].length;
+    }
+
+    yi = 0 + (yi || 0);
+
+    if (yl != null) {
+      yl = 0 + (yl || 0);
+    } else {
+      yl = this.term.lines.length;
+    }
+
+    return this.screen.screenshot(xi, xl, yi, yl, this.term);
+  }
+
+  kill() {
+    if (this.pty) {
+      this.pty.destroy();
+      this.pty.kill();
+    }
+
+    this.term.refresh = function () {};
+
+    this.term.write('\x1b[H\x1b[J');
+
+    if (this.term._blink) {
+      clearInterval(this.term._blink);
+    }
+
+    this.term.destroy();
   }
 
 }
@@ -6005,411 +6007,86 @@ const parseOption = options => {
 };
 
 /**
- * terminal.js - term.js terminal element for blessed
+ * scrollabletext.js - scrollable text element for blessed
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-/**
- * Modules
- */
-
-const nextTick = global.setImmediate || process.nextTick.bind(process);
-
-const parseOptions = options => {
-  options.scrollable = false;
-  return options;
-};
-
-class Terminal extends Box {
+class ScrollableText extends ScrollableBox {
   /**
-   * Terminal
+   * ScrollableText
    */
   constructor(options = {}) {
-    super(parseOptions(options));
-
-    if (!(this instanceof Node)) {
-      return new Terminal(options);
-    } // XXX Workaround for all motion
-
-
-    if (this.screen.program.tmux && this.screen.program.tmuxVersion >= 2) {
-      this.screen.program.enableMouse();
-    }
-
-    this.handler = options.handler;
-    this.shell = options.shell || process.env.SHELL || 'sh';
-    this.args = options.args || [];
-    this.cursor = this.options.cursor;
-    this.cursorBlink = this.options.cursorBlink;
-    this.screenKeys = this.options.screenKeys;
-    this.style = this.style || {};
-    this.style.bg = this.style.bg || 'default';
-    this.style.fg = this.style.fg || 'default';
-    this.termName = options.terminal || options.term || process.env.TERM || 'xterm';
-    this.bootstrap();
-    this.type = 'terminal';
-    this.setScroll = Terminal.prototype.scrollTo;
+    options.alwaysScroll = true;
+    super(options);
+    this.type = 'scrollable-text';
+    if (!(this instanceof Node)) return new ScrollableText(options);
   }
 
-  bootstrap() {
+}
+
+/**
+ * log.js - log element for blessed
+ * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
+ * https://github.com/chjj/blessed
+ */
+const nextTick = global.setImmediate || process.nextTick.bind(process);
+class Log$1 extends ScrollableText {
+  /**
+   * Log
+   */
+  constructor(options = {}) {
+    super(options);
+    this.type = 'log';
+    this.log = this.add;
+    this._scroll = this.scroll;
     const self = this;
-    const element = {
-      // window
-      get document() {
-        return element;
-      },
-
-      navigator: {
-        userAgent: 'node.js'
-      },
-
-      // document
-      get defaultView() {
-        return element;
-      },
-
-      get documentElement() {
-        return element;
-      },
-
-      createElement: function () {
-        return element;
-      },
-
-      // element
-      get ownerDocument() {
-        return element;
-      },
-
-      addEventListener: function () {},
-      removeEventListener: function () {},
-      getElementsByTagName: function () {
-        return [element];
-      },
-      getElementById: function () {
-        return element;
-      },
-      parentNode: null,
-      offsetParent: null,
-      appendChild: function () {},
-      removeChild: function () {},
-      setAttribute: function () {},
-      getAttribute: function () {},
-      style: {},
-      focus: function () {},
-      blur: function () {},
-      console: console
-    };
-    element.parentNode = element;
-    element.offsetParent = element;
-    this.term = require('term.js')({
-      termName: this.termName,
-      cols: this.width - this.iwidth,
-      rows: this.height - this.iheight,
-      context: element,
-      document: element,
-      body: element,
-      parent: element,
-      cursorBlink: this.cursorBlink,
-      screenKeys: this.screenKeys
-    });
-
-    this.term.refresh = function () {
-      self.screen.render();
-    };
-
-    this.term.keyDown = function () {};
-
-    this.term.keyPress = function () {};
-
-    this.term.open(element); // Emits key sequences in html-land.
-    // Technically not necessary here.
-    // In reality if we wanted to be neat, we would overwrite the keyDown and
-    // keyPress methods with our own node.js-keys->terminal-keys methods, but
-    // since all the keys are already coming in as escape sequences, we can just
-    // send the input directly to the handler/socket (see below).
-    // this.term.on('data', function(data) {
-    //   self.handler(data);
-    // });
-    // Incoming keys and mouse inputs.
-    // NOTE: Cannot pass mouse events - coordinates will be off!
-
-    this.screen.program.input.on('data', this._onData = function (data) {
-      if (self.screen.focused === self && !self._isMouse(data)) {
-        self.handler(data);
+    if (!(this instanceof Node)) return new Log$1(options);
+    this.scrollback = options.scrollback != null ? options.scrollback : Infinity;
+    this.scrollOnInput = options.scrollOnInput;
+    this.on('set content', function () {
+      if (!self._userScrolled || self.scrollOnInput) {
+        nextTick(function () {
+          self.setScrollPerc(100);
+          self._userScrolled = false;
+          self.screen.render();
+        });
       }
     });
-    this.onScreenEvent('mouse', function (data) {
-      if (self.screen.focused !== self) return;
-      if (data.x < self.aleft + self.ileft) return;
-      if (data.y < self.atop + self.itop) return;
-      if (data.x > self.aleft - self.ileft + self.width) return;
-      if (data.y > self.atop - self.itop + self.height) return;
+    this._scroll = Log$1.prototype.scroll;
+  }
 
-      if (self.term.x10Mouse || self.term.vt200Mouse || self.term.normalMouse || self.term.mouseEvents || self.term.utfMouse || self.term.sgrMouse || self.term.urxvtMouse) ; else {
-        return;
-      }
+  // log() { return this.add() }
+  add() {
+    const args = Array.prototype.slice.call(arguments);
 
-      let b = data.raw[0];
-      const x = data.x - self.aleft,
-            y = data.y - self.atop;
-      let s;
-
-      if (self.term.urxvtMouse) {
-        if (self.screen.program.sgrMouse) {
-          b += 32;
-        }
-
-        s = '\x1b[' + b + ';' + (x + 32) + ';' + (y + 32) + 'M';
-      } else if (self.term.sgrMouse) {
-        if (!self.screen.program.sgrMouse) {
-          b -= 32;
-        }
-
-        s = '\x1b[<' + b + ';' + x + ';' + y + (data.action === 'mousedown' ? 'M' : 'm');
-      } else {
-        if (self.screen.program.sgrMouse) {
-          b += 32;
-        }
-
-        s = '\x1b[M' + String.fromCharCode(b) + String.fromCharCode(x + 32) + String.fromCharCode(y + 32);
-      }
-
-      self.handler(s);
-    });
-    this.on('focus', function () {
-      self.term.focus();
-    });
-    this.on('blur', function () {
-      self.term.blur();
-    });
-    this.term.on('title', function (title) {
-      self.title = title;
-      self.emit('title', title);
-    });
-    this.term.on('passthrough', function (data) {
-      self.screen.program.flush();
-
-      self.screen.program._owrite(data);
-    });
-    this.on('resize', function () {
-      nextTick(function () {
-        self.term.resize(self.width - self.iwidth, self.height - self.iheight);
-      });
-    });
-    this.once('render', function () {
-      self.term.resize(self.width - self.iwidth, self.height - self.iheight);
-    });
-    this.on('destroy', function () {
-      self.kill();
-      self.screen.program.input.removeListener('data', self._onData);
-    });
-
-    if (this.handler) {
-      return;
+    if (typeof args[0] === 'object') {
+      args[0] = util.inspect(args[0], true, 20, true);
     }
 
-    this.pty = require('pty.js').fork(this.shell, this.args, {
-      name: this.termName,
-      cols: this.width - this.iwidth,
-      rows: this.height - this.iheight,
-      cwd: process.env.HOME,
-      env: this.options.env || process.env
-    });
-    this.on('resize', function () {
-      nextTick(function () {
-        try {
-          self.pty.resize(self.width - self.iwidth, self.height - self.iheight);
-        } catch (e) {}
-      });
-    });
+    const text = util.format.apply(util, args);
+    this.emit('log', text);
+    const ret = this.pushLine(text);
 
-    this.handler = function (data) {
-      self.pty.write(data);
-      self.screen.render();
-    };
-
-    this.pty.on('data', function (data) {
-      self.write(data);
-      self.screen.render();
-    });
-    this.pty.on('exit', function (code) {
-      self.emit('exit', code || null);
-    });
-    this.onScreenEvent('keypress', function () {
-      self.screen.render();
-    });
-
-    this.screen._listenKeys(this);
-  }
-
-  write(data) {
-    return this.term.write(data);
-  }
-
-  render() {
-    const ret = this._render();
-
-    if (!ret) return;
-    this.dattr = this.sattr(this.style);
-    const xi = ret.xi + this.ileft,
-          xl = ret.xl - this.iright,
-          yi = ret.yi + this.itop,
-          yl = ret.yl - this.ibottom;
-    let cursor;
-    const scrollback = this.term.lines.length - (yl - yi);
-
-    for (let y = Math.max(yi, 0); y < yl; y++) {
-      const line = this.screen.lines[y];
-      if (!line || !this.term.lines[scrollback + y - yi]) break;
-
-      if (y === yi + this.term.y && this.term.cursorState && this.screen.focused === this && (this.term.ydisp === this.term.ybase || this.term.selectMode) && !this.term.cursorHidden) {
-        cursor = xi + this.term.x;
-      } else {
-        cursor = -1;
-      }
-
-      for (let x = Math.max(xi, 0); x < xl; x++) {
-        if (!line[x] || !this.term.lines[scrollback + y - yi][x - xi]) break;
-        line[x][0] = this.term.lines[scrollback + y - yi][x - xi][0];
-
-        if (x === cursor) {
-          if (this.cursor === 'line') {
-            line[x][0] = this.dattr;
-            line[x][1] = '\u2502';
-            continue;
-          } else if (this.cursor === 'underline') {
-            line[x][0] = this.dattr | 2 << 18;
-          } else if (this.cursor === 'block' || !this.cursor) {
-            line[x][0] = this.dattr | 8 << 18;
-          }
-        }
-
-        line[x][1] = this.term.lines[scrollback + y - yi][x - xi][1]; // default foreground = 257
-
-        if ((line[x][0] >> 9 & 0x1ff) === 257) {
-          line[x][0] &= ~(0x1ff << 9);
-          line[x][0] |= (this.dattr >> 9 & 0x1ff) << 9;
-        } // default background = 256
-
-
-        if ((line[x][0] & 0x1ff) === 256) {
-          line[x][0] &= ~0x1ff;
-          line[x][0] |= this.dattr & 0x1ff;
-        }
-      }
-
-      line.dirty = true;
+    if (this._clines.fake.length > this.scrollback) {
+      this.shiftLine(0, this.scrollback / 3 | 0);
     }
 
     return ret;
   }
 
-  _isMouse(buf) {
-    let s = buf;
+  scroll(offset, always) {
+    if (offset === 0) return this._scroll(offset, always);
+    this._userScrolled = true;
 
-    if (Buffer.isBuffer(s)) {
-      if (s[0] > 127 && s[1] === undefined) {
-        s[0] -= 128;
-        s = '\x1b' + s.toString('utf-8');
-      } else {
-        s = s.toString('utf-8');
-      }
+    const ret = this._scroll(offset, always);
+
+    if (this.getScrollPerc() === 100) {
+      this._userScrolled = false;
     }
 
-    return buf[0] === 0x1b && buf[1] === 0x5b && buf[2] === 0x4d || /^\x1b\[M([\x00\u0020-\uffff]{3})/.test(s) || /^\x1b\[(\d+;\d+;\d+)M/.test(s) || /^\x1b\[<(\d+;\d+;\d+)([mM])/.test(s) || /^\x1b\[<(\d+;\d+;\d+;\d+)&w/.test(s) || /^\x1b\[24([0135])~\[(\d+),(\d+)\]\r/.test(s) || /^\x1b\[(O|I)/.test(s);
-  }
-
-  scrollTo(offset) {
-    this.term.ydisp = offset;
-    return this.emit('scroll');
-  }
-
-  getScroll() {
-    return this.term.ydisp;
-  }
-
-  scroll(offset) {
-    this.term.scrollDisp(offset);
-    return this.emit('scroll');
-  }
-
-  resetScroll() {
-    this.term.ydisp = 0;
-    this.term.ybase = 0;
-    return this.emit('scroll');
-  }
-
-  getScrollHeight() {
-    return this.term.rows - 1;
-  }
-
-  getScrollPerc() {
-    return this.term.ydisp / this.term.ybase * 100;
-  }
-
-  setScrollPerc(i) {
-    return this.setScroll(i / 100 * this.term.ybase | 0);
-  }
-
-  screenshot(xi, xl, yi, yl) {
-    xi = 0 + (xi || 0);
-
-    if (xl != null) {
-      xl = 0 + (xl || 0);
-    } else {
-      xl = this.term.lines[0].length;
-    }
-
-    yi = 0 + (yi || 0);
-
-    if (yl != null) {
-      yl = 0 + (yl || 0);
-    } else {
-      yl = this.term.lines.length;
-    }
-
-    return this.screen.screenshot(xi, xl, yi, yl, this.term);
-  }
-
-  kill() {
-    if (this.pty) {
-      this.pty.destroy();
-      this.pty.kill();
-    }
-
-    this.term.refresh = function () {};
-
-    this.term.write('\x1b[H\x1b[J');
-
-    if (this.term._blink) {
-      clearInterval(this.term._blink);
-    }
-
-    this.term.destroy();
-  }
-
-}
-/**
- * Expose
- */
-
-module.exports = Terminal;
-
-class Core {
-  static get Screen() {
-    if (!Core._screen) Core._screen = Screen;
-    return Core._screen;
-  }
-
-  static get Element() {
-    if (!Core._element) Core._element = Element;
-    return Core._element;
+    return ret;
   }
 
 }
 
-Core._screen = void 0;
-Core._element = void 0;
-
-export { Box, Element$1 as Element, Layout, Line, Log$1 as Log, Node, Screen$1 as Screen, ScrollableBox, ScrollableText, Core as TUIComponentsCore, Terminal };
+export { Box, Element$1 as Element, Layout, Line, Log$1 as Log, Screen, ScrollableBox, ScrollableText, Terminal };

@@ -15,7 +15,7 @@ class Loading extends componentsCore.Box {
   /**
    * Loading
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
 
     if (!(this instanceof componentsCore.Node)) {
@@ -95,7 +95,7 @@ class Message extends componentsCore.Box {
   /**
    * Message / Error
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions(options));
     this.log = this.display;
 
@@ -199,7 +199,7 @@ class Message extends componentsCore.Box {
  */
 
 class ProgressBar extends componentsForm.Input {
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
     const self = this;
 

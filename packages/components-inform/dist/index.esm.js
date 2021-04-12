@@ -11,7 +11,7 @@ class Loading extends Box {
   /**
    * Loading
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
 
     if (!(this instanceof Node)) {
@@ -91,7 +91,7 @@ class Message extends Box {
   /**
    * Message / Error
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions(options));
     this.log = this.display;
 
@@ -195,7 +195,7 @@ class Message extends Box {
  */
 
 class ProgressBar extends Input {
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
     const self = this;
 

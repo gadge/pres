@@ -17,7 +17,7 @@ export class Message extends Box {
   /**
    * Message / Error
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions(options))
     if (!(this instanceof Node)) { return new Message(options) }
     this.type = 'message'

@@ -2,6 +2,7 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
+var componentsCore = require('@pres/components-core');
 var unicode = require('@pres/util-unicode');
 var fs = require('fs');
 
@@ -39,7 +40,18 @@ var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
  * Helpers
  */
 
-const helpers = {};
+const helpers = {
+  get Screen() {
+    if (!helpers._screen) helpers._screen = componentsCore.Screen;
+    return helpers._screen;
+  },
+
+  get Element() {
+    if (!helpers._element) helpers._element = componentsCore.Element;
+    return helpers._element;
+  }
+
+};
 
 helpers.merge = function (a, b) {
   Object.keys(b).forEach(function (key) {
@@ -168,21 +180,5 @@ helpers.dropUnicode = function (text) {
   if (!text) return '';
   return text.replace(unicode__namespace.chars.all, '??').replace(unicode__namespace.chars.combining, '').replace(unicode__namespace.chars.surrogate, '?');
 };
-
-helpers.__defineGetter__('Screen', function () {
-  if (!helpers._screen) {
-    helpers._screen = require('../widgets/screen');
-  }
-
-  return helpers._screen;
-});
-
-helpers.__defineGetter__('Element', function () {
-  if (!helpers._element) {
-    helpers._element = require('../widgets/element');
-  }
-
-  return helpers._element;
-});
 
 exports.helpers = helpers;

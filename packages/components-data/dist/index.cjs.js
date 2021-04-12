@@ -22,7 +22,7 @@ class List extends componentsCore.Box {
   /**
    * List
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions$2(options));
     this.add = this.appendItem;
     this.addItem = this.appendItem;
@@ -608,7 +608,7 @@ class Listbar extends componentsCore.Box {
   /**
    * Listbar / HorizontalList
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
     const self = this;
     if (!(this instanceof componentsCore.Node)) return new Listbar(options);
@@ -993,7 +993,7 @@ class Table extends componentsCore.Box {
   /**
    * Table
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions$1(options));
     this.setRows = this.setData;
     const self = this;
@@ -1355,7 +1355,7 @@ class ListTable extends List {
   /**
    * ListTable
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions(options));
     const self = this;
 

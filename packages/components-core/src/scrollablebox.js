@@ -4,8 +4,7 @@
  * https://github.com/chjj/blessed
  */
 
-import { Box }  from '../core/box'
-import { Node } from '../core/node'
+import { Box, Node } from '../core'
 
 export class ScrollableBox extends Box {
   type = 'scrollable-box'

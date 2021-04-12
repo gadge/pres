@@ -17,7 +17,7 @@ export class ANSIImage extends Box {
   /**
    * ANSIImage
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions(options))
     const self = this
     if (!(this instanceof Node)) { return new ANSIImage(options) }

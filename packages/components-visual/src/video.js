@@ -11,7 +11,7 @@ export class Video extends Box {
   /**
    * Video
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(options)
     const self = this
     let

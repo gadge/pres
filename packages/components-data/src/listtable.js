@@ -39,7 +39,7 @@ export class ListTable extends List {
   /**
    * ListTable
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions(options))
     const self = this
     if (!(this instanceof Node)) { return new ListTable(options) }

@@ -1730,7 +1730,7 @@ class ANSIImage extends Box {
   /**
    * ANSIImage
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions$1(options));
     const self = this;
 
@@ -1873,7 +1873,7 @@ class BigText extends Box {
   /**
    * BigText
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
 
     if (!(this instanceof Node)) {
@@ -2027,7 +2027,7 @@ class Image extends Box {
   /**
    * Image
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions(options));
 
     if (!(this instanceof Node)) {
@@ -2075,7 +2075,7 @@ class OverlayImage extends Box {
    * Good example of w3mimgdisplay commands:
    * https://github.com/hut/ranger/blob/master/ranger/ext/img_display.py
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
     const self = this;
 
@@ -2700,7 +2700,7 @@ class Video extends Box {
   /**
    * Video
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
     const self = this;
     let shell, args;
@@ -2795,4 +2795,4 @@ class Video extends Box {
  * Expose
  */
 
-export { ANSIImage, BigText, Image, OverlayImage, Video };
+export { ANSIImage, BigText, Image, OverlayImage, ANSIImage as PNG, Video };

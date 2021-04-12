@@ -1763,7 +1763,7 @@ class ANSIImage extends componentsCore.Box {
   /**
    * ANSIImage
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions$1(options));
     const self = this;
 
@@ -1906,7 +1906,7 @@ class BigText extends componentsCore.Box {
   /**
    * BigText
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
 
     if (!(this instanceof componentsCore.Node)) {
@@ -2060,7 +2060,7 @@ class Image extends componentsCore.Box {
   /**
    * Image
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions(options));
 
     if (!(this instanceof componentsCore.Node)) {
@@ -2108,7 +2108,7 @@ class OverlayImage extends componentsCore.Box {
    * Good example of w3mimgdisplay commands:
    * https://github.com/hut/ranger/blob/master/ranger/ext/img_display.py
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
     const self = this;
 
@@ -2733,7 +2733,7 @@ class Video extends componentsCore.Box {
   /**
    * Video
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
     const self = this;
     let shell, args;
@@ -2832,4 +2832,5 @@ exports.ANSIImage = ANSIImage;
 exports.BigText = BigText;
 exports.Image = Image;
 exports.OverlayImage = OverlayImage;
+exports.PNG = ANSIImage;
 exports.Video = Video;

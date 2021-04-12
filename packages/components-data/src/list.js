@@ -17,7 +17,7 @@ export class List extends Box {
   /**
    * List
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions(options))
     const self = this
     if (!(this instanceof Node)) return new List(options)

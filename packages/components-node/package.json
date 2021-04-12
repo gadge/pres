@@ -1,7 +1,7 @@
 {
-  "name": "@pres/components-form",
+  "name": "@pres/components-node",
   "version": "0.0.4",
-  "description": "Core components for tui",
+  "description": "Node component for tui",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "files": [
@@ -15,19 +15,22 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/components-core": "^0.0.4",
-    "@pres/components-data": "^0.0.4",
-    "@pres/util-helpers": "^0.0.4"
+    "@ject/mixin": "^0.0.9",
+    "@pres/events": "^0.0.4",
+    "@pres/program": "^0.0.4",
+    "@pres/util-colors": "^0.0.4",
+    "@pres/util-helpers": "^0.0.4",
+    "@pres/util-unicode": "^0.0.4"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hoyeungw/pres/components-form.git"
+    "url": "git+https://github.com/hoyeungw/pres/components-node.git"
   },
   "keywords": [
     "pres",
     "process",
     "signal-handler",
-    "components-form"
+    "components-node"
   ],
   "author": {
     "name": "Hoyeung Wong",

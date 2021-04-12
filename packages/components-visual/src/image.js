@@ -13,7 +13,7 @@ export class Image extends Box {
   /**
    * Image
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions(options))
     if (!(this instanceof Node)) { return new Image(options) }
     if (options.type === 'ansi' && this.type !== 'ansiimage') {

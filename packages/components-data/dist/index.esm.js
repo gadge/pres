@@ -18,7 +18,7 @@ class List extends Box {
   /**
    * List
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions$2(options));
     this.add = this.appendItem;
     this.addItem = this.appendItem;
@@ -604,7 +604,7 @@ class Listbar extends Box {
   /**
    * Listbar / HorizontalList
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(options);
     const self = this;
     if (!(this instanceof Node)) return new Listbar(options);
@@ -989,7 +989,7 @@ class Table extends Box {
   /**
    * Table
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions$1(options));
     this.setRows = this.setData;
     const self = this;
@@ -1351,7 +1351,7 @@ class ListTable extends List {
   /**
    * ListTable
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions(options));
     const self = this;
 

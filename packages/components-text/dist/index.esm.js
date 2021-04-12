@@ -15,7 +15,7 @@ class Text extends Element {
   /**
    * Text
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions(options));
 
     if (!(this instanceof Node)) {

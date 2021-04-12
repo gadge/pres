@@ -91,7 +91,7 @@ function parseEvent(raw) {
 
 export const gpmClient = options => new GpmClient(options)
 export class GpmClient extends EventEmitter {
-  constructor(options) {
+  constructor(options = {}) {
     super()
     // if (!(this instanceof GpmClient)) return new GpmClient(options)
     const pid = process.pid

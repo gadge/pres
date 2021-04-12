@@ -16,7 +16,7 @@ export class Textbox extends Textarea {
   /**
    * Textbox
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions(options))
     if (!(this instanceof Node)) { return new Textbox(options) }
     this.secret = options.secret

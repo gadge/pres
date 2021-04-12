@@ -19,7 +19,7 @@ class Text extends componentsCore.Element {
   /**
    * Text
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions(options));
 
     if (!(this instanceof componentsCore.Node)) {

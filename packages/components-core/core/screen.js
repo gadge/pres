@@ -10,12 +10,13 @@
 import { Program } from '@pres/program'
 import { Box }     from './box'
 import { Node }    from './node'
+import {_Screen}   from '@pres/components-node'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
 export class Screen extends Node {
   type = 'screen'
-  constructor(options) {
+  constructor(options = {}) {
     super(options)
     const self = this
 
@@ -23,7 +24,7 @@ export class Screen extends Node {
       super()
       return new Screen(options)
     }
-    Screen.configSingleton(this)
+    _Screen.configSingleton(this)
     options = options || {}
     if (options.rsety && options.listen) {
       options = { program: options }
@@ -143,9 +144,6 @@ export class Screen extends Node {
     this.enter()
     this.postEnter()
   }
-  static global = null
-  static total = 0
-  static instances = []
   get title() { return this.program.title }
   set title(title) { return this.program.title = title }
   get terminal() { return this.program.terminal }
@@ -156,35 +154,6 @@ export class Screen extends Node {
   get height() { return this.program.rows }
   get focused() { return this.history[this.history.length - 1] }
   set focused(el) {return this.focusPush(el) }
-  static configSingleton(screen) {
-    if (!Screen.global) { Screen.global = screen}
-    if (!~Screen.instances.indexOf(screen)) {
-      Screen.instances.push(screen)
-      screen.index = Screen.total
-      Screen.total++
-    }
-    if (Screen._bound) return
-    Screen._bound = true
-    process.on('uncaughtException', Screen._exceptionHandler = function (err) {
-      if (process.listeners('uncaughtException').length > 1) { return }
-      Screen.instances.slice().forEach(function (screen) {
-        screen.destroy()
-      })
-      err = err || new Error('Uncaught Exception.')
-      console.error(err.stack ? err.stack + '' : err + '')
-      nextTick(function () { process.exit(1)})
-    });
-    [ 'SIGTERM', 'SIGINT', 'SIGQUIT' ].forEach(function (signal) {
-      const name = '_' + signal.toLowerCase() + 'Handler'
-      process.on(signal, Screen[name] = function () {
-        if (process.listeners(signal).length > 1) { return }
-        nextTick(function () { process.exit(0)})
-      })
-    })
-    process.on('exit', Screen._exitHandler = function () {
-      Screen.instances.slice().forEach(function (screen) { screen.destroy()})
-    })
-  }
 
   setTerminal(terminal) {
     const entered = !!this.program.isAlt
@@ -313,27 +282,27 @@ export class Screen extends Node {
   _destroy = this.destroy
   destroy() {
     this.leave()
-    const index = Screen.instances.indexOf(this)
+    const index = _Screen.instances.indexOf(this)
     if (~index) {
-      Screen.instances.splice(index, 1)
-      Screen.total--
+      _Screen.instances.splice(index, 1)
+      _Screen.total--
 
-      Screen.global = Screen.instances[0]
+      _Screen.global = _Screen.instances[0]
 
-      if (Screen.total === 0) {
-        Screen.global = null
+      if (_Screen.total === 0) {
+        _Screen.global = null
 
-        process.removeListener('uncaughtException', Screen._exceptionHandler)
-        process.removeListener('SIGTERM', Screen._sigtermHandler)
-        process.removeListener('SIGINT', Screen._sigintHandler)
-        process.removeListener('SIGQUIT', Screen._sigquitHandler)
-        process.removeListener('exit', Screen._exitHandler)
-        delete Screen._exceptionHandler
-        delete Screen._sigtermHandler
-        delete Screen._sigintHandler
-        delete Screen._sigquitHandler
-        delete Screen._exitHandler
-        delete Screen._bound
+        process.removeListener('uncaughtException', _Screen._exceptionHandler)
+        process.removeListener('SIGTERM', _Screen._sigtermHandler)
+        process.removeListener('SIGINT', _Screen._sigintHandler)
+        process.removeListener('SIGQUIT', _Screen._sigquitHandler)
+        process.removeListener('exit', _Screen._exitHandler)
+        delete _Screen._exceptionHandler
+        delete _Screen._sigtermHandler
+        delete _Screen._sigintHandler
+        delete _Screen._sigquitHandler
+        delete _Screen._exitHandler
+        delete _Screen._bound
       }
       this.destroyed = true
       this.emit('destroy')

@@ -13,7 +13,7 @@ import { Input } from '@pres/components-form'
  */
 
 export class ProgressBar extends Input {
-  constructor(options) {
+  constructor(options = {}) {
     super(options)
     const self = this
     if (!(this instanceof Node)) { return new ProgressBar(options) }

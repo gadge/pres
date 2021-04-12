@@ -112,7 +112,7 @@ function parseEvent(raw) {
 
 const gpmClient = options => new GpmClient(options);
 class GpmClient extends events.EventEmitter {
-  constructor(options) {
+  constructor(options = {}) {
     super(); // if (!(this instanceof GpmClient)) return new GpmClient(options)
 
     const pid = process.pid; // check tty for /dev/tty[n]

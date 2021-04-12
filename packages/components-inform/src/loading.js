@@ -15,7 +15,7 @@ export class Loading extends Box {
   /**
    * Loading
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(options)
     if (!(this instanceof Node)) {  return new Loading(options) }
 

@@ -388,10 +388,3 @@ export class Terminal extends Box {
     this.term.destroy()
   }
 }
-
-
-/**
- * Expose
- */
-
-module.exports = Terminal

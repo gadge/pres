@@ -13,9 +13,8 @@ class Tput {
   /**
    * Tput
    */
-  constructor(options) {
+  constructor(options = {}) {
     if (!(this instanceof Tput)) return new Tput(options);
-    options = options || {};
     if (typeof options === 'string') options = {
       terminal: options
     };

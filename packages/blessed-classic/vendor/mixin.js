@@ -1,6 +1,6 @@
 export function mixin(...ClassCollection) {
   class Inherited {
-    constructor(options) {
+    constructor(options = {}) {
       for (let Base of ClassCollection)
         assign(this, new Base(options)) // 拷贝实例属性
     }

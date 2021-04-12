@@ -1,4 +1,5 @@
 import Node$1, { Box, Node } from '@pres/components-core';
+import { helpers } from '@pres/util-helpers';
 import fs from 'fs';
 import path from 'path';
 import { List } from '@pres/components-data';
@@ -132,356 +133,6 @@ class Checkbox extends Input {
   }
 
 }
-
-/**
- * unicode.js - east asian width and surrogate pairs
- * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
- * https://github.com/chjj/blessed
- * Borrowed from vangie/east-asian-width, komagata/eastasianwidth,
- * and mathiasbynens/String.prototype.codePointAt. Licenses below.
- */
-const stringFromCharCode = String.fromCharCode;
-const floor = Math.floor;
-
-function isSurrogate(str, i) {
-  const point = typeof str !== 'number' ? codePointAt(str, i || 0) : str;
-  return point > 0x00ffff;
-}
-
-const combiningTable = [[0x0300, 0x036F], [0x0483, 0x0486], [0x0488, 0x0489], [0x0591, 0x05BD], [0x05BF, 0x05BF], [0x05C1, 0x05C2], [0x05C4, 0x05C5], [0x05C7, 0x05C7], [0x0600, 0x0603], [0x0610, 0x0615], [0x064B, 0x065E], [0x0670, 0x0670], [0x06D6, 0x06E4], [0x06E7, 0x06E8], [0x06EA, 0x06ED], [0x070F, 0x070F], [0x0711, 0x0711], [0x0730, 0x074A], [0x07A6, 0x07B0], [0x07EB, 0x07F3], [0x0901, 0x0902], [0x093C, 0x093C], [0x0941, 0x0948], [0x094D, 0x094D], [0x0951, 0x0954], [0x0962, 0x0963], [0x0981, 0x0981], [0x09BC, 0x09BC], [0x09C1, 0x09C4], [0x09CD, 0x09CD], [0x09E2, 0x09E3], [0x0A01, 0x0A02], [0x0A3C, 0x0A3C], [0x0A41, 0x0A42], [0x0A47, 0x0A48], [0x0A4B, 0x0A4D], [0x0A70, 0x0A71], [0x0A81, 0x0A82], [0x0ABC, 0x0ABC], [0x0AC1, 0x0AC5], [0x0AC7, 0x0AC8], [0x0ACD, 0x0ACD], [0x0AE2, 0x0AE3], [0x0B01, 0x0B01], [0x0B3C, 0x0B3C], [0x0B3F, 0x0B3F], [0x0B41, 0x0B43], [0x0B4D, 0x0B4D], [0x0B56, 0x0B56], [0x0B82, 0x0B82], [0x0BC0, 0x0BC0], [0x0BCD, 0x0BCD], [0x0C3E, 0x0C40], [0x0C46, 0x0C48], [0x0C4A, 0x0C4D], [0x0C55, 0x0C56], [0x0CBC, 0x0CBC], [0x0CBF, 0x0CBF], [0x0CC6, 0x0CC6], [0x0CCC, 0x0CCD], [0x0CE2, 0x0CE3], [0x0D41, 0x0D43], [0x0D4D, 0x0D4D], [0x0DCA, 0x0DCA], [0x0DD2, 0x0DD4], [0x0DD6, 0x0DD6], [0x0E31, 0x0E31], [0x0E34, 0x0E3A], [0x0E47, 0x0E4E], [0x0EB1, 0x0EB1], [0x0EB4, 0x0EB9], [0x0EBB, 0x0EBC], [0x0EC8, 0x0ECD], [0x0F18, 0x0F19], [0x0F35, 0x0F35], [0x0F37, 0x0F37], [0x0F39, 0x0F39], [0x0F71, 0x0F7E], [0x0F80, 0x0F84], [0x0F86, 0x0F87], [0x0F90, 0x0F97], [0x0F99, 0x0FBC], [0x0FC6, 0x0FC6], [0x102D, 0x1030], [0x1032, 0x1032], [0x1036, 0x1037], [0x1039, 0x1039], [0x1058, 0x1059], [0x1160, 0x11FF], [0x135F, 0x135F], [0x1712, 0x1714], [0x1732, 0x1734], [0x1752, 0x1753], [0x1772, 0x1773], [0x17B4, 0x17B5], [0x17B7, 0x17BD], [0x17C6, 0x17C6], [0x17C9, 0x17D3], [0x17DD, 0x17DD], [0x180B, 0x180D], [0x18A9, 0x18A9], [0x1920, 0x1922], [0x1927, 0x1928], [0x1932, 0x1932], [0x1939, 0x193B], [0x1A17, 0x1A18], [0x1B00, 0x1B03], [0x1B34, 0x1B34], [0x1B36, 0x1B3A], [0x1B3C, 0x1B3C], [0x1B42, 0x1B42], [0x1B6B, 0x1B73], [0x1DC0, 0x1DCA], [0x1DFE, 0x1DFF], [0x200B, 0x200F], [0x202A, 0x202E], [0x2060, 0x2063], [0x206A, 0x206F], [0x20D0, 0x20EF], [0x302A, 0x302F], [0x3099, 0x309A], [0xA806, 0xA806], [0xA80B, 0xA80B], [0xA825, 0xA826], [0xFB1E, 0xFB1E], [0xFE00, 0xFE0F], [0xFE20, 0xFE23], [0xFEFF, 0xFEFF], [0xFFF9, 0xFFFB], [0x10A01, 0x10A03], [0x10A05, 0x10A06], [0x10A0C, 0x10A0F], [0x10A38, 0x10A3A], [0x10A3F, 0x10A3F], [0x1D167, 0x1D169], [0x1D173, 0x1D182], [0x1D185, 0x1D18B], [0x1D1AA, 0x1D1AD], [0x1D242, 0x1D244], [0xE0001, 0xE0001], [0xE0020, 0xE007F], [0xE0100, 0xE01EF]];
-combiningTable.reduce(function (out, row) {
-  for (let i = row[0]; i <= row[1]; i++) {
-    out[i] = true;
-  }
-
-  return out;
-}, {});
-/**
- * Code Point Helpers
- */
-
-
-function codePointAt(str, position) {
-  if (str == null) {
-    throw TypeError();
-  }
-
-  const string = String(str);
-
-  if (string.codePointAt) {
-    return string.codePointAt(position);
-  }
-
-  const size = string.length; // `ToInteger`
-
-  let index = position ? Number(position) : 0;
-
-  if (index !== index) {
-    // better `isNaN`
-    index = 0;
-  } // Account for out-of-bounds indices:
-
-
-  if (index < 0 || index >= size) {
-    return undefined;
-  } // Get the first code unit
-
-
-  const first = string.charCodeAt(index);
-  let second;
-
-  if ( // check if it’s the start of a surrogate pair
-  first >= 0xD800 && first <= 0xDBFF && // high surrogate
-  size > index + 1 // there is a next code unit
-  ) {
-      second = string.charCodeAt(index + 1);
-
-      if (second >= 0xDC00 && second <= 0xDFFF) {
-        // low surrogate
-        // http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
-        return (first - 0xD800) * 0x400 + second - 0xDC00 + 0x10000;
-      }
-    }
-
-  return first;
-} // exports.codePointAt = function(str, position) {
-//   position = +position || 0;
-//   var x = str.charCodeAt(position);
-//   var y = str.length > 1 ? str.charCodeAt(position + 1) : 0;
-//   var point = x;
-//   if ((0xD800 <= x && x <= 0xDBFF) && (0xDC00 <= y && y <= 0xDFFF)) {
-//     x &= 0x3FF;
-//     y &= 0x3FF;
-//     point = (x << 10) | y;
-//     point += 0x10000;
-//   }
-//   return point;
-// };
-
-
-function fromCodePoint() {
-  if (String.fromCodePoint) {
-    return String.fromCodePoint.apply(String, arguments);
-  }
-
-  const MAX_SIZE = 0x4000;
-  const codeUnits = [];
-  let highSurrogate;
-  let lowSurrogate;
-  let index = -1;
-  const length = arguments.length;
-
-  if (!length) {
-    return '';
-  }
-
-  let result = '';
-
-  while (++index < length) {
-    let codePoint = Number(arguments[index]);
-
-    if (!isFinite(codePoint) || // `NaN`, `+Infinity`, or `-Infinity`
-    codePoint < 0 || // not a valid Unicode code point
-    codePoint > 0x10FFFF || // not a valid Unicode code point
-    floor(codePoint) !== codePoint // not an integer
-    ) {
-        throw RangeError('Invalid code point: ' + codePoint);
-      }
-
-    if (codePoint <= 0xFFFF) {
-      // BMP code point
-      codeUnits.push(codePoint);
-    } else {
-      // Astral code point; split in surrogate halves
-      // http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
-      codePoint -= 0x10000;
-      highSurrogate = (codePoint >> 10) + 0xD800;
-      lowSurrogate = codePoint % 0x400 + 0xDC00;
-      codeUnits.push(highSurrogate, lowSurrogate);
-    }
-
-    if (index + 1 === length || codeUnits.length > MAX_SIZE) {
-      result += stringFromCharCode.apply(null, codeUnits);
-      codeUnits.length = 0;
-    }
-  }
-
-  return result;
-}
-/**
- * Regexes
- */
-
-
-const chars = {}; // Double width characters that are _not_ surrogate pairs.
-// NOTE: 0x20000 - 0x2fffd and 0x30000 - 0x3fffd are not necessary for this
-// regex anyway. This regex is used to put a blank char after wide chars to
-// be eaten, however, if this is a surrogate pair, parseContent already adds
-// the extra one char because its length equals 2 instead of 1.
-
-chars.wide = new RegExp('([' + '\\u1100-\\u115f' // Hangul Jamo init. consonants
-+ '\\u2329\\u232a' + '\\u2e80-\\u303e\\u3040-\\ua4cf' // CJK ... Yi
-+ '\\uac00-\\ud7a3' // Hangul Syllables
-+ '\\uf900-\\ufaff' // CJK Compatibility Ideographs
-+ '\\ufe10-\\ufe19' // Vertical forms
-+ '\\ufe30-\\ufe6f' // CJK Compatibility Forms
-+ '\\uff00-\\uff60' // Fullwidth Forms
-+ '\\uffe0-\\uffe6' + '])', 'g'); // All surrogate pair wide chars.
-
-chars.swide = new RegExp('(' // 0x20000 - 0x2fffd:
-+ '[\\ud840-\\ud87f][\\udc00-\\udffd]' + '|' // 0x30000 - 0x3fffd:
-+ '[\\ud880-\\ud8bf][\\udc00-\\udffd]' + ')', 'g'); // All wide chars including surrogate pairs.
-
-chars.all = new RegExp('(' + chars.swide.source.slice(1, -1) + '|' + chars.wide.source.slice(1, -1) + ')', 'g'); // Regex to detect a surrogate pair.
-
-chars.surrogate = /[\ud800-\udbff][\udc00-\udfff]/g; // Regex to find combining characters.
-
-chars.combining = combiningTable.reduce(function (out, row) {
-  let low, high, range;
-
-  if (row[0] > 0x00ffff) {
-    low = fromCodePoint(row[0]);
-    low = [hexify(low.charCodeAt(0)), hexify(low.charCodeAt(1))];
-    high = fromCodePoint(row[1]);
-    high = [hexify(high.charCodeAt(0)), hexify(high.charCodeAt(1))];
-    range = '[\\u' + low[0] + '-' + '\\u' + high[0] + ']' + '[\\u' + low[1] + '-' + '\\u' + high[1] + ']';
-    if (!~out.indexOf('|')) out += ']';
-    out += '|' + range;
-  } else {
-    low = hexify(row[0]);
-    high = hexify(row[1]);
-    low = '\\u' + low;
-    high = '\\u' + high;
-    out += low + '-' + high;
-  }
-
-  return out;
-}, '[');
-chars.combining = new RegExp(chars.combining, 'g');
-
-function hexify(n) {
-  n = n.toString(16);
-
-  while (n.length < 4) n = '0' + n;
-
-  return n;
-}
-
-/**
- * helpers.js - helpers for blessed
- * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
- * https://github.com/chjj/blessed
- */
-
-/**
- * Helpers
- */
-
-const helpers = {};
-
-helpers.merge = function (a, b) {
-  Object.keys(b).forEach(function (key) {
-    a[key] = b[key];
-  });
-  return a;
-};
-
-helpers.asort = function (obj) {
-  return obj.sort(function (a, b) {
-    a = a.name.toLowerCase();
-    b = b.name.toLowerCase();
-
-    if (a[0] === '.' && b[0] === '.') {
-      a = a[1];
-      b = b[1];
-    } else {
-      a = a[0];
-      b = b[0];
-    }
-
-    return a > b ? 1 : a < b ? -1 : 0;
-  });
-};
-
-helpers.hsort = function (obj) {
-  return obj.sort(function (a, b) {
-    return b.index - a.index;
-  });
-};
-
-helpers.findFile = function (start, target) {
-  return function read(dir) {
-    let files, file, stat, out;
-
-    if (dir === '/dev' || dir === '/sys' || dir === '/proc' || dir === '/net') {
-      return null;
-    }
-
-    try {
-      files = fs.readdirSync(dir);
-    } catch (e) {
-      files = [];
-    }
-
-    for (let i = 0; i < files.length; i++) {
-      file = files[i];
-
-      if (file === target) {
-        return (dir === '/' ? '' : dir) + '/' + file;
-      }
-
-      try {
-        stat = fs.lstatSync((dir === '/' ? '' : dir) + '/' + file);
-      } catch (e) {
-        stat = null;
-      }
-
-      if (stat && stat.isDirectory() && !stat.isSymbolicLink()) {
-        out = read((dir === '/' ? '' : dir) + '/' + file);
-        if (out) return out;
-      }
-    }
-
-    return null;
-  }(start);
-}; // Escape text for tag-enabled elements.
-
-
-helpers.escape = function (text) {
-  return text.replace(/[{}]/g, function (ch) {
-    return ch === '{' ? '{open}' : '{close}';
-  });
-};
-
-helpers.parseTags = function (text, screen) {
-  return helpers.Element.prototype._parseTags.call({
-    parseTags: true,
-    screen: screen || helpers.Screen.global
-  }, text);
-};
-
-helpers.generateTags = function (style, text) {
-  let open = '',
-      close = '';
-  Object.keys(style || {}).forEach(function (key) {
-    let val = style[key];
-
-    if (typeof val === 'string') {
-      val = val.replace(/^light(?!-)/, 'light-');
-      val = val.replace(/^bright(?!-)/, 'bright-');
-      open = '{' + val + '-' + key + '}' + open;
-      close += '{/' + val + '-' + key + '}';
-    } else {
-      if (val === true) {
-        open = '{' + key + '}' + open;
-        close += '{/' + key + '}';
-      }
-    }
-  });
-
-  if (text != null) {
-    return open + text + close;
-  }
-
-  return {
-    open: open,
-    close: close
-  };
-};
-
-helpers.attrToBinary = function (style, element) {
-  return helpers.Element.prototype.sattr.call(element || {}, style);
-};
-
-helpers.stripTags = function (text) {
-  if (!text) return '';
-  return text.replace(/{(\/?)([\w\-,;!#]*)}/g, '').replace(/\x1b\[[\d;]*m/g, '');
-};
-
-helpers.cleanTags = function (text) {
-  return helpers.stripTags(text).trim();
-};
-
-helpers.dropUnicode = function (text) {
-  if (!text) return '';
-  return text.replace(chars.all, '??').replace(chars.combining, '').replace(chars.surrogate, '?');
-};
-
-helpers.__defineGetter__('Screen', function () {
-  if (!helpers._screen) {
-    helpers._screen = require('../widgets/screen');
-  }
-
-  return helpers._screen;
-});
-
-helpers.__defineGetter__('Element', function () {
-  if (!helpers._element) {
-    helpers._element = require('../widgets/element');
-  }
-
-  return helpers._element;
-});
 
 /**
  * filemanager.js - file manager element for blessed
@@ -943,6 +594,200 @@ class Form extends Box {
 }
 
 /**
+ * unicode.js - east asian width and surrogate pairs
+ * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
+ * https://github.com/chjj/blessed
+ * Borrowed from vangie/east-asian-width, komagata/eastasianwidth,
+ * and mathiasbynens/String.prototype.codePointAt. Licenses below.
+ */
+const stringFromCharCode = String.fromCharCode;
+const floor = Math.floor;
+
+function isSurrogate(str, i) {
+  const point = typeof str !== 'number' ? codePointAt(str, i || 0) : str;
+  return point > 0x00ffff;
+}
+
+const combiningTable = [[0x0300, 0x036F], [0x0483, 0x0486], [0x0488, 0x0489], [0x0591, 0x05BD], [0x05BF, 0x05BF], [0x05C1, 0x05C2], [0x05C4, 0x05C5], [0x05C7, 0x05C7], [0x0600, 0x0603], [0x0610, 0x0615], [0x064B, 0x065E], [0x0670, 0x0670], [0x06D6, 0x06E4], [0x06E7, 0x06E8], [0x06EA, 0x06ED], [0x070F, 0x070F], [0x0711, 0x0711], [0x0730, 0x074A], [0x07A6, 0x07B0], [0x07EB, 0x07F3], [0x0901, 0x0902], [0x093C, 0x093C], [0x0941, 0x0948], [0x094D, 0x094D], [0x0951, 0x0954], [0x0962, 0x0963], [0x0981, 0x0981], [0x09BC, 0x09BC], [0x09C1, 0x09C4], [0x09CD, 0x09CD], [0x09E2, 0x09E3], [0x0A01, 0x0A02], [0x0A3C, 0x0A3C], [0x0A41, 0x0A42], [0x0A47, 0x0A48], [0x0A4B, 0x0A4D], [0x0A70, 0x0A71], [0x0A81, 0x0A82], [0x0ABC, 0x0ABC], [0x0AC1, 0x0AC5], [0x0AC7, 0x0AC8], [0x0ACD, 0x0ACD], [0x0AE2, 0x0AE3], [0x0B01, 0x0B01], [0x0B3C, 0x0B3C], [0x0B3F, 0x0B3F], [0x0B41, 0x0B43], [0x0B4D, 0x0B4D], [0x0B56, 0x0B56], [0x0B82, 0x0B82], [0x0BC0, 0x0BC0], [0x0BCD, 0x0BCD], [0x0C3E, 0x0C40], [0x0C46, 0x0C48], [0x0C4A, 0x0C4D], [0x0C55, 0x0C56], [0x0CBC, 0x0CBC], [0x0CBF, 0x0CBF], [0x0CC6, 0x0CC6], [0x0CCC, 0x0CCD], [0x0CE2, 0x0CE3], [0x0D41, 0x0D43], [0x0D4D, 0x0D4D], [0x0DCA, 0x0DCA], [0x0DD2, 0x0DD4], [0x0DD6, 0x0DD6], [0x0E31, 0x0E31], [0x0E34, 0x0E3A], [0x0E47, 0x0E4E], [0x0EB1, 0x0EB1], [0x0EB4, 0x0EB9], [0x0EBB, 0x0EBC], [0x0EC8, 0x0ECD], [0x0F18, 0x0F19], [0x0F35, 0x0F35], [0x0F37, 0x0F37], [0x0F39, 0x0F39], [0x0F71, 0x0F7E], [0x0F80, 0x0F84], [0x0F86, 0x0F87], [0x0F90, 0x0F97], [0x0F99, 0x0FBC], [0x0FC6, 0x0FC6], [0x102D, 0x1030], [0x1032, 0x1032], [0x1036, 0x1037], [0x1039, 0x1039], [0x1058, 0x1059], [0x1160, 0x11FF], [0x135F, 0x135F], [0x1712, 0x1714], [0x1732, 0x1734], [0x1752, 0x1753], [0x1772, 0x1773], [0x17B4, 0x17B5], [0x17B7, 0x17BD], [0x17C6, 0x17C6], [0x17C9, 0x17D3], [0x17DD, 0x17DD], [0x180B, 0x180D], [0x18A9, 0x18A9], [0x1920, 0x1922], [0x1927, 0x1928], [0x1932, 0x1932], [0x1939, 0x193B], [0x1A17, 0x1A18], [0x1B00, 0x1B03], [0x1B34, 0x1B34], [0x1B36, 0x1B3A], [0x1B3C, 0x1B3C], [0x1B42, 0x1B42], [0x1B6B, 0x1B73], [0x1DC0, 0x1DCA], [0x1DFE, 0x1DFF], [0x200B, 0x200F], [0x202A, 0x202E], [0x2060, 0x2063], [0x206A, 0x206F], [0x20D0, 0x20EF], [0x302A, 0x302F], [0x3099, 0x309A], [0xA806, 0xA806], [0xA80B, 0xA80B], [0xA825, 0xA826], [0xFB1E, 0xFB1E], [0xFE00, 0xFE0F], [0xFE20, 0xFE23], [0xFEFF, 0xFEFF], [0xFFF9, 0xFFFB], [0x10A01, 0x10A03], [0x10A05, 0x10A06], [0x10A0C, 0x10A0F], [0x10A38, 0x10A3A], [0x10A3F, 0x10A3F], [0x1D167, 0x1D169], [0x1D173, 0x1D182], [0x1D185, 0x1D18B], [0x1D1AA, 0x1D1AD], [0x1D242, 0x1D244], [0xE0001, 0xE0001], [0xE0020, 0xE007F], [0xE0100, 0xE01EF]];
+combiningTable.reduce(function (out, row) {
+  for (let i = row[0]; i <= row[1]; i++) {
+    out[i] = true;
+  }
+
+  return out;
+}, {});
+/**
+ * Code Point Helpers
+ */
+
+
+function codePointAt(str, position) {
+  if (str == null) {
+    throw TypeError();
+  }
+
+  const string = String(str);
+
+  if (string.codePointAt) {
+    return string.codePointAt(position);
+  }
+
+  const size = string.length; // `ToInteger`
+
+  let index = position ? Number(position) : 0;
+
+  if (index !== index) {
+    // better `isNaN`
+    index = 0;
+  } // Account for out-of-bounds indices:
+
+
+  if (index < 0 || index >= size) {
+    return undefined;
+  } // Get the first code unit
+
+
+  const first = string.charCodeAt(index);
+  let second;
+
+  if ( // check if it’s the start of a surrogate pair
+  first >= 0xD800 && first <= 0xDBFF && // high surrogate
+  size > index + 1 // there is a next code unit
+  ) {
+      second = string.charCodeAt(index + 1);
+
+      if (second >= 0xDC00 && second <= 0xDFFF) {
+        // low surrogate
+        // http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
+        return (first - 0xD800) * 0x400 + second - 0xDC00 + 0x10000;
+      }
+    }
+
+  return first;
+} // exports.codePointAt = function(str, position) {
+//   position = +position || 0;
+//   var x = str.charCodeAt(position);
+//   var y = str.length > 1 ? str.charCodeAt(position + 1) : 0;
+//   var point = x;
+//   if ((0xD800 <= x && x <= 0xDBFF) && (0xDC00 <= y && y <= 0xDFFF)) {
+//     x &= 0x3FF;
+//     y &= 0x3FF;
+//     point = (x << 10) | y;
+//     point += 0x10000;
+//   }
+//   return point;
+// };
+
+
+function fromCodePoint() {
+  if (String.fromCodePoint) {
+    return String.fromCodePoint.apply(String, arguments);
+  }
+
+  const MAX_SIZE = 0x4000;
+  const codeUnits = [];
+  let highSurrogate;
+  let lowSurrogate;
+  let index = -1;
+  const length = arguments.length;
+
+  if (!length) {
+    return '';
+  }
+
+  let result = '';
+
+  while (++index < length) {
+    let codePoint = Number(arguments[index]);
+
+    if (!isFinite(codePoint) || // `NaN`, `+Infinity`, or `-Infinity`
+    codePoint < 0 || // not a valid Unicode code point
+    codePoint > 0x10FFFF || // not a valid Unicode code point
+    floor(codePoint) !== codePoint // not an integer
+    ) {
+        throw RangeError('Invalid code point: ' + codePoint);
+      }
+
+    if (codePoint <= 0xFFFF) {
+      // BMP code point
+      codeUnits.push(codePoint);
+    } else {
+      // Astral code point; split in surrogate halves
+      // http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
+      codePoint -= 0x10000;
+      highSurrogate = (codePoint >> 10) + 0xD800;
+      lowSurrogate = codePoint % 0x400 + 0xDC00;
+      codeUnits.push(highSurrogate, lowSurrogate);
+    }
+
+    if (index + 1 === length || codeUnits.length > MAX_SIZE) {
+      result += stringFromCharCode.apply(null, codeUnits);
+      codeUnits.length = 0;
+    }
+  }
+
+  return result;
+}
+/**
+ * Regexes
+ */
+
+
+const chars = {}; // Double width characters that are _not_ surrogate pairs.
+// NOTE: 0x20000 - 0x2fffd and 0x30000 - 0x3fffd are not necessary for this
+// regex anyway. This regex is used to put a blank char after wide chars to
+// be eaten, however, if this is a surrogate pair, parseContent already adds
+// the extra one char because its length equals 2 instead of 1.
+
+chars.wide = new RegExp('([' + '\\u1100-\\u115f' // Hangul Jamo init. consonants
++ '\\u2329\\u232a' + '\\u2e80-\\u303e\\u3040-\\ua4cf' // CJK ... Yi
++ '\\uac00-\\ud7a3' // Hangul Syllables
++ '\\uf900-\\ufaff' // CJK Compatibility Ideographs
++ '\\ufe10-\\ufe19' // Vertical forms
++ '\\ufe30-\\ufe6f' // CJK Compatibility Forms
++ '\\uff00-\\uff60' // Fullwidth Forms
++ '\\uffe0-\\uffe6' + '])', 'g'); // All surrogate pair wide chars.
+
+chars.swide = new RegExp('(' // 0x20000 - 0x2fffd:
++ '[\\ud840-\\ud87f][\\udc00-\\udffd]' + '|' // 0x30000 - 0x3fffd:
++ '[\\ud880-\\ud8bf][\\udc00-\\udffd]' + ')', 'g'); // All wide chars including surrogate pairs.
+
+chars.all = new RegExp('(' + chars.swide.source.slice(1, -1) + '|' + chars.wide.source.slice(1, -1) + ')', 'g'); // Regex to detect a surrogate pair.
+
+chars.surrogate = /[\ud800-\udbff][\udc00-\udfff]/g; // Regex to find combining characters.
+
+chars.combining = combiningTable.reduce(function (out, row) {
+  let low, high, range;
+
+  if (row[0] > 0x00ffff) {
+    low = fromCodePoint(row[0]);
+    low = [hexify(low.charCodeAt(0)), hexify(low.charCodeAt(1))];
+    high = fromCodePoint(row[1]);
+    high = [hexify(high.charCodeAt(0)), hexify(high.charCodeAt(1))];
+    range = '[\\u' + low[0] + '-' + '\\u' + high[0] + ']' + '[\\u' + low[1] + '-' + '\\u' + high[1] + ']';
+    if (!~out.indexOf('|')) out += ']';
+    out += '|' + range;
+  } else {
+    low = hexify(row[0]);
+    high = hexify(row[1]);
+    low = '\\u' + low;
+    high = '\\u' + high;
+    out += low + '-' + high;
+  }
+
+  return out;
+}, '[');
+chars.combining = new RegExp(chars.combining, 'g');
+
+function hexify(n) {
+  n = n.toString(16);
+
+  while (n.length < 4) n = '0' + n;
+
+  return n;
+}
+
+/**
  * textarea.js - textarea element for blessed
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
@@ -958,7 +803,7 @@ class Textarea extends Input {
   /**
    * Textarea
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions$3(options));
     this.input = this.readInput;
     this.setInput = this.readInput;
@@ -1273,7 +1118,7 @@ class Textbox extends Textarea {
   /**
    * Textbox
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions$2(options));
 
     if (!(this instanceof Node$1)) {

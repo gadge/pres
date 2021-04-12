@@ -14,7 +14,7 @@ export class OverlayImage extends Box {
    * Good example of w3mimgdisplay commands:
    * https://github.com/hut/ranger/blob/master/ranger/ext/img_display.py
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(options)
     const self = this
     if (!(this instanceof Node)) { return new OverlayImage(options) }

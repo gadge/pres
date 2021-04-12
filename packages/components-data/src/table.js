@@ -26,7 +26,7 @@ export class Table extends Box {
   /**
    * Table
    */
-  constructor(options) {
+  constructor(options = {}) {
     super(parseOptions(options))
     const self = this
     if (!(this instanceof Node)) { return new Table(options) }
