@@ -5,9 +5,6 @@
  */
 
 import { Box }  from '../core/box'
-/**
- * Modules
- */
 import { Node } from '../core/node'
 
 export class Line extends Box {

@@ -1,10 +1,14 @@
-import { Terminal }                    from './src/terminal'
-import { Box, Element, Node, Screen, } from './core'
-import { Layout }                      from './src/layout'
-import { Line }                        from './src/line'
-import { Log }                         from './src/log'
-import { ScrollableBox }               from './src/scrollablebox'
-import { ScrollableText }              from './src/scrollabletext'
+import { Node }              from '@pres/components-node'
+import { Box }               from './core/box'
+import { Element }           from './core/element'
+import { Screen }            from './core/screen'
+import { ScrollableElement } from './core/scrollableelement'
+import { Layout }            from './src/layout'
+import { Line }              from './src/line'
+import { Log }               from './src/log'
+import { ScrollableBox }     from './src/scrollablebox'
+import { ScrollableText }    from './src/scrollabletext'
+import { Terminal }          from './src/terminal'
 
 // const nodes = {
 //   Node: NodeFile.Node,
@@ -18,7 +22,7 @@ import { ScrollableText }              from './src/scrollabletext'
 //   ScrollableText: ScrollableTextFile.ScrollableText,
 //   Terminal: TerminalFile.Terminal,
 // }
-
+export { ScrollableElement }
 export { Node }
 export { Element }
 export { Screen }

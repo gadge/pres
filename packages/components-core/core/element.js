@@ -4,13 +4,11 @@
  * https://github.com/chjj/blessed
  */
 
-import * as colors       from '@pres/util-colors'
-import * as helpers      from '@pres/util-helpers'
-import * as unicode      from '@pres/util-unicode'
-import { assign }        from '@ject/mixin'
-import assert            from 'assert'
-import { Node }          from './node'
-import { ScrollableBox } from '../src/scrollablebox'
+import * as colors  from '@pres/util-colors'
+import * as helpers from '@pres/util-helpers'
+import * as unicode from '@pres/util-unicode'
+import assert       from 'assert'
+import { Node }     from './node'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
@@ -23,23 +21,7 @@ export class Element extends Node {
     super(options)
     const self = this
     if (!(this instanceof Node)) { return new Element(options) }
-    // Workaround to get a `scrollable` option.
-    if (options.scrollable && !this._ignore && this.type !== 'scrollable-box') {
-      Object
-        .getOwnPropertyNames(ScrollableBox.prototype)
-        .forEach(
-          function (key) {
-            if (key === 'type') return
-            const desc = Object.getOwnPropertyDescriptor(ScrollableBox.prototype, key)
-            Object.defineProperty(this, key, desc)
-          },
-          this
-        )
-      this._ignore = true
-      assign(this, new ScrollableBox(options)) // ScrollableBox.call(this, options)
-      delete this._ignore
-      return this
-    }
+    // config scrollable properties
     this.name = options.name
     options.position = options.position || {
       left: options.left,
@@ -210,7 +192,6 @@ export class Element extends Node {
     if (options.focused) this.focus()
     this._render = Element.prototype.render
   }
-
   get focused() { return this.screen.focused === this}
   get visible() {
     let el = this
