@@ -7,14 +7,13 @@
 /**
  * Modules
  */
-const Node = require('./node')
-const Input = require('./input')
+import { Node  } from  '@pres/components-core'
+import { Input } from  './input'
 
 /**
  * Button
  */
-
-function Button(options) {
+export function Button(options) {
   const self = this
 
   if (!(this instanceof Node)) {
@@ -54,8 +53,6 @@ Button.prototype.press = function () {
   return result
 }
 
-/**
- * Expose
- */
 
-module.exports = Button
+
+

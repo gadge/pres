@@ -7,14 +7,12 @@
 /**
  * Modules
  */
-const Node = require('./node')
-const Box = require('./box')
+import { Box, Node } from '@pres/components-core'
 
 /**
  * Input
  */
-
-function Input(options) {
+export function Input(options) {
   if (!(this instanceof Node)) {
     return new Input(options)
   }
@@ -26,8 +24,6 @@ Input.prototype.__proto__ = Box.prototype
 
 Input.prototype.type = 'input'
 
-/**
- * Expose
- */
 
-module.exports = Input
+
+

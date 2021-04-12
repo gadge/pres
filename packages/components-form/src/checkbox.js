@@ -7,14 +7,13 @@
 /**
  * Modules
  */
-const Node = require('./node')
-const Input = require('./input')
+import { Node  } from  '@pres/components-core'
+import { Input } from  './input'
 
 /**
  * Checkbox
  */
-
-function Checkbox(options) {
+export function Checkbox(options) {
   const self = this
 
   if (!(this instanceof Node)) return new Checkbox(options)
@@ -81,8 +80,6 @@ Checkbox.prototype.toggle = function () {
     : this.check()
 }
 
-/**
- * Expose
- */
 
-module.exports = Checkbox
+
+

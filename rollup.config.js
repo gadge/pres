@@ -25,6 +25,7 @@ export default [
         comments: true,
         sourceMap: true,
         exclude: 'node_modules/**',
+        babelHelpers: 'bundled',
         presets: [ [ '@babel/preset-env', { targets: { node: '14' } } ] ],
         plugins: [
           [ '@babel/plugin-proposal-optional-chaining' ],

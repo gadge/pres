@@ -7,14 +7,13 @@
 /**
  * Modules
  */
-const Node = require('./node')
-const Checkbox = require('./checkbox')
+import { Node     } from  '@pres/components-core'
+import { Checkbox } from  './checkbox'
 
 /**
  * RadioButton
  */
-
-function RadioButton(options) {
+export function RadioButton(options) {
   const self = this
 
   if (!(this instanceof Node)) {
@@ -53,8 +52,6 @@ RadioButton.prototype.render = function () {
 
 RadioButton.prototype.toggle = RadioButton.prototype.check
 
-/**
- * Expose
- */
 
-module.exports = RadioButton
+
+

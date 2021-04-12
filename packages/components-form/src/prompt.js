@@ -7,16 +7,15 @@
 /**
  * Modules
  */
-const Node = require('./node')
-const Box = require('./box')
-const Button = require('./button')
-const Textbox = require('./textbox')
+import { Node    } from  '@pres/components-core'
+import { Box     } from  '@pres/components-core'
+import { Button  } from  './button'
+import { Textbox } from  './textbox'
 
 /**
  * Prompt
  */
-
-function Prompt(options) {
+export function Prompt(options) {
   if (!(this instanceof Node)) {
     return new Prompt(options)
   }
@@ -112,8 +111,6 @@ Prompt.prototype.input =
       this.screen.render()
     }
 
-/**
- * Expose
- */
 
-module.exports = Prompt
+
+

@@ -7,14 +7,12 @@
 /**
  * Modules
  */
-const Node = require('./node')
-const Box = require('./box')
+import { Box, Node } from '@pres/components-core'
 
 /**
  * Form
  */
-
-function Form(options) {
+export function Form(options) {
   const self = this
 
   if (!(this instanceof Node)) return new Form(options)
@@ -34,7 +32,7 @@ function Form(options) {
         if (el.type === 'textbox' || el.type === 'textarea') {
           if (key.name === 'j') return
           if (key.name === 'tab') {
-            // Workaround, since we can't stop the tab from being added.
+            // Workaround, since we can't stop the tab from  being added.
             el.emit('keypress', null, { name: 'backspace' })
           }
           el.emit('keypress', '\x1b', { name: 'escape' })
@@ -256,8 +254,6 @@ Form.prototype.reset = function () {
   this.emit('reset')
 }
 
-/**
- * Expose
- */
 
-module.exports = Form
+
+

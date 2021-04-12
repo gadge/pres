@@ -5,9 +5,9 @@ export { Screen }         from './core/screen'
 export { Log }            from './src/log'
 export { ScrollableBox }  from './src/scrollablebox'
 export { ScrollableText } from './src/scrollabletext'
-// export { Layout }  from './src/layout'
-// export { Line }  from './src/line'
-// export { Terminal }  from './src/terminal'
+export { Layout }         from './src/layout'
+export { Line }           from './src/line'
+export { Terminal }       from './src/terminal'
 
 class Core {
   static _screen

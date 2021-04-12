@@ -2238,8 +2238,8 @@ function sprintf(src) {
     let param = params[i] != null ? params[i] : ''
     const initial = param
     // , width = +width,
-    opt = {},
-      pre = ''
+    const opt = {}
+    let pre = ''
 
     i++
 

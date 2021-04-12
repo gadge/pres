@@ -7,15 +7,13 @@
 /**
  * Modules
  */
-const Node = require('./node')
-const Box = require('./box')
-const Button = require('./button')
+import { Box, Node } from '@pres/components-core'
+import { Button }    from './button'
 
 /**
  * Question
  */
-
-function Question(options) {
+export function Question(options) {
   if (!(this instanceof Node)) {
     return new Question(options)
   }
@@ -108,8 +106,6 @@ Question.prototype.ask = function (text, callback) {
   this.screen.render()
 }
 
-/**
- * Expose
- */
 
-module.exports = Question
+
+

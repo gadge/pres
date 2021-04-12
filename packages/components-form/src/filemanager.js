@@ -4,22 +4,16 @@
  * https://github.com/chjj/blessed
  */
 
-/**
- * Modules
- */
-const path = require('path'),
-  fs = require('fs')
-
-const helpers = require('../tools/helpers')
-
-const Node = require('./node')
-const List = require('./list')
+import { Node }    from '@pres/components-core'
+import { helpers } from '@pres/util-helpers'
+import fs          from 'fs'
+import path        from 'path'
+import { List }    from './list'
 
 /**
  * FileManager
  */
-
-function FileManager(options) {
+export function FileManager(options) {
   const self = this
 
   if (!(this instanceof Node)) {
@@ -204,8 +198,6 @@ FileManager.prototype.reset = function (cwd, callback) {
   this.refresh(callback)
 }
 
-/**
- * Expose
- */
 
-module.exports = FileManager
+
+

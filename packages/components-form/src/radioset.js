@@ -7,14 +7,12 @@
 /**
  * Modules
  */
-const Node = require('./node')
-const Box = require('./box')
+import { Box, Node } from '@pres/components-core'
 
 /**
  * RadioSet
  */
-
-function RadioSet(options) {
+export function RadioSet(options) {
   if (!(this instanceof Node)) {
     return new RadioSet(options)
   }
@@ -28,8 +26,6 @@ RadioSet.prototype.__proto__ = Box.prototype
 
 RadioSet.prototype.type = 'radio-set'
 
-/**
- * Expose
- */
 
-module.exports = RadioSet
+
+

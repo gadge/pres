@@ -12,7 +12,7 @@ import util from 'util';
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-const nextTick$2 = global.setImmediate || process.nextTick.bind(process);
+const nextTick$3 = global.setImmediate || process.nextTick.bind(process);
 class Screen$1 extends Node {
   constructor(_options) {
     super(_options);
@@ -424,7 +424,7 @@ class Screen$1 extends Node {
       });
       err = err || new Error('Uncaught Exception.');
       console.error(err.stack ? err.stack + '' : err + '');
-      nextTick$2(function () {
+      nextTick$3(function () {
         process.exit(1);
       });
     });
@@ -435,7 +435,7 @@ class Screen$1 extends Node {
           return;
         }
 
-        nextTick$2(function () {
+        nextTick$3(function () {
           process.exit(0);
         });
       });
@@ -3078,7 +3078,7 @@ class ScrollableBox extends Box {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-const nextTick$1 = global.setImmediate || process.nextTick.bind(process);
+const nextTick$2 = global.setImmediate || process.nextTick.bind(process);
 class Element$1 extends Node {
   /**
    * Element
@@ -4241,7 +4241,7 @@ class Element$1 extends Node {
       reposition();
     });
     this.on('resize', this._labelResize = function () {
-      nextTick$1(function () {
+      nextTick$2(function () {
         reposition();
       });
     });
@@ -5700,7 +5700,7 @@ class ScrollableText extends ScrollableBox {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-const nextTick = global.setImmediate || process.nextTick.bind(process);
+const nextTick$1 = global.setImmediate || process.nextTick.bind(process);
 class Log$1 extends ScrollableText {
   /**
    * Log
@@ -5716,7 +5716,7 @@ class Log$1 extends ScrollableText {
     this.scrollOnInput = options.scrollOnInput;
     this.on('set content', function () {
       if (!self._userScrolled || self.scrollOnInput) {
-        nextTick(function () {
+        nextTick$1(function () {
           self.setScrollPerc(100);
           self._userScrolled = false;
           self.screen.render();
@@ -5760,8 +5760,641 @@ class Log$1 extends ScrollableText {
 
 }
 
-// export { Line }  from './src/line'
-// export { Terminal }  from './src/terminal'
+/**
+ * layout.js - layout element for blessed
+ * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
+ * https://github.com/chjj/blessed
+ */
+class Layout extends Element$1 {
+  /**
+   * Layout
+   */
+  constructor(options = {}) {
+    super(options);
+    if (!(this instanceof Node)) return new Layout(options);
+
+    if (options.width == null && options.left == null && options.right == null || options.height == null && options.top == null && options.bottom == null) {
+      throw new Error('`Layout` must have a width and height!');
+    }
+
+    options.layout = options.layout || 'inline';
+
+    if (options.renderer) {
+      this.renderer = options.renderer;
+    }
+
+    this.type = 'layout';
+  }
+
+  isRendered(el) {
+    if (!el.lpos) return false;
+    return el.lpos.xl - el.lpos.xi > 0 && el.lpos.yl - el.lpos.yi > 0;
+  }
+
+  getLast(i) {
+    while (this.children[--i]) {
+      const el = this.children[i];
+      if (this.isRendered(el)) return el;
+    }
+  }
+
+  getLastCoords(i) {
+    const last = this.getLast(i);
+    if (last) return last.lpos;
+  }
+
+  _renderCoords() {
+    const coords = this._getCoords(true);
+
+    const children = this.children;
+    this.children = [];
+
+    this._render();
+
+    this.children = children;
+    return coords;
+  }
+
+  renderer(coords) {
+    const self = this; // The coordinates of the layout element
+
+    const width = coords.xl - coords.xi,
+          height = coords.yl - coords.yi,
+          xi = coords.xi,
+          yi = coords.yi; // The current row offset in cells (which row are we on?)
+
+    let rowOffset = 0; // The index of the first child in the row
+
+    let rowIndex = 0;
+    let lastRowIndex = 0; // Figure out the highest width child
+
+    if (this.options.layout === 'grid') {
+      var highWidth = this.children.reduce(function (out, el) {
+        out = Math.max(out, el.width);
+        return out;
+      }, 0);
+    }
+
+    return function iterator(el, i) {
+      // Make our children shrinkable. If they don't have a height, for
+      // example, calculate it for them.
+      el.shrink = true; // Find the previous rendered child's coordinates
+
+      const last = self.getLast(i); // If there is no previously rendered element, we are on the first child.
+
+      if (!last) {
+        el.position.left = 0;
+        el.position.top = 0;
+      } else {
+        // Otherwise, figure out where to place this child. We'll start by
+        // setting it's `left`/`x` coordinate to right after the previous
+        // rendered element. This child will end up directly to the right of it.
+        el.position.left = last.lpos.xl - xi; // Make sure the position matches the highest width element
+
+        if (self.options.layout === 'grid') {
+          // Compensate with width:
+          // el.position.width = el.width + (highWidth - el.width);
+          // Compensate with position:
+          el.position.left += highWidth - (last.lpos.xl - last.lpos.xi);
+        } // If our child does not overlap the right side of the Layout, set it's
+        // `top`/`y` to the current `rowOffset` (the coordinate for the current
+        // row).
+
+
+        if (el.position.left + el.width <= width) {
+          el.position.top = rowOffset;
+        } else {
+          // Otherwise we need to start a new row and calculate a new
+          // `rowOffset` and `rowIndex` (the index of the child on the current
+          // row).
+          rowOffset += self.children.slice(rowIndex, i).reduce(function (out, el) {
+            if (!self.isRendered(el)) return out;
+            out = Math.max(out, el.lpos.yl - el.lpos.yi);
+            return out;
+          }, 0);
+          lastRowIndex = rowIndex;
+          rowIndex = i;
+          el.position.left = 0;
+          el.position.top = rowOffset;
+        }
+      } // Make sure the elements on lower rows graviatate up as much as possible
+
+
+      if (self.options.layout === 'inline') {
+        let above = null;
+        let abovea = Infinity;
+
+        for (let j = lastRowIndex; j < rowIndex; j++) {
+          const l = self.children[j];
+          if (!self.isRendered(l)) continue;
+          const abs = Math.abs(el.position.left - (l.lpos.xi - xi)); // if (abs < abovea && (l.lpos.xl - l.lpos.xi) <= el.width) {
+
+          if (abs < abovea) {
+            above = l;
+            abovea = abs;
+          }
+        }
+
+        if (above) {
+          el.position.top = above.lpos.yl - yi;
+        }
+      } // If our child overflows the Layout, do not render it!
+      // Disable this feature for now.
+
+
+      if (el.position.top + el.height > height) ;
+    };
+  }
+
+  render() {
+    this._emit('prerender');
+
+    const coords = this._renderCoords();
+
+    if (!coords) {
+      delete this.lpos;
+      return;
+    }
+
+    if (coords.xl - coords.xi <= 0) {
+      coords.xl = Math.max(coords.xl, coords.xi);
+      return;
+    }
+
+    if (coords.yl - coords.yi <= 0) {
+      coords.yl = Math.max(coords.yl, coords.yi);
+      return;
+    }
+
+    this.lpos = coords;
+    if (this.border) coords.xi++, coords.xl--, coords.yi++, coords.yl--;
+
+    if (this.tpadding) {
+      coords.xi += this.padding.left, coords.xl -= this.padding.right;
+      coords.yi += this.padding.top, coords.yl -= this.padding.bottom;
+    }
+
+    const iterator = this.renderer(coords);
+    if (this.border) coords.xi--, coords.xl++, coords.yi--, coords.yl++;
+
+    if (this.tpadding) {
+      coords.xi -= this.padding.left, coords.xl += this.padding.right;
+      coords.yi -= this.padding.top, coords.yl += this.padding.bottom;
+    }
+
+    this.children.forEach(function (el, i) {
+      if (el.screen._ci !== -1) {
+        el.index = el.screen._ci++;
+      }
+
+      const rendered = iterator(el, i);
+
+      if (rendered === false) {
+        delete el.lpos;
+        return;
+      } // if (el.screen._rendering) {
+      //   el._rendering = true;
+      // }
+
+
+      el.render(); // if (el.screen._rendering) {
+      //   el._rendering = false;
+      // }
+    });
+
+    this._emit('render', [coords]);
+
+    return coords;
+  }
+
+}
+
+/**
+ * line.js - line element for blessed
+ * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
+ * https://github.com/chjj/blessed
+ */
+class Line extends Box {
+  /**
+   * Line
+   */
+  constructor(options = {}) {
+    super(parseOption(options));
+    if (!(this instanceof Node)) return new Line(options);
+    const orientation = options.orientation || 'vertical';
+    delete options.orientation;
+    this.ch = !options.type || options.type === 'line' ? orientation === 'horizontal' ? '─' : '│' : options.ch || ' ';
+    this.border = {
+      type: 'bg',
+      __proto__: this
+    };
+    this.style.border = this.style;
+    this.type = 'line';
+  }
+
+}
+
+const parseOption = options => {
+  if ((options.orientation || 'vertical') === 'vertical') {
+    options.width = 1;
+  } else {
+    options.height = 1;
+  }
+
+  return options;
+};
+
+/**
+ * terminal.js - term.js terminal element for blessed
+ * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
+ * https://github.com/chjj/blessed
+ */
+/**
+ * Modules
+ */
+
+const nextTick = global.setImmediate || process.nextTick.bind(process);
+
+const parseOptions = options => {
+  options.scrollable = false;
+  return options;
+};
+
+class Terminal extends Box {
+  /**
+   * Terminal
+   */
+  constructor(options = {}) {
+    super(parseOptions(options));
+
+    if (!(this instanceof Node)) {
+      return new Terminal(options);
+    } // XXX Workaround for all motion
+
+
+    if (this.screen.program.tmux && this.screen.program.tmuxVersion >= 2) {
+      this.screen.program.enableMouse();
+    }
+
+    this.handler = options.handler;
+    this.shell = options.shell || process.env.SHELL || 'sh';
+    this.args = options.args || [];
+    this.cursor = this.options.cursor;
+    this.cursorBlink = this.options.cursorBlink;
+    this.screenKeys = this.options.screenKeys;
+    this.style = this.style || {};
+    this.style.bg = this.style.bg || 'default';
+    this.style.fg = this.style.fg || 'default';
+    this.termName = options.terminal || options.term || process.env.TERM || 'xterm';
+    this.bootstrap();
+    this.type = 'terminal';
+    this.setScroll = Terminal.prototype.scrollTo;
+  }
+
+  bootstrap() {
+    const self = this;
+    const element = {
+      // window
+      get document() {
+        return element;
+      },
+
+      navigator: {
+        userAgent: 'node.js'
+      },
+
+      // document
+      get defaultView() {
+        return element;
+      },
+
+      get documentElement() {
+        return element;
+      },
+
+      createElement: function () {
+        return element;
+      },
+
+      // element
+      get ownerDocument() {
+        return element;
+      },
+
+      addEventListener: function () {},
+      removeEventListener: function () {},
+      getElementsByTagName: function () {
+        return [element];
+      },
+      getElementById: function () {
+        return element;
+      },
+      parentNode: null,
+      offsetParent: null,
+      appendChild: function () {},
+      removeChild: function () {},
+      setAttribute: function () {},
+      getAttribute: function () {},
+      style: {},
+      focus: function () {},
+      blur: function () {},
+      console: console
+    };
+    element.parentNode = element;
+    element.offsetParent = element;
+    this.term = require('term.js')({
+      termName: this.termName,
+      cols: this.width - this.iwidth,
+      rows: this.height - this.iheight,
+      context: element,
+      document: element,
+      body: element,
+      parent: element,
+      cursorBlink: this.cursorBlink,
+      screenKeys: this.screenKeys
+    });
+
+    this.term.refresh = function () {
+      self.screen.render();
+    };
+
+    this.term.keyDown = function () {};
+
+    this.term.keyPress = function () {};
+
+    this.term.open(element); // Emits key sequences in html-land.
+    // Technically not necessary here.
+    // In reality if we wanted to be neat, we would overwrite the keyDown and
+    // keyPress methods with our own node.js-keys->terminal-keys methods, but
+    // since all the keys are already coming in as escape sequences, we can just
+    // send the input directly to the handler/socket (see below).
+    // this.term.on('data', function(data) {
+    //   self.handler(data);
+    // });
+    // Incoming keys and mouse inputs.
+    // NOTE: Cannot pass mouse events - coordinates will be off!
+
+    this.screen.program.input.on('data', this._onData = function (data) {
+      if (self.screen.focused === self && !self._isMouse(data)) {
+        self.handler(data);
+      }
+    });
+    this.onScreenEvent('mouse', function (data) {
+      if (self.screen.focused !== self) return;
+      if (data.x < self.aleft + self.ileft) return;
+      if (data.y < self.atop + self.itop) return;
+      if (data.x > self.aleft - self.ileft + self.width) return;
+      if (data.y > self.atop - self.itop + self.height) return;
+
+      if (self.term.x10Mouse || self.term.vt200Mouse || self.term.normalMouse || self.term.mouseEvents || self.term.utfMouse || self.term.sgrMouse || self.term.urxvtMouse) ; else {
+        return;
+      }
+
+      let b = data.raw[0];
+      const x = data.x - self.aleft,
+            y = data.y - self.atop;
+      let s;
+
+      if (self.term.urxvtMouse) {
+        if (self.screen.program.sgrMouse) {
+          b += 32;
+        }
+
+        s = '\x1b[' + b + ';' + (x + 32) + ';' + (y + 32) + 'M';
+      } else if (self.term.sgrMouse) {
+        if (!self.screen.program.sgrMouse) {
+          b -= 32;
+        }
+
+        s = '\x1b[<' + b + ';' + x + ';' + y + (data.action === 'mousedown' ? 'M' : 'm');
+      } else {
+        if (self.screen.program.sgrMouse) {
+          b += 32;
+        }
+
+        s = '\x1b[M' + String.fromCharCode(b) + String.fromCharCode(x + 32) + String.fromCharCode(y + 32);
+      }
+
+      self.handler(s);
+    });
+    this.on('focus', function () {
+      self.term.focus();
+    });
+    this.on('blur', function () {
+      self.term.blur();
+    });
+    this.term.on('title', function (title) {
+      self.title = title;
+      self.emit('title', title);
+    });
+    this.term.on('passthrough', function (data) {
+      self.screen.program.flush();
+
+      self.screen.program._owrite(data);
+    });
+    this.on('resize', function () {
+      nextTick(function () {
+        self.term.resize(self.width - self.iwidth, self.height - self.iheight);
+      });
+    });
+    this.once('render', function () {
+      self.term.resize(self.width - self.iwidth, self.height - self.iheight);
+    });
+    this.on('destroy', function () {
+      self.kill();
+      self.screen.program.input.removeListener('data', self._onData);
+    });
+
+    if (this.handler) {
+      return;
+    }
+
+    this.pty = require('pty.js').fork(this.shell, this.args, {
+      name: this.termName,
+      cols: this.width - this.iwidth,
+      rows: this.height - this.iheight,
+      cwd: process.env.HOME,
+      env: this.options.env || process.env
+    });
+    this.on('resize', function () {
+      nextTick(function () {
+        try {
+          self.pty.resize(self.width - self.iwidth, self.height - self.iheight);
+        } catch (e) {}
+      });
+    });
+
+    this.handler = function (data) {
+      self.pty.write(data);
+      self.screen.render();
+    };
+
+    this.pty.on('data', function (data) {
+      self.write(data);
+      self.screen.render();
+    });
+    this.pty.on('exit', function (code) {
+      self.emit('exit', code || null);
+    });
+    this.onScreenEvent('keypress', function () {
+      self.screen.render();
+    });
+
+    this.screen._listenKeys(this);
+  }
+
+  write(data) {
+    return this.term.write(data);
+  }
+
+  render() {
+    const ret = this._render();
+
+    if (!ret) return;
+    this.dattr = this.sattr(this.style);
+    const xi = ret.xi + this.ileft,
+          xl = ret.xl - this.iright,
+          yi = ret.yi + this.itop,
+          yl = ret.yl - this.ibottom;
+    let cursor;
+    const scrollback = this.term.lines.length - (yl - yi);
+
+    for (let y = Math.max(yi, 0); y < yl; y++) {
+      const line = this.screen.lines[y];
+      if (!line || !this.term.lines[scrollback + y - yi]) break;
+
+      if (y === yi + this.term.y && this.term.cursorState && this.screen.focused === this && (this.term.ydisp === this.term.ybase || this.term.selectMode) && !this.term.cursorHidden) {
+        cursor = xi + this.term.x;
+      } else {
+        cursor = -1;
+      }
+
+      for (let x = Math.max(xi, 0); x < xl; x++) {
+        if (!line[x] || !this.term.lines[scrollback + y - yi][x - xi]) break;
+        line[x][0] = this.term.lines[scrollback + y - yi][x - xi][0];
+
+        if (x === cursor) {
+          if (this.cursor === 'line') {
+            line[x][0] = this.dattr;
+            line[x][1] = '\u2502';
+            continue;
+          } else if (this.cursor === 'underline') {
+            line[x][0] = this.dattr | 2 << 18;
+          } else if (this.cursor === 'block' || !this.cursor) {
+            line[x][0] = this.dattr | 8 << 18;
+          }
+        }
+
+        line[x][1] = this.term.lines[scrollback + y - yi][x - xi][1]; // default foreground = 257
+
+        if ((line[x][0] >> 9 & 0x1ff) === 257) {
+          line[x][0] &= ~(0x1ff << 9);
+          line[x][0] |= (this.dattr >> 9 & 0x1ff) << 9;
+        } // default background = 256
+
+
+        if ((line[x][0] & 0x1ff) === 256) {
+          line[x][0] &= ~0x1ff;
+          line[x][0] |= this.dattr & 0x1ff;
+        }
+      }
+
+      line.dirty = true;
+    }
+
+    return ret;
+  }
+
+  _isMouse(buf) {
+    let s = buf;
+
+    if (Buffer.isBuffer(s)) {
+      if (s[0] > 127 && s[1] === undefined) {
+        s[0] -= 128;
+        s = '\x1b' + s.toString('utf-8');
+      } else {
+        s = s.toString('utf-8');
+      }
+    }
+
+    return buf[0] === 0x1b && buf[1] === 0x5b && buf[2] === 0x4d || /^\x1b\[M([\x00\u0020-\uffff]{3})/.test(s) || /^\x1b\[(\d+;\d+;\d+)M/.test(s) || /^\x1b\[<(\d+;\d+;\d+)([mM])/.test(s) || /^\x1b\[<(\d+;\d+;\d+;\d+)&w/.test(s) || /^\x1b\[24([0135])~\[(\d+),(\d+)\]\r/.test(s) || /^\x1b\[(O|I)/.test(s);
+  }
+
+  scrollTo(offset) {
+    this.term.ydisp = offset;
+    return this.emit('scroll');
+  }
+
+  getScroll() {
+    return this.term.ydisp;
+  }
+
+  scroll(offset) {
+    this.term.scrollDisp(offset);
+    return this.emit('scroll');
+  }
+
+  resetScroll() {
+    this.term.ydisp = 0;
+    this.term.ybase = 0;
+    return this.emit('scroll');
+  }
+
+  getScrollHeight() {
+    return this.term.rows - 1;
+  }
+
+  getScrollPerc() {
+    return this.term.ydisp / this.term.ybase * 100;
+  }
+
+  setScrollPerc(i) {
+    return this.setScroll(i / 100 * this.term.ybase | 0);
+  }
+
+  screenshot(xi, xl, yi, yl) {
+    xi = 0 + (xi || 0);
+
+    if (xl != null) {
+      xl = 0 + (xl || 0);
+    } else {
+      xl = this.term.lines[0].length;
+    }
+
+    yi = 0 + (yi || 0);
+
+    if (yl != null) {
+      yl = 0 + (yl || 0);
+    } else {
+      yl = this.term.lines.length;
+    }
+
+    return this.screen.screenshot(xi, xl, yi, yl, this.term);
+  }
+
+  kill() {
+    if (this.pty) {
+      this.pty.destroy();
+      this.pty.kill();
+    }
+
+    this.term.refresh = function () {};
+
+    this.term.write('\x1b[H\x1b[J');
+
+    if (this.term._blink) {
+      clearInterval(this.term._blink);
+    }
+
+    this.term.destroy();
+  }
+
+}
+/**
+ * Expose
+ */
+
+module.exports = Terminal;
 
 class Core {
   static get Screen() {
@@ -5779,4 +6412,4 @@ class Core {
 Core._screen = void 0;
 Core._element = void 0;
 
-export { Box, Element$1 as Element, Log$1 as Log, Node, Screen$1 as Screen, ScrollableBox, ScrollableText, Core as TUIComponentsCore };
+export { Box, Element$1 as Element, Layout, Line, Log$1 as Log, Node, Screen$1 as Screen, ScrollableBox, ScrollableText, Core as TUIComponentsCore, Terminal };
