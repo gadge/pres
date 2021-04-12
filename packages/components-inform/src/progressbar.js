@@ -7,23 +7,22 @@
 import { Node }  from '@pres/components-core'
 import { Input } from '@pres/components-form'
 
+
+/**
+ * ProgressBar
+ */
+
 export class ProgressBar extends Input {
-  /**
-   * ProgressBar
-   */
   constructor(options) {
     super(options)
     const self = this
     if (!(this instanceof Node)) { return new ProgressBar(options) }
-
     this.filled = options.filled || 0
     if (typeof this.filled === 'string') {
       this.filled = +this.filled.slice(0, -1)
     }
     this.value = this.filled
-
     this.pch = options.pch || ' '
-
     // XXX Workaround that predates the usage of `el.ch`.
     if (options.ch) {
       this.pch = options.ch
@@ -32,15 +31,12 @@ export class ProgressBar extends Input {
     if (options.bch) {
       this.ch = options.bch
     }
-
     if (!this.style.bar) {
       this.style.bar = {}
       this.style.bar.fg = options.barFg
       this.style.bar.bg = options.barBg
     }
-
     this.orientation = options.orientation || 'horizontal'
-
     if (options.keys) {
       this.on('keypress', function (ch, key) {
         let back, forward
@@ -86,7 +82,8 @@ export class ProgressBar extends Input {
     const ret = this._render()
     if (!ret) return
 
-    let xi = ret.xi,
+    let
+      xi = ret.xi,
       xl = ret.xl,
       yi = ret.yi,
       yl = ret.yl,
@@ -133,10 +130,5 @@ export class ProgressBar extends Input {
     this.value = this.filled
   }
 }
-
-
-/**
- * Expose
- */
 
 
