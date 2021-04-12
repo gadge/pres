@@ -7,16 +7,14 @@
 /**
  * Modules
  */
-const fs = require('fs')
-
-import { Node } from '@pres/components-core'
-import { Box } from '@pres/components-core'
+import fs            from 'fs'
+import { Box, Node } from '@pres/components-core'
 
 /**
  * BigText
  */
-export function  BigText(options) {
-  if (!(this instanceof Node)) {  return new BigText(options) }
+export function BigText(options) {
+  if (!(this instanceof Node)) { return new BigText(options) }
   options = options || {}
   options.font = options.font
     || __dirname + '/../../usr/fonts/ter-u14n.json'

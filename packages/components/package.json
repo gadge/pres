@@ -15,12 +15,12 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@ject/mixin": "^0.0.9",
-    "@pres/events": "^0.0.4",
-    "@pres/program": "^0.0.4",
-    "@pres/util-colors": "^0.0.4",
-    "@pres/util-helpers": "^0.0.4",
-    "@pres/util-unicode": "^0.0.4"
+    "@pres/components-core": "^0.0.4",
+    "@pres/components-data": "^0.0.4",
+    "@pres/components-form": "^0.0.4",
+    "@pres/components-inform": "^0.0.4",
+    "@pres/components-text": "^0.0.4",
+    "@pres/components-visual": "^0.0.4"
   },
   "repository": {
     "type": "git",

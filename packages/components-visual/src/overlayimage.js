@@ -4,26 +4,20 @@
  * https://github.com/chjj/blessed
  */
 
-/**
- * Modules
- */
-const fs = require('fs'),
-  cp = require('child_process')
-
-const helpers = require('../tools/helpers')
-
-const Node = require('../../components-core/trunk/node')
-import { Box } from '@pres/components-core'
+import { Box, Node } from '@pres/components-core'
+import { helpers }   from '@pres/util-helpers'
+import cp            from 'child_process'
+import fs            from 'fs'
 
 /**
  * OverlayImage
  * Good example of w3mimgdisplay commands:
  * https://github.com/hut/ranger/blob/master/ranger/ext/img_display.py
  */
-export function  OverlayImage(options) {
+export function OverlayImage(options) {
   const self = this
 
-  if (!(this instanceof Node)) {  return new OverlayImage(options) }
+  if (!(this instanceof Node)) { return new OverlayImage(options) }
 
   options = options || {}
 

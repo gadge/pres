@@ -4,24 +4,18 @@
  * https://github.com/chjj/blessed
  */
 
-/**
- * Modules
- */
-const cp = require('child_process')
-
-import { Node } from '@pres/components-core'
-import { Box } from '@pres/components-core'
-const Terminal = require('./terminal')
+import { Box, Node, Terminal } from '@pres/components-core'
+import cp                      from 'child_process'
 
 /**
  * Video
  */
-export function  Video(options) {
+export function Video(options) {
   const self = this
   let shell,
     args
 
-  if (!(this instanceof Node)) {  return new Video(options) }
+  if (!(this instanceof Node)) { return new Video(options) }
 
   options = options || {}
 

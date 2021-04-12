@@ -4,25 +4,18 @@
  * https://github.com/chjj/blessed
  */
 
-/**
- * Modules
- */
-const cp = require('child_process')
-
-const colors = require('../tools/colors')
-
-import { Node } from '@pres/components-core'
-import { Box } from '@pres/components-core'
-
-const tng = require('../../vendor/tng')
+import { Box, Node } from '@pres/components-core'
+import * as colors   from '@pres/util-colors'
+import cp            from 'child_process'
+import { png }       from '../vendor/tng'
 
 /**
  * ANSIImage
  */
-export function  ANSIImage(options) {
+export function ANSIImage(options) {
   const self = this
 
-  if (!(this instanceof Node)) {  return new ANSIImage(options) }
+  if (!(this instanceof Node)) { return new ANSIImage(options) }
 
   options = options || {}
   options.shrink = true
@@ -91,8 +84,7 @@ ANSIImage.prototype.setImage = function (file) {
 
   try {
     this.setContent('')
-
-    this.img = tng(file, {
+    this.img = png(file, {
       colors: colors,
       width: width,
       height: height,

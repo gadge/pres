@@ -7,8 +7,7 @@
 /**
  * Modules
  */
-import { Node } from '@pres/components-core'
-import { Box } from '@pres/components-core'
+import { Box, Node } from '@pres/components-core'
 
 /**
  * Image
