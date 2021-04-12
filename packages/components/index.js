@@ -35,6 +35,10 @@ export {
 export {
   Text
 } from '@pres/components-text'
-// export {
-//   Image
-// } from '@pres/components-visual'
+export {
+  ANSIImage,
+  BigText,
+  Image,
+  OverlayImage,
+  Video,
+} from '@pres/components-visual'

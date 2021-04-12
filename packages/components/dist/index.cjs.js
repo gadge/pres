@@ -7,6 +7,7 @@ var componentsData = require('@pres/components-data');
 var componentsForm = require('@pres/components-form');
 var componentsInform = require('@pres/components-inform');
 var componentsText = require('@pres/components-text');
+var componentsVisual = require('@pres/components-visual');
 
 
 
@@ -170,5 +171,35 @@ Object.defineProperty(exports, 'Text', {
   enumerable: true,
   get: function () {
     return componentsText.Text;
+  }
+});
+Object.defineProperty(exports, 'ANSIImage', {
+  enumerable: true,
+  get: function () {
+    return componentsVisual.ANSIImage;
+  }
+});
+Object.defineProperty(exports, 'BigText', {
+  enumerable: true,
+  get: function () {
+    return componentsVisual.BigText;
+  }
+});
+Object.defineProperty(exports, 'Image', {
+  enumerable: true,
+  get: function () {
+    return componentsVisual.Image;
+  }
+});
+Object.defineProperty(exports, 'OverlayImage', {
+  enumerable: true,
+  get: function () {
+    return componentsVisual.OverlayImage;
+  }
+});
+Object.defineProperty(exports, 'Video', {
+  enumerable: true,
+  get: function () {
+    return componentsVisual.Video;
   }
 });
