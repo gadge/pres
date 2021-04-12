@@ -4,52 +4,41 @@
  * https://github.com/chjj/blessed
  */
 
+import { Box }  from '../core/box'
 /**
  * Modules
  */
-const Node = require('../core/node')
-const Box = require('../core/box')
+import { Node } from '../core/node'
 
-/**
- * Line
- */
-
-function Line(options) {
-  if (!(this instanceof Node)) {
-    return new Line(options)
+export class Line extends Box {
+  /**
+   * Line
+   */
+  constructor(options = {}) {
+    super(parseOption(options))
+    if (!(this instanceof Node)) return new Line(options)
+    const orientation = options.orientation || 'vertical'
+    delete options.orientation
+    this.ch = !options.type || options.type === 'line'
+      ? orientation === 'horizontal' ? '─' : '│'
+      : options.ch || ' '
+    this.border = {
+      type: 'bg',
+      __proto__: this
+    }
+    this.style.border = this.style
+    this.type = 'line'
   }
+}
 
-  options = options || {}
-
-  const orientation = options.orientation || 'vertical'
-  delete options.orientation
-
-  if (orientation === 'vertical') {
+const parseOption = options => {
+  if ((options.orientation || 'vertical') === 'vertical') {
     options.width = 1
   } else {
     options.height = 1
   }
-
-  Box.call(this, options)
-
-  this.ch = !options.type || options.type === 'line'
-    ? orientation === 'horizontal' ? '─' : '│'
-    : options.ch || ' '
-
-  this.border = {
-    type: 'bg',
-    __proto__: this
-  }
-
-  this.style.border = this.style
+  return options
 }
 
-Line.prototype.__proto__ = Box.prototype
 
-Line.prototype.type = 'line'
 
-/**
- * Expose
- */
-
-module.exports = Line
