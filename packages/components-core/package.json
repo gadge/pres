@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-core",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Core components for tui",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -16,11 +16,11 @@
   },
   "dependencies": {
     "@ject/mixin": "^0.0.9",
-    "@pres/events": "^0.0.3",
-    "@pres/program": "^0.0.3",
-    "@pres/util-colors": "^0.0.3",
-    "@pres/util-helpers": "^0.0.3",
-    "@pres/util-unicode": "^0.0.3"
+    "@pres/events": "^0.0.4",
+    "@pres/program": "^0.0.4",
+    "@pres/util-colors": "^0.0.4",
+    "@pres/util-helpers": "^0.0.4",
+    "@pres/util-unicode": "^0.0.4"
   },
   "repository": {
     "type": "git",

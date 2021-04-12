@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-unicode",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Unicode for tui",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
