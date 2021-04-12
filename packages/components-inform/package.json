@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-inform",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Core components for tui",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,7 +15,7 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/components-core": "^0.0.2"
+    "@pres/components-core": "^0.0.3"
   },
   "repository": {
     "type": "git",
