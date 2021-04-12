@@ -13,20 +13,17 @@ const fs = require('fs'),
 const helpers = require('../tools/helpers')
 
 const Node = require('../../components-core/trunk/node')
-const Box = require('./box')
+import { Box } from '@pres/components-core'
 
 /**
  * OverlayImage
  * Good example of w3mimgdisplay commands:
  * https://github.com/hut/ranger/blob/master/ranger/ext/img_display.py
  */
-
-function OverlayImage(options) {
+export function  OverlayImage(options) {
   const self = this
 
-  if (!(this instanceof Node)) {
-    return new OverlayImage(options)
-  }
+  if (!(this instanceof Node)) {  return new OverlayImage(options) }
 
   options = options || {}
 
@@ -713,4 +710,4 @@ OverlayImage.prototype.displayImage = function (callback) {
  * Expose
  */
 
-module.exports = OverlayImage
+

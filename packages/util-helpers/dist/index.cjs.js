@@ -7,7 +7,27 @@ var fs = require('fs');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-var unicode__default = /*#__PURE__*/_interopDefaultLegacy(unicode);
+function _interopNamespace(e) {
+  if (e && e.__esModule) return e;
+  var n = Object.create(null);
+  if (e) {
+    Object.keys(e).forEach(function (k) {
+      if (k !== 'default') {
+        var d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(n, k, d.get ? d : {
+          enumerable: true,
+          get: function () {
+            return e[k];
+          }
+        });
+      }
+    });
+  }
+  n['default'] = e;
+  return Object.freeze(n);
+}
+
+var unicode__namespace = /*#__PURE__*/_interopNamespace(unicode);
 var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
 
 /**
@@ -146,7 +166,7 @@ helpers.cleanTags = function (text) {
 
 helpers.dropUnicode = function (text) {
   if (!text) return '';
-  return text.replace(unicode__default['default'].chars.all, '??').replace(unicode__default['default'].chars.combining, '').replace(unicode__default['default'].chars.surrogate, '?');
+  return text.replace(unicode__namespace.chars.all, '??').replace(unicode__namespace.chars.combining, '').replace(unicode__namespace.chars.surrogate, '?');
 };
 
 helpers.__defineGetter__('Screen', function () {

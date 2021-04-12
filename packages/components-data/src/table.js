@@ -7,106 +7,93 @@
 /**
  * Modules
  */
-const Node = require('./node')
-const Box = require('./box')
+import { Box, Node } from '@pres/components-core'
 
-/**
- * Table
- */
-
-function Table(options) {
-  const self = this
-
-  if (!(this instanceof Node)) {
-    return new Table(options)
-  }
-
-  options = options || {}
+const parseOptions = options => {
   options.shrink = true
   options.style = options.style || {}
   options.style.border = options.style.border || {}
   options.style.header = options.style.header || {}
   options.style.cell = options.style.cell || {}
   options.align = options.align || 'center'
-
   // Regular tables do not get custom height (this would
   // require extra padding). Maybe add in the future.
   delete options.height
-
-  Box.call(this, options)
-
-  this.pad = options.pad != null
-    ? options.pad
-    : 2
-
-  this.setData(options.rows || options.data)
-
-  this.on('attach', function () {
-    self.setContent('')
-    self.setData(self.rows)
-  })
-
-  this.on('resize', function () {
-    self.setContent('')
-    self.setData(self.rows)
-    self.screen.render()
-  })
+  return options
 }
 
-Table.prototype.__proto__ = Box.prototype
-
-Table.prototype.type = 'table'
-
-Table.prototype._calculateMaxes = function () {
-  const self = this
-  let maxes = []
-
-  if (this.detached) return
-
-  this.rows = this.rows || []
-
-  this.rows.forEach(function (row) {
-    row.forEach(function (cell, i) {
-      const clen = self.strWidth(cell)
-      if (!maxes[i] || maxes[i] < clen) {
-        maxes[i] = clen
-      }
+export class Table extends Box {
+  /**
+   * Table
+   */
+  constructor(options) {
+    super(parseOptions(options))
+    const self = this
+    if (!(this instanceof Node)) { return new Table(options) }
+    this.pad = options.pad != null
+      ? options.pad
+      : 2
+    this.setData(options.rows || options.data)
+    this.on('attach', function () {
+      self.setContent('')
+      self.setData(self.rows)
     })
-  })
-
-  let total = maxes.reduce(function (total, max) {
-    return total + max
-  }, 0)
-  total += maxes.length + 1
-
-  // XXX There might be an issue with resizing where on the first resize event
-  // width appears to be less than total if it's a percentage or left/right
-  // combination.
-  if (this.width < total) {
-    delete this.position.width
+    this.on('resize', function () {
+      self.setContent('')
+      self.setData(self.rows)
+      self.screen.render()
+    })
+    this.type = 'table'
   }
+  _calculateMaxes() {
+    const self = this
+    let maxes = []
 
-  if (this.position.width != null) {
-    const missing = this.width - total
-    const w = missing / maxes.length | 0
-    const wr = missing % maxes.length
-    maxes = maxes.map(function (max, i) {
-      if (i === maxes.length - 1) {
-        return max + w + wr
-      }
-      return max + w
+    if (this.detached) return
+
+    this.rows = this.rows || []
+
+    this.rows.forEach(function (row) {
+      row.forEach(function (cell, i) {
+        const clen = self.strWidth(cell)
+        if (!maxes[i] || maxes[i] < clen) {
+          maxes[i] = clen
+        }
+      })
     })
-  } else {
-    maxes = maxes.map(function (max) {
-      return max + self.pad
-    })
+
+    let total = maxes.reduce(function (total, max) {
+      return total + max
+    }, 0)
+    total += maxes.length + 1
+
+    // XXX There might be an issue with resizing where on the first resize event
+    // width appears to be less than total if it's a percentage or left/right
+    // combination.
+    if (this.width < total) {
+      delete this.position.width
+    }
+
+    if (this.position.width != null) {
+      const missing = this.width - total
+      const w = missing / maxes.length | 0
+      const wr = missing % maxes.length
+      maxes = maxes.map(function (max, i) {
+        if (i === maxes.length - 1) {
+          return max + w + wr
+        }
+        return max + w
+      })
+    } else {
+      maxes = maxes.map(function (max) {
+        return max + self.pad
+      })
+    }
+
+    return this._maxes = maxes
   }
-
-  return this._maxes = maxes
-}
-
-Table.prototype.setRows =
-  Table.prototype.setData = function (rows) {
+  setRows = this.setData
+  setData(rows) {
     const self = this
     let text = ''
     const align = this.align
@@ -164,190 +151,191 @@ Table.prototype.setRows =
     this.setContent(text)
     this.align = align
   }
+  render() {
+    const self = this
 
-Table.prototype.render = function () {
-  const self = this
+    const coords = this._render()
+    if (!coords) return
 
-  const coords = this._render()
-  if (!coords) return
+    this._calculateMaxes()
 
-  this._calculateMaxes()
+    if (!this._maxes) return coords
 
-  if (!this._maxes) return coords
+    const lines = this.screen.lines,
+      xi = coords.xi,
+      yi = coords.yi
+    let rx,
+      ry,
+      i
 
-  const lines = this.screen.lines,
-    xi = coords.xi,
-    yi = coords.yi
-  let rx,
-    ry,
-    i
+    const dattr = this.sattr(this.style),
+      hattr = this.sattr(this.style.header),
+      cattr = this.sattr(this.style.cell),
+      battr = this.sattr(this.style.border)
 
-  const dattr = this.sattr(this.style),
-    hattr = this.sattr(this.style.header),
-    cattr = this.sattr(this.style.cell),
-    battr = this.sattr(this.style.border)
+    const width = coords.xl - coords.xi - this.iright,
+      height = coords.yl - coords.yi - this.ibottom
 
-  const width = coords.xl - coords.xi - this.iright,
-    height = coords.yl - coords.yi - this.ibottom
-
-  // Apply attributes to header cells and cells.
-  for (let y = this.itop; y < height; y++) {
-    if (!lines[yi + y]) break
-    for (let x = this.ileft; x < width; x++) {
-      if (!lines[yi + y][xi + x]) break
-      // Check to see if it's not the default attr. Allows for tags:
-      if (lines[yi + y][xi + x][0] !== dattr) continue
-      if (y === this.itop) {
-        lines[yi + y][xi + x][0] = hattr
-      } else {
-        lines[yi + y][xi + x][0] = cattr
+    // Apply attributes to header cells and cells.
+    for (let y = this.itop; y < height; y++) {
+      if (!lines[yi + y]) break
+      for (let x = this.ileft; x < width; x++) {
+        if (!lines[yi + y][xi + x]) break
+        // Check to see if it's not the default attr. Allows for tags:
+        if (lines[yi + y][xi + x][0] !== dattr) continue
+        if (y === this.itop) {
+          lines[yi + y][xi + x][0] = hattr
+        } else {
+          lines[yi + y][xi + x][0] = cattr
+        }
+        lines[yi + y].dirty = true
       }
-      lines[yi + y].dirty = true
     }
-  }
 
-  if (!this.border || this.options.noCellBorders) return coords
+    if (!this.border || this.options.noCellBorders) return coords
 
-  // Draw border with correct angles.
-  ry = 0
-  for (i = 0; i < self.rows.length + 1; i++) {
-    if (!lines[yi + ry]) break
-    rx = 0
-    self._maxes.forEach(function (max, i) {
-      rx += max
-      if (i === 0) {
-        if (!lines[yi + ry][xi + 0]) return
-        // left side
-        if (ry === 0) {
-          // top
-          lines[yi + ry][xi + 0][0] = battr
-          // lines[yi + ry][xi + 0][1] = '\u250c'; // '┌'
-        } else if (ry / 2 === self.rows.length) {
-          // bottom
-          lines[yi + ry][xi + 0][0] = battr
-          // lines[yi + ry][xi + 0][1] = '\u2514'; // '└'
-        } else {
-          // middle
-          lines[yi + ry][xi + 0][0] = battr
-          lines[yi + ry][xi + 0][1] = '\u251c' // '├'
-          // XXX If we alter iwidth and ileft for no borders - nothing should be written here
-          if (!self.border.left) {
-            lines[yi + ry][xi + 0][1] = '\u2500' // '─'
+    // Draw border with correct angles.
+    ry = 0
+    for (i = 0; i < self.rows.length + 1; i++) {
+      if (!lines[yi + ry]) break
+      rx = 0
+      self._maxes.forEach(function (max, i) {
+        rx += max
+        if (i === 0) {
+          if (!lines[yi + ry][xi + 0]) return
+          // left side
+          if (ry === 0) {
+            // top
+            lines[yi + ry][xi + 0][0] = battr
+            // lines[yi + ry][xi + 0][1] = '\u250c'; // '┌'
+          } else if (ry / 2 === self.rows.length) {
+            // bottom
+            lines[yi + ry][xi + 0][0] = battr
+            // lines[yi + ry][xi + 0][1] = '\u2514'; // '└'
+          } else {
+            // middle
+            lines[yi + ry][xi + 0][0] = battr
+            lines[yi + ry][xi + 0][1] = '\u251c' // '├'
+            // XXX If we alter iwidth and ileft for no borders - nothing should be written here
+            if (!self.border.left) {
+              lines[yi + ry][xi + 0][1] = '\u2500' // '─'
+            }
           }
+          lines[yi + ry].dirty = true
+        } else if (i === self._maxes.length - 1) {
+          if (!lines[yi + ry][xi + rx + 1]) return
+          // right side
+          if (ry === 0) {
+            // top
+            rx++
+            lines[yi + ry][xi + rx][0] = battr
+            // lines[yi + ry][xi + rx][1] = '\u2510'; // '┐'
+          } else if (ry / 2 === self.rows.length) {
+            // bottom
+            rx++
+            lines[yi + ry][xi + rx][0] = battr
+            // lines[yi + ry][xi + rx][1] = '\u2518'; // '┘'
+          } else {
+            // middle
+            rx++
+            lines[yi + ry][xi + rx][0] = battr
+            lines[yi + ry][xi + rx][1] = '\u2524' // '┤'
+            // XXX If we alter iwidth and iright for no borders - nothing should be written here
+            if (!self.border.right) {
+              lines[yi + ry][xi + rx][1] = '\u2500' // '─'
+            }
+          }
+          lines[yi + ry].dirty = true
+          return
         }
-        lines[yi + ry].dirty = true
-      } else if (i === self._maxes.length - 1) {
         if (!lines[yi + ry][xi + rx + 1]) return
-        // right side
+        // center
         if (ry === 0) {
           // top
           rx++
           lines[yi + ry][xi + rx][0] = battr
-          // lines[yi + ry][xi + rx][1] = '\u2510'; // '┐'
+          lines[yi + ry][xi + rx][1] = '\u252c' // '┬'
+          // XXX If we alter iheight and itop for no borders - nothing should be written here
+          if (!self.border.top) {
+            lines[yi + ry][xi + rx][1] = '\u2502' // '│'
+          }
         } else if (ry / 2 === self.rows.length) {
           // bottom
           rx++
           lines[yi + ry][xi + rx][0] = battr
-          // lines[yi + ry][xi + rx][1] = '\u2518'; // '┘'
+          lines[yi + ry][xi + rx][1] = '\u2534' // '┴'
+          // XXX If we alter iheight and ibottom for no borders - nothing should be written here
+          if (!self.border.bottom) {
+            lines[yi + ry][xi + rx][1] = '\u2502' // '│'
+          }
         } else {
           // middle
-          rx++
-          lines[yi + ry][xi + rx][0] = battr
-          lines[yi + ry][xi + rx][1] = '\u2524' // '┤'
-          // XXX If we alter iwidth and iright for no borders - nothing should be written here
-          if (!self.border.right) {
-            lines[yi + ry][xi + rx][1] = '\u2500' // '─'
-          }
-        }
-        lines[yi + ry].dirty = true
-        return
-      }
-      if (!lines[yi + ry][xi + rx + 1]) return
-      // center
-      if (ry === 0) {
-        // top
-        rx++
-        lines[yi + ry][xi + rx][0] = battr
-        lines[yi + ry][xi + rx][1] = '\u252c' // '┬'
-        // XXX If we alter iheight and itop for no borders - nothing should be written here
-        if (!self.border.top) {
-          lines[yi + ry][xi + rx][1] = '\u2502' // '│'
-        }
-      } else if (ry / 2 === self.rows.length) {
-        // bottom
-        rx++
-        lines[yi + ry][xi + rx][0] = battr
-        lines[yi + ry][xi + rx][1] = '\u2534' // '┴'
-        // XXX If we alter iheight and ibottom for no borders - nothing should be written here
-        if (!self.border.bottom) {
-          lines[yi + ry][xi + rx][1] = '\u2502' // '│'
-        }
-      } else {
-        // middle
-        if (self.options.fillCellBorders) {
-          const lbg = (ry <= 2 ? hattr : cattr) & 0x1ff
-          rx++
-          lines[yi + ry][xi + rx][0] = (battr & ~0x1ff) | lbg
-        } else {
-          rx++
-          lines[yi + ry][xi + rx][0] = battr
-        }
-        lines[yi + ry][xi + rx][1] = '\u253c' // '┼'
-        // rx++;
-      }
-      lines[yi + ry].dirty = true
-    })
-    ry += 2
-  }
-
-  // Draw internal borders.
-  for (ry = 1; ry < self.rows.length * 2; ry++) {
-    if (!lines[yi + ry]) break
-    rx = 0
-    self._maxes.slice(0, -1).forEach(function (max) {
-      rx += max
-      if (!lines[yi + ry][xi + rx + 1]) return
-      if (ry % 2 !== 0) {
-        if (self.options.fillCellBorders) {
-          const lbg = (ry <= 2 ? hattr : cattr) & 0x1ff
-          rx++
-          lines[yi + ry][xi + rx][0] = (battr & ~0x1ff) | lbg
-        } else {
-          rx++
-          lines[yi + ry][xi + rx][0] = battr
-        }
-        lines[yi + ry][xi + rx][1] = '\u2502' // '│'
-        lines[yi + ry].dirty = true
-      } else {
-        rx++
-      }
-    })
-    rx = 1
-    self._maxes.forEach(function (max) {
-      while (max--) {
-        if (ry % 2 === 0) {
-          if (!lines[yi + ry]) break
-          if (!lines[yi + ry][xi + rx + 1]) break
           if (self.options.fillCellBorders) {
             const lbg = (ry <= 2 ? hattr : cattr) & 0x1ff
+            rx++
             lines[yi + ry][xi + rx][0] = (battr & ~0x1ff) | lbg
           } else {
+            rx++
             lines[yi + ry][xi + rx][0] = battr
           }
-          lines[yi + ry][xi + rx][1] = '\u2500' // '─'
+          lines[yi + ry][xi + rx][1] = '\u253c' // '┼'
+          // rx++;
+        }
+        lines[yi + ry].dirty = true
+      })
+      ry += 2
+    }
+
+    // Draw internal borders.
+    for (ry = 1; ry < self.rows.length * 2; ry++) {
+      if (!lines[yi + ry]) break
+      rx = 0
+      self._maxes.slice(0, -1).forEach(function (max) {
+        rx += max
+        if (!lines[yi + ry][xi + rx + 1]) return
+        if (ry % 2 !== 0) {
+          if (self.options.fillCellBorders) {
+            const lbg = (ry <= 2 ? hattr : cattr) & 0x1ff
+            rx++
+            lines[yi + ry][xi + rx][0] = (battr & ~0x1ff) | lbg
+          } else {
+            rx++
+            lines[yi + ry][xi + rx][0] = battr
+          }
+          lines[yi + ry][xi + rx][1] = '\u2502' // '│'
           lines[yi + ry].dirty = true
+        } else {
+          rx++
+        }
+      })
+      rx = 1
+      self._maxes.forEach(function (max) {
+        while (max--) {
+          if (ry % 2 === 0) {
+            if (!lines[yi + ry]) break
+            if (!lines[yi + ry][xi + rx + 1]) break
+            if (self.options.fillCellBorders) {
+              const lbg = (ry <= 2 ? hattr : cattr) & 0x1ff
+              lines[yi + ry][xi + rx][0] = (battr & ~0x1ff) | lbg
+            } else {
+              lines[yi + ry][xi + rx][0] = battr
+            }
+            lines[yi + ry][xi + rx][1] = '\u2500' // '─'
+            lines[yi + ry].dirty = true
+          }
+          rx++
         }
         rx++
-      }
-      rx++
-    })
-  }
+      })
+    }
 
-  return coords
+    return coords
+  }
 }
+
 
 /**
  * Expose
  */
 
-module.exports = Table
+

@@ -7,17 +7,14 @@
 /**
  * Modules
  */
-const Node = require('./node')
-const Box = require('./box')
+import { Node } from '@pres/components-core'
+import { Box } from '@pres/components-core'
 
 /**
  * Message / Error
  */
-
-function Message(options) {
-  if (!(this instanceof Node)) {
-    return new Message(options)
-  }
+export function  Message(options) {
+  if (!(this instanceof Node)) {  return new Message(options) }
 
   options = options || {}
   options.tags = true
@@ -119,4 +116,4 @@ Message.prototype.error = function (text, time, callback) {
  * Expose
  */
 
-module.exports = Message
+

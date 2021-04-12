@@ -7,28 +7,21 @@
 /**
  * Modules
  */
-const Node = require('./node')
-const Element = require('./element')
+import { Element, Node } from '@pres/components-core'
 
-/**
- * Text
- */
-
-function Text(options) {
-  if (!(this instanceof Node)) {
-    return new Text(options)
-  }
-  options = options || {}
+const parseOptions = options => {
   options.shrink = true
-  Element.call(this, options)
+  return options
+}
+export class Text extends Element {
+  /**
+   * Text
+   */
+  constructor(options) {
+    super(parseOptions(options))
+    if (!(this instanceof Node)) { return new Text(options) }
+    this.type = 'text'
+  }
 }
 
-Text.prototype.__proto__ = Element.prototype
 
-Text.prototype.type = 'text'
-
-/**
- * Expose
- */
-
-module.exports = Text

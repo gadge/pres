@@ -1,0 +1,66 @@
+/**
+ * textbox.js - textbox element for blessed
+ * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
+ * https://github.com/chjj/blessed
+ */
+
+import Node         from '@pres/components-core'
+import { Textarea } from './textarea'
+
+const parseOptions = options => {
+  options.scrollable = false
+  return options
+}
+
+export class Textbox extends Textarea {
+  /**
+   * Textbox
+   */
+  constructor(options) {
+    super(parseOptions(options))
+    if (!(this instanceof Node)) { return new Textbox(options) }
+    this.secret = options.secret
+    this.censor = options.censor
+    this.type = 'textbox'
+    this.__olistener = Textbox.prototype._listener
+  }
+  _listener(ch, key) {
+    if (key.name === 'enter') {
+      this._done(null, this.value)
+      return
+    }
+    return this.__olistener(ch, key)
+  }
+  setValue(value) {
+    let visible, val
+    if (value == null) {
+      value = this.value
+    }
+    if (this._value !== value) {
+      value = value.replace(/\n/g, '')
+      this.value = value
+      this._value = value
+      if (this.secret) {
+        this.setContent('')
+      } else if (this.censor) {
+        this.setContent(Array(this.value.length + 1).join('*'))
+      } else {
+        visible = -(this.width - this.iwidth - 1)
+        val = this.value.replace(/\t/g, this.screen.tabc)
+        this.setContent(val.slice(visible))
+      }
+      this._updateCursor()
+    }
+  }
+  submit() {
+    if (!this.__listener) return
+    return this.__listener('\r', { name: 'enter' })
+  }
+}
+
+
+/**
+ * Expose
+ */
+
+

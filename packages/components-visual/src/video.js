@@ -9,22 +9,19 @@
  */
 const cp = require('child_process')
 
-const Node = require('./node')
-const Box = require('./box')
+import { Node } from '@pres/components-core'
+import { Box } from '@pres/components-core'
 const Terminal = require('./terminal')
 
 /**
  * Video
  */
-
-function Video(options) {
+export function  Video(options) {
   const self = this
   let shell,
     args
 
-  if (!(this instanceof Node)) {
-    return new Video(options)
-  }
+  if (!(this instanceof Node)) {  return new Video(options) }
 
   options = options || {}
 
@@ -122,4 +119,4 @@ Video.prototype.exists = function (program) {
  * Expose
  */
 
-module.exports = Video
+

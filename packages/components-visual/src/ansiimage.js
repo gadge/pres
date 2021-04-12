@@ -11,21 +11,18 @@ const cp = require('child_process')
 
 const colors = require('../tools/colors')
 
-const Node = require('./node')
-const Box = require('./box')
+import { Node } from '@pres/components-core'
+import { Box } from '@pres/components-core'
 
 const tng = require('../../vendor/tng')
 
 /**
  * ANSIImage
  */
-
-function ANSIImage(options) {
+export function  ANSIImage(options) {
   const self = this
 
-  if (!(this instanceof Node)) {
-    return new ANSIImage(options)
-  }
+  if (!(this instanceof Node)) {  return new ANSIImage(options) }
 
   options = options || {}
   options.shrink = true
@@ -163,4 +160,4 @@ ANSIImage.prototype.render = function () {
  * Expose
  */
 
-module.exports = ANSIImage
+

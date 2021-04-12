@@ -1,4 +1,4 @@
-import unicode from '@pres/util-unicode';
+import * as unicode from '@pres/util-unicode';
 import fs from 'fs';
 
 /**

@@ -7,18 +7,15 @@
 /**
  * Modules
  */
-const Node = require('./node')
-const Box = require('./box')
+import { Node } from '@pres/components-core'
+import { Box } from '@pres/components-core'
 const Text = require('../../components-text/src/text')
 
 /**
  * Loading
  */
-
-function Loading(options) {
-  if (!(this instanceof Node)) {
-    return new Loading(options)
-  }
+export function  Loading(options) {
+  if (!(this instanceof Node)) {  return new Loading(options) }
 
   options = options || {}
 
@@ -84,4 +81,4 @@ Loading.prototype.stop = function () {
  * Expose
  */
 
-module.exports = Loading
+

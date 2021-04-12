@@ -7,19 +7,16 @@
 /**
  * Modules
  */
-const Node = require('./node')
+import { Node } from '@pres/components-core'
 const Input = require('./input')
 
 /**
  * ProgressBar
  */
-
-function ProgressBar(options) {
+export function  ProgressBar(options) {
   const self = this
 
-  if (!(this instanceof Node)) {
-    return new ProgressBar(options)
-  }
+  if (!(this instanceof Node)) {  return new ProgressBar(options) }
 
   options = options || {}
 
@@ -153,4 +150,4 @@ ProgressBar.prototype.reset = function () {
  * Expose
  */
 
-module.exports = ProgressBar
+

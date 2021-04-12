@@ -15,12 +15,8 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@ject/mixin": "^0.0.9",
-    "@pres/events": "^0.0.2",
-    "@pres/program": "^0.0.2",
-    "@pres/util-colors": "^0.0.2",
-    "@pres/util-helpers": "^0.0.2",
-    "@pres/util-unicode": "^0.0.2"
+    "@pres/components-core": "^0.0.2",
+    "@pres/util-helpers": "^0.0.2"
   },
   "repository": {
     "type": "git",

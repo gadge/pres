@@ -8,7 +8,7 @@ import { Node }    from '@pres/components-core'
 import { helpers } from '@pres/util-helpers'
 import fs          from 'fs'
 import path        from 'path'
-import { List }    from './list'
+import { List }    from '@pres/components-data'
 
 export class FileManager {
   /**

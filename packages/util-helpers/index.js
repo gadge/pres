@@ -4,11 +4,8 @@
  * https://github.com/chjj/blessed
  */
 
-import unicode from '@pres/util-unicode'
-/**
- * Modules
- */
-import fs      from 'fs'
+import * as unicode from '@pres/util-unicode'
+import fs           from 'fs'
 
 /**
  * Helpers

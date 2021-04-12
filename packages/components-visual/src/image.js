@@ -7,17 +7,14 @@
 /**
  * Modules
  */
-const Node = require('./node')
-const Box = require('./box')
+import { Node } from '@pres/components-core'
+import { Box } from '@pres/components-core'
 
 /**
  * Image
  */
-
-function Image(options) {
-  if (!(this instanceof Node)) {
-    return new Image(options)
-  }
+export function  Image(options) {
+  if (!(this instanceof Node)) {  return new Image(options) }
 
   options = options || {}
   options.type = options.itype || options.type || 'ansi'
@@ -57,4 +54,4 @@ Image.prototype.type = 'image'
  * Expose
  */
 
-module.exports = Image
+
