@@ -11,71 +11,67 @@ import { Node } from '@pres/components-core'
 import { Box }  from '@pres/components-core'
 import { Text }     from '@pres/components-text'
 
-/**
- * Loading
- */
-export function  Loading(options) {
-  if (!(this instanceof Node)) {  return new Loading(options) }
+export class Loading extends Box {
+  /**
+   * Loading
+   */
+  constructor(options) {
+    super(options)
+    if (!(this instanceof Node)) {  return new Loading(options) }
 
-  options = options || {}
 
-  Box.call(this, options)
-
-  this._.icon = new Text({
-    parent: this,
-    align: 'center',
-    top: 2,
-    left: 1,
-    right: 1,
-    height: 1,
-    content: '|'
-  })
-}
-
-Loading.prototype.__proto__ = Box.prototype
-
-Loading.prototype.type = 'loading'
-
-Loading.prototype.load = function (text) {
-  const self = this
-
-  // XXX Keep above:
-  // var parent = this.parent;
-  // this.detach();
-  // parent.append(this);
-
-  this.show()
-  this.setContent(text)
-
-  if (this._.timer) {
-    this.stop()
+    this._.icon = new Text({
+      parent: this,
+      align: 'center',
+      top: 2,
+      left: 1,
+      right: 1,
+      height: 1,
+      content: '|'
+    })
+    this.type = 'loading';
   }
+  load(text) {
+    const self = this
 
-  this.screen.lockKeys = true
+    // XXX Keep above:
+    // var parent = this.parent;
+    // this.detach();
+    // parent.append(this);
 
-  this._.timer = setInterval(function () {
-    if (self._.icon.content === '|') {
-      self._.icon.setContent('/')
-    } else if (self._.icon.content === '/') {
-      self._.icon.setContent('-')
-    } else if (self._.icon.content === '-') {
-      self._.icon.setContent('\\')
-    } else if (self._.icon.content === '\\') {
-      self._.icon.setContent('|')
+    this.show()
+    this.setContent(text)
+
+    if (this._.timer) {
+      this.stop()
     }
-    self.screen.render()
-  }, 200)
+
+    this.screen.lockKeys = true
+
+    this._.timer = setInterval(function () {
+      if (self._.icon.content === '|') {
+        self._.icon.setContent('/')
+      } else if (self._.icon.content === '/') {
+        self._.icon.setContent('-')
+      } else if (self._.icon.content === '-') {
+        self._.icon.setContent('\\')
+      } else if (self._.icon.content === '\\') {
+        self._.icon.setContent('|')
+      }
+      self.screen.render()
+    }, 200)
+  }
+  stop() {
+    this.screen.lockKeys = false
+    this.hide()
+    if (this._.timer) {
+      clearInterval(this._.timer)
+      delete this._.timer
+    }
+    this.screen.render()
+  }
 }
 
-Loading.prototype.stop = function () {
-  this.screen.lockKeys = false
-  this.hide()
-  if (this._.timer) {
-    clearInterval(this._.timer)
-    delete this._.timer
-  }
-  this.screen.render()
-}
 
 /**
  * Expose
