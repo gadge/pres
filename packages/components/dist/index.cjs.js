@@ -10,7 +10,9 @@ var componentsText = require('@pres/components-text');
 var componentsVisual = require('@pres/components-visual');
 
 const box = options => new componentsCore.Box(options);
-const element = options => new componentsCore.Element(options);
+const element = function (options) {
+  return options.scrollable && !this._ignore && this.type !== 'scrollable-box' ? new componentsCore.ScrollableElement(options) : new componentsCore.Element(options);
+};
 const node = options => new componentsCore.Node(options);
 const screen = options => new componentsCore.Screen(options);
 const log = options => new componentsCore.Log(options);
