@@ -1,6 +1,6 @@
 {
   "name": "@pres/program",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Curses like basic functionality for tui",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -16,9 +16,9 @@
   },
   "dependencies": {
     "@ject/noop": "^0.0.9",
-    "@pres/events": "^0.0.1",
-    "@pres/terminfo-parser": "^0.0.1",
-    "@pres/util-colors": "^0.0.1",
+    "@pres/events": "^0.0.2",
+    "@pres/terminfo-parser": "^0.0.2",
+    "@pres/util-colors": "^0.0.2",
     "@spare/logger": "^0.11.12"
   },
   "repository": {

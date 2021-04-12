@@ -1,6 +1,6 @@
 {
   "name": "@pres/events",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "EventEmitter for tui",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
