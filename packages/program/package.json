@@ -1,0 +1,45 @@
+{
+  "name": "@pres/program",
+  "version": "0.0.0",
+  "description": "Curses like basic functionality for tui",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "pub": "npm publish",
+    "test": "node -r @babel/register test/test.index.js"
+  },
+  "dependencies": {
+    "@ject/noop": "^0.0.9",
+    "@pres/events": "^0.0.0",
+    "@pres/terminfo-parser": "^0.0.0",
+    "@pres/util-colors": "^0.0.0",
+    "@spare/logger": "^0.11.12"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoyeungw/pres/program.git"
+  },
+  "keywords": [
+    "pres",
+    "process",
+    "signal-handler",
+    "program"
+  ],
+  "author": {
+    "name": "Hoyeung Wong",
+    "email": "hoyeungw@outlook.com",
+    "url": "https://github.com/hoyeungw"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hoyeungw/pres/cluster"
+  },
+  "homepage": "https://github.com/hoyeungw/pres/cluster#readme",
+  "gitHead": "bcc3c7bf1341df4dc3dcf4b1f4df1f9dc42c001a"
+}
