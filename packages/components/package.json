@@ -1,6 +1,6 @@
 {
   "name": "@pres/components",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Core components for tui",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,12 +15,12 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/components-core": "^0.0.5",
-    "@pres/components-data": "^0.0.5",
-    "@pres/components-form": "^0.0.5",
-    "@pres/components-inform": "^0.0.5",
-    "@pres/components-text": "^0.0.5",
-    "@pres/components-visual": "^0.0.5"
+    "@pres/components-core": "^0.0.6",
+    "@pres/components-data": "^0.0.6",
+    "@pres/components-form": "^0.0.6",
+    "@pres/components-inform": "^0.0.6",
+    "@pres/components-text": "^0.0.6",
+    "@pres/components-visual": "^0.0.6"
   },
   "repository": {
     "type": "git",

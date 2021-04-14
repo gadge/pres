@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-node",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Node component for tui",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,7 +15,7 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/events": "^0.0.5"
+    "@pres/events": "^0.0.6"
   },
   "repository": {
     "type": "git",
