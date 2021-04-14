@@ -15,7 +15,7 @@ export class Image extends Box {
    */
   constructor(options = {}) {
     super(parseOptions(options))
-    if (!(this instanceof Node)) { return new Image(options) }
+    // if (!(this instanceof Node)) { return new Image(options) }
     if (options.type === 'ansi' && this.type !== 'ansiimage') {
       const ANSIImage = require('./ansiimage')
       Object.getOwnPropertyNames(ANSIImage.prototype).forEach(function (key) {

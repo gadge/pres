@@ -3,10 +3,10 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var Node = require('@pres/components-core');
+var componentsData = require('@pres/components-data');
 var utilHelpers = require('@pres/util-helpers');
 var fs = require('fs');
 var path = require('path');
-var componentsData = require('@pres/components-data');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -149,17 +149,17 @@ class Checkbox extends Input {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-class FileManager {
+class FileManager extends componentsData.List {
   /**
    * FileManager
    */
   constructor(options = {}) {
+    options.parseTags = true;
+    super(options);
     const self = this;
-    if (!(this instanceof Node.Node)) return new FileManager(options);
-    options = options || {};
-    options.parseTags = true; // options.label = ' {blue-fg}%path{/blue-fg} ';
+    if (!(this instanceof Node.Node)) return new FileManager(options); // options.label = ' {blue-fg}%path{/blue-fg} ';
+    // List.call(this, options)
 
-    componentsData.List.call(this, options);
     this.cwd = options.cwd || process.cwd();
     this.file = this.cwd;
     this.value = this.cwd;
@@ -320,7 +320,6 @@ class FileManager {
   }
 
 }
-FileManager.prototype.__proto__ = componentsData.List.prototype;
 
 /**
  * form.js - form element for blessed

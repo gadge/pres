@@ -21,7 +21,7 @@ export class Form extends Box {
   constructor(options = {}) {
     super(parseOptions(options))
     const self = this
-    if (!(this instanceof Node)) return new Form(options)
+    // if (!(this instanceof Node)) return new Form(options)
     if (options.keys) {
       this.screen._listenKeys(this)
       this.on('element keypress', function (el, ch, key) {

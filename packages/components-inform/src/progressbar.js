@@ -16,7 +16,7 @@ export class ProgressBar extends Input {
   constructor(options = {}) {
     super(options)
     const self = this
-    if (!(this instanceof Node)) { return new ProgressBar(options) }
+    // if (!(this instanceof Node)) return new ProgressBar(options)
     this.filled = options.filled || 0
     if (typeof this.filled === 'string') {
       this.filled = +this.filled.slice(0, -1)

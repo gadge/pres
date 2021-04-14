@@ -17,7 +17,7 @@ export class Loading extends Box {
    */
   constructor(options = {}) {
     super(options)
-    if (!(this instanceof Node)) {  return new Loading(options) }
+    // if (!(this instanceof Node)) return new Loading(options)
 
 
     this._.icon = new Text({

@@ -15,7 +15,7 @@ export class Input extends Box {
    */
   constructor(options = {}) {
     super(options)
-    if (!(this instanceof Node)) return new Input(options)
+    // if (!(this instanceof Node)) return new Input(options)
     this.type = 'input'
   }
 }

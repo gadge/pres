@@ -13,7 +13,7 @@ export class Layout extends Element {
    */
   constructor(options = {}) {
     super(options)
-    if (!(this instanceof Node)) return new Layout(options)
+    // if (!(this instanceof Node)) return new Layout(options)
 
     if ((options.width == null
       && (options.left == null && options.right == null))

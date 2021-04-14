@@ -24,7 +24,7 @@ export class Button extends Input {
     super(parseOptions(options))
     const self = this
 
-    if (!(this instanceof Node)) return new Button(options)
+    // if (!(this instanceof Node)) return new Button(options)
 
     this.on('keypress', function (ch, key) {
       if (key.name === 'enter' || key.name === 'space') {

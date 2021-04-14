@@ -15,7 +15,7 @@ export class Node extends EventEmitter {
   constructor(options = {}) {
     super(options)
     const self = this
-    if (!(this instanceof Node)) return new Node(options)
+    // if (!(this instanceof Node)) return new Node(options)
     this.options = options
     this.screen = this.screen || options.screen
     if (!this.screen) {

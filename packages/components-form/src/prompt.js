@@ -21,7 +21,7 @@ export class Prompt extends Box {
    */
   constructor(options = {}) {
     super(parseOptions(options))
-    if (!(this instanceof Node)) return new Prompt(options)
+    // if (!(this instanceof Node)) return new Prompt(options)
     this._.input = new Textbox({
       parent: this,
       top: 3,

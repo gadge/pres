@@ -18,7 +18,7 @@ export class Log extends ScrollableText {
   constructor(options = {}) {
     super(options)
     const self = this
-    if (!(this instanceof Node)) return new Log(options)
+    // if (!(this instanceof Node)) return new Log(options)
 
     this.scrollback = options.scrollback != null
       ? options.scrollback

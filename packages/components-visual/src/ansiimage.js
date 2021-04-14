@@ -20,7 +20,7 @@ export class ANSIImage extends Box {
   constructor(options = {}) {
     super(parseOptions(options))
     const self = this
-    if (!(this instanceof Node)) { return new ANSIImage(options) }
+    // if (!(this instanceof Node)) { return new ANSIImage(options) }
 
     this.scale = this.options.scale || 1.0
     this.options.animate = this.options.animate !== false

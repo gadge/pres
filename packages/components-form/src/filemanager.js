@@ -18,7 +18,7 @@ export class FileManager extends List {
     options.parseTags = true
     super(options)
     const self = this
-    if (!(this instanceof Node)) return new FileManager(options)
+    // if (!(this instanceof Node)) return new FileManager(options)
     // options.label = ' {blue-fg}%path{/blue-fg} ';
     // List.call(this, options)
     this.cwd = options.cwd || process.cwd()

@@ -17,7 +17,7 @@ export class RadioButton extends Checkbox {
   constructor(options = {}) {
     super(options)
     const self = this
-    if (!(this instanceof Node)) return new RadioButton(options)
+    // if (!(this instanceof Node)) return new RadioButton(options)
     this.on('check', function () {
       let el = self
       while (el = el.parent) {

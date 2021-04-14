@@ -13,7 +13,7 @@ export class Line extends Box {
    */
   constructor(options = {}) {
     super(parseOption(options))
-    if (!(this instanceof Node)) return new Line(options)
+    // if (!(this instanceof Node)) return new Line(options)
     const orientation = options.orientation || 'vertical'
     delete options.orientation
     this.ch = !options.type || options.type === 'line'

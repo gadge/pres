@@ -19,7 +19,7 @@ export class Message extends Box {
    */
   constructor(options = {}) {
     super(parseOptions(options))
-    if (!(this instanceof Node)) { return new Message(options) }
+    // if (!(this instanceof Node)) return new Message(options)
     this.type = 'message'
   }
   log = this.display

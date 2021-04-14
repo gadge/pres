@@ -21,7 +21,7 @@ export class Question extends Box {
    */
   constructor(options = {}) {
     super(parseOptions(options))
-    if (!(this instanceof Node)) return new Question(options)
+    // if (!(this instanceof Node)) return new Question(options)
     this._.okay = new Button({
       screen: this.screen,
       parent: this,

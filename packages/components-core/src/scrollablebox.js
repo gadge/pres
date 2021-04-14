@@ -16,7 +16,7 @@ export class ScrollableBox extends Box {
     super(options)
     const self = this
 
-    if (!(this instanceof Node)) return new ScrollableBox(options)
+    // if (!(this instanceof Node)) return new ScrollableBox(options)
     if (options.scrollable === false) return this
 
     this.scrollable = true

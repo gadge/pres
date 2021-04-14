@@ -15,7 +15,7 @@ export class RadioSet extends Box {
    */
   constructor(options = {}) {
     super(options)
-    if (!(this instanceof Node)) return new RadioSet(options)
+    // if (!(this instanceof Node)) return new RadioSet(options)
     // Possibly inherit parent's style.
     // options.style = this.parent.style;
     this.type = 'radio-set'

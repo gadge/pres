@@ -12,7 +12,7 @@ export class BigText extends Box {
    */
   constructor(options = {}) {
     super(options)
-    if (!(this instanceof Node)) { return new BigText(options) }
+    // if (!(this instanceof Node)) { return new BigText(options) }
     options = options || {}
     options.font = options.font
       || __dirname + '/../../usr/fonts/ter-u14n.json'

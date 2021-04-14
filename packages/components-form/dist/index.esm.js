@@ -1,8 +1,8 @@
 import Node$1, { Box, Node } from '@pres/components-core';
+import { List } from '@pres/components-data';
 import { helpers } from '@pres/util-helpers';
 import fs from 'fs';
 import path from 'path';
-import { List } from '@pres/components-data';
 
 /**
  * input.js - abstract input element for blessed
@@ -139,17 +139,17 @@ class Checkbox extends Input {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-class FileManager {
+class FileManager extends List {
   /**
    * FileManager
    */
   constructor(options = {}) {
+    options.parseTags = true;
+    super(options);
     const self = this;
-    if (!(this instanceof Node)) return new FileManager(options);
-    options = options || {};
-    options.parseTags = true; // options.label = ' {blue-fg}%path{/blue-fg} ';
+    if (!(this instanceof Node)) return new FileManager(options); // options.label = ' {blue-fg}%path{/blue-fg} ';
+    // List.call(this, options)
 
-    List.call(this, options);
     this.cwd = options.cwd || process.cwd();
     this.file = this.cwd;
     this.value = this.cwd;
@@ -310,7 +310,6 @@ class FileManager {
   }
 
 }
-FileManager.prototype.__proto__ = List.prototype;
 
 /**
  * form.js - form element for blessed

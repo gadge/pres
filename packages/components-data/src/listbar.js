@@ -18,7 +18,7 @@ export class Listbar extends Box {
   constructor(options = {}) {
     super(options)
     const self = this
-    if (!(this instanceof Node)) return new Listbar(options)
+    // if (!(this instanceof Node)) return new Listbar(options)
     this.items = []
     this.ritems = []
     this.commands = []

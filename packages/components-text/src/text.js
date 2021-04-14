@@ -7,7 +7,7 @@
 /**
  * Modules
  */
-import { Element, Node } from '@pres/components-core'
+import { Element } from '@pres/components-core'
 
 const parseOptions = options => {
   options.shrink = true
@@ -19,7 +19,7 @@ export class Text extends Element {
    */
   constructor(options = {}) {
     super(parseOptions(options))
-    if (!(this instanceof Node)) { return new Text(options) }
+    // if (!(this instanceof Node)) return new Text(options)
     this.type = 'text'
   }
 }

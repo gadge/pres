@@ -16,7 +16,7 @@ export class Box extends Element {
    * Box
    */
   constructor(options = {}) {
-    super(options) // if (!(this instanceof Node)) return new Box(options)
+    super(options) // // if (!(this instanceof Node)) return new Box(options)
   }
   static build(options) { return new Box(options) }
 }

@@ -17,7 +17,7 @@ export class OverlayImage extends Box {
   constructor(options = {}) {
     super(options)
     const self = this
-    if (!(this instanceof Node)) { return new OverlayImage(options) }
+    // if (!(this instanceof Node)) { return new OverlayImage(options) }
 
     if (options.w3m) {
       OverlayImage.w3mdisplay = options.w3m

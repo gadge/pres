@@ -17,7 +17,7 @@ export class Video extends Box {
     let
       shell,
       args
-    if (!(this instanceof Node)) { return new Video(options) }
+    // if (!(this instanceof Node)) { return new Video(options) }
     if (this.exists('mplayer')) {
       shell = 'mplayer'
       args = [ '-vo', 'caca', '-quiet', options.file ]

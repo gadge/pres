@@ -2604,7 +2604,6 @@ class Box extends Element$1 {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-global.setImmediate || process.nextTick.bind(process);
 class Screen extends Node {
   constructor(_options = {}) {
     super(_options);
@@ -2751,8 +2750,6 @@ class Screen extends Node {
     }
 
     _Screen.configSingleton(this);
-
-    _options = _options || {};
 
     if (_options.rsety && _options.listen) {
       _options = {
@@ -5649,11 +5646,7 @@ class ScrollableText extends ScrollableBox {
 
 }
 
-/**
- * log.js - log element for blessed
- * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
- * https://github.com/chjj/blessed
- */
+scr;
 const nextTick$1 = global.setImmediate || process.nextTick.bind(process);
 class Log$1 extends ScrollableText {
   /**

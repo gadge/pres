@@ -20,7 +20,7 @@ export class List extends Box {
   constructor(options = {}) {
     super(parseOptions(options))
     const self = this
-    if (!(this instanceof Node)) return new List(options)
+    // if (!(this instanceof Node)) return new List(options)
     options.ignoreKeys = true
     // Possibly put this here: this.items = [];
     options.scrollable = true

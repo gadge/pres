@@ -17,7 +17,7 @@ export class Checkbox extends Input {
   constructor(options = {}) {
     super(options)
     const self = this
-    if (!(this instanceof Node)) return new Checkbox(options)
+    // if (!(this instanceof Node)) return new Checkbox(options)
 
     this.text = options.content || options.text || ''
     this.checked = this.value = options.checked || false
