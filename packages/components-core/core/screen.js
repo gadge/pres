@@ -4,15 +4,9 @@
  * https://github.com/chjj/blessed
  */
 
-/**
- * Modules
- */
-import { Program } from '@pres/program'
-import { Box }     from './box'
-import { Node }    from './node'
-import {_Screen}   from '@pres/components-node'
-
-const nextTick = global.setImmediate || process.nextTick.bind(process)
+import { _Screen, Node } from '@pres/components-node'
+import { Program }       from '@pres/program'
+import { Box }           from './box'
 
 export class Screen extends Node {
   type = 'screen'
@@ -25,7 +19,6 @@ export class Screen extends Node {
       return new Screen(options)
     }
     _Screen.configSingleton(this)
-    options = options || {}
     if (options.rsety && options.listen) {
       options = { program: options }
     }
