@@ -39,7 +39,6 @@ export class Program extends EventEmitter {
       const [ input, output ] = arguments
       options = { input, output }
     }
-
     this.options = options
     this.input = options.input || process.stdin
     this.output = options.output || process.stdout

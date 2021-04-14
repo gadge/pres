@@ -1,7 +1,7 @@
 {
-  "name": "@pres/components-visual",
+  "name": "@pres/enum-font-zhekov",
   "version": "0.0.6",
-  "description": "Core components for tui",
+  "description": "Alias for tui",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "files": [
@@ -14,21 +14,15 @@
     "pub": "npm publish",
     "test": "node -r @babel/register test/test.index.js"
   },
-  "dependencies": {
-    "@pres/components-core": "^0.0.6",
-    "@pres/util-colors": "^0.0.6",
-    "@pres/util-helpers": "^0.0.6",
-    "@pres/enum-font-zhekov": "^0.0.6"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hoyeungw/pres/components-visual.git"
+    "url": "git+https://github.com/hoyeungw/pres/alias.git"
   },
   "keywords": [
     "pres",
     "process",
     "signal-handler",
-    "components-visual"
+    "alias"
   ],
   "author": {
     "name": "Hoyeung Wong",

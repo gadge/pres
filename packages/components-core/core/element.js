@@ -20,7 +20,7 @@ export class Element extends Node {
   constructor(options = {}) {
     super(options)
     const self = this
-    if (!(this instanceof Node)) { return new Element(options) }
+    // if (!(this instanceof Node)) { return new Element(options) }
     // config scrollable properties
     this.name = options.name
     options.position = options.position || {
@@ -583,7 +583,7 @@ export class Element extends Node {
         break
       }
 
-      if (cap = /^{(\/?)([\w\-,;!#]*)}/.exec(text)) {
+      if ((cap = /^{(\/?)([\w\-,;!#]*)}/.exec(text))) {
         text = text.substring(cap[0].length)
         slash = cap[1] === '/'
         param = cap[2].replace(/-/g, ' ')
@@ -639,7 +639,7 @@ export class Element extends Node {
         continue
       }
 
-      if (cap = /^[\s\S]+?(?={\/?[\w\-,;!#]*})/.exec(text)) {
+      if ((cap = /^[\s\S]+?(?={\/?[\w\-,;!#]*})/.exec(text))) {
         text = text.substring(cap[0].length)
         out += cap[0]
         continue
@@ -754,13 +754,13 @@ export class Element extends Node {
 
         // Handle alignment tags.
         if (tags) {
-          if (cap = /^{(left|center|right)}/.exec(line)) {
+          if ((cap = /^{(left|center|right)}/.exec(line))) {
             line = line.substring(cap[0].length)
             align = state = cap[1] !== 'left'
               ? cap[1]
               : null
           }
-          if (cap = /{\/(left|center|right)}$/.exec(line)) {
+          if ((cap = /{\/(left|center|right)}$/.exec(line))) {
             line = line.slice(0, -cap[0].length)
             //state = null;
             state = this.align

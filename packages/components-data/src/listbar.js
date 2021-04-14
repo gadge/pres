@@ -23,11 +23,8 @@ export class Listbar extends Box {
     this.mouse = options.mouse || false
     // super(options)
     if (!this.style.selected) this.style.selected = {}
-
     if (!this.style.item) this.style.item = {}
-
     if (options.commands || options.items) this.setItems(options.commands || options.items)
-
     if (options.keys) {
       this.on('keypress', function (ch, key) {
         if (key.name === 'left'
@@ -62,7 +59,6 @@ export class Listbar extends Box {
         if (key.name === 'escape' || (options.vi && key.name === 'q')) {
           self.emit('action')
           self.emit('cancel')
-
         }
       })
     }

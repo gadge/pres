@@ -44,7 +44,6 @@ import {
 }                from '@pres/components-visual'
 
 export const box = (options) => new Box(options)
-
 export const element = function (options) {
   return options.scrollable && !this._ignore && this.type !== 'scrollable-box'
     ? new ScrollableElement(options)
@@ -58,10 +57,12 @@ export const scrollabletext = (options) => new ScrollableText(options)
 export const layout = (options) => new Layout(options)
 export const line = (options) => new Line(options)
 export const terminal = (options) => new Terminal(options)
+
 export const list = (options) => new List(options)
 export const listbar = (options) => new Listbar(options)
 export const listtable = (options) => new ListTable(options)
 export const table = (options) => new Table(options)
+
 export const button = (options) => new Button(options)
 export const checkbox = (options) => new Checkbox(options)
 export const filemanager = (options) => new FileManager(options)
@@ -71,10 +72,13 @@ export const prompt = (options) => new Prompt(options)
 export const question = (options) => new Question(options)
 export const radiobutton = (options) => new RadioButton(options)
 export const radioset = (options) => new RadioSet(options)
+
 export const loading = (options) => new Loading(options)
 export const message = (options) => new Message(options)
 export const progressbar = (options) => new ProgressBar(options)
+
 export const text = (options) => new Text(options)
+
 export const ansiimage = (options) => new ANSIImage(options)
 export const bigtext = (options) => new BigText(options)
 export const image = (options) => new Image(options)

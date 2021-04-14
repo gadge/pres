@@ -13,15 +13,9 @@ export class Screen extends Node {
   constructor(options = {}) {
     super(options)
     const self = this
-
-    if (!(this instanceof Node)) {
-      super()
-      return new Screen(options)
-    }
+    // if (!(this instanceof Node)) return new Screen(options)
     _Screen.configSingleton(this)
-    if (options.rsety && options.listen) {
-      options = { program: options }
-    }
+    if (options.rsety && options.listen) options = { program: options }
     this.program = options.program
     if (!this.program) {
       this.program = Program.build({
@@ -48,7 +42,7 @@ export class Screen extends Node {
       }
     }
     this.tput = this.program.tput
-    super(options)
+    // super(options) // Node.call(this, options)
     this.autoPadding = options.autoPadding !== false
     this.tabc = Array((options.tabSize || 4) + 1).join(' ')
     this.dockBorders = options.dockBorders

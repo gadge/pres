@@ -21,12 +21,8 @@ class Element$1 extends Node {
   constructor(options = {}) {
     super(options);
     this.type = 'element';
-    const self = this;
-
-    if (!(this instanceof Node)) {
-      return new Element$1(options);
-    } // config scrollable properties
-
+    const self = this; // if (!(this instanceof Node)) { return new Element(options) }
+    // config scrollable properties
 
     this.name = options.name;
     options.position = options.position || {
@@ -2675,88 +2671,13 @@ class Screen extends Node {
     };
 
     this.cursorReset = this.resetCursor;
-    const self = this;
-
-    if (!(this instanceof Node)) {
-      super();
-      this.type = 'screen';
-      this._destroy = this.destroy;
-      this.focusPrev = this.focusPrevious;
-      this.unkey = this.removeKey;
-
-      this.spawn = function (file, args, options) {
-        if (!Array.isArray(args)) {
-          options = args;
-          args = [];
-        }
-
-        const screen = this,
-              program = screen.program,
-              spawn = require('child_process').spawn,
-              mouse = program.mouseEnabled;
-
-        let ps;
-        options = options || {};
-        options.stdio = options.stdio || 'inherit';
-        program.lsaveCursor('spawn');
-        program.normalBuffer();
-        program.showCursor();
-        if (mouse) program.disableMouse();
-        const write = program.output.write;
-
-        program.output.write = function () {};
-
-        program.input.pause();
-
-        if (program.input.setRawMode) {
-          program.input.setRawMode(false);
-        }
-
-        const resume = function () {
-          if (resume.done) return;
-          resume.done = true;
-
-          if (program.input.setRawMode) {
-            program.input.setRawMode(true);
-          }
-
-          program.input.resume();
-          program.output.write = write;
-          program.alternateBuffer();
-
-          if (mouse) {
-            program.enableMouse();
-
-            if (screen.options.sendFocus) {
-              screen.program.setMouse({
-                sendFocus: true
-              }, true);
-            }
-          }
-
-          screen.alloc();
-          screen.render();
-          screen.program.lrestoreCursor('spawn', true);
-        };
-
-        ps = spawn(file, args, options);
-        ps.on('error', resume);
-        ps.on('exit', resume);
-        return ps;
-      };
-
-      this.cursorReset = this.resetCursor;
-      return new Screen(_options);
-    }
+    const self = this; // if (!(this instanceof Node)) return new Screen(options)
 
     _Screen.configSingleton(this);
 
-    if (_options.rsety && _options.listen) {
-      _options = {
-        program: _options
-      };
-    }
-
+    if (_options.rsety && _options.listen) _options = {
+      program: _options
+    };
     this.program = _options.program;
 
     if (!this.program) {
@@ -2785,75 +2706,8 @@ class Screen extends Node {
       }
     }
 
-    this.tput = this.program.tput;
-    super(_options);
-    this.type = 'screen';
-    this._destroy = this.destroy;
-    this.focusPrev = this.focusPrevious;
-    this.unkey = this.removeKey;
+    this.tput = this.program.tput; // super(options) // Node.call(this, options)
 
-    this.spawn = function (file, args, options) {
-      if (!Array.isArray(args)) {
-        options = args;
-        args = [];
-      }
-
-      const screen = this,
-            program = screen.program,
-            spawn = require('child_process').spawn,
-            mouse = program.mouseEnabled;
-
-      let ps;
-      options = options || {};
-      options.stdio = options.stdio || 'inherit';
-      program.lsaveCursor('spawn');
-      program.normalBuffer();
-      program.showCursor();
-      if (mouse) program.disableMouse();
-      const write = program.output.write;
-
-      program.output.write = function () {};
-
-      program.input.pause();
-
-      if (program.input.setRawMode) {
-        program.input.setRawMode(false);
-      }
-
-      const resume = function () {
-        if (resume.done) return;
-        resume.done = true;
-
-        if (program.input.setRawMode) {
-          program.input.setRawMode(true);
-        }
-
-        program.input.resume();
-        program.output.write = write;
-        program.alternateBuffer();
-
-        if (mouse) {
-          program.enableMouse();
-
-          if (screen.options.sendFocus) {
-            screen.program.setMouse({
-              sendFocus: true
-            }, true);
-          }
-        }
-
-        screen.alloc();
-        screen.render();
-        screen.program.lrestoreCursor('spawn', true);
-      };
-
-      ps = spawn(file, args, options);
-      ps.on('error', resume);
-      ps.on('exit', resume);
-      return ps;
-    };
-
-    this.cursorReset = this.resetCursor;
     this.autoPadding = _options.autoPadding !== false;
     this.tabc = Array((_options.tabSize || 4) + 1).join(' ');
     this.dockBorders = _options.dockBorders;
