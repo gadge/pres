@@ -12,16 +12,13 @@ import { Node } from '../core/node'
  */
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
-const parseOptions = options => {
-  options.scrollable = false
-  return options
-}
 export class Terminal extends Box {
   /**
    * Terminal
    */
   constructor(options = {}) {
-    super(parseOptions(options))
+    options.scrollable = false
+    super(options)
     if (!(this instanceof Node)) {
       return new Terminal(options)
     }

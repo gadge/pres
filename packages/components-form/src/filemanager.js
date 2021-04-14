@@ -4,7 +4,6 @@
  * https://github.com/chjj/blessed
  */
 
-import { Node }    from '@pres/components-core'
 import { List }    from '@pres/components-data'
 import { helpers } from '@pres/util-helpers'
 import fs          from 'fs'

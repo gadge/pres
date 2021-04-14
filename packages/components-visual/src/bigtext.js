@@ -3,8 +3,8 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-import { Box, Node } from '@pres/components-core'
-import fs            from 'fs'
+import { Box } from '@pres/components-core'
+import fs      from 'fs'
 
 export class BigText extends Box {
   /**

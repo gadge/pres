@@ -7,7 +7,6 @@
 /**
  * Modules
  */
-import { Node }     from '@pres/components-core'
 import { Checkbox } from './checkbox'
 
 export class RadioButton extends Checkbox {
@@ -20,7 +19,7 @@ export class RadioButton extends Checkbox {
     // if (!(this instanceof Node)) return new RadioButton(options)
     this.on('check', function () {
       let el = self
-      while (el = el.parent) {
+      while ((el = el.parent)) {
         if (el.type === 'radio-set'
           || el.type === 'form') break
       }

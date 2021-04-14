@@ -62,8 +62,8 @@ class Node extends EventEmitter {
 
     super(options);
     this.type = 'node';
-    const self = this;
-    if (!(this instanceof Node)) return new Node(options);
+    const self = this; // if (!(this instanceof Node)) return new Node(options)
+
     this.options = options;
     this.screen = this.screen || options.screen;
 

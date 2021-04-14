@@ -4,21 +4,18 @@
  * https://github.com/chjj/blessed
  */
 
-import { Box, Node } from '@pres/components-core'
-import * as colors   from '@pres/util-colors'
-import cp            from 'child_process'
-import { png }       from '../vendor/tng'
+import { Box }     from '@pres/components-core'
+import * as colors from '@pres/util-colors'
+import cp          from 'child_process'
+import { png }     from '../vendor/tng'
 
-const parseOptions = options => {
-  options.shrink = true
-  return options
-}
 export class ANSIImage extends Box {
   /**
    * ANSIImage
    */
   constructor(options = {}) {
-    super(parseOptions(options))
+    options.shrink = true
+    super(options)
     const self = this
     // if (!(this instanceof Node)) { return new ANSIImage(options) }
 

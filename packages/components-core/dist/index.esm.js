@@ -2588,7 +2588,7 @@ class Box extends Element$1 {
    * Box
    */
   constructor(options = {}) {
-    super(options); // if (!(this instanceof Node)) return new Box(options)
+    super(options); // // if (!(this instanceof Node)) return new Box(options)
 
     this.type = 'box';
   }
@@ -5002,8 +5002,8 @@ class ScrollableBox extends Box {
   constructor(options = {}) {
     super(options);
     this.type = 'scrollable-box';
-    const self = this;
-    if (!(this instanceof Node)) return new ScrollableBox(options);
+    const self = this; // if (!(this instanceof Node)) return new ScrollableBox(options)
+
     if (options.scrollable === false) return this;
     this.scrollable = true;
     this.childOffset = 0;
@@ -5394,8 +5394,7 @@ class Layout extends Element$1 {
    * Layout
    */
   constructor(options = {}) {
-    super(options);
-    if (!(this instanceof Node)) return new Layout(options);
+    super(options); // if (!(this instanceof Node)) return new Layout(options)
 
     if (options.width == null && options.left == null && options.right == null || options.height == null && options.top == null && options.bottom == null) {
       throw new Error('`Layout` must have a width and height!');
@@ -5603,8 +5602,14 @@ class Line extends Box {
    * Line
    */
   constructor(options = {}) {
-    super(parseOption(options));
-    if (!(this instanceof Node)) return new Line(options);
+    if ((options.orientation || 'vertical') === 'vertical') {
+      options.width = 1;
+    } else {
+      options.height = 1;
+    }
+
+    super(options); // if (!(this instanceof Node)) return new Line(options)
+
     const orientation = options.orientation || 'vertical';
     delete options.orientation;
     this.ch = !options.type || options.type === 'line' ? orientation === 'horizontal' ? '─' : '│' : options.ch || ' ';
@@ -5618,16 +5623,6 @@ class Line extends Box {
 
 }
 
-const parseOption = options => {
-  if ((options.orientation || 'vertical') === 'vertical') {
-    options.width = 1;
-  } else {
-    options.height = 1;
-  }
-
-  return options;
-};
-
 /**
  * scrollabletext.js - scrollable text element for blessed
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
@@ -5639,9 +5634,9 @@ class ScrollableText extends ScrollableBox {
    */
   constructor(options = {}) {
     options.alwaysScroll = true;
-    super(options);
+    super(options); // if (!(this instanceof Node)) return new ScrollableText(options)
+
     this.type = 'scrollable-text';
-    if (!(this instanceof Node)) return new ScrollableText(options);
   }
 
 }
@@ -5657,8 +5652,8 @@ class Log$1 extends ScrollableText {
     this.type = 'log';
     this.log = this.add;
     this._scroll = this.scroll;
-    const self = this;
-    if (!(this instanceof Node)) return new Log$1(options);
+    const self = this; // if (!(this instanceof Node)) return new Log(options)
+
     this.scrollback = options.scrollback != null ? options.scrollback : Infinity;
     this.scrollOnInput = options.scrollOnInput;
     this.on('set content', function () {
@@ -5717,18 +5712,13 @@ class Log$1 extends ScrollableText {
  */
 
 const nextTick = global.setImmediate || process.nextTick.bind(process);
-
-const parseOptions = options => {
-  options.scrollable = false;
-  return options;
-};
-
 class Terminal extends Box {
   /**
    * Terminal
    */
   constructor(options = {}) {
-    super(parseOptions(options));
+    options.scrollable = false;
+    super(options);
 
     if (!(this instanceof Node)) {
       return new Terminal(options);

@@ -4,8 +4,8 @@
  * https://github.com/chjj/blessed
  */
 
-import { Box, Node, Terminal } from '@pres/components-core'
-import cp                      from 'child_process'
+import { Box, Terminal } from '@pres/components-core'
+import cp                from 'child_process'
 
 export class Video extends Box {
   /**

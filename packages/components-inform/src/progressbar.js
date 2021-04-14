@@ -4,14 +4,11 @@
  * https://github.com/chjj/blessed
  */
 
-import { Node }  from '@pres/components-core'
 import { Input } from '@pres/components-form'
-
 
 /**
  * ProgressBar
  */
-
 export class ProgressBar extends Input {
   constructor(options = {}) {
     super(options)

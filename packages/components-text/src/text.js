@@ -9,16 +9,13 @@
  */
 import { Element } from '@pres/components-core'
 
-const parseOptions = options => {
-  options.shrink = true
-  return options
-}
 export class Text extends Element {
   /**
    * Text
    */
   constructor(options = {}) {
-    super(parseOptions(options))
+    options.shrink = true
+    super(options)
     // if (!(this instanceof Node)) return new Text(options)
     this.type = 'text'
   }

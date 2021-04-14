@@ -9,25 +9,21 @@
  */
 import { Box, Node } from '@pres/components-core'
 
-const parseOptions = options => {
-  options.shrink = true
-  options.style = options.style || {}
-  options.style.border = options.style.border || {}
-  options.style.header = options.style.header || {}
-  options.style.cell = options.style.cell || {}
-  options.align = options.align || 'center'
-  // Regular tables do not get custom height (this would
-  // require extra padding). Maybe add in the future.
-  delete options.height
-  return options
-}
-
 export class Table extends Box {
   /**
    * Table
    */
   constructor(options = {}) {
-    super(parseOptions(options))
+    options.shrink = true
+    options.style = options.style || {}
+    options.style.border = options.style.border || {}
+    options.style.header = options.style.header || {}
+    options.style.cell = options.style.cell || {}
+    options.align = options.align || 'center'
+    // Regular tables do not get custom height (this would
+    // require extra padding). Maybe add in the future.
+    delete options.height
+    super(options)
     const self = this
     if (!(this instanceof Node)) { return new Table(options) }
     this.pad = options.pad != null

@@ -1753,23 +1753,14 @@ GIF.prototype.decompress = function (input, codeSize) {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-const parseOptions$1 = options => {
-  options.shrink = true;
-  return options;
-};
-
 class ANSIImage extends componentsCore.Box {
   /**
    * ANSIImage
    */
   constructor(options = {}) {
-    super(parseOptions$1(options));
-    const self = this;
-
-    if (!(this instanceof componentsCore.Node)) {
-      return new ANSIImage(options);
-    }
+    options.shrink = true;
+    super(options);
+    const self = this; // if (!(this instanceof Node)) { return new ANSIImage(options) }
 
     this.scale = this.options.scale || 1.0;
     this.options.animate = this.options.animate !== false;
@@ -1907,11 +1898,7 @@ class BigText extends componentsCore.Box {
    * BigText
    */
   constructor(options = {}) {
-    super(options);
-
-    if (!(this instanceof componentsCore.Node)) {
-      return new BigText(options);
-    }
+    super(options); // if (!(this instanceof Node)) { return new BigText(options) }
 
     options = options || {};
     options.font = options.font || __dirname + '/../../usr/fonts/ter-u14n.json';
@@ -2050,22 +2037,13 @@ class BigText extends componentsCore.Box {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-const parseOptions = options => {
-  options.type = options.itype || options.type || 'ansi';
-  return options;
-};
-
 class Image extends componentsCore.Box {
   /**
    * Image
    */
   constructor(options = {}) {
-    super(parseOptions(options));
-
-    if (!(this instanceof componentsCore.Node)) {
-      return new Image(options);
-    }
+    options.type = options.itype || options.type || 'ansi';
+    super(options); // if (!(this instanceof Node)) { return new Image(options) }
 
     if (options.type === 'ansi' && this.type !== 'ansiimage') {
       const ANSIImage = require('./ansiimage');
@@ -2110,11 +2088,7 @@ class OverlayImage extends componentsCore.Box {
    */
   constructor(options = {}) {
     super(options);
-    const self = this;
-
-    if (!(this instanceof componentsCore.Node)) {
-      return new OverlayImage(options);
-    }
+    const self = this; // if (!(this instanceof Node)) { return new OverlayImage(options) }
 
     if (options.w3m) {
       OverlayImage.w3mdisplay = options.w3m;
@@ -2736,11 +2710,7 @@ class Video extends componentsCore.Box {
   constructor(options = {}) {
     super(options);
     const self = this;
-    let shell, args;
-
-    if (!(this instanceof componentsCore.Node)) {
-      return new Video(options);
-    }
+    let shell, args; // if (!(this instanceof Node)) { return new Video(options) }
 
     if (this.exists('mplayer')) {
       shell = 'mplayer';

@@ -7,9 +7,8 @@
 /**
  * Modules
  */
-import { Node } from '@pres/components-core'
 import { Box }  from '@pres/components-core'
-import { Text }     from '@pres/components-text'
+import { Text } from '@pres/components-text'
 
 export class Loading extends Box {
   /**
@@ -18,8 +17,6 @@ export class Loading extends Box {
   constructor(options = {}) {
     super(options)
     // if (!(this instanceof Node)) return new Loading(options)
-
-
     this._.icon = new Text({
       parent: this,
       align: 'center',

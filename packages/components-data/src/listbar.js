@@ -4,13 +4,9 @@
  * https://github.com/chjj/blessed
  */
 
-import { Box, Node } from '@pres/components-core'
-import { helpers }   from '@pres/util-helpers'
+import { Box }     from '@pres/components-core'
+import { helpers } from '@pres/util-helpers'
 
-const parseOptions = (options) => {
-
-  return options
-}
 export class Listbar extends Box {
   /**
    * Listbar / HorizontalList
@@ -30,9 +26,7 @@ export class Listbar extends Box {
 
     if (!this.style.item) this.style.item = {}
 
-    if (options.commands || options.items) {
-      this.setItems(options.commands || options.items)
-    }
+    if (options.commands || options.items) this.setItems(options.commands || options.items)
 
     if (options.keys) {
       this.on('keypress', function (ch, key) {

@@ -7,21 +7,15 @@
 /**
  * Modules
  */
-import { Node }  from '@pres/components-core'
 import { Input } from './input'
 
-const parseOptions = options => {
-  if (options.autoFocus == null) {
-    options.autoFocus = false
-  }
-  return options
-}
 export class Button extends Input {
   /**
    * Button
    */
   constructor(options = {}){
-    super(parseOptions(options))
+    if (options.autoFocus == null) options.autoFocus = false
+    super(options)
     const self = this
 
     // if (!(this instanceof Node)) return new Button(options)

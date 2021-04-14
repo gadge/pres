@@ -4,21 +4,18 @@
  * https://github.com/chjj/blessed
  */
 
-import { Box, Node } from '@pres/components-core'
-import { helpers }   from '@pres/util-helpers'
+import { Box }     from '@pres/components-core'
+import { helpers } from '@pres/util-helpers'
 
-const parseOptions = options => {
-  options.ignoreKeys = true
-  // Possibly put this here: this.items = [];
-  options.scrollable = true
-  return options
-}
 export class List extends Box {
   /**
    * List
    */
   constructor(options = {}) {
-    super(parseOptions(options))
+    options.ignoreKeys = true
+    // Possibly put this here: this.items = [];
+    options.scrollable = true
+    super(options)
     const self = this
     // if (!(this instanceof Node)) return new List(options)
     options.ignoreKeys = true

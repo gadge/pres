@@ -7,18 +7,15 @@
 /**
  * Modules
  */
-import { Box, Node } from '@pres/components-core'
+import { Box } from '@pres/components-core'
 
-const parseOptions = options => {
-  options.tags = true
-  return options
-}
 export class Message extends Box {
   /**
    * Message / Error
    */
   constructor(options = {}) {
-    super(parseOptions(options))
+    options.tags = true
+    super(options)
     // if (!(this instanceof Node)) return new Message(options)
     this.type = 'message'
   }

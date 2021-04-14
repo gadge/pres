@@ -14,8 +14,8 @@ class Input extends Box {
    * Input
    */
   constructor(options = {}) {
-    super(options);
-    if (!(this instanceof Node)) return new Input(options);
+    super(options); // if (!(this instanceof Node)) return new Input(options)
+
     this.type = 'input';
   }
 
@@ -26,23 +26,15 @@ class Input extends Box {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-const parseOptions$5 = options => {
-  if (options.autoFocus == null) {
-    options.autoFocus = false;
-  }
-
-  return options;
-};
-
 class Button extends Input {
   /**
    * Button
    */
   constructor(options = {}) {
-    super(parseOptions$5(options));
-    const self = this;
-    if (!(this instanceof Node)) return new Button(options);
+    if (options.autoFocus == null) options.autoFocus = false;
+    super(options);
+    const self = this; // if (!(this instanceof Node)) return new Button(options)
+
     this.on('keypress', function (ch, key) {
       if (key.name === 'enter' || key.name === 'space') {
         return self.press();
@@ -79,8 +71,8 @@ class Checkbox extends Input {
    */
   constructor(options = {}) {
     super(options);
-    const self = this;
-    if (!(this instanceof Node)) return new Checkbox(options);
+    const self = this; // if (!(this instanceof Node)) return new Checkbox(options)
+
     this.text = options.content || options.text || '';
     this.checked = this.value = options.checked || false;
     this.on('keypress', function (ch, key) {
@@ -146,8 +138,8 @@ class FileManager extends List {
   constructor(options = {}) {
     options.parseTags = true;
     super(options);
-    const self = this;
-    if (!(this instanceof Node)) return new FileManager(options); // options.label = ' {blue-fg}%path{/blue-fg} ';
+    const self = this; // if (!(this instanceof Node)) return new FileManager(options)
+    // options.label = ' {blue-fg}%path{/blue-fg} ';
     // List.call(this, options)
 
     this.cwd = options.cwd || process.cwd();
@@ -316,20 +308,14 @@ class FileManager extends List {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-const parseOptions$4 = options => {
-  options.ignoreKeys = true;
-  return options;
-};
-
 class Form extends Box {
   /**
    * Form
    */
   constructor(options = {}) {
-    super(parseOptions$4(options));
-    const self = this;
-    if (!(this instanceof Node)) return new Form(options);
+    options.ignoreKeys = true;
+    super(options);
+    const self = this; // if (!(this instanceof Node)) return new Form(options)
 
     if (options.keys) {
       this.screen._listenKeys(this);
@@ -791,19 +777,14 @@ function hexify(n) {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-const parseOptions$3 = options => {
-  options.scrollable = options.scrollable !== false;
-  return options;
-};
-
 const nextTick = global.setImmediate || process.nextTick.bind(process);
 class Textarea extends Input {
   /**
    * Textarea
    */
   constructor(options = {}) {
-    super(parseOptions$3(options));
+    options.scrollable = options.scrollable !== false;
+    super(options);
     this.input = this.readInput;
     this.setInput = this.readInput;
     this.clearInput = this.clearValue;
@@ -1107,18 +1088,13 @@ class Textarea extends Input {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-const parseOptions$2 = options => {
-  options.scrollable = false;
-  return options;
-};
-
 class Textbox extends Textarea {
   /**
    * Textbox
    */
   constructor(options = {}) {
-    super(parseOptions$2(options));
+    options.scrollable = false;
+    super(options);
 
     if (!(this instanceof Node$1)) {
       return new Textbox(options);
@@ -1183,21 +1159,16 @@ class Textbox extends Textarea {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-const parseOptions$1 = options => {
-  options.hidden = true;
-  return options;
-};
-
 class Prompt extends Box {
   /**
    * Prompt
    */
   constructor(options = {}) {
-    super(parseOptions$1(options));
+    options.hidden = true;
+    super(options); // if (!(this instanceof Node)) return new Prompt(options)
+
     this.input = this.readInput;
     this.setInput = this.readInput;
-    if (!(this instanceof Node)) return new Prompt(options);
     this._.input = new Textbox({
       parent: this,
       top: 3,
@@ -1283,19 +1254,14 @@ class Prompt extends Box {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-const parseOptions = options => {
-  options.hidden = true;
-  return options;
-};
-
 class Question extends Box {
   /**
    * Question
    */
   constructor(options = {}) {
-    super(parseOptions(options));
-    if (!(this instanceof Node)) return new Question(options);
+    options.hidden = true;
+    super(options); // if (!(this instanceof Node)) return new Question(options)
+
     this._.okay = new Button({
       screen: this.screen,
       parent: this,
@@ -1386,8 +1352,8 @@ class RadioButton extends Checkbox {
    */
   constructor(options = {}) {
     super(options);
-    const self = this;
-    if (!(this instanceof Node)) return new RadioButton(options);
+    const self = this; // if (!(this instanceof Node)) return new RadioButton(options)
+
     this.on('check', function () {
       let el = self;
 
@@ -1426,8 +1392,8 @@ class RadioSet extends Box {
    * RadioSet
    */
   constructor(options = {}) {
-    super(options);
-    if (!(this instanceof Node)) return new RadioSet(options); // Possibly inherit parent's style.
+    super(options); // if (!(this instanceof Node)) return new RadioSet(options)
+    // Possibly inherit parent's style.
     // options.style = this.parent.style;
 
     this.type = 'radio-set';

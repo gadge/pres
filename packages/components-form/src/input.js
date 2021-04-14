@@ -7,7 +7,7 @@
 /**
  * Modules
  */
-import { Box, Node } from '@pres/components-core'
+import { Box } from '@pres/components-core'
 
 export class Input extends Box {
   /**

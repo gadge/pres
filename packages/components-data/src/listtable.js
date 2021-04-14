@@ -11,36 +11,30 @@ import { Box, Node } from '@pres/components-core'
 import { List }      from './list'
 import { Table }     from './table'
 
-let __align
-let __border
-const parseOptions = options => {
-  // options.shrink = true;
-  options.normalShrink = true
-  options.style = options.style || {}
-  options.style.border = options.style.border || {}
-  options.style.header = options.style.header || {}
-  options.style.cell = options.style.cell || {}
-  __align = options.align || 'center'
-  delete options.align
-  options.style.selected = options.style.cell.selected
-  options.style.item = options.style.cell
-  let border = __border = options.border
-  if (border
-    && border.top === false
-    && border.bottom === false
-    && border.left === false
-    && border.right === false) {
-    delete options.border
-  }
-  return options
-}
-
 export class ListTable extends List {
   /**
    * ListTable
    */
   constructor(options = {}) {
-    super(parseOptions(options))
+    // options.shrink = true;
+    options.normalShrink = true
+    options.style = options.style || {}
+    options.style.border = options.style.border || {}
+    options.style.header = options.style.header || {}
+    options.style.cell = options.style.cell || {}
+    const __align = options.align || 'center'
+    delete options.align
+    options.style.selected = options.style.cell.selected
+    options.style.item = options.style.cell
+    const __border = options.border
+    if (__border
+      && __border.top === false
+      && __border.bottom === false
+      && __border.left === false
+      && __border.right === false) {
+      delete options.border
+    }
+    super(options)
     const self = this
     if (!(this instanceof Node)) { return new ListTable(options) }
     this.__align = __align

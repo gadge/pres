@@ -1,4 +1,4 @@
-import { Box, Node } from '@pres/components-core';
+import { Box } from '@pres/components-core';
 import { Text } from '@pres/components-text';
 import { Input } from '@pres/components-form';
 
@@ -12,11 +12,7 @@ class Loading extends Box {
    * Loading
    */
   constructor(options = {}) {
-    super(options);
-
-    if (!(this instanceof Node)) {
-      return new Loading(options);
-    }
+    super(options); // if (!(this instanceof Node)) return new Loading(options)
 
     this._.icon = new Text({
       parent: this,
@@ -81,24 +77,15 @@ class Loading extends Box {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-const parseOptions = options => {
-  options.tags = true;
-  return options;
-};
-
 class Message extends Box {
   /**
    * Message / Error
    */
   constructor(options = {}) {
-    super(parseOptions(options));
+    options.tags = true;
+    super(options); // if (!(this instanceof Node)) return new Message(options)
+
     this.log = this.display;
-
-    if (!(this instanceof Node)) {
-      return new Message(options);
-    }
-
     this.type = 'message';
   }
 
@@ -197,11 +184,7 @@ class Message extends Box {
 class ProgressBar extends Input {
   constructor(options = {}) {
     super(options);
-    const self = this;
-
-    if (!(this instanceof Node)) {
-      return new ProgressBar(options);
-    }
+    const self = this; // if (!(this instanceof Node)) return new ProgressBar(options)
 
     this.filled = options.filled || 0;
 

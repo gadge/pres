@@ -16,11 +16,7 @@ class Loading extends componentsCore.Box {
    * Loading
    */
   constructor(options = {}) {
-    super(options);
-
-    if (!(this instanceof componentsCore.Node)) {
-      return new Loading(options);
-    }
+    super(options); // if (!(this instanceof Node)) return new Loading(options)
 
     this._.icon = new componentsText.Text({
       parent: this,
@@ -85,24 +81,15 @@ class Loading extends componentsCore.Box {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-const parseOptions = options => {
-  options.tags = true;
-  return options;
-};
-
 class Message extends componentsCore.Box {
   /**
    * Message / Error
    */
   constructor(options = {}) {
-    super(parseOptions(options));
+    options.tags = true;
+    super(options); // if (!(this instanceof Node)) return new Message(options)
+
     this.log = this.display;
-
-    if (!(this instanceof componentsCore.Node)) {
-      return new Message(options);
-    }
-
     this.type = 'message';
   }
 
@@ -201,11 +188,7 @@ class Message extends componentsCore.Box {
 class ProgressBar extends componentsForm.Input {
   constructor(options = {}) {
     super(options);
-    const self = this;
-
-    if (!(this instanceof componentsCore.Node)) {
-      return new ProgressBar(options);
-    }
+    const self = this; // if (!(this instanceof Node)) return new ProgressBar(options)
 
     this.filled = options.filled || 0;
 

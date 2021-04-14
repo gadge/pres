@@ -5,7 +5,6 @@ scr/**
  */
 
 import util               from 'util'
-import { Node }           from '../core/node'
 import { ScrollableText } from './scrollabletext'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
@@ -19,7 +18,6 @@ export class Log extends ScrollableText {
     super(options)
     const self = this
     // if (!(this instanceof Node)) return new Log(options)
-
     this.scrollback = options.scrollback != null
       ? options.scrollback
       : Infinity

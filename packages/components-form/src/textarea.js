@@ -8,17 +8,14 @@ import { Node }      from '@pres/components-core'
 import * as  unicode from '@pres/util-unicode'
 import { Input }     from './input'
 
-const parseOptions = options => {
-  options.scrollable = options.scrollable !== false
-  return options
-}
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 export class Textarea extends Input {
   /**
    * Textarea
    */
   constructor(options = {}) {
-    super(parseOptions(options))
+    options.scrollable = options.scrollable !== false
+    super(options)
     const self = this
     if (!(this instanceof Node)) { return new Textarea(options) }
     this.screen._listenKeys(this)

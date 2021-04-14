@@ -7,7 +7,6 @@
 /**
  * Modules
  */
-import { Node }  from '@pres/components-core'
 import { Input } from './input'
 
 export class Checkbox extends Input {

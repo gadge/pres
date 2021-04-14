@@ -7,20 +7,17 @@
 /**
  * Modules
  */
-import { Box, Node } from '@pres/components-core'
-import { Button }    from './button'
+import { Box }    from '@pres/components-core'
+import { Button } from './button'
 
-const parseOptions = options => {
-  options.hidden = true
-  return options
-}
 export class Question extends Box {
 
   /**
    * Question
    */
   constructor(options = {}) {
-    super(parseOptions(options))
+    options.hidden = true
+    super(options)
     // if (!(this instanceof Node)) return new Question(options)
     this._.okay = new Button({
       screen: this.screen,

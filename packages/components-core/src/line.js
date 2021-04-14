@@ -4,15 +4,19 @@
  * https://github.com/chjj/blessed
  */
 
-import { Box }  from '../core/box'
-import { Node } from '../core/node'
+import { Box } from '../core/box'
 
 export class Line extends Box {
   /**
    * Line
    */
   constructor(options = {}) {
-    super(parseOption(options))
+    if ((options.orientation || 'vertical') === 'vertical') {
+      options.width = 1
+    } else {
+      options.height = 1
+    }
+    super(options)
     // if (!(this instanceof Node)) return new Line(options)
     const orientation = options.orientation || 'vertical'
     delete options.orientation
@@ -27,15 +31,5 @@ export class Line extends Box {
     this.type = 'line'
   }
 }
-
-const parseOption = options => {
-  if ((options.orientation || 'vertical') === 'vertical') {
-    options.width = 1
-  } else {
-    options.height = 1
-  }
-  return options
-}
-
 
 

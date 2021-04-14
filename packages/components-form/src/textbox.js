@@ -7,17 +7,13 @@
 import Node         from '@pres/components-core'
 import { Textarea } from './textarea'
 
-const parseOptions = options => {
-  options.scrollable = false
-  return options
-}
-
 export class Textbox extends Textarea {
   /**
    * Textbox
    */
   constructor(options = {}) {
-    super(parseOptions(options))
+    options.scrollable = false
+    super(options)
     if (!(this instanceof Node)) { return new Textbox(options) }
     this.secret = options.secret
     this.censor = options.censor

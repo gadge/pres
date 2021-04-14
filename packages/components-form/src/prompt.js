@@ -7,20 +7,17 @@
 /**
  * Modules
  */
-import { Box, Node } from '@pres/components-core'
-import { Button }    from './button'
-import { Textbox }   from './textbox'
+import { Box }     from '@pres/components-core'
+import { Button }  from './button'
+import { Textbox } from './textbox'
 
-const parseOptions = options => {
-  options.hidden = true
-  return options
-}
 export class Prompt extends Box {
   /**
    * Prompt
    */
   constructor(options = {}) {
-    super(parseOptions(options))
+    options.hidden = true
+    super(options)
     // if (!(this instanceof Node)) return new Prompt(options)
     this._.input = new Textbox({
       parent: this,

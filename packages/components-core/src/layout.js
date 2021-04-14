@@ -5,7 +5,6 @@
  */
 
 import { Element } from '../core/element'
-import { Node }    from '../core/node'
 
 export class Layout extends Element {
   /**

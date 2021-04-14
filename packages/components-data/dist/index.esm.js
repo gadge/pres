@@ -6,25 +6,20 @@ import { helpers } from '@pres/util-helpers';
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-const parseOptions$2 = options => {
-  options.ignoreKeys = true; // Possibly put this here: this.items = [];
-
-  options.scrollable = true;
-  return options;
-};
-
 class List extends Box {
   /**
    * List
    */
   constructor(options = {}) {
-    super(parseOptions$2(options));
+    options.ignoreKeys = true; // Possibly put this here: this.items = [];
+
+    options.scrollable = true;
+    super(options);
     this.add = this.appendItem;
     this.addItem = this.appendItem;
     this.find = this.fuzzyFind;
-    const self = this;
-    if (!(this instanceof Node)) return new List(options);
+    const self = this; // if (!(this instanceof Node)) return new List(options)
+
     options.ignoreKeys = true; // Possibly put this here: this.items = [];
 
     options.scrollable = true;
@@ -599,15 +594,14 @@ class List extends Box {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 class Listbar extends Box {
   /**
    * Listbar / HorizontalList
    */
   constructor(options = {}) {
     super(options);
-    const self = this;
-    if (!(this instanceof Node)) return new Listbar(options);
+    const self = this; // if (!(this instanceof Node)) return new Listbar(options)
+
     this.items = [];
     this.ritems = [];
     this.commands = [];
@@ -617,10 +611,7 @@ class Listbar extends Box {
 
     if (!this.style.selected) this.style.selected = {};
     if (!this.style.item) this.style.item = {};
-
-    if (options.commands || options.items) {
-      this.setItems(options.commands || options.items);
-    }
+    if (options.commands || options.items) this.setItems(options.commands || options.items);
 
     if (options.keys) {
       this.on('keypress', function (ch, key) {
@@ -971,26 +962,21 @@ class Listbar extends Box {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-const parseOptions$1 = options => {
-  options.shrink = true;
-  options.style = options.style || {};
-  options.style.border = options.style.border || {};
-  options.style.header = options.style.header || {};
-  options.style.cell = options.style.cell || {};
-  options.align = options.align || 'center'; // Regular tables do not get custom height (this would
-  // require extra padding). Maybe add in the future.
-
-  delete options.height;
-  return options;
-};
-
 class Table extends Box {
   /**
    * Table
    */
   constructor(options = {}) {
-    super(parseOptions$1(options));
+    options.shrink = true;
+    options.style = options.style || {};
+    options.style.border = options.style.border || {};
+    options.style.header = options.style.header || {};
+    options.style.cell = options.style.cell || {};
+    options.align = options.align || 'center'; // Regular tables do not get custom height (this would
+    // require extra padding). Maybe add in the future.
+
+    delete options.height;
+    super(options);
     this.setRows = this.setData;
     const self = this;
 
@@ -1322,37 +1308,30 @@ class Table extends Box {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-let __align;
-
-let __border;
-
-const parseOptions = options => {
-  // options.shrink = true;
-  options.normalShrink = true;
-  options.style = options.style || {};
-  options.style.border = options.style.border || {};
-  options.style.header = options.style.header || {};
-  options.style.cell = options.style.cell || {};
-  __align = options.align || 'center';
-  delete options.align;
-  options.style.selected = options.style.cell.selected;
-  options.style.item = options.style.cell;
-  let border = __border = options.border;
-
-  if (border && border.top === false && border.bottom === false && border.left === false && border.right === false) {
-    delete options.border;
-  }
-
-  return options;
-};
-
 class ListTable extends List {
   /**
    * ListTable
    */
   constructor(options = {}) {
-    super(parseOptions(options));
+    // options.shrink = true;
+    options.normalShrink = true;
+    options.style = options.style || {};
+    options.style.border = options.style.border || {};
+    options.style.header = options.style.header || {};
+    options.style.cell = options.style.cell || {};
+
+    const __align = options.align || 'center';
+
+    delete options.align;
+    options.style.selected = options.style.cell.selected;
+    options.style.item = options.style.cell;
+    const __border = options.border;
+
+    if (__border && __border.top === false && __border.bottom === false && __border.left === false && __border.right === false) {
+      delete options.border;
+    }
+
+    super(options);
     const self = this;
 
     if (!(this instanceof Node)) {

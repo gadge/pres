@@ -7,19 +7,16 @@
 /**
  * Modules
  */
-import { Box, Node } from '@pres/components-core'
+import { Box } from '@pres/components-core'
 
-const parseOptions = options => {
-  options.ignoreKeys = true
-  return options
-}
 
 export class Form extends Box {
   /**
    * Form
    */
   constructor(options = {}) {
-    super(parseOptions(options))
+    options.ignoreKeys = true
+    super(options)
     const self = this
     // if (!(this instanceof Node)) return new Form(options)
     if (options.keys) {
