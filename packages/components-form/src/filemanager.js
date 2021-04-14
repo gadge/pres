@@ -5,38 +5,31 @@
  */
 
 import { Node }    from '@pres/components-core'
+import { List }    from '@pres/components-data'
 import { helpers } from '@pres/util-helpers'
 import fs          from 'fs'
 import path        from 'path'
-import { List }    from '@pres/components-data'
 
-export class FileManager {
+export class FileManager extends List {
   /**
    * FileManager
    */
-  constructor(options = {}){
-    const self = this
-
-    if (!(this instanceof Node)) return new FileManager(options)
-
-    options = options || {}
+  constructor(options = {}) {
     options.parseTags = true
+    super(options)
+    const self = this
+    if (!(this instanceof Node)) return new FileManager(options)
     // options.label = ' {blue-fg}%path{/blue-fg} ';
-
-    List.call(this, options)
-
+    // List.call(this, options)
     this.cwd = options.cwd || process.cwd()
     this.file = this.cwd
     this.value = this.cwd
-
     if (options.label && ~options.label.indexOf('%path')) {
       this._label.setContent(options.label.replace('%path', this.cwd))
     }
-
     this.on('select', function (item) {
       const value = item.content.replace(/\{[^{}]+\}/g, '').replace(/@$/, ''),
         file = path.resolve(self.cwd, value)
-
       return fs.stat(file, function (err, stat) {
         if (err) {
           return self.emit('error', err, file)
@@ -55,7 +48,7 @@ export class FileManager {
         }
       })
     })
-    this.type = 'file-manager';
+    this.type = 'file-manager'
   }
   refresh(cwd, callback) {
     if (!callback) {
@@ -191,8 +184,6 @@ export class FileManager {
     this.refresh(callback)
   }
 }
-
-FileManager.prototype.__proto__ = List.prototype
 
 
 
