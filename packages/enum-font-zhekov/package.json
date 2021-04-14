@@ -1,6 +1,6 @@
 {
   "name": "@pres/enum-font-zhekov",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Alias for tui",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
