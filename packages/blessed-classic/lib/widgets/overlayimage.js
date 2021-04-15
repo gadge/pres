@@ -21,14 +21,11 @@ const Box = require('./box')
  * https://github.com/hut/ranger/blob/master/ranger/ext/img_display.py
  */
 
-function OverlayImage(options) {
+function OverlayImage(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new OverlayImage(options)
-
-  options = options || {}
-
-  Box.call(this, options)
+Box.call(this, options)
 
   if (options.w3m) {
     OverlayImage.w3mdisplay = options.w3m

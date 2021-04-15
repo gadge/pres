@@ -16,14 +16,11 @@ const Box = require('./box')
  * Listbar / HorizontalList
  */
 
-function Listbar(options) {
+function Listbar(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new Listbar(options)
-
-  options = options || {}
-
-  this.items = []
+this.items = []
   this.ritems = []
   this.commands = []
 

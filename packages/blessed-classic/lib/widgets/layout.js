@@ -14,12 +14,9 @@ const Element = require('./element')
  * Layout
  */
 
-function Layout(options) {
+function Layout(options = {}) {
   if (!(this instanceof Node)) return new Layout(options)
-
-  options = options || {}
-
-  if ((options.width == null
+if ((options.width == null
     && (options.left == null && options.right == null))
     || (options.height == null
       && (options.top == null && options.bottom == null))) {

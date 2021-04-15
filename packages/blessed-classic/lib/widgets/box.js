@@ -14,10 +14,9 @@ const Element = require('./element')
  * Box
  */
 
-function Box(options) {
+function Box(options = {}) {
   if (!(this instanceof Node)) return new Box(options)
-  options = options || {}
-  Element.call(this, options)
+Element.call(this, options)
 }
 
 Box.prototype.__proto__ = Element.prototype

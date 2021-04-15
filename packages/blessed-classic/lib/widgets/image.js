@@ -14,11 +14,9 @@ const Box = require('./box')
  * Image
  */
 
-function Image(options) {
+function Image(options = {}) {
   if (!(this instanceof Node)) return new Image(options)
-
-  options = options || {}
-  options.type = options.itype || options.type || 'ansi'
+options.type = options.itype || options.type || 'ansi'
 
   Box.call(this, options)
 

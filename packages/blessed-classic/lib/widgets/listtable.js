@@ -16,14 +16,11 @@ const Table = require('./table')
  * ListTable
  */
 
-function ListTable(options) {
+function ListTable(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new ListTable(options)
-
-  options = options || {}
-
-  // options.shrink = true;
+// options.shrink = true;
   options.normalShrink = true
   options.style = options.style || {}
   options.style.border = options.style.border || {}

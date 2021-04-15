@@ -23,14 +23,11 @@ const Node = require('./node')
  * Element
  */
 
-function Element(options) {
+function Element(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new Element(options)
-
-  options = options || {}
-
-  // Workaround to get a `scrollable` option.
+// Workaround to get a `scrollable` option.
   if (options.scrollable && !this._ignore && this.type !== 'scrollable-box') {
     const ScrollableBox = require('./scrollablebox')
     Object.getOwnPropertyNames(ScrollableBox.prototype).forEach(function (key) {

@@ -18,14 +18,11 @@ const ScrollableText = require('./scrollabletext')
  * Log
  */
 
-function Log(options) {
+function Log(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new Log(options)
-
-  options = options || {}
-
-  ScrollableText.call(this, options)
+ScrollableText.call(this, options)
 
   this.scrollback = options.scrollback != null
     ? options.scrollback

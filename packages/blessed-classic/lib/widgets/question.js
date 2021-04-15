@@ -15,11 +15,9 @@ const Button = require('./button')
  * Question
  */
 
-function Question(options) {
+function Question(options = {}) {
   if (!(this instanceof Node)) return new Question(options)
-
-  options = options || {}
-  options.hidden = true
+options.hidden = true
 
   Box.call(this, options)
 

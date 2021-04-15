@@ -14,14 +14,11 @@ const Input = require('./input')
  * Button
  */
 
-function Button(options) {
+function Button(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new Button(options)
-
-  options = options || {}
-
-  if (options.autoFocus == null) {
+if (options.autoFocus == null) {
     options.autoFocus = false
   }
 

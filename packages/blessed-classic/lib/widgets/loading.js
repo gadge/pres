@@ -15,12 +15,9 @@ const Text = require('./text')
  * Loading
  */
 
-function Loading(options) {
+function Loading(options = {}) {
   if (!(this instanceof Node)) return new Loading(options)
-
-  options = options || {}
-
-  Box.call(this, options)
+Box.call(this, options)
 
   this._.icon = new Text({
     parent: this,

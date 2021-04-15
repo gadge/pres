@@ -19,13 +19,11 @@ const List = require('./list')
  * FileManager
  */
 
-function FileManager(options) {
+function FileManager(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new FileManager(options)
-
-  options = options || {}
-  options.parseTags = true
+options.parseTags = true
   // options.label = ' {blue-fg}%path{/blue-fg} ';
 
   List.call(this, options)

@@ -20,10 +20,7 @@ function List(options)  {
   const self = this
 
   if (!(this instanceof Node)) return new List(options)
-
-  options = options || {}
-
-  options.ignoreKeys = true
+options.ignoreKeys = true
   // Possibly put this here: this.items = [];
   options.scrollable = true
   Box.call(this, options)

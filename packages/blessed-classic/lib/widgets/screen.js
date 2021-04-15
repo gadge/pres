@@ -28,15 +28,13 @@ const Box = require('./box')
  * Screen
  */
 
-function Screen(options) {
+function Screen(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new Screen(options)
 
   Screen.bind(this)
-
-  options = options || {}
-  if (options.rsety && options.listen) options = { program: options }
+if (options.rsety && options.listen) options = { program: options }
 
   this.program = options.program
 

@@ -16,10 +16,8 @@ const Box = require('./box')
  * Terminal
  */
 
-function Terminal(options) {
+function Terminal(options = {}) {
   if (!(this instanceof Node)) return new Terminal(options)
-
-  options = options || {}
   options.scrollable = false
 
   Box.call(this, options)

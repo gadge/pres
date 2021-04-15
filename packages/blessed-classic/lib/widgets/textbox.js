@@ -14,10 +14,8 @@ const Textarea = require('./textarea')
  * Textbox
  */
 
-function Textbox(options) {
+function Textbox(options = {}) {
   if (!(this instanceof Node)) return new Textbox(options)
-
-  options = options || {}
 
   options.scrollable = false
 

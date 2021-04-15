@@ -16,12 +16,9 @@ const Textbox = require('./textbox')
  * Prompt
  */
 
-function Prompt(options) {
+function Prompt(options = {}) {
   if (!(this instanceof Node)) return new Prompt(options)
-
-  options = options || {}
-
-  options.hidden = true
+options.hidden = true
 
   Box.call(this, options)
 

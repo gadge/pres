@@ -16,7 +16,7 @@ const GeiaEventEmitter = require('@pres/events').EventEmitter
  * Node
  */
 
-function Node(options) {
+function Node(options = {}) {
   const self = this
   const Screen = require('./screen')
 
@@ -24,8 +24,6 @@ function Node(options) {
   assign(this, new GeiaEventEmitter())
   // console.log('>>> [Node created]', this.type)
   // EventEmitter.call(this)
-
-  options = options || {}
   this.options = options
 
   this.screen = this.screen || options.screen

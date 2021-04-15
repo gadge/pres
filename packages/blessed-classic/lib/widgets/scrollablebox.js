@@ -14,12 +14,10 @@ const Box = require('./box')
  * ScrollableBox
  */
 
-function ScrollableBox(options) {
+function ScrollableBox(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new ScrollableBox(options)
-
-  options = options || {}
 
   Box.call(this, options)
 

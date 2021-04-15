@@ -17,14 +17,12 @@ const Terminal = require('./terminal')
  * Video
  */
 
-function Video(options) {
+function Video(options = {}) {
   const self = this
   let shell,
     args
 
   if (!(this instanceof Node)) return new Video(options)
-
-  options = options || {}
 
   Box.call(this, options)
 

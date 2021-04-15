@@ -14,12 +14,10 @@ const Box = require('./box')
  * Table
  */
 
-function Table(options) {
+function Table(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new Table(options)
-
-  options = options || {}
   options.shrink = true
   options.style = options.style || {}
   options.style.border = options.style.border || {}

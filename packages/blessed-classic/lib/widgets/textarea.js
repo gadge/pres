@@ -18,12 +18,10 @@ const Input = require('./input')
  * Textarea
  */
 
-function Textarea(options) {
+function Textarea(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new Textarea(options)
-
-  options = options || {}
 
   options.scrollable = options.scrollable !== false
 
