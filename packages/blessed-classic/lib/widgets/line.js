@@ -13,10 +13,9 @@ const Box = require('./box')
 /**
  * Line
  */
-
 function Line(options = {}) {
   if (!(this instanceof Node)) return new Line(options)
-const orientation = options.orientation || 'vertical'
+  const orientation = options.orientation || 'vertical'
   delete options.orientation
 
   if (orientation === 'vertical') {

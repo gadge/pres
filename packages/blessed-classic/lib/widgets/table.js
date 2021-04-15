@@ -13,7 +13,6 @@ const Box = require('./box')
 /**
  * Table
  */
-
 function Table(options = {}) {
   const self = this
 

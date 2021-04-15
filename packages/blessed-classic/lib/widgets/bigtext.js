@@ -8,17 +8,15 @@
  * Modules
  */
 const fs = require('fs')
-
 const Node = require('./node')
 const Box = require('./box')
 
 /**
  * BigText
  */
-
 function BigText(options = {}) {
   if (!(this instanceof Node)) return new BigText(options)
-options.font = options.font
+  options.font = options.font
     || __dirname + '/../../usr/fonts/ter-u14n.json'
   options.fontBold = options.font
     || __dirname + '/../../usr/fonts/ter-u14b.json'

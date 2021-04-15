@@ -13,12 +13,11 @@ const Box = require('./box')
 /**
  * Form
  */
-
 function Form(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new Form(options)
-options.ignoreKeys = true
+  options.ignoreKeys = true
   Box.call(this, options)
 
   if (options.keys) {

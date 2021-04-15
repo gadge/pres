@@ -8,19 +8,17 @@
  * Modules
  */
 const helpers = require('../tools/helpers')
-
 const Node = require('./node')
 const Box = require('./box')
 
 /**
  * Listbar / HorizontalList
  */
-
 function Listbar(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new Listbar(options)
-this.items = []
+  this.items = []
   this.ritems = []
   this.commands = []
 

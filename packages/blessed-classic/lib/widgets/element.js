@@ -8,21 +8,16 @@
  * Modules
  */
 const assert = require('assert')
-
 const
   colors = require('../tools/colors'),
   unicode = require('../tools/unicode')
-
 const nextTick = global.setImmediate || process.nextTick.bind(process)
-
 const helpers = require('../tools/helpers')
-
 const Node = require('./node')
 
 /**
  * Element
  */
-
 function Element(options = {}) {
   const self = this
 

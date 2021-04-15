@@ -8,14 +8,12 @@
  * Modules
  */
 const nextTick = global.setImmediate || process.nextTick.bind(process)
-
 const Node = require('./node')
 const Box = require('./box')
 
 /**
  * Terminal
  */
-
 function Terminal(options = {}) {
   if (!(this instanceof Node)) return new Terminal(options)
   options.scrollable = false

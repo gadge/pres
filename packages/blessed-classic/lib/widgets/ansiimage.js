@@ -8,22 +8,18 @@
  * Modules
  */
 const cp = require('child_process')
-
 const colors = require('../tools/colors')
-
 const Node = require('./node')
 const Box = require('./box')
-
 const tng = require('../../vendor/tng')
 
 /**
  * ANSIImage
  */
-
-function ANSIImage(options)   {
+function ANSIImage(options) {
   const self = this
   if (!(this instanceof Node)) return new ANSIImage(options)
-options.shrink = true
+  options.shrink = true
 
   Box.call(this, options)
 

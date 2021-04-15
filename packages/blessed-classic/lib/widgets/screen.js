@@ -10,15 +10,11 @@
 const path = require('path'),
   fs = require('fs'),
   cp = require('child_process')
-
 const colors = require('../tools/colors'),
   program = require('../program').build,
   unicode = require('../tools/unicode')
-
 const nextTick = global.setImmediate || process.nextTick.bind(process)
-
 const helpers = require('../tools/helpers')
-
 const Node = require('./node')
 const Log = require('./log')
 const Element = require('./element')
@@ -27,14 +23,13 @@ const Box = require('./box')
 /**
  * Screen
  */
-
 function Screen(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new Screen(options)
 
   Screen.bind(this)
-if (options.rsety && options.listen) options = { program: options }
+  if (options.rsety && options.listen) options = { program: options }
 
   this.program = options.program
 

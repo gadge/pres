@@ -15,7 +15,6 @@ const Table = require('./table')
 /**
  * ListTable
  */
-
 function ListTable(options = {}) {
   const self = this
 

@@ -13,7 +13,6 @@ const Element = require('./element')
 /**
  * Text
  */
-
 function Text(options = {}) {
   if (!(this instanceof Node)) return new Text(options)
   options.shrink = true

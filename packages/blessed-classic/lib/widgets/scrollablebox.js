@@ -13,7 +13,6 @@ const Box = require('./box')
 /**
  * ScrollableBox
  */
-
 function ScrollableBox(options = {}) {
   const self = this
 

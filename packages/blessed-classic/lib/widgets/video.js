@@ -8,7 +8,6 @@
  * Modules
  */
 const cp = require('child_process')
-
 const Node = require('./node')
 const Box = require('./box')
 const Terminal = require('./terminal')
@@ -16,7 +15,6 @@ const Terminal = require('./terminal')
 /**
  * Video
  */
-
 function Video(options = {}) {
   const self = this
   let shell,

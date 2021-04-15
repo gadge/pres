@@ -13,7 +13,6 @@ const Textarea = require('./textarea')
 /**
  * Textbox
  */
-
 function Textbox(options = {}) {
   if (!(this instanceof Node)) return new Textbox(options)
 

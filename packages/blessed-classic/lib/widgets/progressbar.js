@@ -13,12 +13,11 @@ const Input = require('./input')
 /**
  * ProgressBar
  */
-
 function ProgressBar(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new ProgressBar(options)
-Input.call(this, options)
+  Input.call(this, options)
 
   this.filled = options.filled || 0
   if (typeof this.filled === 'string') {

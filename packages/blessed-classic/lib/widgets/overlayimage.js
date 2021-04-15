@@ -9,9 +9,7 @@
  */
 const fs = require('fs'),
   cp = require('child_process')
-
 const helpers = require('../tools/helpers')
-
 const Node = require('./node')
 const Box = require('./box')
 
@@ -20,12 +18,11 @@ const Box = require('./box')
  * Good example of w3mimgdisplay commands:
  * https://github.com/hut/ranger/blob/master/ranger/ext/img_display.py
  */
-
 function OverlayImage(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new OverlayImage(options)
-Box.call(this, options)
+  Box.call(this, options)
 
   if (options.w3m) {
     OverlayImage.w3mdisplay = options.w3m

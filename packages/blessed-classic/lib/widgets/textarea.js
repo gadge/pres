@@ -8,16 +8,13 @@
  * Modules
  */
 const unicode = require('../tools/unicode')
-
 const nextTick = global.setImmediate || process.nextTick.bind(process)
-
 const Node = require('./node')
 const Input = require('./input')
 
 /**
  * Textarea
  */
-
 function Textarea(options = {}) {
   const self = this
 

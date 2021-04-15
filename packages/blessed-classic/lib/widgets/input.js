@@ -13,10 +13,9 @@ const Box = require('./box')
 /**
  * Input
  */
-
 function Input(options = {}) {
   if (!(this instanceof Node)) return new Input(options)
-Box.call(this, options)
+  Box.call(this, options)
 }
 
 Input.prototype.__proto__ = Box.prototype

@@ -8,21 +8,18 @@
  * Modules
  */
 const util = require('util')
-
 const nextTick = global.setImmediate || process.nextTick.bind(process)
-
 const Node = require('./node')
 const ScrollableText = require('./scrollabletext')
 
 /**
  * Log
  */
-
 function Log(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new Log(options)
-ScrollableText.call(this, options)
+  ScrollableText.call(this, options)
 
   this.scrollback = options.scrollback != null
     ? options.scrollback

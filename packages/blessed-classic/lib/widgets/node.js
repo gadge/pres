@@ -3,7 +3,6 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 const { assign } = require('@ject/mixin')
 
 /**
@@ -15,7 +14,6 @@ const GeiaEventEmitter = require('@pres/events').EventEmitter
 /**
  * Node
  */
-
 function Node(options = {}) {
   const self = this
   const Screen = require('./screen')

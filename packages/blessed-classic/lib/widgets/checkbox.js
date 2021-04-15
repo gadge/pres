@@ -13,12 +13,11 @@ const Input = require('./input')
 /**
  * Checkbox
  */
-
 function Checkbox(options = {}) {
   const self = this
 
   if (!(this instanceof Node)) return new Checkbox(options)
-Input.call(this, options)
+  Input.call(this, options)
 
   this.text = options.content || options.text || ''
   this.checked = this.value = options.checked || false

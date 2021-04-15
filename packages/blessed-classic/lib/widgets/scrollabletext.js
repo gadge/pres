@@ -13,7 +13,6 @@ const ScrollableBox = require('./scrollablebox')
 /**
  * ScrollableText
  */
-
 function ScrollableText(options = {}) {
   if (!(this instanceof Node)) return new ScrollableText(options)
   options.alwaysScroll = true

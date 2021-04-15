@@ -13,10 +13,9 @@ const Box = require('./box')
 /**
  * Message / Error
  */
-
 function Message(options = {}) {
   if (!(this instanceof Node)) return new Message(options)
-options.tags = true
+  options.tags = true
 
   Box.call(this, options)
 }
