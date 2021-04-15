@@ -3,7 +3,7 @@
  * Copyright (c) 2010-2015, Joyent, Inc. and other contributors (MIT License)
  * https://github.com/chjj/blessed
  */
-const EventEmitter = require('./tools/events').EventEmitter
+const EventEmitter = require('../lib/tools/events').EventEmitter
 
 // NOTE: node <=v0.8.x has no EventEmitter.listenerCount
 function listenerCount(stream, event) {

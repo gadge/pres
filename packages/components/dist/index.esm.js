@@ -1,4 +1,4 @@
-import { Box, ScrollableElement, Element, Node, Screen, Log, ScrollableBox, ScrollableText, Layout, Line, Terminal } from '@pres/components-core';
+import { Box, Element, Node, Screen, Log, ScrollableBox, ScrollableText, Layout, Line, Terminal } from '@pres/components-core';
 export { Box, Element, Layout, Line, Log, Node, Screen, ScrollableBox, ScrollableText, Terminal } from '@pres/components-core';
 import { List, Listbar, ListTable, Table } from '@pres/components-data';
 export { List, ListTable, Listbar, Table } from '@pres/components-data';
@@ -13,7 +13,10 @@ export { ANSIImage, BigText, Image, OverlayImage, PNG, Video } from '@pres/compo
 
 const box = options => new Box(options);
 const element = function (options) {
-  return options.scrollable && !this._ignore && this.type !== 'scrollable-box' ? new ScrollableElement(options) : new Element(options);
+  // return options.scrollable && !this._ignore && this.type !== 'scrollable-box'
+  //   ? new ScrollableElement(options)
+  //   :
+  return new Element(options);
 };
 const node = options => new Node(options);
 const screen = options => new Screen(options);

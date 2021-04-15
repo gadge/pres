@@ -7,8 +7,8 @@ import { assign } from '@ject/mixin'
 
 const net = require('net')
 const fs = require('fs')
-const EventEmitter = require('./tools/events').EventEmitter
-const GeiaEventEmitter = require('@geia/tui-events').EventEmitter
+const EventEmitter = require('../lib/tools/events').EventEmitter
+const GeiaEventEmitter = require('@pres/events').EventEmitter
 const GPM_USE_MAGIC = false
 
 const

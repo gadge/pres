@@ -8,7 +8,7 @@
  * Modules
  */
 const
-  EventEmitter = require('./tools/events').EventEmitter,
+  EventEmitter = require('../lib/tools/events').EventEmitter,
   StringDecoder = require('string_decoder').StringDecoder,
   cp = require('child_process'),
   util = require('util'),
@@ -19,7 +19,7 @@ const { EventEmitter: GeiaEventEmitter } = require('@pres/events')
 const { Tput: GeiaTput } = require('@pres/terminfo-parser')
 const
   Tput = require('./tput'),
-  colors = require('./tools/colors'),
+  colors = require('../lib/tools/colors'),
   slice = Array.prototype.slice
 const { assign } = require('@ject/mixin')
 

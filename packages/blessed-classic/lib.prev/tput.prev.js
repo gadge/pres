@@ -2340,7 +2340,7 @@ function sprintf(src) {
  * Aliases
  */
 
-Tput._alias = require('./tools/alias')
+Tput._alias = require('../lib/tools/alias')
 
 Tput.alias = {};
 

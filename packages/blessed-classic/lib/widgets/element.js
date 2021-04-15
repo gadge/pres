@@ -9,11 +9,15 @@
  */
 const assert = require('assert')
 const
-  colors = require('../tools/colors'),
+  colors  = require('../tools/colors'),
   unicode = require('../tools/unicode')
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 const helpers = require('../tools/helpers')
 const Node = require('./node')
+const Box = require('./box')
+const Mixin = require('@ject/mixin')
+const _Scrollable = require('./base/_Scrollable')
+
 
 /**
  * Element
@@ -23,21 +27,21 @@ function Element(options = {}) {
   if (!(this instanceof Node)) return new Element(options)
 // Workaround to get a `scrollable` option.
   if (options.scrollable && !this._ignore && this.type !== 'scrollable-box') {
-    const ScrollableBox = require('./scrollablebox')
-    Object.getOwnPropertyNames(ScrollableBox.prototype).forEach(function (key) {
-      if (key === 'type') return
-      Object.defineProperty(this, key,
-        Object.getOwnPropertyDescriptor(ScrollableBox.prototype, key))
-    }, this)
-    this._ignore = true
-    ScrollableBox.call(this, options)
-    delete this._ignore
-    return this
+    Mixin.assign(this, _Scrollable.prototype)
+    // const ScrollableBox = require('./scrollablebox')
+    // Object.getOwnPropertyNames(ScrollableBox.prototype).forEach(function (key) {
+    //   if (key === 'type') return
+    //   Object.defineProperty(this, key,
+    //     Object.getOwnPropertyDescriptor(ScrollableBox.prototype, key))
+    // }, this)
+    // this._ignore = true
+    // ScrollableBox.call(this, options)
+    // delete this._ignore
+    // return this
   }
-
   Node.call(this, options)
+  this.constructScrollable?.call(this, options)
   this.name = options.name
-
   options.position = options.position || {
     left: options.left,
     right: options.right,
@@ -196,10 +200,10 @@ Element.prototype.__defineGetter__('focused', function () {
 
 Element.prototype.sattr = function (style, fg, bg) {
   let
-    bold = style.bold,
+    bold      = style.bold,
     underline = style.underline,
-    blink = style.blink,
-    inverse = style.inverse,
+    blink     = style.blink,
+    inverse   = style.inverse,
     invisible = style.invisible
 
   // if (arguments.length === 1) {
@@ -383,15 +387,15 @@ Element.prototype._parseTags = function (text) {
 
   const program = this.screen.program
   let out = '',
-    state
-  const bg = [],
-    fg = [],
-    flag = []
+      state
+  const bg   = [],
+        fg   = [],
+        flag = []
   let cap,
-    slash,
-    param,
-    attr,
-    esc
+      slash,
+      param,
+      attr,
+      esc
 
   for (; ;) {
     if (!esc && (cap = /^{escape}/.exec(text))) {
@@ -480,9 +484,9 @@ Element.prototype._parseAttr = function (lines) {
   let attr = dattr
   const attrs = []
   let line,
-    i,
-    j,
-    c
+      i,
+      j,
+      c
   if (lines[0].attr === attr) {
     return
   }
@@ -508,7 +512,7 @@ Element.prototype._align = function (line, width, align) {
   //if (!align && !~line.indexOf('{|}')) return line;
 
   const cline = line.replace(/\x1b\[[\d;]*m/g, ''),
-    len = cline.length
+        len   = cline.length
   let s = width - len
   if (this.shrink) {
     s = 0
@@ -538,18 +542,18 @@ Element.prototype._wrapContent = function (content, width) {
   const wrap = this.wrap
   let margin = 0
   const rtof = [],
-    ftor = [],
-    out = []
+        ftor = [],
+        out  = []
   let no = 0,
-    line,
-    align,
-    cap,
-    total,
-    i,
-    part,
-    j,
-    lines,
-    rest
+      line,
+      align,
+      cap,
+      total,
+      i,
+      part,
+      j,
+      lines,
+      rest
 
   lines = content.split('\n')
   if (!content) {
@@ -764,11 +768,11 @@ Element.prototype.enableDrag = function (verify) {
     if (!self.parent) return
 
     const ox = self._drag.x,
-      oy = self._drag.y,
-      px = self.parent.aleft,
-      py = self.parent.atop,
-      x = data.x - px - ox,
-      y = data.y - py - oy
+          oy = self._drag.y,
+          px = self.parent.aleft,
+          py = self.parent.atop,
+          x  = data.x - px - ox,
+          y  = data.y - py - oy
     if (self.position.right != null) {
       if (self.position.left != null) {
         self.width = '100%-' + (self.parent.width - self.width)
@@ -979,8 +983,8 @@ Element.prototype._getPos = function () {
 Element.prototype._getWidth = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
   let width = this.position.width,
-    left,
-    expr
+      left,
+      expr
   if (typeof width === 'string') {
     if (width === 'half') width = '50%'
     expr = width.split(/(?=\+|-)/)
@@ -1027,8 +1031,8 @@ Element.prototype.__defineGetter__('width', function () {
 Element.prototype._getHeight = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
   let height = this.position.height,
-    top,
-    expr
+      top,
+      expr
   if (typeof height === 'string') {
     if (height === 'half') height = '50%'
     expr = height.split(/(?=\+|-)/)
@@ -1076,7 +1080,7 @@ Element.prototype.__defineGetter__('height', function () {
 Element.prototype._getLeft = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
   let left = this.position.left || 0,
-    expr
+      expr
   if (typeof left === 'string') {
     if (left === 'center') left = '50%'
     expr = left.split(/(?=\+|-)/)
@@ -1132,7 +1136,7 @@ Element.prototype.__defineGetter__('aright', function () {
 Element.prototype._getTop = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
   let top = this.position.top || 0,
-    expr
+      expr
   if (typeof top === 'string') {
     if (top === 'center') top = '50%'
     expr = top.split(/(?=\+|-)/)
@@ -1516,7 +1520,7 @@ Element.prototype._getShrinkBox = function (xi, xl, yi, yl, get) {
 
 Element.prototype._getShrinkContent = function (xi, xl, yi, yl) {
   const h = this._clines.length,
-    w = this._clines.mwidth || 1
+        w = this._clines.mwidth || 1
   if (this.position.width == null
     && (this.position.left == null
       || this.position.right == null)) {
@@ -1541,10 +1545,10 @@ Element.prototype._getShrinkContent = function (xi, xl, yi, yl) {
 }
 
 Element.prototype._getShrink = function (xi, xl, yi, yl, get) {
-  const shrinkBox = this._getShrinkBox(xi, xl, yi, yl, get),
-    shrinkContent = this._getShrinkContent(xi, xl, yi, yl, get)
+  const shrinkBox     = this._getShrinkBox(xi, xl, yi, yl, get),
+        shrinkContent = this._getShrinkContent(xi, xl, yi, yl, get)
   let xll = xl,
-    yll = yl
+      yll = yl
 
   // Figure out which one is bigger and use it.
   if (shrinkBox.xl - shrinkBox.xi > shrinkContent.xl - shrinkContent.xi) {
@@ -1584,21 +1588,21 @@ Element.prototype._getCoords = function (get, noscroll) {
   //   get = true;
   // }
 
-  let xi = this._getLeft(get),
-    xl = xi + this._getWidth(get),
-    yi = this._getTop(get),
-    yl = yi + this._getHeight(get),
-    base = this.childBase || 0,
-    el = this,
-    fixed = this.fixed,
-    coords,
-    v,
-    noleft,
-    noright,
-    notop,
-    nobot,
-    ppos,
-    b
+  let xi    = this._getLeft(get),
+      xl    = xi + this._getWidth(get),
+      yi    = this._getTop(get),
+      yl    = yi + this._getHeight(get),
+      base  = this.childBase || 0,
+      el    = this,
+      fixed = this.fixed,
+      coords,
+      v,
+      noleft,
+      noright,
+      notop,
+      nobot,
+      ppos,
+      b
 
   // Attempt to shrink the element base on the
   // size of the content and child elements.
@@ -1759,21 +1763,21 @@ Element.prototype.render = function () {
 
   const lines = this.screen.lines
   let xi = coords.xi,
-    xl = coords.xl,
-    yi = coords.yi,
-    yl = coords.yl,
-    x,
-    y,
-    cell,
-    attr,
-    ch
+      xl = coords.xl,
+      yi = coords.yi,
+      yl = coords.yl,
+      x,
+      y,
+      cell,
+      attr,
+      ch
   const content = this._pcontent
   let ci = this._clines.ci[coords.base],
-    battr,
-    dattr,
-    c,
-    visible,
-    i
+      battr,
+      dattr,
+      c,
+      visible,
+      i
   const bch = this.ch
 
   // Clip content if it's off the edge of the screen
@@ -2256,7 +2260,7 @@ Element.prototype.insertLine = function (i, line) {
   // if they're the same, or if they fit in the visible region entirely.
   const start = this._clines.length
   let diff,
-    real
+      real
   if (i >= this._clines.ftor.length) {
     real = this._clines.ftor[this._clines.ftor.length - 1]
     real = real[real.length - 1] + 1
@@ -2274,9 +2278,9 @@ Element.prototype.insertLine = function (i, line) {
     const pos = this._getCoords()
     if (!pos) return
 
-    const height = pos.yl - pos.yi - this.iheight,
-      base = this.childBase || 0,
-      visible = real >= base && real - base < height
+    const height  = pos.yl - pos.yi - this.iheight,
+          base    = this.childBase || 0,
+          visible = real >= base && real - base < height
     if (pos && visible && this.screen.cleanSides(this)) {
       this.screen.insertLine(diff,
         pos.yi + this.itop + real - base,
@@ -2316,8 +2320,8 @@ Element.prototype.deleteLine = function (i, n) {
 
     height = pos.yl - pos.yi - this.iheight
 
-    const base = this.childBase || 0,
-      visible = real >= base && real - base < height
+    const base    = this.childBase || 0,
+          visible = real >= base && real - base < height
     if (pos && visible && this.screen.cleanSides(this)) {
       this.screen.deleteLine(diff,
         pos.yi + this.itop + real - base,
@@ -2336,9 +2340,9 @@ Element.prototype.insertTop = function (line) {
 }
 
 Element.prototype.insertBottom = function (line) {
-  const h = (this.childBase || 0) + this.height - this.iheight,
-    i = Math.min(h, this._clines.length),
-    fake = this._clines.rtof[i - 1] + 1
+  const h    = (this.childBase || 0) + this.height - this.iheight,
+        i    = Math.min(h, this._clines.length),
+        fake = this._clines.rtof[i - 1] + 1
 
   return this.insertLine(fake, line)
 }
@@ -2349,9 +2353,9 @@ Element.prototype.deleteTop = function (n) {
 }
 
 Element.prototype.deleteBottom = function (n) {
-  const h = (this.childBase || 0) + this.height - 1 - this.iheight,
-    i = Math.min(h, this._clines.length - 1),
-    fake = this._clines.rtof[i]
+  const h    = (this.childBase || 0) + this.height - 1 - this.iheight,
+        i    = Math.min(h, this._clines.length - 1),
+        fake = this._clines.rtof[i]
 
   n = n || 1
 

@@ -15,11 +15,11 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@ject/noop": "^0.0.9",
+    "@ject/noop": "^0.0.11",
     "@pres/events": "^0.0.7",
     "@pres/terminfo-parser": "^0.0.7",
     "@pres/util-colors": "^0.0.7",
-    "@spare/logger": "^0.11.12"
+    "@spare/logger": "^0.11.14"
   },
   "repository": {
     "type": "git",
