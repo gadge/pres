@@ -14,10 +14,13 @@ const Box = require('./box')
  * ScrollableBox
  */
 function ScrollableBox(options = {}) {
-  const self = this
   if (!(this instanceof Node)) return new ScrollableBox(options)
-
   Box.call(this, options)
+  this.setup(options)
+}
+
+ScrollableBox.prototype.setup = function (options) {
+  const self = this
   if (options.scrollable === false) return this
   this.scrollable = true
   this.childOffset = 0
@@ -148,10 +151,8 @@ function ScrollableBox(options = {}) {
   this.on('parsed content', function () {
     self._recalculateIndex()
   })
-
   self._recalculateIndex()
 }
-
 ScrollableBox.prototype.__proto__ = Box.prototype
 
 ScrollableBox.prototype.type = 'scrollable-box'
@@ -215,13 +216,13 @@ ScrollableBox.prototype.scroll = function (offset, always) {
 
   // Handle scrolling.
   const visible = this.height - this.iheight,
-    base = this.childBase
+        base    = this.childBase
   let d,
-    p,
-    t,
-    b,
-    max,
-    emax
+      p,
+      t,
+      b,
+      max,
+      emax
   if (this.alwaysScroll || always) {
     // Semi-workaround
     this.childOffset = offset > 0
@@ -332,7 +333,7 @@ ScrollableBox.prototype.getScrollPerc = function (s) {
   if (!pos) return s ? -1 : 0
 
   const height = (pos.yl - pos.yi) - this.iheight,
-    i = this.getScrollHeight()
+        i      = this.getScrollHeight()
   let p
   if (height < i) {
     if (this.alwaysScroll) {

@@ -36,7 +36,8 @@ BigText.prototype.type = 'bigtext'
 
 BigText.prototype.loadFont = function (filename) {
   const self = this
-  let data,
+  let
+    data,
     font
 
   data = JSON.parse(fs.readFileSync(filename, 'utf8'))
