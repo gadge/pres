@@ -25,7 +25,6 @@ function Layout(options = {}) {
   options.layout = options.layout || 'inline'
 
   Element.call(this, options)
-
   if (options.renderer) {
     this.renderer = options.renderer
   }
@@ -169,19 +168,15 @@ Layout.prototype.render = function () {
     delete this.lpos
     return
   }
-
   if (coords.xl - coords.xi <= 0) {
     coords.xl = Math.max(coords.xl, coords.xi)
     return
   }
-
   if (coords.yl - coords.yi <= 0) {
     coords.yl = Math.max(coords.yl, coords.yi)
     return
   }
-
   this.lpos = coords
-
   if (this.border) coords.xi++, coords.xl--, coords.yi++, coords.yl--
   if (this.tpadding) {
     coords.xi += this.padding.left, coords.xl -= this.padding.right
@@ -189,13 +184,11 @@ Layout.prototype.render = function () {
   }
 
   const iterator = this.renderer(coords)
-
   if (this.border) coords.xi--, coords.xl++, coords.yi--, coords.yl++
   if (this.tpadding) {
     coords.xi -= this.padding.left, coords.xl += this.padding.right
     coords.yi -= this.padding.top, coords.yl += this.padding.bottom
   }
-
   this.children.forEach(function (el, i) {
     if (el.screen._ci !== -1) {
       el.index = el.screen._ci++
@@ -213,7 +206,6 @@ Layout.prototype.render = function () {
     //   el._rendering = false;
     // }
   })
-
   this._emit('render', [ coords ])
 
   return coords

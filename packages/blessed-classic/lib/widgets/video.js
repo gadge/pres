@@ -19,11 +19,9 @@ function Video(options = {}) {
   const self = this
   let shell,
     args
-
   if (!(this instanceof Node)) return new Video(options)
 
   Box.call(this, options)
-
   if (this.exists('mplayer')) {
     shell = 'mplayer'
     args = [ '-vo', 'caca', '-quiet', options.file ]
@@ -46,7 +44,6 @@ function Video(options = {}) {
     shell: shell,
     args: args.slice()
   }
-
   this.now = Date.now() / 1000 | 0
   this.start = opts.start || 0
   if (this.start) {
@@ -61,7 +58,6 @@ function Video(options = {}) {
   delete process.env.DISPLAY
   this.tty = new Terminal(opts)
   process.env.DISPLAY = DISPLAY
-
   this.on('click', function () {
     self.tty.pty.write('p')
   })

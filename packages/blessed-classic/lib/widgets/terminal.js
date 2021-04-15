@@ -24,24 +24,19 @@ function Terminal(options = {}) {
   if (this.screen.program.tmux && this.screen.program.tmuxVersion >= 2) {
     this.screen.program.enableMouse()
   }
-
   this.handler = options.handler
   this.shell = options.shell || process.env.SHELL || 'sh'
   this.args = options.args || []
-
   this.cursor = this.options.cursor
   this.cursorBlink = this.options.cursorBlink
   this.screenKeys = this.options.screenKeys
-
   this.style = this.style || {}
   this.style.bg = this.style.bg || 'default'
   this.style.fg = this.style.fg || 'default'
-
   this.termName = options.terminal
     || options.term
     || process.env.TERM
     || 'xterm'
-
   this.bootstrap()
 }
 
@@ -82,7 +77,6 @@ Terminal.prototype.bootstrap = function () {
 
   element.parentNode = element
   element.offsetParent = element
-
   this.term = require('term.js')({
     termName: this.termName,
     cols: this.width - this.iwidth,
@@ -94,14 +88,11 @@ Terminal.prototype.bootstrap = function () {
     cursorBlink: this.cursorBlink,
     screenKeys: this.screenKeys
   })
-
   this.term.refresh = function () {
     self.screen.render()
   }
-
   this.term.keyDown = function () {}
   this.term.keyPress = function () {}
-
   this.term.open(element)
 
   // Emits key sequences in html-land.
@@ -121,15 +112,12 @@ Terminal.prototype.bootstrap = function () {
       self.handler(data)
     }
   })
-
   this.onScreenEvent('mouse', function (data) {
     if (self.screen.focused !== self) return
-
     if (data.x < self.aleft + self.ileft) return
     if (data.y < self.atop + self.itop) return
     if (data.x > self.aleft - self.ileft + self.width) return
     if (data.y > self.atop - self.itop + self.height) return
-
     if (self.term.x10Mouse
       || self.term.vt200Mouse
       || self.term.normalMouse
@@ -137,7 +125,6 @@ Terminal.prototype.bootstrap = function () {
       || self.term.utfMouse
       || self.term.sgrMouse
       || self.term.urxvtMouse) {
-
     } else {
       return
     }
@@ -146,7 +133,6 @@ Terminal.prototype.bootstrap = function () {
     const x = data.x - self.aleft,
       y = data.y - self.atop
     let s
-
     if (self.term.urxvtMouse) {
       if (self.screen.program.sgrMouse) {
         b += 32
@@ -170,44 +156,35 @@ Terminal.prototype.bootstrap = function () {
 
     self.handler(s)
   })
-
   this.on('focus', function () {
     self.term.focus()
   })
-
   this.on('blur', function () {
     self.term.blur()
   })
-
   this.term.on('title', function (title) {
     self.title = title
     self.emit('title', title)
   })
-
   this.term.on('passthrough', function (data) {
     self.screen.program.flush()
     self.screen.program._owrite(data)
   })
-
   this.on('resize', function () {
     nextTick(function () {
       self.term.resize(self.width - self.iwidth, self.height - self.iheight)
     })
   })
-
   this.once('render', function () {
     self.term.resize(self.width - self.iwidth, self.height - self.iheight)
   })
-
   this.on('destroy', function () {
     self.kill()
     self.screen.program.input.removeListener('data', self._onData)
   })
-
   if (this.handler) {
     return
   }
-
   this.pty = require('pty.js').fork(this.shell, this.args, {
     name: this.termName,
     cols: this.width - this.iwidth,
@@ -215,35 +192,28 @@ Terminal.prototype.bootstrap = function () {
     cwd: process.env.HOME,
     env: this.options.env || process.env
   })
-
   this.on('resize', function () {
     nextTick(function () {
       try {
         self.pty.resize(self.width - self.iwidth, self.height - self.iheight)
       } catch (e) {
-
       }
     })
   })
-
   this.handler = function (data) {
     self.pty.write(data)
     self.screen.render()
   }
-
   this.pty.on('data', function (data) {
     self.write(data)
     self.screen.render()
   })
-
   this.pty.on('exit', function (code) {
     self.emit('exit', code || null)
   })
-
   this.onScreenEvent('keypress', function () {
     self.screen.render()
   })
-
   this.screen._listenKeys(this)
 }
 
@@ -254,7 +224,6 @@ Terminal.prototype.write = function (data) {
 Terminal.prototype.render = function () {
   const ret = this._render()
   if (!ret) return
-
   this.dattr = this.sattr(this.style)
 
   const xi = ret.xi + this.ileft,
@@ -268,7 +237,6 @@ Terminal.prototype.render = function () {
   for (let y = Math.max(yi, 0); y < yl; y++) {
     const line = this.screen.lines[y]
     if (!line || !this.term.lines[scrollback + y - yi]) break
-
     if (y === yi + this.term.y
       && this.term.cursorState
       && this.screen.focused === this
@@ -283,7 +251,6 @@ Terminal.prototype.render = function () {
       if (!line[x] || !this.term.lines[scrollback + y - yi][x - xi]) break
 
       line[x][0] = this.term.lines[scrollback + y - yi][x - xi][0]
-
       if (x === cursor) {
         if (this.cursor === 'line') {
           line[x][0] = this.dattr

@@ -15,20 +15,17 @@ const Input = require('./input')
  */
 function Button(options = {}) {
   const self = this
-
   if (!(this instanceof Node)) return new Button(options)
   if (options.autoFocus == null) {
     options.autoFocus = false
   }
 
   Input.call(this, options)
-
   this.on('keypress', function (ch, key) {
     if (key.name === 'enter' || key.name === 'space') {
       return self.press()
     }
   })
-
   if (this.options.mouse) {
     this.on('click', function () {
       return self.press()

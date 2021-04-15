@@ -19,7 +19,6 @@ function Question(options = {}) {
   options.hidden = true
 
   Box.call(this, options)
-
   this._.okay = new Button({
     screen: this.screen,
     parent: this,
@@ -34,7 +33,6 @@ function Question(options = {}) {
     autoFocus: false,
     mouse: true
   })
-
   this._.cancel = new Button({
     screen: this.screen,
     parent: this,
@@ -64,10 +62,8 @@ Question.prototype.ask = function (text, callback) {
   // var parent = this.parent;
   // this.detach();
   // parent.append(this);
-
   this.show()
   this.setContent(' ' + text)
-
   this.onScreenEvent('keypress', press = function (ch, key) {
     if (key.name === 'mouse') return
     if (key.name !== 'enter'
@@ -79,15 +75,12 @@ Question.prototype.ask = function (text, callback) {
     }
     done(null, key.name === 'enter' || key.name === 'y')
   })
-
   this._.okay.on('press', okay = function () {
     done(null, true)
   })
-
   this._.cancel.on('press', cancel = function () {
     done(null, false)
   })
-
   this.screen.saveFocus()
   this.focus()
 
@@ -99,7 +92,6 @@ Question.prototype.ask = function (text, callback) {
     self._.cancel.removeListener('press', cancel)
     return callback(err, data)
   }
-
   this.screen.render()
 }
 

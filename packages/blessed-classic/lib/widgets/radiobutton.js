@@ -15,10 +15,8 @@ const Checkbox = require('./checkbox')
  */
 function RadioButton(options = {}) {
   const self = this
-
   if (!(this instanceof Node)) return new RadioButton(options)
   Checkbox.call(this, options)
-
   this.on('check', function () {
     let el = self
     while (el = el.parent) {

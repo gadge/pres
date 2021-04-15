@@ -17,7 +17,6 @@ const Table = require('./table')
  */
 function ListTable(options = {}) {
   const self = this
-
   if (!(this instanceof Node)) return new ListTable(options)
 // options.shrink = true;
   options.normalShrink = true
@@ -43,7 +42,6 @@ function ListTable(options = {}) {
   List.call(this, options)
 
   options.border = border
-
   this._header = new Box({
     parent: this,
     left: this.screen.autoPadding ? 0 : this.ileft,
@@ -53,7 +51,6 @@ function ListTable(options = {}) {
     style: options.style.header,
     tags: options.parseTags || options.tags
   })
-
   this.on('scroll', function () {
     self._header.setFront()
     self._header.rtop = self.childBase
@@ -61,17 +58,13 @@ function ListTable(options = {}) {
       self._header.rtop = self.childBase + (self.border ? 1 : 0)
     }
   })
-
   this.pad = options.pad != null
     ? options.pad
     : 2
-
   this.setData(options.rows || options.data)
-
   this.on('attach', function () {
     self.setData(self.rows)
   })
-
   this.on('resize', function () {
     const selected = self.selected
     self.setData(self.rows)
@@ -93,28 +86,20 @@ ListTable.prototype.setRows =
       selected = this.selected,
       original = this.items.slice()
     let sel = this.ritems[this.selected]
-
     if (this.visible && this.lpos) {
       this.clearPos()
     }
-
     this.clearItems()
-
     this.rows = rows || []
-
     this._calculateMaxes()
-
     if (!this._maxes) return
-
     this.addItem('')
-
     this.rows.forEach(function (row, i) {
       const isHeader = i === 0
       let text = ''
       row.forEach(function (cell, i) {
         const width = self._maxes[i]
         let clen = self.strWidth(cell)
-
         if (i !== 0) {
           text += ' '
         }
@@ -131,7 +116,6 @@ ListTable.prototype.setRows =
             clen += 1
           }
         }
-
         if (clen > width) {
           if (align === 'center') {
             cell = cell.substring(1)
@@ -153,7 +137,6 @@ ListTable.prototype.setRows =
         self.addItem(text)
       }
     })
-
     this._header.setFront()
 
     // Try to find our old item if it still exists.
@@ -183,9 +166,7 @@ ListTable.prototype.render = function () {
 
   const coords = this._render()
   if (!coords) return
-
   this._calculateMaxes()
-
   if (!this._maxes) return coords
 
   const lines = this.screen.lines,
@@ -203,7 +184,6 @@ ListTable.prototype.render = function () {
   if (!this.border && this.options.border) {
     border = this.options.border
   }
-
   if (!border || this.options.noCellBorders) return coords
 
   // Draw border with correct angles.

@@ -19,7 +19,6 @@ function Textbox(options = {}) {
   options.scrollable = false
 
   Textarea.call(this, options)
-
   this.secret = options.secret
   this.censor = options.censor
 }

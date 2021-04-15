@@ -17,15 +17,12 @@ const GeiaEventEmitter = require('@pres/events').EventEmitter
 function Node(options = {}) {
   const self = this
   const Screen = require('./screen')
-
   if (!(this instanceof Node)) return new Node(options)
   assign(this, new GeiaEventEmitter())
   // console.log('>>> [Node created]', this.type)
   // EventEmitter.call(this)
   this.options = options
-
   this.screen = this.screen || options.screen
-
   if (!this.screen) {
     if (this.type === 'screen') {
       this.screen = this
@@ -54,17 +51,14 @@ function Node(options = {}) {
       throw new Error('No active screen.')
     }
   }
-
   this.parent = options.parent || null
   this.children = []
   this.$ = this._ = this.data = {}
   this.uid = Node.uid++
   this.index = this.index != null ? this.index : -1
-
   if (this.type !== 'screen') {
     this.detached = true
   }
-
   if (this.parent) {
     this.parent.append(this)
   }
@@ -80,7 +74,6 @@ Node.prototype.type = 'node'
 
 Node.prototype.insert = function (element, i) {
   const self = this
-
   if (element.screen && element.screen !== this.screen) {
     throw new Error('Cannot switch a node\'s screen.')
   }
@@ -88,7 +81,6 @@ Node.prototype.insert = function (element, i) {
   element.detach()
   element.parent = this
   element.screen = this.screen
-
   if (i === 0) {
     this.children.unshift(element)
   } else if (i === this.children.length) {
@@ -106,7 +98,6 @@ Node.prototype.insert = function (element, i) {
     if (n) el.emit('attach')
     el.children.forEach(emit)
   })(element)
-
   if (!this.screen.focused) {
     this.screen.focused = element
   }
@@ -139,7 +130,6 @@ Node.prototype.remove = function (element) {
   element.clearPos()
 
   element.parent = null
-
   this.children.splice(i, 1)
 
   i = this.screen.clickable.indexOf(element)
@@ -156,7 +146,6 @@ Node.prototype.remove = function (element) {
     if (n) el.emit('detach')
     el.children.forEach(emit)
   })(element)
-
   if (this.screen.focused === element) {
     this.screen.rewindFocus()
   }
@@ -167,7 +156,6 @@ Node.prototype.detach = function () {
 }
 
 Node.prototype.free = function () {
-
 }
 
 Node.prototype.destroy = function () {
@@ -214,7 +202,6 @@ Node.prototype.collectAncestors = function (s) {
 Node.prototype.emitDescendants = function () {
   const args = Array.prototype.slice(arguments)
   let iter
-
   if (typeof args[args.length - 1] === 'function') {
     iter = args.pop()
   }
@@ -228,7 +215,6 @@ Node.prototype.emitDescendants = function () {
 Node.prototype.emitAncestors = function () {
   const args = Array.prototype.slice(arguments)
   let iter
-
   if (typeof args[args.length - 1] === 'function') {
     iter = args.pop()
   }

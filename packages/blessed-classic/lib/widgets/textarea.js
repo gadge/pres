@@ -17,25 +17,19 @@ const Input = require('./input')
  */
 function Textarea(options = {}) {
   const self = this
-
   if (!(this instanceof Node)) return new Textarea(options)
 
   options.scrollable = options.scrollable !== false
 
   Input.call(this, options)
-
   this.screen._listenKeys(this)
-
   this.value = options.value || ''
-
   this.__updateCursor = this._updateCursor.bind(this)
   this.on('resize', this.__updateCursor)
   this.on('move', this.__updateCursor)
-
   if (options.inputOnFocus) {
     this.on('focus', this.readInput.bind(this, null))
   }
-
   if (!options.inputOnFocus && options.keys) {
     this.on('keypress', function (ch, key) {
       if (self._reading) return
@@ -47,7 +41,6 @@ function Textarea(options = {}) {
       }
     })
   }
-
   if (options.mouse) {
     this.on('click', function (data) {
       if (self._reading) return
@@ -100,7 +93,6 @@ Textarea.prototype._updateCursor = function (get) {
   if (cy === program.y && cx === program.x) {
     return
   }
-
   if (cy === program.y) {
     if (cx > program.x) {
       program.cuf(cx - program.x)
@@ -123,26 +115,19 @@ Textarea.prototype.input =
     Textarea.prototype.readInput = function (callback) {
       const self = this,
         focused = this.screen.focused === this
-
       if (this._reading) return
       this._reading = true
-
       this._callback = callback
-
       if (!focused) {
         this.screen.saveFocus()
         this.focus()
       }
-
       this.screen.grabKeys = true
-
       this._updateCursor()
       this.screen.program.showCursor()
       //this.screen.program.sgr('normal');
-
       this._done = function fn(err, value) {
         if (!self._reading) return
-
         if (fn.done) return
         fn.done = true
 
@@ -159,18 +144,15 @@ Textarea.prototype.input =
 
         self.screen.program.hideCursor()
         self.screen.grabKeys = false
-
         if (!focused) {
           self.screen.restoreFocus()
         }
-
         if (self.options.inputOnFocus) {
           self.screen.rewindFocus()
         }
 
         // Ugly
         if (err === 'stop') return
-
         if (err) {
           self.emit('error', err)
         } else if (value != null) {
@@ -179,7 +161,6 @@ Textarea.prototype.input =
           self.emit('cancel', value)
         }
         self.emit('action', value)
-
         if (!callback) return
 
         return err
@@ -193,7 +174,6 @@ Textarea.prototype.input =
         self.__listener = self._listener.bind(self)
         self.on('keypress', self.__listener)
       })
-
       this.__done = this._done.bind(this, null, null)
       this.on('blur', this.__done)
     }
@@ -201,7 +181,6 @@ Textarea.prototype.input =
 Textarea.prototype._listener = function (ch, key) {
   const done = this._done,
     value = this.value
-
   if (key.name === 'return') return
   if (key.name === 'enter') {
     ch = '\n'
@@ -210,9 +189,7 @@ Textarea.prototype._listener = function (ch, key) {
   // TODO: Handle directional keys.
   if (key.name === 'left' || key.name === 'right'
     || key.name === 'up' || key.name === 'down') {
-
   }
-
   if (this.options.keys && key.ctrl && key.name === 'e') {
     return this.readEditor()
   }
@@ -239,7 +216,6 @@ Textarea.prototype._listener = function (ch, key) {
       this.value += ch
     }
   }
-
   if (this.value !== value) {
     this.screen.render()
   }
@@ -294,11 +270,9 @@ Textarea.prototype.editor =
   Textarea.prototype.setEditor =
     Textarea.prototype.readEditor = function (callback) {
       const self = this
-
       if (this._reading) {
         const _cb = this._callback,
           cb = callback
-
         this._done('stop')
 
         callback = function (err, value) {
@@ -306,7 +280,6 @@ Textarea.prototype.editor =
           if (cb) cb(err, value)
         }
       }
-
       if (!callback) {
         callback = function () {}
       }

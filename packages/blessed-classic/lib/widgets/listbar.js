@@ -16,31 +16,24 @@ const Box = require('./box')
  */
 function Listbar(options = {}) {
   const self = this
-
   if (!(this instanceof Node)) return new Listbar(options)
   this.items = []
   this.ritems = []
   this.commands = []
-
   this.leftBase = 0
   this.leftOffset = 0
-
   this.mouse = options.mouse || false
 
   Box.call(this, options)
-
   if (!this.style.selected) {
     this.style.selected = {}
   }
-
   if (!this.style.item) {
     this.style.item = {}
   }
-
   if (options.commands || options.items) {
     this.setItems(options.commands || options.items)
   }
-
   if (options.keys) {
     this.on('keypress', function (ch, key) {
       if (key.name === 'left'
@@ -75,11 +68,9 @@ function Listbar(options = {}) {
       if (key.name === 'escape' || (options.vi && key.name === 'q')) {
         self.emit('action')
         self.emit('cancel')
-
       }
     })
   }
-
   if (options.autoCommandKeys) {
     this.onScreenEvent('keypress', function (ch) {
       if (/^[0-9]$/.test(ch)) {
@@ -89,7 +80,6 @@ function Listbar(options = {}) {
       }
     })
   }
-
   this.on('focus', function () {
     self.select(self.selected)
   })
@@ -105,20 +95,16 @@ Listbar.prototype.__defineGetter__('selected', function () {
 
 Listbar.prototype.setItems = function (commands) {
   const self = this
-
   if (!Array.isArray(commands)) {
     commands = Object.keys(commands).reduce(function (obj, key, i) {
       let cmd = commands[key],
         cb
-
       if (typeof cmd === 'function') {
         cb = cmd
         cmd = { callback: cb }
       }
-
       if (cmd.text == null) cmd.text = key
       if (cmd.prefix == null) cmd.prefix = ++i + ''
-
       if (cmd.text == null && cmd.callback) {
         cmd.text = cmd.callback.name
       }
@@ -128,11 +114,9 @@ Listbar.prototype.setItems = function (commands) {
       return obj
     }, [])
   }
-
   this.items.forEach(function (el) {
     el.detach()
   })
-
   this.items = []
   this.ritems = []
   this.commands = []
@@ -140,7 +124,6 @@ Listbar.prototype.setItems = function (commands) {
   commands.forEach(function (cmd) {
     self.add(cmd)
   })
-
   this.emit('set items')
 }
 
@@ -153,7 +136,6 @@ Listbar.prototype.add =
         cmd,
         title,
         len
-
       if (!this.parent) {
         drawn = 0
       } else {
@@ -162,12 +144,10 @@ Listbar.prototype.add =
           drawn += this.ileft
         }
       }
-
       if (typeof item === 'object') {
         cmd = item
         if (cmd.prefix == null) cmd.prefix = (this.items.length + 1) + ''
       }
-
       if (typeof item === 'string') {
         cmd = {
           prefix: (this.items.length + 1) + '',
@@ -175,7 +155,6 @@ Listbar.prototype.add =
           callback: callback
         }
       }
-
       if (typeof item === 'function') {
         cmd = {
           prefix: (this.items.length + 1) + '',
@@ -183,7 +162,6 @@ Listbar.prototype.add =
           callback: item
         }
       }
-
       if (cmd.keys && cmd.keys[0]) {
         cmd.prefix = cmd.keys[0]
       }
@@ -208,7 +186,6 @@ Listbar.prototype.add =
         style: helpers.merge({}, this.style.item),
         noOverflow: true
       }
-
       if (!this.screen.autoPadding) {
         options.top += this.itop
         options.left += this.ileft
@@ -226,16 +203,13 @@ Listbar.prototype.add =
       })
 
       var el = new Box(options)
-
       this._[cmd.text] = el
       cmd.element = el
       el._.cmd = cmd
-
       this.ritems.push(cmd.text)
       this.items.push(el)
       this.commands.push(cmd)
       this.append(el)
-
       if (cmd.callback) {
         if (cmd.keys) {
           this.screen.key(cmd.keys, function () {
@@ -249,7 +223,6 @@ Listbar.prototype.add =
           })
         }
       }
-
       if (this.items.length === 1) {
         this.select(0)
       }
@@ -266,18 +239,15 @@ Listbar.prototype.add =
           self.screen.render()
         })
       }
-
       this.emit('add item')
     }
 
 Listbar.prototype.render = function () {
   const self = this
   let drawn = 0
-
   if (!this.screen.autoPadding) {
     drawn += this.ileft
   }
-
   this.items.forEach(function (el, i) {
     if (i < self.leftBase) {
       el.hide()
@@ -295,13 +265,11 @@ Listbar.prototype.select = function (offset) {
   if (typeof offset !== 'number') {
     offset = this.items.indexOf(offset)
   }
-
   if (offset < 0) {
     offset = 0
   } else if (offset >= this.items.length) {
     offset = this.items.length - 1
   }
-
   if (!this.parent) {
     this.emit('select item', this.items[offset], offset)
     return
@@ -318,17 +286,14 @@ Listbar.prototype.select = function (offset) {
 
   el = this.items[offset]
   if (!el) return
-
   this.items.forEach(function (el, i) {
     if (i < self.leftBase) return
 
     const lpos = el._getCoords()
     if (!lpos) return
-
     if (lpos.xl - lpos.xi <= 0) return
 
     drawn += (lpos.xl - lpos.xi) + 2
-
     if (drawn <= width) visible++
   })
 
@@ -358,7 +323,6 @@ Listbar.prototype.removeItem = function (child) {
   const i = typeof child !== 'number'
     ? this.items.indexOf(child)
     : child
-
   if (~i && this.items[i]) {
     child = this.items.splice(i, 1)[0]
     this.ritems.splice(i, 1)
@@ -368,7 +332,6 @@ Listbar.prototype.removeItem = function (child) {
       this.select(i - 1)
     }
   }
-
   this.emit('remove item')
 }
 

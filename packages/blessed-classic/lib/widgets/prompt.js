@@ -20,7 +20,6 @@ function Prompt(options = {}) {
   options.hidden = true
 
   Box.call(this, options)
-
   this._.input = new Textbox({
     parent: this,
     top: 3,
@@ -29,7 +28,6 @@ function Prompt(options = {}) {
     right: 2,
     bg: 'black'
   })
-
   this._.okay = new Button({
     parent: this,
     top: 5,
@@ -43,7 +41,6 @@ function Prompt(options = {}) {
     autoFocus: false,
     mouse: true
   })
-
   this._.cancel = new Button({
     parent: this,
     top: 5,
@@ -69,7 +66,6 @@ Prompt.prototype.input =
     Prompt.prototype.readInput = function (text, value, callback) {
       const self = this
       let okay, cancel
-
       if (!callback) {
         callback = value
         value = ''
@@ -79,22 +75,16 @@ Prompt.prototype.input =
       // var parent = this.parent;
       // this.detach();
       // parent.append(this);
-
       this.show()
       this.setContent(' ' + text)
-
       this._.input.value = value
-
       this.screen.saveFocus()
-
       this._.okay.on('press', okay = function () {
         self._.input.submit()
       })
-
       this._.cancel.on('press', cancel = function () {
         self._.input.cancel()
       })
-
       this._.input.readInput(function (err, data) {
         self.hide()
         self.screen.restoreFocus()
@@ -102,7 +92,6 @@ Prompt.prototype.input =
         self._.cancel.removeListener('press', cancel)
         return callback(err, data)
       })
-
       this.screen.render()
     }
 

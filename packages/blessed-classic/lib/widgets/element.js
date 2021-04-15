@@ -20,7 +20,6 @@ const Node = require('./node')
  */
 function Element(options = {}) {
   const self = this
-
   if (!(this instanceof Node)) return new Element(options)
 // Workaround to get a `scrollable` option.
   if (options.scrollable && !this._ignore && this.type !== 'scrollable-box') {
@@ -37,7 +36,6 @@ function Element(options = {}) {
   }
 
   Node.call(this, options)
-
   this.name = options.name
 
   options.position = options.position || {
@@ -48,7 +46,6 @@ function Element(options = {}) {
     width: options.width,
     height: options.height
   }
-
   if (options.position.width === 'shrink'
     || options.position.height === 'shrink') {
     if (options.position.width === 'shrink') {
@@ -59,15 +56,11 @@ function Element(options = {}) {
     }
     options.shrink = true
   }
-
   this.position = options.position
-
   this.noOverflow = options.noOverflow
   this.dockBorders = options.dockBorders
   this.shadow = options.shadow
-
   this.style = options.style
-
   if (!this.style) {
     this.style = {}
     this.style.fg = options.fg
@@ -79,7 +72,6 @@ function Element(options = {}) {
     this.style.invisible = options.invisible
     this.style.transparent = options.transparent
   }
-
   this.hidden = options.hidden || false
   this.fixed = options.fixed || false
   this.align = options.align || 'left'
@@ -88,7 +80,6 @@ function Element(options = {}) {
   this.shrink = options.shrink
   this.fixed = options.fixed
   this.ch = options.ch || ' '
-
   if (typeof options.padding === 'number' || !options.padding) {
     options.padding = {
       left: options.padding,
@@ -97,14 +88,12 @@ function Element(options = {}) {
       bottom: options.padding
     }
   }
-
   this.padding = {
     left: options.padding.left || 0,
     top: options.padding.top || 0,
     right: options.padding.right || 0,
     bottom: options.padding.bottom || 0
   }
-
   this.border = options.border
   if (this.border) {
     if (typeof this.border === 'string') {
@@ -130,19 +119,14 @@ function Element(options = {}) {
   if (options.clickable) {
     this.screen._listenMouse(this)
   }
-
   if (options.input || options.keyable) {
     this.screen._listenKeys(this)
   }
-
   this.parseTags = options.parseTags || options.tags
-
   this.setContent(options.content || '', true)
-
   if (options.label) {
     this.setLabel(options.label)
   }
-
   if (options.hoverText) {
     this.setHover(options.hoverText)
   }
@@ -165,32 +149,25 @@ function Element(options = {}) {
       self.screen._listenKeys(self)
     }
   })
-
   this.on('resize', function () {
     self.parseContent()
   })
-
   this.on('attach', function () {
     self.parseContent()
   })
-
   this.on('detach', function () {
     delete self.lpos
   })
-
   if (options.hoverBg != null) {
     options.hoverEffects = options.hoverEffects || {}
     options.hoverEffects.bg = options.hoverBg
   }
-
   if (this.style.hover) {
     options.hoverEffects = this.style.hover
   }
-
   if (this.style.focus) {
     options.focusEffects = this.style.focus
   }
-
   if (options.effects) {
     if (options.effects.hover) options.hoverEffects = options.effects.hover
     if (options.effects.focus) options.focusEffects = options.effects.focus
@@ -201,11 +178,9 @@ function Element(options = {}) {
     const pname = props[0], over = props[1], out = props[2], temp = props[3]
     self.screen.setEffects(self, self, over, out, self.options[pname], temp)
   })
-
   if (this.options.draggable) {
     this.draggable = true
   }
-
   if (options.focused) {
     this.focus()
   }
@@ -240,7 +215,6 @@ Element.prototype.sattr = function (style, fg, bg) {
   if (typeof blink === 'function') blink = blink(this)
   if (typeof inverse === 'function') inverse = inverse(this)
   if (typeof invisible === 'function') invisible = invisible(this)
-
   if (typeof fg === 'function') fg = fg(this)
   if (typeof bg === 'function') bg = bg(this)
 
@@ -356,7 +330,6 @@ Element.prototype.parseContent = function (noTags) {
       .replace(/\x1b(?!\[[\d;]*m)/g, '')
       .replace(/\r\n|\r/g, '\n')
       .replace(/\t/g, this.screen.tabc)
-
     if (this.screen.fullUnicode) {
       // double-width chars will eat the next char after render. create a
       // blank character after it so it doesn't eat the real next char.
@@ -379,11 +352,9 @@ Element.prototype.parseContent = function (noTags) {
       // XXX Deduplicate code here:
       // content = helpers.dropUnicode(content);
     }
-
     if (!noTags) {
       content = this._parseTags(content)
     }
-
     this._clines = this._wrapContent(content, width)
     this._clines.width = width
     this._clines.content = this.content
@@ -393,7 +364,6 @@ Element.prototype.parseContent = function (noTags) {
       this._clines.ci.push(total)
       return total + line.length + 1
     }.bind(this), 0)
-
     this._pcontent = this._clines.join('\n')
     this.emit('parsed content')
 
@@ -429,25 +399,21 @@ Element.prototype._parseTags = function (text) {
       esc = true
       continue
     }
-
     if (esc && (cap = /^([\s\S]+?){\/escape}/.exec(text))) {
       text = text.substring(cap[0].length)
       out += cap[1]
       esc = false
       continue
     }
-
     if (esc) {
       // throw new Error('Unterminated escape tag.');
       out += text
       break
     }
-
     if (cap = /^{(\/?)([\w\-,;!#]*)}/.exec(text)) {
       text = text.substring(cap[0].length)
       slash = cap[1] === '/'
       param = cap[2].replace(/-/g, ' ')
-
       if (param === 'open') {
         out += '{'
         continue
@@ -455,11 +421,9 @@ Element.prototype._parseTags = function (text) {
         out += '}'
         continue
       }
-
       if (param.slice(-3) === ' bg') state = bg
       else if (param.slice(-3) === ' fg') state = fg
       else state = flag
-
       if (slash) {
         if (!param) {
           out += program._attr('normal')
@@ -498,7 +462,6 @@ Element.prototype._parseTags = function (text) {
 
       continue
     }
-
     if (cap = /^[\s\S]+?(?={\/?[\w\-,;!#]*})/.exec(text)) {
       text = text.substring(cap[0].length)
       out += cap[0]
@@ -520,7 +483,6 @@ Element.prototype._parseAttr = function (lines) {
     i,
     j,
     c
-
   if (lines[0].attr === attr) {
     return
   }
@@ -548,14 +510,11 @@ Element.prototype._align = function (line, width, align) {
   const cline = line.replace(/\x1b\[[\d;]*m/g, ''),
     len = cline.length
   let s = width - len
-
   if (this.shrink) {
     s = 0
   }
-
   if (len === 0) return line
   if (s < 0) return line
-
   if (align === 'center') {
     s = Array(((s / 2) | 0) + 1).join(' ')
     return s + line + s
@@ -593,7 +552,6 @@ Element.prototype._wrapContent = function (content, width) {
     rest
 
   lines = content.split('\n')
-
   if (!content) {
     out.push(content)
     out.rtof = [ 0 ]
@@ -603,7 +561,6 @@ Element.prototype._wrapContent = function (content, width) {
     out.mwidth = 0
     return out
   }
-
   if (this.scrollbar) margin++
   if (this.type === 'textarea') margin++
   if (width > margin) width -= margin
@@ -636,7 +593,6 @@ Element.prototype._wrapContent = function (content, width) {
         for (i = 0, total = 0; i < line.length; i++) {
           while (line[i] === '\x1b') {
             while (line[i] && line[i++] !== 'm') {
-
             }
           }
           if (!line[i]) break
@@ -780,15 +736,11 @@ Element.prototype.__defineSetter__('draggable', function (draggable) {
 
 Element.prototype.enableDrag = function (verify) {
   const self = this
-
   if (this._draggable) return true
-
   if (typeof verify !== 'function') {
     verify = function () { return true }
   }
-
   this.enableMouse()
-
   this.on('mousedown', this._dragMD = function (data) {
     if (self.screen._dragging) return
     if (!verify(data)) return
@@ -799,10 +751,8 @@ Element.prototype.enableDrag = function (verify) {
     }
     self.setFront()
   })
-
   this.onScreenEvent('mouse', this._dragM = function (data) {
     if (self.screen._dragging !== self) return
-
     if (data.action !== 'mousedown' && data.action !== 'mousemove') {
       delete self.screen._dragging
       delete self._drag
@@ -819,14 +769,12 @@ Element.prototype.enableDrag = function (verify) {
       py = self.parent.atop,
       x = data.x - px - ox,
       y = data.y - py - oy
-
     if (self.position.right != null) {
       if (self.position.left != null) {
         self.width = '100%-' + (self.parent.width - self.width)
       }
       self.position.right = null
     }
-
     if (self.position.bottom != null) {
       if (self.position.top != null) {
         self.height = '100%-' + (self.parent.height - self.height)
@@ -867,7 +815,6 @@ Element.prototype.unkey =
 
 Element.prototype.setIndex = function (index) {
   if (!this.parent) return
-
   if (index < 0) {
     index = this.parent.children.length + index
   }
@@ -903,11 +850,9 @@ Element.prototype.clearPos = function (get, override) {
 Element.prototype.setLabel = function (options) {
   const self = this
   const Box = require('./box')
-
   if (typeof options === 'string') {
     options = { text: options }
   }
-
   if (this._label) {
     this._label.setContent(options.text)
     if (options.side !== 'right') {
@@ -925,7 +870,6 @@ Element.prototype.setLabel = function (options) {
     }
     return
   }
-
   this._label = new Box({
     screen: this.screen,
     parent: this,
@@ -935,15 +879,12 @@ Element.prototype.setLabel = function (options) {
     shrink: true,
     style: this.style.label
   })
-
   if (options.side !== 'right') {
     this._label.rleft = 2 - this.ileft
   } else {
     this._label.rright = 2 - this.iright
   }
-
   this._label._isLabel = true
-
   if (!this.screen.autoPadding) {
     if (options.side !== 'right') {
       this._label.rleft = 2
@@ -960,11 +901,9 @@ Element.prototype.setLabel = function (options) {
     }
     self.screen.render()
   }
-
   this.on('scroll', this._labelScroll = function () {
     reposition()
   })
-
   this.on('resize', this._labelResize = function () {
     nextTick(function () {
       reposition()
@@ -986,7 +925,6 @@ Element.prototype.setHover = function (options) {
   if (typeof options === 'string') {
     options = { text: options }
   }
-
   this._hoverOptions = options
   this.enableMouse()
   this.screen._initHover()
@@ -1022,7 +960,6 @@ Element.prototype._getPos = function () {
   const pos = this.lpos
 
   assert.ok(pos)
-
   if (pos.aleft != null) return pos
 
   pos.aleft = pos.xi
@@ -1044,7 +981,6 @@ Element.prototype._getWidth = function (get) {
   let width = this.position.width,
     left,
     expr
-
   if (typeof width === 'string') {
     if (width === 'half') width = '50%'
     expr = width.split(/(?=\+|-)/)
@@ -1093,7 +1029,6 @@ Element.prototype._getHeight = function (get) {
   let height = this.position.height,
     top,
     expr
-
   if (typeof height === 'string') {
     if (height === 'half') height = '50%'
     expr = height.split(/(?=\+|-)/)
@@ -1142,7 +1077,6 @@ Element.prototype._getLeft = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
   let left = this.position.left || 0,
     expr
-
   if (typeof left === 'string') {
     if (left === 'center') left = '50%'
     expr = left.split(/(?=\+|-)/)
@@ -1154,11 +1088,9 @@ Element.prototype._getLeft = function (get) {
       left -= this._getWidth(get) / 2 | 0
     }
   }
-
   if (this.position.left == null && this.position.right != null) {
     return this.screen.cols - this._getWidth(get) - this._getRight(get)
   }
-
   if (this.screen.autoPadding) {
     if ((this.position.left != null
       || this.position.right == null)
@@ -1177,7 +1109,6 @@ Element.prototype.__defineGetter__('aleft', function () {
 Element.prototype._getRight = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
   let right
-
   if (this.position.right == null && this.position.left != null) {
     right = this.screen.cols - (this._getLeft(get) + this._getWidth(get))
     if (this.screen.autoPadding) {
@@ -1187,7 +1118,6 @@ Element.prototype._getRight = function (get) {
   }
 
   right = (parent.aright || 0) + (this.position.right || 0)
-
   if (this.screen.autoPadding) {
     right += this.parent.iright
   }
@@ -1203,7 +1133,6 @@ Element.prototype._getTop = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
   let top = this.position.top || 0,
     expr
-
   if (typeof top === 'string') {
     if (top === 'center') top = '50%'
     expr = top.split(/(?=\+|-)/)
@@ -1215,11 +1144,9 @@ Element.prototype._getTop = function (get) {
       top -= this._getHeight(get) / 2 | 0
     }
   }
-
   if (this.position.top == null && this.position.bottom != null) {
     return this.screen.rows - this._getHeight(get) - this._getBottom(get)
   }
-
   if (this.screen.autoPadding) {
     if ((this.position.top != null
       || this.position.bottom == null)
@@ -1238,7 +1165,6 @@ Element.prototype.__defineGetter__('atop', function () {
 Element.prototype._getBottom = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
   let bottom
-
   if (this.position.bottom == null && this.position.top != null) {
     bottom = this.screen.rows - (this._getTop(get) + this._getHeight(get))
     if (this.screen.autoPadding) {
@@ -1248,7 +1174,6 @@ Element.prototype._getBottom = function (get) {
   }
 
   bottom = (parent.abottom || 0) + (this.position.bottom || 0)
-
   if (this.screen.autoPadding) {
     bottom += this.parent.ibottom
   }
@@ -1494,7 +1419,6 @@ Element.prototype._getShrinkBox = function (xi, xl, yi, yl, get) {
 
     // Or just (seemed to work, but probably not good):
     // ret = el.lpos || this.lpos;
-
     if (!ret) continue
 
     // Since the parent element is shrunk, and the child elements think it's
@@ -1521,18 +1445,15 @@ Element.prototype._getShrinkBox = function (xi, xl, yi, yl, get) {
         ret.yi += this.itop
       }
     }
-
     if (ret.xi < mxi) mxi = ret.xi
     if (ret.xl > mxl) mxl = ret.xl
     if (ret.yi < myi) myi = ret.yi
     if (ret.yl > myl) myl = ret.yl
   }
-
   if (get) {
     this.lpos = _lpos
     //this.shrink = true;
   }
-
   if (this.position.width == null
     && (this.position.left == null
       || this.position.right == null)) {
@@ -1562,7 +1483,6 @@ Element.prototype._getShrinkBox = function (xi, xl, yi, yl, get) {
       }
     }
   }
-
   if (this.position.height == null
     && (this.position.top == null
       || this.position.bottom == null)
@@ -1597,7 +1517,6 @@ Element.prototype._getShrinkBox = function (xi, xl, yi, yl, get) {
 Element.prototype._getShrinkContent = function (xi, xl, yi, yl) {
   const h = this._clines.length,
     w = this._clines.mwidth || 1
-
   if (this.position.width == null
     && (this.position.left == null
       || this.position.right == null)) {
@@ -1607,7 +1526,6 @@ Element.prototype._getShrinkContent = function (xi, xl, yi, yl) {
       xl = xi + w + this.iwidth
     }
   }
-
   if (this.position.height == null
     && (this.position.top == null
       || this.position.bottom == null)
@@ -1636,7 +1554,6 @@ Element.prototype._getShrink = function (xi, xl, yi, yl, get) {
     xi = shrinkContent.xi
     xl = shrinkContent.xl
   }
-
   if (shrinkBox.yl - shrinkBox.yi > shrinkContent.yl - shrinkContent.yi) {
     yi = shrinkBox.yi
     yl = shrinkBox.yl
@@ -1651,7 +1568,6 @@ Element.prototype._getShrink = function (xi, xl, yi, yl, get) {
     xi += xll
     xl += xll
   }
-
   if (yl < yll && this.position.top === 'center') {
     yll = (yll - yl) / 2 | 0
     yi += yll
@@ -1722,7 +1638,6 @@ Element.prototype._getCoords = function (get, noscroll) {
     // if (!get && !thisparent.shrink) {
     //   ppos = thisparent._getCoords();
     // }
-
     if (!ppos) return
 
     // TODO: Figure out how to fix base (and cbase to only
@@ -1742,7 +1657,6 @@ Element.prototype._getCoords = function (get, noscroll) {
     if (this._isLabel) {
       b = 0
     }
-
     if (yi < ppos.yi + b) {
       if (yl - 1 < ppos.yi + b) {
         // Is above.
@@ -1791,7 +1705,6 @@ Element.prototype._getCoords = function (get, noscroll) {
     //if (xi > xl) return;
     if (xi >= xl) return
   }
-
   if (this.noOverflow && this.parent.lpos) {
     if (xi < this.parent.lpos.xi + this.parent.ileft) {
       xi = this.parent.lpos.xi + this.parent.ileft
@@ -1828,7 +1741,6 @@ Element.prototype._getCoords = function (get, noscroll) {
 
 Element.prototype.render = function () {
   this._emit('prerender')
-
   this.parseContent()
 
   const coords = this._getCoords(true)
@@ -1836,12 +1748,10 @@ Element.prototype.render = function () {
     delete this.lpos
     return
   }
-
   if (coords.xl - coords.xi <= 0) {
     coords.xl = Math.max(coords.xl, coords.xi)
     return
   }
-
   if (coords.yl - coords.yi <= 0) {
     coords.yl = Math.max(coords.yl, coords.yi)
     return
@@ -1890,13 +1800,10 @@ Element.prototype.render = function () {
   //   }
   //   content = clines.join('\n');
   // }
-
   if (coords.base >= this._clines.ci.length) {
     ci = this._pcontent.length
   }
-
   this.lpos = coords
-
   if (this.border && this.border.type === 'line') {
     this.screen._borderStops[coords.yi] = true
     this.screen._borderStops[coords.yl - 1] = true
@@ -1921,7 +1828,6 @@ Element.prototype.render = function () {
   if (ci > 0) {
     attr = this._clines.attr[Math.min(coords.base, this._clines.length - 1)]
   }
-
   if (this.border) xi++, xl--, yi++, yl--
 
   // If we have padding/valign, that means the
@@ -1943,7 +1849,6 @@ Element.prototype.render = function () {
       this.screen.fillRegion(dattr, bch, xi, xl, yi, yl)
     }
   }
-
   if (this.tpadding) {
     xi += this.padding.left, xl -= this.padding.right
     yi += this.padding.top, yl -= this.padding.bottom
@@ -2036,7 +1941,6 @@ Element.prototype.render = function () {
         }
         continue
       }
-
       if (this.screen.fullUnicode && content[ci - 1]) {
         const point = unicode.codePointAt(content, ci - 1)
         // Handle combining chars:
@@ -2061,9 +1965,7 @@ Element.prototype.render = function () {
           ci++
         }
       }
-
       if (this._noFill) continue
-
       if (this.style.transparent) {
         lines[y][x][0] = colors.blend(attr, lines[y][x][0])
         if (content[ci]) lines[y][x][1] = ch
@@ -2116,9 +2018,7 @@ Element.prototype.render = function () {
       }
     }
   }
-
   if (this.border) xi--, xl++, yi--, yl++
-
   if (this.tpadding) {
     xi -= this.padding.left, xl += this.padding.right
     yi -= this.padding.top, yl += this.padding.bottom
@@ -2290,7 +2190,6 @@ Element.prototype.render = function () {
       }
     }
   }
-
   if (this.shadow) {
     // right
     y = Math.max(yi + 1, 0)
@@ -2316,7 +2215,6 @@ Element.prototype.render = function () {
       }
     }
   }
-
   this.children.forEach(function (el) {
     if (el.screen._ci !== -1) {
       el.index = el.screen._ci++
@@ -2329,7 +2227,6 @@ Element.prototype.render = function () {
     //   el._rendering = false;
     // }
   })
-
   this._emit('render', [ coords ])
 
   return coords
@@ -2343,7 +2240,6 @@ Element.prototype._render = Element.prototype.render
 
 Element.prototype.insertLine = function (i, line) {
   if (typeof line === 'string') line = line.split('\n')
-
   if (i !== i || i == null) {
     i = this._clines.ftor.length
   }
@@ -2361,7 +2257,6 @@ Element.prototype.insertLine = function (i, line) {
   const start = this._clines.length
   let diff,
     real
-
   if (i >= this._clines.ftor.length) {
     real = this._clines.ftor[this._clines.ftor.length - 1]
     real = real[real.length - 1] + 1
@@ -2372,11 +2267,9 @@ Element.prototype.insertLine = function (i, line) {
   for (let j = 0; j < line.length; j++) {
     this._clines.fake.splice(i + j, 0, line[j])
   }
-
   this.setContent(this._clines.fake.join('\n'), true)
 
   diff = this._clines.length - start
-
   if (diff > 0) {
     const pos = this._getCoords()
     if (!pos) return
@@ -2384,7 +2277,6 @@ Element.prototype.insertLine = function (i, line) {
     const height = pos.yl - pos.yi - this.iheight,
       base = this.childBase || 0,
       visible = real >= base && real - base < height
-
     if (pos && visible && this.screen.cleanSides(this)) {
       this.screen.insertLine(diff,
         pos.yi + this.itop + real - base,
@@ -2396,7 +2288,6 @@ Element.prototype.insertLine = function (i, line) {
 
 Element.prototype.deleteLine = function (i, n) {
   n = n || 1
-
   if (i !== i || i == null) {
     i = this._clines.ftor.length - 1
   }
@@ -2413,14 +2304,12 @@ Element.prototype.deleteLine = function (i, n) {
   while (n--) {
     this._clines.fake.splice(i, 1)
   }
-
   this.setContent(this._clines.fake.join('\n'), true)
 
   diff = start - this._clines.length
 
   // XXX clearPos() without diff statement?
   let height = 0
-
   if (diff > 0) {
     const pos = this._getCoords()
     if (!pos) return
@@ -2429,7 +2318,6 @@ Element.prototype.deleteLine = function (i, n) {
 
     const base = this.childBase || 0,
       visible = real >= base && real - base < height
-
     if (pos && visible && this.screen.cleanSides(this)) {
       this.screen.deleteLine(diff,
         pos.yi + this.itop + real - base,
@@ -2437,7 +2325,6 @@ Element.prototype.deleteLine = function (i, n) {
         pos.yl - this.ibottom - 1)
     }
   }
-
   if (this._clines.length < height) {
     this.clearPos()
   }

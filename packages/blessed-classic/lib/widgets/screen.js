@@ -25,14 +25,11 @@ const Box = require('./box')
  */
 function Screen(options = {}) {
   const self = this
-
   if (!(this instanceof Node)) return new Screen(options)
 
   Screen.bind(this)
   if (options.rsety && options.listen) options = { program: options }
-
   this.program = options.program
-
   if (!this.program) {
     console.log('>>> [making program again]')
     this.program = program({
@@ -58,22 +55,16 @@ function Screen(options = {}) {
       this.program.tput.unicode = options.forceUnicode
     }
   }
-
   this.tput = this.program.tput
 
   Node.call(this, options)
-
   this.autoPadding = options.autoPadding !== false
   this.tabc = Array((options.tabSize || 4) + 1).join(' ')
   this.dockBorders = options.dockBorders
-
   this.ignoreLocked = options.ignoreLocked || []
-
   this._unicode = this.tput.unicode || this.tput.numbers.U8 === 1
   this.fullUnicode = this.options.fullUnicode && this._unicode
-
   this.dattr = ((0 << 18) | (0x1ff << 9)) | 0x1ff
-
   this.renders = 0
   this.position = {
     left: this.left = this.aleft = this.rleft = 0,
@@ -83,21 +74,18 @@ function Screen(options = {}) {
     get height() { return self.height },
     get width() { return self.width }
   }
-
   this.ileft = 0
   this.itop = 0
   this.iright = 0
   this.ibottom = 0
   this.iheight = 0
   this.iwidth = 0
-
   this.padding = {
     left: 0,
     top: 0,
     right: 0,
     bottom: 0
   }
-
   this.hover = null
   this.history = []
   this.clickable = []
@@ -106,9 +94,7 @@ function Screen(options = {}) {
   this.lockKeys = false
   this.focused
   this._buf = ''
-
   this._ci = -1
-
   if (options.title) {
     this.title = options.title
   }
@@ -119,7 +105,6 @@ function Screen(options = {}) {
     blink: options.cursorBlink,
     color: options.cursorColor
   }
-
   this.cursor = {
     artificial: options.cursor.artificial || false,
     shape: options.cursor.shape || 'block',
@@ -129,7 +114,6 @@ function Screen(options = {}) {
     _state: 1,
     _hidden: true
   }
-
   this.program.on('resize', function () {
     self.alloc()
     self.render();
@@ -138,19 +122,15 @@ function Screen(options = {}) {
       el.children.forEach(emit)
     })(self)
   })
-
   this.program.on('focus', function () {
     self.emit('focus')
   })
-
   this.program.on('blur', function () {
     self.emit('blur')
   })
-
   this.program.on('warning', function (text) {
     self.emit('warning', text)
   })
-
   this.on('newListener', function fn(type) {
     if (type === 'keypress' || type.indexOf('key ') === 0 || type === 'mouse') {
       if (type === 'keypress' || type.indexOf('key ') === 0) self._listenKeys()
@@ -169,11 +149,8 @@ function Screen(options = {}) {
       self._listenMouse()
     }
   })
-
   this.setMaxListeners(Infinity)
-
   this.enter()
-
   this.postEnter()
 }
 
@@ -187,13 +164,11 @@ Screen.bind = function (screen) {
   if (!Screen.global) {
     Screen.global = screen
   }
-
   if (!~Screen.instances.indexOf(screen)) {
     Screen.instances.push(screen)
     screen.index = Screen.total
     Screen.total++
   }
-
   if (Screen._bound) return
   Screen._bound = true
 
@@ -274,7 +249,6 @@ Screen.prototype.enter = function () {
     try {
       cp.execSync('cls', { stdio: 'ignore', timeout: 1000 })
     } catch (e) {
-
     }
   }
   this.program.alternateBuffer()
@@ -310,7 +284,6 @@ Screen.prototype.leave = function () {
     try {
       cp.execSync('cls', { stdio: 'ignore', timeout: 1000 })
     } catch (e) {
-
     }
   }
 }
@@ -343,7 +316,6 @@ Screen.prototype.postEnter = function () {
         }
       }
     })
-
     this.debugLog.toggle = function () {
       if (self.debugLog.hidden) {
         self.saveFocus()
@@ -356,11 +328,9 @@ Screen.prototype.postEnter = function () {
       }
       self.render()
     }
-
     this.debugLog.key([ 'q', 'escape' ], self.debugLog.toggle)
     this.key('f12', self.debugLog.toggle)
   }
-
   if (this.options.warnings) {
     this.on('warning', function (text) {
       const warning = new Box({
@@ -400,7 +370,6 @@ Screen.prototype.destroy = function () {
     Screen.total--
 
     Screen.global = Screen.instances[0]
-
     if (Screen.total === 0) {
       Screen.global = null
 
@@ -417,12 +386,10 @@ Screen.prototype.destroy = function () {
 
       delete Screen._bound
     }
-
     this.destroyed = true
     this.emit('destroy')
     this._destroy()
   }
-
   this.program.destroy()
 }
 
@@ -439,27 +406,21 @@ Screen.prototype.debug = function () {
 
 Screen.prototype._listenMouse = function (el) {
   const self = this
-
   if (el && !~this.clickable.indexOf(el)) {
     el.clickable = true
     this.clickable.push(el)
   }
-
   if (this._listenedMouse) return
   this._listenedMouse = true
-
   this.program.enableMouse()
   if (this.options.sendFocus) {
     this.program.setMouse({ sendFocus: true }, true)
   }
-
   this.on('render', function () {
     self._needsClickableSort = true
   })
-
   this.program.on('mouse', function (data) {
     if (self.lockKeys) return
-
     if (self._needsClickableSort) {
       self.clickable = helpers.hsort(self.clickable)
       self._needsClickableSort = false
@@ -472,7 +433,6 @@ Screen.prototype._listenMouse = function (el) {
 
     for (; i < self.clickable.length; i++) {
       el = self.clickable[i]
-
       if (el.detached || !el.visible) {
         continue
       }
@@ -482,7 +442,6 @@ Screen.prototype._listenMouse = function (el) {
 
       pos = el.lpos
       if (!pos) continue
-
       if (data.x >= pos.xi && data.x < pos.xl
         && data.y >= pos.yi && data.y < pos.yl) {
         el.emit('mouse', data)
@@ -548,12 +507,10 @@ Screen.prototype.enableMouse = function (el) {
 
 Screen.prototype._listenKeys = function (el) {
   const self = this
-
   if (el && !~this.keyable.indexOf(el)) {
     el.keyable = true
     this.keyable.push(el)
   }
-
   if (this._listenedKeys) return
   this._listenedKeys = true
 
@@ -571,7 +528,6 @@ Screen.prototype._listenKeys = function (el) {
 
     const focused = self.focused,
       grabKeys = self.grabKeys
-
     if (!grabKeys || ~self.ignoreLocked.indexOf(key.full)) {
       self.emit('keypress', ch, key)
       self.emit('key ' + key.full, ch, key)
@@ -581,7 +537,6 @@ Screen.prototype._listenKeys = function (el) {
     if (self.grabKeys !== grabKeys || self.lockKeys) {
       return
     }
-
     if (focused && focused.keyable) {
       focused.emit('keypress', ch, key)
       focused.emit('key ' + key.full, ch, key)
@@ -600,11 +555,9 @@ Screen.prototype.enableInput = function (el) {
 
 Screen.prototype._initHover = function () {
   const self = this
-
   if (this._hoverText) {
     return
   }
-
   this._hoverText = new Box({
     screen: this,
     left: 0,
@@ -621,14 +574,12 @@ Screen.prototype._initHover = function () {
       fg: 'default'
     }
   })
-
   this.on('mousemove', function (data) {
     if (self._hoverText.detached) return
     self._hoverText.rleft = data.x + 1
     self._hoverText.rtop = data.y
     self.render()
   })
-
   this.on('element mouseover', function (el, data) {
     if (!el._hoverOptions) return
     self._hoverText.parseTags = el.parseTags
@@ -638,7 +589,6 @@ Screen.prototype._initHover = function () {
     self._hoverText.rtop = data.y
     self.render()
   })
-
   this.on('element mouseout', function () {
     if (self._hoverText.detached) return
     self._hoverText.detach()
@@ -674,7 +624,6 @@ Screen.prototype.__defineGetter__('height', function () {
 
 Screen.prototype.alloc = function (dirty) {
   let x, y
-
   this.lines = []
   for (y = 0; y < this.rows; y++) {
     this.lines[y] = []
@@ -683,7 +632,6 @@ Screen.prototype.alloc = function (dirty) {
     }
     this.lines[y].dirty = !!dirty
   }
-
   this.olines = []
   for (y = 0; y < this.rows; y++) {
     this.olines[y] = []
@@ -691,7 +639,6 @@ Screen.prototype.alloc = function (dirty) {
       this.olines[y][x] = [ this.dattr, ' ' ]
     }
   }
-
   this.program.clear()
 }
 
@@ -701,11 +648,8 @@ Screen.prototype.realloc = function () {
 
 Screen.prototype.render = function () {
   const self = this
-
   if (this.destroyed) return
-
   this.emit('prerender')
-
   this._borderStops = {}
 
   // TODO: Possibly get rid of .dirty altogether.
@@ -723,11 +667,9 @@ Screen.prototype.render = function () {
     //el._rendering = false;
   })
   this._ci = -1
-
   if (this.screen.dockBorders) {
     this._dockBorders()
   }
-
   this.draw(0, this.lines.length - 1)
 
   // XXX Workaround to deal with cursor pos before the screen has rendered and
@@ -735,9 +677,7 @@ Screen.prototype.render = function () {
   if (this.focused && this.focused._updateCursor) {
     this.focused._updateCursor(true)
   }
-
   this.renders++
-
   this.emit('render')
 }
 
@@ -752,11 +692,9 @@ Screen.prototype.blankLine = function (ch, dirty) {
 
 Screen.prototype.insertLine = function (n, y, top, bottom) {
   // if (y === top) return this.insertLineNC(n, y, top, bottom);
-
   if (!this.tput.strings.change_scroll_region
     || !this.tput.strings.delete_line
     || !this.tput.strings.insert_line) return
-
   this._buf += this.tput.csr(top, bottom)
   this._buf += this.tput.cup(y, 0)
   this._buf += this.tput.il(n)
@@ -774,11 +712,9 @@ Screen.prototype.insertLine = function (n, y, top, bottom) {
 
 Screen.prototype.deleteLine = function (n, y, top, bottom) {
   // if (y === top) return this.deleteLineNC(n, y, top, bottom);
-
   if (!this.tput.strings.change_scroll_region
     || !this.tput.strings.delete_line
     || !this.tput.strings.insert_line) return
-
   this._buf += this.tput.csr(top, bottom)
   this._buf += this.tput.cup(y, 0)
   this._buf += this.tput.dl(n)
@@ -800,7 +736,6 @@ Screen.prototype.deleteLine = function (n, y, top, bottom) {
 Screen.prototype.insertLineNC = function (n, y, top, bottom) {
   if (!this.tput.strings.change_scroll_region
     || !this.tput.strings.delete_line) return
-
   this._buf += this.tput.csr(top, bottom)
   this._buf += this.tput.cup(top, 0)
   this._buf += this.tput.dl(n)
@@ -822,7 +757,6 @@ Screen.prototype.insertLineNC = function (n, y, top, bottom) {
 Screen.prototype.deleteLineNC = function (n, y, top, bottom) {
   if (!this.tput.strings.change_scroll_region
     || !this.tput.strings.delete_line) return
-
   this._buf += this.tput.csr(top, bottom)
   this._buf += this.tput.cup(bottom, 0)
   this._buf += Array(n + 1).join('\n')
@@ -866,19 +800,15 @@ Screen.prototype.deleteTop = function (top, bottom) {
 // boxes with clean sides?
 Screen.prototype.cleanSides = function (el) {
   const pos = el.lpos
-
   if (!pos) {
     return false
   }
-
   if (pos._cleanSides != null) {
     return pos._cleanSides
   }
-
   if (pos.xi <= 0 && pos.xl >= this.width) {
     return pos._cleanSides = true
   }
-
   if (this.options.fastCSR) {
     // Maybe just do this instead of parsing.
     if (pos.yi < 0) return pos._cleanSides = false
@@ -888,7 +818,6 @@ Screen.prototype.cleanSides = function (el) {
     }
     return pos._cleanSides = false
   }
-
   if (!this.options.smartCSR) {
     return false
   }
@@ -911,7 +840,6 @@ Screen.prototype.cleanSides = function (el) {
     ch,
     x,
     y
-
   if (pos.yi < 0) return pos._cleanSides = false
   if (pos.yl > this.height) return pos._cleanSides = false
   if (pos.xi - 1 < 0) return pos._cleanSides = true
@@ -985,28 +913,24 @@ Screen.prototype._getAngle = function (lines, x, y) {
   let angle = 0
   const attr = lines[y][x][0],
     ch = lines[y][x][1]
-
   if (lines[y][x - 1] && langles[lines[y][x - 1][1]]) {
     if (!this.options.ignoreDockContrast) {
       if (lines[y][x - 1][0] !== attr) return ch
     }
     angle |= 1 << 3
   }
-
   if (lines[y - 1] && uangles[lines[y - 1][x][1]]) {
     if (!this.options.ignoreDockContrast) {
       if (lines[y - 1][x][0] !== attr) return ch
     }
     angle |= 1 << 2
   }
-
   if (lines[y][x + 1] && rangles[lines[y][x + 1][1]]) {
     if (!this.options.ignoreDockContrast) {
       if (lines[y][x + 1][0] !== attr) return ch
     }
     angle |= 1 << 1
   }
-
   if (lines[y + 1] && dangles[lines[y + 1][x][1]]) {
     if (!this.options.ignoreDockContrast) {
       if (lines[y + 1][x][0] !== attr) return ch
@@ -1061,7 +985,6 @@ Screen.prototype.draw = function (start, end) {
     o
 
   let acs
-
   if (this._buf) {
     main += this._buf
     this._buf = ''
@@ -1070,7 +993,6 @@ Screen.prototype.draw = function (start, end) {
   for (y = start; y <= end; y++) {
     line = this.lines[y]
     o = this.olines[y]
-
     if (!line.dirty && !(this.cursor.artificial && y === this.program.y)) {
       continue
     }
@@ -1114,7 +1036,6 @@ Screen.prototype.draw = function (start, end) {
             neq = true
           }
         }
-
         if (clr && neq) {
           lx = -1, ly = -1
           if (data !== attr) {
@@ -1196,7 +1117,6 @@ Screen.prototype.draw = function (start, end) {
       }
       o[x][0] = data
       o[x][1] = ch
-
       if (data !== attr) {
         if (attr !== this.dattr) {
           out += '\x1b[m'
@@ -1232,7 +1152,6 @@ Screen.prototype.draw = function (start, end) {
           if (flags & 16) {
             out += '8;'
           }
-
           if (bg !== 0x1ff) {
             bg = this._reduceColor(bg)
             if (bg < 16) {
@@ -1247,7 +1166,6 @@ Screen.prototype.draw = function (start, end) {
               out += '48;5;' + bg + ';'
             }
           }
-
           if (fg !== 0x1ff) {
             fg = this._reduceColor(fg)
             if (fg < 16) {
@@ -1262,7 +1180,6 @@ Screen.prototype.draw = function (start, end) {
               out += '38;5;' + fg + ';'
             }
           }
-
           if (out[out.length - 1] === ';') out = out.slice(0, -1)
 
           out += 'm'
@@ -1345,28 +1262,23 @@ Screen.prototype.draw = function (start, end) {
       out += ch
       attr = data
     }
-
     if (attr !== this.dattr) {
       out += '\x1b[m'
     }
-
     if (out) {
       main += this.tput.cup(y, 0) + out
     }
   }
-
   if (acs) {
     main += this.tput.rmacs()
     acs = false
   }
-
   if (main) {
     pre = ''
     post = ''
 
     pre += this.tput.sc()
     post += this.tput.rc()
-
     if (!this.program.cursorHidden) {
       pre += this.tput.civis()
       post += this.tput.cnorm()
@@ -1521,7 +1433,6 @@ Screen.prototype.codeAttr = function (code) {
   if (flags & 16) {
     out += '8;'
   }
-
   if (bg !== 0x1ff) {
     bg = this._reduceColor(bg)
     if (bg < 16) {
@@ -1536,7 +1447,6 @@ Screen.prototype.codeAttr = function (code) {
       out += '48;5;' + bg + ';'
     }
   }
-
   if (fg !== 0x1ff) {
     fg = this._reduceColor(fg)
     if (fg < 16) {
@@ -1551,7 +1461,6 @@ Screen.prototype.codeAttr = function (code) {
       out += '38;5;' + fg + ';'
     }
   }
-
   if (out[out.length - 1] === ';') out = out.slice(0, -1)
 
   return '\x1b[' + out + 'm'
@@ -1561,14 +1470,12 @@ Screen.prototype.focusOffset = function (offset) {
   const shown = this.keyable.filter(function (el) {
     return !el.detached && el.visible
   }).length
-
   if (!shown || !offset) {
     return
   }
 
   let i = this.keyable.indexOf(this.focused)
   if (!~i) return
-
   if (offset > 0) {
     while (offset--) {
       if (++i > this.keyable.length - 1) i = 0
@@ -1635,7 +1542,6 @@ Screen.prototype.rewindFocus = function () {
       return el
     }
   }
-
   if (old) {
     old.emit('blur')
   }
@@ -1665,7 +1571,6 @@ Screen.prototype._focus = function (self, old) {
       self.screen.render()
     }
   }
-
   if (old) {
     old.emit('blur', self)
   }
@@ -1690,7 +1595,6 @@ Screen.prototype.fillRegion = function (attr, ch, xi, xl, yi, yl, override) {
   let
     cell,
     xx
-
   if (xi < 0) xi = 0
   if (yi < 0) yi = 0
 
@@ -1754,7 +1658,6 @@ Screen.prototype.spawn = function (file, args, options) {
   const resume = function () {
     if (resume.done) return
     resume.done = true
-
     if (program.input.setRawMode) {
       program.input.setRawMode(true)
     }
@@ -1805,12 +1708,10 @@ Screen.prototype.readEditor = function (options, callback) {
   if (typeof options === 'string') {
     options = { editor: options }
   }
-
   if (!callback) {
     callback = options
     options = null
   }
-
   if (!callback) {
     callback = function () {}
   }
@@ -1858,7 +1759,6 @@ Screen.prototype.displayImage = function (file, callback) {
   }
 
   file = path.resolve(process.cwd(), file)
-
   if (!~file.indexOf('://')) {
     file = 'file://' + file
   }
@@ -1896,7 +1796,6 @@ Screen.prototype.setEffects = function (el, fel, over, out, effects, temp) {
 
   const tmp = {}
   if (temp) el[temp] = tmp
-
   if (typeof el !== 'function') {
     const _el = el
     el = function () { return _el }
@@ -1960,11 +1859,9 @@ Screen.prototype.copyToClipboard = function (text) {
 
 Screen.prototype.cursorShape = function (shape, blink) {
   const self = this
-
   this.cursor.shape = shape || 'block'
   this.cursor.blink = blink || false
   this.cursor._set = true
-
   if (this.cursor.artificial) {
     if (!this.program.hideCursor_old) {
       const hideCursor = this.program.hideCursor
@@ -2005,7 +1902,6 @@ Screen.prototype.cursorColor = function (color) {
     ? colors.convert(color)
     : null
   this.cursor._set = true
-
   if (this.cursor.artificial) {
     return true
   }
@@ -2019,7 +1915,6 @@ Screen.prototype.cursorReset =
     this.cursor.blink = false
     this.cursor.color = null
     this.cursor._set = false
-
     if (this.cursor.artificial) {
       this.cursor.artificial = false
       if (this.program.hideCursor_old) {
@@ -2044,7 +1939,6 @@ Screen.prototype._cursorAttr = function (cursor, dattr) {
   let attr = dattr || this.dattr,
     cattr,
     ch
-
   if (cursor.shape === 'line') {
     attr &= ~(0x1ff << 9)
     attr |= 7 << 9
@@ -2059,29 +1953,24 @@ Screen.prototype._cursorAttr = function (cursor, dattr) {
     attr |= 8 << 18
   } else if (typeof cursor.shape === 'object' && cursor.shape) {
     cattr = Element.prototype.sattr.call(cursor, cursor.shape)
-
     if (cursor.shape.bold || cursor.shape.underline
       || cursor.shape.blink || cursor.shape.inverse
       || cursor.shape.invisible) {
       attr &= ~(0x1ff << 18)
       attr |= ((cattr >> 18) & 0x1ff) << 18
     }
-
     if (cursor.shape.fg) {
       attr &= ~(0x1ff << 9)
       attr |= ((cattr >> 9) & 0x1ff) << 9
     }
-
     if (cursor.shape.bg) {
       attr &= ~(0x1ff << 0)
       attr |= cattr & 0x1ff
     }
-
     if (cursor.shape.ch) {
       ch = cursor.shape.ch
     }
   }
-
   if (cursor.color != null) {
     attr &= ~(0x1ff << 9)
     attr |= cursor.color << 9
@@ -2098,7 +1987,6 @@ Screen.prototype.screenshot = function (xi, xl, yi, yl, term) {
   if (xl == null) xl = this.cols
   if (yi == null) yi = 0
   if (yl == null) yl = this.rows
-
   if (xi < 0) xi = 0
   if (yi < 0) yi = 0
 
@@ -2111,7 +1999,6 @@ Screen.prototype.screenshot = function (xi, xl, yi, yl, term) {
     attr
 
   const sdattr = this.dattr
-
   if (term) {
     this.dattr = term.defAttr
   }
@@ -2122,7 +2009,6 @@ Screen.prototype.screenshot = function (xi, xl, yi, yl, term) {
     line = term
       ? term.lines[y]
       : this.lines[y]
-
     if (!line) break
 
     out = ''
@@ -2133,7 +2019,6 @@ Screen.prototype.screenshot = function (xi, xl, yi, yl, term) {
 
       data = line[x][0]
       ch = line[x][1]
-
       if (data !== attr) {
         if (attr !== this.dattr) {
           out += '\x1b[m'
@@ -2147,7 +2032,6 @@ Screen.prototype.screenshot = function (xi, xl, yi, yl, term) {
           out += this.codeAttr(_data)
         }
       }
-
       if (this.fullUnicode) {
         if (unicode.charWidth(line[x][1]) === 2) {
           if (x === xl - 1) {
@@ -2161,18 +2045,15 @@ Screen.prototype.screenshot = function (xi, xl, yi, yl, term) {
       out += ch
       attr = data
     }
-
     if (attr !== this.dattr) {
       out += '\x1b[m'
     }
-
     if (out) {
       main += (y > 0 ? '\n' : '') + out
     }
   }
 
   main = main.replace(/(?:\s*\x1b\[40m\s*\x1b\[m\s*)*$/, '') + '\n'
-
   if (term) {
     this.dattr = sdattr
   }

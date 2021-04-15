@@ -18,21 +18,17 @@ const List = require('./list')
  */
 function FileManager(options = {}) {
   const self = this
-
   if (!(this instanceof Node)) return new FileManager(options)
   options.parseTags = true
   // options.label = ' {blue-fg}%path{/blue-fg} ';
 
   List.call(this, options)
-
   this.cwd = options.cwd || process.cwd()
   this.file = this.cwd
   this.value = this.cwd
-
   if (options.label && ~options.label.indexOf('%path')) {
     this._label.setContent(options.label.replace('%path', this.cwd))
   }
-
   this.on('select', function (item) {
     const value = item.content.replace(/\{[^{}]+\}/g, '').replace(/@$/, ''),
       file = path.resolve(self.cwd, value)
@@ -68,7 +64,6 @@ FileManager.prototype.refresh = function (cwd, callback) {
   }
 
   const self = this
-
   if (cwd) this.cwd = cwd
   else cwd = this.cwd
 
@@ -79,7 +74,6 @@ FileManager.prototype.refresh = function (cwd, callback) {
         : '/'
       return self.refresh(callback)
     }
-
     if (err) {
       if (callback) return callback(err)
       return self.emit('error', err, cwd)
@@ -97,9 +91,7 @@ FileManager.prototype.refresh = function (cwd, callback) {
       try {
         stat = fs.lstatSync(f)
       } catch (e) {
-
       }
-
       if ((stat && stat.isDirectory()) || name === '..') {
         dirs.push({
           name: name,
@@ -133,7 +125,6 @@ FileManager.prototype.refresh = function (cwd, callback) {
     self.screen.render()
 
     self.emit('refresh')
-
     if (callback) callback()
   })
 }
@@ -161,24 +152,19 @@ FileManager.prototype.pick = function (cwd, callback) {
     }
     self.screen.render()
   }
-
   this.on('file', onfile = function (file) {
     resume()
     return callback(null, file)
   })
-
   this.on('cancel', oncancel = function () {
     resume()
     return callback()
   })
-
   this.refresh(cwd, function (err) {
     if (err) return callback(err)
-
     if (hidden) {
       self.show()
     }
-
     if (!focused) {
       self.screen.saveFocus()
       self.focus()

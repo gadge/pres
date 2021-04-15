@@ -17,15 +17,12 @@ const ScrollableText = require('./scrollabletext')
  */
 function Log(options = {}) {
   const self = this
-
   if (!(this instanceof Node)) return new Log(options)
   ScrollableText.call(this, options)
-
   this.scrollback = options.scrollback != null
     ? options.scrollback
     : Infinity
   this.scrollOnInput = options.scrollOnInput
-
   this.on('set content', function () {
     if (!self._userScrolled || self.scrollOnInput) {
       nextTick(function () {

@@ -15,7 +15,6 @@ const Box = require('./box')
  */
 function Table(options = {}) {
   const self = this
-
   if (!(this instanceof Node)) return new Table(options)
   options.shrink = true
   options.style = options.style || {}
@@ -29,18 +28,14 @@ function Table(options = {}) {
   delete options.height
 
   Box.call(this, options)
-
   this.pad = options.pad != null
     ? options.pad
     : 2
-
   this.setData(options.rows || options.data)
-
   this.on('attach', function () {
     self.setContent('')
     self.setData(self.rows)
   })
-
   this.on('resize', function () {
     self.setContent('')
     self.setData(self.rows)
@@ -55,11 +50,8 @@ Table.prototype.type = 'table'
 Table.prototype._calculateMaxes = function () {
   const self = this
   let maxes = []
-
   if (this.detached) return
-
   this.rows = this.rows || []
-
   this.rows.forEach(function (row) {
     row.forEach(function (cell, i) {
       const clen = self.strWidth(cell)
@@ -80,7 +72,6 @@ Table.prototype._calculateMaxes = function () {
   if (this.width < total) {
     delete this.position.width
   }
-
   if (this.position.width != null) {
     const missing = this.width - total
     const w = missing / maxes.length | 0
@@ -105,19 +96,14 @@ Table.prototype.setRows =
     const self = this
     let text = ''
     const align = this.align
-
     this.rows = rows || []
-
     this._calculateMaxes()
-
     if (!this._maxes) return
-
     this.rows.forEach(function (row, i) {
       const isFooter = i === self.rows.length - 1
       row.forEach(function (cell, i) {
         const width = self._maxes[i]
         let clen = self.strWidth(cell)
-
         if (i !== 0) {
           text += ' '
         }
@@ -134,7 +120,6 @@ Table.prototype.setRows =
             clen += 1
           }
         }
-
         if (clen > width) {
           if (align === 'center') {
             cell = cell.substring(1)
@@ -165,9 +150,7 @@ Table.prototype.render = function () {
 
   const coords = this._render()
   if (!coords) return
-
   this._calculateMaxes()
-
   if (!this._maxes) return coords
 
   const lines = this.screen.lines,
@@ -200,7 +183,6 @@ Table.prototype.render = function () {
       lines[yi + y].dirty = true
     }
   }
-
   if (!this.border || this.options.noCellBorders) return coords
 
   // Draw border with correct angles.

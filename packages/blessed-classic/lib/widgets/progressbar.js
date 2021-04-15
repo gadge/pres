@@ -15,16 +15,13 @@ const Input = require('./input')
  */
 function ProgressBar(options = {}) {
   const self = this
-
   if (!(this instanceof Node)) return new ProgressBar(options)
   Input.call(this, options)
-
   this.filled = options.filled || 0
   if (typeof this.filled === 'string') {
     this.filled = +this.filled.slice(0, -1)
   }
   this.value = this.filled
-
   this.pch = options.pch || ' '
 
   // XXX Workaround that predates the usage of `el.ch`.
@@ -35,15 +32,12 @@ function ProgressBar(options = {}) {
   if (options.bch) {
     this.ch = options.bch
   }
-
   if (!this.style.bar) {
     this.style.bar = {}
     this.style.bar.fg = options.barFg
     this.style.bar.bg = options.barBg
   }
-
   this.orientation = options.orientation || 'horizontal'
-
   if (options.keys) {
     this.on('keypress', function (ch, key) {
       let back, forward
@@ -62,11 +56,9 @@ function ProgressBar(options = {}) {
       if (key.name === forward[0] || (options.vi && key.name === forward[1])) {
         self.progress(5)
         self.screen.render()
-
       }
     })
   }
-
   if (options.mouse) {
     this.on('click', function (data) {
       let x, y, m, p
@@ -98,9 +90,7 @@ ProgressBar.prototype.render = function () {
     yi = ret.yi,
     yl = ret.yl,
     dattr
-
   if (this.border) xi++, yi++, xl--, yl--
-
   if (this.orientation === 'horizontal') {
     xl = xi + ((xl - xi) * (this.filled / 100)) | 0
   } else if (this.orientation === 'vertical') {
@@ -108,9 +98,7 @@ ProgressBar.prototype.render = function () {
   }
 
   dattr = this.sattr(this.style.bar)
-
   this.screen.fillRegion(dattr, this.pch, xi, xl, yi, yl)
-
   if (this.content) {
     const line = this.screen.lines[yi]
     for (let i = 0; i < this.content.length; i++) {

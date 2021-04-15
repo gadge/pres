@@ -15,11 +15,9 @@ const Box = require('./box')
  */
 function Form(options = {}) {
   const self = this
-
   if (!(this instanceof Node)) return new Form(options)
   options.ignoreKeys = true
   Box.call(this, options)
-
   if (options.keys) {
     this.screen._listenKeys(this)
     this.on('element keypress', function (el, ch, key) {
@@ -38,7 +36,6 @@ function Form(options = {}) {
         self.focusNext()
         return
       }
-
       if ((key.name === 'tab' && key.shift)
         || key.name === 'up'
         || (options.vi && key.name === 'k')) {
@@ -49,7 +46,6 @@ function Form(options = {}) {
         self.focusPrevious()
         return
       }
-
       if (key.name === 'escape') {
         self.focus()
       }
@@ -68,12 +64,10 @@ Form.prototype._refresh = function () {
   // and next().
   if (!this._children) {
     const out = []
-
     this.children.forEach(function fn(el) {
       if (el.keyable) out.push(el)
       el.children.forEach(fn)
     })
-
     this._children = out
   }
 }
@@ -86,9 +80,7 @@ Form.prototype._visible = function () {
 
 Form.prototype.next = function () {
   this._refresh()
-
   if (!this._visible()) return
-
   if (!this._selected) {
     this._selected = this._children[0]
     if (!this._selected.visible) return this.next()
@@ -101,7 +93,6 @@ Form.prototype.next = function () {
     if (!this._selected.visible) return this.next()
     return this._selected
   }
-
   this._selected = this._children[i + 1]
   if (!this._selected.visible) return this.next()
   return this._selected
@@ -109,9 +100,7 @@ Form.prototype.next = function () {
 
 Form.prototype.previous = function () {
   this._refresh()
-
   if (!this._visible()) return
-
   if (!this._selected) {
     this._selected = this._children[this._children.length - 1]
     if (!this._selected.visible) return this.previous()
@@ -124,7 +113,6 @@ Form.prototype.previous = function () {
     if (!this._selected.visible) return this.previous()
     return this._selected
   }
-
   this._selected = this._children[i - 1]
   if (!this._selected.visible) return this.previous()
   return this._selected
@@ -156,7 +144,6 @@ Form.prototype.focusLast = function () {
 
 Form.prototype.submit = function () {
   const out = {}
-
   this.children.forEach(function fn(el) {
     if (el.value != null) {
       const name = el.name || el.type
@@ -170,7 +157,6 @@ Form.prototype.submit = function () {
     }
     el.children.forEach(fn)
   })
-
   this.emit('submit', out)
 
   return this.submission = out
@@ -248,7 +234,6 @@ Form.prototype.reset = function () {
     }
     el.children.forEach(fn)
   })
-
   this.emit('reset')
 }
 

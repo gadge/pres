@@ -40,7 +40,6 @@ BigText.prototype.loadFont = function (filename) {
     font
 
   data = JSON.parse(fs.readFileSync(filename, 'utf8'))
-
   this.ratio.width = data.width
   this.ratio.height = data.height
 

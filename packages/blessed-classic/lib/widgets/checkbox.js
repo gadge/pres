@@ -15,27 +15,22 @@ const Input = require('./input')
  */
 function Checkbox(options = {}) {
   const self = this
-
   if (!(this instanceof Node)) return new Checkbox(options)
   Input.call(this, options)
-
   this.text = options.content || options.text || ''
   this.checked = this.value = options.checked || false
-
   this.on('keypress', function (ch, key) {
     if (key.name === 'enter' || key.name === 'space') {
       self.toggle()
       self.screen.render()
     }
   })
-
   if (options.mouse) {
     this.on('click', function () {
       self.toggle()
       self.screen.render()
     })
   }
-
   this.on('focus', function () {
     const lpos = self.lpos
     if (!lpos) return
@@ -43,7 +38,6 @@ function Checkbox(options = {}) {
     self.screen.program.cup(lpos.yi, lpos.xi + 1)
     self.screen.program.showCursor()
   })
-
   this.on('blur', function () {
     self.screen.program.lrestoreCursor('checkbox', true)
   })

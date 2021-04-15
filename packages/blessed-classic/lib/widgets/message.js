@@ -26,29 +26,24 @@ Message.prototype.type = 'message'
 Message.prototype.log =
   Message.prototype.display = function (text, time, callback) {
     const self = this
-
     if (typeof time === 'function') {
       callback = time
       time = null
     }
-
     if (time == null) time = 3
 
     // Keep above:
     // var parent = this.parent;
     // this.detach();
     // parent.append(this);
-
     if (this.scrollable) {
       this.screen.saveFocus()
       this.focus()
       this.scrollTo(0)
     }
-
     this.show()
     this.setContent(text)
     this.screen.render()
-
     if (time === Infinity || time === -1 || time === 0) {
       const end = function () {
         if (end.done) return
@@ -57,7 +52,6 @@ Message.prototype.log =
           try {
             self.screen.restoreFocus()
           } catch (e) {
-
           }
         }
         self.hide()

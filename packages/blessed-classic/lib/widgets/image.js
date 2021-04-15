@@ -18,7 +18,6 @@ function Image(options = {}) {
   options.type = options.itype || options.type || 'ansi'
 
   Box.call(this, options)
-
   if (options.type === 'ansi' && this.type !== 'ansiimage') {
     const ANSIImage = require('./ansiimage')
     Object.getOwnPropertyNames(ANSIImage.prototype).forEach(function (key) {
@@ -29,7 +28,6 @@ function Image(options = {}) {
     ANSIImage.call(this, options)
     return this
   }
-
   if (options.type === 'overlay' && this.type !== 'overlayimage') {
     const OverlayImage = require('./overlayimage')
     Object.getOwnPropertyNames(OverlayImage.prototype).forEach(function (key) {

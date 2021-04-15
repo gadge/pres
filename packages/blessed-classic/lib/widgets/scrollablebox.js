@@ -15,19 +15,15 @@ const Box = require('./box')
  */
 function ScrollableBox(options = {}) {
   const self = this
-
   if (!(this instanceof Node)) return new ScrollableBox(options)
 
   Box.call(this, options)
-
   if (options.scrollable === false) return this
-
   this.scrollable = true
   this.childOffset = 0
   this.childBase = 0
   this.baseLimit = options.baseLimit || Infinity
   this.alwaysScroll = options.alwaysScroll
-
   this.scrollbar = options.scrollbar
   if (this.scrollbar) {
     this.scrollbar.ch = this.scrollbar.ch || ' '
@@ -96,7 +92,6 @@ function ScrollableBox(options = {}) {
       })
     }
   }
-
   if (options.mouse) {
     this.on('wheeldown', function () {
       self.scroll(self.height / 2 | 0 || 1)
@@ -107,7 +102,6 @@ function ScrollableBox(options = {}) {
       self.screen.render()
     })
   }
-
   if (options.keys && !options.ignoreKeys) {
     this.on('keypress', function (ch, key) {
       if (key.name === 'up' || (options.vi && key.name === 'k')) {
@@ -148,11 +142,9 @@ function ScrollableBox(options = {}) {
       if (options.vi && key.name === 'g' && key.shift) {
         self.scrollTo(self.getScrollHeight())
         self.screen.render()
-
       }
     })
   }
-
   this.on('parsed content', function () {
     self._recalculateIndex()
   })
@@ -178,7 +170,6 @@ ScrollableBox.prototype._scrollBottom = function () {
   if (this._isList) {
     return this.items ? this.items.length : 0
   }
-
   if (this.lpos && this.lpos._scrollBottom) {
     return this.lpos._scrollBottom
   }
@@ -201,7 +192,6 @@ ScrollableBox.prototype._scrollBottom = function () {
 
   // XXX Use this? Makes .getScrollHeight() useless!
   // if (bottom < this._clines.length) bottom = this._clines.length;
-
   if (this.lpos) this.lpos._scrollBottom = bottom
 
   return bottom
@@ -221,7 +211,6 @@ ScrollableBox.prototype.getScroll = function () {
 
 ScrollableBox.prototype.scroll = function (offset, always) {
   if (!this.scrollable) return
-
   if (this.detached) return
 
   // Handle scrolling.
@@ -233,7 +222,6 @@ ScrollableBox.prototype.scroll = function (offset, always) {
     b,
     max,
     emax
-
   if (this.alwaysScroll || always) {
     // Semi-workaround
     this.childOffset = offset > 0
@@ -242,7 +230,6 @@ ScrollableBox.prototype.scroll = function (offset, always) {
   } else {
     this.childOffset += offset
   }
-
   if (this.childOffset > visible - 1) {
     d = this.childOffset - (visible - 1)
     this.childOffset -= d
@@ -252,7 +239,6 @@ ScrollableBox.prototype.scroll = function (offset, always) {
     this.childOffset += -d
     this.childBase += d
   }
-
   if (this.childBase < 0) {
     this.childBase = 0
   } else if (this.childBase > this.baseLimit) {
@@ -278,9 +264,7 @@ ScrollableBox.prototype.scroll = function (offset, always) {
   if (max < 0) max = 0
   emax = this._scrollBottom() - (this.height - this.iheight)
   if (emax < 0) emax = 0
-
   this.childBase = Math.min(this.childBase, Math.max(emax, max))
-
   if (this.childBase < 0) {
     this.childBase = 0
   } else if (this.childBase > this.baseLimit) {
@@ -298,7 +282,6 @@ ScrollableBox.prototype.scroll = function (offset, always) {
     t = p.yi + this.itop
     b = p.yl - this.ibottom - 1
     d = this.childBase - base
-
     if (d > 0 && d < visible) {
       // scrolled down
       this.screen.deleteLine(d, t, t, b)
@@ -314,7 +297,6 @@ ScrollableBox.prototype.scroll = function (offset, always) {
 
 ScrollableBox.prototype._recalculateIndex = function () {
   let max, emax
-
   if (this.detached || !this.scrollable) {
     return 0
   }
@@ -326,9 +308,7 @@ ScrollableBox.prototype._recalculateIndex = function () {
   if (max < 0) max = 0
   emax = this._scrollBottom() - (this.height - this.iheight)
   if (emax < 0) emax = 0
-
   this.childBase = Math.min(this.childBase, Math.max(emax, max))
-
   if (this.childBase < 0) {
     this.childBase = 0
   } else if (this.childBase > this.baseLimit) {
@@ -354,7 +334,6 @@ ScrollableBox.prototype.getScrollPerc = function (s) {
   const height = (pos.yl - pos.yi) - this.iheight,
     i = this.getScrollHeight()
   let p
-
   if (height < i) {
     if (this.alwaysScroll) {
       p = this.childBase / (i - height)

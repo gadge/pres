@@ -17,7 +17,6 @@ const Text = require('./text')
 function Loading(options = {}) {
   if (!(this instanceof Node)) return new Loading(options)
   Box.call(this, options)
-
   this._.icon = new Text({
     parent: this,
     align: 'center',
@@ -40,16 +39,12 @@ Loading.prototype.load = function (text) {
   // var parent = this.parent;
   // this.detach();
   // parent.append(this);
-
   this.show()
   this.setContent(text)
-
   if (this._.timer) {
     this.stop()
   }
-
   this.screen.lockKeys = true
-
   this._.timer = setInterval(function () {
     if (self._.icon.content === '|') {
       self._.icon.setContent('/')

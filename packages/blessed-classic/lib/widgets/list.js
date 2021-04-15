@@ -16,19 +16,16 @@ const Box = require('./box')
  */
 function List(options) {
   const self = this
-
   if (!(this instanceof Node)) return new List(options)
   options.ignoreKeys = true
   // Possibly put this here: this.items = [];
   options.scrollable = true
   Box.call(this, options)
-
   this.value = ''
   this.items = []
   this.ritems = []
   this.selected = 0
   this._isList = true
-
   if (!this.style.selected) {
     this.style.selected = {}
     this.style.selected.bg = options.selectedBg
@@ -39,7 +36,6 @@ function List(options) {
     this.style.selected.inverse = options.selectedInverse
     this.style.selected.invisible = options.selectedInvisible
   }
-
   if (!this.style.item) {
     this.style.item = {}
     this.style.item.bg = options.itemBg
@@ -58,30 +54,22 @@ function List(options) {
       self.style.item[name] = self.style[name]
     }
   })
-
   if (this.options.itemHoverBg) {
     this.options.itemHoverEffects = { bg: this.options.itemHoverBg }
   }
-
   if (this.options.itemHoverEffects) {
     this.style.item.hover = this.options.itemHoverEffects
   }
-
   if (this.options.itemFocusEffects) {
     this.style.item.focus = this.options.itemFocusEffects
   }
-
   this.interactive = options.interactive !== false
-
   this.mouse = options.mouse || false
-
   if (options.items) {
     this.ritems = options.items
     options.items.forEach(this.add.bind(this))
   }
-
   this.select(0)
-
   if (options.mouse) {
     this.screen._listenMouse(this)
     this.on('element wheeldown', function () {
@@ -93,7 +81,6 @@ function List(options) {
       self.screen.render()
     })
   }
-
   if (options.keys) {
     this.on('keypress', function (ch, key) {
       if (key.name === 'up' || (options.vi && key.name === 'k')) {
@@ -168,7 +155,6 @@ function List(options) {
         self.screen.render()
         return
       }
-
       if (options.vi && (key.ch === '/' || key.ch === '?')) {
         if (typeof self.options.search !== 'function') {
           return
@@ -186,7 +172,6 @@ function List(options) {
       }
     })
   }
-
   this.on('resize', function () {
     const visible = self.height - self.iheight
     // if (self.selected < visible - 1) {
@@ -199,7 +184,6 @@ function List(options) {
       self.childOffset = visible - 1
     }
   })
-
   this.on('adopt', function (el) {
     if (!~self.items.indexOf(el)) {
       el.fixed = true
@@ -234,7 +218,6 @@ List.prototype.createItem = function (content) {
     focusEffects: this.mouse ? this.style.item.focus : null,
     autoFocus: false
   }
-
   if (!this.screen.autoPadding) {
     options.top = 1
     options.left = this.ileft
@@ -258,13 +241,11 @@ List.prototype.createItem = function (content) {
       return attr
     }
   })
-
   if (this.style.transparent) {
     options.transparent = true
   }
 
   var item = new Box(options)
-
   if (this.mouse) {
     item.on('click', function () {
       self.focus()
@@ -277,7 +258,6 @@ List.prototype.createItem = function (content) {
       self.screen.render()
     })
   }
-
   this.emit('create item')
 
   return item
@@ -293,15 +273,12 @@ List.prototype.add =
       if (!this.screen.autoPadding) {
         item.position.top = this.itop + this.items.length
       }
-
       this.ritems.push(content)
       this.items.push(item)
       this.append(item)
-
       if (this.items.length === 1) {
         this.select(0)
       }
-
       this.emit('add item')
 
       return item
@@ -366,7 +343,6 @@ List.prototype.setItems = function (items) {
     i = 0
 
   items = items.slice()
-
   this.select(0)
 
   for (; i < items.length; i++) {
@@ -380,7 +356,6 @@ List.prototype.setItems = function (items) {
   for (; i < original.length; i++) {
     this.remove(original[i])
   }
-
   this.ritems = items
 
   // Try to find our old item if it still exists.
@@ -392,7 +367,6 @@ List.prototype.setItems = function (items) {
   } else {
     this.select(Math.min(selected, items.length - 1))
   }
-
   this.emit('set items')
 }
 
@@ -433,28 +407,23 @@ List.prototype.find =
   List.prototype.fuzzyFind = function (search, back) {
     const start = this.selected + (back ? -1 : 1)
     let i
-
     if (typeof search === 'number') search += ''
-
     if (search && search[0] === '/' && search[search.length - 1] === '/') {
       try {
         search = new RegExp(search.slice(1, -1))
       } catch (e) {
-
       }
     }
 
     const test = typeof search === 'string'
       ? function (item) { return !!~item.indexOf(search) }
       : (search.test ? search.test.bind(search) : search)
-
     if (typeof test !== 'function') {
       if (this.screen.options.debug) {
         throw new Error('fuzzyFind(): `test` is not a function.')
       }
       return this.selected
     }
-
     if (!back) {
       for (i = start; i < this.ritems.length; i++) {
         if (test(helpers.cleanTags(this.ritems[i]))) return i
@@ -495,27 +464,22 @@ List.prototype.select = function (index) {
   if (!this.interactive) {
     return
   }
-
   if (!this.items.length) {
     this.selected = 0
     this.value = ''
     this.scrollTo(0)
     return
   }
-
   if (typeof index === 'object') {
     index = this.items.indexOf(index)
   }
-
   if (index < 0) {
     index = 0
   } else if (index >= this.items.length) {
     index = this.items.length - 1
   }
-
   if (this.selected === index && this._listInitialized) return
   this._listInitialized = true
-
   this.selected = index
   this.value = helpers.cleanTags(this.ritems[this.selected])
   if (!this.parent) return
@@ -542,7 +506,6 @@ List.prototype.pick = function (label, callback) {
     callback = label
     label = null
   }
-
   if (!this.interactive) {
     return callback()
   }
@@ -556,7 +519,6 @@ List.prototype.pick = function (label, callback) {
   // var parent = this.parent;
   // this.detach();
   // parent.append(this);
-
   this.focus()
   this.show()
   this.select(0)
