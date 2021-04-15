@@ -15,9 +15,7 @@ const Box = require('./box')
  */
 
 function Line(options) {
-  if (!(this instanceof Node)) {
-    return new Line(options)
-  }
+  if (!(this instanceof Node)) return new Line(options)
 
   options = options || {}
 

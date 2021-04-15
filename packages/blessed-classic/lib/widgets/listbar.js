@@ -19,9 +19,7 @@ const Box = require('./box')
 function Listbar(options) {
   const self = this
 
-  if (!(this instanceof Node)) {
-    return new Listbar(options)
-  }
+  if (!(this instanceof Node)) return new Listbar(options)
 
   options = options || {}
 

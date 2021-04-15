@@ -14,16 +14,13 @@ export class ScrollableBox extends Box {
   constructor(options = {}) {
     super(options)
     const self = this
-
     // if (!(this instanceof Node)) return new ScrollableBox(options)
     if (options.scrollable === false) return this
-
     this.scrollable = true
     this.childOffset = 0
     this.childBase = 0
     this.baseLimit = options.baseLimit || Infinity
     this.alwaysScroll = options.alwaysScroll
-
     this.scrollbar = options.scrollbar
     if (this.scrollbar) {
       this.scrollbar.ch = this.scrollbar.ch || ' '
@@ -92,7 +89,6 @@ export class ScrollableBox extends Box {
         })
       }
     }
-
     if (options.mouse) {
       this.on('wheeldown', function () {
         self.scroll(self.height / 2 | 0 || 1)
@@ -103,7 +99,6 @@ export class ScrollableBox extends Box {
         self.screen.render()
       })
     }
-
     if (options.keys && !options.ignoreKeys) {
       this.on('keypress', function (ch, key) {
         if (key.name === 'up' || (options.vi && key.name === 'k')) {
@@ -148,13 +143,10 @@ export class ScrollableBox extends Box {
         }
       })
     }
-
     this.on('parsed content', function () {
       self._recalculateIndex()
     })
-
     self._recalculateIndex()
-
   }
   _scrollBottom() {
     if (!this.scrollable) return 0

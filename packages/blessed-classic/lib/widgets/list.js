@@ -16,12 +16,10 @@ const Box = require('./box')
  * List
  */
 
-function List(options) {
+function List(options)  {
   const self = this
 
-  if (!(this instanceof Node)) {
-    return new List(options)
-  }
+  if (!(this instanceof Node)) return new List(options)
 
   options = options || {}
 

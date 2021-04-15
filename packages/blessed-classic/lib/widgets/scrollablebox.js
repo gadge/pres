@@ -17,17 +17,13 @@ const Box = require('./box')
 function ScrollableBox(options) {
   const self = this
 
-  if (!(this instanceof Node)) {
-    return new ScrollableBox(options)
-  }
+  if (!(this instanceof Node)) return new ScrollableBox(options)
 
   options = options || {}
 
   Box.call(this, options)
 
-  if (options.scrollable === false) {
-    return this
-  }
+  if (options.scrollable === false) return this
 
   this.scrollable = true
   this.childOffset = 0

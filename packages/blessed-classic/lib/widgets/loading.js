@@ -16,9 +16,7 @@ const Text = require('./text')
  */
 
 function Loading(options) {
-  if (!(this instanceof Node)) {
-    return new Loading(options)
-  }
+  if (!(this instanceof Node)) return new Loading(options)
 
   options = options || {}
 

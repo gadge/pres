@@ -20,12 +20,9 @@ const tng = require('../../vendor/tng')
  * ANSIImage
  */
 
-function ANSIImage(options) {
+function ANSIImage(options)   {
   const self = this
-
-  if (!(this instanceof Node)) {
-    return new ANSIImage(options)
-  }
+  if (!(this instanceof Node)) return new ANSIImage(options)
 
   options = options || {}
   options.shrink = true

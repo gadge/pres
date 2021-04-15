@@ -22,9 +22,7 @@ const List = require('./list')
 function FileManager(options) {
   const self = this
 
-  if (!(this instanceof Node)) {
-    return new FileManager(options)
-  }
+  if (!(this instanceof Node)) return new FileManager(options)
 
   options = options || {}
   options.parseTags = true

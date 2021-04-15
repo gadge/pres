@@ -17,9 +17,7 @@ const Box = require('./box')
 function Table(options) {
   const self = this
 
-  if (!(this instanceof Node)) {
-    return new Table(options)
-  }
+  if (!(this instanceof Node)) return new Table(options)
 
   options = options || {}
   options.shrink = true

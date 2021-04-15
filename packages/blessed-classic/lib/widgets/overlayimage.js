@@ -24,9 +24,7 @@ const Box = require('./box')
 function OverlayImage(options) {
   const self = this
 
-  if (!(this instanceof Node)) {
-    return new OverlayImage(options)
-  }
+  if (!(this instanceof Node)) return new OverlayImage(options)
 
   options = options || {}
 

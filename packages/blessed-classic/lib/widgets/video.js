@@ -22,9 +22,7 @@ function Video(options) {
   let shell,
     args
 
-  if (!(this instanceof Node)) {
-    return new Video(options)
-  }
+  if (!(this instanceof Node)) return new Video(options)
 
   options = options || {}
 

@@ -15,16 +15,13 @@ const Box = require('./box')
  */
 
 function Message(options) {
-  if (!(this instanceof Node)) {
-    return new Message(options)
-  }
+  if (!(this instanceof Node)) return new Message(options)
 
   options = options || {}
   options.tags = true
 
   Box.call(this, options)
 }
-
 Message.prototype.__proto__ = Box.prototype
 
 Message.prototype.type = 'message'

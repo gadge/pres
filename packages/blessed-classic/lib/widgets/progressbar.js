@@ -17,9 +17,7 @@ const Input = require('./input')
 function ProgressBar(options) {
   const self = this
 
-  if (!(this instanceof Node)) {
-    return new ProgressBar(options)
-  }
+  if (!(this instanceof Node)) return new ProgressBar(options)
 
   options = options || {}
 

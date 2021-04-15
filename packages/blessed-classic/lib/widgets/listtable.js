@@ -19,9 +19,7 @@ const Table = require('./table')
 function ListTable(options) {
   const self = this
 
-  if (!(this instanceof Node)) {
-    return new ListTable(options)
-  }
+  if (!(this instanceof Node)) return new ListTable(options)
 
   options = options || {}
 

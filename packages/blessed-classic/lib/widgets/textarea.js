@@ -21,9 +21,7 @@ const Input = require('./input')
 function Textarea(options) {
   const self = this
 
-  if (!(this instanceof Node)) {
-    return new Textarea(options)
-  }
+  if (!(this instanceof Node)) return new Textarea(options)
 
   options = options || {}
 

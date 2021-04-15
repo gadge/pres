@@ -15,9 +15,7 @@ const Element = require('./element')
  */
 
 function Layout(options) {
-  if (!(this instanceof Node)) {
-    return new Layout(options)
-  }
+  if (!(this instanceof Node)) return new Layout(options)
 
   options = options || {}
 
