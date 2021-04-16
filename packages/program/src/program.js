@@ -20,6 +20,7 @@ import {
   MOUSE,
   MOUSEDOWN,
   MOUSEMOVE,
+  MOUSEUP,
   MOUSEWHEEL,
   MOVE,
   NEW_LISTENER,
@@ -49,258 +50,7 @@ export function build(options) {
 }
 
 export class Program extends EventEmitter {
-  static global = null
-  static total = 0
-  static instances = []
   type = 'program'
-  unkey = this.removeKey
-  _owrite = this.write
-  echo = this.print
-  cursorReset = this.resetCursor
-  bel = this.bell
-  ff = this.form
-  kbs = this.backspace
-  ht = this.tab
-  cr = this.return
-  nel = this.feed
-  newline = this.feed
-  /**
-   * Esc
-   */
-
-  // ESC D Index (IND is 0x84).
-  ind = this.index
-// ESC M Reverse Index (RI is 0x8d).
-  ri = this.reverseIndex
-  reverse = this.reverseIndex
-// ESC 7 Save Cursor (DECSC).
-  sc = this.saveCursor
-// ESC 8 Restore Cursor (DECRC).
-  rc = this.restoreCursor
-  enter_alt_charset_mode = this.smacs
-  as = this.smacs
-  exit_alt_charset_mode = this.rmacs
-  ae = this.rmacs
-  /**
-   * CSI
-   */
-
-  // CSI Ps A
-  // Cursor Up Ps Times (default = 1) (CUU).
-  cuu = this.cursorUp
-
-// XTerm mouse events
-// http://invisible-island.net/xterm/ctlseqs/ctlseqs.html#Mouse%20Tracking
-// To better understand these
-// the xterm code is very helpful:
-// Relevant files:
-//   button.c, charproc.c, misc.c
-// Relevant functions in xterm/button.c:
-//   BtnCode, EmitButtonCode, EditorButton, SendMousePosition
-// send a mouse event:
-// regular/utf8: ^[[M Cb Cx Cy
-// urxvt: ^[[ Cb ; Cx ; Cy M
-// sgr: ^[[ Cb ; Cx ; Cy M/m
-// vt300: ^[[ 24(1/3/5)~ [ Cx , Cy ] \r
-// locator: CSI P e ; P b ; P r ; P c ; P p & w
-// motion example of a left click:
-// ^[[M 3<^[[M@4<^[[M@5<^[[M@6<^[[M@7<^[[M#7<
-// mouseup, mousedown, mousewheel
-// left click: ^[[M 3<^[[M#3<
-  up = this.cursorUp
-// Cursor Down Ps Times (default = 1) (CUD).
-  cud = this.cursorDown
-  down = this.cursorDown
-// Cursor Forward Ps Times (default = 1) (CUF).
-  cuf = this.cursorForward
-  right = this.cursorForward
-  forward = this.cursorForward
-// Cursor Backward Ps Times (default = 1) (CUB).
-  cub = this.cursorBackward
-  left = this.cursorBackward
-  back = this.cursorBackward
-// Cursor Position [row;column] (default = [1,1]) (CUP).
-  cup = this.cursorPos
-  pos = this.cursorPos
-//     Ps = 2  -> Selective Erase All.
-  ed = this.eraseInDisplay
-
-// Example: `DCS tmux; ESC Pt ST`
-//     Ps = 2  -> Selective Erase All.
-  el = this.eraseInLine
-//     Ps.
-  sgr = this.charAttributes
-  attr = this.charAttributes
-  fg = this.setForeground
-  bg = this.setBackground
-//   CSI ? 5 0  n  No Locator, if not.
-  dsr = this.deviceStatus
-  /**
-   * Additions
-   */
-
-  // CSI Ps @
-  // Insert Ps (Blank) Character(s) (default = 1) (ICH).
-  ich = this.insertChars
-// same as CSI Ps B ?
-  cnl = this.cursorNextLine
-// reuse CSI Ps A ?
-  cpl = this.cursorPrecedingLine
-// Cursor Character Absolute  [column] (default = [row,1]) (CHA).
-  cha = this.cursorCharAbsolute
-// Insert Ps Line(s) (default = 1) (IL).
-  il = this.insertLines
-// Delete Ps Line(s) (default = 1) (DL).
-  dl = this.deleteLines
-// Delete Ps Character(s) (default = 1) (DCH).
-  dch = this.deleteChars
-// Erase Ps Character(s) (default = 1) (ECH).
-  ech = this.deleteChars
-//   [column] (default = [row,1]) (HPA).
-  hpa = this.charPosAbsolute
-
-// Specific to iTerm2, but I think it's really cool.
-// Example:
-//  if (!screen.copyToClipboard(text)) {
-//    execClipboardProgram(text);
-// reuse CSI Ps C ?
-  hpr = this.HPositionRelative
-//   vim responds with ^[[?0c or ^[[?1c after the terminal's response (?)
-  da = this.sendDeviceAttributes
-// NOTE: Can't find in terminfo, no idea why it has multiple params.
-  vpa = this.linePosAbsolute
-// reuse CSI Ps B ?
-  vpr = this.VPositionRelative
-//   [1,1]) (HVP).
-  hvp = this.HVPosition
-//   http://vt100.net/docs/vt220-rm/chapter4.html
-  sm = this.setMode
-  dectcem = this.showCursor
-  cnorm = this.showCursor
-  cvvis = this.showCursor
-  alternate = this.alternateBuffer
-  smcup = this.alternateBuffer
-//     Ps = 2 0 0 4  -> Reset bracketed paste mode.
-  rm = this.resetMode
-  dectcemh = this.hideCursor
-  cursor_invisible = this.hideCursor
-  vi = this.hideCursor
-  civis = this.hideCursor
-  rmcup = this.normalBuffer
-// CSI ? Pm r
-  decstbm = this.setScrollRegion
-  csr = this.setScrollRegion
-//   Save cursor (ANSI.SYS).
-  scA = this.saveCursorA
-//   Restore cursor (ANSI.SYS).
-  rcA = this.restoreCursorA
-  /**
-   * Lesser Used
-   */
-
-  // CSI Ps I
-  //   Cursor Forward Tabulation Ps tab stops (default = 1) (CHT).
-  cht = this.cursorForwardTab
-// CSI Ps S  Scroll up Ps lines (default = 1) (SU).
-  su = this.scrollUp
-// CSI Ps T  Scroll down Ps lines (default = 1) (SD).
-  sd = this.scrollDown
-// CSI Ps Z  Cursor Backward Tabulation Ps tab stops (default = 1) (CBT).
-  cbt = this.cursorBackwardTab
-// CSI Ps b  Repeat the preceding graphic character Ps times (REP).
-  rep = this.repeatPrecedingCharacter
-//   http://vt100.net/annarbor/aaa-ug/section6.html
-  tbc = this.tabClear
-//     Ps = 1  1  -> Print all pages.
-  mc = this.mediaCopy
-  print_screen = this.mc0
-  ps = this.mc0
-  prtr_on = this.mc5
-  po = this.mc5
-  prtr_off = this.mc4
-  pf = this.mc4
-  prtr_non = this.mc5p
-  pO = this.mc5p
-// http://vt100.net/docs/vt220-rm/table4-10.html
-  decstr = this.softReset
-  rs2 = this.softReset
-//     4 - permanently reset
-  decrqm = this.requestAnsiMode
-//   as in the ANSI DECRQM.
-  decrqmp = this.requestPrivateMode
-//     Ps = 2  -> 8-bit controls.
-  decscl = this.setConformanceLevel
-//     Ps = 2  3  -> Extinguish Scroll Lock.
-  decll = this.loadLEDs
-//     Ps = 4  -> steady underline.
-  decscusr = this.setCursorStyle
-//     Ps = 2  -> DECSED and DECSEL can erase.
-  decsca = this.setCharProtectionAttr
-// NOTE: xterm doesn't enable this code by default.
-  deccara = this.setAttrInRectangle
-// NOTE: xterm doesn't enable this code by default.
-  decrara = this.reverseAttrInRectangle
-
-// ESC N
-// Single Shift Select of G2 Character Set
-// ( SS2 is 0x8e). This affects next character only.
-// ESC O
-// Single Shift Select of G3 Character Set
-// ( SS3 is 0x8f). This affects next character only.
-// ESC n
-// Invoke the G2 Character Set as GL (LS2).
-// ESC o
-// Invoke the G3 Character Set as GL (LS3).
-// ESC |
-// Invoke the G3 Character Set as GR (LS3R).
-// ESC }
-// Invoke the G2 Character Set as GR (LS2R).
-// ESC ~
-//     Ps = 5 , 6 , 7 , or 8  -> high.
-  decswbv = this.setWarningBellVolume
-//     Ps = 0 , 5 , 6 , 7 , or 8  -> high.
-  decsmbv = this.setMarginBellVolume
-
-// OSC Ps ; Pt ST
-// OSC Ps ; Pt BEL
-// NOTE: xterm doesn't enable this code by default.
-  deccra = this.copyRectangle
-
-// OSC Ps ; Pt ST
-// OSC Ps ; Pt BEL
-//   cels any prevous rectangle definition.
-  decefr = this.enableFilterRectangle
-
-// OSC Ps ; Pt ST
-// OSC Ps ; Pt BEL
-//     Pn = 0  <- STP flags.
-  decreqtparm = this.requestParameters
-//     Ps = 2  -> rectangle (exact).
-  decsace = this.selectChangeExtent
-// NOTE: xterm doesn't enable this code by default.
-  decfra = this.fillRectangle
-//     Pu = 2  <- character cells.
-  decelr = this.enableLocatorReporting
-
-// CSI Ps B
-// NOTE: xterm doesn't enable this code by default.
-  decera = this.eraseRectangle
-//     Ps = 4  -> do not report button up transitions.
-  decsle = this.setLocatorEvents
-//     Pt; Pl; Pb; Pr denotes the rectangle.
-  decsera = this.selectiveEraseRectangle
-
-// CSI Ps C
-//   ted.
-  decrqlp = this.requestLocatorPosition
-  req_mouse_pos = this.requestLocatorPosition
-  reqmp = this.requestLocatorPosition
-// NOTE: xterm doesn't enable this code by default.
-  decic = this.insertColumns
-
-// CSI Ps D
-// NOTE: xterm doesn't enable this code by default.
-  decdc = this.deleteColumns
   constructor(options = {}) {
     super()
     console.log(">>> [Program constructed]")
@@ -383,6 +133,260 @@ export class Program extends EventEmitter {
 
     this.listen()
   }
+
+  static global = null
+  static total = 0
+  static instances = []
+
+  unkey = this.removeKey
+  _owrite = this.write
+  echo = this.print
+  cursorReset = this.resetCursor
+  bel = this.bell
+  ff = this.form
+  kbs = this.backspace
+  ht = this.tab
+  cr = this.return
+  nel = this.feed
+  newline = this.feed
+  /**
+   * Esc
+   */
+
+  // ESC D Index (IND is 0x84).
+  ind = this.index
+  // ESC M Reverse Index (RI is 0x8d).
+  ri = this.reverseIndex
+  reverse = this.reverseIndex
+  // ESC 7 Save Cursor (DECSC).
+  sc = this.saveCursor
+  // ESC 8 Restore Cursor (DECRC).
+  rc = this.restoreCursor
+  enter_alt_charset_mode = this.smacs
+  as = this.smacs
+  exit_alt_charset_mode = this.rmacs
+  ae = this.rmacs
+  /**
+   * CSI
+   */
+
+  // CSI Ps A
+  // Cursor Up Ps Times (default = 1) (CUU).
+  cuu = this.cursorUp
+
+  // XTerm mouse events
+  // http://invisible-island.net/xterm/ctlseqs/ctlseqs.html#Mouse%20Tracking
+  // To better understand these
+  // the xterm code is very helpful:
+  // Relevant files:
+  //   button.c, charproc.c, misc.c
+  // Relevant functions in xterm/button.c:
+  //   BtnCode, EmitButtonCode, EditorButton, SendMousePosition
+  // send a mouse event:
+  // regular/utf8: ^[[M Cb Cx Cy
+  // urxvt: ^[[ Cb ; Cx ; Cy M
+  // sgr: ^[[ Cb ; Cx ; Cy M/m
+  // vt300: ^[[ 24(1/3/5)~ [ Cx , Cy ] \r
+  // locator: CSI P e ; P b ; P r ; P c ; P p & w
+  // motion example of a left click:
+  // ^[[M 3<^[[M@4<^[[M@5<^[[M@6<^[[M@7<^[[M#7<
+  // mouseup, mousedown, mousewheel
+  // left click: ^[[M 3<^[[M#3<
+  up = this.cursorUp
+  // Cursor Down Ps Times (default = 1) (CUD).
+  cud = this.cursorDown
+  down = this.cursorDown
+  // Cursor Forward Ps Times (default = 1) (CUF).
+  cuf = this.cursorForward
+  right = this.cursorForward
+  forward = this.cursorForward
+  // Cursor Backward Ps Times (default = 1) (CUB).
+  cub = this.cursorBackward
+  left = this.cursorBackward
+  back = this.cursorBackward
+  // Cursor Position [row;column] (default = [1,1]) (CUP).
+  cup = this.cursorPos
+  pos = this.cursorPos
+  // Ps = 2  -> Selective Erase All.
+  ed = this.eraseInDisplay
+
+  // Example: `DCS tmux; ESC Pt ST`
+  //     Ps = 2  -> Selective Erase All.
+  el = this.eraseInLine
+  //     Ps.
+  sgr = this.charAttributes
+  attr = this.charAttributes
+  fg = this.setForeground
+  bg = this.setBackground
+  //   CSI ? 5 0  n  No Locator, if not.
+  dsr = this.deviceStatus
+  /**
+   * Additions
+   */
+
+  // CSI Ps @
+  // Insert Ps (Blank) Character(s) (default = 1) (ICH).
+  ich = this.insertChars
+  // same as CSI Ps B ?
+  cnl = this.cursorNextLine
+  // reuse CSI Ps A ?
+  cpl = this.cursorPrecedingLine
+  // Cursor Character Absolute  [column] (default = [row,1]) (CHA).
+  cha = this.cursorCharAbsolute
+  // Insert Ps Line(s) (default = 1) (IL).
+  il = this.insertLines
+  // Delete Ps Line(s) (default = 1) (DL).
+  dl = this.deleteLines
+  // Delete Ps Character(s) (default = 1) (DCH).
+  dch = this.deleteChars
+  // Erase Ps Character(s) (default = 1) (ECH).
+  ech = this.deleteChars
+  //   [column] (default = [row,1]) (HPA).
+  hpa = this.charPosAbsolute
+
+  // Specific to iTerm2, but I think it's really cool.
+  // Example:
+  //  if (!screen.copyToClipboard(text)) {
+  //    execClipboardProgram(text);
+  // reuse CSI Ps C ?
+  hpr = this.HPositionRelative
+  //   vim responds with ^[[?0c or ^[[?1c after the terminal's response (?)
+  da = this.sendDeviceAttributes
+  // NOTE: Can't find in terminfo, no idea why it has multiple params.
+  vpa = this.linePosAbsolute
+  // reuse CSI Ps B ?
+  vpr = this.VPositionRelative
+  //   [1,1]) (HVP).
+  hvp = this.HVPosition
+  //   http://vt100.net/docs/vt220-rm/chapter4.html
+  sm = this.setMode
+  dectcem = this.showCursor
+  cnorm = this.showCursor
+  cvvis = this.showCursor
+  alternate = this.alternateBuffer
+  smcup = this.alternateBuffer
+  //     Ps = 2 0 0 4  -> Reset bracketed paste mode.
+  rm = this.resetMode
+  dectcemh = this.hideCursor
+  cursor_invisible = this.hideCursor
+  vi = this.hideCursor
+  civis = this.hideCursor
+  rmcup = this.normalBuffer
+  // CSI ? Pm r
+  decstbm = this.setScrollRegion
+  csr = this.setScrollRegion
+  //   Save cursor (ANSI.SYS).
+  scA = this.saveCursorA
+  //   Restore cursor (ANSI.SYS).
+  rcA = this.restoreCursorA
+  /**
+   * Lesser Used
+   */
+
+  // CSI Ps I
+  //   Cursor Forward Tabulation Ps tab stops (default = 1) (CHT).
+  cht = this.cursorForwardTab
+  // CSI Ps S  Scroll up Ps lines (default = 1) (SU).
+  su = this.scrollUp
+  // CSI Ps T  Scroll down Ps lines (default = 1) (SD).
+  sd = this.scrollDown
+  // CSI Ps Z  Cursor Backward Tabulation Ps tab stops (default = 1) (CBT).
+  cbt = this.cursorBackwardTab
+  // CSI Ps b  Repeat the preceding graphic character Ps times (REP).
+  rep = this.repeatPrecedingCharacter
+  //   http://vt100.net/annarbor/aaa-ug/section6.html
+  tbc = this.tabClear
+  //     Ps = 1  1  -> Print all pages.
+  mc = this.mediaCopy
+  print_screen = this.mc0
+  ps = this.mc0
+  prtr_on = this.mc5
+  po = this.mc5
+  prtr_off = this.mc4
+  pf = this.mc4
+  prtr_non = this.mc5p
+  pO = this.mc5p
+  // http://vt100.net/docs/vt220-rm/table4-10.html
+  decstr = this.softReset
+  rs2 = this.softReset
+  //     4 - permanently reset
+  decrqm = this.requestAnsiMode
+  //   as in the ANSI DECRQM.
+  decrqmp = this.requestPrivateMode
+  //     Ps = 2  -> 8-bit controls.
+  decscl = this.setConformanceLevel
+  //     Ps = 2  3  -> Extinguish Scroll Lock.
+  decll = this.loadLEDs
+  //     Ps = 4  -> steady underline.
+  decscusr = this.setCursorStyle
+  //     Ps = 2  -> DECSED and DECSEL can erase.
+  decsca = this.setCharProtectionAttr
+  // NOTE: xterm doesn't enable this code by default.
+  deccara = this.setAttrInRectangle
+  // NOTE: xterm doesn't enable this code by default.
+  decrara = this.reverseAttrInRectangle
+
+  // ESC N
+  // Single Shift Select of G2 Character Set
+  // ( SS2 is 0x8e). This affects next character only.
+  // ESC O
+  // Single Shift Select of G3 Character Set
+  // ( SS3 is 0x8f). This affects next character only.
+  // ESC n
+  // Invoke the G2 Character Set as GL (LS2).
+  // ESC o
+  // Invoke the G3 Character Set as GL (LS3).
+  // ESC |
+  // Invoke the G3 Character Set as GR (LS3R).
+  // ESC }
+  // Invoke the G2 Character Set as GR (LS2R).
+  // ESC ~
+  //     Ps = 5 , 6 , 7 , or 8  -> high.
+  decswbv = this.setWarningBellVolume
+  //     Ps = 0 , 5 , 6 , 7 , or 8  -> high.
+  decsmbv = this.setMarginBellVolume
+
+  // OSC Ps ; Pt ST
+  // OSC Ps ; Pt BEL
+  // NOTE: xterm doesn't enable this code by default.
+  deccra = this.copyRectangle
+
+  // OSC Ps ; Pt ST
+  // OSC Ps ; Pt BEL
+  //   cels any prevous rectangle definition.
+  decefr = this.enableFilterRectangle
+
+  // OSC Ps ; Pt ST
+  // OSC Ps ; Pt BEL
+  //     Pn = 0  <- STP flags.
+  decreqtparm = this.requestParameters
+  //     Ps = 2  -> rectangle (exact).
+  decsace = this.selectChangeExtent
+  // NOTE: xterm doesn't enable this code by default.
+  decfra = this.fillRectangle
+  //     Pu = 2  <- character cells.
+  decelr = this.enableLocatorReporting
+
+  // CSI Ps B
+  // NOTE: xterm doesn't enable this code by default.
+  decera = this.eraseRectangle
+  //     Ps = 4  -> do not report button up transitions.
+  decsle = this.setLocatorEvents
+  //     Pt; Pl; Pb; Pr denotes the rectangle.
+  decsera = this.selectiveEraseRectangle
+
+  // CSI Ps C
+  //   ted.
+  decrqlp = this.requestLocatorPosition
+  req_mouse_pos = this.requestLocatorPosition
+  reqmp = this.requestLocatorPosition
+  // NOTE: xterm doesn't enable this code by default.
+  decic = this.insertColumns
+
+  // CSI Ps D
+  // NOTE: xterm doesn't enable this code by default.
+  decdc = this.deleteColumns
+
   get terminal() { return this._terminal }
   set terminal(terminal) { return this.setTerminal(terminal), this.terminal }
 
@@ -904,7 +908,7 @@ export class Program extends EventEmitter {
     }
 
     // XTerm / X10
-    if (parts = /^\x1b\[M([\x00\u0020-\uffff]{3})/.exec(s)) {
+    if ((parts = /^\x1b\[M([\x00\u0020-\uffff]{3})/.exec(s))) {
       b = parts[1].charCodeAt(0)
       x = parts[1].charCodeAt(1)
       y = parts[1].charCodeAt(2)
@@ -935,7 +939,7 @@ export class Program extends EventEmitter {
       } else if (b === 3) {
         // NOTE: x10 and urxvt have no way
         // of telling which button mouseup used.
-        key.action = 'mouseup'
+        key.action = MOUSEUP
         key.button = this._lastButton || 'unknown'
         delete this._lastButton
       } else {
@@ -1003,7 +1007,7 @@ export class Program extends EventEmitter {
       } else if (b === 3) {
         // NOTE: x10 and urxvt have no way
         // of telling which button mouseup used.
-        key.action = 'mouseup'
+        key.action = MOUSEUP
         key.button = this._lastButton || 'unknown'
         delete this._lastButton
       } else {
@@ -1036,7 +1040,7 @@ export class Program extends EventEmitter {
       return
     }
     // SGR
-    if (parts = /^\x1b\[<(\d+;\d+;\d+)([mM])/.exec(s)) {
+    if ((parts = /^\x1b\[<(\d+;\d+;\d+)([mM])/.exec(s))) {
       down = parts[2] === 'M'
       params = parts[1].split(';')
       b = +params[0]
@@ -1064,7 +1068,7 @@ export class Program extends EventEmitter {
       } else {
         key.action = down
           ? MOUSEDOWN
-          : 'mouseup'
+          : MOUSEUP
         button = b & 3
         key.button =
           button === 0 ? 'left'
@@ -1096,7 +1100,7 @@ export class Program extends EventEmitter {
     // DEC
     // The xterm mouse documentation says there is a
     // `<` prefix, the DECRQLP says there is no prefix.
-    if (parts = /^\x1b\[<(\d+;\d+;\d+;\d+)&w/.exec(s)) {
+    if ((parts = /^\x1b\[<(\d+;\d+;\d+;\d+)&w/.exec(s))) {
       params = parts[1].split(';')
       b = +params[0]
       x = +params[1]
@@ -1115,7 +1119,7 @@ export class Program extends EventEmitter {
       if (this.zero) key.x--, key.y--
 
       key.action = b === 3
-        ? 'mouseup'
+        ? MOUSEUP
         : MOUSEDOWN
 
       key.button =
@@ -1191,7 +1195,7 @@ export class Program extends EventEmitter {
       const key = {
         name: MOUSE,
         type: 'GPM',
-        action: 'mouseup',
+        action: MOUSEUP,
         button: self.gpm.ButtonName(btn),
         raw: [ btn, modifier, x, y ],
         x: x,
@@ -1290,7 +1294,7 @@ export class Program extends EventEmitter {
     // Send Device Attributes (Primary DA).
     // CSI > P s c
     // Send Device Attributes (Secondary DA).
-    if (parts = /^\x1b\[(\?|>)(\d*(?:;\d*)*)c/.exec(s)) {
+    if ((parts = /^\x1b\[(\?|>)(\d*(?:;\d*)*)c/.exec(s))) {
       parts = parts[2].split(';').map(ch => +ch || 0)
 
       out.event = 'device-attributes'
@@ -1394,7 +1398,6 @@ export class Program extends EventEmitter {
 
       return
     }
-
     // CSI Ps n  Device Status Report (DSR).
     //     Ps = 5  -> Status Report.  Result (``OK'') is
     //   CSI 0 n
@@ -1411,7 +1414,7 @@ export class Program extends EventEmitter {
     //     Ps = 5 3  -> Report Locator status as
     //   CSI ? 5 3  n  Locator available, if compiled-in, or
     //   CSI ? 5 0  n  No Locator, if not.
-    if (parts = /^\x1b\[(\?)?(\d+)(?:;(\d+);(\d+);(\d+))?n/.exec(s)) {
+    if ((parts = /^\x1b\[(\?)?(\d+)(?:;(\d+);(\d+);(\d+))?n/.exec(s))) {
       out.event = 'device-status'
       out.code = 'DSR'
       if (!parts[1] && parts[2] === '0' && !parts[3]) {
@@ -1487,7 +1490,7 @@ export class Program extends EventEmitter {
     //   Device Status Report (DSR, DEC-specific).
     //     Ps = 6  -> Report Cursor Position (CPR) [row;column] as CSI
     //     ? r ; c R (assumes page is zero).
-    if (parts = /^\x1b\[(\?)?(\d+);(\d+)R/.exec(s)) {
+    if ((parts = /^\x1b\[(\?)?(\d+);(\d+)R/.exec(s))) {
       out.event = 'device-status'
       out.code = 'DSR'
       out.type = 'cursor-status'
@@ -1521,7 +1524,7 @@ export class Program extends EventEmitter {
     //     Result is CSI  8  ;  height ;  width t
     //     Ps = 1 9  -> Report the size of the screen in characters.
     //     Result is CSI  9  ;  height ;  width t
-    if (parts = /^\x1b\[(\d+)(?:;(\d+);(\d+))?t/.exec(s)) {
+    if ((parts = /^\x1b\[(\d+)(?:;(\d+);(\d+))?t/.exec(s))) {
       out.event = 'window-manipulation'
       out.code = ''
       if ((parts[1] === '1' || parts[1] === '2') && !parts[2]) {
@@ -1603,7 +1606,6 @@ export class Program extends EventEmitter {
       this.emit('response ' + out.event, out)
       return
     }
-
     // rxvt-unicode does not support window manipulation
     //   Result Normal: OSC l/L 0xEF 0xBF 0xBD
     //   Result ASCII: OSC l/L 0x1c (file separator)
@@ -1614,11 +1616,10 @@ export class Program extends EventEmitter {
     //   -
     //   echo -ne '\e[>3t'
     //   sleep 2 && echo -ne '\e[21t' & cat -v
-    if (parts = /^\x1b\](l|L)([^\x07\x1b]*)$/.exec(s)) {
+    if ((parts = /^\x1b\](l|L)([^\x07\x1b]*)$/.exec(s))) {
       parts[2] = 'rxvt'
       s = '\x1b]' + parts[1] + parts[2] + '\x1b\\'
     }
-
     // CSI Ps ; Ps ; Ps t
     //   Window manipulation (from dtterm, as well as extensions).
     //   These controls may be disabled using the allowWindowOps
@@ -1628,7 +1629,7 @@ export class Program extends EventEmitter {
     //     OSC  L  label ST
     //     Ps = 2 1  -> Report xterm window's title.  Result is OSC  l
     //     label ST
-    if (parts = /^\x1b\](l|L)([^\x07\x1b]*)(?:\x07|\x1b\\)/.exec(s)) {
+    if ((parts = /^\x1b\](l|L)([^\x07\x1b]*)(?:\x07|\x1b\\)/.exec(s))) {
       out.event = 'window-manipulation'
       out.code = ''
       if (parts[1] === 'L') {
@@ -1659,7 +1660,6 @@ export class Program extends EventEmitter {
       this.emit('response ' + out.event, out)
       return
     }
-
     // CSI Ps ' |
     //   Request Locator Position (DECRQLP).
     //     -> CSI Pe ; Pb ; Pr ; Pc ; Pp &  w
@@ -1693,7 +1693,7 @@ export class Program extends EventEmitter {
     // method, but it might make more sense here.
     // The xterm mouse documentation says there is a
     // `<` prefix, the DECRQLP says there is no prefix.
-    if (parts = /^\x1b\[(\d+(?:;\d+){4})&w/.exec(s)) {
+    if ((parts = /^\x1b\[(\d+(?:;\d+){4})&w/.exec(s))) {
       parts = parts[1].split(';').map(ch => +ch)
       out.event = 'locator-position'
       out.code = 'DECRQLP'

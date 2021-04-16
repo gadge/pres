@@ -42,6 +42,7 @@ export const
   MOUSEMOVE          = 'mousemove',
   MOUSEOUT           = 'mouseout',
   MOUSEOVER          = 'mouseover',
+  MOUSEUP            = 'mouseup',
   MOUSEWHEEL         = 'mousewheel',
   MOVE               = 'move',
   NEW_LISTENER       = 'newListener',

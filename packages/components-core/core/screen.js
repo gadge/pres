@@ -23,6 +23,7 @@ import {
   MOUSEOUT,
   MOUSEOVER,
   MOUSEWHEEL,
+  MOUSEUP,
   NEW_LISTENER,
   PRERENDER,
   RENDER,
@@ -159,7 +160,7 @@ export class Screen extends Node {
         || type === MOUSEOVER
         || type === MOUSEOUT
         || type === MOUSEDOWN
-        || type === 'mouseup'
+        || type === MOUSEUP
         || type === MOUSEWHEEL
         || type === WHEELDOWN
         || type === WHEELUP
@@ -387,7 +388,7 @@ export class Screen extends Node {
           el.emit(MOUSE, data)
           if (data.action === MOUSEDOWN) {
             self.mouseDown = el
-          } else if (data.action === 'mouseup') {
+          } else if (data.action === MOUSEUP) {
             (self.mouseDown || el).emit(CLICK, data)
             self.mouseDown = null
           } else if (data.action === MOUSEMOVE) {
@@ -411,7 +412,7 @@ export class Screen extends Node {
       // Just mouseover?
       if ((data.action === MOUSEMOVE
         || data.action === MOUSEDOWN
-        || data.action === 'mouseup')
+        || data.action === MOUSEUP)
         && self.hover
         && !set) {
         self.hover.emit(MOUSEOUT, data)

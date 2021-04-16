@@ -81,10 +81,10 @@ export class ScrollableBox extends Box {
             // If mouseup occurs out of the window, no mouseup event fires, and
             // scrollbar will drag again on mousedown until another mouseup
             // occurs.
-            self.onScreenEvent('mouseup', smu = function () {
+            self.onScreenEvent(MOUSEUP, smu = function () {
               self._scrollingBar = false
               self.removeScreenEvent(MOUSEDOWN, smd)
-              self.removeScreenEvent('mouseup', smu)
+              self.removeScreenEvent(MOUSEUP, smu)
             })
           }
         })

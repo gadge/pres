@@ -1696,7 +1696,6 @@ export class Tput {
           + ' v)')
         continue
       }
-
       // %A, %O
       //   logical AND and OR operations (for conditionals)
       if (read(/^%([AO])/)) {
@@ -1706,14 +1705,12 @@ export class Tput {
           + ' stack.pop())), v)')
         continue
       }
-
       // %! %~
       //   unary operations (logical and bit complement): push(op pop())
       if (read(/^%([!~])/)) {
         expr('(stack.push(v = ' + ch + 'stack.pop()), v)')
         continue
       }
-
       // %i   add 1 to first two parameters (for ANSI terminals)
       if (read(/^%i/)) {
         // Are these supposed to go on the stack in certain situations?
@@ -1725,7 +1722,6 @@ export class Tput {
         expr('(params[0]++, params[1]++)')
         continue
       }
-
       // %? expr %t thenpart %e elsepart %;
       //   This forms an if-then-else.  The %e elsepart is optional.  Usually
       //   the %? expr part pushes a value onto the stack, and %t pops it from
@@ -1739,7 +1735,6 @@ export class Tput {
         stmt(';if (')
         continue
       }
-
       if (read(/^%t/)) {
         end = -1
         // Technically this is supposed to pop everything off the stack that was
@@ -1752,7 +1747,6 @@ export class Tput {
         stmt(') {')
         continue
       }
-
       // Terminfo does elseif's like
       // this: %?[expr]%t...%e[expr]%t...%;
       if (read(/^%e/)) {
@@ -1770,35 +1764,27 @@ export class Tput {
         }
         continue
       }
-
       if (read(/^%;/)) {
         end = null
         stmt('}')
         continue
       }
-
       buff += val[0]
       val = val.substring(1)
     }
-
     // Clear the buffer of any remaining text.
     clear()
-
     // Some terminfos (I'm looking at you, atari-color), don't end an if
     // statement. It's assumed terminfo will automatically end it for
     // them, because they are a bunch of lazy bastards.
-    if (end != null) {
-      stmt('}')
-    }
-
+    if (end != null) stmt('}')
     // Add the footer.
     stmt(footer)
-
     // Optimize and cleanup generated code.
     v = code.slice(header.length, -footer.length)
     if (!v.length) {
       code = 'return "";'
-    } else if (v = /^out\.push\(("(?:[^"]|\\")+")\)$/.exec(v)) {
+    } else if ((v = /^out\.push\(("(?:[^"]|\\")+")\)$/.exec(v))) {
       code = 'return ' + v[1] + ';'
     } else {
       // Turn `(stack.push(v = params[0]), v),out.push(stack.pop())`
@@ -1806,26 +1792,20 @@ export class Tput {
       code = code.replace(
         /\(stack\.push\(v = params\[(\d+)\]\), v\),out\.push\(stack\.pop\(\)\)/g,
         'out.push(params[$1])')
-
       // Remove unnecessary variable initializations.
       v = code.slice(header.length, -footer.length)
       if (!~v.indexOf('v = ')) code = code.replace('v, ', '')
       if (!~v.indexOf('dyn')) code = code.replace('dyn = {}, ', '')
       if (!~v.indexOf('stat')) code = code.replace('stat = {}, ', '')
       if (!~v.indexOf('stack')) code = code.replace('stack = [], ', '')
-
       // Turn `var out = [];out.push("foo"),` into `var out = ["foo"];`.
       code = code.replace(
         /out = \[\];out\.push\(("(?:[^"]|\\")+")\),/,
         'out = [$1];')
     }
-
     // Terminfos `wyse350-vb`, and `wy350-w`
     // seem to have a few broken strings.
-    if (str === '\u001b%?') {
-      code = 'return "\\x1b";'
-    }
-
+    if (str === '\u001b%?') code = 'return "\\x1b";'
     if (this.debug) {
       v = code
         .replace(/\x1b/g, '\\x1b')
@@ -1833,7 +1813,6 @@ export class Tput {
         .replace(/\n/g, '\\n')
       process.stdout.write(v + '\n')
     }
-
     try {
       if (this.options.stringify && code.indexOf('return ') === 0) {
         return new Function('', code)()
@@ -1854,38 +1833,28 @@ export class Tput {
 // See: ~/ncurses/ncurses/tinfo/lib_tputs.c
   _print(code, print, done) {
     const xon = !this.bools.needs_xon_xoff || this.bools.xon_xoff
-
     print = print || write
     done = done || noop
-
     if (!this.padding) {
       print(code)
       return done()
     }
-
     const parts = code.split(/(?=\$<[\d.]+[*\/]{0,2}>)/)
     let i = 0;
-
     (function next() {
-      if (i === parts.length) {
-        return done()
-      }
-
+      if (i === parts.length) return done()
       let part = parts[i++]
       const padding = /^\$<([\d.]+)([*\/]{0,2})>/.exec(part)
       let amount,
           suffix
       // , affect;
-
       if (!padding) {
         print(part)
         return next()
       }
-
       part = part.substring(padding[0].length)
       amount = +padding[1]
       suffix = padding[2]
-
       // A `/'  suffix indicates  that  the  padding  is  mandatory and forces a
       // delay of the given number of milliseconds even on devices for which xon
       // is present to indicate flow control.
@@ -1893,7 +1862,6 @@ export class Tput {
         print(part)
         return next()
       }
-
       // A `*' indicates that the padding required is proportional to the number
       // of lines affected by the operation, and  the amount  given  is the
       // per-affected-unit padding required.  (In the case of insert character,
@@ -1916,7 +1884,6 @@ export class Tput {
         //   amount *= process.stdout.rows;
         // }
       }
-
       return setTimeout(function () {
         print(part)
         return next()

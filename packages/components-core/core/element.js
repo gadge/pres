@@ -15,6 +15,7 @@ import {
   MOUSEDOWN,
   MOUSEMOVE,
   MOUSEOUT,
+  MOUSEUP,
   MOUSEOVER,
   MOUSEWHEEL,
   MOVE,
@@ -168,7 +169,7 @@ export class Element extends Node {
         || type === MOUSEOVER
         || type === MOUSEOUT
         || type === MOUSEDOWN
-        || type === 'mouseup'
+        || type === MOUSEUP
         || type === MOUSEWHEEL
         || type === WHEELDOWN
         || type === WHEELUP
@@ -698,7 +699,7 @@ export class Element extends Node {
       attrs[j] = attr
       for (i = 0; i < line.length; i++) {
         if (line[i] === '\x1b') {
-          if (c = /^\x1b\[[\d;]*m/.exec(line.substring(i))) {
+          if ((c = /^\x1b\[[\d;]*m/.exec(line.substring(i)))) {
             attr = this.screen.attrCode(c[0], attr, dattr)
             i += c[0].length - 1
           }
@@ -1867,7 +1868,7 @@ export class Element extends Node {
 
         // Handle escape codes.
         while (ch === '\x1b') {
-          if (c = /^\x1b\[[\d;]*m/.exec(content.substring(ci - 1))) {
+          if ((c = /^\x1b\[[\d;]*m/.exec(content.substring(ci - 1)))) {
             ci += c[0].length - 1
             attr = this.screen.attrCode(c[0], attr, dattr)
             // Ignore foreground changes for selected items.
