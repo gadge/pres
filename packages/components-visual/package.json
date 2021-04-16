@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-visual",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Core components for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,10 +15,10 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/components-core": "^0.0.7",
-    "@pres/enum-font-zhekov": "^0.0.7",
-    "@pres/util-colors": "^0.0.7",
-    "@pres/util-helpers": "^0.0.7"
+    "@pres/components-core": "^0.0.8",
+    "@pres/enum-font-zhekov": "^0.0.8",
+    "@pres/util-colors": "^0.0.8",
+    "@pres/util-helpers": "^0.0.8"
   },
   "repository": {
     "type": "git",

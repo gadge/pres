@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-inform",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "Core components for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,9 +15,9 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/components-core": "^0.0.7",
-    "@pres/components-form": "^0.0.7",
-    "@pres/components-text": "^0.0.7"
+    "@pres/components-core": "^0.0.8",
+    "@pres/components-form": "^0.0.8",
+    "@pres/components-text": "^0.0.8"
   },
   "repository": {
     "type": "git",
