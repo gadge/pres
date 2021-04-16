@@ -8,12 +8,12 @@
  * Modules
  */
 import { Box, Node } from '@pres/components-core'
-import { List }      from './list'
-import { Table }     from './table'
 
-import { ATTACH, REMOVE_LISTENER, EVENT, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEW_LISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHT_EXCEPTION, WARNING, ACTION, ADD_ITEM, ADOPT, BTNDOWN, BTNUP, CD, CHECK, COMPLETE, CONNECT, CREATE_ITEM, DBLCLICK, DRAG, INSERT_ITEM, _LOG, MOVE, PARSED_CONTENT, PASSTHROUGH, REFRESH, REMOVE, REMOVE_ITEM, REPARENT, RESPONSE, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS, UNCHECK, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
+import { ATTACH, RESIZE, SCROLL, } from '@pres/enum-events'
+import { List }                    from './list'
+import { Table }                   from './table'
 
-export class  ListTable extends List {
+export class ListTable extends List {
   /**
    * ListTable
    */
@@ -76,10 +76,10 @@ export class  ListTable extends List {
     this._select = ListTable.prototype.select
   }
   setData(rows) {
-    const self = this,
-      align = this.__align,
-      selected = this.selected,
-      original = this.items.slice()
+    const self     = this,
+          align    = this.__align,
+          selected = this.selected,
+          original = this.items.slice()
     let sel = this.ritems[this.selected]
 
     if (this.visible && this.lpos) {
@@ -174,11 +174,11 @@ export class  ListTable extends List {
     if (!this._maxes) return coords
 
     const lines = this.screen.lines,
-      xi = coords.xi,
-      yi = coords.yi
+          xi    = coords.xi,
+          yi    = coords.yi
     let rx,
-      ry,
-      i
+        ry,
+        i
 
     const battr = this.sattr(this.style.border)
 

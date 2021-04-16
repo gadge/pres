@@ -141,8 +141,8 @@ Tput.ipaths = [
 
 Tput.prototype.readTerminfo = function (term) {
   let data,
-    file,
-    info
+      file,
+      info
 
   term = term || this.terminal
 
@@ -192,11 +192,11 @@ Tput._tprefix =
     if (!prefix) return
 
     let file,
-      dir,
-      i,
-      sdiff,
-      sfile,
-      list
+        dir,
+        i,
+        sdiff,
+        sfile,
+        list
 
     if (Array.isArray(prefix)) {
       for (i = 0; i < prefix.length; i++) {
@@ -278,10 +278,10 @@ Tput._tprefix =
 Tput.prototype.parseTerminfo = function (data, file) {
   const info = {}
   let extended,
-    l = data.length,
-    i = 0,
-    v,
-    o
+      l = data.length,
+      i = 0,
+      v,
+      o
 
   const h = info.header = {
     dataSize: data.length,
@@ -305,9 +305,9 @@ Tput.prototype.parseTerminfo = function (data, file) {
 
   // Names Section
   const names = data.toString('ascii', i, i + h.namesSize - 1),
-    parts = names.split('|'),
-    name = parts[0],
-    desc = parts.pop()
+        parts = names.split('|'),
+        name  = parts[0],
+        desc  = parts.pop()
 
   info.name = name
   info.names = parts
@@ -472,7 +472,7 @@ Tput.prototype.parseTerminfo = function (data, file) {
 Tput.prototype.parseExtended = function (data) {
   const info = {}
   let l = data.length,
-    i = 0
+      i = 0
 
   const h = info.header = {
     dataSize: data.length,
@@ -565,7 +565,7 @@ Tput.prototype.parseExtended = function (data) {
   l = data.length
 
   var sym = [],
-    j
+      j
 
   for (; i < l; i++) {
     j = i
@@ -658,8 +658,8 @@ Tput.prototype.compile = function (info) {
 }
 
 Tput.prototype.inject = function (info) {
-  const self = this,
-    methods = info.methods || info
+  const self    = this,
+        methods = info.methods || info
 
   Object.keys(methods).forEach(function (key) {
     if (typeof methods[key] !== 'function') {
@@ -737,18 +737,18 @@ Tput.prototype._compile = function (info, key, str) {
     }
   }
 
-  const tkey = info.name + '.' + key,
-    header = 'var v, dyn = {}, stat = {}, stack = [], out = [];',
-    footer = ';return out.join("");'
+  const tkey   = info.name + '.' + key,
+        header = 'var v, dyn = {}, stat = {}, stack = [], out = [];',
+        footer = ';return out.join("");'
   let code = header,
-    val = str,
-    buff = '',
-    cap,
-    ch,
-    fi,
-    then,
-    els,
-    end
+      val  = str,
+      buff = '',
+      cap,
+      ch,
+      fi,
+      then,
+      els,
+      end
 
   function read(regex, no) {
     cap = regex.exec(val)
@@ -1166,7 +1166,7 @@ Tput.prototype._print = function (code, print, done) {
     let part = parts[i++]
     const padding = /^\$<([\d.]+)([*\/]{0,2})>/.exec(part)
     let amount,
-      suffix
+        suffix
     // , affect;
 
     if (!padding) {
@@ -1313,8 +1313,8 @@ Tput.prototype._tryCap = function (file, term) {
   if (!file) return
 
   let terms,
-    data,
-    i
+      data,
+      i
 
   if (Array.isArray(file)) {
     for (i = 0; i < file.length; i++) {
@@ -1367,14 +1367,14 @@ Tput.prototype._tryCap = function (file, term) {
 Tput.prototype.parseTermcap = function (data, file) {
   const terms = {}
   let parts,
-    term,
-    entries,
-    fields,
-    field,
-    names,
-    i,
-    j,
-    k
+      term,
+      entries,
+      fields,
+      field,
+      names,
+      i,
+      j,
+      k
 
   // remove escaped newlines
   data = data.replace(/\\\n[ \t]*/g, '')
@@ -1436,7 +1436,7 @@ Tput.prototype.parseTermcap = function (data, file) {
 
 Tput.prototype.translateTermcap = function (info) {
   const self = this,
-    out = {}
+        out  = {}
 
   if (!info) return
 
@@ -1513,16 +1513,16 @@ Tput.prototype._captoinfo = function (cap, s, parameterized) {
   }
 
   const MAX_PUSHED = 16,
-    stack = []
+        stack      = []
 
   let stackptr = 0,
-    onstack = 0,
-    seenm = 0,
-    seenn = 0,
-    seenr = 0,
-    param = 1,
-    i = 0,
-    out = ''
+      onstack  = 0,
+      seenm    = 0,
+      seenn    = 0,
+      seenr    = 0,
+      param    = 1,
+      i        = 0,
+      out      = ''
 
   function warn() {
     const args = Array.prototype.slice.call(arguments)
@@ -1541,7 +1541,7 @@ Tput.prototype._captoinfo = function (cap, s, parameterized) {
   // convert a character to a terminfo push
   function cvtchar(sp) {
     let c = '\0',
-      len
+        len
 
     let j = i
 
@@ -1965,9 +1965,9 @@ Tput.prototype._captoinfo = function (cap, s, parameterized) {
  */
 
 Tput.prototype.getAll = function () {
-  const dir = this._prefix(),
-    list = asort(fs.readdirSync(dir)),
-    infos = []
+  const dir   = this._prefix(),
+        list  = asort(fs.readdirSync(dir)),
+        infos = []
 
   list.forEach(function (letter) {
     const terms = asort(fs.readdirSync(path.resolve(dir, letter)))
@@ -1987,7 +1987,7 @@ Tput.prototype.getAll = function () {
 
 Tput.prototype.compileAll = function (start) {
   const self = this,
-    all = {}
+        all  = {}
 
   this.getAll().forEach(function (name) {
     if (start && name !== start) {
@@ -2130,8 +2130,8 @@ Tput.prototype.parseACS = function (info) {
   // See: ~/ncurses/ncurses/tinfo/lib_acs.c: L208
   Object.keys(Tput.acsc).forEach(function (ch) {
     const acs_chars = info.strings.acs_chars || '',
-      i = acs_chars.indexOf(ch),
-      next = acs_chars[i + 1]
+          i         = acs_chars.indexOf(ch),
+          next      = acs_chars[i + 1]
 
     if (!next || i === -1 || !Tput.acsc[next]) {
       return
@@ -2230,7 +2230,7 @@ function tryRead(file) {
 
 function sprintf(src) {
   const params = Array.prototype.slice.call(arguments, 1),
-    rule = /%([\-+# ]{1,4})?(\d+(?:\.\d+)?)?([doxXsc])/g
+        rule   = /%([\-+# ]{1,4})?(\d+(?:\.\d+)?)?([doxXsc])/g
   let i = 0
 
   return src.replace(rule, function (_, flag, width, type) {

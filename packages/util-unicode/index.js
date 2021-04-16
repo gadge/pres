@@ -5,6 +5,8 @@
  * Borrowed from vangie/east-asian-width, komagata/eastasianwidth,
  * and mathiasbynens/String.prototype.codePointAt. Licenses below.
  */
+import { _Screen } from '@pres/components-node'
+
 const stringFromCharCode = String.fromCharCode
 const floor = Math.floor
 
@@ -21,24 +23,18 @@ export function charWidth(str, i) {
 
   // tab
   if (point === 0x09) {
-    if (!exports.blessed) {
-      exports.blessed = require('../blessed')
-    }
-    return exports.blessed.screen.global
-      ? exports.blessed.screen.global.tabc.length
+    // if (!exports.blessed) exports.blessed = require('../blessed')
+    return _Screen.global
+      ? _Screen.global.tabc.length
       : 8
   }
 
   // 8-bit control characters (2-width according to unicode??)
-  if (point < 32 || (point >= 0x7f && point < 0xa0)) {
-    return 0
-  }
+  if (point < 32 || (point >= 0x7f && point < 0xa0)) return 0
 
   // search table of non-spacing characters
   // is ucs combining or C0/C1 control character
-  if (combining[point]) {
-    return 0
-  }
+  if (combining[point]) return 0
 
   // check for double-wide
   // if (point >= 0x1100
@@ -58,13 +54,14 @@ export function charWidth(str, i) {
   // }
 
   // check for double-wide
-  if ((0x3000 === point)
+  if (
+    (0x3000 === point)
     || (0xFF01 <= point && point <= 0xFF60)
-    || (0xFFE0 <= point && point <= 0xFFE6)) {
-    return 2
-  }
+    || (0xFFE0 <= point && point <= 0xFFE6)
+  ) return 2
 
-  if ((0x1100 <= point && point <= 0x115F)
+  if (
+    (0x1100 <= point && point <= 0x115F)
     || (0x11A3 <= point && point <= 0x11A7)
     || (0x11FA <= point && point <= 0x11FF)
     || (0x2329 <= point && point <= 0x232A)
@@ -101,9 +98,8 @@ export function charWidth(str, i) {
     || (0x1F250 <= point && point <= 0x1F251)
     || (0x20000 <= point && point <= 0x2F73F)
     || (0x2B740 <= point && point <= 0x2FFFD)
-    || (0x30000 <= point && point <= 0x3FFFD)) {
-    return 2
-  }
+    || (0x30000 <= point && point <= 0x3FFFD)
+  ) return 2
 
   // CJK Ambiguous
   // http://www.unicode.org/reports/tr11/
@@ -285,7 +281,6 @@ export function charWidth(str, i) {
       return +process.env.NCURSES_CJK_WIDTH || 1
     }
   }
-
   return 1
 }
 
@@ -422,9 +417,7 @@ export function codePointAt(str, position) {
 // };
 
 export function fromCodePoint() {
-  if (String.fromCodePoint) {
-    return String.fromCodePoint.apply(String, arguments)
-  }
+  if (String.fromCodePoint) return String.fromCodePoint.apply(String, arguments)
   const MAX_SIZE = 0x4000
   const codeUnits = []
   let highSurrogate

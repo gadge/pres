@@ -66,8 +66,8 @@ function PNG(file, options) {
 
 PNG.prototype.parseRaw = function (buf) {
   var chunks = []
-    , index = 0
-    , i = 0
+    , index  = 0
+    , i      = 0
     , buf
     , len
     , type
@@ -376,7 +376,7 @@ PNG.prototype.unfilterLine = function (filter, line, prior) {
 
 PNG.prototype.sampleLine = function (line, width) {
   let samples = []
-    , x = 0
+    , x       = 0
     , pendingSamples
     , ch
     , i
@@ -451,9 +451,9 @@ PNG.prototype.filters = {
   _predictor: function PaethPredictor(a, b, c) {
     // a = left, b = above, c = upper left
     const p = a + b - c
-      , pa = Math.abs(p - a)
-      , pb = Math.abs(p - b)
-      , pc = Math.abs(p - c)
+      , pa  = Math.abs(p - a)
+      , pb  = Math.abs(p - b)
+      , pc  = Math.abs(p - c)
     if (pa <= pb && pa <= pc) return a
     if (pb <= pc) return b
     return c
@@ -617,13 +617,13 @@ PNG.prototype.createBitmap = function (pixels) {
 }
 
 PNG.prototype.createCellmap = function (bmp, options) {
-  var bmp = bmp || this.bmp
-    , options = options || this.options
-    , cellmap = []
-    , scale = options.scale || 0.20
-    , height = bmp.length
-    , width = bmp[0].length
-    , cmwidth = options.width
+  var bmp      = bmp || this.bmp
+    , options  = options || this.options
+    , cellmap  = []
+    , scale    = options.scale || 0.20
+    , height   = bmp.length
+    , width    = bmp[0].length
+    , cmwidth  = options.width
     , cmheight = options.height
     , line
     , x
@@ -700,7 +700,7 @@ PNG.prototype.renderContent = function (bmp, el) {
 
 PNG.prototype.renderScreen = function (bmp, screen, xi, xl, yi, yl) {
   const self = this
-    , lines = screen.lines
+    , lines  = screen.lines
   let cellLines
     , y
     , yy
@@ -714,7 +714,7 @@ PNG.prototype.renderScreen = function (bmp, screen, xi, xl, yi, yl) {
     const cellLine = []
     line.forEach(function (pixel, x) {
       const outch = self.getOutch(x, y, line, pixel)
-        , cell = self.pixelToCell(pixel, outch)
+        , cell    = self.pixelToCell(pixel, outch)
       cellLine.push(cell)
     })
     cellLines.push(cellLine)
@@ -750,17 +750,17 @@ PNG.prototype.renderScreen = function (bmp, screen, xi, xl, yi, yl) {
 
 PNG.prototype.renderElement = function (bmp, el) {
   const xi = el.aleft + el.ileft
-    , xl = el.aleft + el.width - el.iright
-    , yi = el.atop + el.itop
-    , yl = el.atop + el.height - el.ibottom
+    , xl   = el.aleft + el.width - el.iright
+    , yi   = el.atop + el.itop
+    , yl   = el.atop + el.height - el.ibottom
 
   return this.renderScreen(bmp, el.screen, xi, xl, yi, yl)
 }
 
 PNG.prototype.pixelToSGR = function (pixel, ch) {
   const bga = 1.0
-    , fga = 0.5
-    , a = pixel.a / 255
+    , fga   = 0.5
+    , a     = pixel.a / 255
   let bg
     , fg
 
@@ -787,8 +787,8 @@ PNG.prototype.pixelToSGR = function (pixel, ch) {
 
 PNG.prototype.pixelToTags = function (pixel, ch) {
   const bga = 1.0
-    , fga = 0.5
-    , a = pixel.a / 255
+    , fga   = 0.5
+    , a     = pixel.a / 255
   let bg
     , fg
 
@@ -815,8 +815,8 @@ PNG.prototype.pixelToTags = function (pixel, ch) {
 
 PNG.prototype.pixelToCell = function (pixel, ch) {
   const bga = 1.0
-    , fga = 0.5
-    , a = pixel.a / 255
+    , fga   = 0.5
+    , a     = pixel.a / 255
   let bg
     , fg
 
@@ -846,17 +846,17 @@ PNG.prototype.getOutch = (function () {
 
   const luminance = function (pixel) {
     const a = pixel.a / 255
-      , r = pixel.r * a
-      , g = pixel.g * a
-      , b = pixel.b * a
-      , l = 0.2126 * r + 0.7152 * g + 0.0722 * b
+      , r   = pixel.r * a
+      , g   = pixel.g * a
+      , b   = pixel.b * a
+      , l   = 0.2126 * r + 0.7152 * g + 0.0722 * b
 
     return l / 255
   }
 
   return function (x, y, line, pixel) {
     const lumi = luminance(pixel)
-      , outch = dchars[lumi * (dchars.length - 1) | 0]
+      , outch  = dchars[lumi * (dchars.length - 1) | 0]
 
     return outch
   }
@@ -875,8 +875,8 @@ PNG.prototype.compileFrames_lomem = function (frames) {
     this.height = frame.fctl.height
 
     const pixels = frame._pixels || this.parseLines(frame.fdat)
-      , bmp = frame._bmp || this.createBitmap(pixels)
-      , fc = frame.fctl
+      , bmp      = frame._bmp || this.createBitmap(pixels)
+      , fc       = frame.fctl
 
     return {
       actl: this.actl,
@@ -897,11 +897,11 @@ PNG.prototype.compileFrames_locpu = function (frames) {
     this.width = frame.fctl.width
     this.height = frame.fctl.height
 
-    const pixels = frame._pixels || this.parseLines(frame.fdat)
-      , bmp = frame._bmp || this.createBitmap(pixels)
+    const pixels  = frame._pixels || this.parseLines(frame.fdat)
+      , bmp       = frame._bmp || this.createBitmap(pixels)
       , renderBmp = this.renderFrame(bmp, frame, i)
-      , cellmap = this.createCellmap(renderBmp)
-      , fc = frame.fctl
+      , cellmap   = this.createCellmap(renderBmp)
+      , fc        = frame.fctl
 
     return {
       actl: this.actl,
@@ -915,10 +915,10 @@ PNG.prototype.compileFrames_locpu = function (frames) {
 
 PNG.prototype.renderFrame = function (bmp, frame, i) {
   const first = this.frames[0]
-    , last = this.frames[i - 1]
-    , fc = frame.fctl
-    , xo = fc.xOffset
-    , yo = fc.yOffset
+    , last    = this.frames[i - 1]
+    , fc      = frame.fctl
+    , xo      = fc.xOffset
+    , yo      = fc.yOffset
   let lxo
     , lyo
     , x
@@ -997,7 +997,7 @@ PNG.prototype._animate = function (callback) {
   const self = this
   let numPlays = this.actl.numPlays || Infinity
   let running = 0
-    , i = -1
+    , i       = -1
 
   this._curBmp = null
   this._lastBmp = null
@@ -1015,9 +1015,9 @@ PNG.prototype._animate = function (callback) {
       return setImmediate(next)
     }
 
-    const bmp = frame.bmp
+    const bmp     = frame.bmp
       , renderBmp = self.renderFrame(bmp, frame, i)
-      , cellmap = self.createCellmap(renderBmp)
+      , cellmap   = self.createCellmap(renderBmp)
 
     callback(renderBmp, cellmap)
     return setTimeout(next, frame.delay / self.speed | 0)
@@ -1077,8 +1077,8 @@ PNG.prototype.stop = function () {
 
 PNG.prototype.toPNG = function (input) {
   const options = this.options
-    , file = this.file
-    , format = this.format
+    , file      = this.file
+    , format    = this.format
   let buf
     , img
     , gif
@@ -1143,8 +1143,8 @@ PNG.prototype.toPNG = function (input) {
 // slice them into frames.
 PNG.prototype.gifMagick = function (input) {
   const options = this.options
-    , file = this.file
-    , format = this.format
+    , file      = this.file
+    , format    = this.format
   let buf
     , fmt
     , img
@@ -1607,7 +1607,7 @@ function GIF(file, options) {
     let row = 0
       , col = 0
       , ilp = 0
-      , p = 0
+      , p   = 0
       , b
       , idx
       , i
@@ -1679,15 +1679,15 @@ function GIF(file, options) {
 // https://github.com/lbv/ka-cs-programs/blob/master/lib/gif-reader.js
 GIF.prototype.decompress = function (input, codeSize) {
   let bitDepth = codeSize + 1
-  const CC = 1 << codeSize
-    , EOI = CC + 1
+  const CC  = 1 << codeSize
+    , EOI   = CC + 1
     , stack = []
-  let table = []
-    , ntable = 0
+  let table   = []
+    , ntable  = 0
     , oldCode = null
-    , buffer = 0
+    , buffer  = 0
     , nbuffer = 0
-    , p = 0
+    , p       = 0
   const buf = []
   let bits
     , read

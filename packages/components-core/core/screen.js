@@ -5,16 +5,49 @@
  */
 
 import { _Screen, Node } from '@pres/components-node'
-import { Program }       from '@pres/program'
-import * as colors       from '@pres/util-colors'
-import { helpers }       from '@pres/util-helpers'
-import { Log }           from '../src/log'
-import { Box }           from './box'
+import {
+  BLUR,
+  CLICK,
+  DESTROY,
+  ELEMENT_CLICK,
+  ELEMENT_MOUSEOUT,
+  ELEMENT_MOUSEOVER,
+  ELEMENT_MOUSEUP,
+  ERROR,
+  EXIT,
+  FOCUS,
+  KEYPRESS,
+  MOUSE,
+  MOUSEDOWN,
+  MOUSEMOVE,
+  MOUSEOUT,
+  MOUSEOVER,
+  MOUSEWHEEL,
+  NEW_LISTENER,
+  PRERENDER,
+  RENDER,
+  RESIZE,
+  SIGINT,
+  SIGQUIT,
+  SIGTERM,
+  UNCAUGHT_EXCEPTION,
+  WARNING,
+  WHEELDOWN,
+  WHEELUP,
+}                  from '@pres/enum-events'
+import { Program } from '@pres/program'
+import * as colors from '@pres/util-colors'
+import { helpers } from '@pres/util-helpers'
+import { Log }     from '../src/log'
+import { Box }     from './box'
+import { spawn } from 'child_process'
 
-import { ATTACH, REMOVE_LISTENER, EVENT, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEW_LISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHT_EXCEPTION, WARNING, ACTION, ADD_ITEM, ADOPT, BTNDOWN, BTNUP, CD, CHECK, COMPLETE, CONNECT, CREATE_ITEM, DBLCLICK, DRAG, INSERT_ITEM, _LOG, MOVE, PARSED_CONTENT, PASSTHROUGH, REFRESH, REMOVE, REMOVE_ITEM, REPARENT, RESPONSE, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS, UNCHECK, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
-
-export class  Screen extends Node {
+export class Screen extends Node {
   type = 'screen'
+  _destroy = this.destroy
+  focusPrev = this.focusPrevious
+  unkey = this.removeKey
+  cursorReset = this.resetCursor
   constructor(options = {}) {
     options.lazy = true
     super(options)
@@ -138,7 +171,6 @@ export class  Screen extends Node {
     this.enter()
     this.postEnter()
   }
-
   get title() { return this.program.title }
   set title(title) { return this.program.title = title }
   get terminal() { return this.program.terminal }
@@ -149,7 +181,6 @@ export class  Screen extends Node {
   get height() { return this.program.rows }
   get focused() { return this.history[this.history.length - 1] }
   set focused(el) {return this.focusPush(el) }
-
   setTerminal(terminal) {
     const entered = !!this.program.isAlt
     if (entered) {
@@ -161,7 +192,6 @@ export class  Screen extends Node {
     this.tput = this.program.tput
     if (entered) { this.enter()}
   }
-
   enter() {
     if (this.program.isAlt) return
     if (!this.cursor._set) {
@@ -182,7 +212,6 @@ export class  Screen extends Node {
     if (this.tput.strings.ena_acs) { this.program._write(this.tput.enacs())}
     this.alloc()
   }
-
   leave() {
     if (!this.program.isAlt) return
     this.program.put.keypad_local()
@@ -204,7 +233,6 @@ export class  Screen extends Node {
       } catch (e) {}
     }
   }
-
   postEnter() {
     const self = this
     if (this.options.debug) {
@@ -273,8 +301,6 @@ export class  Screen extends Node {
       })
     }
   }
-
-  _destroy = this.destroy
   destroy() {
     this.leave()
     const index = _Screen.instances.indexOf(this)
@@ -305,14 +331,11 @@ export class  Screen extends Node {
     }
     this.program.destroy()
   }
-
   log() { return this.program.log.apply(this.program, arguments) }
-
   debug() {
     if (this.debugLog) { this.debugLog.log.apply(this.debugLog, arguments) }
     return this.program.debug.apply(this.program, arguments)
   }
-
   _listenMouse(el) {
     const self = this
 
@@ -417,9 +440,7 @@ export class  Screen extends Node {
       }
     })
   }
-
   enableMouse(el) { this._listenMouse(el) }
-
   _listenKeys(el) {
     const self = this
 
@@ -458,14 +479,11 @@ export class  Screen extends Node {
       }
     })
   }
-
   enableKeys(el) { this._listenKeys(el) }
-
   enableInput(el) {
     this._listenMouse(el)
     this._listenKeys(el)
   }
-
   _initHover() {
     const self = this
 
@@ -521,7 +539,6 @@ export class  Screen extends Node {
       self.render()
     })
   }
-
   alloc(dirty) {
     let x, y
 
@@ -544,11 +561,9 @@ export class  Screen extends Node {
 
     this.program.clear()
   }
-
   realloc() {
     return this.alloc(true)
   }
-
   render() {
     const self = this
 
@@ -591,6 +606,8 @@ export class  Screen extends Node {
     this.emit(RENDER)
   }
 
+// This is how ncurses does it.
+// Scroll down (up cursor-wise).
   blankLine(ch, dirty) {
     const out = []
     for (let x = 0; x < this.cols; x++) {
@@ -600,6 +617,8 @@ export class  Screen extends Node {
     return out
   }
 
+// This is how ncurses does it.
+// Scroll up (down cursor-wise).
   insertLine(n, y, top, bottom) {
     // if (y === top) return this.insertLineNC(n, y, top, bottom);
 
@@ -621,7 +640,6 @@ export class  Screen extends Node {
       this.olines.splice(j, 1)
     }
   }
-
   deleteLine(n, y, top, bottom) {
     // if (y === top) return this.deleteLineNC(n, y, top, bottom);
 
@@ -643,9 +661,6 @@ export class  Screen extends Node {
       this.olines.splice(y, 1)
     }
   }
-
-// This is how ncurses does it.
-// Scroll down (up cursor-wise).
 // This will only work for top line deletion as opposed to arbitrary lines.
   insertLineNC(n, y, top, bottom) {
     if (!this.tput.strings.change_scroll_region
@@ -665,9 +680,6 @@ export class  Screen extends Node {
       this.olines.splice(y, 1)
     }
   }
-
-// This is how ncurses does it.
-// Scroll up (down cursor-wise).
 // This will only work for bottom line deletion as opposed to arbitrary lines.
   deleteLineNC(n, y, top, bottom) {
     if (!this.tput.strings.change_scroll_region
@@ -687,21 +699,7 @@ export class  Screen extends Node {
       this.olines.splice(y, 1)
     }
   }
-
   insertBottom(top, bottom) {
-    return this.deleteLine(1, top, top, bottom)
-  }
-
-  insertTop(top, bottom) {
-    return this.insertLine(1, top, top, bottom)
-  }
-
-  deleteBottom(top, bottom) {
-    return this.clearRegion(0, this.width, bottom, bottom)
-  }
-
-  deleteTop(top, bottom) {
-    // Same as: return this.insertBottom(top, bottom);
     return this.deleteLine(1, top, top, bottom)
   }
 
@@ -713,6 +711,16 @@ export class  Screen extends Node {
 // This will cause a performance/cpu-usage hit,
 // but will it be less or greater than the
 // performance hit of slow-rendering scrollable
+  insertTop(top, bottom) {
+    return this.insertLine(1, top, top, bottom)
+  }
+  deleteBottom(top, bottom) {
+    return this.clearRegion(0, this.width, bottom, bottom)
+  }
+  deleteTop(top, bottom) {
+    // Same as: return this.insertBottom(top, bottom);
+    return this.deleteLine(1, top, top, bottom)
+  }
 // boxes with clean sides?
   cleanSides(el) {
     const pos = el.lpos
@@ -793,7 +801,6 @@ export class  Screen extends Node {
 
     return pos._cleanSides = true
   }
-
   _dockBorders() {
     const lines = this.lines
     let stops = this._borderStops,
@@ -830,7 +837,6 @@ export class  Screen extends Node {
       }
     }
   }
-
   _getAngle(lines, x, y) {
     let angle = 0
     const attr = lines[y][x][0],
@@ -883,7 +889,6 @@ export class  Screen extends Node {
 
     return angleTable[angle] || ch
   }
-
   draw(start, end) {
     // this.emit('predraw');
 
@@ -1229,11 +1234,9 @@ export class  Screen extends Node {
 
     // this.emit('draw');
   }
-
   _reduceColor(color) {
     return colors.reduce(color, this.tput.colors)
   }
-
 // Convert an SGR string to our own attribute format.
   attrCode(code, cur, def) {
     let flags = (cur >> 18) & 0x1ff,
@@ -1339,7 +1342,6 @@ export class  Screen extends Node {
 
     return (flags << 18) | (fg << 9) | bg
   }
-
 // Convert our own attribute format to an SGR string.
   codeAttr(code) {
     const flags = (code >> 18) & 0x1ff
@@ -1406,7 +1408,6 @@ export class  Screen extends Node {
 
     return '\x1b[' + out + 'm'
   }
-
   focusOffset(offset) {
     const shown = this.keyable.filter(function (el) {
       return !el.detached && el.visible
@@ -1432,16 +1433,12 @@ export class  Screen extends Node {
 
     return this.keyable[i].focus()
   }
-
-  focusPrev = this.focusPrevious
   focusPrevious() {
     return this.focusOffset(-1)
   }
-
   focusNext() {
     return this.focusOffset(1)
   }
-
   focusPush(el) {
     if (!el) return
     const old = this.history[this.history.length - 1]
@@ -1451,7 +1448,6 @@ export class  Screen extends Node {
     this.history.push(el)
     this._focus(el, old)
   }
-
   focusPop() {
     const old = this.history.pop()
     if (this.history.length) {
@@ -1459,18 +1455,15 @@ export class  Screen extends Node {
     }
     return old
   }
-
   saveFocus() {
     return this._savedFocus = this.focused
   }
-
   restoreFocus() {
     if (!this._savedFocus) return
     this._savedFocus.focus()
     delete this._savedFocus
     return this.focused
   }
-
   rewindFocus() {
     const old = this.history.pop()
     let el
@@ -1488,7 +1481,6 @@ export class  Screen extends Node {
       old.emit(BLUR)
     }
   }
-
   _focus(self, old) {
     // Find a scrollable ancestor if we have one.
     let el = self
@@ -1520,11 +1512,9 @@ export class  Screen extends Node {
 
     self.emit(FOCUS, old)
   }
-
   clearRegion(xi, xl, yi, yl, override) {
     return this.fillRegion(this.dattr, ' ', xi, xl, yi, yl, override)
   }
-
   fillRegion(attr, ch, xi, xl, yi, yl, override) {
     const lines = this.lines
     let cell,
@@ -1546,20 +1536,15 @@ export class  Screen extends Node {
       }
     }
   }
-
   key() {
     return this.program.key.apply(this, arguments)
   }
-
   onceKey() {
     return this.program.onceKey.apply(this, arguments)
   }
-
-  unkey = this.removeKey
   removeKey() {
     return this.program.unkey.apply(this, arguments)
   }
-
   spawn = function (file, args, options) {
     if (!Array.isArray(args)) {
       options = args
@@ -1568,7 +1553,6 @@ export class  Screen extends Node {
 
     const screen  = this,
           program = screen.program,
-          spawn   = require('child_process').spawn,
           mouse   = program.mouseEnabled
     let ps
 
@@ -1622,7 +1606,6 @@ export class  Screen extends Node {
 
     return ps
   }
-
   exec(file, args, options, callback) {
     const ps = this.spawn(file, args, options)
 
@@ -1638,7 +1621,6 @@ export class  Screen extends Node {
 
     return ps
   }
-
   readEditor(options, callback) {
     if (typeof options === 'string') {
       options = { editor: options }
@@ -1688,7 +1670,6 @@ export class  Screen extends Node {
       })
     })
   }
-
   displayImage(file, callback) {
     if (!file) {
       if (!callback) return
@@ -1728,7 +1709,6 @@ export class  Screen extends Node {
     ps.stdin.write(input + '\n')
     ps.stdin.end()
   }
-
   setEffects(el, fel, over, out, effects, temp) {
     if (!effects) return
 
@@ -1781,7 +1761,6 @@ export class  Screen extends Node {
       element.screen.render()
     })
   }
-
   sigtstp(callback) {
     const self = this
     this.program.sigtstp(function () {
@@ -1791,11 +1770,9 @@ export class  Screen extends Node {
       if (callback) callback()
     })
   }
-
   copyToClipboard(text) {
     return this.program.copyToClipboard(text)
   }
-
   cursorShape(shape, blink) {
     const self = this
 
@@ -1837,7 +1814,6 @@ export class  Screen extends Node {
 
     return this.program.cursorShape(this.cursor.shape, this.cursor.blink)
   }
-
   cursorColor(color) {
     this.cursor.color = color != null
       ? colors.convert(color)
@@ -1850,8 +1826,6 @@ export class  Screen extends Node {
 
     return this.program.cursorColor(colors.ncolors[this.cursor.color])
   }
-
-  cursorReset = this.resetCursor
   resetCursor() {
     this.cursor.shape = 'block'
     this.cursor.blink = false

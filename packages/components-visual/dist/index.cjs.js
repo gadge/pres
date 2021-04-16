@@ -3,13 +3,13 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var componentsCore = require('@pres/components-core');
+var enumEvents = require('@pres/enum-events');
 var colors = require('@pres/util-colors');
 var cp = require('child_process');
 var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
 var zlib = require('zlib');
-var enumEvents = require('@pres/enum-events');
 var utilHelpers = require('@pres/util-helpers');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -1783,6 +1783,22 @@ class ANSIImage extends componentsCore.Box {
     this.type = 'ansiimage';
   }
 
+  static curl(url) {
+    try {
+      return cp__default['default'].execFileSync('curl', ['-s', '-A', '', url], {
+        stdio: ['ignore', 'pipe', 'ignore']
+      });
+    } catch (e) {}
+
+    try {
+      return cp__default['default'].execFileSync('wget', ['-U', '', '-O', '-', url], {
+        stdio: ['ignore', 'pipe', 'ignore']
+      });
+    } catch (e) {}
+
+    throw new Error('curl or wget failed.');
+  }
+
   setImage(file) {
     this.file = typeof file === 'string' ? file : null;
 
@@ -1866,22 +1882,6 @@ class ANSIImage extends componentsCore.Box {
     }
 
     return coords;
-  }
-
-  static curl(url) {
-    try {
-      return cp__default['default'].execFileSync('curl', ['-s', '-A', '', url], {
-        stdio: ['ignore', 'pipe', 'ignore']
-      });
-    } catch (e) {}
-
-    try {
-      return cp__default['default'].execFileSync('wget', ['-U', '', '-O', '-', url], {
-        stdio: ['ignore', 'pipe', 'ignore']
-      });
-    } catch (e) {}
-
-    throw new Error('curl or wget failed.');
   }
 
 }

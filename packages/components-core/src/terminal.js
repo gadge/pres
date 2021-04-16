@@ -4,26 +4,38 @@
  * https://github.com/chjj/blessed
  */
 
-import { Box }  from '../core/box'
-import { Node } from '../core/node'
+import {
+  BLUR,
+  DATA,
+  DESTROY,
+  EXIT,
+  FOCUS,
+  KEYPRESS,
+  MOUSE,
+  MOUSEDOWN,
+  PASSTHROUGH,
+  RENDER,
+  RESIZE,
+  SCROLL,
+  TITLE,
+}              from '@pres/enum-events'
+import pty     from 'pty.js'
+import term    from 'term.js'
+import { Box } from '../core/box'
 
 /**
  * Modules
  */
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
-import { ATTACH, REMOVE_LISTENER, EVENT, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEW_LISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHT_EXCEPTION, WARNING, ACTION, ADD_ITEM, ADOPT, BTNDOWN, BTNUP, CD, CHECK, COMPLETE, CONNECT, CREATE_ITEM, DBLCLICK, DRAG, INSERT_ITEM, _LOG, MOVE, PARSED_CONTENT, PASSTHROUGH, REFRESH, REMOVE, REMOVE_ITEM, REPARENT, RESPONSE, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS, UNCHECK, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
-
-export class  Terminal extends Box {
+export class Terminal extends Box {
   /**
    * Terminal
    */
   constructor(options = {}) {
     options.scrollable = false
     super(options)
-    if (!(this instanceof Node)) {
-      return new Terminal(options)
-    }
+    // if (!(this instanceof Node)) return new Terminal(options)
 
     // XXX Workaround for all motion
     if (this.screen.program.tmux && this.screen.program.tmuxVersion >= 2) {
@@ -85,7 +97,7 @@ export class  Terminal extends Box {
     element.parentNode = element
     element.offsetParent = element
 
-    this.term = require('term.js')({
+    this.term = term({
       termName: this.termName,
       cols: this.width - this.iwidth,
       rows: this.height - this.iheight,
@@ -146,7 +158,7 @@ export class  Terminal extends Box {
 
       let b = data.raw[0]
       const x = data.x - self.aleft,
-        y = data.y - self.atop
+            y = data.y - self.atop
       let s
 
       if (self.term.urxvtMouse) {
@@ -210,7 +222,7 @@ export class  Terminal extends Box {
       return
     }
 
-    this.pty = require('pty.js').fork(this.shell, this.args, {
+    this.pty = pty.fork(this.shell, this.args, {
       name: this.termName,
       cols: this.width - this.iwidth,
       rows: this.height - this.iheight,
@@ -258,9 +270,9 @@ export class  Terminal extends Box {
     this.dattr = this.sattr(this.style)
 
     const xi = ret.xi + this.ileft,
-      xl = ret.xl - this.iright,
-      yi = ret.yi + this.itop,
-      yl = ret.yl - this.ibottom
+          xl = ret.xl - this.iright,
+          yi = ret.yi + this.itop,
+          yl = ret.yl - this.ibottom
     let cursor
 
     const scrollback = this.term.lines.length - (yl - yi)

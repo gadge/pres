@@ -2,8 +2,8 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var Node = require('@pres/components-core');
 var enumEvents = require('@pres/enum-events');
+var Node = require('@pres/components-core');
 var componentsData = require('@pres/components-data');
 var utilHelpers = require('@pres/util-helpers');
 var fs = require('fs');

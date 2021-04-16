@@ -3,7 +3,8 @@
  * Copyright (c) 2010-2015, Joyent, Inc. and other contributors (MIT License)
  * https://github.com/chjj/blessed
  */
-import { EventEmitter }  from '@pres/events'
+import { DATA, KEYPRESS, NEW_LISTENER } from '@pres/enum-events'
+import { EventEmitter }                 from '@pres/events'
 import { StringDecoder } from 'string_decoder' // lazy load
 
 // NOTE: node <=v0.8.x has no EventEmitter.listenerCount
@@ -113,14 +114,14 @@ function emitKeys(stream, s) {
 
   buffer.forEach(function (s) {
     let ch,
-      key = {
-        sequence: s,
-        name: undefined,
-        ctrl: false,
-        meta: false,
-        shift: false
-      },
-      parts
+        key = {
+          sequence: s,
+          name: undefined,
+          ctrl: false,
+          meta: false,
+          shift: false
+        },
+        parts
 
     if (s === '\r') {
       // carriage return
@@ -176,9 +177,9 @@ function emitKeys(stream, s) {
 
       // reassemble the key code leaving out leading \x1b's,
       // the modifier key bitflag and any meaningless "1;" sequence
-      const code = (parts[1] || '') + (parts[2] || '') +
+      const code     = (parts[1] || '') + (parts[2] || '') +
         (parts[4] || '') + (parts[9] || ''),
-        modifier = (parts[3] || parts[8] || 1) - 1
+            modifier = (parts[3] || parts[8] || 1) - 1
 
       // Parse the key modifier
       key.ctrl = !!(modifier & 4)

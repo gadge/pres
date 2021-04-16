@@ -4,23 +4,16 @@
  * https://github.com/chjj/blessed
  */
 
-import { Element, Screen } from '@pres/components-core'
-import * as unicode        from '@pres/util-unicode'
-import fs                  from 'fs'
+/**
+ * Modules
+ */
+const fs = require('fs')
+const unicode = require('./unicode')
 
 /**
  * Helpers
  */
-export const helpers = {
-  get Screen() {
-    if (!helpers._screen) helpers._screen = Screen
-    return helpers._screen
-  },
-  get Element() {
-    if (!helpers._element) helpers._element = Element
-    return helpers._element
-  }
-}
+const helpers = exports
 
 helpers.merge = function (a, b) {
   Object.keys(b).forEach(function (key) {
@@ -154,4 +147,16 @@ helpers.dropUnicode = function (text) {
     .replace(unicode.chars.surrogate, '?')
 }
 
+helpers.__defineGetter__('Screen', function () {
+  if (!helpers._screen) {
+    helpers._screen = require('../widgets/screen')
+  }
+  return helpers._screen
+})
 
+helpers.__defineGetter__('Element', function () {
+  if (!helpers._element) {
+    helpers._element = require('../widgets/element')
+  }
+  return helpers._element
+})

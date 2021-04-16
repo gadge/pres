@@ -2,8 +2,8 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var events = require('@pres/events');
 var enumEvents = require('@pres/enum-events');
+var events = require('@pres/events');
 
 /**
  * screen.js - screen node for blessed

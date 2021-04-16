@@ -6,9 +6,7 @@
 import { Box } from '@pres/components-core'
 import fs      from 'fs'
 
-import { ATTACH, REMOVE_LISTENER, EVENT, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEW_LISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHT_EXCEPTION, WARNING, ACTION, ADD_ITEM, ADOPT, BTNDOWN, BTNUP, CD, CHECK, COMPLETE, CONNECT, CREATE_ITEM, DBLCLICK, DRAG, INSERT_ITEM, _LOG, MOVE, PARSED_CONTENT, PASSTHROUGH, REFRESH, REMOVE, REMOVE_ITEM, REPARENT, RESPONSE, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS, UNCHECK, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
-
-export class  BigText extends Box {
+export class BigText extends Box {
   /**
    * BigText
    */
@@ -28,7 +26,7 @@ export class  BigText extends Box {
   loadFont(filename) {
     const self = this
     let data,
-      font
+        font
 
     data = JSON.parse(fs.readFileSync(filename, 'utf8'))
 
@@ -96,17 +94,17 @@ export class  BigText extends Box {
     const coords = this._render()
     if (!coords) return
 
-    const lines = this.screen.lines,
-      left = coords.xi + this.ileft,
-      top = coords.yi + this.itop,
-      right = coords.xl - this.iright,
-      bottom = coords.yl - this.ibottom
+    const lines  = this.screen.lines,
+          left   = coords.xi + this.ileft,
+          top    = coords.yi + this.itop,
+          right  = coords.xl - this.iright,
+          bottom = coords.yl - this.ibottom
 
     const dattr = this.sattr(this.style),
-      bg = dattr & 0x1ff,
-      fg = (dattr >> 9) & 0x1ff,
-      flags = (dattr >> 18) & 0x1ff,
-      attr = (flags << 18) | (bg << 9) | fg
+          bg    = dattr & 0x1ff,
+          fg    = (dattr >> 9) & 0x1ff,
+          flags = (dattr >> 18) & 0x1ff,
+          attr  = (flags << 18) | (bg << 9) | fg
 
     let x = left, i = 0
     for (; x < right; x += this.ratio.width, i++) {

@@ -4,14 +4,36 @@
  * https://github.com/chjj/blessed
  */
 
-import * as colors       from '@pres/util-colors'
+import {
+  BLUR,
+  BTNDOWN,
+  BTNUP,
+  DATA,
+  DESTROY,
+  DRAG,
+  EXIT,
+  FOCUS,
+  KEYPRESS,
+  MOUSE,
+  MOUSEDOWN,
+  MOUSEMOVE,
+  MOUSEWHEEL,
+  MOVE,
+  NEW_LISTENER,
+  RESIZE,
+  RESPONSE,
+  TITLE,
+  WARNING,
+  WHEELDOWN,
+  WHEELUP,
+}                        from '@pres/enum-events'
 import { EventEmitter }  from '@pres/events'
 import { Tput }          from '@pres/terminfo-parser'
+import * as colors       from '@pres/util-colors'
 import cp                from 'child_process'
 import fs                from 'fs'
 import { StringDecoder } from 'string_decoder'
 import util              from 'util'
-import { ATTACH, REMOVE_LISTENER, EVENT, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEW_LISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHT_EXCEPTION, WARNING, ACTION, ADD_ITEM, ADOPT, BTNDOWN, BTNUP, CD, CHECK, COMPLETE, CONNECT, CREATE_ITEM, DBLCLICK, DRAG, INSERT_ITEM, _LOG, MOVE, PARSED_CONTENT, PASSTHROUGH, REFRESH, REMOVE, REMOVE_ITEM, REPARENT, RESPONSE, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS, UNCHECK, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
 
 
 const
@@ -167,9 +189,9 @@ Program.prototype._log = function (pre, msg) {
 }
 
 Program.prototype.setupDump = function () {
-  const self = this,
-    write = this.output.write,
-    decoder = new StringDecoder('utf8')
+  const self    = this,
+        write   = this.output.write,
+        decoder = new StringDecoder('utf8')
 
   function stringify(data) {
     return caret(data
@@ -231,9 +253,9 @@ Program.prototype.setupTput = function () {
   if (this._tputSetup) return
   this._tputSetup = true
 
-  const self = this,
-    options = this.options,
-    write = this._write.bind(this)
+  const self    = this,
+        options = this.options,
+        write   = this._write.bind(this)
 
   const tput = this.tput = new Tput({
     terminal: this.terminal,
@@ -258,7 +280,7 @@ Program.prototype.setupTput = function () {
 
   this.put = function () {
     const args = slice.call(arguments),
-      cap = args.shift()
+          cap  = args.shift()
 
     if (tput[cap]) {
       return this._write(tput[cap].apply(tput, args))
@@ -360,7 +382,7 @@ Program.prototype.listen = function () {
 
 Program.prototype._listenInput = function () {
   const keys = require('../src/keys'),
-    self = this
+        self = this
 
   // Input
   this.input.on(KEYPRESS, this.input._keypressHandler = function (ch, key) {
@@ -545,7 +567,7 @@ Program.prototype.bindMouse = function () {
   this._boundMouse = true
 
   const decoder = new StringDecoder('utf8'),
-    self = this
+        self    = this
 
   this.on(DATA, function (data) {
     const text = decoder.write(data)
@@ -557,15 +579,15 @@ Program.prototype.bindMouse = function () {
 Program.prototype._bindMouse = function (s, buf) {
   const self = this
   let key,
-    parts,
-    b,
-    x,
-    y,
-    mod,
-    params,
-    down,
-    page,
-    button
+      parts,
+      b,
+      x,
+      y,
+      mod,
+      params,
+      down,
+      page,
+      button
 
   key = {
     name: undefined,
@@ -1014,7 +1036,7 @@ Program.prototype.bindResponse = function () {
   this._boundResponse = true
 
   const decoder = new StringDecoder('utf8'),
-    self = this
+        self    = this
 
   this.on(DATA, function (data) {
     data = decoder.write(data)
@@ -1659,7 +1681,7 @@ Program.prototype._write = function (text) {
 Program.prototype._twrite = function (data) {
   const self = this
   let iterations = 0,
-    timer
+      timer
 
   if (this.tmux) {
     // Replace all STs with BELs so they can be nested within the DCS code.
@@ -2503,8 +2525,8 @@ Program.prototype.text = function (text, attr) {
 Program.prototype._attr = function (param, val) {
   const self = this
   let parts,
-    color,
-    m
+      color,
+      m
 
   if (Array.isArray(param)) {
     parts = param
@@ -2516,7 +2538,7 @@ Program.prototype._attr = function (param, val) {
 
   if (parts.length > 1) {
     const used = {},
-      out = []
+          out  = []
 
     parts.forEach(function (part) {
       part = self._attr(part, val).slice(2, -1)
@@ -4203,9 +4225,9 @@ Program.prototype.sigtstp = function (callback) {
 }
 
 Program.prototype.pause = function (callback) {
-  const self = this,
-    isAlt = this.isAlt,
-    mouseEnabled = this.mouseEnabled
+  const self         = this,
+        isAlt        = this.isAlt,
+        mouseEnabled = this.mouseEnabled
 
   this.lsaveCursor('pause')
   //this.csr(0, screen.height - 1);

@@ -4,14 +4,14 @@
  * https://github.com/chjj/blessed
  */
 
-import { Box }     from '@pres/components-core'
-import * as colors from '@pres/util-colors'
-import cp          from 'child_process'
-import { png }     from '../vendor/tng'
+import { Box } from '@pres/components-core'
 
-import { ATTACH, REMOVE_LISTENER, EVENT, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEW_LISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHT_EXCEPTION, WARNING, ACTION, ADD_ITEM, ADOPT, BTNDOWN, BTNUP, CD, CHECK, COMPLETE, CONNECT, CREATE_ITEM, DBLCLICK, DRAG, INSERT_ITEM, _LOG, MOVE, PARSED_CONTENT, PASSTHROUGH, REFRESH, REMOVE, REMOVE_ITEM, REPARENT, RESPONSE, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS, UNCHECK, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
+import { DESTROY, PRERENDER, } from '@pres/enum-events'
+import * as colors             from '@pres/util-colors'
+import cp                      from 'child_process'
+import { png }                 from '../vendor/tng'
 
-export class  ANSIImage extends Box {
+export class ANSIImage extends Box {
   /**
    * ANSIImage
    */
@@ -40,6 +40,23 @@ export class  ANSIImage extends Box {
       self.stop()
     })
     this.type = 'ansiimage'
+  }
+  static curl(url) {
+    try {
+      return cp.execFileSync('curl',
+        [ '-s', '-A', '', url ],
+        { stdio: [ 'ignore', 'pipe', 'ignore' ] })
+    } catch (e) {
+
+    }
+    try {
+      return cp.execFileSync('wget',
+        [ '-U', '', '-O', '-', url ],
+        { stdio: [ 'ignore', 'pipe', 'ignore' ] })
+    } catch (e) {
+
+    }
+    throw new Error('curl or wget failed.')
   }
   setImage(file) {
     this.file = typeof file === 'string' ? file : null
@@ -118,23 +135,6 @@ export class  ANSIImage extends Box {
     }
 
     return coords
-  }
-  static curl(url) {
-    try {
-      return cp.execFileSync('curl',
-        [ '-s', '-A', '', url ],
-        { stdio: [ 'ignore', 'pipe', 'ignore' ] })
-    } catch (e) {
-
-    }
-    try {
-      return cp.execFileSync('wget',
-        [ '-U', '', '-O', '-', url ],
-        { stdio: [ 'ignore', 'pipe', 'ignore' ] })
-    } catch (e) {
-
-    }
-    throw new Error('curl or wget failed.')
   }
 }
 

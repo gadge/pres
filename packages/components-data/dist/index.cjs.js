@@ -3,8 +3,8 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var componentsCore = require('@pres/components-core');
-var utilHelpers = require('@pres/util-helpers');
 var enumEvents = require('@pres/enum-events');
+var utilHelpers = require('@pres/util-helpers');
 
 /**
  * list.js - list element for blessed
@@ -351,7 +351,7 @@ class List extends componentsCore.Box {
       this.select(i + 1);
     }
 
-    this.emit('insert item');
+    this.emit(enumEvents.INSERT_ITEM);
   }
 
   getItem(child) {
@@ -532,7 +532,7 @@ class List extends componentsCore.Box {
     if (!this.parent) return;
     this.scrollTo(this.selected); // XXX Move `action` and `select` events here.
 
-    this.emit('select item', this.items[this.selected], this.selected);
+    this.emit(enumEvents.SELECT_ITEM, this.items[this.selected], this.selected);
   }
 
   move(offset) {
@@ -913,7 +913,7 @@ class Listbar extends componentsCore.Box {
     } // XXX Move `action` and `select` events here.
 
 
-    this.emit('select item', el, offset);
+    this.emit(enumEvents.SELECT_ITEM, el, offset);
   }
 
   removeItem(child) {

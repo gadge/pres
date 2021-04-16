@@ -1,4 +1,6 @@
-const NEW_LISTENER = "newListener";
+const EVENT = 'event',
+      NEW_LISTENER = 'newListener',
+      REMOVE_LISTENER = 'removeListener';
 
 /**
  * alias.js - event emitter for blessed
@@ -49,7 +51,7 @@ class EventEmitter {
     if (typeof handler === 'function' || handler.length === 1) {
       delete this._events[type];
 
-      this._emit('removeListener', [type, listener]);
+      this._emit(REMOVE_LISTENER, [type, listener]);
 
       return;
     }
@@ -58,7 +60,7 @@ class EventEmitter {
       if (handler[i] === listener || handler[i].listener === listener) {
         handler.splice(i, 1);
 
-        this._emit('removeListener', [type, listener]);
+        this._emit(REMOVE_LISTENER, [type, listener]);
 
         return;
       }
@@ -92,7 +94,7 @@ class EventEmitter {
   _emit(type, args) {
     const handler = this._events[type];
     let ret; // if (type !== 'event') {
-    //   this._emit('event', [type.replace(/^element /, '')].concat(args));
+    //   this._emit(EVENT, [type.replace(/^element /, '')].concat(args));
     // }
 
     if (!handler) {
@@ -116,7 +118,7 @@ class EventEmitter {
           params = slice.call(arguments);
     let el = this;
 
-    this._emit('event', params);
+    this._emit(EVENT, params);
 
     if (this.type === 'screen') return this._emit(type, args);
     if (this._emit(type, args) === false) return false;
@@ -127,7 +129,7 @@ class EventEmitter {
     // params.splice(1, 0, this);
 
     do {
-      // el._emit('event', params);
+      // el._emit(EVENT, params);
       if (!el._events[type]) continue;
       if (el._emit(type, args) === false) return false;
     } while (el = el.parent);

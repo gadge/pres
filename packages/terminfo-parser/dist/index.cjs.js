@@ -43,6 +43,64 @@ var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
  */
 class Tput {
   /**
+   * Terminfo
+   */
+
+  /**
+   * Extended Parsing
+   */
+
+  /**
+   * Termcap
+   */
+
+  /**
+   * Aliases
+   */
+
+  /**
+   * Feature Checking
+   */
+
+  /**
+   * Fallback Termcap Entry
+   */
+
+  /**
+   * Terminfo Data
+   */
+  // Taken from tty.js.
+  // For xterm, layout:
+  // { header: '0 - 10', // length: 10
+  //   bools: '10 - 12', // length: 2
+  //   numbers: '12 - 14', // length: 2
+  //   strings: '14 - 128', // length: 114 (57 short)
+  //   symoffsets: '128 - 248', // length: 120 (60 short)
+  //   stringtable: '248 - 612', // length: 364
+  //   sym: '612 - 928' } // length: 316
+  //
+  // How lastStrTableOffset works:
+  //   data.length - h.lastStrTableOffset === 248
+  //     (sym-offset end, string-table start)
+  //   364 + 316 === 680 (lastStrTableOffset)
+  // How strTableSize works:
+  //   h.strCount + [symOffsetCount] === h.strTableSize
+  //   57 + 60 === 117 (strTableSize)
+  //   symOffsetCount doesn't actually exist in the header. it's just implied.
+  // Getting the number of sym offsets:
+  //   h.symOffsetCount = h.strTableSize - h.strCount;
+  // For xterm, header:
+  // Offset: 2342
+  // { header:
+  //    { dataSize: 928,
+  //      headerSize: 10,
+  //      boolCount: 2,
+  //      numCount: 1,
+  //      strCount: 57,
+  //      strTableSize: 117,
+  //      lastStrTableOffset: 680,
+
+  /**
    * Tput
    */
   constructor(options = {}) {
@@ -125,7 +183,132 @@ class Tput {
       '\u00b7': '*' // '·'
 
     };
+  } // For xterm, non-extended header:
+  // { dataSize: 3270,
+  //   headerSize: 12,
+  //   magicNumber: 282,
+  //   namesSize: 48,
+  //   boolCount: 38,
+  //   numCount: 15,
+  //   strCount: 413,
+  //   strTableSize: 1388,
+
+
+  static _tprefix(prefix, term, soft) {
+    if (!prefix) return;
+    let file, dir, i, sdiff, sfile, list;
+
+    if (Array.isArray(prefix)) {
+      for (i = 0; i < prefix.length; i++) {
+        file = this._tprefix(prefix[i], term, soft);
+        if (file) return file;
+      }
+
+      return;
+    }
+
+    const find = function (word) {
+      let file, ch;
+      file = path__default['default'].resolve(prefix, word[0]);
+
+      try {
+        fs__default['default'].statSync(file);
+        return file;
+      } catch (e) {}
+
+      ch = word[0].charCodeAt(0).toString(16);
+      if (ch.length < 2) ch = '0' + ch;
+      file = path__default['default'].resolve(prefix, ch);
+
+      try {
+        fs__default['default'].statSync(file);
+        return file;
+      } catch (e) {}
+    };
+
+    if (!term) {
+      // Make sure the directory's sub-directories
+      // are all one-letter, or hex digits.
+      // return find('x') ? prefix : null;
+      try {
+        dir = fs__default['default'].readdirSync(prefix).filter(file => file.length !== 1 && !/^[0-9a-fA-F]{2}$/.test(file));
+        if (!dir.length) return prefix;
+      } catch (e) {}
+
+      return;
+    }
+
+    term = path__default['default'].basename(term);
+    dir = find(term);
+    if (!dir) return;
+
+    if (soft) {
+      try {
+        list = fs__default['default'].readdirSync(dir);
+      } catch (e) {
+        return;
+      }
+
+      list.forEach(function (file) {
+        if (file.indexOf(term) === 0) {
+          const diff = file.length - term.length;
+
+          if (!sfile || diff < sdiff) {
+            sdiff = diff;
+            sfile = file;
+          }
+        }
+      });
+      return sfile && (soft || sdiff === 0) ? path__default['default'].resolve(dir, sfile) : null;
+    }
+
+    file = path__default['default'].resolve(dir, term);
+
+    try {
+      fs__default['default'].statSync(file);
+      return file;
+    } catch (e) {}
   }
+
+  static _prefix(term) {
+    // If we have a terminfoFile, or our
+    // term looks like a filename, use it.
+    if (term) {
+      if (~term.indexOf(path__default['default'].sep)) {
+        return term;
+      }
+
+      if (this.terminfoFile) {
+        return this.terminfoFile;
+      }
+    }
+
+    const paths = Tput.ipaths.slice();
+    let file;
+    if (this.terminfoPrefix) paths.unshift(this.terminfoPrefix); // Try exact matches.
+
+    file = this._tprefix(paths, term);
+    if (file) return file; // Try similar matches.
+
+    file = this._tprefix(paths, term, true);
+    if (file) return file; // Not found.
+
+    throw new Error('Terminfo directory not found.');
+  } // to easily output text with setTimeouts.
+
+
+  static print() {
+    const fake = {
+      padding: true,
+      bools: {
+        needs_xon_xoff: true,
+        xon_xoff: false
+      }
+    };
+    return Tput.prototype._print.apply(fake, arguments);
+  } // See:
+  // ~/ncurses/ncurses/tinfo/lib_tparm.c
+
 
   setup() {
     this.error = null;
@@ -167,7 +350,17 @@ class Tput {
   _debug() {
     if (!this.debug) return;
     return console.log.apply(console, arguments);
-  }
+  } // Example:
+  // vt102|dec vt102:\
+  //  :do=^J:co#80:li#24:cl=50\E[;H\E[2J:\
+  //  :le=^H:bs:cm=5\E[%i%d;%dH:nd=2\E[C:up=2\E[A:\
+  //  :ce=3\E[K:cd=50\E[J:so=2\E[7m:se=2\E[m:us=2\E[4m:ue=2\E[m:\
+  //  :md=2\E[1m:mr=2\E[7m:mb=2\E[5m:me=2\E[m:is=\E[1;24r\E[24;1H:\
+  //  :rs=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h:ks=\E[?1h\E=:ke=\E[?1l\E>:\
+  //  :ku=\EOA:kd=\EOB:kr=\EOC:kl=\EOD:kb=^H:\
+  //  :ho=\E[H:k1=\EOP:k2=\EOQ:k3=\EOR:k4=\EOS:pt:sr=5\EM:vt#3:\
+  //  :sc=\E7:rc=\E8:cs=\E[%i%d;%dr:vs=\E[?7l:ve=\E[?7h:\
+
   /**
    * Fallback
    */
@@ -438,25 +631,16 @@ class Tput {
     }
 
     return info;
-  } // For xterm, layout:
-  // { header: '0 - 10', // length: 10
-  //   bools: '10 - 12', // length: 2
-  //   numbers: '12 - 14', // length: 2
-  //   strings: '14 - 128', // length: 114 (57 short)
-  //   symoffsets: '128 - 248', // length: 120 (60 short)
-  //   stringtable: '248 - 612', // length: 364
-  //   sym: '612 - 928' } // length: 316
-  //
-  // How lastStrTableOffset works:
-  //   data.length - h.lastStrTableOffset === 248
-  //     (sym-offset end, string-table start)
-  //   364 + 316 === 680 (lastStrTableOffset)
-  // How strTableSize works:
-  //   h.strCount + [symOffsetCount] === h.strTableSize
-  //   57 + 60 === 117 (strTableSize)
-  //   symOffsetCount doesn't actually exist in the header. it's just implied.
-  // Getting the number of sym offsets:
-  //   h.symOffsetCount = h.strTableSize - h.strCount;
+  } // For some reason TERM=linux has smacs/rmacs, but it maps to `^[[11m`
+  // and it does not switch to the DEC SCLD character set. What the hell?
+  // xterm: \x1b(0, screen: \x0e, linux: \x1b[11m (doesn't work)
+  // `man console_codes` says:
+  // 11  select null mapping, set display control flag, reset tog‐
+  //     gle meta flag (ECMA-48 says "first alternate font").
+  // See ncurses:
+  // ~/ncurses/ncurses/base/lib_set_term.c
+  // ~/ncurses/ncurses/tinfo/lib_acs.c
+  // ~/ncurses/ncurses/tinfo/tinfo_driver.c
   //   h.symOffsetSize = (h.strTableSize - h.strCount) * 2;
 
 
@@ -582,31 +766,14 @@ class Tput {
 
     assert__default['default'].equal(i, data.length);
     return info;
-  } // For xterm, header:
-  // Offset: 2342
-  // { header:
-  //    { dataSize: 928,
-  //      headerSize: 10,
-  //      boolCount: 2,
-  //      numCount: 1,
-  //      strCount: 57,
-  //      strTableSize: 117,
-  //      lastStrTableOffset: 680,
+  } // If enter_pc_charset is the same as enter_alt_charset,
+  // the terminal does not support SCLD as ACS.
   //      total: 245 },
 
 
   compileTerminfo(term) {
     return this.compile(this.readTerminfo(term));
-  } // For xterm, non-extended header:
-  // { dataSize: 3270,
-  //   headerSize: 12,
-  //   magicNumber: 282,
-  //   namesSize: 48,
-  //   boolCount: 38,
-  //   numCount: 15,
-  //   strCount: 413,
-  //   strTableSize: 1388,
-  //   total: 2342 }
+  } //   total: 2342 }
 
 
   injectTerminfo(term) {
@@ -695,9 +862,7 @@ class Tput {
 
       self[key] = info.features[key];
     });
-  } // See:
-  // ~/ncurses/ncurses/tinfo/lib_tparm.c
-  // ~/ncurses/ncurses/tinfo/comp_scan.c
+  } // ~/ncurses/ncurses/tinfo/comp_scan.c
 
 
   _compile(info, key, str) {
@@ -1245,17 +1410,7 @@ class Tput {
     }
 
     return terms;
-  } // Example:
-  // vt102|dec vt102:\
-  //  :do=^J:co#80:li#24:cl=50\E[;H\E[2J:\
-  //  :le=^H:bs:cm=5\E[%i%d;%dH:nd=2\E[C:up=2\E[A:\
-  //  :ce=3\E[K:cd=50\E[J:so=2\E[7m:se=2\E[m:us=2\E[4m:ue=2\E[m:\
-  //  :md=2\E[1m:mr=2\E[7m:mb=2\E[5m:me=2\E[m:is=\E[1;24r\E[24;1H:\
-  //  :rs=\E>\E[?3l\E[?4l\E[?5l\E[?7h\E[?8h:ks=\E[?1h\E=:ke=\E[?1l\E>:\
-  //  :ku=\EOA:kd=\EOB:kr=\EOC:kl=\EOD:kb=^H:\
-  //  :ho=\E[H:k1=\EOP:k2=\EOQ:k3=\EOR:k4=\EOS:pt:sr=5\EM:vt#3:\
-  //  :sc=\E7:rc=\E8:cs=\E[%i%d;%dr:vs=\E[?7l:ve=\E[?7h:\
-  //  :mi:al=\E[L:dc=\E[P:dl=\E[M:ei=\E[4l:im=\E[4h:
+  } //  :mi:al=\E[L:dc=\E[P:dl=\E[M:ei=\E[4l:im=\E[4h:
 
 
   parseTermcap(data, file) {
@@ -1356,7 +1511,8 @@ class Tput {
     });
 
     return out;
-  }
+  } // A small helper function if we want
+
   /**
    * Termcap Parser
    *  http://en.wikipedia.org/wiki/Termcap
@@ -1952,17 +2108,7 @@ class Tput {
       acscr: data.acscr
     };
     return info.features;
-  } // For some reason TERM=linux has smacs/rmacs, but it maps to `^[[11m`
-  // and it does not switch to the DEC SCLD character set. What the hell?
-  // xterm: \x1b(0, screen: \x0e, linux: \x1b[11m (doesn't work)
-  // `man console_codes` says:
-  // 11  select null mapping, set display control flag, reset tog‐
-  //     gle meta flag (ECMA-48 says "first alternate font").
-  // See ncurses:
-  // ~/ncurses/ncurses/base/lib_set_term.c
-  // ~/ncurses/ncurses/tinfo/lib_acs.c
-  // ~/ncurses/ncurses/tinfo/tinfo_driver.c
-  // ~/ncurses/ncurses/tinfo/lib_setup.c
+  } // ~/ncurses/ncurses/tinfo/lib_setup.c
 
 
   detectBrokenACS(info) {
@@ -1997,9 +2143,7 @@ class Tput {
     }
 
     return false;
-  } // If enter_pc_charset is the same as enter_alt_charset,
-  // the terminal does not support SCLD as ACS.
-  // See: ~/ncurses/ncurses/tinfo/lib_acs.c
+  } // See: ~/ncurses/ncurses/tinfo/lib_acs.c
 
 
   detectPCRomSet(info) {
@@ -2099,121 +2243,6 @@ class Tput {
     return !!val;
   }
 
-  static _tprefix(prefix, term, soft) {
-    if (!prefix) return;
-    let file, dir, i, sdiff, sfile, list;
-
-    if (Array.isArray(prefix)) {
-      for (i = 0; i < prefix.length; i++) {
-        file = this._tprefix(prefix[i], term, soft);
-        if (file) return file;
-      }
-
-      return;
-    }
-
-    const find = function (word) {
-      let file, ch;
-      file = path__default['default'].resolve(prefix, word[0]);
-
-      try {
-        fs__default['default'].statSync(file);
-        return file;
-      } catch (e) {}
-
-      ch = word[0].charCodeAt(0).toString(16);
-      if (ch.length < 2) ch = '0' + ch;
-      file = path__default['default'].resolve(prefix, ch);
-
-      try {
-        fs__default['default'].statSync(file);
-        return file;
-      } catch (e) {}
-    };
-
-    if (!term) {
-      // Make sure the directory's sub-directories
-      // are all one-letter, or hex digits.
-      // return find('x') ? prefix : null;
-      try {
-        dir = fs__default['default'].readdirSync(prefix).filter(file => file.length !== 1 && !/^[0-9a-fA-F]{2}$/.test(file));
-        if (!dir.length) return prefix;
-      } catch (e) {}
-
-      return;
-    }
-
-    term = path__default['default'].basename(term);
-    dir = find(term);
-    if (!dir) return;
-
-    if (soft) {
-      try {
-        list = fs__default['default'].readdirSync(dir);
-      } catch (e) {
-        return;
-      }
-
-      list.forEach(function (file) {
-        if (file.indexOf(term) === 0) {
-          const diff = file.length - term.length;
-
-          if (!sfile || diff < sdiff) {
-            sdiff = diff;
-            sfile = file;
-          }
-        }
-      });
-      return sfile && (soft || sdiff === 0) ? path__default['default'].resolve(dir, sfile) : null;
-    }
-
-    file = path__default['default'].resolve(dir, term);
-
-    try {
-      fs__default['default'].statSync(file);
-      return file;
-    } catch (e) {}
-  }
-
-  static _prefix(term) {
-    // If we have a terminfoFile, or our
-    // term looks like a filename, use it.
-    if (term) {
-      if (~term.indexOf(path__default['default'].sep)) {
-        return term;
-      }
-
-      if (this.terminfoFile) {
-        return this.terminfoFile;
-      }
-    }
-
-    const paths = Tput.ipaths.slice();
-    let file;
-    if (this.terminfoPrefix) paths.unshift(this.terminfoPrefix); // Try exact matches.
-
-    file = this._tprefix(paths, term);
-    if (file) return file; // Try similar matches.
-
-    file = this._tprefix(paths, term, true);
-    if (file) return file; // Not found.
-
-    throw new Error('Terminfo directory not found.');
-  } // A small helper function if we want
-  // to easily output text with setTimeouts.
-
-
-  static print() {
-    const fake = {
-      padding: true,
-      bools: {
-        needs_xon_xoff: true,
-        xon_xoff: false
-      }
-    };
-    return Tput.prototype._print.apply(fake, arguments);
-  }
-
   readTermcap(term) {
     const self = this;
     let terms, term_, root, paths;
@@ -2274,7 +2303,8 @@ class Tput {
 
     root = this.translateTermcap(root);
     return root;
-  }
+  } // DEC Special Character and Line Drawing Set.
+
 
   detectUnicode() {
     if (process.env.NCURSES_FORCE_UNICODE != null) {
@@ -2302,10 +2332,6 @@ class Tput {
 
     return info;
   }
-  /**
-   * Terminfo
-   */
-
 
 }
 Tput.ipaths = [process.env.TERMINFO || '', (process.env.TERMINFO_DIRS || '').split(':'), (process.env.HOME || '') + '/.terminfo', '/usr/share/terminfo', '/usr/share/lib/terminfo', '/usr/lib/terminfo', '/usr/local/share/terminfo', '/usr/local/share/lib/terminfo', '/usr/local/lib/terminfo', '/usr/local/ncurses/lib/terminfo', '/lib/terminfo'];

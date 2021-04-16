@@ -1,5 +1,5 @@
-import { EventEmitter } from '@pres/events';
 import { UNCAUGHT_EXCEPTION, SIGTERM, SIGINT, SIGQUIT, EXIT, REPARENT, ADOPT, ATTACH, REMOVE, DETACH, DESTROY } from '@pres/enum-events';
+import { EventEmitter } from '@pres/events';
 
 /**
  * screen.js - screen node for blessed

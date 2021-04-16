@@ -4,11 +4,10 @@
  * https://github.com/chjj/blessed
  */
 
-import { Element } from '../core/element'
+import { PRERENDER, RENDER, } from '@pres/enum-events'
+import { Element }            from '../core/element'
 
-import { ATTACH, REMOVE_LISTENER, EVENT, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEW_LISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHT_EXCEPTION, WARNING, ACTION, ADD_ITEM, ADOPT, BTNDOWN, BTNUP, CD, CHECK, COMPLETE, CONNECT, CREATE_ITEM, DBLCLICK, DRAG, INSERT_ITEM, _LOG, MOVE, PARSED_CONTENT, PASSTHROUGH, REFRESH, REMOVE, REMOVE_ITEM, REPARENT, RESPONSE, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS, UNCHECK, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
-
-export class  Layout extends Element {
+export class Layout extends Element {
   /**
    * Layout
    */
@@ -57,10 +56,10 @@ export class  Layout extends Element {
     const self = this
 
     // The coordinates of the layout element
-    const width = coords.xl - coords.xi,
-      height = coords.yl - coords.yi,
-      xi = coords.xi,
-      yi = coords.yi
+    const width  = coords.xl - coords.xi,
+          height = coords.yl - coords.yi,
+          xi     = coords.xi,
+          yi     = coords.yi
 
     // The current row offset in cells (which row are we on?)
     let rowOffset = 0

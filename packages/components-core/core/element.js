@@ -5,19 +5,41 @@
  */
 
 import * as Mixin      from '@ject/mixin'
+import {
+  ATTACH,
+  CLICK,
+  DETACH,
+  HIDE,
+  KEYPRESS,
+  MOUSE,
+  MOUSEDOWN,
+  MOUSEMOVE,
+  MOUSEOUT,
+  MOUSEOVER,
+  MOUSEWHEEL,
+  MOVE,
+  NEW_LISTENER,
+  PARSED_CONTENT,
+  PRERENDER,
+  RENDER,
+  RESIZE,
+  SCROLL,
+  SET_CONTENT,
+  SHOW,
+  WHEELDOWN,
+  WHEELUP,
+}                      from '@pres/enum-events'
 import * as colors     from '@pres/util-colors'
 import * as helpers    from '@pres/util-helpers'
 import * as unicode    from '@pres/util-unicode'
 import assert          from 'assert'
 import { _Scrollable } from '../utils/_Scrollable'
+import { Box }         from './box'
 import { Node }        from './node'
-import {Box}           from './box'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
-import { ATTACH, REMOVE_LISTENER, EVENT, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEW_LISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHT_EXCEPTION, WARNING, ACTION, ADD_ITEM, ADOPT, BTNDOWN, BTNUP, CD, CHECK, COMPLETE, CONNECT, CREATE_ITEM, DBLCLICK, DRAG, INSERT_ITEM, _LOG, MOVE, PARSED_CONTENT, PASSTHROUGH, REFRESH, REMOVE, REMOVE_ITEM, REPARENT, RESPONSE, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS, UNCHECK, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
-
-export class  Element extends Node {
+export class Element extends Node {
   type = 'element'
   /**
    * Element
@@ -226,16 +248,6 @@ export class  Element extends Node {
    * Positioning
    */
   get width() { return this._getWidth(false) }
-  get height() { return this._getHeight(false) }
-  get aleft() { return this._getLeft(false) }
-  get aright() { return this._getRight(false) }
-  get atop() { return this._getTop(false) }
-  get abottom() { return this._getBottom(false) }
-  get rleft() { return this.aleft - this.parent.aleft }
-  get rright() { return this.aright - this.parent.aright }
-  get rtop() { return this.atop - this.parent.atop }
-  get rbottom() { return this.abottom - this.parent.abottom }
-
   /**
    * Position Setters
    */
@@ -251,6 +263,7 @@ export class  Element extends Node {
     this.clearPos()
     return this.position.width = val
   }
+  get height() { return this._getHeight(false) }
   set height(val) {
     if (this.position.height === val) return
     if (/^\d+$/.test(val)) val = +val
@@ -258,6 +271,7 @@ export class  Element extends Node {
     this.clearPos()
     return this.position.height = val
   }
+  get aleft() { return this._getLeft(false) }
   set aleft(val) {
     let expr
     if (typeof val === 'string') {
@@ -278,6 +292,7 @@ export class  Element extends Node {
     this.clearPos()
     return this.position.left = val
   }
+  get aright() { return this._getRight(false) }
   set aright(val) {
     val -= this.parent.aright
     if (this.position.right === val) return
@@ -285,6 +300,7 @@ export class  Element extends Node {
     this.clearPos()
     return this.position.right = val
   }
+  get atop() { return this._getTop(false) }
   set atop(val) {
     let expr
     if (typeof val === 'string') {
@@ -305,6 +321,7 @@ export class  Element extends Node {
     this.clearPos()
     return this.position.top = val
   }
+  get abottom() { return this._getBottom(false) }
   set abottom(val) {
     val -= this.parent.abottom
     if (this.position.bottom === val) return
@@ -312,6 +329,7 @@ export class  Element extends Node {
     this.clearPos()
     return this.position.bottom = val
   }
+  get rleft() { return this.aleft - this.parent.aleft }
   set rleft(val) {
     if (this.position.left === val) return
     if (/^\d+$/.test(val)) val = +val
@@ -319,12 +337,14 @@ export class  Element extends Node {
     this.clearPos()
     return this.position.left = val
   }
+  get rright() { return this.aright - this.parent.aright }
   set rright(val) {
     if (this.position.right === val) return
     this.emit(MOVE)
     this.clearPos()
     return this.position.right = val
   }
+  get rtop() { return this.atop - this.parent.atop }
   set rtop(val) {
     if (this.position.top === val) return
     if (/^\d+$/.test(val)) val = +val
@@ -332,6 +352,7 @@ export class  Element extends Node {
     this.clearPos()
     return this.position.top = val
   }
+  get rbottom() { return this.abottom - this.parent.abottom }
   set rbottom(val) {
     if (this.position.bottom === val) return
     this.emit(MOVE)
@@ -373,12 +394,12 @@ export class  Element extends Node {
    */
 
   get left() { return this.rleft }
-  get right() { return this.rright }
-  get top() { return this.rtop }
-  get bottom() { return this.rbottom }
   set left(val) { return this.rleft = val }
+  get right() { return this.rright }
   set right(val) { return this.rright = val }
+  get top() { return this.rtop }
   set top(val) { return this.rtop = val }
+  get bottom() { return this.rbottom }
   set bottom(val) { return this.rbottom = val }
 
   sattr(style, fg, bg) {

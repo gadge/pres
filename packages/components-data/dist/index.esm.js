@@ -1,6 +1,6 @@
 import { Box, Node } from '@pres/components-core';
+import { ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, KEYPRESS, RESIZE, ADOPT, REMOVE, CLICK, ACTION, SELECT, CREATE_ITEM, ADD_ITEM, REMOVE_ITEM, INSERT_ITEM, SET_ITEMS, SELECT_ITEM, CANCEL, FOCUS, SELECT_TAB, ATTACH, SCROLL } from '@pres/enum-events';
 import { helpers } from '@pres/util-helpers';
-import { ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, KEYPRESS, RESIZE, ADOPT, REMOVE, CLICK, ACTION, SELECT, CREATE_ITEM, ADD_ITEM, REMOVE_ITEM, SET_ITEMS, CANCEL, FOCUS, SELECT_ITEM, SELECT_TAB, ATTACH, SCROLL } from '@pres/enum-events';
 
 /**
  * list.js - list element for blessed
@@ -347,7 +347,7 @@ class List extends Box {
       this.select(i + 1);
     }
 
-    this.emit('insert item');
+    this.emit(INSERT_ITEM);
   }
 
   getItem(child) {
@@ -528,7 +528,7 @@ class List extends Box {
     if (!this.parent) return;
     this.scrollTo(this.selected); // XXX Move `action` and `select` events here.
 
-    this.emit('select item', this.items[this.selected], this.selected);
+    this.emit(SELECT_ITEM, this.items[this.selected], this.selected);
   }
 
   move(offset) {
@@ -909,7 +909,7 @@ class Listbar extends Box {
     } // XXX Move `action` and `select` events here.
 
 
-    this.emit('select item', el, offset);
+    this.emit(SELECT_ITEM, el, offset);
   }
 
   removeItem(child) {

@@ -1,7 +1,12 @@
-import { ATTACH, REMOVE_LISTENER, EVENT, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEW_LISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHT_EXCEPTION, WARNING, ACTION, ADD_ITEM, ADOPT, BTNDOWN, BTNUP, CD, CHECK, COMPLETE, CONNECT, CREATE_ITEM, DBLCLICK, DRAG, INSERT_ITEM, _LOG, MOVE, PARSED_CONTENT, PASSTHROUGH, REFRESH, REMOVE, REMOVE_ITEM, REPARENT, RESPONSE, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS, UNCHECK, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
+import { KEYPRESS, MOUSEDOWN, PARSED_CONTENT, SCROLL, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
 
-export class  _Scrollable {
+export class _Scrollable {
   constructor(options = {}) {}
+  get reallyScrollable() {
+    // XXX Potentially use this in place of scrollable checks elsewhere.
+    if (this.shrink) return this.scrollable
+    return this.getScrollHeight() > this.height
+  }
   constructScrollable(options) {
     const self = this
     if (options.scrollable === false) return this
@@ -135,11 +140,6 @@ export class  _Scrollable {
       self._recalculateIndex()
     })
     self._recalculateIndex()
-  }
-  get reallyScrollable() {
-    // XXX Potentially use this in place of scrollable checks elsewhere.
-    if (this.shrink) return this.scrollable
-    return this.getScrollHeight() > this.height
   }
   _scrollBottom() {
     if (!this.scrollable) return 0

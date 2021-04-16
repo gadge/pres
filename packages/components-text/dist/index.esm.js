@@ -1,5 +1,4 @@
 import { Element } from '@pres/components-core';
-import '@pres/enum-events';
 
 /**
  * text.js - text element for blessed

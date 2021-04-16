@@ -1,17 +1,23 @@
 import { Node, _Screen } from '@pres/components-node';
 export { Node } from '@pres/components-node';
 import * as Mixin from '@ject/mixin';
+import { MOUSEDOWN, WHEELDOWN, WHEELUP, KEYPRESS, PARSED_CONTENT, SCROLL, NEW_LISTENER, MOUSE, CLICK, MOUSEOVER, MOUSEOUT, MOUSEWHEEL, MOUSEMOVE, RESIZE, ATTACH, DETACH, MOVE, HIDE, SHOW, SET_CONTENT, PRERENDER, RENDER, _LOG, ERROR, EXIT, FOCUS, BLUR, WARNING, UNCAUGHT_EXCEPTION, SIGTERM, SIGINT, SIGQUIT, DESTROY, ELEMENT_CLICK, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, DATA, TITLE, PASSTHROUGH } from '@pres/enum-events';
 import * as colors from '@pres/util-colors';
 import * as helpers from '@pres/util-helpers';
 import { helpers as helpers$1 } from '@pres/util-helpers';
 import * as unicode$1 from '@pres/util-unicode';
 import assert from 'assert';
-import { MOUSEDOWN, WHEELDOWN, WHEELUP, KEYPRESS, PARSED_CONTENT, SCROLL, NEW_LISTENER, MOUSE, CLICK, MOUSEOVER, MOUSEOUT, MOUSEWHEEL, MOUSEMOVE, RESIZE, ATTACH, DETACH, MOVE, HIDE, SHOW, SET_CONTENT, PRERENDER, RENDER, _LOG, ERROR, EXIT, FOCUS, BLUR, WARNING, UNCAUGHT_EXCEPTION, SIGTERM, SIGINT, SIGQUIT, DESTROY, ELEMENT_CLICK, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, DATA, TITLE, PASSTHROUGH } from '@pres/enum-events';
 import { Program } from '@pres/program';
 import util from 'util';
 
 class _Scrollable {
   constructor(options = {}) {}
+
+  get reallyScrollable() {
+    // XXX Potentially use this in place of scrollable checks elsewhere.
+    if (this.shrink) return this.scrollable;
+    return this.getScrollHeight() > this.height;
+  }
 
   constructScrollable(options) {
     const self = this;
@@ -165,12 +171,6 @@ class _Scrollable {
     });
 
     self._recalculateIndex();
-  }
-
-  get reallyScrollable() {
-    // XXX Potentially use this in place of scrollable checks elsewhere.
-    if (this.shrink) return this.scrollable;
-    return this.getScrollHeight() > this.height;
   }
 
   _scrollBottom() {
@@ -589,42 +589,6 @@ class Element$1 extends Node {
   get width() {
     return this._getWidth(false);
   }
-
-  get height() {
-    return this._getHeight(false);
-  }
-
-  get aleft() {
-    return this._getLeft(false);
-  }
-
-  get aright() {
-    return this._getRight(false);
-  }
-
-  get atop() {
-    return this._getTop(false);
-  }
-
-  get abottom() {
-    return this._getBottom(false);
-  }
-
-  get rleft() {
-    return this.aleft - this.parent.aleft;
-  }
-
-  get rright() {
-    return this.aright - this.parent.aright;
-  }
-
-  get rtop() {
-    return this.atop - this.parent.atop;
-  }
-
-  get rbottom() {
-    return this.abottom - this.parent.abottom;
-  }
   /**
    * Position Setters
    */
@@ -643,12 +607,20 @@ class Element$1 extends Node {
     return this.position.width = val;
   }
 
+  get height() {
+    return this._getHeight(false);
+  }
+
   set height(val) {
     if (this.position.height === val) return;
     if (/^\d+$/.test(val)) val = +val;
     this.emit(RESIZE);
     this.clearPos();
     return this.position.height = val;
+  }
+
+  get aleft() {
+    return this._getLeft(false);
   }
 
   set aleft(val) {
@@ -674,12 +646,20 @@ class Element$1 extends Node {
     return this.position.left = val;
   }
 
+  get aright() {
+    return this._getRight(false);
+  }
+
   set aright(val) {
     val -= this.parent.aright;
     if (this.position.right === val) return;
     this.emit(MOVE);
     this.clearPos();
     return this.position.right = val;
+  }
+
+  get atop() {
+    return this._getTop(false);
   }
 
   set atop(val) {
@@ -705,12 +685,20 @@ class Element$1 extends Node {
     return this.position.top = val;
   }
 
+  get abottom() {
+    return this._getBottom(false);
+  }
+
   set abottom(val) {
     val -= this.parent.abottom;
     if (this.position.bottom === val) return;
     this.emit(MOVE);
     this.clearPos();
     return this.position.bottom = val;
+  }
+
+  get rleft() {
+    return this.aleft - this.parent.aleft;
   }
 
   set rleft(val) {
@@ -721,11 +709,19 @@ class Element$1 extends Node {
     return this.position.left = val;
   }
 
+  get rright() {
+    return this.aright - this.parent.aright;
+  }
+
   set rright(val) {
     if (this.position.right === val) return;
     this.emit(MOVE);
     this.clearPos();
     return this.position.right = val;
+  }
+
+  get rtop() {
+    return this.atop - this.parent.atop;
   }
 
   set rtop(val) {
@@ -734,6 +730,10 @@ class Element$1 extends Node {
     this.emit(MOVE);
     this.clearPos();
     return this.position.top = val;
+  }
+
+  get rbottom() {
+    return this.abottom - this.parent.abottom;
   }
 
   set rbottom(val) {
@@ -785,28 +785,28 @@ class Element$1 extends Node {
     return this.rleft;
   }
 
-  get right() {
-    return this.rright;
-  }
-
-  get top() {
-    return this.rtop;
-  }
-
-  get bottom() {
-    return this.rbottom;
-  }
-
   set left(val) {
     return this.rleft = val;
+  }
+
+  get right() {
+    return this.rright;
   }
 
   set right(val) {
     return this.rright = val;
   }
 
+  get top() {
+    return this.rtop;
+  }
+
   set top(val) {
     return this.rtop = val;
+  }
+
+  get bottom() {
+    return this.rbottom;
   }
 
   set bottom(val) {
@@ -3112,6 +3112,12 @@ class ScrollableBox extends Box {
     });
 
     self._recalculateIndex();
+  } // XXX Potentially use this in place of scrollable checks elsewhere.
+
+
+  get reallyScrollable() {
+    if (this.shrink) return this.scrollable;
+    return this.getScrollHeight() > this.height;
   }
 
   _scrollBottom() {
@@ -3307,12 +3313,6 @@ class ScrollableBox extends Box {
     // var m = this.getScrollHeight();
     const m = Math.max(this._clines.length, this._scrollBottom());
     return this.scrollTo(i / 100 * m | 0);
-  } // XXX Potentially use this in place of scrollable checks elsewhere.
-
-
-  get reallyScrollable() {
-    if (this.shrink) return this.scrollable;
-    return this.getScrollHeight() > this.height;
   }
 
 }
@@ -3342,6 +3342,8 @@ class ScrollableText extends ScrollableBox {
  */
 const nextTick$1 = global.setImmediate || process.nextTick.bind(process);
 class Log extends ScrollableText {
+  // log() { return this.add() }
+
   /**
    * Log
    */
@@ -3366,7 +3368,6 @@ class Log extends ScrollableText {
     this._scroll = Log.prototype.scroll;
   }
 
-  // log() { return this.add() }
   add() {
     const args = Array.prototype.slice.call(arguments);
 
@@ -3413,6 +3414,7 @@ class Screen extends Node {
     this._destroy = this.destroy;
     this.focusPrev = this.focusPrevious;
     this.unkey = this.removeKey;
+    this.cursorReset = this.resetCursor;
 
     this.spawn = function (file, args, options) {
       if (!Array.isArray(args)) {
@@ -3476,7 +3478,6 @@ class Screen extends Node {
       return ps;
     };
 
-    this.cursorReset = this.resetCursor;
     const self = this; // if (!(this instanceof Node)) return new Screen(options)
 
     _Screen.configSingleton(this);
@@ -4141,7 +4142,9 @@ class Screen extends Node {
 
     this.renders++;
     this.emit(RENDER);
-  }
+  } // This is how ncurses does it.
+  // Scroll down (up cursor-wise).
+
 
   blankLine(ch, dirty) {
     const out = [];
@@ -4152,7 +4155,9 @@ class Screen extends Node {
 
     out.dirty = dirty;
     return out;
-  }
+  } // This is how ncurses does it.
+  // Scroll up (down cursor-wise).
+
 
   insertLine(n, y, top, bottom) {
     // if (y === top) return this.insertLineNC(n, y, top, bottom);
@@ -4186,9 +4191,7 @@ class Screen extends Node {
       this.olines.splice(j, 0, this.blankLine());
       this.olines.splice(y, 1);
     }
-  } // This is how ncurses does it.
-  // Scroll down (up cursor-wise).
-  // This will only work for top line deletion as opposed to arbitrary lines.
+  } // This will only work for top line deletion as opposed to arbitrary lines.
 
 
   insertLineNC(n, y, top, bottom) {
@@ -4205,9 +4208,7 @@ class Screen extends Node {
       this.olines.splice(j, 0, this.blankLine());
       this.olines.splice(y, 1);
     }
-  } // This is how ncurses does it.
-  // Scroll up (down cursor-wise).
-  // This will only work for bottom line deletion as opposed to arbitrary lines.
+  } // This will only work for bottom line deletion as opposed to arbitrary lines.
 
 
   deleteLineNC(n, y, top, bottom) {
@@ -4228,7 +4229,15 @@ class Screen extends Node {
 
   insertBottom(top, bottom) {
     return this.deleteLine(1, top, top, bottom);
-  }
+  } // Parse the sides of an element to determine
+  // whether an element has uniform cells on
+  // both sides. If it does, we can use CSR to
+  // optimize scrolling on a scrollable element.
+  // Not exactly sure how worthwile this is.
+  // This will cause a performance/cpu-usage hit,
+  // but will it be less or greater than the
+  // performance hit of slow-rendering scrollable
+
 
   insertTop(top, bottom) {
     return this.insertLine(1, top, top, bottom);
@@ -4241,15 +4250,7 @@ class Screen extends Node {
   deleteTop(top, bottom) {
     // Same as: return this.insertBottom(top, bottom);
     return this.deleteLine(1, top, top, bottom);
-  } // Parse the sides of an element to determine
-  // whether an element has uniform cells on
-  // both sides. If it does, we can use CSR to
-  // optimize scrolling on a scrollable element.
-  // Not exactly sure how worthwile this is.
-  // This will cause a performance/cpu-usage hit,
-  // but will it be less or greater than the
-  // performance hit of slow-rendering scrollable
-  // boxes with clean sides?
+  } // boxes with clean sides?
 
 
   cleanSides(el) {

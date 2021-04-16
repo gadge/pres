@@ -1,11 +1,11 @@
 import { Box, Terminal } from '@pres/components-core';
+import { PRERENDER, DESTROY, HIDE, SHOW, DETACH, ATTACH, RESIZE, RENDER, ERROR, EXIT, DATA, CLICK } from '@pres/enum-events';
 import * as colors from '@pres/util-colors';
 import cp from 'child_process';
 import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import zlib from 'zlib';
-import { PRERENDER, DESTROY, HIDE, SHOW, DETACH, ATTACH, RESIZE, RENDER, ERROR, EXIT, DATA, CLICK } from '@pres/enum-events';
 import { helpers } from '@pres/util-helpers';
 
 /**
@@ -1750,6 +1750,22 @@ class ANSIImage extends Box {
     this.type = 'ansiimage';
   }
 
+  static curl(url) {
+    try {
+      return cp.execFileSync('curl', ['-s', '-A', '', url], {
+        stdio: ['ignore', 'pipe', 'ignore']
+      });
+    } catch (e) {}
+
+    try {
+      return cp.execFileSync('wget', ['-U', '', '-O', '-', url], {
+        stdio: ['ignore', 'pipe', 'ignore']
+      });
+    } catch (e) {}
+
+    throw new Error('curl or wget failed.');
+  }
+
   setImage(file) {
     this.file = typeof file === 'string' ? file : null;
 
@@ -1833,22 +1849,6 @@ class ANSIImage extends Box {
     }
 
     return coords;
-  }
-
-  static curl(url) {
-    try {
-      return cp.execFileSync('curl', ['-s', '-A', '', url], {
-        stdio: ['ignore', 'pipe', 'ignore']
-      });
-    } catch (e) {}
-
-    try {
-      return cp.execFileSync('wget', ['-U', '', '-O', '-', url], {
-        stdio: ['ignore', 'pipe', 'ignore']
-      });
-    } catch (e) {}
-
-    throw new Error('curl or wget failed.');
   }
 
 }

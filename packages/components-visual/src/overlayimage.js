@@ -3,14 +3,14 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-import { Box }     from '@pres/components-core'
-import { helpers } from '@pres/util-helpers'
-import cp          from 'child_process'
-import fs          from 'fs'
+import { Box } from '@pres/components-core'
 
-import { ATTACH, REMOVE_LISTENER, EVENT, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEW_LISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHT_EXCEPTION, WARNING, ACTION, ADD_ITEM, ADOPT, BTNDOWN, BTNUP, CD, CHECK, COMPLETE, CONNECT, CREATE_ITEM, DBLCLICK, DRAG, INSERT_ITEM, _LOG, MOVE, PARSED_CONTENT, PASSTHROUGH, REFRESH, REMOVE, REMOVE_ITEM, REPARENT, RESPONSE, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS, UNCHECK, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
+import { ATTACH, DATA, DETACH, ERROR, EXIT, HIDE, RENDER, RESIZE, SHOW, } from '@pres/enum-events'
+import { helpers }                                                        from '@pres/util-helpers'
+import cp                                                                 from 'child_process'
+import fs                                                                 from 'fs'
 
-export class  OverlayImage extends Box {
+export class OverlayImage extends Box {
   /**
    * OverlayImage
    * Good example of w3mimgdisplay commands:
@@ -102,10 +102,10 @@ export class  OverlayImage extends Box {
     if (this.options.file || this.options.img) {
       this.setImage(this.options.file || this.options.img)
     }
-    this.type = 'overlayimage';
+    this.type = 'overlayimage'
   }
   spawn(file, args, opt, callback) {
-    const spawn = require('child_process').spawn
+    const spawn = cp.spawn
     let ps
 
     opt = opt || {}
@@ -265,10 +265,10 @@ export class  OverlayImage extends Box {
           : callback(null, success)
       })
 
-      const width = self.width * ratio.tw | 0,
-        height = self.height * ratio.th | 0,
-        aleft = self.aleft * ratio.tw | 0,
-        atop = self.atop * ratio.th | 0
+      const width  = self.width * ratio.tw | 0,
+            height = self.height * ratio.th | 0,
+            aleft  = self.aleft * ratio.tw | 0,
+            atop   = self.atop * ratio.th | 0
 
       const input = '0;1;'
         + aleft + ';'
@@ -322,10 +322,10 @@ export class  OverlayImage extends Box {
         : callback(null, success)
     })
 
-    let width = this._props.width + 2,
-      height = this._props.height + 2,
-      aleft = this._props.aleft,
-      atop = this._props.atop
+    let width  = this._props.width + 2,
+        height = this._props.height + 2,
+        aleft  = this._props.aleft,
+        atop   = this._props.atop
 
     if (this._drag) {
       aleft -= 10
@@ -513,10 +513,10 @@ export class  OverlayImage extends Box {
     this.file = _file
     this._lastSize = _lastSize
 
-    const width = this.width * ratio.tw | 0,
-      height = this.height * ratio.th | 0,
-      aleft = this.aleft * ratio.tw | 0,
-      atop = this.atop * ratio.th | 0
+    const width  = this.width * ratio.tw | 0,
+          height = this.height * ratio.th | 0,
+          aleft  = this.aleft * ratio.tw | 0,
+          atop   = this.atop * ratio.th | 0
 
     const input = '0;1;'
       + aleft + ';'
@@ -555,10 +555,10 @@ export class  OverlayImage extends Box {
       return false
     }
 
-    let width = this._props.width + 2,
-      height = this._props.height + 2,
-      aleft = this._props.aleft,
-      atop = this._props.atop
+    let width  = this._props.width + 2,
+        height = this._props.height + 2,
+        aleft  = this._props.aleft,
+        atop   = this._props.atop
 
     if (this._drag) {
       aleft -= 10

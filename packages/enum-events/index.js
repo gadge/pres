@@ -1,4 +1,4 @@
-const
+export const
   ACTION             = 'action',
   ADD_ITEM           = 'add item',
   ADOPT              = 'adopt',

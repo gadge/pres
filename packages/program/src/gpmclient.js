@@ -3,22 +3,23 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-import { EventEmitter } from '@pres/events'
-import fs               from 'fs'
-import net              from 'net'
+import { BTNDOWN, BTNUP, CLICK, CONNECT, DATA, DBLCLICK, DRAG, ERROR, MOUSEWHEEL, MOVE, } from '@pres/enum-events'
+import { EventEmitter }                                                                   from '@pres/events'
+import fs                                                                                 from 'fs'
+import net                                                                                from 'net'
 
 const GPM_USE_MAGIC = false
 
 const GPM_MOVE = 1,
-  GPM_DRAG = 2,
-  GPM_DOWN = 4,
-  GPM_UP = 8
+      GPM_DRAG = 2,
+      GPM_DOWN = 4,
+      GPM_UP   = 8
 
 const GPM_DOUBLE = 32,
-  GPM_MFLAG = 128
+      GPM_MFLAG  = 128
 
 const GPM_REQ_NOPASTE = 3,
-  GPM_HARD = 256
+      GPM_HARD        = 256
 
 const GPM_MAGIC = 0x47706D4C
 const GPM_SOCKET = '/dev/gpmctl'
@@ -90,9 +91,8 @@ function parseEvent(raw) {
 }
 
 export const gpmClient = options => new GpmClient(options)
-import { ATTACH, REMOVE_LISTENER, EVENT, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEW_LISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHT_EXCEPTION, WARNING, ACTION, ADD_ITEM, ADOPT, BTNDOWN, BTNUP, CD, CHECK, COMPLETE, CONNECT, CREATE_ITEM, DBLCLICK, DRAG, INSERT_ITEM, _LOG, MOVE, PARSED_CONTENT, PASSTHROUGH, REFRESH, REMOVE, REMOVE_ITEM, REPARENT, RESPONSE, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS, UNCHECK, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
 
-export class  GpmClient extends EventEmitter {
+export class GpmClient extends EventEmitter {
   constructor(options = {}) {
     super()
     // if (!(this instanceof GpmClient)) return new GpmClient(options)

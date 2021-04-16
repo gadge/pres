@@ -3,7 +3,6 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var componentsCore = require('@pres/components-core');
-require('@pres/enum-events');
 
 /**
  * text.js - text element for blessed

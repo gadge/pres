@@ -19,8 +19,8 @@ exports.match = function (r1, g1, b1) {
   }
   let
     ldiff = Infinity,
-    li = -1,
-    i = 0,
+    li    = -1,
+    i     = 0,
     c,
     r2,
     g2,
@@ -62,9 +62,9 @@ exports.hexToRGB = function (hex) {
       + hex[3] + hex[3]
   }
   const col = parseInt(hex.substring(1), 16),
-    r = (col >> 16) & 0xff,
-    g = (col >> 8) & 0xff,
-    b = col & 0xff
+        r   = (col >> 16) & 0xff,
+        g   = (col >> 8) & 0xff,
+        b   = col & 0xff
   return [ r, g, b ]
 }
 
@@ -217,8 +217,8 @@ exports.xterm = [
 // Seed all 256 colors. Assume xterm defaults.
 // Ported from the xterm color generation script.
 exports.colors = (() => {
-  const cols = exports.colors = [],
-    _cols = exports.vcolors = []
+  const cols  = exports.colors = [],
+        _cols = exports.vcolors = []
   let r, g, b, i, l
   function hex(n) {
     n = n.toString(16)
@@ -262,7 +262,7 @@ exports.colors = (() => {
 // This allows translation of high colors to low colors on 8-color terminals.
 exports.ccolors = (function () {
   const _cols = exports.vcolors.slice(),
-    cols = exports.colors.slice()
+        cols  = exports.colors.slice()
   let out
 
   exports.vcolors = exports.vcolors.slice(0, 8)
