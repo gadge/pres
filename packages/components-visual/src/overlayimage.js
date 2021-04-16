@@ -46,7 +46,7 @@ export class  OverlayImage extends Box {
       self.clearImage()
     })
 
-    this.on('show', function () {
+    this.on(SHOW, function () {
       if (!self._lastFile) return
       self.setImage(self._lastFile)
     })

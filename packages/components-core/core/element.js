@@ -465,7 +465,7 @@ export class  Element extends Node {
   show() {
     if (!this.hidden) return
     this.hidden = false
-    this.emit('show')
+    this.emit(SHOW)
   }
   toggle() {
     return this.hidden ? this.show() : this.hide()
@@ -477,7 +477,7 @@ export class  Element extends Node {
     if (!noClear) this.clearPos()
     this.content = content || ''
     this.parseContent(noTags)
-    this.emit('set content')
+    this.emit(SET_CONTENT)
   }
   getContent() {
     if (!this._clines) return ''

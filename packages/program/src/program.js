@@ -229,12 +229,12 @@ export class  Program extends EventEmitter {
     })
     if (tput.error) {
       nextTick(function () {
-        self.emit('warning', tput.error.message)
+        self.emit(WARNING, tput.error.message)
       })
     }
     if (tput.padding) {
       nextTick(function () {
-        self.emit('warning', 'Terminfo padding has been enabled.')
+        self.emit(WARNING, 'Terminfo padding has been enabled.')
       })
     }
     this.put = function () {
@@ -367,7 +367,7 @@ export class  Program extends EventEmitter {
     const self = this
     if (!this.output.isTTY) {
       nextTick(function () {
-        self.emit('warning', 'Output is not a TTY')
+        self.emit(WARNING, 'Output is not a TTY')
       })
     }
     // Output

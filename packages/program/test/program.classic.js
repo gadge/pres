@@ -246,13 +246,13 @@ Program.prototype.setupTput = function () {
 
   if (tput.error) {
     nextTick(function () {
-      self.emit('warning', tput.error.message)
+      self.emit(WARNING, tput.error.message)
     })
   }
 
   if (tput.padding) {
     nextTick(function () {
-      self.emit('warning', 'Terminfo padding has been enabled.')
+      self.emit(WARNING, 'Terminfo padding has been enabled.')
     })
   }
 
@@ -414,7 +414,7 @@ Program.prototype._listenOutput = function () {
 
   if (!this.output.isTTY) {
     nextTick(function () {
-      self.emit('warning', 'Output is not a TTY')
+      self.emit(WARNING, 'Output is not a TTY')
     })
   }
 
@@ -1779,11 +1779,11 @@ Program.prototype.repeat = function (ch, i) {
   return Array(i + 1).join(ch)
 }
 
-Program.prototype.__defineGetter__('title', function () {
+Program.prototype.__defineGetter__(TITLE, function () {
   return this._title
 })
 
-Program.prototype.__defineSetter__('title', function (title) {
+Program.prototype.__defineSetter__(TITLE, function (title) {
   this.setTitle(title)
   return this._title
 })

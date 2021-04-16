@@ -21,14 +21,14 @@ export class  _Screen {
     }
     if (_Screen._bound) return
     _Screen._bound = true
-    process.on('uncaughtException', _Screen._exceptionHandler = err => {
-      if (process.listeners('uncaughtException').length > 1) { return }
+    process.on(UNCAUGHT_EXCEPTION, _Screen._exceptionHandler = err => {
+      if (process.listeners(UNCAUGHT_EXCEPTION).length > 1) { return }
       _Screen.instances.slice().forEach(screen => screen.destroy())
       err = err || new Error('Uncaught Exception.')
       console.error(err.stack ? err.stack + '' : err + '')
       nextTick(() => process.exit(1))
     });
-    [ 'SIGTERM', 'SIGINT', 'SIGQUIT' ].forEach(signal => {
+    [ SIGTERM, SIGINT, SIGQUIT ].forEach(signal => {
       const name = '_' + signal.toLowerCase() + 'Handler'
       process.on(signal, _Screen[name] = () => {
         if (process.listeners(signal).length > 1) { return }

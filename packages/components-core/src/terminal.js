@@ -181,9 +181,9 @@ export class  Terminal extends Box {
       self.term.blur()
     })
 
-    this.term.on('title', function (title) {
+    this.term.on(TITLE, function (title) {
       self.title = title
-      self.emit('title', title)
+      self.emit(TITLE, title)
     })
 
     this.term.on('passthrough', function (data) {

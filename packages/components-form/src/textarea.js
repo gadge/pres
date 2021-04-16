@@ -160,7 +160,7 @@ export class  Textarea extends Input {
       if (err) {
         self.emit(ERROR, err)
       } else if (value != null) {
-        self.emit('submit', value)
+        self.emit(SUBMIT, value)
       } else {
         self.emit(CANCEL, value)
       }

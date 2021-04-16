@@ -159,7 +159,7 @@ export class  Form extends Box {
       el.children.forEach(fn)
     })
 
-    this.emit('submit', out)
+    this.emit(SUBMIT, out)
 
     return this.submission = out
   }

@@ -24,7 +24,7 @@ export class  Log extends ScrollableText {
       : Infinity
     this.scrollOnInput = options.scrollOnInput
 
-    this.on('set content', function () {
+    this.on(SET_CONTENT, function () {
       if (!self._userScrolled || self.scrollOnInput) {
         nextTick(function () {
           self.setScrollPerc(100)

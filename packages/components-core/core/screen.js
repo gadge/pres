@@ -115,7 +115,7 @@ export class  Screen extends Node {
     })
     this.program.on(FOCUS, function () {self.emit(FOCUS)})
     this.program.on(BLUR, function () {self.emit(BLUR)})
-    this.program.on('warning', function (text) {self.emit('warning', text)})
+    this.program.on(WARNING, function (text) {self.emit(WARNING, text)})
     this.on(NEW_LISTENER, function fn(type) {
       if (type === KEYPRESS || type.indexOf('key ') === 0 || type === MOUSE) {
         if (type === KEYPRESS || type.indexOf('key ') === 0) self._listenKeys()
@@ -246,7 +246,7 @@ export class  Screen extends Node {
     }
 
     if (this.options.warnings) {
-      this.on('warning', function (text) {
+      this.on(WARNING, function (text) {
         const warning = new Box({
           screen: self,
           parent: self,
@@ -287,10 +287,10 @@ export class  Screen extends Node {
       if (_Screen.total === 0) {
         _Screen.global = null
 
-        process.removeListener('uncaughtException', _Screen._exceptionHandler)
-        process.removeListener('SIGTERM', _Screen._sigtermHandler)
-        process.removeListener('SIGINT', _Screen._sigintHandler)
-        process.removeListener('SIGQUIT', _Screen._sigquitHandler)
+        process.removeListener(UNCAUGHT_EXCEPTION, _Screen._exceptionHandler)
+        process.removeListener(SIGTERM, _Screen._sigtermHandler)
+        process.removeListener(SIGINT, _Screen._sigintHandler)
+        process.removeListener(SIGQUIT, _Screen._sigquitHandler)
         process.removeListener(EXIT, _Screen._exitHandler)
         delete _Screen._exceptionHandler
         delete _Screen._sigtermHandler
