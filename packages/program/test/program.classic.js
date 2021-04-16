@@ -11,7 +11,7 @@ import cp                from 'child_process'
 import fs                from 'fs'
 import { StringDecoder } from 'string_decoder'
 import util              from 'util'
-import { ATTACH, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEWLISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHTEXCEPTION, WARNING, } from '@pres/enum-events'
+import { ATTACH, REMOVE_LISTENER, EVENT, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEW_LISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHT_EXCEPTION, WARNING, ACTION, ADD_ITEM, ADOPT, BTNDOWN, BTNUP, CD, CHECK, COMPLETE, CONNECT, CREATE_ITEM, DBLCLICK, DRAG, INSERT_ITEM, _LOG, MOVE, PARSED_CONTENT, PASSTHROUGH, REFRESH, REMOVE, REMOVE_ITEM, REPARENT, RESPONSE, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS, UNCHECK, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
 
 
 const
@@ -651,7 +651,7 @@ Program.prototype._bindMouse = function (s, buf) {
     b -= 32
 
     if ((b >> 6) & 1) {
-      key.action = b & 1 ? 'wheeldown' : 'wheelup'
+      key.action = b & 1 ? WHEELDOWN : WHEELUP
       key.button = 'middle'
     } else if (b === 3) {
       // NOTE: x10 and urxvt have no way
@@ -723,7 +723,7 @@ Program.prototype._bindMouse = function (s, buf) {
     b -= 32
 
     if ((b >> 6) & 1) {
-      key.action = b & 1 ? 'wheeldown' : 'wheelup'
+      key.action = b & 1 ? WHEELDOWN : WHEELUP
       key.button = 'middle'
     } else if (b === 3) {
       // NOTE: x10 and urxvt have no way
@@ -788,7 +788,7 @@ Program.prototype._bindMouse = function (s, buf) {
     key.ctrl = !!((mod >> 2) & 1)
 
     if ((b >> 6) & 1) {
-      key.action = b & 1 ? 'wheeldown' : 'wheelup'
+      key.action = b & 1 ? WHEELDOWN : WHEELUP
       key.button = 'middle'
     } else {
       key.action = down
@@ -907,7 +907,7 @@ Program.prototype.enableGpm = function () {
 
   this.gpm = gpmclient()
 
-  this.gpm.on('btndown', function (btn, modifier, x, y) {
+  this.gpm.on(BTNDOWN, function (btn, modifier, x, y) {
     x--, y--
 
     const key = {
@@ -926,7 +926,7 @@ Program.prototype.enableGpm = function () {
     self.emit(MOUSE, key)
   })
 
-  this.gpm.on('btnup', function (btn, modifier, x, y) {
+  this.gpm.on(BTNUP, function (btn, modifier, x, y) {
     x--, y--
 
     const key = {
@@ -945,7 +945,7 @@ Program.prototype.enableGpm = function () {
     self.emit(MOUSE, key)
   })
 
-  this.gpm.on('move', function (btn, modifier, x, y) {
+  this.gpm.on(MOVE, function (btn, modifier, x, y) {
     x--, y--
 
     const key = {
@@ -964,7 +964,7 @@ Program.prototype.enableGpm = function () {
     self.emit(MOUSE, key)
   })
 
-  this.gpm.on('drag', function (btn, modifier, x, y) {
+  this.gpm.on(DRAG, function (btn, modifier, x, y) {
     x--, y--
 
     const key = {
@@ -987,7 +987,7 @@ Program.prototype.enableGpm = function () {
     const key = {
       name: MOUSE,
       type: 'GPM',
-      action: dy > 0 ? 'wheelup' : 'wheeldown',
+      action: dy > 0 ? WHEELUP : WHEELDOWN,
       button: self.gpm.ButtonName(btn),
       raw: [ btn, modifier, x, y, dx, dy ],
       x: x,
@@ -1141,7 +1141,7 @@ Program.prototype._bindResponse = function (s) {
     // LEGACY
     out.deviceAttributes = out
 
-    this.emit('response', out)
+    this.emit(RESPONSE, out)
     this.emit('response ' + out.event, out)
 
     return
@@ -1174,7 +1174,7 @@ Program.prototype._bindResponse = function (s) {
       // LEGACY
       out.deviceStatus = out.status
 
-      this.emit('response', out)
+      this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
       return
@@ -1189,7 +1189,7 @@ Program.prototype._bindResponse = function (s) {
       // LEGACY
       out.printerStatus = out.status
 
-      this.emit('response', out)
+      this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
       return
@@ -1204,7 +1204,7 @@ Program.prototype._bindResponse = function (s) {
       // LEGACY
       out.UDKStatus = out.status
 
-      this.emit('response', out)
+      this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
       return
@@ -1221,7 +1221,7 @@ Program.prototype._bindResponse = function (s) {
       // LEGACY
       out.keyboardStatus = out.status
 
-      this.emit('response', out)
+      this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
       return
@@ -1236,7 +1236,7 @@ Program.prototype._bindResponse = function (s) {
       // LEGACY
       out.locator = out.status
 
-      this.emit('response', out)
+      this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
       return
@@ -1248,7 +1248,7 @@ Program.prototype._bindResponse = function (s) {
     // LEGACY
     out.error = out.text
 
-    this.emit('response', out)
+    this.emit(RESPONSE, out)
     this.emit('response ' + out.event, out)
 
     return
@@ -1280,7 +1280,7 @@ Program.prototype._bindResponse = function (s) {
     // LEGACY
     out.cursor = out.status
 
-    this.emit('response', out)
+    this.emit(RESPONSE, out)
     this.emit('response ' + out.event, out)
 
     return
@@ -1315,7 +1315,7 @@ Program.prototype._bindResponse = function (s) {
       // LEGACY
       out.windowState = out.state
 
-      this.emit('response', out)
+      this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
       return
@@ -1334,7 +1334,7 @@ Program.prototype._bindResponse = function (s) {
       // LEGACY
       out.windowPosition = out.position
 
-      this.emit('response', out)
+      this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
       return
@@ -1352,7 +1352,7 @@ Program.prototype._bindResponse = function (s) {
       // LEGACY
       out.windowSizePixels = out.size
 
-      this.emit('response', out)
+      this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
       return
@@ -1370,7 +1370,7 @@ Program.prototype._bindResponse = function (s) {
       // LEGACY
       out.textAreaSizeCharacters = out.size
 
-      this.emit('response', out)
+      this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
       return
@@ -1388,7 +1388,7 @@ Program.prototype._bindResponse = function (s) {
       // LEGACY
       out.screenSizeCharacters = out.size
 
-      this.emit('response', out)
+      this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
       return
@@ -1400,7 +1400,7 @@ Program.prototype._bindResponse = function (s) {
     // LEGACY
     out.error = out.text
 
-    this.emit('response', out)
+    this.emit(RESPONSE, out)
     this.emit('response ' + out.event, out)
 
     return
@@ -1441,7 +1441,7 @@ Program.prototype._bindResponse = function (s) {
       // LEGACY
       out.windowIconLabel = out.text
 
-      this.emit('response', out)
+      this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
       return
@@ -1454,7 +1454,7 @@ Program.prototype._bindResponse = function (s) {
       // LEGACY
       out.windowTitle = out.text
 
-      this.emit('response', out)
+      this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
       return
@@ -1466,7 +1466,7 @@ Program.prototype._bindResponse = function (s) {
     // LEGACY
     out.error = out.text
 
-    this.emit('response', out)
+    this.emit(RESPONSE, out)
     this.emit('response ' + out.event, out)
 
     return
@@ -1557,7 +1557,7 @@ Program.prototype._bindResponse = function (s) {
     // LEGACY
     out.locatorPosition = out
 
-    this.emit('response', out)
+    this.emit(RESPONSE, out)
     this.emit('response ' + out.event, out)
 
     return
@@ -1571,7 +1571,7 @@ Program.prototype._bindResponse = function (s) {
     out.code = 'Set Text Parameters'
     out.ps = +s[1]
     out.pt = s[2]
-    this.emit('response', out)
+    this.emit(RESPONSE, out)
     this.emit('response ' + out.event, out)
   }
 }
@@ -1593,7 +1593,7 @@ Program.prototype.response = function (name, text, callback, noBypass) {
 
   name = name
     ? 'response ' + name
-    : 'response'
+    : RESPONSE
 
   let onresponse
 

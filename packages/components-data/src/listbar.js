@@ -7,7 +7,7 @@
 import { Box }     from '@pres/components-core'
 import { helpers } from '@pres/util-helpers'
 
-import { ATTACH, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEWLISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHTEXCEPTION, WARNING, } from '@pres/enum-events'
+import { ATTACH, REMOVE_LISTENER, EVENT, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEW_LISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHT_EXCEPTION, WARNING, ACTION, ADD_ITEM, ADOPT, BTNDOWN, BTNUP, CD, CHECK, COMPLETE, CONNECT, CREATE_ITEM, DBLCLICK, DRAG, INSERT_ITEM, _LOG, MOVE, PARSED_CONTENT, PASSTHROUGH, REFRESH, REMOVE, REMOVE_ITEM, REPARENT, RESPONSE, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS, UNCHECK, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
 
 export class  Listbar extends Box {
   /**
@@ -49,8 +49,8 @@ export class  Listbar extends Box {
         }
         if (key.name === 'enter'
           || (options.vi && key.name === 'k' && !key.shift)) {
-          self.emit('action', self.items[self.selected], self.selected)
-          self.emit('select', self.items[self.selected], self.selected)
+          self.emit(ACTION, self.items[self.selected], self.selected)
+          self.emit(SELECT, self.items[self.selected], self.selected)
           const item = self.items[self.selected]
           if (item._.cmd.callback) {
             item._.cmd.callback()
@@ -59,7 +59,7 @@ export class  Listbar extends Box {
           return
         }
         if (key.name === 'escape' || (options.vi && key.name === 'q')) {
-          self.emit('action')
+          self.emit(ACTION)
           self.emit(CANCEL)
         }
       })
@@ -123,7 +123,7 @@ export class  Listbar extends Box {
       self.add(cmd)
     })
 
-    this.emit('set items')
+    this.emit(SET_ITEMS)
   }
   appendItem(item, callback) {
     const self = this,
@@ -218,8 +218,8 @@ export class  Listbar extends Box {
     if (cmd.callback) {
       if (cmd.keys) {
         this.screen.key(cmd.keys, function () {
-          self.emit('action', el, self.selected)
-          self.emit('select', el, self.selected)
+          self.emit(ACTION, el, self.selected)
+          self.emit(SELECT, el, self.selected)
           if (el._.cmd.callback) {
             el._.cmd.callback()
           }
@@ -236,8 +236,8 @@ export class  Listbar extends Box {
     // XXX May be affected by new element.options.mouse option.
     if (this.mouse) {
       el.on(CLICK, function () {
-        self.emit('action', el, self.selected)
-        self.emit('select', el, self.selected)
+        self.emit(ACTION, el, self.selected)
+        self.emit(SELECT, el, self.selected)
         if (el._.cmd.callback) {
           el._.cmd.callback()
         }
@@ -246,7 +246,7 @@ export class  Listbar extends Box {
       })
     }
 
-    this.emit('add item')
+    this.emit(ADD_ITEM)
   }
   render() {
     const self = this
@@ -280,7 +280,7 @@ export class  Listbar extends Box {
     }
 
     if (!this.parent) {
-      this.emit('select item', this.items[offset], offset)
+      this.emit(SELECT_ITEM, this.items[offset], offset)
       return
     }
 
@@ -328,7 +328,7 @@ export class  Listbar extends Box {
     }
 
     // XXX Move `action` and `select` events here.
-    this.emit('select item', el, offset)
+    this.emit(SELECT_ITEM, el, offset)
   }
   removeItem(child) {
     const i = typeof child !== 'number'
@@ -345,7 +345,7 @@ export class  Listbar extends Box {
       }
     }
 
-    this.emit('remove item')
+    this.emit(REMOVE_ITEM)
   }
   move(offset) {
     this.select(this.selected + offset)
@@ -365,6 +365,6 @@ export class  Listbar extends Box {
       this.select(index)
       this.screen.render()
     }
-    this.emit('select tab', item, index)
+    this.emit(SELECT_TAB, item, index)
   }
 }

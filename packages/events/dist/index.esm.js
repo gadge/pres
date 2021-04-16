@@ -1,3 +1,5 @@
+const NEW_LISTENER = "newListener";
+
 /**
  * alias.js - event emitter for blessed
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
@@ -37,7 +39,7 @@ class EventEmitter {
       this._events[type].push(listener);
     }
 
-    this._emit('newListener', [type, listener]);
+    this._emit(NEW_LISTENER, [type, listener]);
   }
 
   removeListener(type, listener) {

@@ -9,7 +9,7 @@ import { helpers } from '@pres/util-helpers'
 import fs          from 'fs'
 import path        from 'path'
 
-import { ATTACH, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEWLISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHTEXCEPTION, WARNING, } from '@pres/enum-events'
+import { ATTACH, REMOVE_LISTENER, EVENT, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEW_LISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHT_EXCEPTION, WARNING, ACTION, ADD_ITEM, ADOPT, BTNDOWN, BTNUP, CD, CHECK, COMPLETE, CONNECT, CREATE_ITEM, DBLCLICK, DRAG, INSERT_ITEM, _LOG, MOVE, PARSED_CONTENT, PASSTHROUGH, REFRESH, REMOVE, REMOVE_ITEM, REPARENT, RESPONSE, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS, UNCHECK, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
 
 export class  FileManager extends List {
   /**
@@ -28,7 +28,7 @@ export class  FileManager extends List {
     if (options.label && ~options.label.indexOf('%path')) {
       this._label.setContent(options.label.replace('%path', this.cwd))
     }
-    this.on('select', function (item) {
+    this.on(SELECT, function (item) {
       const value = item.content.replace(/\{[^{}]+\}/g, '').replace(/@$/, ''),
         file = path.resolve(self.cwd, value)
       return fs.stat(file, function (err, stat) {
@@ -38,7 +38,7 @@ export class  FileManager extends List {
         self.file = file
         self.value = file
         if (stat.isDirectory()) {
-          self.emit('cd', file, self.cwd)
+          self.emit(CD, file, self.cwd)
           self.cwd = file
           if (options.label && ~options.label.indexOf('%path')) {
             self._label.setContent(options.label.replace('%path', file))
@@ -122,7 +122,7 @@ export class  FileManager extends List {
       self.select(0)
       self.screen.render()
 
-      self.emit('refresh')
+      self.emit(REFRESH)
 
       if (callback) callback()
     })

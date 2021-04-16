@@ -4,6 +4,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var componentsCore = require('@pres/components-core');
 var utilHelpers = require('@pres/util-helpers');
+var enumEvents = require('@pres/enum-events');
 
 /**
  * list.js - list element for blessed
@@ -89,18 +90,18 @@ class List extends componentsCore.Box {
     if (options.mouse) {
       this.screen._listenMouse(this);
 
-      this.on('element wheeldown', function () {
+      this.on(enumEvents.ELEMENT_WHEELDOWN, function () {
         self.select(self.selected + 2);
         self.screen.render();
       });
-      this.on('element wheelup', function () {
+      this.on(enumEvents.ELEMENT_WHEELUP, function () {
         self.select(self.selected - 2);
         self.screen.render();
       });
     }
 
     if (options.keys) {
-      this.on('keypress', function (ch, key) {
+      this.on(enumEvents.KEYPRESS, function (ch, key) {
         if (key.name === 'up' || options.vi && key.name === 'k') {
           self.up();
           self.screen.render();
@@ -200,7 +201,7 @@ class List extends componentsCore.Box {
       });
     }
 
-    this.on('resize', function () {
+    this.on(enumEvents.RESIZE, function () {
       const visible = self.height - self.iheight; // if (self.selected < visible - 1) {
 
       if (visible >= self.selected + 1) {
@@ -212,14 +213,14 @@ class List extends componentsCore.Box {
         self.childOffset = visible - 1;
       }
     });
-    this.on('adopt', function (el) {
+    this.on(enumEvents.ADOPT, function (el) {
       if (!~self.items.indexOf(el)) {
         el.fixed = true;
       }
     }); // Ensure children are removed from the
     // item list if they are items.
 
-    this.on('remove', function (el) {
+    this.on(enumEvents.REMOVE, function (el) {
       self.removeItem(el);
     });
     this.type = 'list';
@@ -270,12 +271,12 @@ class List extends componentsCore.Box {
     var item = new componentsCore.Box(options);
 
     if (this.mouse) {
-      item.on('click', function () {
+      item.on(enumEvents.CLICK, function () {
         self.focus();
 
         if (self.items[self.selected] === item) {
-          self.emit('action', item, self.selected);
-          self.emit('select', item, self.selected);
+          self.emit(enumEvents.ACTION, item, self.selected);
+          self.emit(enumEvents.SELECT, item, self.selected);
           return;
         }
 
@@ -284,7 +285,7 @@ class List extends componentsCore.Box {
       });
     }
 
-    this.emit('create item');
+    this.emit(enumEvents.CREATE_ITEM);
     return item;
   }
 
@@ -305,7 +306,7 @@ class List extends componentsCore.Box {
       this.select(0);
     }
 
-    this.emit('add item');
+    this.emit(enumEvents.ADD_ITEM);
     return item;
   }
 
@@ -326,7 +327,7 @@ class List extends componentsCore.Box {
       }
     }
 
-    this.emit('remove item');
+    this.emit(enumEvents.REMOVE_ITEM);
     return child;
   }
 
@@ -401,7 +402,7 @@ class List extends componentsCore.Box {
       this.select(Math.min(selected, items.length - 1));
     }
 
-    this.emit('set items');
+    this.emit(enumEvents.SET_ITEMS);
   }
 
   pushItem(content) {
@@ -569,7 +570,7 @@ class List extends componentsCore.Box {
     this.select(0);
     if (label) this.setLabel(label);
     this.screen.render();
-    this.once('action', function (el, selected) {
+    this.once(enumEvents.ACTION, function (el, selected) {
       if (label) self.removeLabel();
       self.screen.restoreFocus();
       self.hide();
@@ -581,14 +582,14 @@ class List extends componentsCore.Box {
 
   enterSelected(i) {
     if (i != null) this.select(i);
-    this.emit('action', this.items[this.selected], this.selected);
-    this.emit('select', this.items[this.selected], this.selected);
+    this.emit(enumEvents.ACTION, this.items[this.selected], this.selected);
+    this.emit(enumEvents.SELECT, this.items[this.selected], this.selected);
   }
 
   cancelSelected(i) {
     if (i != null) this.select(i);
-    this.emit('action');
-    this.emit('cancel');
+    this.emit(enumEvents.ACTION);
+    this.emit(enumEvents.CANCEL);
   }
 
 }
@@ -618,7 +619,7 @@ class Listbar extends componentsCore.Box {
     if (options.commands || options.items) this.setItems(options.commands || options.items);
 
     if (options.keys) {
-      this.on('keypress', function (ch, key) {
+      this.on(enumEvents.KEYPRESS, function (ch, key) {
         if (key.name === 'left' || options.vi && key.name === 'h' || key.shift && key.name === 'tab') {
           self.moveLeft();
           self.screen.render(); // Stop propagation if we're in a form.
@@ -636,8 +637,8 @@ class Listbar extends componentsCore.Box {
         }
 
         if (key.name === 'enter' || options.vi && key.name === 'k' && !key.shift) {
-          self.emit('action', self.items[self.selected], self.selected);
-          self.emit('select', self.items[self.selected], self.selected);
+          self.emit(enumEvents.ACTION, self.items[self.selected], self.selected);
+          self.emit(enumEvents.SELECT, self.items[self.selected], self.selected);
           const item = self.items[self.selected];
 
           if (item._.cmd.callback) {
@@ -649,14 +650,14 @@ class Listbar extends componentsCore.Box {
         }
 
         if (key.name === 'escape' || options.vi && key.name === 'q') {
-          self.emit('action');
-          self.emit('cancel');
+          self.emit(enumEvents.ACTION);
+          self.emit(enumEvents.CANCEL);
         }
       });
     }
 
     if (options.autoCommandKeys) {
-      this.onScreenEvent('keypress', function (ch) {
+      this.onScreenEvent(enumEvents.KEYPRESS, function (ch) {
         if (/^[0-9]$/.test(ch)) {
           let i = +ch - 1;
           if (!~i) i = 9;
@@ -665,7 +666,7 @@ class Listbar extends componentsCore.Box {
       });
     }
 
-    this.on('focus', function () {
+    this.on(enumEvents.FOCUS, function () {
       self.select(self.selected);
     });
     this.type = 'listbar';
@@ -713,7 +714,7 @@ class Listbar extends componentsCore.Box {
     commands.forEach(function (cmd) {
       self.add(cmd);
     });
-    this.emit('set items');
+    this.emit(enumEvents.SET_ITEMS);
   }
 
   appendItem(item, callback) {
@@ -800,8 +801,8 @@ class Listbar extends componentsCore.Box {
     if (cmd.callback) {
       if (cmd.keys) {
         this.screen.key(cmd.keys, function () {
-          self.emit('action', el, self.selected);
-          self.emit('select', el, self.selected);
+          self.emit(enumEvents.ACTION, el, self.selected);
+          self.emit(enumEvents.SELECT, el, self.selected);
 
           if (el._.cmd.callback) {
             el._.cmd.callback();
@@ -819,9 +820,9 @@ class Listbar extends componentsCore.Box {
 
 
     if (this.mouse) {
-      el.on('click', function () {
-        self.emit('action', el, self.selected);
-        self.emit('select', el, self.selected);
+      el.on(enumEvents.CLICK, function () {
+        self.emit(enumEvents.ACTION, el, self.selected);
+        self.emit(enumEvents.SELECT, el, self.selected);
 
         if (el._.cmd.callback) {
           el._.cmd.callback();
@@ -832,7 +833,7 @@ class Listbar extends componentsCore.Box {
       });
     }
 
-    this.emit('add item');
+    this.emit(enumEvents.ADD_ITEM);
   }
 
   render() {
@@ -867,7 +868,7 @@ class Listbar extends componentsCore.Box {
     }
 
     if (!this.parent) {
-      this.emit('select item', this.items[offset], offset);
+      this.emit(enumEvents.SELECT_ITEM, this.items[offset], offset);
       return;
     }
 
@@ -929,7 +930,7 @@ class Listbar extends componentsCore.Box {
       }
     }
 
-    this.emit('remove item');
+    this.emit(enumEvents.REMOVE_ITEM);
   }
 
   move(offset) {
@@ -956,7 +957,7 @@ class Listbar extends componentsCore.Box {
       this.screen.render();
     }
 
-    this.emit('select tab', item, index);
+    this.emit(enumEvents.SELECT_TAB, item, index);
   }
 
 }
@@ -990,11 +991,11 @@ class Table extends componentsCore.Box {
 
     this.pad = options.pad != null ? options.pad : 2;
     this.setData(options.rows || options.data);
-    this.on('attach', function () {
+    this.on(enumEvents.ATTACH, function () {
       self.setContent('');
       self.setData(self.rows);
     });
-    this.on('resize', function () {
+    this.on(enumEvents.RESIZE, function () {
       self.setContent('');
       self.setData(self.rows);
       self.screen.render();
@@ -1353,7 +1354,7 @@ class ListTable extends List {
       style: options.style.header,
       tags: options.parseTags || options.tags
     });
-    this.on('scroll', function () {
+    this.on(enumEvents.SCROLL, function () {
       self._header.setFront();
 
       self._header.rtop = self.childBase;
@@ -1364,10 +1365,10 @@ class ListTable extends List {
     });
     this.pad = options.pad != null ? options.pad : 2;
     this.setData(options.rows || options.data);
-    this.on('attach', function () {
+    this.on(enumEvents.ATTACH, function () {
       self.setData(self.rows);
     });
-    this.on('resize', function () {
+    this.on(enumEvents.RESIZE, function () {
       const selected = self.selected;
       self.setData(self.rows);
       self.select(selected);

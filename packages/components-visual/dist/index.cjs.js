@@ -9,6 +9,7 @@ var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
 var zlib = require('zlib');
+var enumEvents = require('@pres/enum-events');
 var utilHelpers = require('@pres/util-helpers');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -1770,13 +1771,13 @@ class ANSIImage extends componentsCore.Box {
       this.setImage(this.options.file);
     }
 
-    this.screen.on('prerender', function () {
+    this.screen.on(enumEvents.PRERENDER, function () {
       const lpos = self.lpos;
       if (!lpos) return; // prevent image from blending with itself if there are alpha channels
 
       self.screen.clearRegion(lpos.xi, lpos.xl, lpos.yi, lpos.yl);
     });
-    this.on('destroy', function () {
+    this.on(enumEvents.DESTROY, function () {
       self.stop();
     });
     this.type = 'ansiimage';
@@ -2108,26 +2109,26 @@ class OverlayImage extends componentsCore.Box {
       }
     }
 
-    this.on('hide', function () {
+    this.on(enumEvents.HIDE, function () {
       self._lastFile = self.file;
       self.clearImage();
     });
-    this.on('show', function () {
+    this.on(enumEvents.SHOW, function () {
       if (!self._lastFile) return;
       self.setImage(self._lastFile);
     });
-    this.on('detach', function () {
+    this.on(enumEvents.DETACH, function () {
       self._lastFile = self.file;
       self.clearImage();
     });
-    this.on('attach', function () {
+    this.on(enumEvents.ATTACH, function () {
       if (!self._lastFile) return;
       self.setImage(self._lastFile);
     });
-    this.onScreenEvent('resize', function () {
+    this.onScreenEvent(enumEvents.RESIZE, function () {
       self._needsRatio = true;
     }); // Get images to overlap properly. Maybe not worth it:
-    // this.onScreenEvent('render', function() {
+    // this.onScreenEvent(RENDER, function() {
     //   self.screen.program.flush();
     //   if (!self._noImage) return;
     //   function display(el, next) {
@@ -2153,7 +2154,7 @@ class OverlayImage extends componentsCore.Box {
     //   recurse(self.screen);
     // });
 
-    this.onScreenEvent('render', function () {
+    this.onScreenEvent(enumEvents.RENDER, function () {
       self.screen.program.flush();
 
       if (!self._noImage) {
@@ -2174,11 +2175,11 @@ class OverlayImage extends componentsCore.Box {
     let ps;
     opt = opt || {};
     ps = spawn(file, args, opt);
-    ps.on('error', function (err) {
+    ps.on(enumEvents.ERROR, function (err) {
       if (!callback) return;
       return callback(err);
     });
-    ps.on('exit', function (code) {
+    ps.on(enumEvents.EXIT, function (code) {
       if (!callback) return;
       if (code !== 0) return callback(new Error('Exit Code: ' + code));
       return callback(null, code === 0);
@@ -2421,14 +2422,14 @@ class OverlayImage extends componentsCore.Box {
     const ps = this.spawn(OverlayImage.w3mdisplay, [], opt);
     let buf = '';
     ps.stdout.setEncoding('utf8');
-    ps.stdout.on('data', function (data) {
+    ps.stdout.on(enumEvents.DATA, function (data) {
       buf += data;
     });
-    ps.on('error', function (err) {
+    ps.on(enumEvents.ERROR, function (err) {
       if (!callback) return;
       return callback(err);
     });
-    ps.on('exit', function () {
+    ps.on(enumEvents.EXIT, function () {
       if (!callback) return;
       const size = buf.trim().split(/\s+/);
       return callback(null, {
@@ -2470,14 +2471,14 @@ class OverlayImage extends componentsCore.Box {
     const ps = this.spawn(OverlayImage.w3mdisplay, ['-test'], opt);
     let buf = '';
     ps.stdout.setEncoding('utf8');
-    ps.stdout.on('data', function (data) {
+    ps.stdout.on(enumEvents.DATA, function (data) {
       buf += data;
     });
-    ps.on('error', function (err) {
+    ps.on(enumEvents.ERROR, function (err) {
       if (!callback) return;
       return callback(err);
     });
-    ps.on('exit', function () {
+    ps.on(enumEvents.EXIT, function () {
       if (!callback) return;
 
       if (!buf.trim()) {
@@ -2747,12 +2748,12 @@ class Video extends componentsCore.Box {
     delete process.env.DISPLAY;
     this.tty = new componentsCore.Terminal(opts);
     process.env.DISPLAY = DISPLAY;
-    this.on('click', function () {
+    this.on(enumEvents.CLICK, function () {
       self.tty.pty.write('p');
     }); // mplayer/mpv cannot resize itself in the terminal, so we have
     // to restart it at the correct start time.
 
-    this.on('resize', function () {
+    this.on(enumEvents.RESIZE, function () {
       self.tty.destroy();
       const opts = {
         parent: self,

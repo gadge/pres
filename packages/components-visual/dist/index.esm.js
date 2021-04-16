@@ -5,6 +5,7 @@ import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import zlib from 'zlib';
+import { PRERENDER, DESTROY, HIDE, SHOW, DETACH, ATTACH, RESIZE, RENDER, ERROR, EXIT, DATA, CLICK } from '@pres/enum-events';
 import { helpers } from '@pres/util-helpers';
 
 /**
@@ -1737,13 +1738,13 @@ class ANSIImage extends Box {
       this.setImage(this.options.file);
     }
 
-    this.screen.on('prerender', function () {
+    this.screen.on(PRERENDER, function () {
       const lpos = self.lpos;
       if (!lpos) return; // prevent image from blending with itself if there are alpha channels
 
       self.screen.clearRegion(lpos.xi, lpos.xl, lpos.yi, lpos.yl);
     });
-    this.on('destroy', function () {
+    this.on(DESTROY, function () {
       self.stop();
     });
     this.type = 'ansiimage';
@@ -2075,26 +2076,26 @@ class OverlayImage extends Box {
       }
     }
 
-    this.on('hide', function () {
+    this.on(HIDE, function () {
       self._lastFile = self.file;
       self.clearImage();
     });
-    this.on('show', function () {
+    this.on(SHOW, function () {
       if (!self._lastFile) return;
       self.setImage(self._lastFile);
     });
-    this.on('detach', function () {
+    this.on(DETACH, function () {
       self._lastFile = self.file;
       self.clearImage();
     });
-    this.on('attach', function () {
+    this.on(ATTACH, function () {
       if (!self._lastFile) return;
       self.setImage(self._lastFile);
     });
-    this.onScreenEvent('resize', function () {
+    this.onScreenEvent(RESIZE, function () {
       self._needsRatio = true;
     }); // Get images to overlap properly. Maybe not worth it:
-    // this.onScreenEvent('render', function() {
+    // this.onScreenEvent(RENDER, function() {
     //   self.screen.program.flush();
     //   if (!self._noImage) return;
     //   function display(el, next) {
@@ -2120,7 +2121,7 @@ class OverlayImage extends Box {
     //   recurse(self.screen);
     // });
 
-    this.onScreenEvent('render', function () {
+    this.onScreenEvent(RENDER, function () {
       self.screen.program.flush();
 
       if (!self._noImage) {
@@ -2141,11 +2142,11 @@ class OverlayImage extends Box {
     let ps;
     opt = opt || {};
     ps = spawn(file, args, opt);
-    ps.on('error', function (err) {
+    ps.on(ERROR, function (err) {
       if (!callback) return;
       return callback(err);
     });
-    ps.on('exit', function (code) {
+    ps.on(EXIT, function (code) {
       if (!callback) return;
       if (code !== 0) return callback(new Error('Exit Code: ' + code));
       return callback(null, code === 0);
@@ -2388,14 +2389,14 @@ class OverlayImage extends Box {
     const ps = this.spawn(OverlayImage.w3mdisplay, [], opt);
     let buf = '';
     ps.stdout.setEncoding('utf8');
-    ps.stdout.on('data', function (data) {
+    ps.stdout.on(DATA, function (data) {
       buf += data;
     });
-    ps.on('error', function (err) {
+    ps.on(ERROR, function (err) {
       if (!callback) return;
       return callback(err);
     });
-    ps.on('exit', function () {
+    ps.on(EXIT, function () {
       if (!callback) return;
       const size = buf.trim().split(/\s+/);
       return callback(null, {
@@ -2437,14 +2438,14 @@ class OverlayImage extends Box {
     const ps = this.spawn(OverlayImage.w3mdisplay, ['-test'], opt);
     let buf = '';
     ps.stdout.setEncoding('utf8');
-    ps.stdout.on('data', function (data) {
+    ps.stdout.on(DATA, function (data) {
       buf += data;
     });
-    ps.on('error', function (err) {
+    ps.on(ERROR, function (err) {
       if (!callback) return;
       return callback(err);
     });
-    ps.on('exit', function () {
+    ps.on(EXIT, function () {
       if (!callback) return;
 
       if (!buf.trim()) {
@@ -2714,12 +2715,12 @@ class Video extends Box {
     delete process.env.DISPLAY;
     this.tty = new Terminal(opts);
     process.env.DISPLAY = DISPLAY;
-    this.on('click', function () {
+    this.on(CLICK, function () {
       self.tty.pty.write('p');
     }); // mplayer/mpv cannot resize itself in the terminal, so we have
     // to restart it at the correct start time.
 
-    this.on('resize', function () {
+    this.on(RESIZE, function () {
       self.tty.destroy();
       const opts = {
         parent: self,

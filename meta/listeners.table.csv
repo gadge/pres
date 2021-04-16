@@ -1,48 +1,82 @@
-constants,events
-ATTACH,attach
-BLUR,blur
-CANCEL,cancel
-CLICK,click
-CLOSE,close
-DATA,data
-DESTROY,destroy
-DETACH,detach
-ELEMENT_KEYPRESS,element keypress
-ELEMENT_CLICK,element click
-ELEMENT_FOCUS,element focus
-ELEMENT_WHEELDOWN,element wheeldown
-ELEMENT_WHEELUP,element wheelup
-ELEMENT_MOUSEOVER,element mouseover
-ELEMENT_MOUSEOUT,element mouseout
-ELEMENT_MOUSEUP,element mouseup
-ERROR,error
-EXIT,exit
-FILE,file
-FOCUS,focus
-HIDE,hide
-KEY,key
-KEYPRESS,keypress
-MOUSE,mouse
-MOUSEDOWN,mousedown
-MOUSEOVER,mouseover
-MOUSEMOVE,mousemove
-MOUSEOUT,mouseout
-MOUSEWHEEL,mousewheel
-NEW_LISTENER,newListener
-ON,on
-PRERENDER,prerender
-PRESS,press
-RENDER,render
-RESET,reset
-RESIZE,resize
-SCROLL,scroll
-SET_CONTENT,set content
-SHOW,show
-SIGINT,SIGINT
-SIGQUIT,SIGQUIT
-SIGTERM,SIGTERM
-SIZE,size
-SUBMIT,submit
-TITLE,title
-UNCAUGHT_EXCEPTION,uncaughtException
-WARNING,warning
+constants,events,
+ACTION,action,
+ADD_ITEM,add item,
+ADOPT,adopt,
+ATTACH,attach,
+BLUR,blur,
+BTNDOWN,btndown,
+BTNUP,btnup,
+CANCEL,cancel,
+CD,cd,
+CHECK,check,
+CLICK,click,
+CLOSE,close,
+COMPLETE,complete,
+CONNECT,connect,
+CREATE_ITEM,create item,
+DATA,data,
+DBLCLICK,dblclick,
+DESTROY,destroy,
+DETACH,detach,
+DRAG,drag,
+ELEMENT_CLICK,element click,
+ELEMENT_FOCUS,element focus,
+ELEMENT_KEYPRESS,element keypress,
+ELEMENT_MOUSEOUT,element mouseout,
+ELEMENT_MOUSEOVER,element mouseover,
+ELEMENT_MOUSEUP,element mouseup,
+ELEMENT_WHEELDOWN,element wheeldown,
+ELEMENT_WHEELUP,element wheelup,
+ERROR,error,
+EVENT,event,
+EXIT,exit,
+FILE,file,
+FOCUS,focus,
+HIDE,hide,
+INSERT_ITEM,insert item,
+KEY,key,
+KEYPRESS,keypress,
+LOG,log,
+MOUSE,mouse,
+MOUSEDOWN,mousedown,
+MOUSEMOVE,mousemove,
+MOUSEOUT,mouseout,
+MOUSEOVER,mouseover,
+MOUSEWHEEL,mousewheel,
+MOVE,move,
+NEW_LISTENER,newListener,
+ON,on,
+PARSED_CONTENT,parsed content,
+PASSTHROUGH,passthrough,
+PRERENDER,prerender,
+PRESS,press,
+REFRESH,refresh,
+REMOVE,remove,
+REMOVE_ITEM,remove item,
+REMOVE_LISTENER,removeListener,
+RENDER,render,
+REPARENT,reparent,
+RESET,reset,
+RESIZE,resize,
+RESPONSE,response,
+SCROLL,scroll,
+SELECT,select,
+SELECT_ITEM,select item,
+SELECT_TAB,select tab,
+SET_CONTENT,set content,
+SET_ITEMS,set items,
+SHOW,show,
+SIGINT,SIGINT,
+SIGQUIT,SIGQUIT,
+SIGTERM,SIGTERM,
+SIZE,size,
+SUBMIT,submit,
+TITLE,title,
+UNCAUGHT_EXCEPTION,uncaughtException,
+UNCHECK,uncheck,
+WARNING,warning,
+WHEELDOWN,wheeldown,
+WHEELUP,wheelup,
+,,
+,,
+,,

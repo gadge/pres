@@ -6,6 +6,7 @@ import * as helpers from '@pres/util-helpers';
 import { helpers as helpers$1 } from '@pres/util-helpers';
 import * as unicode$1 from '@pres/util-unicode';
 import assert from 'assert';
+import { MOUSEDOWN, WHEELDOWN, WHEELUP, KEYPRESS, PARSED_CONTENT, SCROLL, NEW_LISTENER, MOUSE, CLICK, MOUSEOVER, MOUSEOUT, MOUSEWHEEL, MOUSEMOVE, RESIZE, ATTACH, DETACH, MOVE, HIDE, SHOW, SET_CONTENT, PRERENDER, RENDER, _LOG, ERROR, EXIT, FOCUS, BLUR, WARNING, UNCAUGHT_EXCEPTION, SIGTERM, SIGINT, SIGQUIT, DESTROY, ELEMENT_CLICK, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, DATA, TITLE, PASSTHROUGH } from '@pres/enum-events';
 import { Program } from '@pres/program';
 import util from 'util';
 
@@ -58,7 +59,7 @@ class _Scrollable {
 
 
       if (options.mouse) {
-        this.on('mousedown', function (data) {
+        this.on(MOUSEDOWN, function (data) {
           if (self._scrollingBar) {
             // Do not allow dragging on the scrollbar:
             delete self.screen._dragging;
@@ -78,7 +79,7 @@ class _Scrollable {
             self.screen.render();
             let smd, smu;
             self._scrollingBar = true;
-            self.onScreenEvent('mousedown', smd = function (data) {
+            self.onScreenEvent(MOUSEDOWN, smd = function (data) {
               const y = data.y - self.atop;
               const perc = y / self.height;
               self.setScrollPerc(perc * 100 | 0);
@@ -89,7 +90,7 @@ class _Scrollable {
 
             self.onScreenEvent('mouseup', smu = function () {
               self._scrollingBar = false;
-              self.removeScreenEvent('mousedown', smd);
+              self.removeScreenEvent(MOUSEDOWN, smd);
               self.removeScreenEvent('mouseup', smu);
             });
           }
@@ -98,18 +99,18 @@ class _Scrollable {
     }
 
     if (options.mouse) {
-      this.on('wheeldown', function () {
+      this.on(WHEELDOWN, function () {
         self.scroll(self.height / 2 | 0 || 1);
         self.screen.render();
       });
-      this.on('wheelup', function () {
+      this.on(WHEELUP, function () {
         self.scroll(-(self.height / 2 | 0) || -1);
         self.screen.render();
       });
     }
 
     if (options.keys && !options.ignoreKeys) {
-      this.on('keypress', function (ch, key) {
+      this.on(KEYPRESS, function (ch, key) {
         if (key.name === 'up' || options.vi && key.name === 'k') {
           self.scroll(-1);
           self.screen.render();
@@ -159,7 +160,7 @@ class _Scrollable {
       });
     }
 
-    this.on('parsed content', function () {
+    this.on(PARSED_CONTENT, function () {
       self._recalculateIndex();
     });
 
@@ -253,7 +254,7 @@ class _Scrollable {
 
 
     if (this.childBase === base) {
-      return this.emit('scroll');
+      return this.emit(SCROLL);
     } // When scrolling text, we want to be able to handle SGR codes as well as line
     // feeds. This allows us to take preformatted text output from other programs
     // and put it in a scrollable text box.
@@ -296,7 +297,7 @@ class _Scrollable {
       }
     }
 
-    return this.emit('scroll');
+    return this.emit(SCROLL);
   }
 
   _recalculateIndex() {
@@ -325,7 +326,7 @@ class _Scrollable {
     if (!this.scrollable) return;
     this.childOffset = 0;
     this.childBase = 0;
-    return this.emit('scroll');
+    return this.emit(SCROLL);
   }
 
   getScrollHeight() {
@@ -491,24 +492,24 @@ class Element$1 extends Node {
 
     if (options.hoverText) {
       this.setHover(options.hoverText);
-    } // TODO: Possibly move this to Node for onScreenEvent('mouse', ...).
+    } // TODO: Possibly move this to Node for onScreenEvent(MOUSE, ...).
 
 
-    this.on('newListener', function fn(type) {
+    this.on(NEW_LISTENER, function fn(type) {
       // type = type.split(' ').slice(1).join(' ');
-      if (type === 'mouse' || type === 'click' || type === 'mouseover' || type === 'mouseout' || type === 'mousedown' || type === 'mouseup' || type === 'mousewheel' || type === 'wheeldown' || type === 'wheelup' || type === 'mousemove') {
+      if (type === MOUSE || type === CLICK || type === MOUSEOVER || type === MOUSEOUT || type === MOUSEDOWN || type === 'mouseup' || type === MOUSEWHEEL || type === WHEELDOWN || type === WHEELUP || type === MOUSEMOVE) {
         self.screen._listenMouse(self);
-      } else if (type === 'keypress' || type.indexOf('key ') === 0) {
+      } else if (type === KEYPRESS || type.indexOf('key ') === 0) {
         self.screen._listenKeys(self);
       }
     });
-    this.on('resize', function () {
+    this.on(RESIZE, function () {
       self.parseContent();
     });
-    this.on('attach', function () {
+    this.on(ATTACH, function () {
       self.parseContent();
     });
-    this.on('detach', function () {
+    this.on(DETACH, function () {
       delete self.lpos;
     });
 
@@ -637,7 +638,7 @@ class Element$1 extends Node {
   set width(val) {
     if (this.position.width === val) return;
     if (/^\d+$/.test(val)) val = +val;
-    this.emit('resize');
+    this.emit(RESIZE);
     this.clearPos();
     return this.position.width = val;
   }
@@ -645,7 +646,7 @@ class Element$1 extends Node {
   set height(val) {
     if (this.position.height === val) return;
     if (/^\d+$/.test(val)) val = +val;
-    this.emit('resize');
+    this.emit(RESIZE);
     this.clearPos();
     return this.position.height = val;
   }
@@ -668,7 +669,7 @@ class Element$1 extends Node {
 
     val -= this.parent.aleft;
     if (this.position.left === val) return;
-    this.emit('move');
+    this.emit(MOVE);
     this.clearPos();
     return this.position.left = val;
   }
@@ -676,7 +677,7 @@ class Element$1 extends Node {
   set aright(val) {
     val -= this.parent.aright;
     if (this.position.right === val) return;
-    this.emit('move');
+    this.emit(MOVE);
     this.clearPos();
     return this.position.right = val;
   }
@@ -699,7 +700,7 @@ class Element$1 extends Node {
 
     val -= this.parent.atop;
     if (this.position.top === val) return;
-    this.emit('move');
+    this.emit(MOVE);
     this.clearPos();
     return this.position.top = val;
   }
@@ -707,7 +708,7 @@ class Element$1 extends Node {
   set abottom(val) {
     val -= this.parent.abottom;
     if (this.position.bottom === val) return;
-    this.emit('move');
+    this.emit(MOVE);
     this.clearPos();
     return this.position.bottom = val;
   }
@@ -715,14 +716,14 @@ class Element$1 extends Node {
   set rleft(val) {
     if (this.position.left === val) return;
     if (/^\d+$/.test(val)) val = +val;
-    this.emit('move');
+    this.emit(MOVE);
     this.clearPos();
     return this.position.left = val;
   }
 
   set rright(val) {
     if (this.position.right === val) return;
-    this.emit('move');
+    this.emit(MOVE);
     this.clearPos();
     return this.position.right = val;
   }
@@ -730,14 +731,14 @@ class Element$1 extends Node {
   set rtop(val) {
     if (this.position.top === val) return;
     if (/^\d+$/.test(val)) val = +val;
-    this.emit('move');
+    this.emit(MOVE);
     this.clearPos();
     return this.position.top = val;
   }
 
   set rbottom(val) {
     if (this.position.bottom === val) return;
-    this.emit('move');
+    this.emit(MOVE);
     this.clearPos();
     return this.position.bottom = val;
   }
@@ -896,7 +897,7 @@ class Element$1 extends Node {
     if (this.hidden) return;
     this.clearPos();
     this.hidden = true;
-    this.emit('hide');
+    this.emit(HIDE);
 
     if (this.screen.focused === this) {
       this.screen.rewindFocus();
@@ -906,7 +907,7 @@ class Element$1 extends Node {
   show() {
     if (!this.hidden) return;
     this.hidden = false;
-    this.emit('show');
+    this.emit(SHOW);
   }
 
   toggle() {
@@ -921,7 +922,7 @@ class Element$1 extends Node {
     if (!noClear) this.clearPos();
     this.content = content || '';
     this.parseContent(noTags);
-    this.emit('set content');
+    this.emit(SET_CONTENT);
   }
 
   getContent() {
@@ -986,7 +987,7 @@ class Element$1 extends Node {
       }.bind(this), 0);
 
       this._pcontent = this._clines.join('\n');
-      this.emit('parsed content');
+      this.emit(PARSED_CONTENT);
       return true;
     } // Need to calculate this every time because the default fg/bg may change.
 
@@ -1333,7 +1334,7 @@ class Element$1 extends Node {
     }
 
     this.enableMouse();
-    this.on('mousedown', this._dragMD = function (data) {
+    this.on(MOUSEDOWN, this._dragMD = function (data) {
       if (self.screen._dragging) return;
       if (!verify(data)) return;
       self.screen._dragging = self;
@@ -1343,10 +1344,10 @@ class Element$1 extends Node {
       };
       self.setFront();
     });
-    this.onScreenEvent('mouse', this._dragM = function (data) {
+    this.onScreenEvent(MOUSE, this._dragM = function (data) {
       if (self.screen._dragging !== self) return;
 
-      if (data.action !== 'mousedown' && data.action !== 'mousemove') {
+      if (data.action !== MOUSEDOWN && data.action !== MOUSEMOVE) {
         delete self.screen._dragging;
         delete self._drag;
         return;
@@ -1389,8 +1390,8 @@ class Element$1 extends Node {
     if (!this._draggable) return false;
     delete this.screen._dragging;
     delete this._drag;
-    this.removeListener('mousedown', this._dragMD);
-    this.removeScreenEvent('mouse', this._dragM);
+    this.removeListener(MOUSEDOWN, this._dragMD);
+    this.removeScreenEvent(MOUSE, this._dragM);
     return this._draggable = false;
   }
 
@@ -1511,10 +1512,10 @@ class Element$1 extends Node {
       self.screen.render();
     };
 
-    this.on('scroll', this._labelScroll = function () {
+    this.on(SCROLL, this._labelScroll = function () {
       reposition();
     });
-    this.on('resize', this._labelResize = function () {
+    this.on(RESIZE, this._labelResize = function () {
       nextTick$2(function () {
         reposition();
       });
@@ -1523,8 +1524,8 @@ class Element$1 extends Node {
 
   removeLabel() {
     if (!this._label) return;
-    this.removeListener('scroll', this._labelScroll);
-    this.removeListener('resize', this._labelResize);
+    this.removeListener(SCROLL, this._labelScroll);
+    this.removeListener(RESIZE, this._labelResize);
 
     this._label.detach();
 
@@ -2171,7 +2172,7 @@ class Element$1 extends Node {
   }
 
   render() {
-    this._emit('prerender');
+    this._emit(PRERENDER);
 
     this.parseContent();
 
@@ -2711,7 +2712,7 @@ class Element$1 extends Node {
       // }
     });
 
-    this._emit('render', [coords]);
+    this._emit(RENDER, [coords]);
 
     return coords;
   }
@@ -2931,10 +2932,6 @@ class Element$1 extends Node {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-/**
- * Modules
- */
-
 class Box extends Element$1 {
   /**
    * Box
@@ -3009,7 +3006,7 @@ class ScrollableBox extends Box {
 
 
       if (options.mouse) {
-        this.on('mousedown', function (data) {
+        this.on(MOUSEDOWN, function (data) {
           if (self._scrollingBar) {
             // Do not allow dragging on the scrollbar:
             delete self.screen._dragging;
@@ -3029,7 +3026,7 @@ class ScrollableBox extends Box {
             self.screen.render();
             let smd, smu;
             self._scrollingBar = true;
-            self.onScreenEvent('mousedown', smd = function (data) {
+            self.onScreenEvent(MOUSEDOWN, smd = function (data) {
               const y = data.y - self.atop;
               const perc = y / self.height;
               self.setScrollPerc(perc * 100 | 0);
@@ -3040,7 +3037,7 @@ class ScrollableBox extends Box {
 
             self.onScreenEvent('mouseup', smu = function () {
               self._scrollingBar = false;
-              self.removeScreenEvent('mousedown', smd);
+              self.removeScreenEvent(MOUSEDOWN, smd);
               self.removeScreenEvent('mouseup', smu);
             });
           }
@@ -3049,18 +3046,18 @@ class ScrollableBox extends Box {
     }
 
     if (options.mouse) {
-      this.on('wheeldown', function () {
+      this.on(WHEELDOWN, function () {
         self.scroll(self.height / 2 | 0 || 1);
         self.screen.render();
       });
-      this.on('wheelup', function () {
+      this.on(WHEELUP, function () {
         self.scroll(-(self.height / 2 | 0) || -1);
         self.screen.render();
       });
     }
 
     if (options.keys && !options.ignoreKeys) {
-      this.on('keypress', function (ch, key) {
+      this.on(KEYPRESS, function (ch, key) {
         if (key.name === 'up' || options.vi && key.name === 'k') {
           self.scroll(-1);
           self.screen.render();
@@ -3110,7 +3107,7 @@ class ScrollableBox extends Box {
       });
     }
 
-    this.on('parsed content', function () {
+    this.on(PARSED_CONTENT, function () {
       self._recalculateIndex();
     });
 
@@ -3205,7 +3202,7 @@ class ScrollableBox extends Box {
 
 
     if (this.childBase === base) {
-      return this.emit('scroll');
+      return this.emit(SCROLL);
     } // When scrolling text, we want to be able to handle SGR codes as well as line
     // feeds. This allows us to take preformatted text output from other programs
     // and put it in a scrollable text box.
@@ -3248,7 +3245,7 @@ class ScrollableBox extends Box {
       }
     }
 
-    return this.emit('scroll');
+    return this.emit(SCROLL);
   }
 
   _recalculateIndex() {
@@ -3277,7 +3274,7 @@ class ScrollableBox extends Box {
     if (!this.scrollable) return;
     this.childOffset = 0;
     this.childBase = 0;
-    return this.emit('scroll');
+    return this.emit(SCROLL);
   }
 
   getScrollHeight() {
@@ -3357,7 +3354,7 @@ class Log extends ScrollableText {
 
     this.scrollback = options.scrollback != null ? options.scrollback : Infinity;
     this.scrollOnInput = options.scrollOnInput;
-    this.on('set content', function () {
+    this.on(SET_CONTENT, function () {
       if (!self._userScrolled || self.scrollOnInput) {
         nextTick$1(function () {
           self.setScrollPerc(100);
@@ -3378,7 +3375,7 @@ class Log extends ScrollableText {
     }
 
     const text = util.format.apply(util, args);
-    this.emit('log', text);
+    this.emit(_LOG, text);
     const ret = this.pushLine(text);
 
     if (this._clines.fake.length > this.scrollback) {
@@ -3474,8 +3471,8 @@ class Screen extends Node {
       };
 
       ps = spawn(file, args, options);
-      ps.on('error', resume);
-      ps.on('exit', resume);
+      ps.on(ERROR, resume);
+      ps.on(EXIT, resume);
       return ps;
     };
 
@@ -3582,31 +3579,31 @@ class Screen extends Node {
       _state: 1,
       _hidden: true
     };
-    this.program.on('resize', function () {
+    this.program.on(RESIZE, function () {
       self.alloc();
       self.render();
 
       (function emit(el) {
-        el.emit('resize');
+        el.emit(RESIZE);
         el.children.forEach(emit);
       })(self);
     });
-    this.program.on('focus', function () {
-      self.emit('focus');
+    this.program.on(FOCUS, function () {
+      self.emit(FOCUS);
     });
-    this.program.on('blur', function () {
-      self.emit('blur');
+    this.program.on(BLUR, function () {
+      self.emit(BLUR);
     });
-    this.program.on('warning', function (text) {
-      self.emit('warning', text);
+    this.program.on(WARNING, function (text) {
+      self.emit(WARNING, text);
     });
-    this.on('newListener', function fn(type) {
-      if (type === 'keypress' || type.indexOf('key ') === 0 || type === 'mouse') {
-        if (type === 'keypress' || type.indexOf('key ') === 0) self._listenKeys();
-        if (type === 'mouse') self._listenMouse();
+    this.on(NEW_LISTENER, function fn(type) {
+      if (type === KEYPRESS || type.indexOf('key ') === 0 || type === MOUSE) {
+        if (type === KEYPRESS || type.indexOf('key ') === 0) self._listenKeys();
+        if (type === MOUSE) self._listenMouse();
       }
 
-      if (type === 'mouse' || type === 'click' || type === 'mouseover' || type === 'mouseout' || type === 'mousedown' || type === 'mouseup' || type === 'mousewheel' || type === 'wheeldown' || type === 'wheelup' || type === 'mousemove') {
+      if (type === MOUSE || type === CLICK || type === MOUSEOVER || type === MOUSEOUT || type === MOUSEDOWN || type === 'mouseup' || type === MOUSEWHEEL || type === WHEELDOWN || type === WHEELUP || type === MOUSEMOVE) {
         self._listenMouse();
       }
     });
@@ -3787,7 +3784,7 @@ class Screen extends Node {
     }
 
     if (this.options.warnings) {
-      this.on('warning', function (text) {
+      this.on(WARNING, function (text) {
         const warning = new Box({
           screen: self,
           parent: self,
@@ -3829,11 +3826,11 @@ class Screen extends Node {
 
       if (_Screen.total === 0) {
         _Screen.global = null;
-        process.removeListener('uncaughtException', _Screen._exceptionHandler);
-        process.removeListener('SIGTERM', _Screen._sigtermHandler);
-        process.removeListener('SIGINT', _Screen._sigintHandler);
-        process.removeListener('SIGQUIT', _Screen._sigquitHandler);
-        process.removeListener('exit', _Screen._exitHandler);
+        process.removeListener(UNCAUGHT_EXCEPTION, _Screen._exceptionHandler);
+        process.removeListener(SIGTERM, _Screen._sigtermHandler);
+        process.removeListener(SIGINT, _Screen._sigintHandler);
+        process.removeListener(SIGQUIT, _Screen._sigquitHandler);
+        process.removeListener(EXIT, _Screen._exitHandler);
         delete _Screen._exceptionHandler;
         delete _Screen._sigtermHandler;
         delete _Screen._sigintHandler;
@@ -3843,7 +3840,7 @@ class Screen extends Node {
       }
 
       this.destroyed = true;
-      this.emit('destroy');
+      this.emit(DESTROY);
 
       this._destroy();
     }
@@ -3881,10 +3878,10 @@ class Screen extends Node {
       }, true);
     }
 
-    this.on('render', function () {
+    this.on(RENDER, function () {
       self._needsClickableSort = true;
     });
-    this.program.on('mouse', function (data) {
+    this.program.on(MOUSE, function (data) {
       if (self.lockKeys) return;
 
       if (self._needsClickableSort) {
@@ -3910,24 +3907,24 @@ class Screen extends Node {
         if (!pos) continue;
 
         if (data.x >= pos.xi && data.x < pos.xl && data.y >= pos.yi && data.y < pos.yl) {
-          el.emit('mouse', data);
+          el.emit(MOUSE, data);
 
-          if (data.action === 'mousedown') {
+          if (data.action === MOUSEDOWN) {
             self.mouseDown = el;
           } else if (data.action === 'mouseup') {
-            (self.mouseDown || el).emit('click', data);
+            (self.mouseDown || el).emit(CLICK, data);
             self.mouseDown = null;
-          } else if (data.action === 'mousemove') {
+          } else if (data.action === MOUSEMOVE) {
             if (self.hover && el.index > self.hover.index) {
               set = false;
             }
 
             if (self.hover !== el && !set) {
               if (self.hover) {
-                self.hover.emit('mouseout', data);
+                self.hover.emit(MOUSEOUT, data);
               }
 
-              el.emit('mouseover', data);
+              el.emit(MOUSEOVER, data);
               self.hover = el;
             }
 
@@ -3940,15 +3937,15 @@ class Screen extends Node {
       } // Just mouseover?
 
 
-      if ((data.action === 'mousemove' || data.action === 'mousedown' || data.action === 'mouseup') && self.hover && !set) {
-        self.hover.emit('mouseout', data);
+      if ((data.action === MOUSEMOVE || data.action === MOUSEDOWN || data.action === 'mouseup') && self.hover && !set) {
+        self.hover.emit(MOUSEOUT, data);
         self.hover = null;
       }
 
-      self.emit('mouse', data);
+      self.emit(MOUSE, data);
       self.emit(data.action, data);
     }); // Autofocus highest element.
-    // this.on('element click', function(el, data) {
+    // this.on(ELEMENT_CLICK, function(el, data) {
     //   var target;
     //   do {
     //     if (el.clickable === true && el.options.autoFocus !== false) {
@@ -3959,7 +3956,7 @@ class Screen extends Node {
     // });
     // Autofocus elements with the appropriate option.
 
-    this.on('element click', function (el) {
+    this.on(ELEMENT_CLICK, function (el) {
       if (el.clickable === true && el.options.autoFocus !== false) {
         el.focus();
       }
@@ -3987,7 +3984,7 @@ class Screen extends Node {
     // checks to make sure grabKeys, lockKeys, and focused
     // weren't changed, and handles those situations appropriately.
 
-    this.program.on('keypress', function (ch, key) {
+    this.program.on(KEYPRESS, function (ch, key) {
       if (self.lockKeys && !~self.ignoreLocked.indexOf(key.full)) {
         return;
       }
@@ -3996,7 +3993,7 @@ class Screen extends Node {
             grabKeys = self.grabKeys;
 
       if (!grabKeys || ~self.ignoreLocked.indexOf(key.full)) {
-        self.emit('keypress', ch, key);
+        self.emit(KEYPRESS, ch, key);
         self.emit('key ' + key.full, ch, key);
       } // If something changed from the screen key handler, stop.
 
@@ -4006,7 +4003,7 @@ class Screen extends Node {
       }
 
       if (focused && focused.keyable) {
-        focused.emit('keypress', ch, key);
+        focused.emit(KEYPRESS, ch, key);
         focused.emit('key ' + key.full, ch, key);
       }
     });
@@ -4045,13 +4042,13 @@ class Screen extends Node {
         fg: 'default'
       }
     });
-    this.on('mousemove', function (data) {
+    this.on(MOUSEMOVE, function (data) {
       if (self._hoverText.detached) return;
       self._hoverText.rleft = data.x + 1;
       self._hoverText.rtop = data.y;
       self.render();
     });
-    this.on('element mouseover', function (el, data) {
+    this.on(ELEMENT_MOUSEOVER, function (el, data) {
       if (!el._hoverOptions) return;
       self._hoverText.parseTags = el.parseTags;
 
@@ -4062,7 +4059,7 @@ class Screen extends Node {
       self._hoverText.rtop = data.y;
       self.render();
     });
-    this.on('element mouseout', function () {
+    this.on(ELEMENT_MOUSEOUT, function () {
       if (self._hoverText.detached) return;
 
       self._hoverText.detach();
@@ -4072,7 +4069,7 @@ class Screen extends Node {
     // terminal does not support allMotion.
     // Workaround: check to see if content is set.
 
-    this.on('element mouseup', function (el) {
+    this.on(ELEMENT_MOUSEUP, function (el) {
       if (!self._hoverText.getContent()) return;
       if (!el._hoverOptions) return;
       self.append(self._hoverText);
@@ -4114,7 +4111,7 @@ class Screen extends Node {
   render() {
     const self = this;
     if (this.destroyed) return;
-    this.emit('prerender');
+    this.emit(PRERENDER);
     this._borderStops = {}; // TODO: Possibly get rid of .dirty altogether.
     // TODO: Could possibly drop .dirty and just clear the `lines` buffer every
     // time before a screen.render. This way clearRegion doesn't have to be
@@ -4143,7 +4140,7 @@ class Screen extends Node {
     }
 
     this.renders++;
-    this.emit('render');
+    this.emit(RENDER);
   }
 
   blankLine(ch, dirty) {
@@ -5049,7 +5046,7 @@ class Screen extends Node {
     }
 
     if (old) {
-      old.emit('blur');
+      old.emit(BLUR);
     }
   }
 
@@ -5081,10 +5078,10 @@ class Screen extends Node {
     }
 
     if (old) {
-      old.emit('blur', self);
+      old.emit(BLUR, self);
     }
 
-    self.emit('focus', old);
+    self.emit(FOCUS, old);
   }
 
   clearRegion(xi, xl, yi, yl, override) {
@@ -5127,11 +5124,11 @@ class Screen extends Node {
 
   exec(file, args, options, callback) {
     const ps = this.spawn(file, args, options);
-    ps.on('error', function (err) {
+    ps.on(ERROR, function (err) {
       if (!callback) return;
       return callback(err, false);
     });
-    ps.on('exit', function (code) {
+    ps.on(EXIT, function (code) {
       if (!callback) return;
       return callback(null, code === 0);
     });
@@ -5208,11 +5205,11 @@ class Screen extends Node {
       cwd: process.env.HOME
     };
     const ps = this.spawn(args[0], args.slice(1), opt);
-    ps.on('error', function (err) {
+    ps.on(ERROR, function (err) {
       if (!callback) return;
       return callback(err);
     });
-    ps.on('exit', function (code) {
+    ps.on(EXIT, function (code) {
       if (!callback) return;
       if (code !== 0) return callback(new Error('Exit Code: ' + code));
       return callback(null, code === 0);
@@ -5800,7 +5797,7 @@ class Layout extends Element$1 {
   }
 
   render() {
-    this._emit('prerender');
+    this._emit(PRERENDER);
 
     const coords = this._renderCoords();
 
@@ -5855,7 +5852,7 @@ class Layout extends Element$1 {
       // }
     });
 
-    this._emit('render', [coords]);
+    this._emit(RENDER, [coords]);
 
     return coords;
   }
@@ -6012,18 +6009,18 @@ class Terminal extends Box {
     // keyPress methods with our own node.js-keys->terminal-keys methods, but
     // since all the keys are already coming in as escape sequences, we can just
     // send the input directly to the handler/socket (see below).
-    // this.term.on('data', function(data) {
+    // this.term.on(DATA, function(data) {
     //   self.handler(data);
     // });
     // Incoming keys and mouse inputs.
     // NOTE: Cannot pass mouse events - coordinates will be off!
 
-    this.screen.program.input.on('data', this._onData = function (data) {
+    this.screen.program.input.on(DATA, this._onData = function (data) {
       if (self.screen.focused === self && !self._isMouse(data)) {
         self.handler(data);
       }
     });
-    this.onScreenEvent('mouse', function (data) {
+    this.onScreenEvent(MOUSE, function (data) {
       if (self.screen.focused !== self) return;
       if (data.x < self.aleft + self.ileft) return;
       if (data.y < self.atop + self.itop) return;
@@ -6050,7 +6047,7 @@ class Terminal extends Box {
           b -= 32;
         }
 
-        s = '\x1b[<' + b + ';' + x + ';' + y + (data.action === 'mousedown' ? 'M' : 'm');
+        s = '\x1b[<' + b + ';' + x + ';' + y + (data.action === MOUSEDOWN ? 'M' : 'm');
       } else {
         if (self.screen.program.sgrMouse) {
           b += 32;
@@ -6061,32 +6058,32 @@ class Terminal extends Box {
 
       self.handler(s);
     });
-    this.on('focus', function () {
+    this.on(FOCUS, function () {
       self.term.focus();
     });
-    this.on('blur', function () {
+    this.on(BLUR, function () {
       self.term.blur();
     });
-    this.term.on('title', function (title) {
+    this.term.on(TITLE, function (title) {
       self.title = title;
-      self.emit('title', title);
+      self.emit(TITLE, title);
     });
-    this.term.on('passthrough', function (data) {
+    this.term.on(PASSTHROUGH, function (data) {
       self.screen.program.flush();
 
       self.screen.program._owrite(data);
     });
-    this.on('resize', function () {
+    this.on(RESIZE, function () {
       nextTick(function () {
         self.term.resize(self.width - self.iwidth, self.height - self.iheight);
       });
     });
-    this.once('render', function () {
+    this.once(RENDER, function () {
       self.term.resize(self.width - self.iwidth, self.height - self.iheight);
     });
-    this.on('destroy', function () {
+    this.on(DESTROY, function () {
       self.kill();
-      self.screen.program.input.removeListener('data', self._onData);
+      self.screen.program.input.removeListener(DATA, self._onData);
     });
 
     if (this.handler) {
@@ -6100,7 +6097,7 @@ class Terminal extends Box {
       cwd: process.env.HOME,
       env: this.options.env || process.env
     });
-    this.on('resize', function () {
+    this.on(RESIZE, function () {
       nextTick(function () {
         try {
           self.pty.resize(self.width - self.iwidth, self.height - self.iheight);
@@ -6113,14 +6110,14 @@ class Terminal extends Box {
       self.screen.render();
     };
 
-    this.pty.on('data', function (data) {
+    this.pty.on(DATA, function (data) {
       self.write(data);
       self.screen.render();
     });
-    this.pty.on('exit', function (code) {
-      self.emit('exit', code || null);
+    this.pty.on(EXIT, function (code) {
+      self.emit(EXIT, code || null);
     });
-    this.onScreenEvent('keypress', function () {
+    this.onScreenEvent(KEYPRESS, function () {
       self.screen.render();
     });
 
@@ -6206,7 +6203,7 @@ class Terminal extends Box {
 
   scrollTo(offset) {
     this.term.ydisp = offset;
-    return this.emit('scroll');
+    return this.emit(SCROLL);
   }
 
   getScroll() {
@@ -6215,13 +6212,13 @@ class Terminal extends Box {
 
   scroll(offset) {
     this.term.scrollDisp(offset);
-    return this.emit('scroll');
+    return this.emit(SCROLL);
   }
 
   resetScroll() {
     this.term.ydisp = 0;
     this.term.ybase = 0;
-    return this.emit('scroll');
+    return this.emit(SCROLL);
   }
 
   getScrollHeight() {

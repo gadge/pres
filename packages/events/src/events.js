@@ -4,7 +4,7 @@
  * https://github.com/chjj/blessed
  */
 
-import { ATTACH, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEWLISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHTEXCEPTION, WARNING, } from '@pres/enum-events'
+import { ATTACH, REMOVE_LISTENER, EVENT, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEW_LISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHT_EXCEPTION, WARNING, ACTION, ADD_ITEM, ADOPT, BTNDOWN, BTNUP, CD, CHECK, COMPLETE, CONNECT, CREATE_ITEM, DBLCLICK, DRAG, INSERT_ITEM, _LOG, MOVE, PARSED_CONTENT, PASSTHROUGH, REFRESH, REMOVE, REMOVE_ITEM, REPARENT, RESPONSE, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS, UNCHECK, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
 
 export class  EventEmitter {
   /**
@@ -34,13 +34,13 @@ export class  EventEmitter {
     if (!handler) return
     if (typeof handler === 'function' || handler.length === 1) {
       delete this._events[type]
-      this._emit('removeListener', [ type, listener ])
+      this._emit(REMOVE_LISTENER, [ type, listener ])
       return
     }
     for (let i = 0; i < handler.length; i++) {
       if (handler[i] === listener || handler[i].listener === listener) {
         handler.splice(i, 1)
-        this._emit('removeListener', [ type, listener ])
+        this._emit(REMOVE_LISTENER, [ type, listener ])
         return
       }
     }
@@ -70,7 +70,7 @@ export class  EventEmitter {
     const handler = this._events[type]
     let ret
     // if (type !== 'event') {
-    //   this._emit('event', [type.replace(/^element /, '')].concat(args));
+    //   this._emit(EVENT, [type.replace(/^element /, '')].concat(args));
     // }
     if (!handler) {
       if (type === 'error') throw new args[0]
@@ -88,7 +88,7 @@ export class  EventEmitter {
     const args = slice.call(arguments, 1),
       params = slice.call(arguments)
     let el = this
-    this._emit('event', params)
+    this._emit(EVENT, params)
     if (this.type === 'screen') return this._emit(type, args)
     if (this._emit(type, args) === false) return false
     type = 'element ' + type
@@ -98,7 +98,7 @@ export class  EventEmitter {
     // no `element` prefix
     // params.splice(1, 0, this);
     do {
-      // el._emit('event', params);
+      // el._emit(EVENT, params);
       if (!el._events[type]) continue
       if (el._emit(type, args) === false) return false
     } while ((el = el.parent))

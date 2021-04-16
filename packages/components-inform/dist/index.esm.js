@@ -1,5 +1,6 @@
 import { Box } from '@pres/components-core';
 import { Text } from '@pres/components-text';
+import { KEYPRESS, MOUSE, MOUSEMOVE, CLICK, COMPLETE, RESET } from '@pres/enum-events';
 import { Input } from '@pres/components-form';
 
 /**
@@ -129,8 +130,8 @@ class Message extends Box {
       };
 
       setTimeout(function () {
-        self.onScreenEvent('keypress', function fn(ch, key) {
-          if (key.name === 'mouse') return;
+        self.onScreenEvent(KEYPRESS, function fn(ch, key) {
+          if (key.name === MOUSE) return;
 
           if (self.scrollable) {
             if (key.name === 'up' || self.options.vi && key.name === 'k' || key.name === 'down' || self.options.vi && key.name === 'j' || self.options.vi && key.name === 'u' && key.ctrl || self.options.vi && key.name === 'd' && key.ctrl || self.options.vi && key.name === 'b' && key.ctrl || self.options.vi && key.name === 'f' && key.ctrl || self.options.vi && key.name === 'g' && !key.shift || self.options.vi && key.name === 'g' && key.shift) {
@@ -142,14 +143,14 @@ class Message extends Box {
             return;
           }
 
-          self.removeScreenEvent('keypress', fn);
+          self.removeScreenEvent(KEYPRESS, fn);
           end();
         }); // XXX May be affected by new element.options.mouse option.
 
         if (!self.options.mouse) return;
-        self.onScreenEvent('mouse', function fn(data) {
-          if (data.action === 'mousemove') return;
-          self.removeScreenEvent('mouse', fn);
+        self.onScreenEvent(MOUSE, function fn(data) {
+          if (data.action === MOUSEMOVE) return;
+          self.removeScreenEvent(MOUSE, fn);
           end();
         });
       }, 10);
@@ -177,10 +178,6 @@ class Message extends Box {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-/**
- * ProgressBar
- */
-
 class ProgressBar extends Input {
   constructor(options = {}) {
     super(options);
@@ -213,7 +210,7 @@ class ProgressBar extends Input {
     this.orientation = options.orientation || 'horizontal';
 
     if (options.keys) {
-      this.on('keypress', function (ch, key) {
+      this.on(KEYPRESS, function (ch, key) {
         let back, forward;
 
         if (self.orientation === 'horizontal') {
@@ -238,7 +235,7 @@ class ProgressBar extends Input {
     }
 
     if (options.mouse) {
-      this.on('click', function (data) {
+      this.on(CLICK, function (data) {
         let x, y, m, p;
         if (!self.lpos) return;
 
@@ -297,7 +294,7 @@ class ProgressBar extends Input {
     if (this.filled < 0) this.filled = 0;else if (this.filled > 100) this.filled = 100;
 
     if (this.filled === 100) {
-      this.emit('complete');
+      this.emit(COMPLETE);
     }
 
     this.value = this.filled;
@@ -309,7 +306,7 @@ class ProgressBar extends Input {
   }
 
   reset() {
-    this.emit('reset');
+    this.emit(RESET);
     this.filled = 0;
     this.value = this.filled;
   }

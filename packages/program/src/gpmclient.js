@@ -90,7 +90,7 @@ function parseEvent(raw) {
 }
 
 export const gpmClient = options => new GpmClient(options)
-import { ATTACH, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEWLISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHTEXCEPTION, WARNING, } from '@pres/enum-events'
+import { ATTACH, REMOVE_LISTENER, EVENT, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEW_LISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHT_EXCEPTION, WARNING, ACTION, ADD_ITEM, ADOPT, BTNDOWN, BTNUP, CD, CHECK, COMPLETE, CONNECT, CREATE_ITEM, DBLCLICK, DRAG, INSERT_ITEM, _LOG, MOVE, PARSED_CONTENT, PASSTHROUGH, REFRESH, REMOVE, REMOVE_ITEM, REPARENT, RESPONSE, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS, UNCHECK, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
 
 export class  GpmClient extends EventEmitter {
   constructor(options = {}) {
@@ -128,7 +128,7 @@ export class  GpmClient extends EventEmitter {
         }
         const gpm = net.createConnection(GPM_SOCKET)
         this.gpm = gpm
-        gpm.on('connect', function () {
+        gpm.on(CONNECT, function () {
           send_config(gpm, conf, function () {
             conf.pid = 0
             conf.vc = GPM_REQ_NOPASTE
@@ -140,7 +140,7 @@ export class  GpmClient extends EventEmitter {
           switch (evnt.type & 15) {
             case GPM_MOVE:
               if (evnt.dx || evnt.dy) {
-                self.emit('move', evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
+                self.emit(MOVE, evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
               }
               if (evnt.wdx || evnt.wdy) {
                 self.emit(MOUSEWHEEL,
@@ -150,7 +150,7 @@ export class  GpmClient extends EventEmitter {
               break
             case GPM_DRAG:
               if (evnt.dx || evnt.dy) {
-                self.emit('drag', evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
+                self.emit(DRAG, evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
               }
               if (evnt.wdx || evnt.wdy) {
                 self.emit(MOUSEWHEEL,
@@ -159,13 +159,13 @@ export class  GpmClient extends EventEmitter {
               }
               break
             case GPM_DOWN:
-              self.emit('btndown', evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
+              self.emit(BTNDOWN, evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
               if (evnt.type & GPM_DOUBLE) {
-                self.emit('dblclick', evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
+                self.emit(DBLCLICK, evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
               }
               break
             case GPM_UP:
-              self.emit('btnup', evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
+              self.emit(BTNUP, evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
               if (!(evnt.type & GPM_MFLAG)) {
                 self.emit(CLICK, evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
               }

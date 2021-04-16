@@ -3,6 +3,7 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var Node = require('@pres/components-core');
+var enumEvents = require('@pres/enum-events');
 var componentsData = require('@pres/components-data');
 var utilHelpers = require('@pres/util-helpers');
 var fs = require('fs');
@@ -41,14 +42,14 @@ class Button extends Input {
     super(options);
     const self = this; // if (!(this instanceof Node)) return new Button(options)
 
-    this.on('keypress', function (ch, key) {
+    this.on(enumEvents.KEYPRESS, function (ch, key) {
       if (key.name === 'enter' || key.name === 'space') {
         return self.press();
       }
     });
 
     if (this.options.mouse) {
-      this.on('click', function () {
+      this.on(enumEvents.CLICK, function () {
         return self.press();
       });
     }
@@ -59,7 +60,7 @@ class Button extends Input {
   press() {
     this.focus();
     this.value = true;
-    const result = this.emit('press');
+    const result = this.emit(enumEvents.PRESS);
     delete this.value;
     return result;
   }
@@ -81,7 +82,7 @@ class Checkbox extends Input {
 
     this.text = options.content || options.text || '';
     this.checked = this.value = options.checked || false;
-    this.on('keypress', function (ch, key) {
+    this.on(enumEvents.KEYPRESS, function (ch, key) {
       if (key.name === 'enter' || key.name === 'space') {
         self.toggle();
         self.screen.render();
@@ -89,20 +90,20 @@ class Checkbox extends Input {
     });
 
     if (options.mouse) {
-      this.on('click', function () {
+      this.on(enumEvents.CLICK, function () {
         self.toggle();
         self.screen.render();
       });
     }
 
-    this.on('focus', function () {
+    this.on(enumEvents.FOCUS, function () {
       const lpos = self.lpos;
       if (!lpos) return;
       self.screen.program.lsaveCursor('checkbox');
       self.screen.program.cup(lpos.yi, lpos.xi + 1);
       self.screen.program.showCursor();
     });
-    this.on('blur', function () {
+    this.on(enumEvents.BLUR, function () {
       self.screen.program.lrestoreCursor('checkbox', true);
     });
     this.type = 'checkbox';
@@ -117,13 +118,13 @@ class Checkbox extends Input {
   check() {
     if (this.checked) return;
     this.checked = this.value = true;
-    this.emit('check');
+    this.emit(enumEvents.CHECK);
   }
 
   uncheck() {
     if (!this.checked) return;
     this.checked = this.value = false;
-    this.emit('uncheck');
+    this.emit(enumEvents.UNCHECK);
   }
 
   toggle() {
@@ -156,19 +157,19 @@ class FileManager extends componentsData.List {
       this._label.setContent(options.label.replace('%path', this.cwd));
     }
 
-    this.on('select', function (item) {
+    this.on(enumEvents.SELECT, function (item) {
       const value = item.content.replace(/\{[^{}]+\}/g, '').replace(/@$/, ''),
             file = path__default['default'].resolve(self.cwd, value);
       return fs__default['default'].stat(file, function (err, stat) {
         if (err) {
-          return self.emit('error', err, file);
+          return self.emit(enumEvents.ERROR, err, file);
         }
 
         self.file = file;
         self.value = file;
 
         if (stat.isDirectory()) {
-          self.emit('cd', file, self.cwd);
+          self.emit(enumEvents.CD, file, self.cwd);
           self.cwd = file;
 
           if (options.label && ~options.label.indexOf('%path')) {
@@ -177,7 +178,7 @@ class FileManager extends componentsData.List {
 
           self.refresh();
         } else {
-          self.emit('file', file);
+          self.emit(enumEvents.FILE, file);
         }
       });
     });
@@ -200,7 +201,7 @@ class FileManager extends componentsData.List {
 
       if (err) {
         if (callback) return callback(err);
-        return self.emit('error', err, cwd);
+        return self.emit(enumEvents.ERROR, err, cwd);
       }
 
       let dirs = [],
@@ -242,7 +243,7 @@ class FileManager extends componentsData.List {
       self.setItems(list);
       self.select(0);
       self.screen.render();
-      self.emit('refresh');
+      self.emit(enumEvents.REFRESH);
       if (callback) callback();
     });
   }
@@ -259,8 +260,8 @@ class FileManager extends componentsData.List {
     let onfile, oncancel;
 
     function resume() {
-      self.removeListener('file', onfile);
-      self.removeListener('cancel', oncancel);
+      self.removeListener(enumEvents.FILE, onfile);
+      self.removeListener(enumEvents.CANCEL, oncancel);
 
       if (hidden) {
         self.hide();
@@ -273,11 +274,11 @@ class FileManager extends componentsData.List {
       self.screen.render();
     }
 
-    this.on('file', onfile = function (file) {
+    this.on(enumEvents.FILE, onfile = function (file) {
       resume();
       return callback(null, file);
     });
-    this.on('cancel', oncancel = function () {
+    this.on(enumEvents.CANCEL, oncancel = function () {
       resume();
       return callback();
     });
@@ -314,10 +315,6 @@ class FileManager extends componentsData.List {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-/**
- * Form
- */
-
 class Form extends Node.Box {
   constructor(options = {}) {
     options.ignoreKeys = true;
@@ -327,19 +324,19 @@ class Form extends Node.Box {
     if (options.keys) {
       this.screen._listenKeys(this);
 
-      this.on('element keypress', function (el, ch, key) {
+      this.on(enumEvents.ELEMENT_KEYPRESS, function (el, ch, key) {
         if (key.name === 'tab' && !key.shift || el.type === 'textbox' && options.autoNext && key.name === 'enter' || key.name === 'down' || options.vi && key.name === 'j') {
           if (el.type === 'textbox' || el.type === 'textarea') {
             if (key.name === 'j') return;
 
             if (key.name === 'tab') {
               // Workaround, since we can't stop the tab from  being added.
-              el.emit('keypress', null, {
+              el.emit(enumEvents.KEYPRESS, null, {
                 name: 'backspace'
               });
             }
 
-            el.emit('keypress', '\x1b', {
+            el.emit(enumEvents.KEYPRESS, '\x1b', {
               name: 'escape'
             });
           }
@@ -351,7 +348,7 @@ class Form extends Node.Box {
         if (key.name === 'tab' && key.shift || key.name === 'up' || options.vi && key.name === 'k') {
           if (el.type === 'textbox' || el.type === 'textarea') {
             if (key.name === 'k') return;
-            el.emit('keypress', '\x1b', {
+            el.emit(enumEvents.KEYPRESS, '\x1b', {
               name: 'escape'
             });
           }
@@ -479,12 +476,12 @@ class Form extends Node.Box {
 
       el.children.forEach(fn);
     });
-    this.emit('submit', out);
+    this.emit(enumEvents.SUBMIT, out);
     return this.submission = out;
   }
 
   cancel() {
-    this.emit('cancel');
+    this.emit(enumEvents.CANCEL);
   }
 
   reset() {
@@ -580,7 +577,7 @@ class Form extends Node.Box {
 
       el.children.forEach(fn);
     });
-    this.emit('reset');
+    this.emit(enumEvents.RESET);
   }
 
 }
@@ -807,15 +804,15 @@ class Textarea extends Input {
 
     this.value = options.value || '';
     this.__updateCursor = this._updateCursor.bind(this);
-    this.on('resize', this.__updateCursor);
-    this.on('move', this.__updateCursor);
+    this.on(enumEvents.RESIZE, this.__updateCursor);
+    this.on(enumEvents.MOVE, this.__updateCursor);
 
     if (options.inputOnFocus) {
-      this.on('focus', this.readInput.bind(this, null));
+      this.on(enumEvents.FOCUS, this.readInput.bind(this, null));
     }
 
     if (!options.inputOnFocus && options.keys) {
-      this.on('keypress', function (ch, key) {
+      this.on(enumEvents.KEYPRESS, function (ch, key) {
         if (self._reading) return;
 
         if (key.name === 'enter' || options.vi && key.name === 'i') {
@@ -829,7 +826,7 @@ class Textarea extends Input {
     }
 
     if (options.mouse) {
-      this.on('click', function (data) {
+      this.on(enumEvents.CLICK, function (data) {
         if (self._reading) return;
         if (data.button !== 'right') return;
         self.readEditor();
@@ -912,9 +909,9 @@ class Textarea extends Input {
       self._reading = false;
       delete self._callback;
       delete self._done;
-      self.removeListener('keypress', self.__listener);
+      self.removeListener(enumEvents.KEYPRESS, self.__listener);
       delete self.__listener;
-      self.removeListener('blur', self.__done);
+      self.removeListener(enumEvents.BLUR, self.__done);
       delete self.__done;
       self.screen.program.hideCursor();
       self.screen.grabKeys = false;
@@ -931,14 +928,14 @@ class Textarea extends Input {
       if (err === 'stop') return;
 
       if (err) {
-        self.emit('error', err);
+        self.emit(enumEvents.ERROR, err);
       } else if (value != null) {
-        self.emit('submit', value);
+        self.emit(enumEvents.SUBMIT, value);
       } else {
-        self.emit('cancel', value);
+        self.emit(enumEvents.CANCEL, value);
       }
 
-      self.emit('action', value);
+      self.emit(enumEvents.ACTION, value);
       if (!callback) return;
       return err ? callback(err) : callback(null, value);
     }; // Put this in a nextTick so the current
@@ -947,10 +944,10 @@ class Textarea extends Input {
 
     nextTick(function () {
       self.__listener = self._listener.bind(self);
-      self.on('keypress', self.__listener);
+      self.on(enumEvents.KEYPRESS, self.__listener);
     });
     this.__done = this._done.bind(this, null, null);
-    this.on('blur', this.__done);
+    this.on(enumEvents.BLUR, this.__done);
   }
 
   _listener(ch, key) {
@@ -1232,11 +1229,11 @@ class Prompt extends Node.Box {
     this._.input.value = value;
     this.screen.saveFocus();
 
-    this._.okay.on('press', okay = function () {
+    this._.okay.on(enumEvents.PRESS, okay = function () {
       self._.input.submit();
     });
 
-    this._.cancel.on('press', cancel = function () {
+    this._.cancel.on(enumEvents.PRESS, cancel = function () {
       self._.input.cancel();
     });
 
@@ -1244,9 +1241,9 @@ class Prompt extends Node.Box {
       self.hide();
       self.screen.restoreFocus();
 
-      self._.okay.removeListener('press', okay);
+      self._.okay.removeListener(enumEvents.PRESS, okay);
 
-      self._.cancel.removeListener('press', cancel);
+      self._.cancel.removeListener(enumEvents.PRESS, cancel);
 
       return callback(err, data);
     });
@@ -1310,8 +1307,8 @@ class Question extends Node.Box {
 
     this.show();
     this.setContent(' ' + text);
-    this.onScreenEvent('keypress', press = function (ch, key) {
-      if (key.name === 'mouse') return;
+    this.onScreenEvent(enumEvents.KEYPRESS, press = function (ch, key) {
+      if (key.name === enumEvents.MOUSE) return;
 
       if (key.name !== 'enter' && key.name !== 'escape' && key.name !== 'q' && key.name !== 'y' && key.name !== 'n') {
         return;
@@ -1320,11 +1317,11 @@ class Question extends Node.Box {
       done(null, key.name === 'enter' || key.name === 'y');
     });
 
-    this._.okay.on('press', okay = function () {
+    this._.okay.on(enumEvents.PRESS, okay = function () {
       done(null, true);
     });
 
-    this._.cancel.on('press', cancel = function () {
+    this._.cancel.on(enumEvents.PRESS, cancel = function () {
       done(null, false);
     });
 
@@ -1334,11 +1331,11 @@ class Question extends Node.Box {
     function done(err, data) {
       self.hide();
       self.screen.restoreFocus();
-      self.removeScreenEvent('keypress', press);
+      self.removeScreenEvent(enumEvents.KEYPRESS, press);
 
-      self._.okay.removeListener('press', okay);
+      self._.okay.removeListener(enumEvents.PRESS, okay);
 
-      self._.cancel.removeListener('press', cancel);
+      self._.cancel.removeListener(enumEvents.PRESS, cancel);
 
       return callback(err, data);
     }
@@ -1361,7 +1358,7 @@ class RadioButton extends Checkbox {
     super(options);
     const self = this; // if (!(this instanceof Node)) return new RadioButton(options)
 
-    this.on('check', function () {
+    this.on(enumEvents.CHECK, function () {
       let el = self;
 
       while (el = el.parent) {

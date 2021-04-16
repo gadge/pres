@@ -8,6 +8,7 @@ var colors = require('@pres/util-colors');
 var helpers = require('@pres/util-helpers');
 var unicode$1 = require('@pres/util-unicode');
 var assert = require('assert');
+var enumEvents = require('@pres/enum-events');
 var program = require('@pres/program');
 var util = require('util');
 
@@ -89,7 +90,7 @@ class _Scrollable {
 
 
       if (options.mouse) {
-        this.on('mousedown', function (data) {
+        this.on(enumEvents.MOUSEDOWN, function (data) {
           if (self._scrollingBar) {
             // Do not allow dragging on the scrollbar:
             delete self.screen._dragging;
@@ -109,7 +110,7 @@ class _Scrollable {
             self.screen.render();
             let smd, smu;
             self._scrollingBar = true;
-            self.onScreenEvent('mousedown', smd = function (data) {
+            self.onScreenEvent(enumEvents.MOUSEDOWN, smd = function (data) {
               const y = data.y - self.atop;
               const perc = y / self.height;
               self.setScrollPerc(perc * 100 | 0);
@@ -120,7 +121,7 @@ class _Scrollable {
 
             self.onScreenEvent('mouseup', smu = function () {
               self._scrollingBar = false;
-              self.removeScreenEvent('mousedown', smd);
+              self.removeScreenEvent(enumEvents.MOUSEDOWN, smd);
               self.removeScreenEvent('mouseup', smu);
             });
           }
@@ -129,18 +130,18 @@ class _Scrollable {
     }
 
     if (options.mouse) {
-      this.on('wheeldown', function () {
+      this.on(enumEvents.WHEELDOWN, function () {
         self.scroll(self.height / 2 | 0 || 1);
         self.screen.render();
       });
-      this.on('wheelup', function () {
+      this.on(enumEvents.WHEELUP, function () {
         self.scroll(-(self.height / 2 | 0) || -1);
         self.screen.render();
       });
     }
 
     if (options.keys && !options.ignoreKeys) {
-      this.on('keypress', function (ch, key) {
+      this.on(enumEvents.KEYPRESS, function (ch, key) {
         if (key.name === 'up' || options.vi && key.name === 'k') {
           self.scroll(-1);
           self.screen.render();
@@ -190,7 +191,7 @@ class _Scrollable {
       });
     }
 
-    this.on('parsed content', function () {
+    this.on(enumEvents.PARSED_CONTENT, function () {
       self._recalculateIndex();
     });
 
@@ -284,7 +285,7 @@ class _Scrollable {
 
 
     if (this.childBase === base) {
-      return this.emit('scroll');
+      return this.emit(enumEvents.SCROLL);
     } // When scrolling text, we want to be able to handle SGR codes as well as line
     // feeds. This allows us to take preformatted text output from other programs
     // and put it in a scrollable text box.
@@ -327,7 +328,7 @@ class _Scrollable {
       }
     }
 
-    return this.emit('scroll');
+    return this.emit(enumEvents.SCROLL);
   }
 
   _recalculateIndex() {
@@ -356,7 +357,7 @@ class _Scrollable {
     if (!this.scrollable) return;
     this.childOffset = 0;
     this.childBase = 0;
-    return this.emit('scroll');
+    return this.emit(enumEvents.SCROLL);
   }
 
   getScrollHeight() {
@@ -522,24 +523,24 @@ class Element$1 extends componentsNode.Node {
 
     if (options.hoverText) {
       this.setHover(options.hoverText);
-    } // TODO: Possibly move this to Node for onScreenEvent('mouse', ...).
+    } // TODO: Possibly move this to Node for onScreenEvent(MOUSE, ...).
 
 
-    this.on('newListener', function fn(type) {
+    this.on(enumEvents.NEW_LISTENER, function fn(type) {
       // type = type.split(' ').slice(1).join(' ');
-      if (type === 'mouse' || type === 'click' || type === 'mouseover' || type === 'mouseout' || type === 'mousedown' || type === 'mouseup' || type === 'mousewheel' || type === 'wheeldown' || type === 'wheelup' || type === 'mousemove') {
+      if (type === enumEvents.MOUSE || type === enumEvents.CLICK || type === enumEvents.MOUSEOVER || type === enumEvents.MOUSEOUT || type === enumEvents.MOUSEDOWN || type === 'mouseup' || type === enumEvents.MOUSEWHEEL || type === enumEvents.WHEELDOWN || type === enumEvents.WHEELUP || type === enumEvents.MOUSEMOVE) {
         self.screen._listenMouse(self);
-      } else if (type === 'keypress' || type.indexOf('key ') === 0) {
+      } else if (type === enumEvents.KEYPRESS || type.indexOf('key ') === 0) {
         self.screen._listenKeys(self);
       }
     });
-    this.on('resize', function () {
+    this.on(enumEvents.RESIZE, function () {
       self.parseContent();
     });
-    this.on('attach', function () {
+    this.on(enumEvents.ATTACH, function () {
       self.parseContent();
     });
-    this.on('detach', function () {
+    this.on(enumEvents.DETACH, function () {
       delete self.lpos;
     });
 
@@ -668,7 +669,7 @@ class Element$1 extends componentsNode.Node {
   set width(val) {
     if (this.position.width === val) return;
     if (/^\d+$/.test(val)) val = +val;
-    this.emit('resize');
+    this.emit(enumEvents.RESIZE);
     this.clearPos();
     return this.position.width = val;
   }
@@ -676,7 +677,7 @@ class Element$1 extends componentsNode.Node {
   set height(val) {
     if (this.position.height === val) return;
     if (/^\d+$/.test(val)) val = +val;
-    this.emit('resize');
+    this.emit(enumEvents.RESIZE);
     this.clearPos();
     return this.position.height = val;
   }
@@ -699,7 +700,7 @@ class Element$1 extends componentsNode.Node {
 
     val -= this.parent.aleft;
     if (this.position.left === val) return;
-    this.emit('move');
+    this.emit(enumEvents.MOVE);
     this.clearPos();
     return this.position.left = val;
   }
@@ -707,7 +708,7 @@ class Element$1 extends componentsNode.Node {
   set aright(val) {
     val -= this.parent.aright;
     if (this.position.right === val) return;
-    this.emit('move');
+    this.emit(enumEvents.MOVE);
     this.clearPos();
     return this.position.right = val;
   }
@@ -730,7 +731,7 @@ class Element$1 extends componentsNode.Node {
 
     val -= this.parent.atop;
     if (this.position.top === val) return;
-    this.emit('move');
+    this.emit(enumEvents.MOVE);
     this.clearPos();
     return this.position.top = val;
   }
@@ -738,7 +739,7 @@ class Element$1 extends componentsNode.Node {
   set abottom(val) {
     val -= this.parent.abottom;
     if (this.position.bottom === val) return;
-    this.emit('move');
+    this.emit(enumEvents.MOVE);
     this.clearPos();
     return this.position.bottom = val;
   }
@@ -746,14 +747,14 @@ class Element$1 extends componentsNode.Node {
   set rleft(val) {
     if (this.position.left === val) return;
     if (/^\d+$/.test(val)) val = +val;
-    this.emit('move');
+    this.emit(enumEvents.MOVE);
     this.clearPos();
     return this.position.left = val;
   }
 
   set rright(val) {
     if (this.position.right === val) return;
-    this.emit('move');
+    this.emit(enumEvents.MOVE);
     this.clearPos();
     return this.position.right = val;
   }
@@ -761,14 +762,14 @@ class Element$1 extends componentsNode.Node {
   set rtop(val) {
     if (this.position.top === val) return;
     if (/^\d+$/.test(val)) val = +val;
-    this.emit('move');
+    this.emit(enumEvents.MOVE);
     this.clearPos();
     return this.position.top = val;
   }
 
   set rbottom(val) {
     if (this.position.bottom === val) return;
-    this.emit('move');
+    this.emit(enumEvents.MOVE);
     this.clearPos();
     return this.position.bottom = val;
   }
@@ -927,7 +928,7 @@ class Element$1 extends componentsNode.Node {
     if (this.hidden) return;
     this.clearPos();
     this.hidden = true;
-    this.emit('hide');
+    this.emit(enumEvents.HIDE);
 
     if (this.screen.focused === this) {
       this.screen.rewindFocus();
@@ -937,7 +938,7 @@ class Element$1 extends componentsNode.Node {
   show() {
     if (!this.hidden) return;
     this.hidden = false;
-    this.emit('show');
+    this.emit(enumEvents.SHOW);
   }
 
   toggle() {
@@ -952,7 +953,7 @@ class Element$1 extends componentsNode.Node {
     if (!noClear) this.clearPos();
     this.content = content || '';
     this.parseContent(noTags);
-    this.emit('set content');
+    this.emit(enumEvents.SET_CONTENT);
   }
 
   getContent() {
@@ -1017,7 +1018,7 @@ class Element$1 extends componentsNode.Node {
       }.bind(this), 0);
 
       this._pcontent = this._clines.join('\n');
-      this.emit('parsed content');
+      this.emit(enumEvents.PARSED_CONTENT);
       return true;
     } // Need to calculate this every time because the default fg/bg may change.
 
@@ -1364,7 +1365,7 @@ class Element$1 extends componentsNode.Node {
     }
 
     this.enableMouse();
-    this.on('mousedown', this._dragMD = function (data) {
+    this.on(enumEvents.MOUSEDOWN, this._dragMD = function (data) {
       if (self.screen._dragging) return;
       if (!verify(data)) return;
       self.screen._dragging = self;
@@ -1374,10 +1375,10 @@ class Element$1 extends componentsNode.Node {
       };
       self.setFront();
     });
-    this.onScreenEvent('mouse', this._dragM = function (data) {
+    this.onScreenEvent(enumEvents.MOUSE, this._dragM = function (data) {
       if (self.screen._dragging !== self) return;
 
-      if (data.action !== 'mousedown' && data.action !== 'mousemove') {
+      if (data.action !== enumEvents.MOUSEDOWN && data.action !== enumEvents.MOUSEMOVE) {
         delete self.screen._dragging;
         delete self._drag;
         return;
@@ -1420,8 +1421,8 @@ class Element$1 extends componentsNode.Node {
     if (!this._draggable) return false;
     delete this.screen._dragging;
     delete this._drag;
-    this.removeListener('mousedown', this._dragMD);
-    this.removeScreenEvent('mouse', this._dragM);
+    this.removeListener(enumEvents.MOUSEDOWN, this._dragMD);
+    this.removeScreenEvent(enumEvents.MOUSE, this._dragM);
     return this._draggable = false;
   }
 
@@ -1542,10 +1543,10 @@ class Element$1 extends componentsNode.Node {
       self.screen.render();
     };
 
-    this.on('scroll', this._labelScroll = function () {
+    this.on(enumEvents.SCROLL, this._labelScroll = function () {
       reposition();
     });
-    this.on('resize', this._labelResize = function () {
+    this.on(enumEvents.RESIZE, this._labelResize = function () {
       nextTick$2(function () {
         reposition();
       });
@@ -1554,8 +1555,8 @@ class Element$1 extends componentsNode.Node {
 
   removeLabel() {
     if (!this._label) return;
-    this.removeListener('scroll', this._labelScroll);
-    this.removeListener('resize', this._labelResize);
+    this.removeListener(enumEvents.SCROLL, this._labelScroll);
+    this.removeListener(enumEvents.RESIZE, this._labelResize);
 
     this._label.detach();
 
@@ -2202,7 +2203,7 @@ class Element$1 extends componentsNode.Node {
   }
 
   render() {
-    this._emit('prerender');
+    this._emit(enumEvents.PRERENDER);
 
     this.parseContent();
 
@@ -2742,7 +2743,7 @@ class Element$1 extends componentsNode.Node {
       // }
     });
 
-    this._emit('render', [coords]);
+    this._emit(enumEvents.RENDER, [coords]);
 
     return coords;
   }
@@ -2962,10 +2963,6 @@ class Element$1 extends componentsNode.Node {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-/**
- * Modules
- */
-
 class Box extends Element$1 {
   /**
    * Box
@@ -3040,7 +3037,7 @@ class ScrollableBox extends Box {
 
 
       if (options.mouse) {
-        this.on('mousedown', function (data) {
+        this.on(enumEvents.MOUSEDOWN, function (data) {
           if (self._scrollingBar) {
             // Do not allow dragging on the scrollbar:
             delete self.screen._dragging;
@@ -3060,7 +3057,7 @@ class ScrollableBox extends Box {
             self.screen.render();
             let smd, smu;
             self._scrollingBar = true;
-            self.onScreenEvent('mousedown', smd = function (data) {
+            self.onScreenEvent(enumEvents.MOUSEDOWN, smd = function (data) {
               const y = data.y - self.atop;
               const perc = y / self.height;
               self.setScrollPerc(perc * 100 | 0);
@@ -3071,7 +3068,7 @@ class ScrollableBox extends Box {
 
             self.onScreenEvent('mouseup', smu = function () {
               self._scrollingBar = false;
-              self.removeScreenEvent('mousedown', smd);
+              self.removeScreenEvent(enumEvents.MOUSEDOWN, smd);
               self.removeScreenEvent('mouseup', smu);
             });
           }
@@ -3080,18 +3077,18 @@ class ScrollableBox extends Box {
     }
 
     if (options.mouse) {
-      this.on('wheeldown', function () {
+      this.on(enumEvents.WHEELDOWN, function () {
         self.scroll(self.height / 2 | 0 || 1);
         self.screen.render();
       });
-      this.on('wheelup', function () {
+      this.on(enumEvents.WHEELUP, function () {
         self.scroll(-(self.height / 2 | 0) || -1);
         self.screen.render();
       });
     }
 
     if (options.keys && !options.ignoreKeys) {
-      this.on('keypress', function (ch, key) {
+      this.on(enumEvents.KEYPRESS, function (ch, key) {
         if (key.name === 'up' || options.vi && key.name === 'k') {
           self.scroll(-1);
           self.screen.render();
@@ -3141,7 +3138,7 @@ class ScrollableBox extends Box {
       });
     }
 
-    this.on('parsed content', function () {
+    this.on(enumEvents.PARSED_CONTENT, function () {
       self._recalculateIndex();
     });
 
@@ -3236,7 +3233,7 @@ class ScrollableBox extends Box {
 
 
     if (this.childBase === base) {
-      return this.emit('scroll');
+      return this.emit(enumEvents.SCROLL);
     } // When scrolling text, we want to be able to handle SGR codes as well as line
     // feeds. This allows us to take preformatted text output from other programs
     // and put it in a scrollable text box.
@@ -3279,7 +3276,7 @@ class ScrollableBox extends Box {
       }
     }
 
-    return this.emit('scroll');
+    return this.emit(enumEvents.SCROLL);
   }
 
   _recalculateIndex() {
@@ -3308,7 +3305,7 @@ class ScrollableBox extends Box {
     if (!this.scrollable) return;
     this.childOffset = 0;
     this.childBase = 0;
-    return this.emit('scroll');
+    return this.emit(enumEvents.SCROLL);
   }
 
   getScrollHeight() {
@@ -3388,7 +3385,7 @@ class Log extends ScrollableText {
 
     this.scrollback = options.scrollback != null ? options.scrollback : Infinity;
     this.scrollOnInput = options.scrollOnInput;
-    this.on('set content', function () {
+    this.on(enumEvents.SET_CONTENT, function () {
       if (!self._userScrolled || self.scrollOnInput) {
         nextTick$1(function () {
           self.setScrollPerc(100);
@@ -3409,7 +3406,7 @@ class Log extends ScrollableText {
     }
 
     const text = util__default['default'].format.apply(util__default['default'], args);
-    this.emit('log', text);
+    this.emit(enumEvents._LOG, text);
     const ret = this.pushLine(text);
 
     if (this._clines.fake.length > this.scrollback) {
@@ -3505,8 +3502,8 @@ class Screen extends componentsNode.Node {
       };
 
       ps = spawn(file, args, options);
-      ps.on('error', resume);
-      ps.on('exit', resume);
+      ps.on(enumEvents.ERROR, resume);
+      ps.on(enumEvents.EXIT, resume);
       return ps;
     };
 
@@ -3613,31 +3610,31 @@ class Screen extends componentsNode.Node {
       _state: 1,
       _hidden: true
     };
-    this.program.on('resize', function () {
+    this.program.on(enumEvents.RESIZE, function () {
       self.alloc();
       self.render();
 
       (function emit(el) {
-        el.emit('resize');
+        el.emit(enumEvents.RESIZE);
         el.children.forEach(emit);
       })(self);
     });
-    this.program.on('focus', function () {
-      self.emit('focus');
+    this.program.on(enumEvents.FOCUS, function () {
+      self.emit(enumEvents.FOCUS);
     });
-    this.program.on('blur', function () {
-      self.emit('blur');
+    this.program.on(enumEvents.BLUR, function () {
+      self.emit(enumEvents.BLUR);
     });
-    this.program.on('warning', function (text) {
-      self.emit('warning', text);
+    this.program.on(enumEvents.WARNING, function (text) {
+      self.emit(enumEvents.WARNING, text);
     });
-    this.on('newListener', function fn(type) {
-      if (type === 'keypress' || type.indexOf('key ') === 0 || type === 'mouse') {
-        if (type === 'keypress' || type.indexOf('key ') === 0) self._listenKeys();
-        if (type === 'mouse') self._listenMouse();
+    this.on(enumEvents.NEW_LISTENER, function fn(type) {
+      if (type === enumEvents.KEYPRESS || type.indexOf('key ') === 0 || type === enumEvents.MOUSE) {
+        if (type === enumEvents.KEYPRESS || type.indexOf('key ') === 0) self._listenKeys();
+        if (type === enumEvents.MOUSE) self._listenMouse();
       }
 
-      if (type === 'mouse' || type === 'click' || type === 'mouseover' || type === 'mouseout' || type === 'mousedown' || type === 'mouseup' || type === 'mousewheel' || type === 'wheeldown' || type === 'wheelup' || type === 'mousemove') {
+      if (type === enumEvents.MOUSE || type === enumEvents.CLICK || type === enumEvents.MOUSEOVER || type === enumEvents.MOUSEOUT || type === enumEvents.MOUSEDOWN || type === 'mouseup' || type === enumEvents.MOUSEWHEEL || type === enumEvents.WHEELDOWN || type === enumEvents.WHEELUP || type === enumEvents.MOUSEMOVE) {
         self._listenMouse();
       }
     });
@@ -3818,7 +3815,7 @@ class Screen extends componentsNode.Node {
     }
 
     if (this.options.warnings) {
-      this.on('warning', function (text) {
+      this.on(enumEvents.WARNING, function (text) {
         const warning = new Box({
           screen: self,
           parent: self,
@@ -3860,11 +3857,11 @@ class Screen extends componentsNode.Node {
 
       if (componentsNode._Screen.total === 0) {
         componentsNode._Screen.global = null;
-        process.removeListener('uncaughtException', componentsNode._Screen._exceptionHandler);
-        process.removeListener('SIGTERM', componentsNode._Screen._sigtermHandler);
-        process.removeListener('SIGINT', componentsNode._Screen._sigintHandler);
-        process.removeListener('SIGQUIT', componentsNode._Screen._sigquitHandler);
-        process.removeListener('exit', componentsNode._Screen._exitHandler);
+        process.removeListener(enumEvents.UNCAUGHT_EXCEPTION, componentsNode._Screen._exceptionHandler);
+        process.removeListener(enumEvents.SIGTERM, componentsNode._Screen._sigtermHandler);
+        process.removeListener(enumEvents.SIGINT, componentsNode._Screen._sigintHandler);
+        process.removeListener(enumEvents.SIGQUIT, componentsNode._Screen._sigquitHandler);
+        process.removeListener(enumEvents.EXIT, componentsNode._Screen._exitHandler);
         delete componentsNode._Screen._exceptionHandler;
         delete componentsNode._Screen._sigtermHandler;
         delete componentsNode._Screen._sigintHandler;
@@ -3874,7 +3871,7 @@ class Screen extends componentsNode.Node {
       }
 
       this.destroyed = true;
-      this.emit('destroy');
+      this.emit(enumEvents.DESTROY);
 
       this._destroy();
     }
@@ -3912,10 +3909,10 @@ class Screen extends componentsNode.Node {
       }, true);
     }
 
-    this.on('render', function () {
+    this.on(enumEvents.RENDER, function () {
       self._needsClickableSort = true;
     });
-    this.program.on('mouse', function (data) {
+    this.program.on(enumEvents.MOUSE, function (data) {
       if (self.lockKeys) return;
 
       if (self._needsClickableSort) {
@@ -3941,24 +3938,24 @@ class Screen extends componentsNode.Node {
         if (!pos) continue;
 
         if (data.x >= pos.xi && data.x < pos.xl && data.y >= pos.yi && data.y < pos.yl) {
-          el.emit('mouse', data);
+          el.emit(enumEvents.MOUSE, data);
 
-          if (data.action === 'mousedown') {
+          if (data.action === enumEvents.MOUSEDOWN) {
             self.mouseDown = el;
           } else if (data.action === 'mouseup') {
-            (self.mouseDown || el).emit('click', data);
+            (self.mouseDown || el).emit(enumEvents.CLICK, data);
             self.mouseDown = null;
-          } else if (data.action === 'mousemove') {
+          } else if (data.action === enumEvents.MOUSEMOVE) {
             if (self.hover && el.index > self.hover.index) {
               set = false;
             }
 
             if (self.hover !== el && !set) {
               if (self.hover) {
-                self.hover.emit('mouseout', data);
+                self.hover.emit(enumEvents.MOUSEOUT, data);
               }
 
-              el.emit('mouseover', data);
+              el.emit(enumEvents.MOUSEOVER, data);
               self.hover = el;
             }
 
@@ -3971,15 +3968,15 @@ class Screen extends componentsNode.Node {
       } // Just mouseover?
 
 
-      if ((data.action === 'mousemove' || data.action === 'mousedown' || data.action === 'mouseup') && self.hover && !set) {
-        self.hover.emit('mouseout', data);
+      if ((data.action === enumEvents.MOUSEMOVE || data.action === enumEvents.MOUSEDOWN || data.action === 'mouseup') && self.hover && !set) {
+        self.hover.emit(enumEvents.MOUSEOUT, data);
         self.hover = null;
       }
 
-      self.emit('mouse', data);
+      self.emit(enumEvents.MOUSE, data);
       self.emit(data.action, data);
     }); // Autofocus highest element.
-    // this.on('element click', function(el, data) {
+    // this.on(ELEMENT_CLICK, function(el, data) {
     //   var target;
     //   do {
     //     if (el.clickable === true && el.options.autoFocus !== false) {
@@ -3990,7 +3987,7 @@ class Screen extends componentsNode.Node {
     // });
     // Autofocus elements with the appropriate option.
 
-    this.on('element click', function (el) {
+    this.on(enumEvents.ELEMENT_CLICK, function (el) {
       if (el.clickable === true && el.options.autoFocus !== false) {
         el.focus();
       }
@@ -4018,7 +4015,7 @@ class Screen extends componentsNode.Node {
     // checks to make sure grabKeys, lockKeys, and focused
     // weren't changed, and handles those situations appropriately.
 
-    this.program.on('keypress', function (ch, key) {
+    this.program.on(enumEvents.KEYPRESS, function (ch, key) {
       if (self.lockKeys && !~self.ignoreLocked.indexOf(key.full)) {
         return;
       }
@@ -4027,7 +4024,7 @@ class Screen extends componentsNode.Node {
             grabKeys = self.grabKeys;
 
       if (!grabKeys || ~self.ignoreLocked.indexOf(key.full)) {
-        self.emit('keypress', ch, key);
+        self.emit(enumEvents.KEYPRESS, ch, key);
         self.emit('key ' + key.full, ch, key);
       } // If something changed from the screen key handler, stop.
 
@@ -4037,7 +4034,7 @@ class Screen extends componentsNode.Node {
       }
 
       if (focused && focused.keyable) {
-        focused.emit('keypress', ch, key);
+        focused.emit(enumEvents.KEYPRESS, ch, key);
         focused.emit('key ' + key.full, ch, key);
       }
     });
@@ -4076,13 +4073,13 @@ class Screen extends componentsNode.Node {
         fg: 'default'
       }
     });
-    this.on('mousemove', function (data) {
+    this.on(enumEvents.MOUSEMOVE, function (data) {
       if (self._hoverText.detached) return;
       self._hoverText.rleft = data.x + 1;
       self._hoverText.rtop = data.y;
       self.render();
     });
-    this.on('element mouseover', function (el, data) {
+    this.on(enumEvents.ELEMENT_MOUSEOVER, function (el, data) {
       if (!el._hoverOptions) return;
       self._hoverText.parseTags = el.parseTags;
 
@@ -4093,7 +4090,7 @@ class Screen extends componentsNode.Node {
       self._hoverText.rtop = data.y;
       self.render();
     });
-    this.on('element mouseout', function () {
+    this.on(enumEvents.ELEMENT_MOUSEOUT, function () {
       if (self._hoverText.detached) return;
 
       self._hoverText.detach();
@@ -4103,7 +4100,7 @@ class Screen extends componentsNode.Node {
     // terminal does not support allMotion.
     // Workaround: check to see if content is set.
 
-    this.on('element mouseup', function (el) {
+    this.on(enumEvents.ELEMENT_MOUSEUP, function (el) {
       if (!self._hoverText.getContent()) return;
       if (!el._hoverOptions) return;
       self.append(self._hoverText);
@@ -4145,7 +4142,7 @@ class Screen extends componentsNode.Node {
   render() {
     const self = this;
     if (this.destroyed) return;
-    this.emit('prerender');
+    this.emit(enumEvents.PRERENDER);
     this._borderStops = {}; // TODO: Possibly get rid of .dirty altogether.
     // TODO: Could possibly drop .dirty and just clear the `lines` buffer every
     // time before a screen.render. This way clearRegion doesn't have to be
@@ -4174,7 +4171,7 @@ class Screen extends componentsNode.Node {
     }
 
     this.renders++;
-    this.emit('render');
+    this.emit(enumEvents.RENDER);
   }
 
   blankLine(ch, dirty) {
@@ -5080,7 +5077,7 @@ class Screen extends componentsNode.Node {
     }
 
     if (old) {
-      old.emit('blur');
+      old.emit(enumEvents.BLUR);
     }
   }
 
@@ -5112,10 +5109,10 @@ class Screen extends componentsNode.Node {
     }
 
     if (old) {
-      old.emit('blur', self);
+      old.emit(enumEvents.BLUR, self);
     }
 
-    self.emit('focus', old);
+    self.emit(enumEvents.FOCUS, old);
   }
 
   clearRegion(xi, xl, yi, yl, override) {
@@ -5158,11 +5155,11 @@ class Screen extends componentsNode.Node {
 
   exec(file, args, options, callback) {
     const ps = this.spawn(file, args, options);
-    ps.on('error', function (err) {
+    ps.on(enumEvents.ERROR, function (err) {
       if (!callback) return;
       return callback(err, false);
     });
-    ps.on('exit', function (code) {
+    ps.on(enumEvents.EXIT, function (code) {
       if (!callback) return;
       return callback(null, code === 0);
     });
@@ -5239,11 +5236,11 @@ class Screen extends componentsNode.Node {
       cwd: process.env.HOME
     };
     const ps = this.spawn(args[0], args.slice(1), opt);
-    ps.on('error', function (err) {
+    ps.on(enumEvents.ERROR, function (err) {
       if (!callback) return;
       return callback(err);
     });
-    ps.on('exit', function (code) {
+    ps.on(enumEvents.EXIT, function (code) {
       if (!callback) return;
       if (code !== 0) return callback(new Error('Exit Code: ' + code));
       return callback(null, code === 0);
@@ -5831,7 +5828,7 @@ class Layout extends Element$1 {
   }
 
   render() {
-    this._emit('prerender');
+    this._emit(enumEvents.PRERENDER);
 
     const coords = this._renderCoords();
 
@@ -5886,7 +5883,7 @@ class Layout extends Element$1 {
       // }
     });
 
-    this._emit('render', [coords]);
+    this._emit(enumEvents.RENDER, [coords]);
 
     return coords;
   }
@@ -6043,18 +6040,18 @@ class Terminal extends Box {
     // keyPress methods with our own node.js-keys->terminal-keys methods, but
     // since all the keys are already coming in as escape sequences, we can just
     // send the input directly to the handler/socket (see below).
-    // this.term.on('data', function(data) {
+    // this.term.on(DATA, function(data) {
     //   self.handler(data);
     // });
     // Incoming keys and mouse inputs.
     // NOTE: Cannot pass mouse events - coordinates will be off!
 
-    this.screen.program.input.on('data', this._onData = function (data) {
+    this.screen.program.input.on(enumEvents.DATA, this._onData = function (data) {
       if (self.screen.focused === self && !self._isMouse(data)) {
         self.handler(data);
       }
     });
-    this.onScreenEvent('mouse', function (data) {
+    this.onScreenEvent(enumEvents.MOUSE, function (data) {
       if (self.screen.focused !== self) return;
       if (data.x < self.aleft + self.ileft) return;
       if (data.y < self.atop + self.itop) return;
@@ -6081,7 +6078,7 @@ class Terminal extends Box {
           b -= 32;
         }
 
-        s = '\x1b[<' + b + ';' + x + ';' + y + (data.action === 'mousedown' ? 'M' : 'm');
+        s = '\x1b[<' + b + ';' + x + ';' + y + (data.action === enumEvents.MOUSEDOWN ? 'M' : 'm');
       } else {
         if (self.screen.program.sgrMouse) {
           b += 32;
@@ -6092,32 +6089,32 @@ class Terminal extends Box {
 
       self.handler(s);
     });
-    this.on('focus', function () {
+    this.on(enumEvents.FOCUS, function () {
       self.term.focus();
     });
-    this.on('blur', function () {
+    this.on(enumEvents.BLUR, function () {
       self.term.blur();
     });
-    this.term.on('title', function (title) {
+    this.term.on(enumEvents.TITLE, function (title) {
       self.title = title;
-      self.emit('title', title);
+      self.emit(enumEvents.TITLE, title);
     });
-    this.term.on('passthrough', function (data) {
+    this.term.on(enumEvents.PASSTHROUGH, function (data) {
       self.screen.program.flush();
 
       self.screen.program._owrite(data);
     });
-    this.on('resize', function () {
+    this.on(enumEvents.RESIZE, function () {
       nextTick(function () {
         self.term.resize(self.width - self.iwidth, self.height - self.iheight);
       });
     });
-    this.once('render', function () {
+    this.once(enumEvents.RENDER, function () {
       self.term.resize(self.width - self.iwidth, self.height - self.iheight);
     });
-    this.on('destroy', function () {
+    this.on(enumEvents.DESTROY, function () {
       self.kill();
-      self.screen.program.input.removeListener('data', self._onData);
+      self.screen.program.input.removeListener(enumEvents.DATA, self._onData);
     });
 
     if (this.handler) {
@@ -6131,7 +6128,7 @@ class Terminal extends Box {
       cwd: process.env.HOME,
       env: this.options.env || process.env
     });
-    this.on('resize', function () {
+    this.on(enumEvents.RESIZE, function () {
       nextTick(function () {
         try {
           self.pty.resize(self.width - self.iwidth, self.height - self.iheight);
@@ -6144,14 +6141,14 @@ class Terminal extends Box {
       self.screen.render();
     };
 
-    this.pty.on('data', function (data) {
+    this.pty.on(enumEvents.DATA, function (data) {
       self.write(data);
       self.screen.render();
     });
-    this.pty.on('exit', function (code) {
-      self.emit('exit', code || null);
+    this.pty.on(enumEvents.EXIT, function (code) {
+      self.emit(enumEvents.EXIT, code || null);
     });
-    this.onScreenEvent('keypress', function () {
+    this.onScreenEvent(enumEvents.KEYPRESS, function () {
       self.screen.render();
     });
 
@@ -6237,7 +6234,7 @@ class Terminal extends Box {
 
   scrollTo(offset) {
     this.term.ydisp = offset;
-    return this.emit('scroll');
+    return this.emit(enumEvents.SCROLL);
   }
 
   getScroll() {
@@ -6246,13 +6243,13 @@ class Terminal extends Box {
 
   scroll(offset) {
     this.term.scrollDisp(offset);
-    return this.emit('scroll');
+    return this.emit(enumEvents.SCROLL);
   }
 
   resetScroll() {
     this.term.ydisp = 0;
     this.term.ybase = 0;
-    return this.emit('scroll');
+    return this.emit(enumEvents.SCROLL);
   }
 
   getScrollHeight() {

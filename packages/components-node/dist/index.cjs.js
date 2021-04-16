@@ -3,6 +3,7 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var events = require('@pres/events');
+var enumEvents = require('@pres/enum-events');
 
 /**
  * screen.js - screen node for blessed
@@ -23,8 +24,8 @@ class _Screen {
 
     if (_Screen._bound) return;
     _Screen._bound = true;
-    process.on('uncaughtException', _Screen._exceptionHandler = err => {
-      if (process.listeners('uncaughtException').length > 1) {
+    process.on(enumEvents.UNCAUGHT_EXCEPTION, _Screen._exceptionHandler = err => {
+      if (process.listeners(enumEvents.UNCAUGHT_EXCEPTION).length > 1) {
         return;
       }
 
@@ -34,7 +35,7 @@ class _Screen {
       console.error(err.stack ? err.stack + '' : err + '');
       nextTick(() => process.exit(1));
     });
-    ['SIGTERM', 'SIGINT', 'SIGQUIT'].forEach(signal => {
+    [enumEvents.SIGTERM, enumEvents.SIGINT, enumEvents.SIGQUIT].forEach(signal => {
       const name = '_' + signal.toLowerCase() + 'Handler';
       process.on(signal, _Screen[name] = () => {
         if (process.listeners(signal).length > 1) {
@@ -44,7 +45,7 @@ class _Screen {
         nextTick(() => process.exit(0));
       });
     });
-    process.on('exit', _Screen._exitHandler = () => {
+    process.on(enumEvents.EXIT, _Screen._exitHandler = () => {
       _Screen.instances.slice().forEach(screen => screen.destroy());
     });
   }
@@ -140,13 +141,13 @@ class Node extends events.EventEmitter {
       this.children.splice(i, 0, element);
     }
 
-    element.emit('reparent', this);
-    this.emit('adopt', element);
+    element.emit(enumEvents.REPARENT, this);
+    this.emit(enumEvents.ADOPT, element);
 
     (function emit(el) {
       const n = el.detached !== self.detached;
       el.detached = self.detached;
-      if (n) el.emit('attach');
+      if (n) el.emit(enumEvents.ATTACH);
       el.children.forEach(emit);
     })(element);
 
@@ -184,13 +185,13 @@ class Node extends events.EventEmitter {
     if (~i) this.screen.clickable.splice(i, 1);
     i = this.screen.keyable.indexOf(element);
     if (~i) this.screen.keyable.splice(i, 1);
-    element.emit('reparent', null);
-    this.emit('remove', element);
+    element.emit(enumEvents.REPARENT, null);
+    this.emit(enumEvents.REMOVE, element);
 
     (function emit(el) {
       const n = el.detached !== true;
       el.detached = true;
-      if (n) el.emit('detach');
+      if (n) el.emit(enumEvents.DETACH);
       el.children.forEach(emit);
     })(element);
 
@@ -210,7 +211,7 @@ class Node extends events.EventEmitter {
     this.forDescendants(function (el) {
       el.free();
       el.destroyed = true;
-      el.emit('destroy');
+      el.emit(enumEvents.DESTROY);
     }, this);
   }
 

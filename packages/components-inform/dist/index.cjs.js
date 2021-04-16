@@ -4,6 +4,7 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 var componentsCore = require('@pres/components-core');
 var componentsText = require('@pres/components-text');
+var enumEvents = require('@pres/enum-events');
 var componentsForm = require('@pres/components-form');
 
 /**
@@ -133,8 +134,8 @@ class Message extends componentsCore.Box {
       };
 
       setTimeout(function () {
-        self.onScreenEvent('keypress', function fn(ch, key) {
-          if (key.name === 'mouse') return;
+        self.onScreenEvent(enumEvents.KEYPRESS, function fn(ch, key) {
+          if (key.name === enumEvents.MOUSE) return;
 
           if (self.scrollable) {
             if (key.name === 'up' || self.options.vi && key.name === 'k' || key.name === 'down' || self.options.vi && key.name === 'j' || self.options.vi && key.name === 'u' && key.ctrl || self.options.vi && key.name === 'd' && key.ctrl || self.options.vi && key.name === 'b' && key.ctrl || self.options.vi && key.name === 'f' && key.ctrl || self.options.vi && key.name === 'g' && !key.shift || self.options.vi && key.name === 'g' && key.shift) {
@@ -146,14 +147,14 @@ class Message extends componentsCore.Box {
             return;
           }
 
-          self.removeScreenEvent('keypress', fn);
+          self.removeScreenEvent(enumEvents.KEYPRESS, fn);
           end();
         }); // XXX May be affected by new element.options.mouse option.
 
         if (!self.options.mouse) return;
-        self.onScreenEvent('mouse', function fn(data) {
-          if (data.action === 'mousemove') return;
-          self.removeScreenEvent('mouse', fn);
+        self.onScreenEvent(enumEvents.MOUSE, function fn(data) {
+          if (data.action === enumEvents.MOUSEMOVE) return;
+          self.removeScreenEvent(enumEvents.MOUSE, fn);
           end();
         });
       }, 10);
@@ -181,10 +182,6 @@ class Message extends componentsCore.Box {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-/**
- * ProgressBar
- */
-
 class ProgressBar extends componentsForm.Input {
   constructor(options = {}) {
     super(options);
@@ -217,7 +214,7 @@ class ProgressBar extends componentsForm.Input {
     this.orientation = options.orientation || 'horizontal';
 
     if (options.keys) {
-      this.on('keypress', function (ch, key) {
+      this.on(enumEvents.KEYPRESS, function (ch, key) {
         let back, forward;
 
         if (self.orientation === 'horizontal') {
@@ -242,7 +239,7 @@ class ProgressBar extends componentsForm.Input {
     }
 
     if (options.mouse) {
-      this.on('click', function (data) {
+      this.on(enumEvents.CLICK, function (data) {
         let x, y, m, p;
         if (!self.lpos) return;
 
@@ -301,7 +298,7 @@ class ProgressBar extends componentsForm.Input {
     if (this.filled < 0) this.filled = 0;else if (this.filled > 100) this.filled = 100;
 
     if (this.filled === 100) {
-      this.emit('complete');
+      this.emit(enumEvents.COMPLETE);
     }
 
     this.value = this.filled;
@@ -313,7 +310,7 @@ class ProgressBar extends componentsForm.Input {
   }
 
   reset() {
-    this.emit('reset');
+    this.emit(enumEvents.RESET);
     this.filled = 0;
     this.value = this.filled;
   }

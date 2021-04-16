@@ -1,5 +1,6 @@
 import { Box, Node } from '@pres/components-core';
 import { helpers } from '@pres/util-helpers';
+import { ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, KEYPRESS, RESIZE, ADOPT, REMOVE, CLICK, ACTION, SELECT, CREATE_ITEM, ADD_ITEM, REMOVE_ITEM, SET_ITEMS, CANCEL, FOCUS, SELECT_ITEM, SELECT_TAB, ATTACH, SCROLL } from '@pres/enum-events';
 
 /**
  * list.js - list element for blessed
@@ -85,18 +86,18 @@ class List extends Box {
     if (options.mouse) {
       this.screen._listenMouse(this);
 
-      this.on('element wheeldown', function () {
+      this.on(ELEMENT_WHEELDOWN, function () {
         self.select(self.selected + 2);
         self.screen.render();
       });
-      this.on('element wheelup', function () {
+      this.on(ELEMENT_WHEELUP, function () {
         self.select(self.selected - 2);
         self.screen.render();
       });
     }
 
     if (options.keys) {
-      this.on('keypress', function (ch, key) {
+      this.on(KEYPRESS, function (ch, key) {
         if (key.name === 'up' || options.vi && key.name === 'k') {
           self.up();
           self.screen.render();
@@ -196,7 +197,7 @@ class List extends Box {
       });
     }
 
-    this.on('resize', function () {
+    this.on(RESIZE, function () {
       const visible = self.height - self.iheight; // if (self.selected < visible - 1) {
 
       if (visible >= self.selected + 1) {
@@ -208,14 +209,14 @@ class List extends Box {
         self.childOffset = visible - 1;
       }
     });
-    this.on('adopt', function (el) {
+    this.on(ADOPT, function (el) {
       if (!~self.items.indexOf(el)) {
         el.fixed = true;
       }
     }); // Ensure children are removed from the
     // item list if they are items.
 
-    this.on('remove', function (el) {
+    this.on(REMOVE, function (el) {
       self.removeItem(el);
     });
     this.type = 'list';
@@ -266,12 +267,12 @@ class List extends Box {
     var item = new Box(options);
 
     if (this.mouse) {
-      item.on('click', function () {
+      item.on(CLICK, function () {
         self.focus();
 
         if (self.items[self.selected] === item) {
-          self.emit('action', item, self.selected);
-          self.emit('select', item, self.selected);
+          self.emit(ACTION, item, self.selected);
+          self.emit(SELECT, item, self.selected);
           return;
         }
 
@@ -280,7 +281,7 @@ class List extends Box {
       });
     }
 
-    this.emit('create item');
+    this.emit(CREATE_ITEM);
     return item;
   }
 
@@ -301,7 +302,7 @@ class List extends Box {
       this.select(0);
     }
 
-    this.emit('add item');
+    this.emit(ADD_ITEM);
     return item;
   }
 
@@ -322,7 +323,7 @@ class List extends Box {
       }
     }
 
-    this.emit('remove item');
+    this.emit(REMOVE_ITEM);
     return child;
   }
 
@@ -397,7 +398,7 @@ class List extends Box {
       this.select(Math.min(selected, items.length - 1));
     }
 
-    this.emit('set items');
+    this.emit(SET_ITEMS);
   }
 
   pushItem(content) {
@@ -565,7 +566,7 @@ class List extends Box {
     this.select(0);
     if (label) this.setLabel(label);
     this.screen.render();
-    this.once('action', function (el, selected) {
+    this.once(ACTION, function (el, selected) {
       if (label) self.removeLabel();
       self.screen.restoreFocus();
       self.hide();
@@ -577,14 +578,14 @@ class List extends Box {
 
   enterSelected(i) {
     if (i != null) this.select(i);
-    this.emit('action', this.items[this.selected], this.selected);
-    this.emit('select', this.items[this.selected], this.selected);
+    this.emit(ACTION, this.items[this.selected], this.selected);
+    this.emit(SELECT, this.items[this.selected], this.selected);
   }
 
   cancelSelected(i) {
     if (i != null) this.select(i);
-    this.emit('action');
-    this.emit('cancel');
+    this.emit(ACTION);
+    this.emit(CANCEL);
   }
 
 }
@@ -614,7 +615,7 @@ class Listbar extends Box {
     if (options.commands || options.items) this.setItems(options.commands || options.items);
 
     if (options.keys) {
-      this.on('keypress', function (ch, key) {
+      this.on(KEYPRESS, function (ch, key) {
         if (key.name === 'left' || options.vi && key.name === 'h' || key.shift && key.name === 'tab') {
           self.moveLeft();
           self.screen.render(); // Stop propagation if we're in a form.
@@ -632,8 +633,8 @@ class Listbar extends Box {
         }
 
         if (key.name === 'enter' || options.vi && key.name === 'k' && !key.shift) {
-          self.emit('action', self.items[self.selected], self.selected);
-          self.emit('select', self.items[self.selected], self.selected);
+          self.emit(ACTION, self.items[self.selected], self.selected);
+          self.emit(SELECT, self.items[self.selected], self.selected);
           const item = self.items[self.selected];
 
           if (item._.cmd.callback) {
@@ -645,14 +646,14 @@ class Listbar extends Box {
         }
 
         if (key.name === 'escape' || options.vi && key.name === 'q') {
-          self.emit('action');
-          self.emit('cancel');
+          self.emit(ACTION);
+          self.emit(CANCEL);
         }
       });
     }
 
     if (options.autoCommandKeys) {
-      this.onScreenEvent('keypress', function (ch) {
+      this.onScreenEvent(KEYPRESS, function (ch) {
         if (/^[0-9]$/.test(ch)) {
           let i = +ch - 1;
           if (!~i) i = 9;
@@ -661,7 +662,7 @@ class Listbar extends Box {
       });
     }
 
-    this.on('focus', function () {
+    this.on(FOCUS, function () {
       self.select(self.selected);
     });
     this.type = 'listbar';
@@ -709,7 +710,7 @@ class Listbar extends Box {
     commands.forEach(function (cmd) {
       self.add(cmd);
     });
-    this.emit('set items');
+    this.emit(SET_ITEMS);
   }
 
   appendItem(item, callback) {
@@ -796,8 +797,8 @@ class Listbar extends Box {
     if (cmd.callback) {
       if (cmd.keys) {
         this.screen.key(cmd.keys, function () {
-          self.emit('action', el, self.selected);
-          self.emit('select', el, self.selected);
+          self.emit(ACTION, el, self.selected);
+          self.emit(SELECT, el, self.selected);
 
           if (el._.cmd.callback) {
             el._.cmd.callback();
@@ -815,9 +816,9 @@ class Listbar extends Box {
 
 
     if (this.mouse) {
-      el.on('click', function () {
-        self.emit('action', el, self.selected);
-        self.emit('select', el, self.selected);
+      el.on(CLICK, function () {
+        self.emit(ACTION, el, self.selected);
+        self.emit(SELECT, el, self.selected);
 
         if (el._.cmd.callback) {
           el._.cmd.callback();
@@ -828,7 +829,7 @@ class Listbar extends Box {
       });
     }
 
-    this.emit('add item');
+    this.emit(ADD_ITEM);
   }
 
   render() {
@@ -863,7 +864,7 @@ class Listbar extends Box {
     }
 
     if (!this.parent) {
-      this.emit('select item', this.items[offset], offset);
+      this.emit(SELECT_ITEM, this.items[offset], offset);
       return;
     }
 
@@ -925,7 +926,7 @@ class Listbar extends Box {
       }
     }
 
-    this.emit('remove item');
+    this.emit(REMOVE_ITEM);
   }
 
   move(offset) {
@@ -952,7 +953,7 @@ class Listbar extends Box {
       this.screen.render();
     }
 
-    this.emit('select tab', item, index);
+    this.emit(SELECT_TAB, item, index);
   }
 
 }
@@ -986,11 +987,11 @@ class Table extends Box {
 
     this.pad = options.pad != null ? options.pad : 2;
     this.setData(options.rows || options.data);
-    this.on('attach', function () {
+    this.on(ATTACH, function () {
       self.setContent('');
       self.setData(self.rows);
     });
-    this.on('resize', function () {
+    this.on(RESIZE, function () {
       self.setContent('');
       self.setData(self.rows);
       self.screen.render();
@@ -1349,7 +1350,7 @@ class ListTable extends List {
       style: options.style.header,
       tags: options.parseTags || options.tags
     });
-    this.on('scroll', function () {
+    this.on(SCROLL, function () {
       self._header.setFront();
 
       self._header.rtop = self.childBase;
@@ -1360,10 +1361,10 @@ class ListTable extends List {
     });
     this.pad = options.pad != null ? options.pad : 2;
     this.setData(options.rows || options.data);
-    this.on('attach', function () {
+    this.on(ATTACH, function () {
       self.setData(self.rows);
     });
-    this.on('resize', function () {
+    this.on(RESIZE, function () {
       const selected = self.selected;
       self.setData(self.rows);
       self.select(selected);

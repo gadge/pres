@@ -7,6 +7,31 @@ import { StringDecoder } from 'string_decoder';
 import util from 'util';
 import net from 'net';
 
+const BLUR = "blur",
+      CLICK = "click",
+      DATA$1 = "data",
+      DESTROY = "destroy",
+      ERROR = "error",
+      EXIT = "exit",
+      FOCUS = "focus",
+      KEYPRESS$1 = "keypress",
+      MOUSE = "mouse",
+      MOUSEDOWN = "mousedown",
+      MOUSEMOVE = "mousemove",
+      MOUSEWHEEL = "mousewheel",
+      NEW_LISTENER$1 = "newListener",
+      RESIZE = "resize",
+      WARNING = "warning",
+      BTNDOWN = "btndown",
+      BTNUP = "btnup",
+      CONNECT = "connect",
+      DBLCLICK = "dblclick",
+      DRAG = "drag",
+      MOVE = "move",
+      RESPONSE = "response",
+      WHEELDOWN = "wheeldown",
+      WHEELUP = "wheelup";
+
 /**
  * gpmclient.js - support the gpm mouse protocol
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
@@ -118,58 +143,58 @@ class GpmClient extends EventEmitter {
         };
         const gpm = net.createConnection(GPM_SOCKET);
         this.gpm = gpm;
-        gpm.on('connect', function () {
+        gpm.on(CONNECT, function () {
           send_config(gpm, conf, function () {
             conf.pid = 0;
             conf.vc = GPM_REQ_NOPASTE; //send_config(gpm, conf);
           });
         });
-        gpm.on('data', function (packet) {
+        gpm.on(DATA$1, function (packet) {
           const evnt = parseEvent(packet);
 
           switch (evnt.type & 15) {
             case GPM_MOVE:
               if (evnt.dx || evnt.dy) {
-                self.emit('move', evnt.buttons, evnt.modifiers, evnt.x, evnt.y);
+                self.emit(MOVE, evnt.buttons, evnt.modifiers, evnt.x, evnt.y);
               }
 
               if (evnt.wdx || evnt.wdy) {
-                self.emit('mousewheel', evnt.buttons, evnt.modifiers, evnt.x, evnt.y, evnt.wdx, evnt.wdy);
+                self.emit(MOUSEWHEEL, evnt.buttons, evnt.modifiers, evnt.x, evnt.y, evnt.wdx, evnt.wdy);
               }
 
               break;
 
             case GPM_DRAG:
               if (evnt.dx || evnt.dy) {
-                self.emit('drag', evnt.buttons, evnt.modifiers, evnt.x, evnt.y);
+                self.emit(DRAG, evnt.buttons, evnt.modifiers, evnt.x, evnt.y);
               }
 
               if (evnt.wdx || evnt.wdy) {
-                self.emit('mousewheel', evnt.buttons, evnt.modifiers, evnt.x, evnt.y, evnt.wdx, evnt.wdy);
+                self.emit(MOUSEWHEEL, evnt.buttons, evnt.modifiers, evnt.x, evnt.y, evnt.wdx, evnt.wdy);
               }
 
               break;
 
             case GPM_DOWN:
-              self.emit('btndown', evnt.buttons, evnt.modifiers, evnt.x, evnt.y);
+              self.emit(BTNDOWN, evnt.buttons, evnt.modifiers, evnt.x, evnt.y);
 
               if (evnt.type & GPM_DOUBLE) {
-                self.emit('dblclick', evnt.buttons, evnt.modifiers, evnt.x, evnt.y);
+                self.emit(DBLCLICK, evnt.buttons, evnt.modifiers, evnt.x, evnt.y);
               }
 
               break;
 
             case GPM_UP:
-              self.emit('btnup', evnt.buttons, evnt.modifiers, evnt.x, evnt.y);
+              self.emit(BTNUP, evnt.buttons, evnt.modifiers, evnt.x, evnt.y);
 
               if (!(evnt.type & GPM_MFLAG)) {
-                self.emit('click', evnt.buttons, evnt.modifiers, evnt.x, evnt.y);
+                self.emit(CLICK, evnt.buttons, evnt.modifiers, evnt.x, evnt.y);
               }
 
               break;
           }
         });
-        gpm.on('error', function () {
+        gpm.on(ERROR, function () {
           self.stop();
         });
       });
@@ -222,28 +247,28 @@ function emitKeypressEvents(stream) {
   stream._keypressDecoder = new StringDecoder('utf8');
 
   function onData(b) {
-    if (listenerCount(stream, 'keypress') > 0) {
+    if (listenerCount(stream, KEYPRESS) > 0) {
       const r = stream._keypressDecoder.write(b);
 
       if (r) emitKeys(stream, r);
     } else {
       // Nobody's watching anyway
-      stream.removeListener('data', onData);
-      stream.on('newListener', onNewListener);
+      stream.removeListener(DATA, onData);
+      stream.on(NEW_LISTENER, onNewListener);
     }
   }
 
   function onNewListener(event) {
-    if (event === 'keypress') {
-      stream.on('data', onData);
-      stream.removeListener('newListener', onNewListener);
+    if (event === KEYPRESS) {
+      stream.on(DATA, onData);
+      stream.removeListener(NEW_LISTENER, onNewListener);
     }
   }
 
-  if (listenerCount(stream, 'keypress') > 0) {
-    stream.on('data', onData);
+  if (listenerCount(stream, KEYPRESS) > 0) {
+    stream.on(DATA, onData);
   } else {
-    stream.on('newListener', onNewListener);
+    stream.on(NEW_LISTENER, onNewListener);
   }
 }
 /*
@@ -696,13 +721,13 @@ function emitKeys(stream, s) {
     }
 
     if (key || ch) {
-      stream.emit('keypress', ch, key); // if (key && key.name === 'return') {
+      stream.emit(KEYPRESS, ch, key); // if (key && key.name === 'return') {
       //   var nkey = {};
       //   Object.keys(key).forEach(function(k) {
       //     nkey[k] = key[k];
       //   });
       //   nkey.name = 'enter';
-      //   stream.emit('keypress', ch, nkey);
+      //   stream.emit(KEYPRESS, ch, nkey);
       // }
     }
   });
@@ -723,10 +748,6 @@ function build(options) {
   console.log('>>> [about to create pres program]');
   return new Program(options);
 }
-/**
- * Program
- */
-
 class Program extends EventEmitter {
   constructor(options = {}) {
     super();
@@ -927,7 +948,7 @@ class Program extends EventEmitter {
 
     if (Program._bound) return;
     Program._bound = true;
-    unshiftEvent(process, 'exit', Program._exitHandler = function () {
+    unshiftEvent(process, EXIT, Program._exitHandler = function () {
       Program.instances.forEach(function (program) {
         // Potentially reset window title on exit:
         // if (program._originalTitle) {
@@ -1006,7 +1027,7 @@ class Program extends EventEmitter {
       });
     }
 
-    this.input.on('data', data => self._log('IN', stringify(decoder.write(data))));
+    this.input.on(DATA$1, data => self._log('IN', stringify(decoder.write(data))));
 
     this.output.write = function (data) {
       self._log('OUT', stringify(data));
@@ -1034,13 +1055,13 @@ class Program extends EventEmitter {
 
     if (tput.error) {
       nextTick(function () {
-        self.emit('warning', tput.error.message);
+        self.emit(WARNING, tput.error.message);
       });
     }
 
     if (tput.padding) {
       nextTick(function () {
-        self.emit('warning', 'Terminfo padding has been enabled.');
+        self.emit(WARNING, 'Terminfo padding has been enabled.');
       });
     }
 
@@ -1116,9 +1137,9 @@ class Program extends EventEmitter {
       this.input._blessedInput++;
     }
 
-    this.on('newListener', this._newHandler = function fn(type) {
-      if (type === 'keypress' || type === 'mouse') {
-        self.removeListener('newListener', fn);
+    this.on(NEW_LISTENER$1, this._newHandler = function fn(type) {
+      if (type === KEYPRESS$1 || type === MOUSE) {
+        self.removeListener(NEW_LISTENER$1, fn);
 
         if (self.input.setRawMode && !self.input.isRaw) {
           self.input.setRawMode(true);
@@ -1126,9 +1147,9 @@ class Program extends EventEmitter {
         }
       }
     });
-    this.on('newListener', function fn(type) {
-      if (type === 'mouse') {
-        self.removeListener('newListener', fn);
+    this.on(NEW_LISTENER$1, function fn(type) {
+      if (type === MOUSE) {
+        self.removeListener(NEW_LISTENER$1, fn);
         self.bindMouse();
       }
     }); // Listen for resize on output
@@ -1147,7 +1168,7 @@ class Program extends EventEmitter {
     console.log('>>> [Program.prototype._listenInput]');
     setTimeout(() => {}, 3000); // Input
 
-    this.input.on('keypress', this.input._keypressHandler = function (ch, key) {
+    this.input.on(KEYPRESS$1, this.input._keypressHandler = function (ch, key) {
       key = key || {
         ch: ch
       };
@@ -1167,7 +1188,7 @@ class Program extends EventEmitter {
       }
 
       if (key.name === 'return' && key.sequence === '\r') {
-        self.input.emit('keypress', ch, merge({}, key, {
+        self.input.emit(KEYPRESS$1, ch, merge({}, key, {
           name: 'enter'
         }));
       }
@@ -1176,14 +1197,14 @@ class Program extends EventEmitter {
       key.full = name;
       Program.instances.forEach(function (program) {
         if (program.input !== self.input) return;
-        program.emit('keypress', ch, key);
+        program.emit(KEYPRESS$1, ch, key);
         program.emit('key ' + name, ch, key);
       });
     });
-    this.input.on('data', this.input._dataHandler = function (data) {
+    this.input.on(DATA$1, this.input._dataHandler = function (data) {
       Program.instances.forEach(function (program) {
         if (program.input !== self.input) return;
-        program.emit('data', data);
+        program.emit(DATA$1, data);
       });
     });
     emitKeypressEvents(this.input);
@@ -1194,7 +1215,7 @@ class Program extends EventEmitter {
 
     if (!this.output.isTTY) {
       nextTick(function () {
-        self.emit('warning', 'Output is not a TTY');
+        self.emit(WARNING, 'Output is not a TTY');
       });
     } // Output
 
@@ -1204,11 +1225,11 @@ class Program extends EventEmitter {
         if (program.output !== self.output) return;
         program.cols = program.output.columns;
         program.rows = program.output.rows;
-        program.emit('resize');
+        program.emit(RESIZE);
       });
     }
 
-    this.output.on('resize', this.output._resizeHandler = function () {
+    this.output.on(RESIZE, this.output._resizeHandler = function () {
       Program.instances.forEach(function (program) {
         if (program.output !== self.output) return;
 
@@ -1239,7 +1260,7 @@ class Program extends EventEmitter {
 
       if (Program.total === 0) {
         Program.global = null;
-        process.removeListener('exit', Program._exitHandler);
+        process.removeListener(EXIT, Program._exitHandler);
         delete Program._exitHandler;
         delete Program._bound;
       }
@@ -1248,8 +1269,8 @@ class Program extends EventEmitter {
       this.output._blessedOutput--;
 
       if (this.input._blessedInput === 0) {
-        this.input.removeListener('keypress', this.input._keypressHandler);
-        this.input.removeListener('data', this.input._dataHandler);
+        this.input.removeListener(KEYPRESS$1, this.input._keypressHandler);
+        this.input.removeListener(DATA$1, this.input._dataHandler);
         delete this.input._keypressHandler;
         delete this.input._dataHandler;
 
@@ -1265,14 +1286,14 @@ class Program extends EventEmitter {
       }
 
       if (this.output._blessedOutput === 0) {
-        this.output.removeListener('resize', this.output._resizeHandler);
+        this.output.removeListener(RESIZE, this.output._resizeHandler);
         delete this.output._resizeHandler;
       }
 
-      this.removeListener('newListener', this._newHandler);
+      this.removeListener(NEW_LISTENER$1, this._newHandler);
       delete this._newHandler;
       this.destroyed = true;
-      this.emit('destroy');
+      this.emit(DESTROY);
     }
   }
 
@@ -1321,7 +1342,7 @@ class Program extends EventEmitter {
     this._boundMouse = true;
     const decoder = new StringDecoder('utf8'),
           self = this;
-    this.on('data', function (data) {
+    this.on(DATA$1, function (data) {
       const text = decoder.write(data);
       if (!text) return;
 
@@ -1384,7 +1405,7 @@ class Program extends EventEmitter {
       b = parts[1].charCodeAt(0);
       x = parts[1].charCodeAt(1);
       y = parts[1].charCodeAt(2);
-      key.name = 'mouse';
+      key.name = MOUSE;
       key.type = 'X10';
       key.raw = [b, x, y, parts[0]];
       key.buf = buf;
@@ -1400,7 +1421,7 @@ class Program extends EventEmitter {
       b -= 32;
 
       if (b >> 6 & 1) {
-        key.action = b & 1 ? 'wheeldown' : 'wheelup';
+        key.action = b & 1 ? WHEELDOWN : WHEELUP;
         key.button = 'middle';
       } else if (b === 3) {
         // NOTE: x10 and urxvt have no way
@@ -1409,7 +1430,7 @@ class Program extends EventEmitter {
         key.button = this._lastButton || 'unknown';
         delete this._lastButton;
       } else {
-        key.action = 'mousedown';
+        key.action = MOUSEDOWN;
         button = b & 3;
         key.button = button === 0 ? 'left' : button === 1 ? 'middle' : button === 2 ? 'right' : 'unknown';
         this._lastButton = key.button;
@@ -1422,15 +1443,15 @@ class Program extends EventEmitter {
       // gnome: 32, 36, 48, 40
       // xterm: 35, _, 51, _
       // urxvt: 35, _, _, _
-      // if (key.action === 'mousedown' && key.button === 'unknown') {
+      // if (key.action === MOUSEDOWN && key.button === 'unknown') {
 
 
       if (b === 35 || b === 39 || b === 51 || b === 43 || this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40)) {
         delete key.button;
-        key.action = 'mousemove';
+        key.action = MOUSEMOVE;
       }
 
-      self.emit('mouse', key);
+      self.emit(MOUSE, key);
       return;
     } // URxvt
 
@@ -1440,7 +1461,7 @@ class Program extends EventEmitter {
       b = +params[0];
       x = +params[1];
       y = +params[2];
-      key.name = 'mouse';
+      key.name = MOUSE;
       key.type = 'urxvt';
       key.raw = [b, x, y, parts[0]];
       key.buf = buf;
@@ -1458,7 +1479,7 @@ class Program extends EventEmitter {
       b -= 32;
 
       if (b >> 6 & 1) {
-        key.action = b & 1 ? 'wheeldown' : 'wheelup';
+        key.action = b & 1 ? WHEELDOWN : WHEELUP;
         key.button = 'middle';
       } else if (b === 3) {
         // NOTE: x10 and urxvt have no way
@@ -1467,7 +1488,7 @@ class Program extends EventEmitter {
         key.button = this._lastButton || 'unknown';
         delete this._lastButton;
       } else {
-        key.action = 'mousedown';
+        key.action = MOUSEDOWN;
         button = b & 3;
         key.button = button === 0 ? 'left' : button === 1 ? 'middle' : button === 2 ? 'right' : 'unknown'; // NOTE: 0/32 = mousemove, 32/64 = mousemove with left down
         // if ((b >> 1) === 32)
@@ -1481,15 +1502,15 @@ class Program extends EventEmitter {
       // none, shift, ctrl, alt
       // urxvt: 35, _, _, _
       // gnome: 32, 36, 48, 40
-      // if (key.action === 'mousedown' && key.button === 'unknown') {
+      // if (key.action === MOUSEDOWN && key.button === 'unknown') {
 
 
       if (b === 35 || b === 39 || b === 51 || b === 43 || this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40)) {
         delete key.button;
-        key.action = 'mousemove';
+        key.action = MOUSEMOVE;
       }
 
-      self.emit('mouse', key);
+      self.emit(MOUSE, key);
       return;
     } // SGR
 
@@ -1500,7 +1521,7 @@ class Program extends EventEmitter {
       b = +params[0];
       x = +params[1];
       y = +params[2];
-      key.name = 'mouse';
+      key.name = MOUSE;
       key.type = 'sgr';
       key.raw = [b, x, y, parts[0]];
       key.buf = buf;
@@ -1513,10 +1534,10 @@ class Program extends EventEmitter {
       key.ctrl = !!(mod >> 2 & 1);
 
       if (b >> 6 & 1) {
-        key.action = b & 1 ? 'wheeldown' : 'wheelup';
+        key.action = b & 1 ? WHEELDOWN : WHEELUP;
         key.button = 'middle';
       } else {
-        key.action = down ? 'mousedown' : 'mouseup';
+        key.action = down ? MOUSEDOWN : 'mouseup';
         button = b & 3;
         key.button = button === 0 ? 'left' : button === 1 ? 'middle' : button === 2 ? 'right' : 'unknown';
       } // Probably a movement.
@@ -1527,15 +1548,15 @@ class Program extends EventEmitter {
       // none, shift, ctrl, alt
       // xterm: 35, _, 51, _
       // gnome: 32, 36, 48, 40
-      // if (key.action === 'mousedown' && key.button === 'unknown') {
+      // if (key.action === MOUSEDOWN && key.button === 'unknown') {
 
 
       if (b === 35 || b === 39 || b === 51 || b === 43 || this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40)) {
         delete key.button;
-        key.action = 'mousemove';
+        key.action = MOUSEMOVE;
       }
 
-      self.emit('mouse', key);
+      self.emit(MOUSE, key);
       return;
     } // DEC
     // The xterm mouse documentation says there is a
@@ -1548,7 +1569,7 @@ class Program extends EventEmitter {
       x = +params[1];
       y = +params[2];
       page = +params[3];
-      key.name = 'mouse';
+      key.name = MOUSE;
       key.type = 'dec';
       key.raw = [b, x, y, parts[0]];
       key.buf = buf;
@@ -1556,9 +1577,9 @@ class Program extends EventEmitter {
       key.y = y;
       key.page = page;
       if (this.zero) key.x--, key.y--;
-      key.action = b === 3 ? 'mouseup' : 'mousedown';
+      key.action = b === 3 ? 'mouseup' : MOUSEDOWN;
       key.button = b === 2 ? 'left' : b === 4 ? 'middle' : b === 6 ? 'right' : 'unknown';
-      self.emit('mouse', key);
+      self.emit(MOUSE, key);
       return;
     } // vt300
 
@@ -1567,22 +1588,22 @@ class Program extends EventEmitter {
       b = +parts[1];
       x = +parts[2];
       y = +parts[3];
-      key.name = 'mouse';
+      key.name = MOUSE;
       key.type = 'vt300';
       key.raw = [b, x, y, parts[0]];
       key.buf = buf;
       key.x = x;
       key.y = y;
       if (this.zero) key.x--, key.y--;
-      key.action = 'mousedown';
+      key.action = MOUSEDOWN;
       key.button = b === 1 ? 'left' : b === 2 ? 'middle' : b === 5 ? 'right' : 'unknown';
-      self.emit('mouse', key);
+      self.emit(MOUSE, key);
       return;
     }
 
     if (parts = /^\x1b\[(O|I)/.exec(s)) {
-      key.action = parts[1] === 'I' ? 'focus' : 'blur';
-      self.emit('mouse', key);
+      key.action = parts[1] === 'I' ? FOCUS : BLUR;
+      self.emit(MOUSE, key);
       self.emit(key.action);
     }
   } // gpm support for linux vc
@@ -1592,12 +1613,12 @@ class Program extends EventEmitter {
     const self = this;
     if (this.gpm) return;
     this.gpm = gpmClient();
-    this.gpm.on('btndown', function (btn, modifier, x, y) {
+    this.gpm.on(BTNDOWN, function (btn, modifier, x, y) {
       x--, y--;
       const key = {
-        name: 'mouse',
+        name: MOUSE,
         type: 'GPM',
-        action: 'mousedown',
+        action: MOUSEDOWN,
         button: self.gpm.ButtonName(btn),
         raw: [btn, modifier, x, y],
         x: x,
@@ -1606,12 +1627,12 @@ class Program extends EventEmitter {
         meta: self.gpm.hasMetaKey(modifier),
         ctrl: self.gpm.hasCtrlKey(modifier)
       };
-      self.emit('mouse', key);
+      self.emit(MOUSE, key);
     });
-    this.gpm.on('btnup', function (btn, modifier, x, y) {
+    this.gpm.on(BTNUP, function (btn, modifier, x, y) {
       x--, y--;
       const key = {
-        name: 'mouse',
+        name: MOUSE,
         type: 'GPM',
         action: 'mouseup',
         button: self.gpm.ButtonName(btn),
@@ -1622,14 +1643,14 @@ class Program extends EventEmitter {
         meta: self.gpm.hasMetaKey(modifier),
         ctrl: self.gpm.hasCtrlKey(modifier)
       };
-      self.emit('mouse', key);
+      self.emit(MOUSE, key);
     });
-    this.gpm.on('move', function (btn, modifier, x, y) {
+    this.gpm.on(MOVE, function (btn, modifier, x, y) {
       x--, y--;
       const key = {
-        name: 'mouse',
+        name: MOUSE,
         type: 'GPM',
-        action: 'mousemove',
+        action: MOUSEMOVE,
         button: self.gpm.ButtonName(btn),
         raw: [btn, modifier, x, y],
         x: x,
@@ -1638,14 +1659,14 @@ class Program extends EventEmitter {
         meta: self.gpm.hasMetaKey(modifier),
         ctrl: self.gpm.hasCtrlKey(modifier)
       };
-      self.emit('mouse', key);
+      self.emit(MOUSE, key);
     });
-    this.gpm.on('drag', function (btn, modifier, x, y) {
+    this.gpm.on(DRAG, function (btn, modifier, x, y) {
       x--, y--;
       const key = {
-        name: 'mouse',
+        name: MOUSE,
         type: 'GPM',
-        action: 'mousemove',
+        action: MOUSEMOVE,
         button: self.gpm.ButtonName(btn),
         raw: [btn, modifier, x, y],
         x: x,
@@ -1654,13 +1675,13 @@ class Program extends EventEmitter {
         meta: self.gpm.hasMetaKey(modifier),
         ctrl: self.gpm.hasCtrlKey(modifier)
       };
-      self.emit('mouse', key);
+      self.emit(MOUSE, key);
     });
-    this.gpm.on('mousewheel', function (btn, modifier, x, y, dx, dy) {
+    this.gpm.on(MOUSEWHEEL, function (btn, modifier, x, y, dx, dy) {
       const key = {
-        name: 'mouse',
+        name: MOUSE,
         type: 'GPM',
-        action: dy > 0 ? 'wheelup' : 'wheeldown',
+        action: dy > 0 ? WHEELUP : WHEELDOWN,
         button: self.gpm.ButtonName(btn),
         raw: [btn, modifier, x, y, dx, dy],
         x: x,
@@ -1669,7 +1690,7 @@ class Program extends EventEmitter {
         meta: self.gpm.hasMetaKey(modifier),
         ctrl: self.gpm.hasCtrlKey(modifier)
       };
-      self.emit('mouse', key);
+      self.emit(MOUSE, key);
     });
   }
 
@@ -1686,7 +1707,7 @@ class Program extends EventEmitter {
     this._boundResponse = true;
     const decoder = new StringDecoder('utf8'),
           self = this;
-    this.on('data', function (data) {
+    this.on(DATA$1, function (data) {
       data = decoder.write(data);
       if (!data) return;
 
@@ -1825,7 +1846,7 @@ class Program extends EventEmitter {
 
 
       out.deviceAttributes = out;
-      this.emit('response', out);
+      this.emit(RESPONSE, out);
       this.emit('response ' + out.event, out);
       return;
     } // CSI Ps n  Device Status Report (DSR).
@@ -1855,7 +1876,7 @@ class Program extends EventEmitter {
         out.status = 'OK'; // LEGACY
 
         out.deviceStatus = out.status;
-        this.emit('response', out);
+        this.emit(RESPONSE, out);
         this.emit('response ' + out.event, out);
         return;
       }
@@ -1865,7 +1886,7 @@ class Program extends EventEmitter {
         out.status = parts[2] === '10' ? 'ready' : 'not ready'; // LEGACY
 
         out.printerStatus = out.status;
-        this.emit('response', out);
+        this.emit(RESPONSE, out);
         this.emit('response ' + out.event, out);
         return;
       }
@@ -1875,7 +1896,7 @@ class Program extends EventEmitter {
         out.status = parts[2] === '20' ? 'unlocked' : 'locked'; // LEGACY
 
         out.UDKStatus = out.status;
-        this.emit('response', out);
+        this.emit(RESPONSE, out);
         this.emit('response ' + out.event, out);
         return;
       }
@@ -1885,7 +1906,7 @@ class Program extends EventEmitter {
         out.status = 'OK'; // LEGACY
 
         out.keyboardStatus = out.status;
-        this.emit('response', out);
+        this.emit(RESPONSE, out);
         this.emit('response ' + out.event, out);
         return;
       }
@@ -1895,7 +1916,7 @@ class Program extends EventEmitter {
         out.status = parts[2] === '53' ? 'available' : 'unavailable'; // LEGACY
 
         out.locator = out.status;
-        this.emit('response', out);
+        this.emit(RESPONSE, out);
         this.emit('response ' + out.event, out);
         return;
       }
@@ -1904,7 +1925,7 @@ class Program extends EventEmitter {
       out.text = 'Unhandled: ' + JSON.stringify(parts); // LEGACY
 
       out.error = out.text;
-      this.emit('response', out);
+      this.emit(RESPONSE, out);
       this.emit('response ' + out.event, out);
       return;
     } // CSI Ps n  Device Status Report (DSR).
@@ -1931,7 +1952,7 @@ class Program extends EventEmitter {
       out.page = out.status.page; // LEGACY
 
       out.cursor = out.status;
-      this.emit('response', out);
+      this.emit(RESPONSE, out);
       this.emit('response ' + out.event, out);
       return;
     } // CSI Ps ; Ps ; Ps t
@@ -1961,7 +1982,7 @@ class Program extends EventEmitter {
         out.state = parts[1] === '1' ? 'non-iconified' : 'iconified'; // LEGACY
 
         out.windowState = out.state;
-        this.emit('response', out);
+        this.emit(RESPONSE, out);
         this.emit('response ' + out.event, out);
         return;
       }
@@ -1976,7 +1997,7 @@ class Program extends EventEmitter {
         out.y = out.position.y; // LEGACY
 
         out.windowPosition = out.position;
-        this.emit('response', out);
+        this.emit(RESPONSE, out);
         this.emit('response ' + out.event, out);
         return;
       }
@@ -1991,7 +2012,7 @@ class Program extends EventEmitter {
         out.width = out.size.width; // LEGACY
 
         out.windowSizePixels = out.size;
-        this.emit('response', out);
+        this.emit(RESPONSE, out);
         this.emit('response ' + out.event, out);
         return;
       }
@@ -2006,7 +2027,7 @@ class Program extends EventEmitter {
         out.width = out.size.width; // LEGACY
 
         out.textAreaSizeCharacters = out.size;
-        this.emit('response', out);
+        this.emit(RESPONSE, out);
         this.emit('response ' + out.event, out);
         return;
       }
@@ -2021,7 +2042,7 @@ class Program extends EventEmitter {
         out.width = out.size.width; // LEGACY
 
         out.screenSizeCharacters = out.size;
-        this.emit('response', out);
+        this.emit(RESPONSE, out);
         this.emit('response ' + out.event, out);
         return;
       }
@@ -2030,7 +2051,7 @@ class Program extends EventEmitter {
       out.text = 'Unhandled: ' + JSON.stringify(parts); // LEGACY
 
       out.error = out.text;
-      this.emit('response', out);
+      this.emit(RESPONSE, out);
       this.emit('response ' + out.event, out);
       return;
     } // rxvt-unicode does not support window manipulation
@@ -2068,7 +2089,7 @@ class Program extends EventEmitter {
         out.text = parts[2]; // LEGACY
 
         out.windowIconLabel = out.text;
-        this.emit('response', out);
+        this.emit(RESPONSE, out);
         this.emit('response ' + out.event, out);
         return;
       }
@@ -2078,7 +2099,7 @@ class Program extends EventEmitter {
         out.text = parts[2]; // LEGACY
 
         out.windowTitle = out.text;
-        this.emit('response', out);
+        this.emit(RESPONSE, out);
         this.emit('response ' + out.event, out);
         return;
       }
@@ -2087,7 +2108,7 @@ class Program extends EventEmitter {
       out.text = 'Unhandled: ' + JSON.stringify(parts); // LEGACY
 
       out.error = out.text;
-      this.emit('response', out);
+      this.emit(RESPONSE, out);
       this.emit('response ' + out.event, out);
       return;
     } // CSI Ps ' |
@@ -2182,7 +2203,7 @@ class Program extends EventEmitter {
       out.page = parts[4]; // LEGACY
 
       out.locatorPosition = out;
-      this.emit('response', out);
+      this.emit(RESPONSE, out);
       this.emit('response ' + out.event, out);
       return;
     } // OSC Ps ; Pt BEL
@@ -2195,7 +2216,7 @@ class Program extends EventEmitter {
       out.code = 'Set Text Parameters';
       out.ps = +s[1];
       out.pt = s[2];
-      this.emit('response', out);
+      this.emit(RESPONSE, out);
       this.emit('response ' + out.event, out);
     }
   }
@@ -2211,7 +2232,7 @@ class Program extends EventEmitter {
 
     if (!callback) callback = () => {};
     this.bindResponse();
-    name = name ? 'response ' + name : 'response';
+    name = name ? 'response ' + name : RESPONSE;
     let onresponse;
     this.once(name, onresponse = function (event) {
       if (timeout) clearTimeout(timeout);

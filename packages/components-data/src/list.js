@@ -6,7 +6,7 @@
 
 import { Box }     from '@pres/components-core'
 import { helpers } from '@pres/util-helpers'
-import { ATTACH, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEWLISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHTEXCEPTION, WARNING, } from '@pres/enum-events'
+import { ATTACH, REMOVE_LISTENER, EVENT, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEW_LISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHT_EXCEPTION, WARNING, ACTION, ADD_ITEM, ADOPT, BTNDOWN, BTNUP, CD, CHECK, COMPLETE, CONNECT, CREATE_ITEM, DBLCLICK, DRAG, INSERT_ITEM, _LOG, MOVE, PARSED_CONTENT, PASSTHROUGH, REFRESH, REMOVE, REMOVE_ITEM, REPARENT, RESPONSE, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS, UNCHECK, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
 
 export class  List extends Box {
   /**
@@ -185,14 +185,14 @@ export class  List extends Box {
         self.childOffset = visible - 1
       }
     })
-    this.on('adopt', function (el) {
+    this.on(ADOPT, function (el) {
       if (!~self.items.indexOf(el)) {
         el.fixed = true
       }
     })
     // Ensure children are removed from the
     // item list if they are items.
-    this.on('remove', function (el) {
+    this.on(REMOVE, function (el) {
       self.removeItem(el)
     })
     this.type = 'list'
@@ -249,8 +249,8 @@ export class  List extends Box {
       item.on(CLICK, function () {
         self.focus()
         if (self.items[self.selected] === item) {
-          self.emit('action', item, self.selected)
-          self.emit('select', item, self.selected)
+          self.emit(ACTION, item, self.selected)
+          self.emit(SELECT, item, self.selected)
           return
         }
         self.select(item)
@@ -258,7 +258,7 @@ export class  List extends Box {
       })
     }
 
-    this.emit('create item')
+    this.emit(CREATE_ITEM)
 
     return item
   }
@@ -281,7 +281,7 @@ export class  List extends Box {
       this.select(0)
     }
 
-    this.emit('add item')
+    this.emit(ADD_ITEM)
 
     return item
   }
@@ -298,7 +298,7 @@ export class  List extends Box {
         this.select(i - 1)
       }
     }
-    this.emit('remove item')
+    this.emit(REMOVE_ITEM)
     return child
   }
   insertItem(child, content) {
@@ -317,7 +317,7 @@ export class  List extends Box {
     if (i === this.selected) {
       this.select(i + 1)
     }
-    this.emit('insert item')
+    this.emit(INSERT_ITEM)
   }
   getItem(child) {
     return this.items[this.getItemIndex(child)]
@@ -366,7 +366,7 @@ export class  List extends Box {
       this.select(Math.min(selected, items.length - 1))
     }
 
-    this.emit('set items')
+    this.emit(SET_ITEMS)
   }
   pushItem(content) {
     this.appendItem(content)
@@ -487,7 +487,7 @@ export class  List extends Box {
     this.scrollTo(this.selected)
 
     // XXX Move `action` and `select` events here.
-    this.emit('select item', this.items[this.selected], this.selected)
+    this.emit(SELECT_ITEM, this.items[this.selected], this.selected)
   }
   move(offset) {
     this.select(this.selected + offset)
@@ -523,7 +523,7 @@ export class  List extends Box {
     this.select(0)
     if (label) this.setLabel(label)
     this.screen.render()
-    this.once('action', function (el, selected) {
+    this.once(ACTION, function (el, selected) {
       if (label) self.removeLabel()
       self.screen.restoreFocus()
       self.hide()
@@ -534,12 +534,12 @@ export class  List extends Box {
   }
   enterSelected(i) {
     if (i != null) this.select(i)
-    this.emit('action', this.items[this.selected], this.selected)
-    this.emit('select', this.items[this.selected], this.selected)
+    this.emit(ACTION, this.items[this.selected], this.selected)
+    this.emit(SELECT, this.items[this.selected], this.selected)
   }
   cancelSelected(i) {
     if (i != null) this.select(i)
-    this.emit('action')
+    this.emit(ACTION)
     this.emit(CANCEL)
   }
 }
