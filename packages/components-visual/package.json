@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-visual",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Core components for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -16,11 +16,11 @@
   },
   "dependencies": {
     "@ject/mixin": "^0.0.11",
-    "@pres/components-core": "^0.0.10",
-    "@pres/enum-events": "^0.0.10",
-    "@pres/enum-font-zhekov": "^0.0.10",
-    "@pres/util-colors": "^0.0.10",
-    "@pres/util-helpers": "^0.0.10"
+    "@pres/components-core": "^0.0.11",
+    "@pres/enum-events": "^0.0.11",
+    "@pres/enum-font-zhekov": "^0.0.11",
+    "@pres/util-colors": "^0.0.11",
+    "@pres/util-helpers": "^0.0.11"
   },
   "repository": {
     "type": "git",
