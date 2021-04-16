@@ -6,6 +6,8 @@
 
 import { EVENT, NEW_LISTENER, REMOVE_LISTENER, } from '@pres/enum-events'
 
+const slice = Array.prototype.slice
+
 export class EventEmitter {
   /**
    * EventEmitter
@@ -14,11 +16,10 @@ export class EventEmitter {
     if (!this._events) this._events = {}
     // console.log('>>> [EventEmitter is constructed]')
   }
-  // static listenerCount
   build() { return new EventEmitter() }
   setMaxListeners(n) { this._maxListeners = n }
-  on(type, listener) { this.addListener(type, listener) }
-  off(type, listener) { this.removeListener(type, listener) }
+  on = this.addListener
+  off = this.removeListener
   addListener(type, listener) {
     if (!this._events[type]) {
       this._events[type] = listener
@@ -105,8 +106,6 @@ export class EventEmitter {
     return true
   }
 }
-
-const slice = Array.prototype.slice
 
 // For hooking into the main EventEmitter if we want to.
 // Might be better to do things this way being that it

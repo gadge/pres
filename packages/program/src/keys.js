@@ -5,7 +5,7 @@
  */
 import { DATA, KEYPRESS, NEW_LISTENER } from '@pres/enum-events'
 import { EventEmitter }                 from '@pres/events'
-import { StringDecoder } from 'string_decoder' // lazy load
+import { StringDecoder }                from 'string_decoder' // lazy load
 
 // NOTE: node <=v0.8.x has no EventEmitter.listenerCount
 

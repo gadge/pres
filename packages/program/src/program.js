@@ -625,7 +625,7 @@ export class Program extends EventEmitter {
   term(is) { return this.terminal.indexOf(is) === 0 }
   listen() {
     const self = this
-    console.log(`>>> [this.input._blessedInput = ${this.input._blessedInput}]`)
+    console.log(`>>> [this.input._presInput = ${this.input._presInput}]`)
     // Potentially reset window title on exit:
     // if (!this.isRxvt) {
     //   if (!this.isVTE) this.setTitleModeFeature(3);
@@ -636,11 +636,11 @@ export class Program extends EventEmitter {
     // }
 
     // Listen for keys/mouse on input
-    if (!this.input._blessedInput) {
-      this.input._blessedInput = 1
+    if (!this.input._presInput) {
+      this.input._presInput = 1
       this._listenInput()
     } else {
-      this.input._blessedInput++
+      this.input._presInput++
     }
 
     this.on(NEW_LISTENER, this._newHandler = function fn(type) {
@@ -661,11 +661,11 @@ export class Program extends EventEmitter {
     })
 
     // Listen for resize on output
-    if (!this.output._blessedOutput) {
-      this.output._blessedOutput = 1
+    if (!this.output._presOutput) {
+      this.output._presOutput = 1
       this._listenOutput()
     } else {
-      this.output._blessedOutput++
+      this.output._presOutput++
     }
   }
   _listenInput() {
@@ -756,9 +756,9 @@ export class Program extends EventEmitter {
         delete Program._exitHandler
         delete Program._bound
       }
-      this.input._blessedInput--
-      this.output._blessedOutput--
-      if (this.input._blessedInput === 0) {
+      this.input._presInput--
+      this.output._presOutput--
+      if (this.input._presInput === 0) {
         this.input.removeListener(KEYPRESS, this.input._keypressHandler)
         this.input.removeListener(DATA, this.input._dataHandler)
         delete this.input._keypressHandler
@@ -769,7 +769,7 @@ export class Program extends EventEmitter {
         }
       }
 
-      if (this.output._blessedOutput === 0) {
+      if (this.output._presOutput === 0) {
         this.output.removeListener(RESIZE, this.output._resizeHandler)
         delete this.output._resizeHandler
       }
