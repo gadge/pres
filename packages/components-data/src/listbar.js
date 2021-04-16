@@ -48,7 +48,7 @@ export class Listbar extends Box {
           self.screen.render()
           // Stop propagation if we're in a form.
           if (key.name === 'tab') return false
-          return
+          return void 0
         }
         if (key.name === 'right'
           || (options.vi && key.name === 'l')
@@ -57,7 +57,7 @@ export class Listbar extends Box {
           self.screen.render()
           // Stop propagation if we're in a form.
           if (key.name === 'tab') return false
-          return
+          return void 0
         }
         if (key.name === 'enter'
           || (options.vi && key.name === 'k' && !key.shift)) {
@@ -68,11 +68,12 @@ export class Listbar extends Box {
             item._.cmd.callback()
           }
           self.screen.render()
-          return
+          return void 0
         }
         if (key.name === 'escape' || (options.vi && key.name === 'q')) {
           self.emit(ACTION)
           self.emit(CANCEL)
+          return void 0
         }
       })
     }
@@ -285,9 +286,10 @@ export class Listbar extends Box {
 
     if (offset < 0) {
       offset = 0
-    } else if (offset >= this.items.length) {
-      offset = this.items.length - 1
-    }
+    } else
+      if (offset >= this.items.length) {
+        offset = this.items.length - 1
+      }
 
     if (!this.parent) {
       this.emit(SELECT_ITEM, this.items[offset], offset)
@@ -327,15 +329,16 @@ export class Listbar extends Box {
       } else {
         this.leftOffset += diff
       }
-    } else if (offset < this.leftBase + this.leftOffset) {
-      diff = -diff
-      if (offset < this.leftBase) {
-        this.leftOffset = 0
-        this.leftBase = offset
-      } else {
-        this.leftOffset -= diff
+    } else
+      if (offset < this.leftBase + this.leftOffset) {
+        diff = -diff
+        if (offset < this.leftBase) {
+          this.leftOffset = 0
+          this.leftBase = offset
+        } else {
+          this.leftOffset -= diff
+        }
       }
-    }
 
     // XXX Move `action` and `select` events here.
     this.emit(SELECT_ITEM, el, offset)

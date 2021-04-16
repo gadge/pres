@@ -30,31 +30,20 @@ export class Loading extends Box {
   }
   load(text) {
     const self = this
-
     // XXX Keep above:
     // var parent = this.parent;
     // this.detach();
     // parent.append(this);
-
     this.show()
     this.setContent(text)
-
-    if (this._.timer) {
-      this.stop()
-    }
-
+    if (this._.timer) this.stop()
     this.screen.lockKeys = true
-
-    this._.timer = setInterval(function () {
-      if (self._.icon.content === '|') {
-        self._.icon.setContent('/')
-      } else if (self._.icon.content === '/') {
-        self._.icon.setContent('-')
-      } else if (self._.icon.content === '-') {
-        self._.icon.setContent('\\')
-      } else if (self._.icon.content === '\\') {
-        self._.icon.setContent('|')
-      }
+    this._.timer = setInterval(() => {
+      const { icon } = self._, { content } = icon
+      if (content === '|') { icon.setContent('/') } else
+        if (content === '/') { icon.setContent('-') } else
+          if (content === '-') { icon.setContent('\\') } else
+            if (content === '\\') { icon.setContent('|') }
       self.screen.render()
     }, 200)
   }
@@ -68,10 +57,4 @@ export class Loading extends Box {
     this.screen.render()
   }
 }
-
-
-/**
- * Expose
- */
-
 

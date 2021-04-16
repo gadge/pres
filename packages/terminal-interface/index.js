@@ -1,5 +1,4 @@
 import * as components from '@pres/components'
-// import { Deco, logger } from '@spare/logger'
 import { Program }     from '@pres/program'
 import { Tput }        from '@pres/terminfo-parser'
 import * as colors     from '@pres/util-colors'
@@ -17,4 +16,3 @@ export class TerminalInterface {
 
 Object.assign(TerminalInterface, components)
 
-// Object.assign({}, TerminalInterface) |> Deco({ depth: 2, vert: 2 }) |> logger

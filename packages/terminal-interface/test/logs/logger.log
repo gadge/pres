@@ -1,0 +1,12 @@
+OUT: >>> [this.input._blessedInput = undefined]\n
+-
+OUT: >>> [Program.prototype._listenInput]\n
+-
+OUT: >>> this.type = screen\n
+-
+OUT: >>> this.type = node\n
+-
+OUT: ^[[?1049h^[[?1h^[=^[[1;24r^[[?25l^[[1;1H^[[H^[[2J^[[?1000h^[[?1002h^[[?1003h^[[?1005h^[7^[[7;1H^[[46C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[8;1H^[[8;47Hx^[[90Cx^[[9;1H^[[9;47Hx^[[90Cx^[[10;1H^[[10;47Hx^[[90Cx^[[11;1H^[[11;47Hx^[[90Cx^[[12;1H^[[12;47Hx^[[90Cx^[[13;1H^[[13;47Hx^[[90Cx^[[14;1H^[[14;47Hx^[[90Cx^[[15;1H^[[15;47Hx^[[90Cx^[[16;1H^[[16;47Hx^[[90Cx^[[17;1H^[[17;47Hx^[[90Cx^[[18;1H^[[18;47Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8^[7^[[10;1H^[[79C^[(0lq^[[1C^[[1;31m^[(BWARNING^[[1C^[[m^[(0qqqqqqqqqqqqqk^[[11;1H^[[11;80Hx^[[23Cx^[[12;1H^[[12;80Hx^[[1C^[[1m^[(BTerminfo parse error.^[[1C^[[m^[(0x^[[13;1H^[[13;80Hx^[[23Cx^[[14;1H^[[14;80Hmqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+-
+OUT: ^[7^[[8;1H^[[47CHello^[[1C^[[38;5;43mworld^[[m:^[[1C^[[1mknk1c16g^[[m.^[8^[[?1l^[>^[[?12l^[[?25h^[[H^[[2J^[[?1000l^[[?1002l^[[?1003l^[[?1005l^[[?1049l
+-
