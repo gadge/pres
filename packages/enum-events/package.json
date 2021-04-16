@@ -1,7 +1,7 @@
 {
-  "name": "@pres/components-inform",
+  "name": "@pres/enum-events",
   "version": "0.0.7",
-  "description": "Core components for pres",
+  "description": "Events for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "files": [
@@ -14,20 +14,15 @@
     "pub": "npm publish",
     "test": "node -r @babel/register test/test.index.js"
   },
-  "dependencies": {
-    "@pres/components-core": "^0.0.7",
-    "@pres/components-form": "^0.0.7",
-    "@pres/components-text": "^0.0.7"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hoyeungw/pres/components-inform.git"
+    "url": "git+https://github.com/hoyeungw/pres/alias.git"
   },
   "keywords": [
     "pres",
     "process",
     "signal-handler",
-    "components-inform"
+    "alias"
   ],
   "author": {
     "name": "Hoyeung Wong",

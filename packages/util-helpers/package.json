@@ -1,7 +1,7 @@
 {
   "name": "@pres/util-helpers",
   "version": "0.0.7",
-  "description": "Helpers for tui",
+  "description": "Helpers for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "files": [

@@ -4,9 +4,9 @@
  * https://github.com/chjj/blessed
  */
 
-import * as colors            from '@pres/util-colors'
 import { EventEmitter }       from '@pres/events'
 import { Tput }               from '@pres/terminfo-parser'
+import * as colors            from '@pres/util-colors'
 import cp                     from 'child_process'
 import fs                     from 'fs'
 import { StringDecoder }      from 'string_decoder'
@@ -19,7 +19,7 @@ const slice = Array.prototype.slice
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
 export function build(options) {
-  console.log('>>> [about to create tui program]')
+  console.log('>>> [about to create pres program]')
   return new Program(options)
 }
 /**
@@ -31,7 +31,6 @@ export class Program extends EventEmitter {
     super()
     console.log(">>> [Program constructed]")
     const self = this
-
     // if (!(this instanceof Program)) return new Program(options)
     Program.configSingleton(this)
     // EventEmitter.call(this)
@@ -111,7 +110,7 @@ export class Program extends EventEmitter {
     this.listen()
   }
   static build(options) {
-    console.log('>>> [about to create tui program]')
+    console.log('>>> [about to create pres program]')
     return new Program(options)
   }
   static global = null
@@ -156,8 +155,8 @@ export class Program extends EventEmitter {
 
   setupDump() {
     const
-      self = this,
-      write = this.output.write,
+      self    = this,
+      write   = this.output.write,
       decoder = new StringDecoder('utf8')
     function stringify(data) {
       return caret(data
@@ -215,9 +214,9 @@ export class Program extends EventEmitter {
     if (this._tputSetup) return
     this._tputSetup = true
     const
-      self = this,
+      self    = this,
       options = this.options,
-      write = this._write.bind(this)
+      write   = this._write.bind(this)
     const tput = this.tput = new Tput({
       terminal: this.terminal,
       padding: options.padding,
@@ -239,7 +238,7 @@ export class Program extends EventEmitter {
     this.put = function () {
       const
         args = slice.call(arguments),
-        cap = args.shift()
+        cap  = args.shift()
       if (tput[cap])
         return this._write(tput[cap].apply(tput, args))
     }
@@ -482,7 +481,7 @@ export class Program extends EventEmitter {
     this._boundMouse = true
 
     const decoder = new StringDecoder('utf8'),
-      self = this
+          self    = this
 
     this.on('data', function (data) {
       const text = decoder.write(data)
@@ -928,7 +927,7 @@ export class Program extends EventEmitter {
     if (this._boundResponse) return
     this._boundResponse = true
     const decoder = new StringDecoder('utf8'),
-      self = this
+          self    = this
     this.on('data', function (data) {
       data = decoder.write(data)
       if (!data) return
@@ -1769,7 +1768,7 @@ export class Program extends EventEmitter {
    * Esc
    */
 
-// ESC D Index (IND is 0x84).
+  // ESC D Index (IND is 0x84).
   ind = this.index
   index() {
     this.y++
@@ -2055,8 +2054,8 @@ export class Program extends EventEmitter {
    * CSI
    */
 
-// CSI Ps A
-// Cursor Up Ps Times (default = 1) (CUU).
+  // CSI Ps A
+  // Cursor Up Ps Times (default = 1) (CUU).
   cuu = this.cursorUp
   up = this.cursorUp
   cursorUp(param) {
@@ -2305,8 +2304,8 @@ export class Program extends EventEmitter {
   _attr(param, val) {
     const self = this
     let parts,
-      color,
-      m
+        color,
+        m
 
     if (Array.isArray(param)) {
       parts = param
@@ -2318,7 +2317,7 @@ export class Program extends EventEmitter {
 
     if (parts.length > 1) {
       const used = {},
-        out = []
+            out  = []
 
       parts.forEach(function (part) {
         part = self._attr(part, val).slice(2, -1)
@@ -2670,8 +2669,8 @@ export class Program extends EventEmitter {
    * Additions
    */
 
-// CSI Ps @
-// Insert Ps (Blank) Character(s) (default = 1) (ICH).
+  // CSI Ps @
+  // Insert Ps (Blank) Character(s) (default = 1) (ICH).
   ich = this.insertChars
   insertChars(param) {
     this.x += param || 1
@@ -3383,8 +3382,8 @@ export class Program extends EventEmitter {
    * Lesser Used
    */
 
-// CSI Ps I
-//   Cursor Forward Tabulation Ps tab stops (default = 1) (CHT).
+  // CSI Ps I
+  //   Cursor Forward Tabulation Ps tab stops (default = 1) (CHT).
   cht = this.cursorForwardTab
   cursorForwardTab(param) {
     this.x += 8
@@ -4005,9 +4004,9 @@ export class Program extends EventEmitter {
   }
 
   pause(callback) {
-    const self = this,
-      isAlt = this.isAlt,
-      mouseEnabled = this.mouseEnabled
+    const self         = this,
+          isAlt        = this.isAlt,
+          mouseEnabled = this.mouseEnabled
 
     this.lsaveCursor('pause')
     //this.csr(0, screen.height - 1);

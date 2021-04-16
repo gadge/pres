@@ -1,7 +1,7 @@
 {
   "name": "@pres/components-node",
   "version": "0.0.7",
-  "description": "Node component for tui",
+  "description": "Node component for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "files": [

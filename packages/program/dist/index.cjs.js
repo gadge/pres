@@ -752,7 +752,7 @@ function isMouse(s) {
 const slice = Array.prototype.slice;
 const nextTick = global.setImmediate || process.nextTick.bind(process);
 function build(options) {
-  console.log('>>> [about to create tui program]');
+  console.log('>>> [about to create pres program]');
   return new Program(options);
 }
 /**
@@ -944,7 +944,7 @@ class Program extends events.EventEmitter {
   }
 
   static build(options) {
-    console.log('>>> [about to create tui program]');
+    console.log('>>> [about to create pres program]');
     return new Program(options);
   }
 

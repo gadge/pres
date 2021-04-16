@@ -1,7 +1,7 @@
 {
   "name": "@pres/program",
   "version": "0.0.7",
-  "description": "Curses like basic functionality for tui",
+  "description": "Curses like basic functionality for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "files": [

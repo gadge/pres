@@ -31,14 +31,14 @@
   },
   "keywords": [
     "curses",
-    "tui",
+    "pres",
     "tput",
     "terminfo",
     "termcap"
   ],
   "tags": [
     "curses",
-    "tui",
+    "pres",
     "tput",
     "terminfo",
     "termcap"
