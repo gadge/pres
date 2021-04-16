@@ -17,6 +17,7 @@
   "dependencies": {
     "@pres/components-core": "^0.0.8",
     "@pres/components-data": "^0.0.8",
+    "@pres/enum-events": "^0.0.8",
     "@pres/util-helpers": "^0.0.8"
   },
   "repository": {

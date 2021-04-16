@@ -7,7 +7,9 @@
 import { EventEmitter } from '@pres/events'
 import { _Screen }      from './_screen'
 
-export class Node extends EventEmitter {
+import { ATTACH, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEWLISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHTEXCEPTION, WARNING, } from '@pres/enum-events'
+
+export class  Node extends EventEmitter {
   type = 'node'
   /**
    * Node
@@ -85,7 +87,7 @@ export class Node extends EventEmitter {
     (function emit(el) {
       const n = el.detached !== self.detached
       el.detached = self.detached
-      if (n) el.emit('attach')
+      if (n) el.emit(ATTACH)
       el.children.forEach(emit)
     })(element)
 

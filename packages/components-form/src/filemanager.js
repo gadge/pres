@@ -9,7 +9,9 @@ import { helpers } from '@pres/util-helpers'
 import fs          from 'fs'
 import path        from 'path'
 
-export class FileManager extends List {
+import { ATTACH, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEWLISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHTEXCEPTION, WARNING, } from '@pres/enum-events'
+
+export class  FileManager extends List {
   /**
    * FileManager
    */
@@ -139,7 +141,7 @@ export class FileManager extends List {
 
     function resume() {
       self.removeListener('file', onfile)
-      self.removeListener('cancel', oncancel)
+      self.removeListener(CANCEL, oncancel)
       if (hidden) {
         self.hide()
       }
@@ -154,7 +156,7 @@ export class FileManager extends List {
       return callback(null, file)
     })
 
-    this.on('cancel', oncancel = function () {
+    this.on(CANCEL, oncancel = function () {
       resume()
       return callback()
     })

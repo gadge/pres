@@ -25,7 +25,9 @@ export function build(options) {
 /**
  * Program
  */
-export class Program extends EventEmitter {
+import { ATTACH, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEWLISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHTEXCEPTION, WARNING, } from '@pres/enum-events'
+
+export class  Program extends EventEmitter {
   type = 'program'
   constructor(options = {}) {
     super()
@@ -817,7 +819,7 @@ export class Program extends EventEmitter {
     if ((parts = /^\x1b\[(O|I)/.exec(s))) {
       key.action = parts[1] === 'I'
         ? 'focus'
-        : 'blur'
+        : BLUR
       self.emit('mouse', key)
       self.emit(key.action)
     }

@@ -15,7 +15,8 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/components-core": "^0.0.8"
+    "@pres/components-core": "^0.0.8",
+    "@pres/enum-events": "^0.0.8"
   },
   "repository": {
     "type": "git",

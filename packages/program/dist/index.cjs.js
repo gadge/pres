@@ -2,9 +2,9 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-var colors = require('@pres/util-colors');
 var events = require('@pres/events');
 var terminfoParser = require('@pres/terminfo-parser');
+var colors = require('@pres/util-colors');
 var cp = require('child_process');
 var fs = require('fs');
 var string_decoder = require('string_decoder');

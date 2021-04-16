@@ -11,7 +11,9 @@ import { helpers }       from '@pres/util-helpers'
 import { Log }           from '../src/log'
 import { Box }           from './box'
 
-export class Screen extends Node {
+import { ATTACH, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEWLISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHTEXCEPTION, WARNING, } from '@pres/enum-events'
+
+export class  Screen extends Node {
   type = 'screen'
   constructor(options = {}) {
     options.lazy = true
@@ -112,7 +114,7 @@ export class Screen extends Node {
       })(self)
     })
     this.program.on('focus', function () {self.emit('focus')})
-    this.program.on('blur', function () {self.emit('blur')})
+    this.program.on(BLUR, function () {self.emit(BLUR)})
     this.program.on('warning', function (text) {self.emit('warning', text)})
     this.on('newListener', function fn(type) {
       if (type === 'keypress' || type.indexOf('key ') === 0 || type === 'mouse') {
@@ -1483,7 +1485,7 @@ export class Screen extends Node {
     }
 
     if (old) {
-      old.emit('blur')
+      old.emit(BLUR)
     }
   }
 
@@ -1513,7 +1515,7 @@ export class Screen extends Node {
     }
 
     if (old) {
-      old.emit('blur', self)
+      old.emit(BLUR, self)
     }
 
     self.emit('focus', old)

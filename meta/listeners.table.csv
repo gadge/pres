@@ -7,14 +7,14 @@ CLOSE,close
 DATA,data
 DESTROY,destroy
 DETACH,detach
-ELEMENT KEYPRESS,element keypress
-ELEMENT CLICK,element click
-ELEMENT FOCUS,element focus
-ELEMENT WHEELDOWN,element wheeldown
-ELEMENT WHEELUP,element wheelup
-ELEMENT MOUSEOVER,element mouseover
-ELEMENT MOUSEOUT,element mouseout
-ELEMENT MOUSEUP,element mouseup
+ELEMENT_KEYPRESS,element keypress
+ELEMENT_CLICK,element click
+ELEMENT_FOCUS,element focus
+ELEMENT_WHEELDOWN,element wheeldown
+ELEMENT_WHEELUP,element wheelup
+ELEMENT_MOUSEOVER,element mouseover
+ELEMENT_MOUSEOUT,element mouseout
+ELEMENT_MOUSEUP,element mouseup
 ERROR,error
 EXIT,exit
 FILE,file
@@ -28,7 +28,7 @@ MOUSEOVER,mouseover
 MOUSEMOVE,mousemove
 MOUSEOUT,mouseout
 MOUSEWHEEL,mousewheel
-NEWLISTENER,newListener
+NEW_LISTENER,newListener
 ON,on
 PRERENDER,prerender
 PRESS,press
@@ -36,7 +36,7 @@ RENDER,render
 RESET,reset
 RESIZE,resize
 SCROLL,scroll
-SET CONTENT,set content
+SET_CONTENT,set content
 SHOW,show
 SIGINT,SIGINT
 SIGQUIT,SIGQUIT
@@ -44,5 +44,5 @@ SIGTERM,SIGTERM
 SIZE,size
 SUBMIT,submit
 TITLE,title
-UNCAUGHTEXCEPTION,uncaughtException
+UNCAUGHT_EXCEPTION,uncaughtException
 WARNING,warning

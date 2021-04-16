@@ -11,7 +11,9 @@ import { Box, Node } from '@pres/components-core'
 import { List }      from './list'
 import { Table }     from './table'
 
-export class ListTable extends List {
+import { ATTACH, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEWLISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHTEXCEPTION, WARNING, } from '@pres/enum-events'
+
+export class  ListTable extends List {
   /**
    * ListTable
    */
@@ -59,7 +61,7 @@ export class ListTable extends List {
       ? options.pad
       : 2
     this.setData(options.rows || options.data)
-    this.on('attach', function () {
+    this.on(ATTACH, function () {
       self.setData(self.rows)
     })
     this.on('resize', function () {

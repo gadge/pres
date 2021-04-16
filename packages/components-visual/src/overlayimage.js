@@ -8,7 +8,9 @@ import { helpers } from '@pres/util-helpers'
 import cp          from 'child_process'
 import fs          from 'fs'
 
-export class OverlayImage extends Box {
+import { ATTACH, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEWLISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHTEXCEPTION, WARNING, } from '@pres/enum-events'
+
+export class  OverlayImage extends Box {
   /**
    * OverlayImage
    * Good example of w3mimgdisplay commands:
@@ -54,7 +56,7 @@ export class OverlayImage extends Box {
       self.clearImage()
     })
 
-    this.on('attach', function () {
+    this.on(ATTACH, function () {
       if (!self._lastFile) return
       self.setImage(self._lastFile)
     })

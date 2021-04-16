@@ -1,6 +1,6 @@
-import * as colors from '@pres/util-colors';
 import { EventEmitter } from '@pres/events';
 import { Tput } from '@pres/terminfo-parser';
+import * as colors from '@pres/util-colors';
 import cp from 'child_process';
 import fs from 'fs';
 import { StringDecoder } from 'string_decoder';

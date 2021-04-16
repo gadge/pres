@@ -20,7 +20,8 @@
     "@pres/components-form": "^0.0.8",
     "@pres/components-inform": "^0.0.8",
     "@pres/components-text": "^0.0.8",
-    "@pres/components-visual": "^0.0.8"
+    "@pres/components-visual": "^0.0.8",
+    "@pres/enum-events": "^0.0.8"
   },
   "repository": {
     "type": "git",

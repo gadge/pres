@@ -12,7 +12,9 @@ import { Node } from '../core/node'
  */
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
-export class Terminal extends Box {
+import { ATTACH, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEWLISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHTEXCEPTION, WARNING, } from '@pres/enum-events'
+
+export class  Terminal extends Box {
   /**
    * Terminal
    */
@@ -175,7 +177,7 @@ export class Terminal extends Box {
       self.term.focus()
     })
 
-    this.on('blur', function () {
+    this.on(BLUR, function () {
       self.term.blur()
     })
 
