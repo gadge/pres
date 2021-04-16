@@ -9,6 +9,9 @@ import * as unicode$1 from '@pres/util-unicode';
 import assert from 'assert';
 import { Program } from '@pres/program';
 import util from 'util';
+import { spawn } from 'child_process';
+import pty from 'pty.js';
+import term from 'term.js';
 
 class _Scrollable {
   constructor(options = {}) {}
@@ -3424,9 +3427,7 @@ class Screen extends Node {
 
       const screen = this,
             program = screen.program,
-            spawn = require('child_process').spawn,
             mouse = program.mouseEnabled;
-
       let ps;
       options = options || {};
       options.stdio = options.stdio || 'inherit';
@@ -5907,12 +5908,8 @@ class Terminal extends Box {
    */
   constructor(options = {}) {
     options.scrollable = false;
-    super(options);
-
-    if (!(this instanceof Node)) {
-      return new Terminal(options);
-    } // XXX Workaround for all motion
-
+    super(options); // if (!(this instanceof Node)) return new Terminal(options)
+    // XXX Workaround for all motion
 
     if (this.screen.program.tmux && this.screen.program.tmuxVersion >= 2) {
       this.screen.program.enableMouse();
@@ -5984,7 +5981,7 @@ class Terminal extends Box {
     };
     element.parentNode = element;
     element.offsetParent = element;
-    this.term = require('term.js')({
+    this.term = term({
       termName: this.termName,
       cols: this.width - this.iwidth,
       rows: this.height - this.iheight,
@@ -6091,7 +6088,7 @@ class Terminal extends Box {
       return;
     }
 
-    this.pty = require('pty.js').fork(this.shell, this.args, {
+    this.pty = pty.fork(this.shell, this.args, {
       name: this.termName,
       cols: this.width - this.iwidth,
       rows: this.height - this.iheight,

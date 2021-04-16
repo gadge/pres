@@ -11,6 +11,9 @@ var unicode$1 = require('@pres/util-unicode');
 var assert = require('assert');
 var program = require('@pres/program');
 var util = require('util');
+var child_process = require('child_process');
+var pty = require('pty.js');
+var term = require('term.js');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
@@ -40,6 +43,8 @@ var helpers__namespace = /*#__PURE__*/_interopNamespace(helpers);
 var unicode__namespace = /*#__PURE__*/_interopNamespace(unicode$1);
 var assert__default = /*#__PURE__*/_interopDefaultLegacy(assert);
 var util__default = /*#__PURE__*/_interopDefaultLegacy(util);
+var pty__default = /*#__PURE__*/_interopDefaultLegacy(pty);
+var term__default = /*#__PURE__*/_interopDefaultLegacy(term);
 
 class _Scrollable {
   constructor(options = {}) {}
@@ -3455,9 +3460,7 @@ class Screen extends componentsNode.Node {
 
       const screen = this,
             program = screen.program,
-            spawn = require('child_process').spawn,
             mouse = program.mouseEnabled;
-
       let ps;
       options = options || {};
       options.stdio = options.stdio || 'inherit';
@@ -3503,7 +3506,7 @@ class Screen extends componentsNode.Node {
         screen.program.lrestoreCursor('spawn', true);
       };
 
-      ps = spawn(file, args, options);
+      ps = child_process.spawn(file, args, options);
       ps.on(enumEvents.ERROR, resume);
       ps.on(enumEvents.EXIT, resume);
       return ps;
@@ -5938,12 +5941,8 @@ class Terminal extends Box {
    */
   constructor(options = {}) {
     options.scrollable = false;
-    super(options);
-
-    if (!(this instanceof componentsNode.Node)) {
-      return new Terminal(options);
-    } // XXX Workaround for all motion
-
+    super(options); // if (!(this instanceof Node)) return new Terminal(options)
+    // XXX Workaround for all motion
 
     if (this.screen.program.tmux && this.screen.program.tmuxVersion >= 2) {
       this.screen.program.enableMouse();
@@ -6015,7 +6014,7 @@ class Terminal extends Box {
     };
     element.parentNode = element;
     element.offsetParent = element;
-    this.term = require('term.js')({
+    this.term = term__default['default']({
       termName: this.termName,
       cols: this.width - this.iwidth,
       rows: this.height - this.iheight,
@@ -6122,7 +6121,7 @@ class Terminal extends Box {
       return;
     }
 
-    this.pty = require('pty.js').fork(this.shell, this.args, {
+    this.pty = pty__default['default'].fork(this.shell, this.args, {
       name: this.termName,
       cols: this.width - this.iwidth,
       rows: this.height - this.iheight,

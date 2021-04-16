@@ -1,5 +1,5 @@
 import { KEYPRESS, CLICK, PRESS, FOCUS, BLUR, CHECK, UNCHECK, SELECT, ERROR, CD, FILE, REFRESH, CANCEL, ELEMENT_KEYPRESS, SUBMIT, RESET, RESIZE, MOVE, ACTION, MOUSE } from '@pres/enum-events';
-import Node$1, { Box, Node } from '@pres/components-core';
+import { Box, Node } from '@pres/components-core';
 import { List } from '@pres/components-data';
 import { helpers } from '@pres/util-helpers';
 import fs from 'fs';
@@ -1088,11 +1088,7 @@ class Textbox extends Textarea {
    */
   constructor(options = {}) {
     options.scrollable = false;
-    super(options);
-
-    if (!(this instanceof Node$1)) {
-      return new Textbox(options);
-    }
+    super(options); // if (!(this instanceof Node)) { return new Textbox(options) }
 
     this.secret = options.secret;
     this.censor = options.censor;

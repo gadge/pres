@@ -6,6 +6,7 @@ import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import zlib from 'zlib';
+import * as Mixin from '@ject/mixin';
 import { helpers } from '@pres/util-helpers';
 
 /**
@@ -2000,49 +2001,6 @@ class BigText extends Box {
  */
 
 /**
- * image.js - image element for blessed
- * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
- * https://github.com/chjj/blessed
- */
-class Image extends Box {
-  /**
-   * Image
-   */
-  constructor(options = {}) {
-    options.type = options.itype || options.type || 'ansi';
-    super(options); // if (!(this instanceof Node)) { return new Image(options) }
-
-    if (options.type === 'ansi' && this.type !== 'ansiimage') {
-      const ANSIImage = require('./ansiimage');
-
-      Object.getOwnPropertyNames(ANSIImage.prototype).forEach(function (key) {
-        if (key === 'type') return;
-        Object.defineProperty(this, key, Object.getOwnPropertyDescriptor(ANSIImage.prototype, key));
-      }, this);
-      ANSIImage.call(this, options);
-      return this;
-    }
-
-    if (options.type === 'overlay' && this.type !== 'overlayimage') {
-      const OverlayImage = require('./overlayimage');
-
-      Object.getOwnPropertyNames(OverlayImage.prototype).forEach(function (key) {
-        if (key === 'type') return;
-        Object.defineProperty(this, key, Object.getOwnPropertyDescriptor(OverlayImage.prototype, key));
-      }, this);
-      OverlayImage.call(this, options);
-      return this;
-    }
-
-    throw new Error('`type` must either be `ansi` or `overlay`.');
-  }
-
-}
-/**
- * Expose
- */
-
-/**
  * overlayimage.js - w3m image element for blessed
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
@@ -2137,8 +2095,7 @@ class OverlayImage extends Box {
   }
 
   spawn(file, args, opt, callback) {
-    const spawn = require('child_process').spawn;
-
+    const spawn = cp.spawn;
     let ps;
     opt = opt || {};
     ps = spawn(file, args, opt);
@@ -2661,6 +2618,47 @@ class OverlayImage extends Box {
 
 }
 OverlayImage.w3mdisplay = '/usr/lib/w3m/w3mimgdisplay';
+/**
+ * Expose
+ */
+
+/**
+ * image.js - image element for blessed
+ * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
+ * https://github.com/chjj/blessed
+ */
+class Image extends Box {
+  /**
+   * Image
+   */
+  constructor(options = {}) {
+    options.type = options.itype || options.type || 'ansi';
+    super(options); // if (!(this instanceof Node)) { return new Image(options) }
+
+    if (options.type === 'ansi' && this.type !== 'ansiimage') {
+      Object.getOwnPropertyNames(ANSIImage.prototype).forEach(function (key) {
+        if (key === 'type') return;
+        Object.defineProperty(this, key, Object.getOwnPropertyDescriptor(ANSIImage.prototype, key));
+      }, this);
+      Mixin.assign(this, new ANSIImage(options)); // ANSIImage.call(this, options)
+
+      return this;
+    }
+
+    if (options.type === 'overlay' && this.type !== 'overlayimage') {
+      Object.getOwnPropertyNames(OverlayImage.prototype).forEach(function (key) {
+        if (key === 'type') return;
+        Object.defineProperty(this, key, Object.getOwnPropertyDescriptor(OverlayImage.prototype, key));
+      }, this);
+      Mixin.assign(this, new OverlayImage(options)); // OverlayImage.call(this, options)
+
+      return this;
+    }
+
+    throw new Error('`type` must either be `ansi` or `overlay`.');
+  }
+
+}
 /**
  * Expose
  */

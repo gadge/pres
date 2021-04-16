@@ -3,7 +3,7 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 var enumEvents = require('@pres/enum-events');
-var Node = require('@pres/components-core');
+var componentsCore = require('@pres/components-core');
 var componentsData = require('@pres/components-data');
 var utilHelpers = require('@pres/util-helpers');
 var fs = require('fs');
@@ -11,7 +11,6 @@ var path = require('path');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-var Node__default = /*#__PURE__*/_interopDefaultLegacy(Node);
 var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 
@@ -20,7 +19,7 @@ var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-class Input extends Node.Box {
+class Input extends componentsCore.Box {
   constructor(options = {}) {
     super(options);
     this.type = 'input';
@@ -315,7 +314,7 @@ class FileManager extends componentsData.List {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-class Form extends Node.Box {
+class Form extends componentsCore.Box {
   constructor(options = {}) {
     options.ignoreKeys = true;
     super(options);
@@ -796,7 +795,7 @@ class Textarea extends Input {
     this.setEditor = this.readEditor;
     const self = this;
 
-    if (!(this instanceof Node.Node)) {
+    if (!(this instanceof componentsCore.Node)) {
       return new Textarea(options);
     }
 
@@ -1098,11 +1097,7 @@ class Textbox extends Textarea {
    */
   constructor(options = {}) {
     options.scrollable = false;
-    super(options);
-
-    if (!(this instanceof Node__default['default'])) {
-      return new Textbox(options);
-    }
+    super(options); // if (!(this instanceof Node)) { return new Textbox(options) }
 
     this.secret = options.secret;
     this.censor = options.censor;
@@ -1163,7 +1158,7 @@ class Textbox extends Textarea {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-class Prompt extends Node.Box {
+class Prompt extends componentsCore.Box {
   /**
    * Prompt
    */
@@ -1258,7 +1253,7 @@ class Prompt extends Node.Box {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-class Question extends Node.Box {
+class Question extends componentsCore.Box {
   /**
    * Question
    */
@@ -1391,7 +1386,7 @@ class RadioButton extends Checkbox {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-class RadioSet extends Node.Box {
+class RadioSet extends componentsCore.Box {
   /**
    * RadioSet
    */

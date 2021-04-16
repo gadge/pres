@@ -10,6 +10,7 @@ var assert = require('assert');
 var fs = require('fs');
 var path = require('path');
 var zlib = require('zlib');
+var Mixin = require('@ject/mixin');
 var utilHelpers = require('@pres/util-helpers');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
@@ -40,6 +41,7 @@ var assert__default = /*#__PURE__*/_interopDefaultLegacy(assert);
 var fs__default = /*#__PURE__*/_interopDefaultLegacy(fs);
 var path__default = /*#__PURE__*/_interopDefaultLegacy(path);
 var zlib__default = /*#__PURE__*/_interopDefaultLegacy(zlib);
+var Mixin__namespace = /*#__PURE__*/_interopNamespace(Mixin);
 
 /**
  * tng.js - png reader
@@ -2033,49 +2035,6 @@ class BigText extends componentsCore.Box {
  */
 
 /**
- * image.js - image element for blessed
- * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
- * https://github.com/chjj/blessed
- */
-class Image extends componentsCore.Box {
-  /**
-   * Image
-   */
-  constructor(options = {}) {
-    options.type = options.itype || options.type || 'ansi';
-    super(options); // if (!(this instanceof Node)) { return new Image(options) }
-
-    if (options.type === 'ansi' && this.type !== 'ansiimage') {
-      const ANSIImage = require('./ansiimage');
-
-      Object.getOwnPropertyNames(ANSIImage.prototype).forEach(function (key) {
-        if (key === 'type') return;
-        Object.defineProperty(this, key, Object.getOwnPropertyDescriptor(ANSIImage.prototype, key));
-      }, this);
-      ANSIImage.call(this, options);
-      return this;
-    }
-
-    if (options.type === 'overlay' && this.type !== 'overlayimage') {
-      const OverlayImage = require('./overlayimage');
-
-      Object.getOwnPropertyNames(OverlayImage.prototype).forEach(function (key) {
-        if (key === 'type') return;
-        Object.defineProperty(this, key, Object.getOwnPropertyDescriptor(OverlayImage.prototype, key));
-      }, this);
-      OverlayImage.call(this, options);
-      return this;
-    }
-
-    throw new Error('`type` must either be `ansi` or `overlay`.');
-  }
-
-}
-/**
- * Expose
- */
-
-/**
  * overlayimage.js - w3m image element for blessed
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
@@ -2170,8 +2129,7 @@ class OverlayImage extends componentsCore.Box {
   }
 
   spawn(file, args, opt, callback) {
-    const spawn = require('child_process').spawn;
-
+    const spawn = cp__default['default'].spawn;
     let ps;
     opt = opt || {};
     ps = spawn(file, args, opt);
@@ -2694,6 +2652,47 @@ class OverlayImage extends componentsCore.Box {
 
 }
 OverlayImage.w3mdisplay = '/usr/lib/w3m/w3mimgdisplay';
+/**
+ * Expose
+ */
+
+/**
+ * image.js - image element for blessed
+ * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
+ * https://github.com/chjj/blessed
+ */
+class Image extends componentsCore.Box {
+  /**
+   * Image
+   */
+  constructor(options = {}) {
+    options.type = options.itype || options.type || 'ansi';
+    super(options); // if (!(this instanceof Node)) { return new Image(options) }
+
+    if (options.type === 'ansi' && this.type !== 'ansiimage') {
+      Object.getOwnPropertyNames(ANSIImage.prototype).forEach(function (key) {
+        if (key === 'type') return;
+        Object.defineProperty(this, key, Object.getOwnPropertyDescriptor(ANSIImage.prototype, key));
+      }, this);
+      Mixin__namespace.assign(this, new ANSIImage(options)); // ANSIImage.call(this, options)
+
+      return this;
+    }
+
+    if (options.type === 'overlay' && this.type !== 'overlayimage') {
+      Object.getOwnPropertyNames(OverlayImage.prototype).forEach(function (key) {
+        if (key === 'type') return;
+        Object.defineProperty(this, key, Object.getOwnPropertyDescriptor(OverlayImage.prototype, key));
+      }, this);
+      Mixin__namespace.assign(this, new OverlayImage(options)); // OverlayImage.call(this, options)
+
+      return this;
+    }
+
+    throw new Error('`type` must either be `ansi` or `overlay`.');
+  }
+
+}
 /**
  * Expose
  */
