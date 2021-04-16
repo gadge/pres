@@ -14,11 +14,15 @@ export class Node extends EventEmitter {
    */
   constructor(options = {}) {
     super(options)
-    const self = this
     // if (!(this instanceof Node)) return new Node(options)
+    if (!options.lazy) this.setup(options)
+  }
+  setup(options) {
+    const self = this
     this.options = options
     this.screen = this.screen || options.screen
     if (!this.screen) {
+      console.log(`>>> this.type = ${this.type}`)
       if (this.type === 'screen') {
         this.screen = this
       } else if (_Screen.total === 1) {
@@ -46,16 +50,13 @@ export class Node extends EventEmitter {
         throw new Error('No active screen.')
       }
     }
-
     this.parent = options.parent || null
     this.children = []
     this.$ = this._ = this.data = {}
     this.uid = Node.uid++
     this.index = this.index != null ? this.index : -1
-
     if (this.type !== 'screen') { this.detached = true }
     if (this.parent) { this.parent.append(this) }
-
     (options.children ?? []).forEach(this.append.bind(this))
   }
   static uid = 0

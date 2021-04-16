@@ -4,7 +4,7 @@
  * https://github.com/chjj/blessed
  */
 
-const { deco } = require('@spare/logger')
+// const { deco } = require('@spare/logger')
 /**
  * Blessed
  */
@@ -12,8 +12,11 @@ function blessed() { return blessed.program(...arguments) }
 
 blessed.program = blessed.Program = require('./program').build
 blessed.tput = blessed.Tput = require('@pres/terminfo-parser').Tput
-blessed.widget = require('@pres/components') //require('./widget')
-console.log(deco(blessed.widget, { depth: 2 }))
+
+blessed.widget = require('@pres/components')
+// blessed.widget = require('./widget')
+// console.log(deco(blessed.widget, { depth: 2 }))
+
 blessed.colors = require('./tools/colors')
 blessed.unicode = require('./tools/unicode')
 blessed.helpers = require('./tools/helpers')

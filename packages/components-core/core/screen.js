@@ -6,11 +6,15 @@
 
 import { _Screen, Node } from '@pres/components-node'
 import { Program }       from '@pres/program'
+import * as colors       from '@pres/util-colors'
+import { helpers }       from '@pres/util-helpers'
+import { Log }           from '../src/log'
 import { Box }           from './box'
 
 export class Screen extends Node {
   type = 'screen'
   constructor(options = {}) {
+    options.lazy = true
     super(options)
     const self = this
     // if (!(this instanceof Node)) return new Screen(options)
@@ -42,6 +46,7 @@ export class Screen extends Node {
       }
     }
     this.tput = this.program.tput
+    super.setup(options)
     // super(options) // Node.call(this, options)
     this.autoPadding = options.autoPadding !== false
     this.tabc = Array((options.tabSize || 4) + 1).join(' ')
@@ -131,6 +136,7 @@ export class Screen extends Node {
     this.enter()
     this.postEnter()
   }
+
   get title() { return this.program.title }
   set title(title) { return this.program.title = title }
   get terminal() { return this.program.terminal }
@@ -334,9 +340,9 @@ export class Screen extends Node {
       }
 
       let i = 0,
-        el,
-        set,
-        pos
+          el,
+          set,
+          pos
 
       for (; i < self.clickable.length; i++) {
         el = self.clickable[i]
@@ -433,8 +439,8 @@ export class Screen extends Node {
     this.program.on('keypress', function (ch, key) {
       if (self.lockKeys && !~self.ignoreLocked.indexOf(key.full)) { return }
 
-      const focused = self.focused,
-        grabKeys = self.grabKeys
+      const focused  = self.focused,
+            grabKeys = self.grabKeys
 
       if (!grabKeys || ~self.ignoreLocked.indexOf(key.full)) {
         self.emit('keypress', ch, key)
@@ -748,11 +754,11 @@ export class Screen extends Node {
     // }
 
     const yi = pos.yi + el.itop,
-      yl = pos.yl - el.ibottom
+          yl = pos.yl - el.ibottom
     let first,
-      ch,
-      x,
-      y
+        ch,
+        x,
+        y
 
     if (pos.yi < 0) return pos._cleanSides = false
     if (pos.yl > this.height) return pos._cleanSides = false
@@ -789,10 +795,10 @@ export class Screen extends Node {
   _dockBorders() {
     const lines = this.lines
     let stops = this._borderStops,
-      i,
-      y,
-      x,
-      ch
+        i,
+        y,
+        x,
+        ch
 
     // var keys, stop;
     //
@@ -826,7 +832,7 @@ export class Screen extends Node {
   _getAngle(lines, x, y) {
     let angle = 0
     const attr = lines[y][x][0],
-      ch = lines[y][x][1]
+          ch   = lines[y][x][1]
 
     if (lines[y][x - 1] && langles[lines[y][x - 1][1]]) {
       if (!this.options.ignoreDockContrast) {
@@ -880,27 +886,27 @@ export class Screen extends Node {
     // this.emit('predraw');
 
     let x,
-      y,
-      line,
-      out,
-      ch,
-      data,
-      attr,
-      fg,
-      bg,
-      flags
+        y,
+        line,
+        out,
+        ch,
+        data,
+        attr,
+        fg,
+        bg,
+        flags
 
     let main = '',
-      pre,
-      post
+        pre,
+        post
 
     let clr,
-      neq,
-      xx
+        neq,
+        xx
 
     let lx = -1,
-      ly = -1,
-      o
+        ly = -1,
+        o
 
     let acs
 
@@ -1229,10 +1235,10 @@ export class Screen extends Node {
 // Convert an SGR string to our own attribute format.
   attrCode(code, cur, def) {
     let flags = (cur >> 18) & 0x1ff,
-      fg = (cur >> 9) & 0x1ff,
-      bg = cur & 0x1ff,
-      c,
-      i
+        fg    = (cur >> 9) & 0x1ff,
+        bg    = cur & 0x1ff,
+        c,
+        i
 
     code = code.slice(2, -1).split(';')
     if (!code[0]) code[0] = '0'
@@ -1335,9 +1341,9 @@ export class Screen extends Node {
 // Convert our own attribute format to an SGR string.
   codeAttr(code) {
     const flags = (code >> 18) & 0x1ff
-    let fg = (code >> 9) & 0x1ff,
-      bg = code & 0x1ff,
-      out = ''
+    let fg  = (code >> 9) & 0x1ff,
+        bg  = code & 0x1ff,
+        out = ''
 
     // bold
     if (flags & 1) {
@@ -1520,7 +1526,7 @@ export class Screen extends Node {
   fillRegion(attr, ch, xi, xl, yi, yl, override) {
     const lines = this.lines
     let cell,
-      xx
+        xx
 
     if (xi < 0) xi = 0
     if (yi < 0) yi = 0
@@ -1558,10 +1564,10 @@ export class Screen extends Node {
       args = []
     }
 
-    const screen = this,
-      program = screen.program,
-      spawn = require('child_process').spawn,
-      mouse = program.mouseEnabled
+    const screen  = this,
+          program = screen.program,
+          spawn   = require('child_process').spawn,
+          mouse   = program.mouseEnabled
     let ps
 
     options = options || {}
@@ -1647,12 +1653,12 @@ export class Screen extends Node {
 
     options = options || {}
 
-    const self = this,
-      editor = options.editor || process.env.EDITOR || 'vi',
-      name = options.name || process.title || 'blessed',
-      rnd = Math.random().toString(36).split('.').pop(),
-      file = '/tmp/' + name + '.' + rnd,
-      args = [ file ]
+    const self   = this,
+          editor = options.editor || process.env.EDITOR || 'vi',
+          name   = options.name || process.title || 'blessed',
+          rnd    = Math.random().toString(36).split('.').pop(),
+          file   = '/tmp/' + name + '.' + rnd,
+          args   = [ file ]
     let opt
 
     opt = {
@@ -1872,8 +1878,8 @@ export class Screen extends Node {
 
   _cursorAttr(cursor, dattr) {
     let attr = dattr || this.dattr,
-      cattr,
-      ch
+        cattr,
+        ch
 
     if (cursor.shape === 'line') {
       attr &= ~(0x1ff << 9)
@@ -1933,12 +1939,12 @@ export class Screen extends Node {
     if (yi < 0) yi = 0
 
     let x,
-      y,
-      line,
-      out,
-      ch,
-      data,
-      attr
+        y,
+        line,
+        out,
+        ch,
+        data,
+        attr
 
     const sdattr = this.dattr
 

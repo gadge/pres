@@ -43,12 +43,7 @@ import {
 }                from '@pres/components-visual'
 
 export const box = (options) => new Box(options)
-export const element = function (options) {
-  // return options.scrollable && !this._ignore && this.type !== 'scrollable-box'
-  //   ? new ScrollableElement(options)
-  //   :
-    return new Element(options)
-}
+export const element = (options) => new Element(options)
 export const node = (options) => new Node(options)
 export const screen = (options) => new Screen(options)
 export const log = (options) => new Log(options)

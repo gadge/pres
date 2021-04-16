@@ -15,15 +15,20 @@ const GeiaEventEmitter = require('@pres/events').EventEmitter
  * Node
  */
 function Node(options = {}) {
-  const self = this
-  const Screen = require('./screen')
   if (!(this instanceof Node)) return new Node(options)
   assign(this, new GeiaEventEmitter())
   // console.log('>>> [Node created]', this.type)
   // EventEmitter.call(this)
+  this.setup(options)
+}
+
+Node.prototype.setup = function (options) {
+  const self = this
+  const Screen = require('./screen')
   this.options = options
   this.screen = this.screen || options.screen
   if (!this.screen) {
+    console.log(`>>> this.type = ${this.type}`)
     if (this.type === 'screen') {
       this.screen = this
     } else if (Screen.total === 1) {
@@ -62,7 +67,6 @@ function Node(options = {}) {
   if (this.parent) {
     this.parent.append(this)
   }
-
   (options.children || []).forEach(this.append.bind(this))
 }
 

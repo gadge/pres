@@ -357,7 +357,7 @@ Program.prototype.listen = function () {
 }
 
 Program.prototype._listenInput = function () {
-  const keys = require('./keys'),
+  const keys = require('../src/keys'),
     self = this
 
   // Input
@@ -899,7 +899,7 @@ Program.prototype._bindMouse = function (s, buf) {
 // gpm support for linux vc
 Program.prototype.enableGpm = function () {
   const self = this
-  const gpmclient = require('./gpmclient')
+  const gpmclient = require('../src/gpmclient')
 
   if (this.gpm) return
 

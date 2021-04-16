@@ -12,12 +12,7 @@ import { ANSIImage, BigText, Image, OverlayImage, PNG, Video } from '@pres/compo
 export { ANSIImage, BigText, Image, OverlayImage, PNG, Video } from '@pres/components-visual';
 
 const box = options => new Box(options);
-const element = function (options) {
-  // return options.scrollable && !this._ignore && this.type !== 'scrollable-box'
-  //   ? new ScrollableElement(options)
-  //   :
-  return new Element(options);
-};
+const element = options => new Element(options);
 const node = options => new Node(options);
 const screen = options => new Screen(options);
 const log = options => new Log(options);

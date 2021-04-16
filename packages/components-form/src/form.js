@@ -9,11 +9,11 @@
  */
 import { Box } from '@pres/components-core'
 
+/**
+ * Form
+ */
 
 export class Form extends Box {
-  /**
-   * Form
-   */
   constructor(options = {}) {
     options.ignoreKeys = true
     super(options)

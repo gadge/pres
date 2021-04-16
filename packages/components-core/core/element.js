@@ -11,6 +11,7 @@ import * as unicode    from '@pres/util-unicode'
 import assert          from 'assert'
 import { _Scrollable } from '../utils/_Scrollable'
 import { Node }        from './node'
+import {Box}           from './box'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
@@ -1005,7 +1006,7 @@ export class Element extends Node {
   }
   setLabel(options) {
     const self = this
-    const Box = require('./box')
+    // const Box = require('./box')
 
     if (typeof options === 'string') {
       options = { text: options }

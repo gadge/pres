@@ -4,18 +4,11 @@
  * https://github.com/chjj/blessed
  */
 
-/**
- * Modules
- */
 import { Box } from '@pres/components-core'
 
 export class Input extends Box {
-  /**
-   * Input
-   */
   constructor(options = {}) {
     super(options)
-    // if (!(this instanceof Node)) return new Input(options)
     this.type = 'input'
   }
 }

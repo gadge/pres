@@ -10,12 +10,8 @@ import path from 'path';
  * https://github.com/chjj/blessed
  */
 class Input extends Box {
-  /**
-   * Input
-   */
   constructor(options = {}) {
-    super(options); // if (!(this instanceof Node)) return new Input(options)
-
+    super(options);
     this.type = 'input';
   }
 
@@ -308,10 +304,11 @@ class FileManager extends List {
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
+/**
+ * Form
+ */
+
 class Form extends Box {
-  /**
-   * Form
-   */
   constructor(options = {}) {
     options.ignoreKeys = true;
     super(options);

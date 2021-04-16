@@ -1,36 +1,36 @@
-component,group,ancestor,pre-options,pre-target,comment
-box,core,element,0,0,-
-element,core,node,0,1,inject predecessor
-layout,core,element,1,0,-
-line,core,box,1,0,-
-log,core,scrollabletext,0,0,-
-screen,core,node,1,1,-
-scrollablebox,core,box,0,0,-
-scrollabletext,core,scrollablebox,1,0,-
-terminal,core,box,1,0,-
-list,data,box,1,0,-
-listbar,data,box,1,1,author mistake
-listtable,data,list,1,1,temp storage
-table,data,box,1,0,-
-button,form,input,1,0,-
-checkbox,form,input,0,0,-
-filemanager,form,list,1,0,-
-form,form,box,1,0,-
-input,form,box,1,0,-
-prompt,form,box,1,0,-
-question,form,box,1,0,-
-radiobutton,form,checkbox,0,0,-
-radioset,form,box,1,0,-
-textarea,form,input,1,0,-
-textbox,form,textarea,1,0,-
-loading,inform,box,0,0,-
-message,inform,box,1,0,-
-progressbar,inform,input,0,0,-
-node,node,eventemitter,0,0,-
-text,text,element,1,0,-
-ansiimage,visual,box,1,0,-
-bigtext,visual,box,1,1,author mistake
-image,visual,box,1,0,-
-overlayimage,visual,box,0,0,-
-png,visual,box,1,0,-
-video,visual,box,0,0,-
+component,group,ancestor,is-ancestor,pre-options,pre-target,comment
+box,core,element,1,0,0,-
+element,core,node,1,0,1,inject predecessor
+layout,core,element,0,1,0,-
+line,core,box,0,1,0,-
+log,core,scrollabletext,0,0,0,-
+screen,core,node,0,1,1,-
+scrollablebox,core,box,1,0,0,-
+scrollabletext,core,scrollablebox,1,1,0,-
+terminal,core,box,0,1,0,-
+list,data,box,1,1,0,-
+listbar,data,box,0,1,1,author mistake
+listtable,data,list,0,1,1,temp storage
+table,data,box,0,1,0,-
+button,form,input,0,1,0,-
+checkbox,form,input,1,0,0,-
+filemanager,form,list,0,1,0,-
+form,form,box,0,1,0,-
+input,form,box,1,1,0,-
+prompt,form,box,0,1,0,-
+question,form,box,0,1,0,-
+radiobutton,form,checkbox,0,0,0,-
+radioset,form,box,0,1,0,-
+textarea,form,input,1,1,0,-
+textbox,form,textarea,0,1,0,-
+loading,inform,box,0,0,0,-
+message,inform,box,0,1,0,-
+progressbar,inform,input,0,0,0,-
+node,node,eventemitter,1,0,0,-
+text,text,element,0,1,0,-
+ansiimage,visual,box,0,1,0,-
+bigtext,visual,box,0,1,1,author mistake
+image,visual,box,0,1,0,-
+overlayimage,visual,box,0,0,0,-
+png,visual,box,0,1,0,-
+video,visual,box,0,0,0,-
