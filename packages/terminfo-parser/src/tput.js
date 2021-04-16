@@ -1871,7 +1871,7 @@ export class Tput {
       if (~suffix.indexOf('*')) {
         // XXX Disable this for now.
         amount = amount
-        // if (affect = /\x1b\[(\d+)[LM]/.exec(part)) {
+        // if ((affect = /\x1b\[(\d+)[LM]/.exec(part))) {
         //   amount *= +affect[1];
         // }
         // The above is a huge workaround. In reality, we need to compile

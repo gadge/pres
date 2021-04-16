@@ -134,7 +134,7 @@ const slice = Array.prototype.slice
 //     if (!el._events || !el._events[type]) continue;
 //     el._emit.apply(el, args);
 //     if (this._bubbleStopped) return false;
-//   } while (el = el.parent);
+//   } while ((el = el.parent));
 //
 //   return true;
 // };

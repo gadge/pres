@@ -430,7 +430,7 @@ export class Screen extends Node {
     //     if (el.clickable === true && el.options.autoFocus !== false) {
     //       target = el;
     //     }
-    //   } while (el = el.parent);
+    //   } while ((el = el.parent));
     //   if (target) target.focus();
     // });
 
@@ -1485,9 +1485,7 @@ export class Screen extends Node {
   _focus(self, old) {
     // Find a scrollable ancestor if we have one.
     let el = self
-    while (el = el.parent) {
-      if (el.scrollable) break
-    }
+    while ((el = el.parent)) if (el.scrollable) break
 
     // If we're in a scrollable element,
     // automatically scroll to the focused element.

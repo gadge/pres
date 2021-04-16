@@ -1572,7 +1572,7 @@ export class Element extends Node {
     }
 
     // Find a scrollable ancestor if we have one.
-    while (el = el.parent) {
+    while ((el = el.parent)) {
       if (el.scrollable) {
         if (fixed) {
           fixed = false

@@ -163,7 +163,7 @@ export class Node extends EventEmitter {
   forAncestors(iter, s) {
     let el = this
     if (s) iter(this)
-    while (el = el.parent) {
+    while ((el = el.parent)) {
       iter(el)
     }
   }
@@ -222,16 +222,11 @@ export class Node extends EventEmitter {
   }
   hasAncestor(target) {
     let el = this
-    while (el = el.parent) {
-      if (el === target) return true
-    }
+    while ((el = el.parent)) if (el === target) return true
     return false
   }
   get(name, value) {
-    if (this.data.hasOwnProperty(name)) {
-      return this.data[name]
-    }
-    return value
+    return this.data.hasOwnProperty(name) ? this.data[name] : value
   }
   set(name, value) {
     return this.data[name] = value

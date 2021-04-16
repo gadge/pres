@@ -105,7 +105,7 @@ function emitKeys(stream, s) {
 
   let buffer = []
   let match
-  while (match = escapeCodeReAnywhere.exec(s)) {
+  while ((match = escapeCodeReAnywhere.exec(s))) {
     buffer = buffer.concat(s.slice(0, match.index).split(''))
     buffer.push(match[0])
     s = s.slice(match.index + match[0].length)
