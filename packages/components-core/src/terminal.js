@@ -19,8 +19,8 @@ import {
   SCROLL,
   TITLE,
 }              from '@pres/enum-events'
-import pty     from 'pty.js'
-import term    from 'term.js'
+// import pty     from 'pty.js'
+// import term    from 'term.js'
 import { Box } from '../core/box'
 
 /**
@@ -97,7 +97,7 @@ export class Terminal extends Box {
     element.parentNode = element
     element.offsetParent = element
 
-    this.term = term({
+    this.term = require('term.js')({
       termName: this.termName,
       cols: this.width - this.iwidth,
       rows: this.height - this.iheight,
@@ -109,13 +109,9 @@ export class Terminal extends Box {
       screenKeys: this.screenKeys
     })
 
-    this.term.refresh = function () {
-      self.screen.render()
-    }
-
+    this.term.refresh = function () { self.screen.render() }
     this.term.keyDown = function () {}
     this.term.keyPress = function () {}
-
     this.term.open(element)
 
     // Emits key sequences in html-land.
@@ -222,7 +218,7 @@ export class Terminal extends Box {
       return
     }
 
-    this.pty = pty.fork(this.shell, this.args, {
+    this.pty = require('pty.js').fork(this.shell, this.args, {
       name: this.termName,
       cols: this.width - this.iwidth,
       rows: this.height - this.iheight,
