@@ -4,7 +4,6 @@
  * https://github.com/chjj/blessed
  */
 
-import Node         from '@pres/components-core'
 import { Textarea } from './textarea'
 
 export class Textbox extends Textarea {
