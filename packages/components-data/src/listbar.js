@@ -28,7 +28,7 @@ export class  Listbar extends Box {
     if (!this.style.item) this.style.item = {}
     if (options.commands || options.items) this.setItems(options.commands || options.items)
     if (options.keys) {
-      this.on('keypress', function (ch, key) {
+      this.on(KEYPRESS, function (ch, key) {
         if (key.name === 'left'
           || (options.vi && key.name === 'h')
           || (key.shift && key.name === 'tab')) {
@@ -66,7 +66,7 @@ export class  Listbar extends Box {
     }
 
     if (options.autoCommandKeys) {
-      this.onScreenEvent('keypress', function (ch) {
+      this.onScreenEvent(KEYPRESS, function (ch) {
         if (/^[0-9]$/.test(ch)) {
           let i = +ch - 1
           if (!~i) i = 9
@@ -75,7 +75,7 @@ export class  Listbar extends Box {
       })
     }
 
-    this.on('focus', function () {
+    this.on(FOCUS, function () {
       self.select(self.selected)
     })
     this.type = 'listbar'
@@ -235,7 +235,7 @@ export class  Listbar extends Box {
 
     // XXX May be affected by new element.options.mouse option.
     if (this.mouse) {
-      el.on('click', function () {
+      el.on(CLICK, function () {
         self.emit('action', el, self.selected)
         self.emit('select', el, self.selected)
         if (el._.cmd.callback) {

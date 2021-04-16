@@ -33,7 +33,7 @@ export class  FileManager extends List {
         file = path.resolve(self.cwd, value)
       return fs.stat(file, function (err, stat) {
         if (err) {
-          return self.emit('error', err, file)
+          return self.emit(ERROR, err, file)
         }
         self.file = file
         self.value = file
@@ -45,7 +45,7 @@ export class  FileManager extends List {
           }
           self.refresh()
         } else {
-          self.emit('file', file)
+          self.emit(FILE, file)
         }
       })
     })
@@ -72,7 +72,7 @@ export class  FileManager extends List {
 
       if (err) {
         if (callback) return callback(err)
-        return self.emit('error', err, cwd)
+        return self.emit(ERROR, err, cwd)
       }
 
       let dirs = [],
@@ -140,7 +140,7 @@ export class  FileManager extends List {
       oncancel
 
     function resume() {
-      self.removeListener('file', onfile)
+      self.removeListener(FILE, onfile)
       self.removeListener(CANCEL, oncancel)
       if (hidden) {
         self.hide()
@@ -151,7 +151,7 @@ export class  FileManager extends List {
       self.screen.render()
     }
 
-    this.on('file', onfile = function (file) {
+    this.on(FILE, onfile = function (file) {
       resume()
       return callback(null, file)
     })

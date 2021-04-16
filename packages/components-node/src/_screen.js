@@ -35,7 +35,7 @@ export class  _Screen {
         nextTick(() => process.exit(0))
       })
     })
-    process.on('exit', _Screen._exitHandler = () => {
+    process.on(EXIT, _Screen._exitHandler = () => {
       _Screen.instances.slice().forEach(screen => screen.destroy())
     })
   }

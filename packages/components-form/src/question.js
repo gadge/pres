@@ -64,8 +64,8 @@ export class  Question extends Box {
     this.show()
     this.setContent(' ' + text)
 
-    this.onScreenEvent('keypress', press = function (ch, key) {
-      if (key.name === 'mouse') return
+    this.onScreenEvent(KEYPRESS, press = function (ch, key) {
+      if (key.name === MOUSE) return
       if (key.name !== 'enter'
         && key.name !== 'escape'
         && key.name !== 'q'
@@ -90,7 +90,7 @@ export class  Question extends Box {
     function done(err, data) {
       self.hide()
       self.screen.restoreFocus()
-      self.removeScreenEvent('keypress', press)
+      self.removeScreenEvent(KEYPRESS, press)
       self._.okay.removeListener('press', okay)
       self._.cancel.removeListener('press', cancel)
       return callback(err, data)

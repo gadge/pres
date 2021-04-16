@@ -113,19 +113,19 @@ export class  Screen extends Node {
         el.children.forEach(emit)
       })(self)
     })
-    this.program.on('focus', function () {self.emit('focus')})
+    this.program.on(FOCUS, function () {self.emit(FOCUS)})
     this.program.on(BLUR, function () {self.emit(BLUR)})
     this.program.on('warning', function (text) {self.emit('warning', text)})
     this.on('newListener', function fn(type) {
-      if (type === 'keypress' || type.indexOf('key ') === 0 || type === 'mouse') {
-        if (type === 'keypress' || type.indexOf('key ') === 0) self._listenKeys()
-        if (type === 'mouse') self._listenMouse()
+      if (type === KEYPRESS || type.indexOf('key ') === 0 || type === MOUSE) {
+        if (type === KEYPRESS || type.indexOf('key ') === 0) self._listenKeys()
+        if (type === MOUSE) self._listenMouse()
       }
-      if (type === 'mouse'
-        || type === 'click'
+      if (type === MOUSE
+        || type === CLICK
         || type === 'mouseover'
         || type === 'mouseout'
-        || type === 'mousedown'
+        || type === MOUSEDOWN
         || type === 'mouseup'
         || type === 'mousewheel'
         || type === 'wheeldown'
@@ -291,7 +291,7 @@ export class  Screen extends Node {
         process.removeListener('SIGTERM', _Screen._sigtermHandler)
         process.removeListener('SIGINT', _Screen._sigintHandler)
         process.removeListener('SIGQUIT', _Screen._sigquitHandler)
-        process.removeListener('exit', _Screen._exitHandler)
+        process.removeListener(EXIT, _Screen._exitHandler)
         delete _Screen._exceptionHandler
         delete _Screen._sigtermHandler
         delete _Screen._sigintHandler
@@ -300,7 +300,7 @@ export class  Screen extends Node {
         delete _Screen._bound
       }
       this.destroyed = true
-      this.emit('destroy')
+      this.emit(DESTROY)
       this._destroy()
     }
     this.program.destroy()
@@ -333,7 +333,7 @@ export class  Screen extends Node {
       self._needsClickableSort = true
     })
 
-    this.program.on('mouse', function (data) {
+    this.program.on(MOUSE, function (data) {
       if (self.lockKeys) return
 
       if (self._needsClickableSort) {
@@ -361,11 +361,11 @@ export class  Screen extends Node {
 
         if (data.x >= pos.xi && data.x < pos.xl
           && data.y >= pos.yi && data.y < pos.yl) {
-          el.emit('mouse', data)
-          if (data.action === 'mousedown') {
+          el.emit(MOUSE, data)
+          if (data.action === MOUSEDOWN) {
             self.mouseDown = el
           } else if (data.action === 'mouseup') {
-            (self.mouseDown || el).emit('click', data)
+            (self.mouseDown || el).emit(CLICK, data)
             self.mouseDown = null
           } else if (data.action === 'mousemove') {
             if (self.hover && el.index > self.hover.index) {
@@ -387,7 +387,7 @@ export class  Screen extends Node {
 
       // Just mouseover?
       if ((data.action === 'mousemove'
-        || data.action === 'mousedown'
+        || data.action === MOUSEDOWN
         || data.action === 'mouseup')
         && self.hover
         && !set) {
@@ -395,12 +395,12 @@ export class  Screen extends Node {
         self.hover = null
       }
 
-      self.emit('mouse', data)
+      self.emit(MOUSE, data)
       self.emit(data.action, data)
     })
 
     // Autofocus highest element.
-    // this.on('element click', function(el, data) {
+    // this.on(ELEMENT_CLICK, function(el, data) {
     //   var target;
     //   do {
     //     if (el.clickable === true && el.options.autoFocus !== false) {
@@ -411,7 +411,7 @@ export class  Screen extends Node {
     // });
 
     // Autofocus elements with the appropriate option.
-    this.on('element click', function (el) {
+    this.on(ELEMENT_CLICK, function (el) {
       if (el.clickable === true && el.options.autoFocus !== false) {
         el.focus()
       }
@@ -438,14 +438,14 @@ export class  Screen extends Node {
     // After the first keypress emitted, the handler
     // checks to make sure grabKeys, lockKeys, and focused
     // weren't changed, and handles those situations appropriately.
-    this.program.on('keypress', function (ch, key) {
+    this.program.on(KEYPRESS, function (ch, key) {
       if (self.lockKeys && !~self.ignoreLocked.indexOf(key.full)) { return }
 
       const focused  = self.focused,
             grabKeys = self.grabKeys
 
       if (!grabKeys || ~self.ignoreLocked.indexOf(key.full)) {
-        self.emit('keypress', ch, key)
+        self.emit(KEYPRESS, ch, key)
         self.emit('key ' + key.full, ch, key)
       }
 
@@ -453,7 +453,7 @@ export class  Screen extends Node {
       if (self.grabKeys !== grabKeys || self.lockKeys) { return }
 
       if (focused && focused.keyable) {
-        focused.emit('keypress', ch, key)
+        focused.emit(KEYPRESS, ch, key)
         focused.emit('key ' + key.full, ch, key)
       }
     })
@@ -495,7 +495,7 @@ export class  Screen extends Node {
       self.render()
     })
 
-    this.on('element mouseover', function (el, data) {
+    this.on(ELEMENT_MOUSEOVER, function (el, data) {
       if (!el._hoverOptions) return
       self._hoverText.parseTags = el.parseTags
       self._hoverText.setContent(el._hoverOptions.text)
@@ -505,7 +505,7 @@ export class  Screen extends Node {
       self.render()
     })
 
-    this.on('element mouseout', function () {
+    this.on(ELEMENT_MOUSEOUT, function () {
       if (self._hoverText.detached) return
       self._hoverText.detach()
       self.render()
@@ -514,7 +514,7 @@ export class  Screen extends Node {
     // XXX This can cause problems if the
     // terminal does not support allMotion.
     // Workaround: check to see if content is set.
-    this.on('element mouseup', function (el) {
+    this.on(ELEMENT_MOUSEUP, function (el) {
       if (!self._hoverText.getContent()) return
       if (!el._hoverOptions) return
       self.append(self._hoverText)
@@ -1518,7 +1518,7 @@ export class  Screen extends Node {
       old.emit(BLUR, self)
     }
 
-    self.emit('focus', old)
+    self.emit(FOCUS, old)
   }
 
   clearRegion(xi, xl, yi, yl, override) {
@@ -1616,9 +1616,9 @@ export class  Screen extends Node {
 
     ps = spawn(file, args, options)
 
-    ps.on('error', resume)
+    ps.on(ERROR, resume)
 
-    ps.on('exit', resume)
+    ps.on(EXIT, resume)
 
     return ps
   }
@@ -1626,12 +1626,12 @@ export class  Screen extends Node {
   exec(file, args, options, callback) {
     const ps = this.spawn(file, args, options)
 
-    ps.on('error', function (err) {
+    ps.on(ERROR, function (err) {
       if (!callback) return
       return callback(err, false)
     })
 
-    ps.on('exit', function (code) {
+    ps.on(EXIT, function (code) {
       if (!callback) return
       return callback(null, code === 0)
     })
@@ -1714,12 +1714,12 @@ export class  Screen extends Node {
 
     const ps = this.spawn(args[0], args.slice(1), opt)
 
-    ps.on('error', function (err) {
+    ps.on(ERROR, function (err) {
       if (!callback) return
       return callback(err)
     })
 
-    ps.on('exit', function (code) {
+    ps.on(EXIT, function (code) {
       if (!callback) return
       if (code !== 0) return callback(new Error('Exit Code: ' + code))
       return callback(null, code === 0)

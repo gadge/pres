@@ -58,7 +58,7 @@ export class  Video extends Box {
     this.tty = new Terminal(opts)
     process.env.DISPLAY = DISPLAY
 
-    this.on('click', function () {
+    this.on(CLICK, function () {
       self.tty.pty.write('p')
     })
 

@@ -135,7 +135,7 @@ export class  GpmClient extends EventEmitter {
             //send_config(gpm, conf);
           })
         })
-        gpm.on('data', function (packet) {
+        gpm.on(DATA, function (packet) {
           const evnt = parseEvent(packet)
           switch (evnt.type & 15) {
             case GPM_MOVE:
@@ -167,12 +167,12 @@ export class  GpmClient extends EventEmitter {
             case GPM_UP:
               self.emit('btnup', evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
               if (!(evnt.type & GPM_MFLAG)) {
-                self.emit('click', evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
+                self.emit(CLICK, evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
               }
               break
           }
         })
-        gpm.on('error', function () {
+        gpm.on(ERROR, function () {
           self.stop()
         })
       })

@@ -130,7 +130,7 @@ Program.bind = function (program) {
   if (Program._bound) return
   Program._bound = true
 
-  unshiftEvent(process, 'exit', Program._exitHandler = function () {
+  unshiftEvent(process, EXIT, Program._exitHandler = function () {
     Program.instances.forEach(function (program) {
       // Potentially reset window title on exit:
       // if (program._originalTitle) {
@@ -215,7 +215,7 @@ Program.prototype.setupDump = function () {
     })
   }
 
-  this.input.on('data', function (data) {
+  this.input.on(DATA, function (data) {
     self._log('IN', stringify(decoder.write(data)))
   })
 
@@ -331,7 +331,7 @@ Program.prototype.listen = function () {
   }
 
   this.on('newListener', this._newHandler = function fn(type) {
-    if (type === 'keypress' || type === 'mouse') {
+    if (type === KEYPRESS || type === MOUSE) {
       self.removeListener('newListener', fn)
       if (self.input.setRawMode && !self.input.isRaw) {
         self.input.setRawMode(true)
@@ -341,7 +341,7 @@ Program.prototype.listen = function () {
   })
 
   this.on('newListener', function fn(type) {
-    if (type === 'mouse') {
+    if (type === MOUSE) {
       self.removeListener('newListener', fn)
       self.bindMouse()
     }
@@ -361,7 +361,7 @@ Program.prototype._listenInput = function () {
     self = this
 
   // Input
-  this.input.on('keypress', this.input._keypressHandler = function (ch, key) {
+  this.input.on(KEYPRESS, this.input._keypressHandler = function (ch, key) {
     key = key || { ch: ch }
 
     if (key.name === 'undefined'
@@ -380,7 +380,7 @@ Program.prototype._listenInput = function () {
     }
 
     if (key.name === 'return' && key.sequence === '\r') {
-      self.input.emit('keypress', ch, merge({}, key, { name: 'enter' }))
+      self.input.emit(KEYPRESS, ch, merge({}, key, { name: 'enter' }))
     }
 
     const name = (key.ctrl ? 'C-' : '')
@@ -392,15 +392,15 @@ Program.prototype._listenInput = function () {
 
     Program.instances.forEach(function (program) {
       if (program.input !== self.input) return
-      program.emit('keypress', ch, key)
+      program.emit(KEYPRESS, ch, key)
       program.emit('key ' + name, ch, key)
     })
   })
 
-  this.input.on('data', this.input._dataHandler = function (data) {
+  this.input.on(DATA, this.input._dataHandler = function (data) {
     Program.instances.forEach(function (program) {
       if (program.input !== self.input) return
-      program.emit('data', data)
+      program.emit(DATA, data)
     })
   })
 
@@ -459,7 +459,7 @@ Program.prototype.destroy = function () {
     if (Program.total === 0) {
       Program.global = null
 
-      process.removeListener('exit', Program._exitHandler)
+      process.removeListener(EXIT, Program._exitHandler)
       delete Program._exitHandler
 
       delete Program._bound
@@ -469,8 +469,8 @@ Program.prototype.destroy = function () {
     this.output._blessedOutput--
 
     if (this.input._blessedInput === 0) {
-      this.input.removeListener('keypress', this.input._keypressHandler)
-      this.input.removeListener('data', this.input._dataHandler)
+      this.input.removeListener(KEYPRESS, this.input._keypressHandler)
+      this.input.removeListener(DATA, this.input._dataHandler)
       delete this.input._keypressHandler
       delete this.input._dataHandler
 
@@ -493,7 +493,7 @@ Program.prototype.destroy = function () {
     delete this._newHandler
 
     this.destroyed = true
-    this.emit('destroy')
+    this.emit(DESTROY)
   }
 }
 
@@ -545,7 +545,7 @@ Program.prototype.bindMouse = function () {
   const decoder = new StringDecoder('utf8'),
     self = this
 
-  this.on('data', function (data) {
+  this.on(DATA, function (data) {
     const text = decoder.write(data)
     if (!text) return
     self._bindMouse(text, data)
@@ -628,7 +628,7 @@ Program.prototype._bindMouse = function (s, buf) {
     x = parts[1].charCodeAt(1)
     y = parts[1].charCodeAt(2)
 
-    key.name = 'mouse'
+    key.name = MOUSE
     key.type = 'X10'
 
     key.raw = [ b, x, y, parts[0] ]
@@ -658,7 +658,7 @@ Program.prototype._bindMouse = function (s, buf) {
       key.button = this._lastButton || 'unknown'
       delete this._lastButton
     } else {
-      key.action = 'mousedown'
+      key.action = MOUSEDOWN
       button = b & 3
       key.button =
         button === 0 ? 'left'
@@ -677,14 +677,14 @@ Program.prototype._bindMouse = function (s, buf) {
     // gnome: 32, 36, 48, 40
     // xterm: 35, _, 51, _
     // urxvt: 35, _, _, _
-    // if (key.action === 'mousedown' && key.button === 'unknown') {
+    // if (key.action === MOUSEDOWN && key.button === 'unknown') {
     if (b === 35 || b === 39 || b === 51 || b === 43
       || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
       delete key.button
       key.action = 'mousemove'
     }
 
-    self.emit('mouse', key)
+    self.emit(MOUSE, key)
 
     return
   }
@@ -696,7 +696,7 @@ Program.prototype._bindMouse = function (s, buf) {
     x = +params[1]
     y = +params[2]
 
-    key.name = 'mouse'
+    key.name = MOUSE
     key.type = 'urxvt'
 
     key.raw = [ b, x, y, parts[0] ]
@@ -730,7 +730,7 @@ Program.prototype._bindMouse = function (s, buf) {
       key.button = this._lastButton || 'unknown'
       delete this._lastButton
     } else {
-      key.action = 'mousedown'
+      key.action = MOUSEDOWN
       button = b & 3
       key.button =
         button === 0 ? 'left'
@@ -750,14 +750,14 @@ Program.prototype._bindMouse = function (s, buf) {
     // none, shift, ctrl, alt
     // urxvt: 35, _, _, _
     // gnome: 32, 36, 48, 40
-    // if (key.action === 'mousedown' && key.button === 'unknown') {
+    // if (key.action === MOUSEDOWN && key.button === 'unknown') {
     if (b === 35 || b === 39 || b === 51 || b === 43
       || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
       delete key.button
       key.action = 'mousemove'
     }
 
-    self.emit('mouse', key)
+    self.emit(MOUSE, key)
 
     return
   }
@@ -770,7 +770,7 @@ Program.prototype._bindMouse = function (s, buf) {
     x = +params[1]
     y = +params[2]
 
-    key.name = 'mouse'
+    key.name = MOUSE
     key.type = 'sgr'
 
     key.raw = [ b, x, y, parts[0] ]
@@ -790,7 +790,7 @@ Program.prototype._bindMouse = function (s, buf) {
       key.button = 'middle'
     } else {
       key.action = down
-        ? 'mousedown'
+        ? MOUSEDOWN
         : 'mouseup'
       button = b & 3
       key.button =
@@ -808,14 +808,14 @@ Program.prototype._bindMouse = function (s, buf) {
     // none, shift, ctrl, alt
     // xterm: 35, _, 51, _
     // gnome: 32, 36, 48, 40
-    // if (key.action === 'mousedown' && key.button === 'unknown') {
+    // if (key.action === MOUSEDOWN && key.button === 'unknown') {
     if (b === 35 || b === 39 || b === 51 || b === 43
       || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
       delete key.button
       key.action = 'mousemove'
     }
 
-    self.emit('mouse', key)
+    self.emit(MOUSE, key)
 
     return
   }
@@ -830,7 +830,7 @@ Program.prototype._bindMouse = function (s, buf) {
     y = +params[2]
     page = +params[3]
 
-    key.name = 'mouse'
+    key.name = MOUSE
     key.type = 'dec'
 
     key.raw = [ b, x, y, parts[0] ]
@@ -843,7 +843,7 @@ Program.prototype._bindMouse = function (s, buf) {
 
     key.action = b === 3
       ? 'mouseup'
-      : 'mousedown'
+      : MOUSEDOWN
 
     key.button =
       b === 2 ? 'left'
@@ -851,7 +851,7 @@ Program.prototype._bindMouse = function (s, buf) {
         : b === 6 ? 'right'
           : 'unknown'
 
-    self.emit('mouse', key)
+    self.emit(MOUSE, key)
 
     return
   }
@@ -862,7 +862,7 @@ Program.prototype._bindMouse = function (s, buf) {
     x = +parts[2]
     y = +parts[3]
 
-    key.name = 'mouse'
+    key.name = MOUSE
     key.type = 'vt300'
 
     key.raw = [ b, x, y, parts[0] ]
@@ -872,24 +872,24 @@ Program.prototype._bindMouse = function (s, buf) {
 
     if (this.zero) key.x--, key.y--
 
-    key.action = 'mousedown'
+    key.action = MOUSEDOWN
     key.button =
       b === 1 ? 'left'
         : b === 2 ? 'middle'
         : b === 5 ? 'right'
           : 'unknown'
 
-    self.emit('mouse', key)
+    self.emit(MOUSE, key)
 
     return
   }
 
   if (parts = /^\x1b\[(O|I)/.exec(s)) {
     key.action = parts[1] === 'I'
-      ? 'focus'
+      ? FOCUS
       : BLUR
 
-    self.emit('mouse', key)
+    self.emit(MOUSE, key)
     self.emit(key.action)
 
 
@@ -909,9 +909,9 @@ Program.prototype.enableGpm = function () {
     x--, y--
 
     const key = {
-      name: 'mouse',
+      name: MOUSE,
       type: 'GPM',
-      action: 'mousedown',
+      action: MOUSEDOWN,
       button: self.gpm.ButtonName(btn),
       raw: [ btn, modifier, x, y ],
       x: x,
@@ -921,14 +921,14 @@ Program.prototype.enableGpm = function () {
       ctrl: self.gpm.hasCtrlKey(modifier)
     }
 
-    self.emit('mouse', key)
+    self.emit(MOUSE, key)
   })
 
   this.gpm.on('btnup', function (btn, modifier, x, y) {
     x--, y--
 
     const key = {
-      name: 'mouse',
+      name: MOUSE,
       type: 'GPM',
       action: 'mouseup',
       button: self.gpm.ButtonName(btn),
@@ -940,14 +940,14 @@ Program.prototype.enableGpm = function () {
       ctrl: self.gpm.hasCtrlKey(modifier)
     }
 
-    self.emit('mouse', key)
+    self.emit(MOUSE, key)
   })
 
   this.gpm.on('move', function (btn, modifier, x, y) {
     x--, y--
 
     const key = {
-      name: 'mouse',
+      name: MOUSE,
       type: 'GPM',
       action: 'mousemove',
       button: self.gpm.ButtonName(btn),
@@ -959,14 +959,14 @@ Program.prototype.enableGpm = function () {
       ctrl: self.gpm.hasCtrlKey(modifier)
     }
 
-    self.emit('mouse', key)
+    self.emit(MOUSE, key)
   })
 
   this.gpm.on('drag', function (btn, modifier, x, y) {
     x--, y--
 
     const key = {
-      name: 'mouse',
+      name: MOUSE,
       type: 'GPM',
       action: 'mousemove',
       button: self.gpm.ButtonName(btn),
@@ -978,12 +978,12 @@ Program.prototype.enableGpm = function () {
       ctrl: self.gpm.hasCtrlKey(modifier)
     }
 
-    self.emit('mouse', key)
+    self.emit(MOUSE, key)
   })
 
   this.gpm.on('mousewheel', function (btn, modifier, x, y, dx, dy) {
     const key = {
-      name: 'mouse',
+      name: MOUSE,
       type: 'GPM',
       action: dy > 0 ? 'wheelup' : 'wheeldown',
       button: self.gpm.ButtonName(btn),
@@ -995,7 +995,7 @@ Program.prototype.enableGpm = function () {
       ctrl: self.gpm.hasCtrlKey(modifier)
     }
 
-    self.emit('mouse', key)
+    self.emit(MOUSE, key)
   })
 }
 
@@ -1014,7 +1014,7 @@ Program.prototype.bindResponse = function () {
   const decoder = new StringDecoder('utf8'),
     self = this
 
-  this.on('data', function (data) {
+  this.on(DATA, function (data) {
     data = decoder.write(data)
     if (!data) return
     self._bindResponse(data)

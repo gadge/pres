@@ -64,8 +64,8 @@ export class  Message extends Box {
       }
 
       setTimeout(function () {
-        self.onScreenEvent('keypress', function fn(ch, key) {
-          if (key.name === 'mouse') return
+        self.onScreenEvent(KEYPRESS, function fn(ch, key) {
+          if (key.name === MOUSE) return
           if (self.scrollable) {
             if ((key.name === 'up' || (self.options.vi && key.name === 'k'))
               || (key.name === 'down' || (self.options.vi && key.name === 'j'))
@@ -81,14 +81,14 @@ export class  Message extends Box {
           if (self.options.ignoreKeys && ~self.options.ignoreKeys.indexOf(key.name)) {
             return
           }
-          self.removeScreenEvent('keypress', fn)
+          self.removeScreenEvent(KEYPRESS, fn)
           end()
         })
         // XXX May be affected by new element.options.mouse option.
         if (!self.options.mouse) return
-        self.onScreenEvent('mouse', function fn(data) {
+        self.onScreenEvent(MOUSE, function fn(data) {
           if (data.action === 'mousemove') return
-          self.removeScreenEvent('mouse', fn)
+          self.removeScreenEvent(MOUSE, fn)
           end()
         })
       }, 10)

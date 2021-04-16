@@ -118,13 +118,13 @@ export class  Terminal extends Box {
 
     // Incoming keys and mouse inputs.
     // NOTE: Cannot pass mouse events - coordinates will be off!
-    this.screen.program.input.on('data', this._onData = function (data) {
+    this.screen.program.input.on(DATA, this._onData = function (data) {
       if (self.screen.focused === self && !self._isMouse(data)) {
         self.handler(data)
       }
     })
 
-    this.onScreenEvent('mouse', function (data) {
+    this.onScreenEvent(MOUSE, function (data) {
       if (self.screen.focused !== self) return
 
       if (data.x < self.aleft + self.ileft) return
@@ -159,7 +159,7 @@ export class  Terminal extends Box {
           b -= 32
         }
         s = '\x1b[<' + b + ';' + x + ';' + y
-          + (data.action === 'mousedown' ? 'M' : 'm')
+          + (data.action === MOUSEDOWN ? 'M' : 'm')
       } else {
         if (self.screen.program.sgrMouse) {
           b += 32
@@ -173,7 +173,7 @@ export class  Terminal extends Box {
       self.handler(s)
     })
 
-    this.on('focus', function () {
+    this.on(FOCUS, function () {
       self.term.focus()
     })
 
@@ -201,9 +201,9 @@ export class  Terminal extends Box {
       self.term.resize(self.width - self.iwidth, self.height - self.iheight)
     })
 
-    this.on('destroy', function () {
+    this.on(DESTROY, function () {
       self.kill()
-      self.screen.program.input.removeListener('data', self._onData)
+      self.screen.program.input.removeListener(DATA, self._onData)
     })
 
     if (this.handler) {
@@ -233,16 +233,16 @@ export class  Terminal extends Box {
       self.screen.render()
     }
 
-    this.pty.on('data', function (data) {
+    this.pty.on(DATA, function (data) {
       self.write(data)
       self.screen.render()
     })
 
-    this.pty.on('exit', function (code) {
-      self.emit('exit', code || null)
+    this.pty.on(EXIT, function (code) {
+      self.emit(EXIT, code || null)
     })
 
-    this.onScreenEvent('keypress', function () {
+    this.onScreenEvent(KEYPRESS, function () {
       self.screen.render()
     })
 

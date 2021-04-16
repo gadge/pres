@@ -72,17 +72,17 @@ export class  List extends Box {
     this.select(0)
     if (options.mouse) {
       this.screen._listenMouse(this)
-      this.on('element wheeldown', function () {
+      this.on(ELEMENT_WHEELDOWN, function () {
         self.select(self.selected + 2)
         self.screen.render()
       })
-      this.on('element wheelup', function () {
+      this.on(ELEMENT_WHEELUP, function () {
         self.select(self.selected - 2)
         self.screen.render()
       })
     }
     if (options.keys) {
-      this.on('keypress', function (ch, key) {
+      this.on(KEYPRESS, function (ch, key) {
         if (key.name === 'up' || (options.vi && key.name === 'k')) {
           self.up()
           self.screen.render()
@@ -246,7 +246,7 @@ export class  List extends Box {
     var item = new Box(options)
 
     if (this.mouse) {
-      item.on('click', function () {
+      item.on(CLICK, function () {
         self.focus()
         if (self.items[self.selected] === item) {
           self.emit('action', item, self.selected)

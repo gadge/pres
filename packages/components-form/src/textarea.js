@@ -26,10 +26,10 @@ export class  Textarea extends Input {
     this.on('resize', this.__updateCursor)
     this.on('move', this.__updateCursor)
     if (options.inputOnFocus) {
-      this.on('focus', this.readInput.bind(this, null))
+      this.on(FOCUS, this.readInput.bind(this, null))
     }
     if (!options.inputOnFocus && options.keys) {
-      this.on('keypress', function (ch, key) {
+      this.on(KEYPRESS, function (ch, key) {
         if (self._reading) return
         if (key.name === 'enter' || (options.vi && key.name === 'i')) {
           return self.readInput()
@@ -40,7 +40,7 @@ export class  Textarea extends Input {
       })
     }
     if (options.mouse) {
-      this.on('click', function (data) {
+      this.on(CLICK, function (data) {
         if (self._reading) return
         if (data.button !== 'right') return
         self.readEditor()
@@ -137,7 +137,7 @@ export class  Textarea extends Input {
       delete self._callback
       delete self._done
 
-      self.removeListener('keypress', self.__listener)
+      self.removeListener(KEYPRESS, self.__listener)
       delete self.__listener
 
       self.removeListener(BLUR, self.__done)
@@ -158,7 +158,7 @@ export class  Textarea extends Input {
       if (err === 'stop') return
 
       if (err) {
-        self.emit('error', err)
+        self.emit(ERROR, err)
       } else if (value != null) {
         self.emit('submit', value)
       } else {
@@ -177,7 +177,7 @@ export class  Textarea extends Input {
     // key event doesn't trigger any keys input.
     nextTick(function () {
       self.__listener = self._listener.bind(self)
-      self.on('keypress', self.__listener)
+      self.on(KEYPRESS, self.__listener)
     })
 
     this.__done = this._done.bind(this, null, null)

@@ -23,25 +23,25 @@ export function emitKeypressEvents(stream) {
   stream._keypressDecoder = new StringDecoder('utf8')
 
   function onData(b) {
-    if (listenerCount(stream, 'keypress') > 0) {
+    if (listenerCount(stream, KEYPRESS) > 0) {
       const r = stream._keypressDecoder.write(b)
       if (r) emitKeys(stream, r)
     } else {
       // Nobody's watching anyway
-      stream.removeListener('data', onData)
+      stream.removeListener(DATA, onData)
       stream.on('newListener', onNewListener)
     }
   }
 
   function onNewListener(event) {
-    if (event === 'keypress') {
-      stream.on('data', onData)
+    if (event === KEYPRESS) {
+      stream.on(DATA, onData)
       stream.removeListener('newListener', onNewListener)
     }
   }
 
-  if (listenerCount(stream, 'keypress') > 0) {
-    stream.on('data', onData)
+  if (listenerCount(stream, KEYPRESS) > 0) {
+    stream.on(DATA, onData)
   } else {
     stream.on('newListener', onNewListener)
   }
@@ -456,14 +456,14 @@ function emitKeys(stream, s) {
     }
 
     if (key || ch) {
-      stream.emit('keypress', ch, key)
+      stream.emit(KEYPRESS, ch, key)
       // if (key && key.name === 'return') {
       //   var nkey = {};
       //   Object.keys(key).forEach(function(k) {
       //     nkey[k] = key[k];
       //   });
       //   nkey.name = 'enter';
-      //   stream.emit('keypress', ch, nkey);
+      //   stream.emit(KEYPRESS, ch, nkey);
       // }
     }
   })

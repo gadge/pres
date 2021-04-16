@@ -23,7 +23,7 @@ export class  Form extends Box {
     // if (!(this instanceof Node)) return new Form(options)
     if (options.keys) {
       this.screen._listenKeys(this)
-      this.on('element keypress', function (el, ch, key) {
+      this.on(ELEMENT_KEYPRESS, function (el, ch, key) {
         if ((key.name === 'tab' && !key.shift)
           || (el.type === 'textbox' && options.autoNext && key.name === 'enter')
           || key.name === 'down'
@@ -32,9 +32,9 @@ export class  Form extends Box {
             if (key.name === 'j') return
             if (key.name === 'tab') {
               // Workaround, since we can't stop the tab from  being added.
-              el.emit('keypress', null, { name: 'backspace' })
+              el.emit(KEYPRESS, null, { name: 'backspace' })
             }
-            el.emit('keypress', '\x1b', { name: 'escape' })
+            el.emit(KEYPRESS, '\x1b', { name: 'escape' })
           }
           self.focusNext()
           return
@@ -45,7 +45,7 @@ export class  Form extends Box {
           || (options.vi && key.name === 'k')) {
           if (el.type === 'textbox' || el.type === 'textarea') {
             if (key.name === 'k') return
-            el.emit('keypress', '\x1b', { name: 'escape' })
+            el.emit(KEYPRESS, '\x1b', { name: 'escape' })
           }
           self.focusPrevious()
           return

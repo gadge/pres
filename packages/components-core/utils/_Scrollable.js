@@ -42,7 +42,7 @@ export class  _Scrollable {
       }
       // Allow controlling of the scrollbar via the mouse:
       if (options.mouse) {
-        this.on('mousedown', function (data) {
+        this.on(MOUSEDOWN, function (data) {
           if (self._scrollingBar) {
             // Do not allow dragging on the scrollbar:
             delete self.screen._dragging
@@ -60,7 +60,7 @@ export class  _Scrollable {
             self.screen.render()
             let smd, smu
             self._scrollingBar = true
-            self.onScreenEvent('mousedown', smd = function (data) {
+            self.onScreenEvent(MOUSEDOWN, smd = function (data) {
               const y = data.y - self.atop
               const perc = y / self.height
               self.setScrollPerc(perc * 100 | 0)
@@ -71,7 +71,7 @@ export class  _Scrollable {
             // occurs.
             self.onScreenEvent('mouseup', smu = function () {
               self._scrollingBar = false
-              self.removeScreenEvent('mousedown', smd)
+              self.removeScreenEvent(MOUSEDOWN, smd)
               self.removeScreenEvent('mouseup', smu)
             })
           }
@@ -89,7 +89,7 @@ export class  _Scrollable {
       })
     }
     if (options.keys && !options.ignoreKeys) {
-      this.on('keypress', function (ch, key) {
+      this.on(KEYPRESS, function (ch, key) {
         if (key.name === 'up' || (options.vi && key.name === 'k')) {
           self.scroll(-1)
           self.screen.render()

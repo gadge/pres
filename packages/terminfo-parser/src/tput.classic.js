@@ -1442,7 +1442,7 @@ Tput.prototype.translateTermcap = function (info) {
 
   this._debug(info);
 
-  [ 'name', 'names', 'desc', 'file', 'termcap' ].forEach(function (key) {
+  [ 'name', 'names', 'desc', FILE, 'termcap' ].forEach(function (key) {
     out[key] = info[key]
   })
 

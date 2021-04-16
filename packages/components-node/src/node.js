@@ -132,7 +132,7 @@ export class  Node extends EventEmitter {
     (function emit(el) {
       const n = el.detached !== true
       el.detached = true
-      if (n) el.emit('detach')
+      if (n) el.emit(DETACH)
       el.children.forEach(emit)
     })(element)
 
@@ -151,7 +151,7 @@ export class  Node extends EventEmitter {
     this.forDescendants(function (el) {
       el.free()
       el.destroyed = true
-      el.emit('destroy')
+      el.emit(DESTROY)
     }, this)
   }
   forDescendants(iter, s) {

@@ -36,7 +36,7 @@ export class  ANSIImage extends Box {
       self.screen.clearRegion(lpos.xi, lpos.xl, lpos.yi, lpos.yl)
     })
 
-    this.on('destroy', function () {
+    this.on(DESTROY, function () {
       self.stop()
     })
     this.type = 'ansiimage'

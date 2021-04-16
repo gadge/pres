@@ -41,7 +41,7 @@ export class  OverlayImage extends Box {
       }
     }
 
-    this.on('hide', function () {
+    this.on(HIDE, function () {
       self._lastFile = self.file
       self.clearImage()
     })
@@ -51,7 +51,7 @@ export class  OverlayImage extends Box {
       self.setImage(self._lastFile)
     })
 
-    this.on('detach', function () {
+    this.on(DETACH, function () {
       self._lastFile = self.file
       self.clearImage()
     })
@@ -111,12 +111,12 @@ export class  OverlayImage extends Box {
     opt = opt || {}
     ps = spawn(file, args, opt)
 
-    ps.on('error', function (err) {
+    ps.on(ERROR, function (err) {
       if (!callback) return
       return callback(err)
     })
 
-    ps.on('exit', function (code) {
+    ps.on(EXIT, function (code) {
       if (!callback) return
       if (code !== 0) return callback(new Error('Exit Code: ' + code))
       return callback(null, code === 0)
@@ -382,16 +382,16 @@ export class  OverlayImage extends Box {
 
     ps.stdout.setEncoding('utf8')
 
-    ps.stdout.on('data', function (data) {
+    ps.stdout.on(DATA, function (data) {
       buf += data
     })
 
-    ps.on('error', function (err) {
+    ps.on(ERROR, function (err) {
       if (!callback) return
       return callback(err)
     })
 
-    ps.on('exit', function () {
+    ps.on(EXIT, function () {
       if (!callback) return
       const size = buf.trim().split(/\s+/)
       return callback(null, {
@@ -435,16 +435,16 @@ export class  OverlayImage extends Box {
 
     ps.stdout.setEncoding('utf8')
 
-    ps.stdout.on('data', function (data) {
+    ps.stdout.on(DATA, function (data) {
       buf += data
     })
 
-    ps.on('error', function (err) {
+    ps.on(ERROR, function (err) {
       if (!callback) return
       return callback(err)
     })
 
-    ps.on('exit', function () {
+    ps.on(EXIT, function () {
       if (!callback) return
 
       if (!buf.trim()) {

@@ -138,21 +138,21 @@ export class  Element extends Node {
       this.setHover(options.hoverText)
     }
 
-    // TODO: Possibly move this to Node for onScreenEvent('mouse', ...).
+    // TODO: Possibly move this to Node for onScreenEvent(MOUSE, ...).
     this.on('newListener', function fn(type) {
       // type = type.split(' ').slice(1).join(' ');
-      if (type === 'mouse'
-        || type === 'click'
+      if (type === MOUSE
+        || type === CLICK
         || type === 'mouseover'
         || type === 'mouseout'
-        || type === 'mousedown'
+        || type === MOUSEDOWN
         || type === 'mouseup'
         || type === 'mousewheel'
         || type === 'wheeldown'
         || type === 'wheelup'
         || type === 'mousemove') {
         self.screen._listenMouse(self)
-      } else if (type === 'keypress' || type.indexOf('key ') === 0) {
+      } else if (type === KEYPRESS || type.indexOf('key ') === 0) {
         self.screen._listenKeys(self)
       }
     })
@@ -165,7 +165,7 @@ export class  Element extends Node {
       self.parseContent()
     })
 
-    this.on('detach', function () {
+    this.on(DETACH, function () {
       delete self.lpos
     })
 
@@ -457,7 +457,7 @@ export class  Element extends Node {
     if (this.hidden) return
     this.clearPos()
     this.hidden = true
-    this.emit('hide')
+    this.emit(HIDE)
     if (this.screen.focused === this) {
       this.screen.rewindFocus()
     }
@@ -902,7 +902,7 @@ export class  Element extends Node {
 
     this.enableMouse()
 
-    this.on('mousedown', this._dragMD = function (data) {
+    this.on(MOUSEDOWN, this._dragMD = function (data) {
       if (self.screen._dragging) return
       if (!verify(data)) return
       self.screen._dragging = self
@@ -913,10 +913,10 @@ export class  Element extends Node {
       self.setFront()
     })
 
-    this.onScreenEvent('mouse', this._dragM = function (data) {
+    this.onScreenEvent(MOUSE, this._dragM = function (data) {
       if (self.screen._dragging !== self) return
 
-      if (data.action !== 'mousedown' && data.action !== 'mousemove') {
+      if (data.action !== MOUSEDOWN && data.action !== 'mousemove') {
         delete self.screen._dragging
         delete self._drag
         return
@@ -959,8 +959,8 @@ export class  Element extends Node {
     if (!this._draggable) return false
     delete this.screen._dragging
     delete this._drag
-    this.removeListener('mousedown', this._dragMD)
-    this.removeScreenEvent('mouse', this._dragM)
+    this.removeListener(MOUSEDOWN, this._dragMD)
+    this.removeScreenEvent(MOUSE, this._dragM)
     return this._draggable = false
   }
   key() {

@@ -23,7 +23,7 @@ export class  Checkbox extends Input {
     this.text = options.content || options.text || ''
     this.checked = this.value = options.checked || false
 
-    this.on('keypress', function (ch, key) {
+    this.on(KEYPRESS, function (ch, key) {
       if (key.name === 'enter' || key.name === 'space') {
         self.toggle()
         self.screen.render()
@@ -31,13 +31,13 @@ export class  Checkbox extends Input {
     })
 
     if (options.mouse) {
-      this.on('click', function () {
+      this.on(CLICK, function () {
         self.toggle()
         self.screen.render()
       })
     }
 
-    this.on('focus', function () {
+    this.on(FOCUS, function () {
       const lpos = self.lpos
       if (!lpos) return
       self.screen.program.lsaveCursor('checkbox')
