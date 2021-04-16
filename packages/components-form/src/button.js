@@ -38,7 +38,7 @@ export class  Button extends Input {
   press() {
     this.focus()
     this.value = true
-    const result = this.emit('press')
+    const result = this.emit(PRESS)
     delete this.value
     return result
   }

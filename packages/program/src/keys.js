@@ -29,21 +29,21 @@ export function emitKeypressEvents(stream) {
     } else {
       // Nobody's watching anyway
       stream.removeListener(DATA, onData)
-      stream.on('newListener', onNewListener)
+      stream.on(NEW_LISTENER, onNewListener)
     }
   }
 
   function onNewListener(event) {
     if (event === KEYPRESS) {
       stream.on(DATA, onData)
-      stream.removeListener('newListener', onNewListener)
+      stream.removeListener(NEW_LISTENER, onNewListener)
     }
   }
 
   if (listenerCount(stream, KEYPRESS) > 0) {
     stream.on(DATA, onData)
   } else {
-    stream.on('newListener', onNewListener)
+    stream.on(NEW_LISTENER, onNewListener)
   }
 }
 

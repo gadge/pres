@@ -29,7 +29,7 @@ export class  ANSIImage extends Box {
       this.setImage(this.options.file)
     }
 
-    this.screen.on('prerender', function () {
+    this.screen.on(PRERENDER, function () {
       const lpos = self.lpos
       if (!lpos) return
       // prevent image from blending with itself if there are alpha channels

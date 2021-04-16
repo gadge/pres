@@ -36,7 +36,7 @@ export class  Table extends Box {
       self.setContent('')
       self.setData(self.rows)
     })
-    this.on('resize', function () {
+    this.on(RESIZE, function () {
       self.setContent('')
       self.setData(self.rows)
       self.screen.render()

@@ -123,7 +123,7 @@ export class ProgressBar extends Input {
     this.progress(filled)
   }
   reset() {
-    this.emit('reset')
+    this.emit(RESET)
     this.filled = 0
     this.value = this.filled
   }

@@ -173,7 +173,7 @@ export class  List extends Box {
         }
       })
     }
-    this.on('resize', function () {
+    this.on(RESIZE, function () {
       const visible = self.height - self.iheight
       // if (self.selected < visible - 1) {
       if (visible >= self.selected + 1) {

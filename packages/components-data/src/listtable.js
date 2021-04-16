@@ -50,7 +50,7 @@ export class  ListTable extends List {
       style: options.style.header,
       tags: options.parseTags || options.tags
     })
-    this.on('scroll', function () {
+    this.on(SCROLL, function () {
       self._header.setFront()
       self._header.rtop = self.childBase
       if (!self.screen.autoPadding) {
@@ -64,7 +64,7 @@ export class  ListTable extends List {
     this.on(ATTACH, function () {
       self.setData(self.rows)
     })
-    this.on('resize', function () {
+    this.on(RESIZE, function () {
       const selected = self.selected
       self.setData(self.rows)
       self.select(selected)

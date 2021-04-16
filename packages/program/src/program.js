@@ -295,9 +295,9 @@ export class  Program extends EventEmitter {
       this.input._blessedInput++
     }
 
-    this.on('newListener', this._newHandler = function fn(type) {
+    this.on(NEW_LISTENER, this._newHandler = function fn(type) {
       if (type === KEYPRESS || type === MOUSE) {
-        self.removeListener('newListener', fn)
+        self.removeListener(NEW_LISTENER, fn)
         if (self.input.setRawMode && !self.input.isRaw) {
           self.input.setRawMode(true)
           self.input.resume()
@@ -305,9 +305,9 @@ export class  Program extends EventEmitter {
       }
     })
 
-    this.on('newListener', function fn(type) {
+    this.on(NEW_LISTENER, function fn(type) {
       if (type === MOUSE) {
-        self.removeListener('newListener', fn)
+        self.removeListener(NEW_LISTENER, fn)
         self.bindMouse()
       }
     })
@@ -376,10 +376,10 @@ export class  Program extends EventEmitter {
         if (program.output !== self.output) return
         program.cols = program.output.columns
         program.rows = program.output.rows
-        program.emit('resize')
+        program.emit(RESIZE)
       })
     }
-    this.output.on('resize', this.output._resizeHandler = function () {
+    this.output.on(RESIZE, this.output._resizeHandler = function () {
       Program.instances.forEach(function (program) {
         if (program.output !== self.output) return
         if (!program.options.resizeTimeout) {
@@ -425,11 +425,11 @@ export class  Program extends EventEmitter {
       }
 
       if (this.output._blessedOutput === 0) {
-        this.output.removeListener('resize', this.output._resizeHandler)
+        this.output.removeListener(RESIZE, this.output._resizeHandler)
         delete this.output._resizeHandler
       }
 
-      this.removeListener('newListener', this._newHandler)
+      this.removeListener(NEW_LISTENER, this._newHandler)
       delete this._newHandler
 
       this.destroyed = true
@@ -626,7 +626,7 @@ export class  Program extends EventEmitter {
         || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))
       ) {
         delete key.button
-        key.action = 'mousemove'
+        key.action = MOUSEMOVE
       }
       self.emit(MOUSE, key)
       return
@@ -692,7 +692,7 @@ export class  Program extends EventEmitter {
       if (b === 35 || b === 39 || b === 51 || b === 43
         || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
         delete key.button
-        key.action = 'mousemove'
+        key.action = MOUSEMOVE
       }
       self.emit(MOUSE, key)
       return
@@ -747,7 +747,7 @@ export class  Program extends EventEmitter {
       if (b === 35 || b === 39 || b === 51 || b === 43
         || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
         delete key.button
-        key.action = 'mousemove'
+        key.action = MOUSEMOVE
       }
 
       self.emit(MOUSE, key)
@@ -871,7 +871,7 @@ export class  Program extends EventEmitter {
       const key = {
         name: MOUSE,
         type: 'GPM',
-        action: 'mousemove',
+        action: MOUSEMOVE,
         button: self.gpm.ButtonName(btn),
         raw: [ btn, modifier, x, y ],
         x: x,
@@ -888,7 +888,7 @@ export class  Program extends EventEmitter {
       const key = {
         name: MOUSE,
         type: 'GPM',
-        action: 'mousemove',
+        action: MOUSEMOVE,
         button: self.gpm.ButtonName(btn),
         raw: [ btn, modifier, x, y ],
         x: x,
@@ -900,7 +900,7 @@ export class  Program extends EventEmitter {
       self.emit(MOUSE, key)
     })
 
-    this.gpm.on('mousewheel', function (btn, modifier, x, y, dx, dy) {
+    this.gpm.on(MOUSEWHEEL, function (btn, modifier, x, y, dx, dy) {
       const key = {
         name: MOUSE,
         type: 'GPM',

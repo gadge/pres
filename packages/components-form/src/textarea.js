@@ -23,7 +23,7 @@ export class  Textarea extends Input {
     this.screen._listenKeys(this)
     this.value = options.value || ''
     this.__updateCursor = this._updateCursor.bind(this)
-    this.on('resize', this.__updateCursor)
+    this.on(RESIZE, this.__updateCursor)
     this.on('move', this.__updateCursor)
     if (options.inputOnFocus) {
       this.on(FOCUS, this.readInput.bind(this, null))

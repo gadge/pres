@@ -27,7 +27,7 @@ export class  EventEmitter {
     } else {
       this._events[type].push(listener)
     }
-    this._emit('newListener', [ type, listener ])
+    this._emit(NEW_LISTENER, [ type, listener ])
   }
   removeListener(type, listener) {
     const handler = this._events[type]

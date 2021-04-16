@@ -11,6 +11,8 @@ import cp                from 'child_process'
 import fs                from 'fs'
 import { StringDecoder } from 'string_decoder'
 import util              from 'util'
+import { ATTACH, BLUR, CANCEL, CLICK, CLOSE, DATA, DESTROY, DETACH, ELEMENT_KEYPRESS, ELEMENT_CLICK, ELEMENT_FOCUS, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, FILE, FOCUS, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEOVER, MOUSEMOVE, MOUSEOUT, MOUSEWHEEL, NEWLISTENER, ON, PRERENDER, PRESS, RENDER, RESET, RESIZE, SCROLL, SET_CONTENT, SHOW, SIGINT, SIGQUIT, SIGTERM, SIZE, SUBMIT, TITLE, UNCAUGHTEXCEPTION, WARNING, } from '@pres/enum-events'
+
 
 const
   slice = Array.prototype.slice
@@ -330,9 +332,9 @@ Program.prototype.listen = function () {
     this.input._blessedInput++
   }
 
-  this.on('newListener', this._newHandler = function fn(type) {
+  this.on(NEW_LISTENER, this._newHandler = function fn(type) {
     if (type === KEYPRESS || type === MOUSE) {
-      self.removeListener('newListener', fn)
+      self.removeListener(NEW_LISTENER, fn)
       if (self.input.setRawMode && !self.input.isRaw) {
         self.input.setRawMode(true)
         self.input.resume()
@@ -340,9 +342,9 @@ Program.prototype.listen = function () {
     }
   })
 
-  this.on('newListener', function fn(type) {
+  this.on(NEW_LISTENER, function fn(type) {
     if (type === MOUSE) {
-      self.removeListener('newListener', fn)
+      self.removeListener(NEW_LISTENER, fn)
       self.bindMouse()
     }
   })
@@ -422,11 +424,11 @@ Program.prototype._listenOutput = function () {
       if (program.output !== self.output) return
       program.cols = program.output.columns
       program.rows = program.output.rows
-      program.emit('resize')
+      program.emit(RESIZE)
     })
   }
 
-  this.output.on('resize', this.output._resizeHandler = function () {
+  this.output.on(RESIZE, this.output._resizeHandler = function () {
     Program.instances.forEach(function (program) {
       if (program.output !== self.output) return
       if (!program.options.resizeTimeout) {
@@ -485,11 +487,11 @@ Program.prototype.destroy = function () {
     }
 
     if (this.output._blessedOutput === 0) {
-      this.output.removeListener('resize', this.output._resizeHandler)
+      this.output.removeListener(RESIZE, this.output._resizeHandler)
       delete this.output._resizeHandler
     }
 
-    this.removeListener('newListener', this._newHandler)
+    this.removeListener(NEW_LISTENER, this._newHandler)
     delete this._newHandler
 
     this.destroyed = true
@@ -681,7 +683,7 @@ Program.prototype._bindMouse = function (s, buf) {
     if (b === 35 || b === 39 || b === 51 || b === 43
       || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
       delete key.button
-      key.action = 'mousemove'
+      key.action = MOUSEMOVE
     }
 
     self.emit(MOUSE, key)
@@ -754,7 +756,7 @@ Program.prototype._bindMouse = function (s, buf) {
     if (b === 35 || b === 39 || b === 51 || b === 43
       || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
       delete key.button
-      key.action = 'mousemove'
+      key.action = MOUSEMOVE
     }
 
     self.emit(MOUSE, key)
@@ -812,7 +814,7 @@ Program.prototype._bindMouse = function (s, buf) {
     if (b === 35 || b === 39 || b === 51 || b === 43
       || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
       delete key.button
-      key.action = 'mousemove'
+      key.action = MOUSEMOVE
     }
 
     self.emit(MOUSE, key)
@@ -949,7 +951,7 @@ Program.prototype.enableGpm = function () {
     const key = {
       name: MOUSE,
       type: 'GPM',
-      action: 'mousemove',
+      action: MOUSEMOVE,
       button: self.gpm.ButtonName(btn),
       raw: [ btn, modifier, x, y ],
       x: x,
@@ -968,7 +970,7 @@ Program.prototype.enableGpm = function () {
     const key = {
       name: MOUSE,
       type: 'GPM',
-      action: 'mousemove',
+      action: MOUSEMOVE,
       button: self.gpm.ButtonName(btn),
       raw: [ btn, modifier, x, y ],
       x: x,
@@ -981,7 +983,7 @@ Program.prototype.enableGpm = function () {
     self.emit(MOUSE, key)
   })
 
-  this.gpm.on('mousewheel', function (btn, modifier, x, y, dx, dy) {
+  this.gpm.on(MOUSEWHEEL, function (btn, modifier, x, y, dx, dy) {
     const key = {
       name: MOUSE,
       type: 'GPM',

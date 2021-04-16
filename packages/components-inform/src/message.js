@@ -87,7 +87,7 @@ export class  Message extends Box {
         // XXX May be affected by new element.options.mouse option.
         if (!self.options.mouse) return
         self.onScreenEvent(MOUSE, function fn(data) {
-          if (data.action === 'mousemove') return
+          if (data.action === MOUSEMOVE) return
           self.removeScreenEvent(MOUSE, fn)
           end()
         })

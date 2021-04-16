@@ -61,12 +61,12 @@ export class  OverlayImage extends Box {
       self.setImage(self._lastFile)
     })
 
-    this.onScreenEvent('resize', function () {
+    this.onScreenEvent(RESIZE, function () {
       self._needsRatio = true
     })
 
     // Get images to overlap properly. Maybe not worth it:
-    // this.onScreenEvent('render', function() {
+    // this.onScreenEvent(RENDER, function() {
     //   self.screen.program.flush();
     //   if (!self._noImage) return;
     //   function display(el, next) {
@@ -92,7 +92,7 @@ export class  OverlayImage extends Box {
     //   recurse(self.screen);
     // });
 
-    this.onScreenEvent('render', function () {
+    this.onScreenEvent(RENDER, function () {
       self.screen.program.flush()
       if (!self._noImage) {
         self.setImage(self.file)

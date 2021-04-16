@@ -191,13 +191,13 @@ export class  Terminal extends Box {
       self.screen.program._owrite(data)
     })
 
-    this.on('resize', function () {
+    this.on(RESIZE, function () {
       nextTick(function () {
         self.term.resize(self.width - self.iwidth, self.height - self.iheight)
       })
     })
 
-    this.once('render', function () {
+    this.once(RENDER, function () {
       self.term.resize(self.width - self.iwidth, self.height - self.iheight)
     })
 
@@ -218,7 +218,7 @@ export class  Terminal extends Box {
       env: this.options.env || process.env
     })
 
-    this.on('resize', function () {
+    this.on(RESIZE, function () {
       nextTick(function () {
         try {
           self.pty.resize(self.width - self.iwidth, self.height - self.iheight)
@@ -336,19 +336,19 @@ export class  Terminal extends Box {
   }
   scrollTo(offset) {
     this.term.ydisp = offset
-    return this.emit('scroll')
+    return this.emit(SCROLL)
   }
   getScroll() {
     return this.term.ydisp
   }
   scroll(offset) {
     this.term.scrollDisp(offset)
-    return this.emit('scroll')
+    return this.emit(SCROLL)
   }
   resetScroll() {
     this.term.ydisp = 0
     this.term.ybase = 0
-    return this.emit('scroll')
+    return this.emit(SCROLL)
   }
   getScrollHeight() {
     return this.term.rows - 1

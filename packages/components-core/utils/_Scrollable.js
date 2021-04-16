@@ -224,7 +224,7 @@ export class  _Scrollable {
     // content and descendant elements.
     // Scroll the content if necessary.
     if (this.childBase === base) {
-      return this.emit('scroll')
+      return this.emit(SCROLL)
     }
 
     // When scrolling text, we want to be able to handle SGR codes as well as line
@@ -267,7 +267,7 @@ export class  _Scrollable {
       }
     }
 
-    return this.emit('scroll')
+    return this.emit(SCROLL)
   }
   _recalculateIndex() {
     let max, emax
@@ -293,7 +293,7 @@ export class  _Scrollable {
     if (!this.scrollable) return
     this.childOffset = 0
     this.childBase = 0
-    return this.emit('scroll')
+    return this.emit(SCROLL)
   }
   getScrollHeight() {
     return Math.max(this._clines.length, this._scrollBottom())

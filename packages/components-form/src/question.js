@@ -76,11 +76,11 @@ export class  Question extends Box {
       done(null, key.name === 'enter' || key.name === 'y')
     })
 
-    this._.okay.on('press', okay = function () {
+    this._.okay.on(PRESS, okay = function () {
       done(null, true)
     })
 
-    this._.cancel.on('press', cancel = function () {
+    this._.cancel.on(PRESS, cancel = function () {
       done(null, false)
     })
 
@@ -91,8 +91,8 @@ export class  Question extends Box {
       self.hide()
       self.screen.restoreFocus()
       self.removeScreenEvent(KEYPRESS, press)
-      self._.okay.removeListener('press', okay)
-      self._.cancel.removeListener('press', cancel)
+      self._.okay.removeListener(PRESS, okay)
+      self._.cancel.removeListener(PRESS, cancel)
       return callback(err, data)
     }
 

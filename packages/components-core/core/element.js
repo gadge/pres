@@ -139,25 +139,25 @@ export class  Element extends Node {
     }
 
     // TODO: Possibly move this to Node for onScreenEvent(MOUSE, ...).
-    this.on('newListener', function fn(type) {
+    this.on(NEW_LISTENER, function fn(type) {
       // type = type.split(' ').slice(1).join(' ');
       if (type === MOUSE
         || type === CLICK
-        || type === 'mouseover'
-        || type === 'mouseout'
+        || type === MOUSEOVER
+        || type === MOUSEOUT
         || type === MOUSEDOWN
         || type === 'mouseup'
-        || type === 'mousewheel'
+        || type === MOUSEWHEEL
         || type === 'wheeldown'
         || type === 'wheelup'
-        || type === 'mousemove') {
+        || type === MOUSEMOVE) {
         self.screen._listenMouse(self)
       } else if (type === KEYPRESS || type.indexOf('key ') === 0) {
         self.screen._listenKeys(self)
       }
     })
 
-    this.on('resize', function () {
+    this.on(RESIZE, function () {
       self.parseContent()
     })
 
@@ -247,14 +247,14 @@ export class  Element extends Node {
   set width(val) {
     if (this.position.width === val) return
     if (/^\d+$/.test(val)) val = +val
-    this.emit('resize')
+    this.emit(RESIZE)
     this.clearPos()
     return this.position.width = val
   }
   set height(val) {
     if (this.position.height === val) return
     if (/^\d+$/.test(val)) val = +val
-    this.emit('resize')
+    this.emit(RESIZE)
     this.clearPos()
     return this.position.height = val
   }
@@ -916,7 +916,7 @@ export class  Element extends Node {
     this.onScreenEvent(MOUSE, this._dragM = function (data) {
       if (self.screen._dragging !== self) return
 
-      if (data.action !== MOUSEDOWN && data.action !== 'mousemove') {
+      if (data.action !== MOUSEDOWN && data.action !== MOUSEMOVE) {
         delete self.screen._dragging
         delete self._drag
         return
@@ -1067,11 +1067,11 @@ export class  Element extends Node {
       self.screen.render()
     }
 
-    this.on('scroll', this._labelScroll = function () {
+    this.on(SCROLL, this._labelScroll = function () {
       reposition()
     })
 
-    this.on('resize', this._labelResize = function () {
+    this.on(RESIZE, this._labelResize = function () {
       nextTick(function () {
         reposition()
       })
@@ -1079,8 +1079,8 @@ export class  Element extends Node {
   }
   removeLabel() {
     if (!this._label) return
-    this.removeListener('scroll', this._labelScroll)
-    this.removeListener('resize', this._labelResize)
+    this.removeListener(SCROLL, this._labelScroll)
+    this.removeListener(RESIZE, this._labelResize)
     this._label.detach()
     delete this._labelScroll
     delete this._labelResize
@@ -1683,7 +1683,7 @@ export class  Element extends Node {
     }
   }
   render() {
-    this._emit('prerender')
+    this._emit(PRERENDER)
 
     this.parseContent()
 
@@ -2186,7 +2186,7 @@ export class  Element extends Node {
       // }
     })
 
-    this._emit('render', [ coords ])
+    this._emit(RENDER, [ coords ])
 
     return coords
   }

@@ -64,7 +64,7 @@ export class  Video extends Box {
 
     // mplayer/mpv cannot resize itself in the terminal, so we have
     // to restart it at the correct start time.
-    this.on('resize', function () {
+    this.on(RESIZE, function () {
       self.tty.destroy()
 
       const opts = {

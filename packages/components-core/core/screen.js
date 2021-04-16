@@ -105,32 +105,32 @@ export class  Screen extends Node {
       _state: 1,
       _hidden: true
     }
-    this.program.on('resize', function () {
+    this.program.on(RESIZE, function () {
       self.alloc()
       self.render();
       (function emit(el) {
-        el.emit('resize')
+        el.emit(RESIZE)
         el.children.forEach(emit)
       })(self)
     })
     this.program.on(FOCUS, function () {self.emit(FOCUS)})
     this.program.on(BLUR, function () {self.emit(BLUR)})
     this.program.on('warning', function (text) {self.emit('warning', text)})
-    this.on('newListener', function fn(type) {
+    this.on(NEW_LISTENER, function fn(type) {
       if (type === KEYPRESS || type.indexOf('key ') === 0 || type === MOUSE) {
         if (type === KEYPRESS || type.indexOf('key ') === 0) self._listenKeys()
         if (type === MOUSE) self._listenMouse()
       }
       if (type === MOUSE
         || type === CLICK
-        || type === 'mouseover'
-        || type === 'mouseout'
+        || type === MOUSEOVER
+        || type === MOUSEOUT
         || type === MOUSEDOWN
         || type === 'mouseup'
-        || type === 'mousewheel'
+        || type === MOUSEWHEEL
         || type === 'wheeldown'
         || type === 'wheelup'
-        || type === 'mousemove') {
+        || type === MOUSEMOVE) {
         self._listenMouse()
       }
     })
@@ -329,7 +329,7 @@ export class  Screen extends Node {
       this.program.setMouse({ sendFocus: true }, true)
     }
 
-    this.on('render', function () {
+    this.on(RENDER, function () {
       self._needsClickableSort = true
     })
 
@@ -367,15 +367,15 @@ export class  Screen extends Node {
           } else if (data.action === 'mouseup') {
             (self.mouseDown || el).emit(CLICK, data)
             self.mouseDown = null
-          } else if (data.action === 'mousemove') {
+          } else if (data.action === MOUSEMOVE) {
             if (self.hover && el.index > self.hover.index) {
               set = false
             }
             if (self.hover !== el && !set) {
               if (self.hover) {
-                self.hover.emit('mouseout', data)
+                self.hover.emit(MOUSEOUT, data)
               }
-              el.emit('mouseover', data)
+              el.emit(MOUSEOVER, data)
               self.hover = el
             }
             set = true
@@ -386,12 +386,12 @@ export class  Screen extends Node {
       }
 
       // Just mouseover?
-      if ((data.action === 'mousemove'
+      if ((data.action === MOUSEMOVE
         || data.action === MOUSEDOWN
         || data.action === 'mouseup')
         && self.hover
         && !set) {
-        self.hover.emit('mouseout', data)
+        self.hover.emit(MOUSEOUT, data)
         self.hover = null
       }
 
@@ -488,7 +488,7 @@ export class  Screen extends Node {
       }
     })
 
-    this.on('mousemove', function (data) {
+    this.on(MOUSEMOVE, function (data) {
       if (self._hoverText.detached) return
       self._hoverText.rleft = data.x + 1
       self._hoverText.rtop = data.y
@@ -554,7 +554,7 @@ export class  Screen extends Node {
 
     if (this.destroyed) return
 
-    this.emit('prerender')
+    this.emit(PRERENDER)
 
     this._borderStops = {}
 
@@ -588,7 +588,7 @@ export class  Screen extends Node {
 
     this.renders++
 
-    this.emit('render')
+    this.emit(RENDER)
   }
 
   blankLine(ch, dirty) {

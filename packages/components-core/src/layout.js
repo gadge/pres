@@ -152,7 +152,7 @@ export class  Layout extends Element {
     }
   }
   render() {
-    this._emit('prerender')
+    this._emit(PRERENDER)
 
     const coords = this._renderCoords()
     if (!coords) {
@@ -204,7 +204,7 @@ export class  Layout extends Element {
       // }
     })
 
-    this._emit('render', [ coords ])
+    this._emit(RENDER, [ coords ])
 
     return coords
   }
