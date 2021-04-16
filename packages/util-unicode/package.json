@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-unicode",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "Unicode for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
