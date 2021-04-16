@@ -68,6 +68,8 @@ export {
   question,
   radiobutton,
   radioset,
+  textbox,
+  textarea,
   loading,
   message,
   progressbar,

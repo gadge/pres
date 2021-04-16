@@ -1,5 +1,5 @@
-import blessed from '../index'
 import fs      from 'fs'
+import blessed from '../index'
 // Screen
 const screen = blessed.screen({
   smartCSR: true,

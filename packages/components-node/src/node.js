@@ -24,33 +24,36 @@ export class Node extends EventEmitter {
     this.options = options
     this.screen = this.screen || options.screen
     if (!this.screen) {
-      console.log(`>>> this.type = ${this.type}`)
+      // console.log(`>>> this.type = ${this.type}`)
       if (this.type === 'screen') {
         this.screen = this
-      } else if (_Screen.total === 1) {
-        this.screen = _Screen.global
-      } else if (options.parent) {
-        this.screen = options.parent
-        while (this.screen && this.screen.type !== 'screen') {
-          this.screen = this.screen.parent
-        }
-      } else if (_Screen.total) {
-        // This _should_ work in most cases as long as the element is appended
-        // synchronously after the screen's creation. Throw error if not.
-        this.screen = _Screen.instances[_Screen.instances.length - 1]
-        process.nextTick(function () {
-          if (!self.parent) {
-            throw new Error('Element (' + self.type + ')'
-              + ' was not appended synchronously after the'
-              + ' screen\'s creation. Please set a `parent`'
-              + ' or `screen` option in the element\'s constructor'
-              + ' if you are going to use multiple screens and'
-              + ' append the element later.')
-          }
-        })
-      } else {
-        throw new Error('No active screen.')
-      }
+      } else
+        if (_Screen.total === 1) {
+          this.screen = _Screen.global
+        } else
+          if (options.parent) {
+            this.screen = options.parent
+            while (this.screen && this.screen.type !== 'screen') {
+              this.screen = this.screen.parent
+            }
+          } else
+            if (_Screen.total) {
+              // This _should_ work in most cases as long as the element is appended
+              // synchronously after the screen's creation. Throw error if not.
+              this.screen = _Screen.instances[_Screen.instances.length - 1]
+              process.nextTick(function () {
+                if (!self.parent) {
+                  throw new Error('Element (' + self.type + ')'
+                    + ' was not appended synchronously after the'
+                    + ' screen\'s creation. Please set a `parent`'
+                    + ' or `screen` option in the element\'s constructor'
+                    + ' if you are going to use multiple screens and'
+                    + ' append the element later.')
+                }
+              })
+            } else {
+              throw new Error('No active screen.')
+            }
     }
     this.parent = options.parent || null
     this.children = []
@@ -74,11 +77,12 @@ export class Node extends EventEmitter {
 
     if (i === 0) {
       this.children.unshift(element)
-    } else if (i === this.children.length) {
-      this.children.push(element)
-    } else {
-      this.children.splice(i, 0, element)
-    }
+    } else
+      if (i === this.children.length) {
+        this.children.push(element)
+      } else {
+        this.children.splice(i, 0, element)
+      }
 
     element.emit(REPARENT, this)
     this.emit(ADOPT, element);
