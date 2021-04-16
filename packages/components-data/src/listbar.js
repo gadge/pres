@@ -91,12 +91,10 @@ export class Listbar extends Box {
       self.select(self.selected)
     })
     this.type = 'listbar'
-    this.add = Listbar.prototype.appendItem
-    this.addItem = Listbar.prototype.appendItem
   }
-  get selected() {
-    return this.leftBase + this.leftOffset
-  }
+  add = this.appendItem
+  addItem = this.appendItem
+  get selected() { return this.leftBase + this.leftOffset }
   setItems(commands) {
     const self = this
 

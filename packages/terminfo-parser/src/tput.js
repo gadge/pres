@@ -684,7 +684,7 @@ export class Tput {
     this.termcapFile = options.termcapFile
 
     if (options.terminal || options.term) this.setup()
-    this._readTermcap = Tput.prototype.readTermcap
+
     // Convert ACS unicode characters to the
     // most similar-looking ascii characters.
     this.utoa = {
@@ -721,6 +721,7 @@ export class Tput {
       '\u00b7': '*'  // '·'
     }
   }
+  _readTermcap = this.readTermcap
 // For xterm, non-extended header:
 // { dataSize: 3270,
 //   headerSize: 12,

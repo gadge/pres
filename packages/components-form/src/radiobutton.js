@@ -33,8 +33,8 @@ export class RadioButton extends Checkbox {
       })
     })
     this.type = 'radio-button'
-    this.toggle = RadioButton.prototype.check
   }
+  toggle = this.check
   render() {
     this.clearPos(true)
     this.setContent('(' + (this.checked ? '*' : ' ') + ') ' + this.text, true)

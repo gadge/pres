@@ -17,8 +17,8 @@ export class Textbox extends Textarea {
     this.secret = options.secret
     this.censor = options.censor
     this.type = 'textbox'
-    this.__olistener = Textbox.prototype._listener
   }
+  __olistener = this._listener
   _listener(ch, key) {
     if (key.name === 'enter') {
       this._done(null, this.value)

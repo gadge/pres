@@ -5,6 +5,7 @@
  */
 
 import { _LOG, SET_CONTENT, } from '@pres/enum-events'
+import { OBJ }                from '@typen/enum-data-types'
 import util                   from 'util'
 import { ScrollableText }     from './scrollabletext'
 
@@ -35,11 +36,10 @@ export class Log extends ScrollableText {
         })
       }
     })
-    this._scroll = Log.prototype.scroll
   }
   add() {
     const args = Array.prototype.slice.call(arguments)
-    if (typeof args[0] === 'object') {
+    if (typeof args[0] === OBJ) {
       args[0] = util.inspect(args[0], true, 20, true)
     }
     const text = util.format.apply(util, args)
@@ -50,6 +50,7 @@ export class Log extends ScrollableText {
     }
     return ret
   }
+  _scroll = this.scroll
   scroll(offset, always) {
     if (offset === 0) return this._scroll(offset, always)
     this._userScrolled = true

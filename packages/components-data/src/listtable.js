@@ -71,10 +71,9 @@ export class ListTable extends List {
       self.screen.render()
     })
     this.type = 'list-table'
-    this._calculateMaxes = Table.prototype._calculateMaxes
-    this.setRows = ListTable.prototype.setData
-    this._select = ListTable.prototype.select
   }
+  _calculateMaxes() { return Table.prototype._calculateMaxes.call(this) }
+  setRows = this.setData
   setData(rows) {
     const self     = this,
           align    = this.__align,
@@ -154,6 +153,7 @@ export class ListTable extends List {
       this.select(Math.min(selected, this.items.length - 1))
     }
   }
+  _select = this.select
   select(i) {
     if (i === 0) {
       i = 1

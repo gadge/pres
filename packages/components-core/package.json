@@ -24,7 +24,8 @@
     "@pres/util-helpers": "^0.0.10",
     "@pres/util-unicode": "^0.0.10",
     "pty.js": "^0.3.1",
-    "term.js": "^0.0.7"
+    "term.js": "^0.0.7",
+    "@typen/enum-data-types": "^0.1.16"
   },
   "repository": {
     "type": "git",

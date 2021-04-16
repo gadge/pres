@@ -38,10 +38,11 @@ import {
 }                  from '@pres/enum-events'
 import { Program } from '@pres/program'
 import * as colors from '@pres/util-colors'
-import { helpers } from '@pres/util-helpers'
-import { Log }     from '../src/log'
+import { helpers }       from '@pres/util-helpers'
+import { FUN, OBJ, STR } from '@typen/enum-data-types'
+import { Log }           from '../src/log'
 import { Box }     from './box'
-import { spawn } from 'child_process'
+import { spawn }   from 'child_process'
 
 export class Screen extends Node {
   type = 'screen'
@@ -1621,7 +1622,7 @@ export class Screen extends Node {
     return ps
   }
   readEditor(options, callback) {
-    if (typeof options === 'string') {
+    if (typeof options === STR) {
       options = { editor: options }
     }
 
@@ -1714,7 +1715,7 @@ export class Screen extends Node {
     const tmp = {}
     if (temp) el[temp] = tmp
 
-    if (typeof el !== 'function') {
+    if (typeof el !== FUN) {
       const _el = el
       el = function () { return _el }
     }
@@ -1723,7 +1724,7 @@ export class Screen extends Node {
       const element = el()
       Object.keys(effects).forEach(function (key) {
         const val = effects[key]
-        if (val !== null && typeof val === 'object') {
+        if (val !== null && typeof val === OBJ) {
           tmp[key] = tmp[key] || {}
           // element.style[key] = element.style[key] || {};
           Object.keys(val).forEach(function (k) {
@@ -1743,7 +1744,7 @@ export class Screen extends Node {
       const element = el()
       Object.keys(effects).forEach(function (key) {
         const val = effects[key]
-        if (val !== null && typeof val === 'object') {
+        if (val !== null && typeof val === OBJ) {
           tmp[key] = tmp[key] || {}
           // element.style[key] = element.style[key] || {};
           Object.keys(val).forEach(function (k) {
@@ -1868,7 +1869,7 @@ export class Screen extends Node {
       attr &= ~(0x1ff << 9)
       attr |= 7 << 9
       attr |= 8 << 18
-    } else if (typeof cursor.shape === 'object' && cursor.shape) {
+    } else if (typeof cursor.shape === OBJ && cursor.shape) {
       cattr = Element.prototype.sattr.call(cursor, cursor.shape)
 
       if (cursor.shape.bold || cursor.shape.underline

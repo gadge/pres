@@ -4,7 +4,7 @@
  * https://github.com/chjj/blessed
  */
 
-import * as Mixin      from '@ject/mixin'
+import * as Mixin        from '@ject/mixin'
 import {
   ATTACH,
   CLICK,
@@ -15,8 +15,8 @@ import {
   MOUSEDOWN,
   MOUSEMOVE,
   MOUSEOUT,
-  MOUSEUP,
   MOUSEOVER,
+  MOUSEUP,
   MOUSEWHEEL,
   MOVE,
   NEW_LISTENER,
@@ -29,14 +29,15 @@ import {
   SHOW,
   WHEELDOWN,
   WHEELUP,
-}                      from '@pres/enum-events'
-import * as colors     from '@pres/util-colors'
-import * as helpers    from '@pres/util-helpers'
-import * as unicode    from '@pres/util-unicode'
-import assert          from 'assert'
-import { _Scrollable } from '../utils/_Scrollable'
-import { Box }         from './box'
-import { Node }        from './node'
+}                        from '@pres/enum-events'
+import * as colors       from '@pres/util-colors'
+import * as helpers      from '@pres/util-helpers'
+import * as unicode      from '@pres/util-unicode'
+import { FUN, NUM, STR } from '@typen/enum-data-types'
+import assert            from 'assert'
+import { _Scrollable }   from '../utils/_Scrollable'
+import { Box }           from './box'
+import { Node }          from './node'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
@@ -103,7 +104,7 @@ export class Element extends Node {
     this.fixed = options.fixed
     this.ch = options.ch || ' '
 
-    if (typeof options.padding === 'number' || !options.padding) {
+    if (typeof options.padding === NUM || !options.padding) {
       options.padding = {
         left: options.padding,
         top: options.padding,
@@ -121,7 +122,7 @@ export class Element extends Node {
 
     this.border = options.border
     if (this.border) {
-      if (typeof this.border === 'string') {
+      if (typeof this.border === STR) {
         this.border = { type: this.border }
       }
       this.border.type = this.border.type || 'bg'
@@ -221,7 +222,6 @@ export class Element extends Node {
     }
 
     if (options.focused) this.focus()
-    this._render = Element.prototype.render
   }
   get focused() { return this.screen.focused === this}
   get visible() {
@@ -275,7 +275,7 @@ export class Element extends Node {
   get aleft() { return this._getLeft(false) }
   set aleft(val) {
     let expr
-    if (typeof val === 'string') {
+    if (typeof val === STR) {
       if (val === 'center') {
         val = this.screen.width / 2 | 0
         val -= this.width / 2 | 0
@@ -304,7 +304,7 @@ export class Element extends Node {
   get atop() { return this._getTop(false) }
   set atop(val) {
     let expr
-    if (typeof val === 'string') {
+    if (typeof val === STR) {
       if (val === 'center') {
         val = this.screen.height / 2 | 0
         val -= this.height / 2 | 0
@@ -419,14 +419,14 @@ export class Element extends Node {
 
     // This used to be a loop, but I decided
     // to unroll it for performance's sake.
-    if (typeof bold === 'function') bold = bold(this)
-    if (typeof underline === 'function') underline = underline(this)
-    if (typeof blink === 'function') blink = blink(this)
-    if (typeof inverse === 'function') inverse = inverse(this)
-    if (typeof invisible === 'function') invisible = invisible(this)
+    if (typeof bold === FUN) bold = bold(this)
+    if (typeof underline === FUN) underline = underline(this)
+    if (typeof blink === FUN) blink = blink(this)
+    if (typeof inverse === FUN) inverse = inverse(this)
+    if (typeof invisible === FUN) invisible = invisible(this)
 
-    if (typeof fg === 'function') fg = fg(this)
-    if (typeof bg === 'function') bg = bg(this)
+    if (typeof fg === FUN) fg = fg(this)
+    if (typeof bg === FUN) bg = bg(this)
 
     // return (this.uid << 24)
     //   | ((this.dockBorders ? 32 : 0) << 18)
@@ -918,7 +918,7 @@ export class Element extends Node {
 
     if (this._draggable) return true
 
-    if (typeof verify !== 'function') {
+    if (typeof verify !== FUN) {
       verify = function () { return true }
     }
 
@@ -1032,7 +1032,7 @@ export class Element extends Node {
     const self = this
     // const Box = require('./box')
 
-    if (typeof options === 'string') {
+    if (typeof options === STR) {
       options = { text: options }
     }
 
@@ -1109,7 +1109,7 @@ export class Element extends Node {
     delete this._label
   }
   setHover(options) {
-    if (typeof options === 'string') {
+    if (typeof options === STR) {
       options = { text: options }
     }
 
@@ -1162,7 +1162,7 @@ export class Element extends Node {
         left,
         expr
 
-    if (typeof width === 'string') {
+    if (typeof width === STR) {
       if (width === 'half') width = '50%'
       expr = width.split(/(?=\+|-)/)
       width = expr[0]
@@ -1180,7 +1180,7 @@ export class Element extends Node {
     // calculated here.
     if (width == null) {
       left = this.position.left || 0
-      if (typeof left === 'string') {
+      if (typeof left === STR) {
         if (left === 'center') left = '50%'
         expr = left.split(/(?=\+|-)/)
         left = expr[0]
@@ -1206,7 +1206,7 @@ export class Element extends Node {
         top,
         expr
 
-    if (typeof height === 'string') {
+    if (typeof height === STR) {
       if (height === 'half') height = '50%'
       expr = height.split(/(?=\+|-)/)
       height = expr[0]
@@ -1224,7 +1224,7 @@ export class Element extends Node {
     // calculated here.
     if (height == null) {
       top = this.position.top || 0
-      if (typeof top === 'string') {
+      if (typeof top === STR) {
         if (top === 'center') top = '50%'
         expr = top.split(/(?=\+|-)/)
         top = expr[0]
@@ -1250,7 +1250,7 @@ export class Element extends Node {
     let left = this.position.left || 0,
         expr
 
-    if (typeof left === 'string') {
+    if (typeof left === STR) {
       if (left === 'center') left = '50%'
       expr = left.split(/(?=\+|-)/)
       left = expr[0]
@@ -1301,7 +1301,7 @@ export class Element extends Node {
     let top = this.position.top || 0,
         expr
 
-    if (typeof top === 'string') {
+    if (typeof top === STR) {
       if (top === 'center') top = '50%'
       expr = top.split(/(?=\+|-)/)
       top = expr[0]
@@ -1704,6 +1704,7 @@ export class Element extends Node {
       renders: this.screen.renders
     }
   }
+  _render = this.render
   render() {
     this._emit(PRERENDER)
 
@@ -2216,7 +2217,7 @@ export class Element extends Node {
    * Content Methods
    */
   insertLine(i, line) {
-    if (typeof line === 'string') line = line.split('\n')
+    if (typeof line === STR) line = line.split('\n')
 
     if (i !== i || i == null) {
       i = this._clines.ftor.length

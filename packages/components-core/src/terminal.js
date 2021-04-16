@@ -38,9 +38,8 @@ export class Terminal extends Box {
     // if (!(this instanceof Node)) return new Terminal(options)
 
     // XXX Workaround for all motion
-    if (this.screen.program.tmux && this.screen.program.tmuxVersion >= 2) {
+    if (this.screen.program.tmux && this.screen.program.tmuxVersion >= 2)
       this.screen.program.enableMouse()
-    }
 
     this.handler = options.handler
     this.shell = options.shell || process.env.SHELL || 'sh'
@@ -61,7 +60,6 @@ export class Terminal extends Box {
 
     this.bootstrap()
     this.type = 'terminal'
-    this.setScroll = Terminal.prototype.scrollTo
   }
   bootstrap() {
     const self = this
@@ -342,6 +340,7 @@ export class Terminal extends Box {
       || /^\x1b\[24([0135])~\[(\d+),(\d+)\]\r/.test(s)
       || /^\x1b\[(O|I)/.test(s)
   }
+  setScroll = this.scrollTo
   scrollTo(offset) {
     this.term.ydisp = offset
     return this.emit(SCROLL)
