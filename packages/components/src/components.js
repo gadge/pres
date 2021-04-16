@@ -26,6 +26,8 @@ import {
   Question,
   RadioButton,
   RadioSet,
+  Textarea,
+  Textbox,
 }                from '@pres/components-form'
 import {
   Loading,
@@ -67,6 +69,8 @@ export const prompt = (options) => new Prompt(options)
 export const question = (options) => new Question(options)
 export const radiobutton = (options) => new RadioButton(options)
 export const radioset = (options) => new RadioSet(options)
+export const textbox = (options) => new Textbox(options)
+export const textarea = (options) => new Textarea(options)
 
 export const loading = (options) => new Loading(options)
 export const message = (options) => new Message(options)

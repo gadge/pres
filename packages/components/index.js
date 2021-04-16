@@ -26,6 +26,8 @@ export {
   Question,
   RadioButton,
   RadioSet,
+  Textbox,
+  Textarea,
 }                from '@pres/components-form'
 export {
   Loading,
