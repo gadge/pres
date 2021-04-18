@@ -40,7 +40,7 @@ import { Program }       from '@pres/program'
 import * as colors       from '@pres/util-colors'
 import { helpers }       from '@pres/util-helpers'
 import { FUN, OBJ, STR } from '@typen/enum-data-types'
-import { spawn }         from 'child_process'
+import cp, { spawn }     from 'child_process'
 import { Log }           from '../src/log'
 import { Box }           from './box'
 
@@ -469,9 +469,7 @@ export class Screen extends Node {
   }
   _initHover() {
     const self = this
-
     if (this._hoverText) { return }
-
     this._hoverText = new Box({
       screen: this,
       left: 0,
@@ -488,7 +486,6 @@ export class Screen extends Node {
         fg: 'default'
       }
     })
-
     this.on(MOUSEMOVE, function (data) {
       if (self._hoverText.detached) return
       self._hoverText.rleft = data.x + 1
