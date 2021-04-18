@@ -4,20 +4,9 @@
  * https://github.com/chjj/blessed
  */
 
-import { Box } from '@pres/components-core'
-
+import { Box }     from '@pres/components-core'
 import {
-  ACTION,
-  ADD_ITEM,
-  CANCEL,
-  CLICK,
-  FOCUS,
-  KEYPRESS,
-  REMOVE_ITEM,
-  SELECT,
-  SELECT_ITEM,
-  SELECT_TAB,
-  SET_ITEMS,
+  ACTION, ADD_ITEM, CANCEL, CLICK, FOCUS, KEYPRESS, REMOVE_ITEM, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS,
 }                  from '@pres/enum-events'
 import { helpers } from '@pres/util-helpers'
 

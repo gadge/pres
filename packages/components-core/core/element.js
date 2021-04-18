@@ -1648,9 +1648,9 @@ export class Element extends Node {
       renders: this.screen.renders
     }
   }
-  render = this._render()
+  render = this._render
   _render() {
-    console.log(`>>> calling element._render`)
+    // console.log(`>>> calling element._render`)
     this._emit(PRERENDER)
     this.parseContent()
     const coords = this._getCoords(true)

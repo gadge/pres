@@ -14,7 +14,6 @@ const nextTick = global.setImmediate || process.nextTick.bind(process)
 export class Log extends ScrollableText {
   type = 'log'
   log = this.add // log() { return this.add() }
-  _scroll = this.scroll
   /**
    * Log
    */
@@ -50,8 +49,8 @@ export class Log extends ScrollableText {
     }
     return ret
   }
-  _scroll = this.scroll
-  scroll(offset, always) {
+  scroll = this._scroll
+  _scroll(offset, always) {
     if (offset === 0) return this._scroll(offset, always)
     this._userScrolled = true
     const ret = this._scroll(offset, always)
