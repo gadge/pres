@@ -4,14 +4,7 @@
  * https://github.com/chjj/blessed
  */
 
-/**
- * Modules
- */
 import { Box }                                                from '@pres/components-core'
-
-/**
- * Form
- */
 import { CANCEL, ELEMENT_KEYPRESS, KEYPRESS, RESET, SUBMIT, } from '@pres/enum-events'
 
 export class Form extends Box {

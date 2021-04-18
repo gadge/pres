@@ -1648,28 +1648,24 @@ export class Element extends Node {
       renders: this.screen.renders
     }
   }
-  _render = this.render
-  render() {
+  render = this._render()
+  _render() {
+    console.log(`>>> calling element._render`)
     this._emit(PRERENDER)
-
     this.parseContent()
-
     const coords = this._getCoords(true)
     if (!coords) {
       delete this.lpos
       return
     }
-
     if (coords.xl - coords.xi <= 0) {
       coords.xl = Math.max(coords.xl, coords.xi)
       return
     }
-
     if (coords.yl - coords.yi <= 0) {
       coords.yl = Math.max(coords.yl, coords.yi)
       return
     }
-
     const lines = this.screen.lines
     let xi = coords.xi,
         xl = coords.xl,
@@ -1688,7 +1684,6 @@ export class Element extends Node {
         visible,
         i
     const bch = this.ch
-
     // Clip content if it's off the edge of the screen
     // if (xi + this.ileft < 0 || yi + this.itop < 0) {
     //   var clines = this._clines.slice();
@@ -1713,13 +1708,10 @@ export class Element extends Node {
     //   }
     //   content = clines.join('\n');
     // }
-
     if (coords.base >= this._clines.ci.length) {
       ci = this._pcontent.length
     }
-
     this.lpos = coords
-
     if (this.border && this.border.type === 'line') {
       this.screen._borderStops[coords.yi] = true
       this.screen._borderStops[coords.yl - 1] = true
@@ -1735,18 +1727,14 @@ export class Element extends Node {
       // }
       // this.screen._borderStops[coords.yl - 1] = this.screen._borderStops[coords.yi];
     }
-
     dattr = this.sattr(this.style)
     attr = dattr
-
     // If we're in a scrollable text box, check to
     // see which attributes this line starts with.
     if (ci > 0) {
       attr = this._clines.attr[Math.min(coords.base, this._clines.length - 1)]
     }
-
     if (this.border) xi++, xl--, yi++, yl--
-
     // If we have padding/valign, that means the
     // content-drawing loop will skip a few cells/lines.
     // To deal with this, we can just fill the whole thing
@@ -1766,12 +1754,10 @@ export class Element extends Node {
         this.screen.fillRegion(dattr, bch, xi, xl, yi, yl)
       }
     }
-
     if (this.tpadding) {
       xi += this.padding.left, xl -= this.padding.right
       yi += this.padding.top, yl -= this.padding.bottom
     }
-
     // Determine where to place the text if it's vertically aligned.
     if (this.valign === 'middle' || this.valign === 'bottom') {
       visible = yl - yi
@@ -1786,7 +1772,6 @@ export class Element extends Node {
         ci -= visible * (xl - xi)
       }
     }
-
     // Draw the content and background.
     for (y = yi; y < yl; y++) {
       if (!lines[y]) {
@@ -1902,7 +1887,6 @@ export class Element extends Node {
         }
       }
     }
-
     // Draw the scrollbar.
     // Could possibly draw this after all child elements.
     if (this.scrollbar) {
@@ -1941,14 +1925,11 @@ export class Element extends Node {
         }
       }
     }
-
     if (this.border) xi--, xl++, yi--, yl++
-
     if (this.tpadding) {
       xi -= this.padding.left, xl += this.padding.right
       yi -= this.padding.top, yl += this.padding.bottom
     }
-
     // Draw the border.
     if (this.border) {
       battr = this.sattr(this.style.border)
@@ -2121,7 +2102,6 @@ export class Element extends Node {
         }
       }
     }
-
     if (this.shadow) {
       // right
       y = Math.max(yi + 1, 0)
@@ -2147,7 +2127,6 @@ export class Element extends Node {
         }
       }
     }
-
     this.children.forEach(function (el) {
       if (el.screen._ci !== -1) {
         el.index = el.screen._ci++
@@ -2160,9 +2139,7 @@ export class Element extends Node {
       //   el._rendering = false;
       // }
     })
-
     this._emit(RENDER, [ coords ])
-
     return coords
   }
   /**
