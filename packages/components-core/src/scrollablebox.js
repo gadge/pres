@@ -4,8 +4,8 @@
  * https://github.com/chjj/blessed
  */
 
-import { KEYPRESS, MOUSEDOWN, PARSED_CONTENT, SCROLL, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
-import { Box }                                                              from '../core/box'
+import { KEYPRESS, MOUSEDOWN, MOUSEUP, PARSED_CONTENT, SCROLL, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
+import { Box }                                                                       from '../core/box'
 
 export class ScrollableBox extends Box {
   type = 'scrollable-box'
@@ -144,9 +144,7 @@ export class ScrollableBox extends Box {
         }
       })
     }
-    this.on(PARSED_CONTENT, function () {
-      self._recalculateIndex()
-    })
+    this.on(PARSED_CONTENT, () => self._recalculateIndex())
     self._recalculateIndex()
   }
   // XXX Potentially use this in place of scrollable checks elsewhere.
@@ -233,17 +231,19 @@ export class ScrollableBox extends Box {
       d = this.childOffset - (visible - 1)
       this.childOffset -= d
       this.childBase += d
-    } else if (this.childOffset < 0) {
-      d = this.childOffset
-      this.childOffset += -d
-      this.childBase += d
-    }
+    } else
+      if (this.childOffset < 0) {
+        d = this.childOffset
+        this.childOffset += -d
+        this.childBase += d
+      }
 
     if (this.childBase < 0) {
       this.childBase = 0
-    } else if (this.childBase > this.baseLimit) {
-      this.childBase = this.baseLimit
-    }
+    } else
+      if (this.childBase > this.baseLimit) {
+        this.childBase = this.baseLimit
+      }
 
     // Find max "bottom" value for
     // content and descendant elements.
@@ -269,9 +269,10 @@ export class ScrollableBox extends Box {
 
     if (this.childBase < 0) {
       this.childBase = 0
-    } else if (this.childBase > this.baseLimit) {
-      this.childBase = this.baseLimit
-    }
+    } else
+      if (this.childBase > this.baseLimit) {
+        this.childBase = this.baseLimit
+      }
 
     // Optimize scrolling with CSR + IL/DL.
     p = this.lpos
@@ -288,11 +289,12 @@ export class ScrollableBox extends Box {
       if (d > 0 && d < visible) {
         // scrolled down
         this.screen.deleteLine(d, t, t, b)
-      } else if (d < 0 && -d < visible) {
-        // scrolled up
-        d = -d
-        this.screen.insertLine(d, t, t, b)
-      }
+      } else
+        if (d < 0 && -d < visible) {
+          // scrolled up
+          d = -d
+          this.screen.insertLine(d, t, t, b)
+        }
     }
 
     return this.emit(SCROLL)
@@ -314,11 +316,8 @@ export class ScrollableBox extends Box {
 
     this.childBase = Math.min(this.childBase, Math.max(emax, max))
 
-    if (this.childBase < 0) {
-      this.childBase = 0
-    } else if (this.childBase > this.baseLimit) {
-      this.childBase = this.baseLimit
-    }
+    if (this.childBase < 0) { this.childBase = 0 } else
+      if (this.childBase > this.baseLimit) { this.childBase = this.baseLimit }
   }
   resetScroll() {
     if (!this.scrollable) return
@@ -332,11 +331,9 @@ export class ScrollableBox extends Box {
   getScrollPerc(s) {
     const pos = this.lpos || this._getCoords()
     if (!pos) return s ? -1 : 0
-
     const height = (pos.yl - pos.yi) - this.iheight,
           i      = this.getScrollHeight()
     let p
-
     if (height < i) {
       if (this.alwaysScroll) {
         p = this.childBase / (i - height)
@@ -345,7 +342,6 @@ export class ScrollableBox extends Box {
       }
       return p * 100
     }
-
     return s ? -1 : 0
   }
   setScrollPerc(i) {

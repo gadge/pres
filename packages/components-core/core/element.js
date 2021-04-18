@@ -48,9 +48,12 @@ export class Element extends Node {
    */
   constructor(options = {}) {
     super(options)
-    if (options.scrollable && !this._ignore && this.type !== 'scrollable-box')
+    if (options.scrollable && !this._ignore && this.type !== 'scrollable-box') {
+      console.log(Reflect.ownKeys(_Scrollable.prototype))
       Mixin.assign(this, _Scrollable.prototype)
-    this.constructScrollable?.call(this, options)
+      // console.log(Reflect.ownKeys(this))
+    }
+
     const self = this
     // if (!(this instanceof Node)) { return new Element(options) }
     // config scrollable properties
@@ -149,19 +152,10 @@ export class Element extends Node {
     if (options.input || options.keyable) {
       this.screen._listenKeys(this)
     }
-
     this.parseTags = options.parseTags || options.tags
-
     this.setContent(options.content || '', true)
-
-    if (options.label) {
-      this.setLabel(options.label)
-    }
-
-    if (options.hoverText) {
-      this.setHover(options.hoverText)
-    }
-
+    if (options.label) { this.setLabel(options.label) }
+    if (options.hoverText) { this.setHover(options.hoverText) }
     // TODO: Possibly move this to Node for onScreenEvent(MOUSE, ...).
     this.on(NEW_LISTENER, function fn(type) {
       // type = type.split(' ').slice(1).join(' ');
@@ -176,43 +170,29 @@ export class Element extends Node {
         || type === WHEELUP
         || type === MOUSEMOVE) {
         self.screen._listenMouse(self)
-      } else if (type === KEYPRESS || type.indexOf('key ') === 0) {
-        self.screen._listenKeys(self)
-      }
+      } else
+        if (type === KEYPRESS || type.indexOf('key ') === 0) {
+          self.screen._listenKeys(self)
+        }
     })
-
-    this.on(RESIZE, function () {
-      self.parseContent()
-    })
-
-    this.on(ATTACH, function () {
-      self.parseContent()
-    })
-
-    this.on(DETACH, function () {
-      delete self.lpos
-    })
-
+    this.on(RESIZE, function () { self.parseContent() })
+    this.on(ATTACH, function () { self.parseContent() })
+    this.on(DETACH, function () { delete self.lpos })
     if (options.hoverBg != null) {
       options.hoverEffects = options.hoverEffects || {}
       options.hoverEffects.bg = options.hoverBg
     }
-
-    if (this.style.hover) {
-      options.hoverEffects = this.style.hover
-    }
-
-    if (this.style.focus) {
-      options.focusEffects = this.style.focus
-    }
-
+    if (this.style.hover) { options.hoverEffects = this.style.hover }
+    if (this.style.focus) { options.focusEffects = this.style.focus }
     if (options.effects) {
       if (options.effects.hover) options.hoverEffects = options.effects.hover
       if (options.effects.focus) options.focusEffects = options.effects.focus
     }
 
-    [ [ 'hoverEffects', 'mouseover', 'mouseout', '_htemp' ],
-      [ 'focusEffects', 'focus', 'blur', '_ftemp' ] ].forEach(function (props) {
+    [
+      [ 'hoverEffects', 'mouseover', 'mouseout', '_htemp' ],
+      [ 'focusEffects', 'focus', 'blur', '_ftemp' ]
+    ].forEach(function (props) {
       const pname = props[0], over = props[1], out = props[2], temp = props[3]
       self.screen.setEffects(self, self, over, out, self.options[pname], temp)
     })
@@ -222,6 +202,7 @@ export class Element extends Node {
     }
 
     if (options.focused) this.focus()
+    this.constructScrollable?.call(this, options)
   }
   get focused() { return this.screen.focused === this}
   get visible() {
@@ -621,14 +602,16 @@ export class Element extends Node {
         if (param === 'open') {
           out += '{'
           continue
-        } else if (param === 'close') {
-          out += '}'
-          continue
-        }
+        } else
+          if (param === 'close') {
+            out += '}'
+            continue
+          }
 
         if (param.slice(-3) === ' bg') state = bg
-        else if (param.slice(-3) === ' fg') state = fg
-        else state = flag
+        else
+          if (param.slice(-3) === ' fg') state = fg
+          else state = flag
 
         if (slash) {
           if (!param) {
@@ -727,16 +710,18 @@ export class Element extends Node {
     if (align === 'center') {
       s = Array(((s / 2) | 0) + 1).join(' ')
       return s + line + s
-    } else if (align === 'right') {
-      s = Array(s + 1).join(' ')
-      return s + line
-    } else if (this.parseTags && ~line.indexOf('{|}')) {
-      const parts = line.split('{|}')
-      const cparts = cline.split('{|}')
-      s = Math.max(width - cparts[0].length - cparts[1].length, 0)
-      s = Array(s + 1).join(' ')
-      return parts[0] + s + parts[1]
-    }
+    } else
+      if (align === 'right') {
+        s = Array(s + 1).join(' ')
+        return s + line
+      } else
+        if (this.parseTags && ~line.indexOf('{|}')) {
+          const parts = line.split('{|}')
+          const cparts = cline.split('{|}')
+          s = Math.max(width - cparts[0].length - cparts[1].length, 0)
+          s = Array(s + 1).join(' ')
+          return parts[0] + s + parts[1]
+        }
 
     return line
   }
@@ -1635,19 +1620,20 @@ export class Element extends Node {
           base += v
           yi += v
         }
-      } else if (yl > ppos.yl - b) {
-        if (yi > ppos.yl - 1 - b) {
-          // Is below.
-          return
-        } else {
-          // Is partially covered below.
-          nobot = true
-          v = yl - ppos.yl
-          if (this.border) v--
-          if (thisparent.border) v++
-          yl -= v
+      } else
+        if (yl > ppos.yl - b) {
+          if (yi > ppos.yl - 1 - b) {
+            // Is below.
+            return
+          } else {
+            // Is partially covered below.
+            nobot = true
+            v = yl - ppos.yl
+            if (this.border) v--
+            if (thisparent.border) v++
+            yl -= v
+          }
         }
-      }
 
       // Shouldn't be necessary.
       // assert.ok(yi < yl);
@@ -1835,9 +1821,10 @@ export class Element extends Node {
         if (this.valign === 'middle') {
           visible = visible / 2 | 0
           visible -= this._clines.length / 2 | 0
-        } else if (this.valign === 'bottom') {
-          visible -= this._clines.length
-        }
+        } else
+          if (this.valign === 'bottom') {
+            visible -= this._clines.length
+          }
         ci -= visible * (xl - xi)
       }
     }
@@ -1927,9 +1914,10 @@ export class Element extends Node {
             }
             if (x - 1 >= xi) {
               lines[y][x - 1][1] += ch
-            } else if (y - 1 >= yi) {
-              lines[y - 1][xl - 1][1] += ch
-            }
+            } else
+              if (y - 1 >= yi) {
+                lines[y - 1][xl - 1][1] += ch
+              }
             x--
             continue
           }
@@ -2028,25 +2016,27 @@ export class Element extends Node {
                 ch = '\u2502' // '│'
               }
             }
-          } else if (x === xl - 1) {
-            ch = '\u2510' // '┐'
-            if (!this.border.right) {
-              if (this.border.top) {
-                ch = '\u2500' // '─'
+          } else
+            if (x === xl - 1) {
+              ch = '\u2510' // '┐'
+              if (!this.border.right) {
+                if (this.border.top) {
+                  ch = '\u2500' // '─'
+                } else {
+                  continue
+                }
               } else {
-                continue
+                if (!this.border.top) {
+                  ch = '\u2502' // '│'
+                }
               }
             } else {
-              if (!this.border.top) {
-                ch = '\u2502' // '│'
-              }
+              ch = '\u2500' // '─'
             }
-          } else {
-            ch = '\u2500' // '─'
+        } else
+          if (this.border.type === 'bg') {
+            ch = this.border.ch
           }
-        } else if (this.border.type === 'bg') {
-          ch = this.border.ch
-        }
         if (!this.border.top && x !== xi && x !== xl - 1) {
           ch = ' '
           if (dattr !== cell[0] || ch !== cell[1]) {
@@ -2070,9 +2060,10 @@ export class Element extends Node {
           if (this.border.left) {
             if (this.border.type === 'line') {
               ch = '\u2502' // '│'
-            } else if (this.border.type === 'bg') {
-              ch = this.border.ch
-            }
+            } else
+              if (this.border.type === 'bg') {
+                ch = this.border.ch
+              }
             if (!coords.noleft)
               if (battr !== cell[0] || ch !== cell[1]) {
                 lines[y][xi][0] = battr
@@ -2093,9 +2084,10 @@ export class Element extends Node {
           if (this.border.right) {
             if (this.border.type === 'line') {
               ch = '\u2502' // '│'
-            } else if (this.border.type === 'bg') {
-              ch = this.border.ch
-            }
+            } else
+              if (this.border.type === 'bg') {
+                ch = this.border.ch
+              }
             if (!coords.noright)
               if (battr !== cell[0] || ch !== cell[1]) {
                 lines[y][xl - 1][0] = battr
@@ -2134,25 +2126,27 @@ export class Element extends Node {
                 ch = '\u2502' // '│'
               }
             }
-          } else if (x === xl - 1) {
-            ch = '\u2518' // '┘'
-            if (!this.border.right) {
-              if (this.border.bottom) {
-                ch = '\u2500' // '─'
+          } else
+            if (x === xl - 1) {
+              ch = '\u2518' // '┘'
+              if (!this.border.right) {
+                if (this.border.bottom) {
+                  ch = '\u2500' // '─'
+                } else {
+                  continue
+                }
               } else {
-                continue
+                if (!this.border.bottom) {
+                  ch = '\u2502' // '│'
+                }
               }
             } else {
-              if (!this.border.bottom) {
-                ch = '\u2502' // '│'
-              }
+              ch = '\u2500' // '─'
             }
-          } else {
-            ch = '\u2500' // '─'
+        } else
+          if (this.border.type === 'bg') {
+            ch = this.border.ch
           }
-        } else if (this.border.type === 'bg') {
-          ch = this.border.ch
-        }
         if (!this.border.bottom && x !== xi && x !== xl - 1) {
           ch = ' '
           if (dattr !== cell[0] || ch !== cell[1]) {

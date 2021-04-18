@@ -1,11 +1,9 @@
+import { Node }                                                                      from '@pres/components-node/src/node'
 import { KEYPRESS, MOUSEDOWN, MOUSEUP, PARSED_CONTENT, SCROLL, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
 
-export class _Scrollable {
-  constructor(options = {}) {}
-  get reallyScrollable() {
-    // XXX Potentially use this in place of scrollable checks elsewhere.
-    if (this.shrink) return this.scrollable
-    return this.getScrollHeight() > this.height
+export class _Scrollable extends Node {
+  constructor(options = {}) {
+    super(options)
   }
   constructScrollable(options) {
     const self = this
@@ -136,10 +134,13 @@ export class _Scrollable {
         }
       })
     }
-    this.on(PARSED_CONTENT, function () {
-      self._recalculateIndex()
-    })
+    this.on(PARSED_CONTENT, () => self._recalculateIndex())
     self._recalculateIndex()
+  }
+  get reallyScrollable() {
+    // XXX Potentially use this in place of scrollable checks elsewhere.
+    if (this.shrink) return this.scrollable
+    return this.getScrollHeight() > this.height
   }
   _scrollBottom() {
     if (!this.scrollable) return 0
@@ -209,16 +210,18 @@ export class _Scrollable {
       d = this.childOffset - (visible - 1)
       this.childOffset -= d
       this.childBase += d
-    } else if (this.childOffset < 0) {
-      d = this.childOffset
-      this.childOffset += -d
-      this.childBase += d
-    }
+    } else
+      if (this.childOffset < 0) {
+        d = this.childOffset
+        this.childOffset += -d
+        this.childBase += d
+      }
     if (this.childBase < 0) {
       this.childBase = 0
-    } else if (this.childBase > this.baseLimit) {
-      this.childBase = this.baseLimit
-    }
+    } else
+      if (this.childBase > this.baseLimit) {
+        this.childBase = this.baseLimit
+      }
 
     // Find max "bottom" value for
     // content and descendant elements.
@@ -242,9 +245,10 @@ export class _Scrollable {
     this.childBase = Math.min(this.childBase, Math.max(emax, max))
     if (this.childBase < 0) {
       this.childBase = 0
-    } else if (this.childBase > this.baseLimit) {
-      this.childBase = this.baseLimit
-    }
+    } else
+      if (this.childBase > this.baseLimit) {
+        this.childBase = this.baseLimit
+      }
 
     // Optimize scrolling with CSR + IL/DL.
     p = this.lpos
@@ -260,24 +264,21 @@ export class _Scrollable {
       if (d > 0 && d < visible) {
         // scrolled down
         this.screen.deleteLine(d, t, t, b)
-      } else if (d < 0 && -d < visible) {
-        // scrolled up
-        d = -d
-        this.screen.insertLine(d, t, t, b)
-      }
+      } else
+        if (d < 0 && -d < visible) {
+          // scrolled up
+          d = -d
+          this.screen.insertLine(d, t, t, b)
+        }
     }
 
     return this.emit(SCROLL)
   }
   _recalculateIndex() {
     let max, emax
-    if (this.detached || !this.scrollable) {
-      return 0
-    }
-
+    if (this.detached || !this.scrollable) return 0
     // XXX
     // max = this.getScrollHeight() - (this.height - this.iheight);
-
     max = this._clines.length - (this.height - this.iheight)
     if (max < 0) max = 0
     emax = this._scrollBottom() - (this.height - this.iheight)
@@ -285,9 +286,9 @@ export class _Scrollable {
     this.childBase = Math.min(this.childBase, Math.max(emax, max))
     if (this.childBase < 0) {
       this.childBase = 0
-    } else if (this.childBase > this.baseLimit) {
-      this.childBase = this.baseLimit
-    }
+    } else
+      if (this.childBase > this.baseLimit)
+        this.childBase = this.baseLimit
   }
   resetScroll() {
     if (!this.scrollable) return

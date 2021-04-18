@@ -22,8 +22,8 @@ import {
   MOUSEMOVE,
   MOUSEOUT,
   MOUSEOVER,
-  MOUSEWHEEL,
   MOUSEUP,
+  MOUSEWHEEL,
   NEW_LISTENER,
   PRERENDER,
   RENDER,
@@ -35,14 +35,14 @@ import {
   WARNING,
   WHEELDOWN,
   WHEELUP,
-}                  from '@pres/enum-events'
-import { Program } from '@pres/program'
-import * as colors from '@pres/util-colors'
+}                        from '@pres/enum-events'
+import { Program }       from '@pres/program'
+import * as colors       from '@pres/util-colors'
 import { helpers }       from '@pres/util-helpers'
 import { FUN, OBJ, STR } from '@typen/enum-data-types'
+import { spawn }         from 'child_process'
 import { Log }           from '../src/log'
-import { Box }     from './box'
-import { spawn }   from 'child_process'
+import { Box }           from './box'
 
 export class Screen extends Node {
   type = 'screen'
@@ -314,7 +314,6 @@ export class Screen extends Node {
 
       if (_Screen.total === 0) {
         _Screen.global = null
-
         process.removeListener(UNCAUGHT_EXCEPTION, _Screen._exceptionHandler)
         process.removeListener(SIGTERM, _Screen._sigtermHandler)
         process.removeListener(SIGINT, _Screen._sigintHandler)
@@ -354,62 +353,52 @@ export class Screen extends Node {
       this.program.setMouse({ sendFocus: true }, true)
     }
 
-    this.on(RENDER, function () {
-      self._needsClickableSort = true
-    })
+    this.on(RENDER, function () { self._needsClickableSort = true })
 
     this.program.on(MOUSE, function (data) {
       if (self.lockKeys) return
-
       if (self._needsClickableSort) {
         self.clickable = helpers.hsort(self.clickable)
         self._needsClickableSort = false
       }
-
       let i = 0,
           el,
           set,
           pos
-
       for (; i < self.clickable.length; i++) {
         el = self.clickable[i]
-
-        if (el.detached || !el.visible) {
-          continue
-        }
-
+        if (el.detached || !el.visible) continue
         // if (self.grabMouse && self.focused !== el
         //     && !el.hasAncestor(self.focused)) continue;
-
         pos = el.lpos
         if (!pos) continue
-
         if (data.x >= pos.xi && data.x < pos.xl
           && data.y >= pos.yi && data.y < pos.yl) {
           el.emit(MOUSE, data)
           if (data.action === MOUSEDOWN) {
             self.mouseDown = el
-          } else if (data.action === MOUSEUP) {
-            (self.mouseDown || el).emit(CLICK, data)
-            self.mouseDown = null
-          } else if (data.action === MOUSEMOVE) {
-            if (self.hover && el.index > self.hover.index) {
-              set = false
-            }
-            if (self.hover !== el && !set) {
-              if (self.hover) {
-                self.hover.emit(MOUSEOUT, data)
+          } else
+            if (data.action === MOUSEUP) {
+              (self.mouseDown || el).emit(CLICK, data)
+              self.mouseDown = null
+            } else
+              if (data.action === MOUSEMOVE) {
+                if (self.hover && el.index > self.hover.index) {
+                  set = false
+                }
+                if (self.hover !== el && !set) {
+                  if (self.hover) {
+                    self.hover.emit(MOUSEOUT, data)
+                  }
+                  el.emit(MOUSEOVER, data)
+                  self.hover = el
+                }
+                set = true
               }
-              el.emit(MOUSEOVER, data)
-              self.hover = el
-            }
-            set = true
-          }
           el.emit(data.action, data)
           break
         }
       }
-
       // Just mouseover?
       if ((data.action === MOUSEMOVE
         || data.action === MOUSEDOWN
@@ -419,7 +408,6 @@ export class Screen extends Node {
         self.hover.emit(MOUSEOUT, data)
         self.hover = null
       }
-
       self.emit(MOUSE, data)
       self.emit(data.action, data)
     })
@@ -445,15 +433,12 @@ export class Screen extends Node {
   enableMouse(el) { this._listenMouse(el) }
   _listenKeys(el) {
     const self = this
-
     if (el && !~this.keyable.indexOf(el)) {
       el.keyable = true
       this.keyable.push(el)
     }
-
     if (this._listenedKeys) return
     this._listenedKeys = true
-
     // NOTE: The event emissions used to be reversed:
     // element + screen
     // They are now:
@@ -463,18 +448,14 @@ export class Screen extends Node {
     // weren't changed, and handles those situations appropriately.
     this.program.on(KEYPRESS, function (ch, key) {
       if (self.lockKeys && !~self.ignoreLocked.indexOf(key.full)) { return }
-
       const focused  = self.focused,
             grabKeys = self.grabKeys
-
       if (!grabKeys || ~self.ignoreLocked.indexOf(key.full)) {
         self.emit(KEYPRESS, ch, key)
         self.emit('key ' + key.full, ch, key)
       }
-
       // If something changed from the screen key handler, stop.
       if (self.grabKeys !== grabKeys || self.lockKeys) { return }
-
       if (focused && focused.keyable) {
         focused.emit(KEYPRESS, ch, key)
         focused.emit('key ' + key.full, ch, key)
@@ -1041,16 +1022,17 @@ export class Screen extends Node {
             ly = y
           }
           continue
-        } else if (lx !== -1) {
-          if (this.tput.strings.parm_right_cursor) {
-            out += y === ly
-              ? this.tput.cuf(x - lx)
-              : this.tput.cup(y, x)
-          } else {
-            out += this.tput.cup(y, x)
+        } else
+          if (lx !== -1) {
+            if (this.tput.strings.parm_right_cursor) {
+              out += y === ly
+                ? this.tput.cuf(x - lx)
+                : this.tput.cup(y, x)
+            } else {
+              out += this.tput.cup(y, x)
+            }
+            lx = -1, ly = -1
           }
-          lx = -1, ly = -1
-        }
         o[x][0] = data
         o[x][1] = ch
 
@@ -1095,10 +1077,11 @@ export class Screen extends Node {
               if (bg < 16) {
                 if (bg < 8) {
                   bg += 40
-                } else if (bg < 16) {
-                  bg -= 8
-                  bg += 100
-                }
+                } else
+                  if (bg < 16) {
+                    bg -= 8
+                    bg += 100
+                  }
                 out += bg + ';'
               } else {
                 out += '48;5;' + bg + ';'
@@ -1110,10 +1093,11 @@ export class Screen extends Node {
               if (fg < 16) {
                 if (fg < 8) {
                   fg += 30
-                } else if (fg < 16) {
-                  fg -= 8
-                  fg += 90
-                }
+                } else
+                  if (fg < 16) {
+                    fg -= 8
+                    fg += 90
+                  }
                 out += fg + ';'
               } else {
                 out += '38;5;' + fg + ';'
@@ -1179,10 +1163,11 @@ export class Screen extends Node {
                 + this.tput.acscr[ch]
               acs = true
             }
-          } else if (acs) {
-            ch = this.tput.rmacs() + ch
-            acs = false
-          }
+          } else
+            if (acs) {
+              ch = this.tput.rmacs() + ch
+              acs = false
+            }
         } else {
           // U8 is not consistently correct. Some terminfo's
           // terminals that do not declare it may actually
@@ -1303,41 +1288,50 @@ export class Screen extends Node {
             i += 2
             bg = +code[i]
             break
-          } else if (c === 48 && +code[i + 1] === 2) {
-            i += 2
-            bg = colors.match(+code[i], +code[i + 1], +code[i + 2])
-            if (bg === -1) bg = def & 0x1ff
-            i += 2
-            break
-          } else if (c === 38 && +code[i + 1] === 5) {
-            i += 2
-            fg = +code[i]
-            break
-          } else if (c === 38 && +code[i + 1] === 2) {
-            i += 2
-            fg = colors.match(+code[i], +code[i + 1], +code[i + 2])
-            if (fg === -1) fg = (def >> 9) & 0x1ff
-            i += 2
-            break
-          }
+          } else
+            if (c === 48 && +code[i + 1] === 2) {
+              i += 2
+              bg = colors.match(+code[i], +code[i + 1], +code[i + 2])
+              if (bg === -1) bg = def & 0x1ff
+              i += 2
+              break
+            } else
+              if (c === 38 && +code[i + 1] === 5) {
+                i += 2
+                fg = +code[i]
+                break
+              } else
+                if (c === 38 && +code[i + 1] === 2) {
+                  i += 2
+                  fg = colors.match(+code[i], +code[i + 1], +code[i + 2])
+                  if (fg === -1) fg = (def >> 9) & 0x1ff
+                  i += 2
+                  break
+                }
           if (c >= 40 && c <= 47) {
             bg = c - 40
-          } else if (c >= 100 && c <= 107) {
-            bg = c - 100
-            bg += 8
-          } else if (c === 49) {
-            bg = def & 0x1ff
-          } else if (c >= 30 && c <= 37) {
-            fg = c - 30
-          } else if (c >= 90 && c <= 97) {
-            fg = c - 90
-            fg += 8
-          } else if (c === 39) {
-            fg = (def >> 9) & 0x1ff
-          } else if (c === 100) {
-            fg = (def >> 9) & 0x1ff
-            bg = def & 0x1ff
-          }
+          } else
+            if (c >= 100 && c <= 107) {
+              bg = c - 100
+              bg += 8
+            } else
+              if (c === 49) {
+                bg = def & 0x1ff
+              } else
+                if (c >= 30 && c <= 37) {
+                  fg = c - 30
+                } else
+                  if (c >= 90 && c <= 97) {
+                    fg = c - 90
+                    fg += 8
+                  } else
+                    if (c === 39) {
+                      fg = (def >> 9) & 0x1ff
+                    } else
+                      if (c === 100) {
+                        fg = (def >> 9) & 0x1ff
+                        bg = def & 0x1ff
+                      }
           break
       }
     }
@@ -1381,10 +1375,11 @@ export class Screen extends Node {
       if (bg < 16) {
         if (bg < 8) {
           bg += 40
-        } else if (bg < 16) {
-          bg -= 8
-          bg += 100
-        }
+        } else
+          if (bg < 16) {
+            bg -= 8
+            bg += 100
+          }
         out += bg + ';'
       } else {
         out += '48;5;' + bg + ';'
@@ -1396,10 +1391,11 @@ export class Screen extends Node {
       if (fg < 16) {
         if (fg < 8) {
           fg += 30
-        } else if (fg < 16) {
-          fg -= 8
-          fg += 90
-        }
+        } else
+          if (fg < 16) {
+            fg -= 8
+            fg += 90
+          }
         out += fg + ';'
       } else {
         out += '38;5;' + fg + ';'
@@ -1498,12 +1494,13 @@ export class Screen extends Node {
       if (self.rtop < el.childBase) {
         el.scrollTo(self.rtop)
         self.screen.render()
-      } else if (self.rtop + self.height - self.ibottom > el.childBase + visible) {
-        // Explanation for el.itop here: takes into account scrollable elements
-        // with borders otherwise the element gets covered by the bottom border:
-        el.scrollTo(self.rtop - (el.height - self.height) + el.itop, true)
-        self.screen.render()
-      }
+      } else
+        if (self.rtop + self.height - self.ibottom > el.childBase + visible) {
+          // Explanation for el.itop here: takes into account scrollable elements
+          // with borders otherwise the element gets covered by the bottom border:
+          el.scrollTo(self.rtop - (el.height - self.height) + el.itop, true)
+          self.screen.render()
+        }
     }
 
     if (old) {
@@ -1861,38 +1858,41 @@ export class Screen extends Node {
       attr &= ~(0x1ff << 9)
       attr |= 7 << 9
       ch = '\u2502'
-    } else if (cursor.shape === 'underline') {
-      attr &= ~(0x1ff << 9)
-      attr |= 7 << 9
-      attr |= 2 << 18
-    } else if (cursor.shape === 'block') {
-      attr &= ~(0x1ff << 9)
-      attr |= 7 << 9
-      attr |= 8 << 18
-    } else if (typeof cursor.shape === OBJ && cursor.shape) {
-      cattr = Element.prototype.sattr.call(cursor, cursor.shape)
-
-      if (cursor.shape.bold || cursor.shape.underline
-        || cursor.shape.blink || cursor.shape.inverse
-        || cursor.shape.invisible) {
-        attr &= ~(0x1ff << 18)
-        attr |= ((cattr >> 18) & 0x1ff) << 18
-      }
-
-      if (cursor.shape.fg) {
+    } else
+      if (cursor.shape === 'underline') {
         attr &= ~(0x1ff << 9)
-        attr |= ((cattr >> 9) & 0x1ff) << 9
-      }
+        attr |= 7 << 9
+        attr |= 2 << 18
+      } else
+        if (cursor.shape === 'block') {
+          attr &= ~(0x1ff << 9)
+          attr |= 7 << 9
+          attr |= 8 << 18
+        } else
+          if (typeof cursor.shape === OBJ && cursor.shape) {
+            cattr = Element.prototype.sattr.call(cursor, cursor.shape)
 
-      if (cursor.shape.bg) {
-        attr &= ~(0x1ff << 0)
-        attr |= cattr & 0x1ff
-      }
+            if (cursor.shape.bold || cursor.shape.underline
+              || cursor.shape.blink || cursor.shape.inverse
+              || cursor.shape.invisible) {
+              attr &= ~(0x1ff << 18)
+              attr |= ((cattr >> 18) & 0x1ff) << 18
+            }
 
-      if (cursor.shape.ch) {
-        ch = cursor.shape.ch
-      }
-    }
+            if (cursor.shape.fg) {
+              attr &= ~(0x1ff << 9)
+              attr |= ((cattr >> 9) & 0x1ff) << 9
+            }
+
+            if (cursor.shape.bg) {
+              attr &= ~(0x1ff << 0)
+              attr |= cattr & 0x1ff
+            }
+
+            if (cursor.shape.ch) {
+              ch = cursor.shape.ch
+            }
+          }
 
     if (cursor.color != null) {
       attr &= ~(0x1ff << 9)

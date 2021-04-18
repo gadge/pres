@@ -4,9 +4,8 @@
  * https://github.com/chjj/blessed
  */
 
-import { Node }                                                                       from '@pres/components-core'
 import { ACTION, BLUR, CANCEL, CLICK, ERROR, FOCUS, KEYPRESS, MOVE, RESIZE, SUBMIT, } from '@pres/enum-events'
-import * as  unicode                                                                  from '@pres/util-unicode'
+import * as unicode                                                                   from '@pres/util-unicode'
 import { Input }                                                                      from './input'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
@@ -24,24 +23,19 @@ export class Textarea extends Input {
     options.scrollable = options.scrollable !== false
     super(options)
     const self = this
-    if (!(this instanceof Node)) { return new Textarea(options) }
+    // if (!(this instanceof Node)) { return new Textarea(options) }
     this.screen._listenKeys(this)
     this.value = options.value || ''
     this.__updateCursor = this._updateCursor.bind(this)
     this.on(RESIZE, this.__updateCursor)
     this.on(MOVE, this.__updateCursor)
-    if (options.inputOnFocus) {
+    if (options.inputOnFocus)
       this.on(FOCUS, this.readInput.bind(this, null))
-    }
     if (!options.inputOnFocus && options.keys) {
       this.on(KEYPRESS, function (ch, key) {
         if (self._reading) return
-        if (key.name === 'enter' || (options.vi && key.name === 'i')) {
-          return self.readInput()
-        }
-        if (key.name === 'e') {
-          return self.readEditor()
-        }
+        if (key.name === 'enter' || (options.vi && key.name === 'i')) return self.readInput()
+        if (key.name === 'e') return self.readEditor()
       })
     }
     if (options.mouse) {
@@ -54,13 +48,9 @@ export class Textarea extends Input {
     this.type = 'textarea'
   }
   _updateCursor(get) {
-    if (this.screen.focused !== this) {
-      return
-    }
-
+    if (this.screen.focused !== this) return
     const lpos = get ? this.lpos : this._getCoords()
     if (!lpos) return
-
     let last = this._clines[this._clines.length - 1]
     const program = this.screen.program
     let line,
@@ -96,18 +86,21 @@ export class Textarea extends Input {
     if (cy === program.y) {
       if (cx > program.x) {
         program.cuf(cx - program.x)
-      } else if (cx < program.x) {
-        program.cub(program.x - cx)
+      } else
+        if (cx < program.x) {
+          program.cub(program.x - cx)
+        }
+    } else
+      if (cx === program.x) {
+        if (cy > program.y) {
+          program.cud(cy - program.y)
+        } else
+          if (cy < program.y) {
+            program.cuu(program.y - cy)
+          }
+      } else {
+        program.cup(cy, cx)
       }
-    } else if (cx === program.x) {
-      if (cy > program.y) {
-        program.cud(cy - program.y)
-      } else if (cy < program.y) {
-        program.cuu(program.y - cy)
-      }
-    } else {
-      program.cup(cy, cx)
-    }
   }
   readInput(callback) {
     const self    = this,
@@ -162,11 +155,12 @@ export class Textarea extends Input {
 
       if (err) {
         self.emit(ERROR, err)
-      } else if (value != null) {
-        self.emit(SUBMIT, value)
-      } else {
-        self.emit(CANCEL, value)
-      }
+      } else
+        if (value != null) {
+          self.emit(SUBMIT, value)
+        } else {
+          self.emit(CANCEL, value)
+        }
       self.emit(ACTION, value)
 
       if (!callback) return
@@ -209,24 +203,26 @@ export class Textarea extends Input {
     // to the screen and screen buffer here.
     if (key.name === 'escape') {
       done(null, null)
-    } else if (key.name === 'backspace') {
-      if (this.value.length) {
-        if (this.screen.fullUnicode) {
-          if (unicode.isSurrogate(this.value, this.value.length - 2)) {
-            // || unicode.isCombining(this.value, this.value.length - 1)) {
-            this.value = this.value.slice(0, -2)
+    } else
+      if (key.name === 'backspace') {
+        if (this.value.length) {
+          if (this.screen.fullUnicode) {
+            if (unicode.isSurrogate(this.value, this.value.length - 2)) {
+              // || unicode.isCombining(this.value, this.value.length - 1)) {
+              this.value = this.value.slice(0, -2)
+            } else {
+              this.value = this.value.slice(0, -1)
+            }
           } else {
             this.value = this.value.slice(0, -1)
           }
-        } else {
-          this.value = this.value.slice(0, -1)
         }
-      }
-    } else if (ch) {
-      if (!/^[\x00-\x08\x0b-\x0c\x0e-\x1f\x7f]$/.test(ch)) {
-        this.value += ch
-      }
-    }
+      } else
+        if (ch) {
+          if (!/^[\x00-\x08\x0b-\x0c\x0e-\x1f\x7f]$/.test(ch)) {
+            this.value += ch
+          }
+        }
 
     if (this.value !== value) {
       this.screen.render()

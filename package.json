@@ -12,7 +12,7 @@
     "build": "lerna exec --parallel -- rollup -c ../../rollup.config.js",
     "build-specific": "lerna exec --scope=@pres/enum-events -- rollup -c ../../rollup.config.js",
     "watch": "lerna exec --parallel -- rollup -c ../../rollup.config.js -w",
-    "watch-specific": "lerna exec --scope=@vins-mono/art-project -- rollup -c ../../rollup.config.js -w"
+    "watch-specific": "lerna exec --scope=@pres/components-core -- rollup -c ../../rollup.config.js -w"
   },
   "devDependencies": {
     "@babel/core": "^7.13.15",
