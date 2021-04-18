@@ -7,7 +7,7 @@
 /**
  * Modules
  */
-import { Box, Node } from '@pres/components-core'
+import { Box } from '@pres/components-core'
 
 import { ATTACH, RESIZE, } from '@pres/enum-events'
 
@@ -28,7 +28,7 @@ export class Table extends Box {
     delete options.height
     super(options)
     const self = this
-    if (!(this instanceof Node)) { return new Table(options) }
+    // if (!(this instanceof Node)) { return new Table(options) }
     this.pad = options.pad != null
       ? options.pad
       : 2

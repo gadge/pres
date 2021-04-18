@@ -52,10 +52,3 @@ export class Textbox extends Textarea {
     return this.__listener('\r', { name: 'enter' })
   }
 }
-
-
-/**
- * Expose
- */
-
-

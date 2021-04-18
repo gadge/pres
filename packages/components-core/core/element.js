@@ -5,30 +5,10 @@
  */
 
 import * as Mixin        from '@ject/mixin'
+import { Node }          from '@pres/components-node'
 import {
-  ATTACH,
-  CLICK,
-  DETACH,
-  HIDE,
-  KEYPRESS,
-  MOUSE,
-  MOUSEDOWN,
-  MOUSEMOVE,
-  MOUSEOUT,
-  MOUSEOVER,
-  MOUSEUP,
-  MOUSEWHEEL,
-  MOVE,
-  NEW_LISTENER,
-  PARSED_CONTENT,
-  PRERENDER,
-  RENDER,
-  RESIZE,
-  SCROLL,
-  SET_CONTENT,
-  SHOW,
-  WHEELDOWN,
-  WHEELUP,
+  ATTACH, CLICK, DETACH, HIDE, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, MOVE,
+  NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
 }                        from '@pres/enum-events'
 import * as colors       from '@pres/util-colors'
 import * as helpers      from '@pres/util-helpers'
@@ -37,7 +17,6 @@ import { FUN, NUM, STR } from '@typen/enum-data-types'
 import assert            from 'assert'
 import { _Scrollable }   from '../utils/_Scrollable'
 import { Box }           from './box'
-import { Node }          from './node'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
@@ -66,7 +45,6 @@ export class Element extends Node {
       width: options.width,
       height: options.height
     }
-
     if (options.position.width === 'shrink'
       || options.position.height === 'shrink') {
       if (options.position.width === 'shrink') {
@@ -77,15 +55,11 @@ export class Element extends Node {
       }
       options.shrink = true
     }
-
     this.position = options.position
-
     this.noOverflow = options.noOverflow
     this.dockBorders = options.dockBorders
     this.shadow = options.shadow
-
     this.style = options.style
-
     if (!this.style) {
       this.style = {}
       this.style.fg = options.fg
@@ -97,7 +71,6 @@ export class Element extends Node {
       this.style.invisible = options.invisible
       this.style.transparent = options.transparent
     }
-
     this.hidden = options.hidden || false
     this.fixed = options.fixed || false
     this.align = options.align || 'left'
@@ -106,7 +79,6 @@ export class Element extends Node {
     this.shrink = options.shrink
     this.fixed = options.fixed
     this.ch = options.ch || ' '
-
     if (typeof options.padding === NUM || !options.padding) {
       options.padding = {
         left: options.padding,
@@ -115,19 +87,15 @@ export class Element extends Node {
         bottom: options.padding
       }
     }
-
     this.padding = {
       left: options.padding.left || 0,
       top: options.padding.top || 0,
       right: options.padding.right || 0,
       bottom: options.padding.bottom || 0
     }
-
     this.border = options.border
     if (this.border) {
-      if (typeof this.border === STR) {
-        this.border = { type: this.border }
-      }
+      if (typeof this.border === STR) { this.border = { type: this.border } }
       this.border.type = this.border.type || 'bg'
       if (this.border.type === 'ascii') this.border.type = 'line'
       this.border.ch = this.border.ch || ' '
@@ -143,15 +111,9 @@ export class Element extends Node {
       if (this.border.right == null) this.border.right = true
       if (this.border.bottom == null) this.border.bottom = true
     }
-
     // if (options.mouse || options.clickable) {
-    if (options.clickable) {
-      this.screen._listenMouse(this)
-    }
-
-    if (options.input || options.keyable) {
-      this.screen._listenKeys(this)
-    }
+    if (options.clickable) { this.screen._listenMouse(this) }
+    if (options.input || options.keyable) { this.screen._listenKeys(this) }
     this.parseTags = options.parseTags || options.tags
     this.setContent(options.content || '', true)
     if (options.label) { this.setLabel(options.label) }
@@ -188,7 +150,6 @@ export class Element extends Node {
       if (options.effects.hover) options.hoverEffects = options.effects.hover
       if (options.effects.focus) options.focusEffects = options.effects.focus
     }
-
     [
       [ 'hoverEffects', 'mouseover', 'mouseout', '_htemp' ],
       [ 'focusEffects', 'focus', 'blur', '_ftemp' ]
@@ -196,14 +157,11 @@ export class Element extends Node {
       const pname = props[0], over = props[1], out = props[2], temp = props[3]
       self.screen.setEffects(self, self, over, out, self.options[pname], temp)
     })
-
-    if (this.options.draggable) {
-      this.draggable = true
-    }
-
+    if (this.options.draggable) { this.draggable = true }
     if (options.focused) this.focus()
     this.constructScrollable?.call(this, options)
   }
+
   get focused() { return this.screen.focused === this}
   get visible() {
     let el = this

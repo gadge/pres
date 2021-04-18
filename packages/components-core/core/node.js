@@ -1,3 +1,1 @@
-import { Node } from '@pres/components-node'
-
-export { Node }
+export { Node } from '@pres/components-node'

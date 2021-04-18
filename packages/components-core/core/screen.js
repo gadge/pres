@@ -6,35 +6,9 @@
 
 import { _Screen, Node } from '@pres/components-node'
 import {
-  BLUR,
-  CLICK,
-  DESTROY,
-  ELEMENT_CLICK,
-  ELEMENT_MOUSEOUT,
-  ELEMENT_MOUSEOVER,
-  ELEMENT_MOUSEUP,
-  ERROR,
-  EXIT,
-  FOCUS,
-  KEYPRESS,
-  MOUSE,
-  MOUSEDOWN,
-  MOUSEMOVE,
-  MOUSEOUT,
-  MOUSEOVER,
-  MOUSEUP,
-  MOUSEWHEEL,
-  NEW_LISTENER,
-  PRERENDER,
-  RENDER,
-  RESIZE,
-  SIGINT,
-  SIGQUIT,
-  SIGTERM,
-  UNCAUGHT_EXCEPTION,
-  WARNING,
-  WHEELDOWN,
-  WHEELUP,
+  BLUR, CLICK, DESTROY, ELEMENT_CLICK, ELEMENT_MOUSEOUT, ELEMENT_MOUSEOVER, ELEMENT_MOUSEUP, ERROR, EXIT, FOCUS,
+  KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, NEW_LISTENER, PRERENDER, RENDER,
+  RESIZE, SIGINT, SIGQUIT, SIGTERM, UNCAUGHT_EXCEPTION, WARNING, WHEELDOWN, WHEELUP,
 }                        from '@pres/enum-events'
 import { Program }       from '@pres/program'
 import * as colors       from '@pres/util-colors'
@@ -46,10 +20,6 @@ import { Box }           from './box'
 
 export class Screen extends Node {
   type = 'screen'
-  _destroy = this.destroy
-  focusPrev = this.focusPrevious
-  unkey = this.removeKey
-  cursorReset = this.resetCursor
   constructor(options = {}) {
     options.lazy = true
     super(options)
@@ -173,6 +143,11 @@ export class Screen extends Node {
     this.enter()
     this.postEnter()
   }
+
+  _destroy = this.destroy
+  focusPrev = this.focusPrevious
+  unkey = this.removeKey
+  cursorReset = this.resetCursor
   get title() { return this.program.title }
   set title(title) { return this.program.title = title }
   get terminal() { return this.program.terminal }

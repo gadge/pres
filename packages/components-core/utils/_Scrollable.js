@@ -1,4 +1,4 @@
-import { Node }                                                                      from '@pres/components-node/src/node'
+import { Node }                                                                      from '@pres/components-node'
 import { KEYPRESS, MOUSEDOWN, MOUSEUP, PARSED_CONTENT, SCROLL, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
 
 export class _Scrollable extends Node {
