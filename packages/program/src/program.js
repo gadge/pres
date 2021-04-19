@@ -139,7 +139,6 @@ export class Program extends EventEmitter {
   static instances = []
 
   unkey = this.removeKey
-  _owrite = this.write
   echo = this.print
   cursorReset = this.resetCursor
   bel = this.bell
@@ -1785,7 +1784,8 @@ export class Program extends EventEmitter {
 
 // CSI Ps F
 // Cursor Preceding Line Ps Times (default = 1) (CNL).
-  write(text) {
+  write = this._owrite
+  _owrite(text) {
     return !this.output.writable
       ? void 0
       : this.output.write(text)

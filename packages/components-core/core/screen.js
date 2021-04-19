@@ -144,7 +144,7 @@ export class Screen extends Node {
     this.postEnter()
   }
 
-  _destroy = this.destroy
+
   focusPrev = this.focusPrevious
   unkey = this.removeKey
   cursorReset = this.resetCursor
@@ -278,7 +278,8 @@ export class Screen extends Node {
       })
     }
   }
-  destroy() {
+  destroy = this._destroy
+  _destroy() {
     this.leave()
     const index = _Screen.instances.indexOf(this)
     if (~index) {

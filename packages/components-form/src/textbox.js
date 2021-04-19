@@ -7,9 +7,6 @@
 import { Textarea } from './textarea'
 
 export class Textbox extends Textarea {
-  /**
-   * Textbox
-   */
   constructor(options = {}) {
     options.scrollable = false
     super(options)
@@ -17,8 +14,9 @@ export class Textbox extends Textarea {
     this.secret = options.secret
     this.censor = options.censor
     this.type = 'textbox'
+    console.log(`>>> constructed ${this.type}`)
   }
-  __olistener = this._listener
+  __olistener = Textbox.prototype._listener
   _listener(ch, key) {
     if (key.name === 'enter') {
       this._done(null, this.value)
@@ -28,22 +26,19 @@ export class Textbox extends Textarea {
   }
   setValue(value) {
     let visible, val
-    if (value == null) {
-      value = this.value
-    }
+    if (value == null) value = this.value
     if (this._value !== value) {
       value = value.replace(/\n/g, '')
       this.value = value
       this._value = value
-      if (this.secret) {
-        this.setContent('')
-      } else if (this.censor) {
-        this.setContent(Array(this.value.length + 1).join('*'))
-      } else {
-        visible = -(this.width - this.iwidth - 1)
-        val = this.value.replace(/\t/g, this.screen.tabc)
-        this.setContent(val.slice(visible))
-      }
+      if (this.secret) { this.setContent('') } else
+        if (this.censor) {
+          this.setContent(Array(this.value.length + 1).join('*'))
+        } else {
+          visible = -(this.width - this.iwidth - 1)
+          val = this.value.replace(/\t/g, this.screen.tabc)
+          this.setContent(val.slice(visible))
+        }
       this._updateCursor()
     }
   }

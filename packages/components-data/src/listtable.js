@@ -155,12 +155,8 @@ export class ListTable extends List {
   }
   _select = this.select
   select(i) {
-    if (i === 0) {
-      i = 1
-    }
-    if (i <= this.childBase) {
-      this.setScroll(this.childBase - 1)
-    }
+    if (i === 0) i = 1
+    if (i <= this.childBase) this.setScroll(this.childBase - 1)
     return this._select(i)
   }
   render() {
