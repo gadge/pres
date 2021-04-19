@@ -42,7 +42,8 @@ function Screen(options) {
       tput: true,
       buffer: true,
       zero: true
-    }) }
+    })
+  }
   else {
     this.program.setupTput()
     this.program.useBuffer = true
@@ -115,17 +116,23 @@ function Screen(options) {
     self.render();
     (function emit(el) {
       el.emit('resize')
-      el.children.forEach(emit) })(self) })
+      el.children.forEach(emit)
+    })(self)
+  })
   this.program.on('focus', function () {
-    self.emit('focus') })
+    self.emit('focus')
+  })
   this.program.on('blur', function () {
-    self.emit('blur') })
+    self.emit('blur')
+  })
   this.program.on('warning', function (text) {
-    self.emit('warning', text) })
+    self.emit('warning', text)
+  })
   this.on('newListener', function fn(type) {
     if (type === 'keypress' || type.indexOf('key ') === 0 || type === 'mouse') {
       if (type === 'keypress' || type.indexOf('key ') === 0) self._listenKeys()
-      if (type === 'mouse') self._listenMouse() }
+      if (type === 'mouse') self._listenMouse()
+    }
     if (type === 'mouse'
       || type === 'click'
       || type === 'mouseover'
@@ -136,11 +143,13 @@ function Screen(options) {
       || type === 'wheeldown'
       || type === 'wheelup'
       || type === 'mousemove') {
-      self._listenMouse() }
+      self._listenMouse()
+    }
   })
   this.setMaxListeners(Infinity)
   this.enter()
-  this.postEnter() }
+  this.postEnter()
+}
 
 Screen.global = null
 
@@ -165,11 +174,14 @@ Screen.bind = function (screen) {
       return
     }
     Screen.instances.slice().forEach(function (screen) {
-      screen.destroy() })
+      screen.destroy()
+    })
     err = err || new Error('Uncaught Exception.')
     console.error(err.stack ? err.stack + '' : err + '')
     nextTick(function () {
-      process.exit(1) }) });
+      process.exit(1)
+    })
+  });
 
   [ 'SIGTERM', 'SIGINT', 'SIGQUIT' ].forEach(function (signal) {
     const name = '_' + signal.toLowerCase() + 'Handler'
@@ -178,11 +190,17 @@ Screen.bind = function (screen) {
         return
       }
       nextTick(function () {
-        process.exit(0) }) }) })
+        process.exit(0)
+      })
+    })
+  })
 
   process.on('exit', Screen._exitHandler = function () {
     Screen.instances.slice().forEach(function (screen) {
-      screen.destroy() }) }) }
+      screen.destroy()
+    })
+  })
+}
 
 Screen.prototype.__proto__ = Node.prototype
 
@@ -210,22 +228,27 @@ Screen.prototype.setTerminal = function (terminal) {
   if (entered) {
     this._buf = ''
     this.program._buf = ''
-    this.leave() }
+    this.leave()
+  }
   this.program.setTerminal(terminal)
   this.tput = this.program.tput
-  if (entered) this.enter() }
+  if (entered) this.enter()
+}
 
 Screen.prototype.enter = function () {
   if (this.program.isAlt) return
   if (!this.cursor._set) {
     if (this.options.cursor.shape) {
-      this.cursorShape(this.cursor.shape, this.cursor.blink) }
+      this.cursorShape(this.cursor.shape, this.cursor.blink)
+    }
     if (this.options.cursor.color) {
-      this.cursorColor(this.cursor.color) }
+      this.cursorColor(this.cursor.color)
+    }
   }
   if (process.platform === 'win32') {
     try {
-      cp.execSync('cls', { stdio: 'ignore', timeout: 1000 }) } catch (e) { }
+      cp.execSync('cls', { stdio: 'ignore', timeout: 1000 })
+    } catch (e) { }
   }
   this.program.alternateBuffer()
   this.program.put.keypad_xmit()
@@ -234,27 +257,32 @@ Screen.prototype.enter = function () {
   this.program.cup(0, 0)
   // We need this for tmux now:
   if (this.tput.strings.ena_acs) {
-    this.program._write(this.tput.enacs()) }
-  this.alloc() }
+    this.program._write(this.tput.enacs())
+  }
+  this.alloc()
+}
 
 Screen.prototype.leave = function () {
   if (!this.program.isAlt) return
   this.program.put.keypad_local()
   if (this.program.scrollTop !== 0
     || this.program.scrollBottom !== this.rows - 1) {
-    this.program.csr(0, this.height - 1) }
+    this.program.csr(0, this.height - 1)
+  }
   // XXX For some reason if alloc/clear() is before this
   // line, it doesn't work on linux console.
   this.program.showCursor()
   this.alloc()
   if (this._listenedMouse) {
-    this.program.disableMouse() }
+    this.program.disableMouse()
+  }
   this.program.normalBuffer()
   if (this.cursor._set) this.cursorReset()
   this.program.flush()
   if (process.platform === 'win32') {
     try {
-      cp.execSync('cls', { stdio: 'ignore', timeout: 1000 }) } catch (e) { }
+      cp.execSync('cls', { stdio: 'ignore', timeout: 1000 })
+    } catch (e) { }
   }
 }
 
@@ -291,13 +319,17 @@ Screen.prototype.postEnter = function () {
         self.saveFocus()
         self.debugLog.show()
         self.debugLog.setFront()
-        self.debugLog.focus() }
+        self.debugLog.focus()
+      }
       else {
         self.debugLog.hide()
-        self.restoreFocus() }
-      self.render() }
+        self.restoreFocus()
+      }
+      self.render()
+    }
     this.debugLog.key([ 'q', 'escape' ], self.debugLog.toggle)
-    this.key('f12', self.debugLog.toggle) }
+    this.key('f12', self.debugLog.toggle)
+  }
   if (this.options.warnings) {
     this.on('warning', function (text) {
       const warning = new Box({
@@ -318,10 +350,13 @@ Screen.prototype.postEnter = function () {
       self.render()
       const timeout = setTimeout(function () {
         warning.destroy()
-        self.render() }, 1500)
+        self.render()
+      }, 1500)
       if (timeout.unref) {
-        timeout.unref() }
-    }) }
+        timeout.unref()
+      }
+    })
+  }
 }
 
 Screen.prototype._destroy = Screen.prototype.destroy
@@ -351,27 +386,34 @@ Screen.prototype.destroy = function () {
     }
     this.destroyed = true
     this.emit('destroy')
-    this._destroy() }
-  this.program.destroy() }
+    this._destroy()
+  }
+  this.program.destroy()
+}
 
 Screen.prototype.log = function () {
-  return this.program.log.apply(this.program, arguments) }
+  return this.program.log.apply(this.program, arguments)
+}
 
 Screen.prototype.debug = function () {
   if (this.debugLog) {
-    this.debugLog.log.apply(this.debugLog, arguments) }
-  return this.program.debug.apply(this.program, arguments) }
+    this.debugLog.log.apply(this.debugLog, arguments)
+  }
+  return this.program.debug.apply(this.program, arguments)
+}
 
 Screen.prototype._listenMouse = function (el) {
   const self = this
   if (el && !~this.clickable.indexOf(el)) {
     el.clickable = true
-    this.clickable.push(el) }
+    this.clickable.push(el)
+  }
   if (this._listenedMouse) return
   this._listenedMouse = true
   this.program.enableMouse()
   if (this.options.sendFocus) {
-    this.program.setMouse({ sendFocus: true }, true) }
+    this.program.setMouse({ sendFocus: true }, true)
+  }
   this.on('render', function () {
     self._needsClickableSort = true
   })
@@ -413,7 +455,8 @@ Screen.prototype._listenMouse = function (el) {
           }
           if (self.hover !== el && !set) {
             if (self.hover) {
-              self.hover.emit('mouseout', data) }
+              self.hover.emit('mouseout', data)
+            }
             el.emit('mouseover', data)
             self.hover = el
           }
@@ -435,7 +478,8 @@ Screen.prototype._listenMouse = function (el) {
     }
 
     self.emit('mouse', data)
-    self.emit(data.action, data) })
+    self.emit(data.action, data)
+  })
 
   // Autofocus highest element.
   // this.on('element click', function(el, data) {
@@ -451,17 +495,21 @@ Screen.prototype._listenMouse = function (el) {
   // Autofocus elements with the appropriate option.
   this.on('element click', function (el) {
     if (el.clickable === true && el.options.autoFocus !== false) {
-      el.focus() }
-  }) }
+      el.focus()
+    }
+  })
+}
 
 Screen.prototype.enableMouse = function (el) {
-  this._listenMouse(el) }
+  this._listenMouse(el)
+}
 
 Screen.prototype._listenKeys = function (el) {
   const self = this
   if (el && !~this.keyable.indexOf(el)) {
     el.keyable = true
-    this.keyable.push(el) }
+    this.keyable.push(el)
+  }
   if (this._listenedKeys) return
   this._listenedKeys = true
 
@@ -480,7 +528,8 @@ Screen.prototype._listenKeys = function (el) {
       , grabKeys  = self.grabKeys
     if (!grabKeys || ~self.ignoreLocked.indexOf(key.full)) {
       self.emit('keypress', ch, key)
-      self.emit('key ' + key.full, ch, key) }
+      self.emit('key ' + key.full, ch, key)
+    }
 
     // If something changed from the screen key handler, stop.
     if (self.grabKeys !== grabKeys || self.lockKeys) {
@@ -488,15 +537,19 @@ Screen.prototype._listenKeys = function (el) {
     }
     if (focused && focused.keyable) {
       focused.emit('keypress', ch, key)
-      focused.emit('key ' + key.full, ch, key) }
-  }) }
+      focused.emit('key ' + key.full, ch, key)
+    }
+  })
+}
 
 Screen.prototype.enableKeys = function (el) {
-  this._listenKeys(el) }
+  this._listenKeys(el)
+}
 
 Screen.prototype.enableInput = function (el) {
   this._listenMouse(el)
-  this._listenKeys(el) }
+  this._listenKeys(el)
+}
 
 Screen.prototype._initHover = function () {
   const self = this
@@ -523,7 +576,8 @@ Screen.prototype._initHover = function () {
     if (self._hoverText.detached) return
     self._hoverText.rleft = data.x + 1
     self._hoverText.rtop = data.y
-    self.render() })
+    self.render()
+  })
   this.on('element mouseover', function (el, data) {
     if (!el._hoverOptions) return
     self._hoverText.parseTags = el.parseTags
@@ -531,11 +585,13 @@ Screen.prototype._initHover = function () {
     self.append(self._hoverText)
     self._hoverText.rleft = data.x + 1
     self._hoverText.rtop = data.y
-    self.render() })
+    self.render()
+  })
   this.on('element mouseout', function () {
     if (self._hoverText.detached) return
     self._hoverText.detach()
-    self.render() })
+    self.render()
+  })
 
   // XXX This can cause problems if the
   // terminal does not support allMotion.
@@ -544,7 +600,9 @@ Screen.prototype._initHover = function () {
     if (!self._hoverText.getContent()) return
     if (!el._hoverOptions) return
     self.append(self._hoverText)
-    self.render() }) }
+    self.render()
+  })
+}
 
 Screen.prototype.__defineGetter__('cols', function () {
   return this.program.cols
@@ -579,10 +637,12 @@ Screen.prototype.alloc = function (dirty) {
       this.olines[y][x] = [ this.dattr, ' ' ]
     }
   }
-  this.program.clear() }
+  this.program.clear()
+}
 
 Screen.prototype.realloc = function () {
-  return this.alloc(true) }
+  return this.alloc(true)
+}
 
 Screen.prototype.render = function () {
   const self = this
@@ -606,15 +666,18 @@ Screen.prototype.render = function () {
   })
   this._ci = -1
   if (this.screen.dockBorders) {
-    this._dockBorders() }
+    this._dockBorders()
+  }
   this.draw(0, this.lines.length - 1)
 
   // XXX Workaround to deal with cursor pos before the screen has rendered and
   // lpos is not reliable (stale).
   if (this.focused && this.focused._updateCursor) {
-    this.focused._updateCursor(true) }
+    this.focused._updateCursor(true)
+  }
   this.renders++
-  this.emit('render') }
+  this.emit('render')
+}
 
 Screen.prototype.blankLine = function (ch, dirty) {
   const out = []
@@ -639,7 +702,8 @@ Screen.prototype.insertLine = function (n, y, top, bottom) {
     this.lines.splice(y, 0, this.blankLine())
     this.lines.splice(j, 1)
     this.olines.splice(y, 0, this.blankLine())
-    this.olines.splice(j, 1) }
+    this.olines.splice(j, 1)
+  }
 }
 
 Screen.prototype.deleteLine = function (n, y, top, bottom) {
@@ -656,7 +720,8 @@ Screen.prototype.deleteLine = function (n, y, top, bottom) {
     this.lines.splice(j, 0, this.blankLine())
     this.lines.splice(y, 1)
     this.olines.splice(j, 0, this.blankLine())
-    this.olines.splice(y, 1) }
+    this.olines.splice(y, 1)
+  }
 }
 
 // This is how ncurses does it.
@@ -674,7 +739,8 @@ Screen.prototype.insertLineNC = function (n, y, top, bottom) {
     this.lines.splice(j, 0, this.blankLine())
     this.lines.splice(y, 1)
     this.olines.splice(j, 0, this.blankLine())
-    this.olines.splice(y, 1) }
+    this.olines.splice(y, 1)
+  }
 }
 
 // This is how ncurses does it.
@@ -692,21 +758,26 @@ Screen.prototype.deleteLineNC = function (n, y, top, bottom) {
     this.lines.splice(j, 0, this.blankLine())
     this.lines.splice(y, 1)
     this.olines.splice(j, 0, this.blankLine())
-    this.olines.splice(y, 1) }
+    this.olines.splice(y, 1)
+  }
 }
 
 Screen.prototype.insertBottom = function (top, bottom) {
-  return this.deleteLine(1, top, top, bottom) }
+  return this.deleteLine(1, top, top, bottom)
+}
 
 Screen.prototype.insertTop = function (top, bottom) {
-  return this.insertLine(1, top, top, bottom) }
+  return this.insertLine(1, top, top, bottom)
+}
 
 Screen.prototype.deleteBottom = function (top, bottom) {
-  return this.clearRegion(0, this.width, bottom, bottom) }
+  return this.clearRegion(0, this.width, bottom, bottom)
+}
 
 Screen.prototype.deleteTop = function (top, bottom) {
   // Same as: return this.insertBottom(top, bottom);
-  return this.deleteLine(1, top, top, bottom) }
+  return this.deleteLine(1, top, top, bottom)
+}
 
 // Parse the sides of an element to determine
 // whether an element has uniform cells on
@@ -1023,9 +1094,11 @@ Screen.prototype.draw = function (start, end) {
         if (this.tput.strings.parm_right_cursor) {
           out += y === ly
             ? this.tput.cuf(x - lx)
-            : this.tput.cup(y, x) }
+            : this.tput.cup(y, x)
+        }
         else {
-          out += this.tput.cup(y, x) }
+          out += this.tput.cup(y, x)
+        }
         lx = -1, ly = -1
       }
       o[x][0] = data
@@ -1202,17 +1275,20 @@ Screen.prototype.draw = function (start, end) {
     post += this.tput.rc()
     if (!this.program.cursorHidden) {
       pre += this.tput.civis()
-      post += this.tput.cnorm() }
+      post += this.tput.cnorm()
+    }
 
     // this.program.flush();
     // this.program._owrite(pre + main + post);
-    this.program._write(pre + main + post) }
+    this.program._write(pre + main + post)
+  }
 
   // this.emit('draw');
 }
 
 Screen.prototype._reduceColor = function (color) {
-  return colors.reduce(color, this.tput.colors) }
+  return colors.reduce(color, this.tput.colors)
+}
 
 // Convert an SGR string to our own attribute format.
 Screen.prototype.attrCode = function (code, cur, def) {
@@ -1420,27 +1496,33 @@ Screen.prototype.focusOffset = function (offset) {
     }
   }
 
-  return this.keyable[i].focus() }
+  return this.keyable[i].focus()
+}
 
 Screen.prototype.focusPrev =
   Screen.prototype.focusPrevious = function () {
-    return this.focusOffset(-1) }
+    return this.focusOffset(-1)
+  }
 
 Screen.prototype.focusNext = function () {
-  return this.focusOffset(1) }
+  return this.focusOffset(1)
+}
 
 Screen.prototype.focusPush = function (el) {
   if (!el) return
   const old = this.history[this.history.length - 1]
   if (this.history.length === 10) {
-    this.history.shift() }
+    this.history.shift()
+  }
   this.history.push(el)
-  this._focus(el, old) }
+  this._focus(el, old)
+}
 
 Screen.prototype.focusPop = function () {
   const old = this.history.pop()
   if (this.history.length) {
-    this._focus(this.history[this.history.length - 1], old) }
+    this._focus(this.history[this.history.length - 1], old)
+  }
   return old
 }
 
@@ -1467,7 +1549,8 @@ Screen.prototype.rewindFocus = function () {
     }
   }
   if (old) {
-    old.emit('blur') }
+    old.emit('blur')
+  }
 }
 
 Screen.prototype._focus = function (self, old) {
@@ -1486,27 +1569,33 @@ Screen.prototype._focus = function (self, old) {
     const visible = self.screen.height - el.atop - el.itop - el.abottom - el.ibottom
     if (self.rtop < el.childBase) {
       el.scrollTo(self.rtop)
-      self.screen.render() }
+      self.screen.render()
+    }
     else if (self.rtop + self.height - self.ibottom > el.childBase + visible) {
       // Explanation for el.itop here: takes into account scrollable elements
       // with borders otherwise the element gets covered by the bottom border:
       el.scrollTo(self.rtop - (el.height - self.height) + el.itop, true)
-      self.screen.render() }
+      self.screen.render()
+    }
   }
   if (old) {
-    old.emit('blur', self) }
+    old.emit('blur', self)
+  }
 
-  self.emit('focus', old) }
+  self.emit('focus', old)
+}
 
 Screen.prototype.__defineGetter__('focused', function () {
   return this.history[this.history.length - 1]
 })
 
 Screen.prototype.__defineSetter__('focused', function (el) {
-  return this.focusPush(el) })
+  return this.focusPush(el)
+})
 
 Screen.prototype.clearRegion = function (xi, xl, yi, yl, override) {
-  return this.fillRegion(this.dattr, ' ', xi, xl, yi, yl, override) }
+  return this.fillRegion(this.dattr, ' ', xi, xl, yi, yl, override)
+}
 
 Screen.prototype.fillRegion = function (attr, ch, xi, xl, yi, yl, override) {
   const lines = this.lines
@@ -1530,14 +1619,17 @@ Screen.prototype.fillRegion = function (attr, ch, xi, xl, yi, yl, override) {
 }
 
 Screen.prototype.key = function () {
-  return this.program.key.apply(this, arguments) }
+  return this.program.key.apply(this, arguments)
+}
 
 Screen.prototype.onceKey = function () {
-  return this.program.onceKey.apply(this, arguments) }
+  return this.program.onceKey.apply(this, arguments)
+}
 
 Screen.prototype.unkey =
   Screen.prototype.removeKey = function () {
-    return this.program.unkey.apply(this, arguments) }
+    return this.program.unkey.apply(this, arguments)
+  }
 
 Screen.prototype.spawn = function (file, args, options) {
   if (!Array.isArray(args)) {
@@ -1561,12 +1653,14 @@ Screen.prototype.spawn = function (file, args, options) {
   program.output.write = function () {}
   program.input.pause()
   if (program.input.setRawMode) {
-    program.input.setRawMode(false) }
+    program.input.setRawMode(false)
+  }
   const resume = function () {
     if (resume.done) return
     resume.done = true
     if (program.input.setRawMode) {
-      program.input.setRawMode(true) }
+      program.input.setRawMode(true)
+    }
     program.input.resume()
     program.output.write = write
 
@@ -1575,13 +1669,15 @@ Screen.prototype.spawn = function (file, args, options) {
     if (mouse) {
       program.enableMouse()
       if (screen.options.sendFocus) {
-        screen.program.setMouse({ sendFocus: true }, true) }
+        screen.program.setMouse({ sendFocus: true }, true)
+      }
     }
 
     screen.alloc()
     screen.render()
 
-    screen.program.lrestoreCursor('spawn', true) }
+    screen.program.lrestoreCursor('spawn', true)
+  }
 
   ps = spawn(file, args, options)
 
@@ -1597,11 +1693,13 @@ Screen.prototype.exec = function (file, args, options, callback) {
 
   ps.on('error', function (err) {
     if (!callback) return
-    return callback(err, false) })
+    return callback(err, false)
+  })
 
   ps.on('exit', function (code) {
     if (!callback) return
-    return callback(null, code === 0) })
+    return callback(null, code === 0)
+  })
 
   return ps
 }
@@ -1634,7 +1732,8 @@ Screen.prototype.readEditor = function (options, callback) {
 
   function writeFile(callback) {
     if (!options.value) return callback()
-    return fs.writeFile(file, options.value, callback) }
+    return fs.writeFile(file, options.value, callback)
+  }
 
   return writeFile(function (err) {
     if (err) return callback(err)
@@ -1644,12 +1743,18 @@ Screen.prototype.readEditor = function (options, callback) {
         return fs.unlink(file, function () {
           if (!success) return callback(new Error('Unsuccessful.'))
           if (err) return callback(err)
-          return callback(null, data) }) }) }) }) }
+          return callback(null, data)
+        })
+      })
+    })
+  })
+}
 
 Screen.prototype.displayImage = function (file, callback) {
   if (!file) {
     if (!callback) return
-    return callback(new Error('No image.')) }
+    return callback(new Error('No image.'))
+  }
 
   file = path.resolve(process.cwd(), file)
   if (!~file.indexOf('://')) {
@@ -1667,15 +1772,18 @@ Screen.prototype.displayImage = function (file, callback) {
 
   ps.on('error', function (err) {
     if (!callback) return
-    return callback(err) })
+    return callback(err)
+  })
 
   ps.on('exit', function (code) {
     if (!callback) return
     if (code !== 0) return callback(new Error('Exit Code: ' + code))
-    return callback(null, code === 0) })
+    return callback(null, code === 0)
+  })
 
   ps.stdin.write(input + '\n')
-  ps.stdin.end() }
+  ps.stdin.end()
+}
 
 Screen.prototype.setEffects = function (el, fel, over, out, effects, temp) {
   if (!effects) return
@@ -1703,7 +1811,8 @@ Screen.prototype.setEffects = function (el, fel, over, out, effects, temp) {
       tmp[key] = element.style[key]
       element.style[key] = val
     })
-    element.screen.render() })
+    element.screen.render()
+  })
 
   fel.on(out, function () {
     const element = el()
@@ -1723,7 +1832,9 @@ Screen.prototype.setEffects = function (el, fel, over, out, effects, temp) {
         element.style[key] = tmp[key]
       }
     })
-    element.screen.render() }) }
+    element.screen.render()
+  })
+}
 
 Screen.prototype.sigtstp = function (callback) {
   const self = this
@@ -1731,10 +1842,13 @@ Screen.prototype.sigtstp = function (callback) {
     self.alloc()
     self.render()
     self.program.lrestoreCursor('pause', true)
-    if (callback) callback() }) }
+    if (callback) callback()
+  })
+}
 
 Screen.prototype.copyToClipboard = function (text) {
-  return this.program.copyToClipboard(text) }
+  return this.program.copyToClipboard(text)
+}
 
 Screen.prototype.cursorShape = function (shape, blink) {
   const self = this
@@ -1748,7 +1862,8 @@ Screen.prototype.cursorShape = function (shape, blink) {
       this.program.hideCursor = function () {
         hideCursor.call(self.program)
         self.cursor._hidden = true
-        if (self.renders) self.render() }
+        if (self.renders) self.render()
+      }
     }
     if (!this.program.showCursor_old) {
       const showCursor = this.program.showCursor
@@ -1756,20 +1871,24 @@ Screen.prototype.cursorShape = function (shape, blink) {
       this.program.showCursor = function () {
         self.cursor._hidden = false
         if (self.program._exiting) showCursor.call(self.program)
-        if (self.renders) self.render() }
+        if (self.renders) self.render()
+      }
     }
     if (!this._cursorBlink) {
       this._cursorBlink = setInterval(function () {
         if (!self.cursor.blink) return
         self.cursor._state ^= 1
-        if (self.renders) self.render() }, 500)
+        if (self.renders) self.render()
+      }, 500)
       if (this._cursorBlink.unref) {
-        this._cursorBlink.unref() }
+        this._cursorBlink.unref()
+      }
     }
     return true
   }
 
-  return this.program.cursorShape(this.cursor.shape, this.cursor.blink) }
+  return this.program.cursorShape(this.cursor.shape, this.cursor.blink)
+}
 
 Screen.prototype.cursorColor = function (color) {
   this.cursor.color = color != null
@@ -1780,7 +1899,8 @@ Screen.prototype.cursorColor = function (color) {
     return true
   }
 
-  return this.program.cursorColor(colors.ncolors[this.cursor.color]) }
+  return this.program.cursorColor(colors.ncolors[this.cursor.color])
+}
 
 Screen.prototype.cursorReset =
   Screen.prototype.resetCursor = function () {
@@ -1805,7 +1925,8 @@ Screen.prototype.cursorReset =
       return true
     }
 
-    return this.program.cursorReset() }
+    return this.program.cursorReset()
+  }
 
 Screen.prototype._cursorAttr = function (cursor, dattr) {
   let attr = dattr || this.dattr
@@ -1901,7 +2022,8 @@ Screen.prototype.screenshot = function (xi, xl, yi, yl, term) {
             if (((_data >> 9) & 0x1ff) === 257) _data |= 0x1ff << 9
             if ((_data & 0x1ff) === 256) _data |= 0x1ff
           }
-          out += this.codeAttr(_data) }
+          out += this.codeAttr(_data)
+        }
       }
       if (this.fullUnicode) {
         if (unicode.charWidth(line[x][1]) === 2) {

@@ -20,7 +20,8 @@ const fs      = require('fs'),
 function OverlayImage(options) {
   const self = this
   if (!(this instanceof Node)) {
-    return new OverlayImage(options) }
+    return new OverlayImage(options)
+  }
   options = options || {}
 
   Box.call(this, options)
@@ -46,16 +47,20 @@ function OverlayImage(options) {
   }
   this.on('hide', function () {
     self._lastFile = self.file
-    self.clearImage() })
+    self.clearImage()
+  })
   this.on('show', function () {
     if (!self._lastFile) return
-    self.setImage(self._lastFile) })
+    self.setImage(self._lastFile)
+  })
   this.on('detach', function () {
     self._lastFile = self.file
-    self.clearImage() })
+    self.clearImage()
+  })
   this.on('attach', function () {
     if (!self._lastFile) return
-    self.setImage(self._lastFile) })
+    self.setImage(self._lastFile)
+  })
   this.onScreenEvent('resize', function () {
     self._needsRatio = true
   })
@@ -89,10 +94,12 @@ function OverlayImage(options) {
   this.onScreenEvent('render', function () {
     self.screen.program.flush()
     if (!self._noImage) {
-      self.setImage(self.file) }
+      self.setImage(self.file)
+    }
   })
   if (this.options.file || this.options.img) {
-    this.setImage(this.options.file || this.options.img) }
+    this.setImage(this.options.file || this.options.img)
+  }
 }
 
 OverlayImage.prototype.__proto__ = Box.prototype
@@ -110,12 +117,14 @@ OverlayImage.prototype.spawn = function (file, args, opt, callback) {
 
   ps.on('error', function (err) {
     if (!callback) return
-    return callback(err) })
+    return callback(err)
+  })
 
   ps.on('exit', function (code) {
     if (!callback) return
     if (code !== 0) return callback(new Error('Exit Code: ' + code))
-    return callback(null, code === 0) })
+    return callback(null, code === 0)
+  })
 
   return ps
 }
@@ -133,29 +142,34 @@ OverlayImage.prototype.setImage = function (img, callback) {
     self._queue = self._queue || []
     const item = self._queue.shift()
     if (item) {
-      self.setImage(item[0], item[1]) }
+      self.setImage(item[0], item[1])
+    }
   }
   if (OverlayImage.hasW3MDisplay === false) {
     reset()
     if (!callback) return
-    return callback(new Error('W3M Image Display not available.')) }
+    return callback(new Error('W3M Image Display not available.'))
+  }
   if (!img) {
     reset()
     if (!callback) return
-    return callback(new Error('No image.')) }
+    return callback(new Error('No image.'))
+  }
   this.file = img
 
   return this.getPixelRatio(function (err, ratio) {
     if (err) {
       reset()
       if (!callback) return
-      return callback(err) }
+      return callback(err)
+    }
 
     return self.renderImage(img, ratio, function (err, success) {
       if (err) {
         reset()
         if (!callback) return
-        return callback(err) }
+        return callback(err)
+      }
       if (self.shrink || self.options.autofit) {
         delete self.shrink
         delete self.options.shrink
@@ -164,7 +178,8 @@ OverlayImage.prototype.setImage = function (img, callback) {
           if (err) {
             reset()
             if (!callback) return
-            return callback(err) }
+            return callback(err)
+          }
           if (self._lastSize
             && ratio.tw === self._lastSize.tw
             && ratio.th === self._lastSize.th
@@ -174,7 +189,8 @@ OverlayImage.prototype.setImage = function (img, callback) {
             && self.atop === self._lastSize.atop) {
             reset()
             if (!callback) return
-            return callback(null, success) }
+            return callback(null, success)
+          }
 
           self._lastSize = {
             tw: ratio.tw,
@@ -193,26 +209,35 @@ OverlayImage.prototype.setImage = function (img, callback) {
           self._noImage = false
 
           reset()
-          return self.renderImage(img, ratio, callback) }) }
+          return self.renderImage(img, ratio, callback)
+        })
+      }
 
       reset()
       if (!callback) return
-      return callback(null, success) }) }) }
+      return callback(null, success)
+    })
+  })
+}
 
 OverlayImage.prototype.renderImage = function (img, ratio, callback) {
   const self = this
   if (cp.execSync) {
     callback = callback || function (err, result) { return result }
     try {
-      return callback(null, this.renderImageSync(img, ratio)) } catch (e) {
-      return callback(e) }
+      return callback(null, this.renderImageSync(img, ratio))
+    } catch (e) {
+      return callback(e)
+    }
   }
   if (OverlayImage.hasW3MDisplay === false) {
     if (!callback) return
-    return callback(new Error('W3M Image Display not available.')) }
+    return callback(new Error('W3M Image Display not available.'))
+  }
   if (!ratio) {
     if (!callback) return
-    return callback(new Error('No ratio.')) }
+    return callback(new Error('No ratio.'))
+  }
 
   // clearImage unsets these:
   const _file = self.file
@@ -231,7 +256,8 @@ OverlayImage.prototype.renderImage = function (img, ratio, callback) {
       if (!callback) return
       return err
         ? callback(err)
-        : callback(null, success) })
+        : callback(null, success)
+    })
     const width = self.width * ratio.tw | 0
       , height  = self.height * ratio.th | 0
       , aleft   = self.aleft * ratio.tw | 0
@@ -252,21 +278,27 @@ OverlayImage.prototype.renderImage = function (img, ratio, callback) {
     }
 
     ps.stdin.write(input)
-    ps.stdin.end() }) }
+    ps.stdin.end()
+  })
+}
 
 OverlayImage.prototype.clearImage = function (callback) {
   if (cp.execSync) {
     callback = callback || function (err, result) { return result }
     try {
-      return callback(null, this.clearImageSync()) } catch (e) {
-      return callback(e) }
+      return callback(null, this.clearImageSync())
+    } catch (e) {
+      return callback(e)
+    }
   }
   if (OverlayImage.hasW3MDisplay === false) {
     if (!callback) return
-    return callback(new Error('W3M Image Display not available.')) }
+    return callback(new Error('W3M Image Display not available.'))
+  }
   if (!this._props) {
     if (!callback) return
-    return callback(null) }
+    return callback(null)
+  }
   const opt = {
     stdio: 'pipe',
     env: process.env,
@@ -276,7 +308,8 @@ OverlayImage.prototype.clearImage = function (callback) {
     if (!callback) return
     return err
       ? callback(err)
-      : callback(null, success) })
+      : callback(null, success)
+  })
   let width  = this._props.width + 2
     , height = this._props.height + 2
     , aleft  = this._props.aleft
@@ -299,22 +332,27 @@ OverlayImage.prototype.clearImage = function (callback) {
   delete this._lastSize
 
   ps.stdin.write(input)
-  ps.stdin.end() }
+  ps.stdin.end()
+}
 
 OverlayImage.prototype.imageSize = function (callback) {
   const img = this.file
   if (cp.execSync) {
     callback = callback || function (err, result) { return result }
     try {
-      return callback(null, this.imageSizeSync()) } catch (e) {
-      return callback(e) }
+      return callback(null, this.imageSizeSync())
+    } catch (e) {
+      return callback(e)
+    }
   }
   if (OverlayImage.hasW3MDisplay === false) {
     if (!callback) return
-    return callback(new Error('W3M Image Display not available.')) }
+    return callback(new Error('W3M Image Display not available.'))
+  }
   if (!img) {
     if (!callback) return
-    return callback(new Error('No image.')) }
+    return callback(new Error('No image.'))
+  }
   const opt = {
     stdio: 'pipe',
     env: process.env,
@@ -331,7 +369,8 @@ OverlayImage.prototype.imageSize = function (callback) {
 
   ps.on('error', function (err) {
     if (!callback) return
-    return callback(err) })
+    return callback(err)
+  })
 
   ps.on('exit', function () {
     if (!callback) return
@@ -340,23 +379,28 @@ OverlayImage.prototype.imageSize = function (callback) {
       raw: buf.trim(),
       width: +size[0],
       height: +size[1]
-    }) })
+    })
+  })
   const input = '5;' + img + '\n'
 
   ps.stdin.write(input)
-  ps.stdin.end() }
+  ps.stdin.end()
+}
 
 OverlayImage.prototype.termSize = function (callback) {
   const self = this
   if (cp.execSync) {
     callback = callback || function (err, result) { return result }
     try {
-      return callback(null, this.termSizeSync()) } catch (e) {
-      return callback(e) }
+      return callback(null, this.termSizeSync())
+    } catch (e) {
+      return callback(e)
+    }
   }
   if (OverlayImage.hasW3MDisplay === false) {
     if (!callback) return
-    return callback(new Error('W3M Image Display not available.')) }
+    return callback(new Error('W3M Image Display not available.'))
+  }
   const opt = {
     stdio: 'pipe',
     env: process.env,
@@ -373,37 +417,44 @@ OverlayImage.prototype.termSize = function (callback) {
 
   ps.on('error', function (err) {
     if (!callback) return
-    return callback(err) })
+    return callback(err)
+  })
 
   ps.on('exit', function () {
     if (!callback) return
     if (!buf.trim()) {
       // Bug: w3mimgdisplay will sometimes
       // output nothing. Try again:
-      return self.termSize(callback) }
+      return self.termSize(callback)
+    }
     const size = buf.trim().split(/\s+/)
 
     return callback(null, {
       raw: buf.trim(),
       width: +size[0],
       height: +size[1]
-    }) })
+    })
+  })
 
-  ps.stdin.end() }
+  ps.stdin.end()
+}
 
 OverlayImage.prototype.getPixelRatio = function (callback) {
   const self = this
   if (cp.execSync) {
     callback = callback || function (err, result) { return result }
     try {
-      return callback(null, this.getPixelRatioSync()) } catch (e) {
-      return callback(e) }
+      return callback(null, this.getPixelRatioSync())
+    } catch (e) {
+      return callback(e)
+    }
   }
 
   // XXX We could cache this, but sometimes it's better
   // to recalculate to be pixel perfect.
   if (this._ratio && !this._needsRatio) {
-    return callback(null, this._ratio) }
+    return callback(null, this._ratio)
+  }
 
   return this.termSize(function (err, dimensions) {
     if (err) return callback(err)
@@ -415,13 +466,17 @@ OverlayImage.prototype.getPixelRatio = function (callback) {
 
     self._needsRatio = false
 
-    return callback(null, self._ratio) }) }
+    return callback(null, self._ratio)
+  })
+}
 
 OverlayImage.prototype.renderImageSync = function (img, ratio) {
   if (OverlayImage.hasW3MDisplay === false) {
-    throw new Error('W3M Image Display not available.') }
+    throw new Error('W3M Image Display not available.')
+  }
   if (!ratio) {
-    throw new Error('No ratio.') }
+    throw new Error('No ratio.')
+  }
 
   // clearImage unsets these:
   const _file = this.file
@@ -453,14 +508,16 @@ OverlayImage.prototype.renderImageSync = function (img, ratio) {
       encoding: 'utf8',
       input: input,
       timeout: 1000
-    }) } catch (e) { }
+    })
+  } catch (e) { }
 
   return true
 }
 
 OverlayImage.prototype.clearImageSync = function () {
   if (OverlayImage.hasW3MDisplay === false) {
-    throw new Error('W3M Image Display not available.') }
+    throw new Error('W3M Image Display not available.')
+  }
   if (!this._props) {
     return false
   }
@@ -491,7 +548,8 @@ OverlayImage.prototype.clearImageSync = function () {
       encoding: 'utf8',
       input: input,
       timeout: 1000
-    }) } catch (e) { }
+    })
+  } catch (e) { }
 
   return true
 }
@@ -499,9 +557,11 @@ OverlayImage.prototype.clearImageSync = function () {
 OverlayImage.prototype.imageSizeSync = function () {
   const img = this.file
   if (OverlayImage.hasW3MDisplay === false) {
-    throw new Error('W3M Image Display not available.') }
+    throw new Error('W3M Image Display not available.')
+  }
   if (!img) {
-    throw new Error('No image.') }
+    throw new Error('No image.')
+  }
   let buf = ''
   const input = '5;' + img + '\n'
 
@@ -511,7 +571,8 @@ OverlayImage.prototype.imageSizeSync = function () {
       encoding: 'utf8',
       input: input,
       timeout: 1000
-    }) } catch (e) { }
+    })
+  } catch (e) { }
   const size = buf.trim().split(/\s+/)
 
   return {
@@ -523,7 +584,8 @@ OverlayImage.prototype.imageSizeSync = function () {
 
 OverlayImage.prototype.termSizeSync = function (_, recurse) {
   if (OverlayImage.hasW3MDisplay === false) {
-    throw new Error('W3M Image Display not available.') }
+    throw new Error('W3M Image Display not available.')
+  }
   let buf = ''
 
   try {
@@ -531,14 +593,17 @@ OverlayImage.prototype.termSizeSync = function (_, recurse) {
       env: process.env,
       encoding: 'utf8',
       timeout: 1000
-    }) } catch (e) { }
+    })
+  } catch (e) { }
   if (!buf.trim()) {
     // Bug: w3mimgdisplay will sometimes
     // output nothing. Try again:
     recurse = recurse || 0
     if (++recurse === 5) {
-      throw new Error('Term size not determined.') }
-    return this.termSizeSync(_, recurse) }
+      throw new Error('Term size not determined.')
+    }
+    return this.termSizeSync(_, recurse)
+  }
   const size = buf.trim().split(/\s+/)
 
   return {
@@ -565,7 +630,8 @@ OverlayImage.prototype.getPixelRatioSync = function () {
 }
 
 OverlayImage.prototype.displayImage = function (callback) {
-  return this.screen.displayImage(this.file, callback) }
+  return this.screen.displayImage(this.file, callback)
+}
 
 /**
  * Expose

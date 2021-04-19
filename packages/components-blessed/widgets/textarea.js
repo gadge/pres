@@ -17,8 +17,7 @@ const
 
 function Textarea(options) {
   const self = this
-  if (!(this instanceof Node)) {
-    return new Textarea(options) }
+  if (!(this instanceof Node)) { return new Textarea(options) }
   options = options || {}
   options.scrollable = options.scrollable !== false
 
@@ -28,21 +27,21 @@ function Textarea(options) {
   this.__updateCursor = this._updateCursor.bind(this)
   this.on('resize', this.__updateCursor)
   this.on('move', this.__updateCursor)
-  if (options.inputOnFocus) {
-    this.on('focus', this.readInput.bind(this, null)) }
+  if (options.inputOnFocus) { this.on('focus', this.readInput.bind(this, null)) }
   if (!options.inputOnFocus && options.keys) {
     this.on('keypress', function (ch, key) {
       if (self._reading) return
-      if (key.name === 'enter' || (options.vi && key.name === 'i')) {
-        return self.readInput() }
-      if (key.name === 'e') {
-        return self.readEditor() }
-    }) }
+      if (key.name === 'enter' || (options.vi && key.name === 'i')) { return self.readInput() }
+      if (key.name === 'e') { return self.readEditor() }
+    })
+  }
   if (options.mouse) {
     this.on('click', function (data) {
       if (self._reading) return
       if (data.button !== 'right') return
-      self.readEditor() }) }
+      self.readEditor()
+    })
+  }
 }
 
 Textarea.prototype.__proto__ = Input.prototype
@@ -88,18 +87,23 @@ Textarea.prototype._updateCursor = function (get) {
   }
   if (cy === program.y) {
     if (cx > program.x) {
-      program.cuf(cx - program.x) }
+      program.cuf(cx - program.x)
+    }
     else if (cx < program.x) {
-      program.cub(program.x - cx) }
+      program.cub(program.x - cx)
+    }
   }
   else if (cx === program.x) {
     if (cy > program.y) {
-      program.cud(cy - program.y) }
+      program.cud(cy - program.y)
+    }
     else if (cy < program.y) {
-      program.cuu(program.y - cy) }
+      program.cuu(program.y - cy)
+    }
   }
   else {
-    program.cup(cy, cx) }
+    program.cup(cy, cx)
+  }
 }
 
 Textarea.prototype.input =
@@ -113,7 +117,8 @@ Textarea.prototype.input =
       this._callback = callback
       if (!focused) {
         this.screen.saveFocus()
-        this.focus() }
+        this.focus()
+      }
       this.screen.grabKeys = true
       this._updateCursor()
       this.screen.program.showCursor()
@@ -137,33 +142,41 @@ Textarea.prototype.input =
         self.screen.program.hideCursor()
         self.screen.grabKeys = false
         if (!focused) {
-          self.screen.restoreFocus() }
+          self.screen.restoreFocus()
+        }
         if (self.options.inputOnFocus) {
-          self.screen.rewindFocus() }
+          self.screen.rewindFocus()
+        }
 
         // Ugly
         if (err === 'stop') return
         if (err) {
-          self.emit('error', err) }
+          self.emit('error', err)
+        }
         else if (value != null) {
-          self.emit('submit', value) }
+          self.emit('submit', value)
+        }
         else {
-          self.emit('cancel', value) }
+          self.emit('cancel', value)
+        }
         self.emit('action', value)
         if (!callback) return
 
         return err
           ? callback(err)
-          : callback(null, value) }
+          : callback(null, value)
+      }
 
       // Put this in a nextTick so the current
       // key event doesn't trigger any keys input.
       nextTick(function () {
         // console.log('>>> calling nextTick in TextArea')
         self.__listener = self._listener.bind(self)
-        self.on('keypress', self.__listener) })
+        self.on('keypress', self.__listener)
+      })
       this.__done = this._done.bind(this, null, null)
-      this.on('blur', this.__done) }
+      this.on('blur', this.__done)
+    }
 
 Textarea.prototype._listener = function (ch, key) {
   // console.log('>>> calling _listener in TextArea')
@@ -179,18 +192,22 @@ Textarea.prototype._listener = function (ch, key) {
   // TODO: Optimize typing by writing directly
   // to the screen and screen buffer here.
   if (key.name === 'escape') {
-    done(null, null) }
+    done(null, null)
+  }
   else if (key.name === 'backspace') {
     if (this.value.length) {
       if (this.screen.fullUnicode) {
         if (unicode.isSurrogate(this.value, this.value.length - 2)) {
           // || unicode.isCombining(this.value, this.value.length - 1)) {
-          this.value = this.value.slice(0, -2) }
+          this.value = this.value.slice(0, -2)
+        }
         else {
-          this.value = this.value.slice(0, -1) }
+          this.value = this.value.slice(0, -1)
+        }
       }
       else {
-        this.value = this.value.slice(0, -1) }
+        this.value = this.value.slice(0, -1)
+      }
     }
   }
   else if (ch) {
@@ -199,14 +216,16 @@ Textarea.prototype._listener = function (ch, key) {
     }
   }
   if (this.value !== value) {
-    this.screen.render() }
+    this.screen.render()
+  }
 }
 
 Textarea.prototype._typeScroll = function () {
   // XXX Workaround
   const height = this.height - this.iheight
   if (this._clines.length - this.childBase > height) {
-    this.scroll(this._clines.length) }
+    this.scroll(this._clines.length)
+  }
 }
 
 Textarea.prototype.getValue = function () {
@@ -222,24 +241,29 @@ Textarea.prototype.setValue = function (value) {
     this._value = value
     this.setContent(this.value)
     this._typeScroll()
-    this._updateCursor() }
+    this._updateCursor()
+  }
 }
 
 Textarea.prototype.clearInput =
   Textarea.prototype.clearValue = function () {
-    return this.setValue('') }
+    return this.setValue('')
+  }
 
 Textarea.prototype.submit = function () {
   if (!this.__listener) return
-  return this.__listener('\x1b', { name: 'escape' }) }
+  return this.__listener('\x1b', { name: 'escape' })
+}
 
 Textarea.prototype.cancel = function () {
   if (!this.__listener) return
-  return this.__listener('\x1b', { name: 'escape' }) }
+  return this.__listener('\x1b', { name: 'escape' })
+}
 
 Textarea.prototype.render = function () {
   this.setValue()
-  return this._render() }
+  return this._render()
+}
 
 Textarea.prototype.editor =
   Textarea.prototype.setEditor =
@@ -253,7 +277,8 @@ Textarea.prototype.editor =
 
         callback = function (err, value) {
           if (_cb) _cb(err, value)
-          if (cb) cb(err, value) }
+          if (cb) cb(err, value)
+        }
       }
       if (!callback) {
         callback = function () {}
@@ -263,13 +288,17 @@ Textarea.prototype.editor =
         if (err) {
           if (err.message === 'Unsuccessful.') {
             self.screen.render()
-            return self.readInput(callback) }
+            return self.readInput(callback)
+          }
           self.screen.render()
           self.readInput(callback)
-          return callback(err) }
+          return callback(err)
+        }
         self.setValue(value)
         self.screen.render()
-        return self.readInput(callback) }) }
+        return self.readInput(callback)
+      })
+    }
 
 /**
  * Expose

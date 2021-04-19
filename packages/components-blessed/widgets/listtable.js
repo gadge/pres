@@ -15,8 +15,7 @@ const
 
 function ListTable(options) {
   const self = this
-  if (!(this instanceof Node)) {
-    return new ListTable(options) }
+  if (!(this instanceof Node)) { return new ListTable(options) }
   options = options || {}
 
   // options.shrink = true;
@@ -52,20 +51,20 @@ function ListTable(options) {
   this.on('scroll', function () {
     self._header.setFront()
     self._header.rtop = self.childBase
-    if (!self.screen.autoPadding) {
-      self._header.rtop = self.childBase + (self.border ? 1 : 0) }
+    if (!self.screen.autoPadding) { self._header.rtop = self.childBase + (self.border ? 1 : 0) }
   })
   this.pad = options.pad != null
     ? options.pad
     : 2
   this.setData(options.rows || options.data)
-  this.on('attach', function () {
-    self.setData(self.rows) })
+  this.on('attach', function () { self.setData(self.rows) })
   this.on('resize', function () {
     const selected = self.selected
     self.setData(self.rows)
     self.select(selected)
-    self.screen.render() }) }
+    self.screen.render()
+  })
+}
 
 ListTable.prototype.__proto__ = List.prototype
 
@@ -80,8 +79,7 @@ ListTable.prototype.setRows =
       , selected = this.selected
       , original = this.items.slice()
     let sel = this.ritems[this.selected]
-    if (this.visible && this.lpos) {
-      this.clearPos() }
+    if (this.visible && this.lpos) { this.clearPos() }
     this.clearItems()
     this.rows = rows || []
     this._calculateMaxes()
@@ -128,20 +126,25 @@ ListTable.prototype.setRows =
         text += cell
       })
       if (isHeader) {
-        self._header.setContent(text) }
+        self._header.setContent(text)
+      }
       else {
-        self.addItem(text) }
+        self.addItem(text)
+      }
     })
     this._header.setFront()
 
     // Try to find our old item if it still exists.
     sel = this.ritems.indexOf(sel)
     if (~sel) {
-      this.select(sel) }
+      this.select(sel)
+    }
     else if (this.items.length === original.length) {
-      this.select(selected) }
+      this.select(selected)
+    }
     else {
-      this.select(Math.min(selected, this.items.length - 1)) }
+      this.select(Math.min(selected, this.items.length - 1))
+    }
   }
 
 ListTable.prototype._select = ListTable.prototype.select
@@ -150,8 +153,10 @@ ListTable.prototype.select = function (i) {
     i = 1
   }
   if (i <= this.childBase) {
-    this.setScroll(this.childBase - 1) }
-  return this._select(i) }
+    this.setScroll(this.childBase - 1)
+  }
+  return this._select(i)
+}
 
 ListTable.prototype.render = function () {
   const self = this
@@ -230,7 +235,8 @@ ListTable.prototype.render = function () {
       }
       lines[yi + ry][xi + rx][1] = '\u2502' // '│'
       lines[yi + ry].dirty = true
-    }) }
+    })
+  }
 
   return coords
 }

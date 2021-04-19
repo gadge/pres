@@ -14,11 +14,13 @@ const
 
 function RadioSet(options) {
   if (!(this instanceof Node)) {
-    return new RadioSet(options) }
+    return new RadioSet(options)
+  }
   options = options || {}
   // Possibly inherit parent's style.
   // options.style = this.parent.style;
-  Box.call(this, options) }
+  Box.call(this, options)
+}
 
 RadioSet.prototype.__proto__ = Box.prototype
 

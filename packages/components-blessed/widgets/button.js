@@ -14,7 +14,8 @@ const
 function Button(options) {
   const self = this
   if (!(this instanceof Node)) {
-    return new Button(options) }
+    return new Button(options)
+  }
   options = options || {}
   if (options.autoFocus == null) {
     options.autoFocus = false
@@ -23,11 +24,14 @@ function Button(options) {
   Input.call(this, options)
   this.on('keypress', function (ch, key) {
     if (key.name === 'enter' || key.name === 'space') {
-      return self.press() }
+      return self.press()
+    }
   })
   if (this.options.mouse) {
     this.on('click', function () {
-      return self.press() }) }
+      return self.press()
+    })
+  }
 }
 
 Button.prototype.__proto__ = Input.prototype

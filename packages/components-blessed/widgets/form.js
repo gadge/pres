@@ -14,7 +14,8 @@ const
 function Form(options) {
   const self = this
   if (!(this instanceof Node)) {
-    return new Form(options) }
+    return new Form(options)
+  }
   options = options || {}
   options.ignoreKeys = true
   Box.call(this, options)
@@ -29,8 +30,10 @@ function Form(options) {
           if (key.name === 'j') return
           if (key.name === 'tab') {
             // Workaround, since we can't stop the tab from being added.
-            el.emit('keypress', null, { name: 'backspace' }) }
-          el.emit('keypress', '\x1b', { name: 'escape' }) }
+            el.emit('keypress', null, { name: 'backspace' })
+          }
+          el.emit('keypress', '\x1b', { name: 'escape' })
+        }
         self.focusNext()
         return
       }
@@ -39,7 +42,8 @@ function Form(options) {
         || (options.vi && key.name === 'k')) {
         if (el.type === 'textbox' || el.type === 'textarea') {
           if (key.name === 'k') return
-          el.emit('keypress', '\x1b', { name: 'escape' }) }
+          el.emit('keypress', '\x1b', { name: 'escape' })
+        }
         self.focusPrevious()
         return
       }
@@ -47,7 +51,8 @@ function Form(options) {
         self.focus()
         return
       }
-    }) }
+    })
+  }
 }
 
 Form.prototype.__proto__ = Box.prototype
@@ -63,7 +68,8 @@ Form.prototype._refresh = function () {
     const out = []
     this.children.forEach(function fn(el) {
       if (el.keyable) out.push(el)
-      el.children.forEach(fn) })
+      el.children.forEach(fn)
+    })
     this._children = out
   }
 }
@@ -114,11 +120,13 @@ Form.prototype.previous = function () {
 
 Form.prototype.focusNext = function () {
   const next = this.next()
-  if (next) next.focus() }
+  if (next) next.focus()
+}
 
 Form.prototype.focusPrevious = function () {
   const previous = this.previous()
-  if (previous) previous.focus() }
+  if (previous) previous.focus()
+}
 
 Form.prototype.resetSelected = function () {
   this._selected = null
@@ -126,11 +134,13 @@ Form.prototype.resetSelected = function () {
 
 Form.prototype.focusFirst = function () {
   this.resetSelected()
-  this.focusNext() }
+  this.focusNext()
+}
 
 Form.prototype.focusLast = function () {
   this.resetSelected()
-  this.focusPrevious() }
+  this.focusPrevious()
+}
 
 Form.prototype.submit = function () {
   const out = {}
@@ -138,7 +148,8 @@ Form.prototype.submit = function () {
     if (el.value != null) {
       const name = el.name || el.type
       if (Array.isArray(out[name])) {
-        out[name].push(el.value) }
+        out[name].push(el.value)
+      }
       else if (out[name]) {
         out[name] = [ out[name], el.value ]
       }
@@ -146,14 +157,16 @@ Form.prototype.submit = function () {
         out[name] = el.value
       }
     }
-    el.children.forEach(fn) })
+    el.children.forEach(fn)
+  })
   this.emit('submit', out)
 
   return this.submission = out
 }
 
 Form.prototype.cancel = function () {
-  this.emit('cancel') }
+  this.emit('cancel')
+}
 
 Form.prototype.reset = function () {
   this.children.forEach(function fn(el) {
@@ -221,8 +234,10 @@ Form.prototype.reset = function () {
         //el.clearImage();
         return
     }
-    el.children.forEach(fn) })
-  this.emit('reset') }
+    el.children.forEach(fn)
+  })
+  this.emit('reset')
+}
 
 /**
  * Expose

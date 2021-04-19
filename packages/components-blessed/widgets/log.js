@@ -17,7 +17,8 @@ const
 function Log(options) {
   const self = this
   if (!(this instanceof Node)) {
-    return new Log(options) }
+    return new Log(options)
+  }
   options = options || {}
 
   ScrollableText.call(this, options)
@@ -30,8 +31,11 @@ function Log(options) {
       nextTick(function () {
         self.setScrollPerc(100)
         self._userScrolled = false
-        self.screen.render() }) }
-  }) }
+        self.screen.render()
+      })
+    }
+  })
+}
 
 Log.prototype.__proto__ = ScrollableText.prototype
 
@@ -41,12 +45,14 @@ Log.prototype.log =
   Log.prototype.add = function () {
     const args = Array.prototype.slice.call(arguments)
     if (typeof args[0] === 'object') {
-      args[0] = util.inspect(args[0], true, 20, true) }
+      args[0] = util.inspect(args[0], true, 20, true)
+    }
     const text = util.format.apply(util, args)
     this.emit('log', text)
     const ret = this.pushLine(text)
     if (this._clines.fake.length > this.scrollback) {
-      this.shiftLine(0, (this.scrollback / 3) | 0) }
+      this.shiftLine(0, (this.scrollback / 3) | 0)
+    }
     return ret
   }
 

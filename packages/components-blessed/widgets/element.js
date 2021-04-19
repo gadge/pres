@@ -19,7 +19,8 @@ const
 function Element(options) {
   const self = this
   if (!(this instanceof Node)) {
-    return new Element(options) }
+    return new Element(options)
+  }
   options = options || {}
 
   // Workaround to get a `scrollable` option.
@@ -29,7 +30,8 @@ function Element(options) {
       .getOwnPropertyNames(ScrollableBox.prototype)
       .forEach(function (key) {
         if (key === 'type') return
-        Object.defineProperty(this, key, Object.getOwnPropertyDescriptor(ScrollableBox.prototype, key)) }, this)
+        Object.defineProperty(this, key, Object.getOwnPropertyDescriptor(ScrollableBox.prototype, key))
+      }, this)
     this._ignore = true
     ScrollableBox.call(this, options)
     delete this._ignore
@@ -119,15 +121,19 @@ function Element(options) {
 
   // if (options.mouse || options.clickable) {
   if (options.clickable) {
-    this.screen._listenMouse(this) }
+    this.screen._listenMouse(this)
+  }
   if (options.input || options.keyable) {
-    this.screen._listenKeys(this) }
+    this.screen._listenKeys(this)
+  }
   this.parseTags = options.parseTags || options.tags
   this.setContent(options.content || '', true)
   if (options.label) {
-    this.setLabel(options.label) }
+    this.setLabel(options.label)
+  }
   if (options.hoverText) {
-    this.setHover(options.hoverText) }
+    this.setHover(options.hoverText)
+  }
 
   // TODO: Possibly move this to Node for onScreenEvent('mouse', ...).
   this.on('newListener', function fn(type) {
@@ -142,14 +148,18 @@ function Element(options) {
       || type === 'wheeldown'
       || type === 'wheelup'
       || type === 'mousemove') {
-      self.screen._listenMouse(self) }
+      self.screen._listenMouse(self)
+    }
     else if (type === 'keypress' || type.indexOf('key ') === 0) {
-      self.screen._listenKeys(self) }
+      self.screen._listenKeys(self)
+    }
   })
   this.on('resize', function () {
-    self.parseContent() })
+    self.parseContent()
+  })
   this.on('attach', function () {
-    self.parseContent() })
+    self.parseContent()
+  })
   this.on('detach', function () {
     delete self.lpos
   })
@@ -171,12 +181,14 @@ function Element(options) {
   [ [ 'hoverEffects', 'mouseover', 'mouseout', '_htemp' ],
     [ 'focusEffects', 'focus', 'blur', '_ftemp' ] ].forEach(function (props) {
     const pname = props[0], over = props[1], out = props[2], temp = props[3]
-    self.screen.setEffects(self, self, over, out, self.options[pname], temp) })
+    self.screen.setEffects(self, self, over, out, self.options[pname], temp)
+  })
   if (this.options.draggable) {
     this.draggable = true
   }
   if (options.focused) {
-    this.focus() }
+    this.focus()
+  }
 }
 
 Element.prototype.__proto__ = Node.prototype
@@ -218,12 +230,14 @@ Element.prototype.sattr = function (style, fg, bg) {
     | ((underline ? 2 : 0) << 18)
     | ((bold ? 1 : 0) << 18)
     | (colors.convert(fg) << 9)
-    | colors.convert(bg) }
+    | colors.convert(bg)
+}
 
 Element.prototype.onScreenEvent = function (type, handler) {
   const listeners = this._slisteners = this._slisteners || []
   listeners.push({ type: type, handler: handler })
-  this.screen.on(type, handler) }
+  this.screen.on(type, handler)
+}
 
 Element.prototype.onceScreenEvent = function (type, handler) {
   const listeners = this._slisteners = this._slisteners || []
@@ -232,7 +246,9 @@ Element.prototype.onceScreenEvent = function (type, handler) {
   this.screen.once(type, function () {
     const i = listeners.indexOf(entry)
     if (~i) listeners.splice(i, 1)
-    return handler.apply(this, arguments) }) }
+    return handler.apply(this, arguments)
+  })
+}
 
 Element.prototype.removeScreenEvent = function (type, handler) {
   const listeners = this._slisteners = this._slisteners || []
@@ -246,13 +262,15 @@ Element.prototype.removeScreenEvent = function (type, handler) {
       break
     }
   }
-  this.screen.removeListener(type, handler) }
+  this.screen.removeListener(type, handler)
+}
 
 Element.prototype.free = function () {
   const listeners = this._slisteners = this._slisteners || []
   for (let i = 0; i < listeners.length; i++) {
     const listener = listeners[i]
-    this.screen.removeListener(listener.type, listener.handler) }
+    this.screen.removeListener(listener.type, listener.handler)
+  }
   delete this._slisteners
 }
 
@@ -262,16 +280,19 @@ Element.prototype.hide = function () {
   this.hidden = true
   this.emit('hide')
   if (this.screen.focused === this) {
-    this.screen.rewindFocus() }
+    this.screen.rewindFocus()
+  }
 }
 
 Element.prototype.show = function () {
   if (!this.hidden) return
   this.hidden = false
-  this.emit('show') }
+  this.emit('show')
+}
 
 Element.prototype.toggle = function () {
-  return this.hidden ? this.show() : this.hide() }
+  return this.hidden ? this.show() : this.hide()
+}
 
 Element.prototype.focus = function () {
   return this.screen.focused = this
@@ -281,19 +302,23 @@ Element.prototype.setContent = function (content, noClear, noTags) {
   if (!noClear) this.clearPos()
   this.content = content || ''
   this.parseContent(noTags)
-  this.emit('set content') }
+  this.emit('set content')
+}
 
 Element.prototype.getContent = function () {
   if (!this._clines) return ''
-  return this._clines.fake.join('\n') }
+  return this._clines.fake.join('\n')
+}
 
 Element.prototype.setText = function (content, noClear) {
   content = content || ''
   content = content.replace(/\x1b\[[\d;]*m/g, '')
-  return this.setContent(content, noClear, true) }
+  return this.setContent(content, noClear, true)
+}
 
 Element.prototype.getText = function () {
-  return this.getContent().replace(/\x1b\[[\d;]*m/g, '') }
+  return this.getContent().replace(/\x1b\[[\d;]*m/g, '')
+}
 
 Element.prototype.parseContent = function (noTags) {
   if (this.detached) return false
@@ -314,7 +339,8 @@ Element.prototype.parseContent = function (noTags) {
       content = content.replace(unicode.chars.all, '$1\x03')
       // iTerm2 cannot render combining characters properly.
       if (this.screen.program.isiTerm2) {
-        content = content.replace(unicode.chars.combining, '') }
+        content = content.replace(unicode.chars.combining, '')
+      }
     }
     else {
       // no double-width: replace them with question-marks.
@@ -418,7 +444,8 @@ Element.prototype._parseTags = function (text) {
             // }
             state.pop()
             if (state.length) {
-              out += program._attr(state[state.length - 1]) }
+              out += program._attr(state[state.length - 1])
+            }
             else {
               out += attr
             }
@@ -657,7 +684,8 @@ Element.prototype._wrapContent = function (content, width) {
 
       out.push(this._align(line, width, align))
       ftor[no].push(out.length - 1)
-      rtof.push(no) }
+      rtof.push(no)
+    }
 
   out.rtof = rtof
   out.ftor = ftor
@@ -695,21 +723,25 @@ Element.prototype.__defineGetter__('_detached', function () {
 })
 
 Element.prototype.enableMouse = function () {
-  this.screen._listenMouse(this) }
+  this.screen._listenMouse(this)
+}
 
 Element.prototype.enableKeys = function () {
-  this.screen._listenKeys(this) }
+  this.screen._listenKeys(this)
+}
 
 Element.prototype.enableInput = function () {
   this.screen._listenMouse(this)
-  this.screen._listenKeys(this) }
+  this.screen._listenKeys(this)
+}
 
 Element.prototype.__defineGetter__('draggable', function () {
   return this._draggable === true
 })
 
 Element.prototype.__defineSetter__('draggable', function (draggable) {
-  return draggable ? this.enableDrag(draggable) : this.disableDrag() })
+  return draggable ? this.enableDrag(draggable) : this.disableDrag()
+})
 
 Element.prototype.enableDrag = function (verify) {
   const self = this
@@ -726,7 +758,8 @@ Element.prototype.enableDrag = function (verify) {
       x: data.x - self.aleft,
       y: data.y - self.atop
     }
-    self.setFront() })
+    self.setFront()
+  })
   this.onScreenEvent('mouse', this._dragM = function (data) {
     if (self.screen._dragging !== self) return
     if (data.action !== 'mousedown' && data.action !== 'mousemove') {
@@ -746,19 +779,22 @@ Element.prototype.enableDrag = function (verify) {
       , y    = data.y - py - oy
     if (self.position.right != null) {
       if (self.position.left != null) {
-        self.width = '100%-' + (self.parent.width - self.width) }
+        self.width = '100%-' + (self.parent.width - self.width)
+      }
       self.position.right = null
     }
     if (self.position.bottom != null) {
       if (self.position.top != null) {
-        self.height = '100%-' + (self.parent.height - self.height) }
+        self.height = '100%-' + (self.parent.height - self.height)
+      }
       self.position.bottom = null
     }
 
     self.rleft = x
     self.rtop = y
 
-    self.screen.render() })
+    self.screen.render()
+  })
 
   return this._draggable = true
 }
@@ -773,14 +809,17 @@ Element.prototype.disableDrag = function () {
 }
 
 Element.prototype.key = function () {
-  return this.screen.program.key.apply(this, arguments) }
+  return this.screen.program.key.apply(this, arguments)
+}
 
 Element.prototype.onceKey = function () {
-  return this.screen.program.onceKey.apply(this, arguments) }
+  return this.screen.program.onceKey.apply(this, arguments)
+}
 
 Element.prototype.unkey =
   Element.prototype.removeKey = function () {
-    return this.screen.program.unkey.apply(this, arguments) }
+    return this.screen.program.unkey.apply(this, arguments)
+  }
 
 Element.prototype.setIndex = function (index) {
   if (!this.parent) return
@@ -793,13 +832,16 @@ Element.prototype.setIndex = function (index) {
   const i = this.parent.children.indexOf(this)
   if (!~i) return
   const item = this.parent.children.splice(i, 1)[0]
-  this.parent.children.splice(index, 0, item) }
+  this.parent.children.splice(index, 0, item)
+}
 
 Element.prototype.setFront = function () {
-  return this.setIndex(-1) }
+  return this.setIndex(-1)
+}
 
 Element.prototype.setBack = function () {
-  return this.setIndex(0) }
+  return this.setIndex(0)
+}
 
 Element.prototype.clearPos = function (get, override) {
   if (this.detached) return
@@ -808,7 +850,8 @@ Element.prototype.clearPos = function (get, override) {
   this.screen.clearRegion(
     lpos.xi, lpos.xl,
     lpos.yi, lpos.yl,
-    override) }
+    override)
+}
 
 Element.prototype.setLabel = function (options) {
   const self = this
@@ -862,13 +905,19 @@ Element.prototype.setLabel = function (options) {
   const reposition = function () {
     self._label.rtop = (self.childBase || 0) - self.itop
     if (!self.screen.autoPadding) {
-      self._label.rtop = (self.childBase || 0) }
-    self.screen.render() }
+      self._label.rtop = (self.childBase || 0)
+    }
+    self.screen.render()
+  }
   this.on('scroll', this._labelScroll = function () {
-    reposition() })
+    reposition()
+  })
   this.on('resize', this._labelResize = function () {
     nextTick(function () {
-      reposition() }) }) }
+      reposition()
+    })
+  })
+}
 
 Element.prototype.removeLabel = function () {
   if (!this._label) return
@@ -886,13 +935,15 @@ Element.prototype.setHover = function (options) {
   }
   this._hoverOptions = options
   this.enableMouse()
-  this.screen._initHover() }
+  this.screen._initHover()
+}
 
 Element.prototype.removeHover = function () {
   delete this._hoverOptions
   if (!this.screen._hoverText || this.screen._hoverText.detached) return
   this.screen._hoverText.detach()
-  this.screen.render() }
+  this.screen.render()
+}
 
 /**
  * Positioning
@@ -962,7 +1013,8 @@ Element.prototype._getWidth = function (get) {
       left = expr[0]
       left = +left.slice(0, -1) / 100
       left = parent.width * left | 0
-      left += +(expr[1] || 0) }
+      left += +(expr[1] || 0)
+    }
     width = parent.width - (this.position.right || 0) - left
     if (this.screen.autoPadding) {
       if ((this.position.left != null || this.position.right == null)
@@ -977,7 +1029,8 @@ Element.prototype._getWidth = function (get) {
 }
 
 Element.prototype.__defineGetter__('width', function () {
-  return this._getWidth(false) })
+  return this._getWidth(false)
+})
 
 Element.prototype._getHeight = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
@@ -1008,7 +1061,8 @@ Element.prototype._getHeight = function (get) {
       top = expr[0]
       top = +top.slice(0, -1) / 100
       top = parent.height * top | 0
-      top += +(expr[1] || 0) }
+      top += +(expr[1] || 0)
+    }
     height = parent.height - (this.position.bottom || 0) - top
     if (this.screen.autoPadding) {
       if ((this.position.top != null
@@ -1024,7 +1078,8 @@ Element.prototype._getHeight = function (get) {
 }
 
 Element.prototype.__defineGetter__('height', function () {
-  return this._getHeight(false) })
+  return this._getHeight(false)
+})
 
 Element.prototype._getLeft = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
@@ -1042,7 +1097,8 @@ Element.prototype._getLeft = function (get) {
     }
   }
   if (this.position.left == null && this.position.right != null) {
-    return this.screen.cols - this._getWidth(get) - this._getRight(get) }
+    return this.screen.cols - this._getWidth(get) - this._getRight(get)
+  }
   if (this.screen.autoPadding) {
     if ((this.position.left != null
       || this.position.right == null)
@@ -1055,7 +1111,8 @@ Element.prototype._getLeft = function (get) {
 }
 
 Element.prototype.__defineGetter__('aleft', function () {
-  return this._getLeft(false) })
+  return this._getLeft(false)
+})
 
 Element.prototype._getRight = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
@@ -1077,7 +1134,8 @@ Element.prototype._getRight = function (get) {
 }
 
 Element.prototype.__defineGetter__('aright', function () {
-  return this._getRight(false) })
+  return this._getRight(false)
+})
 
 Element.prototype._getTop = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
@@ -1095,7 +1153,8 @@ Element.prototype._getTop = function (get) {
     }
   }
   if (this.position.top == null && this.position.bottom != null) {
-    return this.screen.rows - this._getHeight(get) - this._getBottom(get) }
+    return this.screen.rows - this._getHeight(get) - this._getBottom(get)
+  }
   if (this.screen.autoPadding) {
     if ((this.position.top != null
       || this.position.bottom == null)
@@ -1108,7 +1167,8 @@ Element.prototype._getTop = function (get) {
 }
 
 Element.prototype.__defineGetter__('atop', function () {
-  return this._getTop(false) })
+  return this._getTop(false)
+})
 
 Element.prototype._getBottom = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
@@ -1130,7 +1190,8 @@ Element.prototype._getBottom = function (get) {
 }
 
 Element.prototype.__defineGetter__('abottom', function () {
-  return this._getBottom(false) })
+  return this._getBottom(false)
+})
 
 Element.prototype.__defineGetter__('rleft', function () {
   return this.aleft - this.parent.aleft
@@ -1185,7 +1246,8 @@ Element.prototype.__defineSetter__('aleft', function (val) {
       val = expr[0]
       val = +val.slice(0, -1) / 100
       val = this.screen.width * val | 0
-      val += +(expr[1] || 0) }
+      val += +(expr[1] || 0)
+    }
   }
   val -= this.parent.aleft
   if (this.position.left === val) return
@@ -1214,7 +1276,8 @@ Element.prototype.__defineSetter__('atop', function (val) {
       val = expr[0]
       val = +val.slice(0, -1) / 100
       val = this.screen.height * val | 0
-      val += +(expr[1] || 0) }
+      val += +(expr[1] || 0)
+    }
   }
   val -= this.parent.atop
   if (this.position.top === val) return
@@ -1802,7 +1865,8 @@ Element.prototype.render = function () {
       }
     }
     else {
-      this.screen.fillRegion(dattr, bch, xi, xl, yi, yl) }
+      this.screen.fillRegion(dattr, bch, xi, xl, yi, yl)
+    }
   }
   if (this.tpadding) {
     xi += this.padding.left, xl -= this.padding.right
@@ -1820,7 +1884,8 @@ Element.prototype.render = function () {
       else if (this.valign === 'bottom') {
         visible -= this._clines.length
       }
-      ci -= visible * (xl - xi) }
+      ci -= visible * (xl - xi)
+    }
   }
 
   // Draw the content and background.
@@ -1859,7 +1924,8 @@ Element.prototype.render = function () {
           if (this.parent._isList && this.parent.interactive
             && this.parent.items[this.parent.selected] === this
             && this.parent.options.invertSelected !== false) {
-            attr = (attr & ~(0x1ff << 9)) | (dattr & (0x1ff << 9)) }
+            attr = (attr & ~(0x1ff << 9)) | (dattr & (0x1ff << 9))
+          }
           ch = content[ci] || bch
           ci++
         }
@@ -1945,15 +2011,18 @@ Element.prototype.render = function () {
   if (this.scrollbar) {
     // XXX
     // i = this.getScrollHeight();
-    i = Math.max(this._clines.length, this._scrollBottom()) }
+    i = Math.max(this._clines.length, this._scrollBottom())
+  }
   if (coords.notop || coords.nobot) i = -Infinity
   if (this.scrollbar && (yl - yi) < i) {
     x = xl - 1
     if (this.scrollbar.ignoreBorder && this.border) x++
     if (this.alwaysScroll) {
-      y = this.childBase / (i - (yl - yi)) }
+      y = this.childBase / (i - (yl - yi))
+    }
     else {
-      y = (this.childBase + this.childOffset) / (i - 1) }
+      y = (this.childBase + this.childOffset) / (i - 1)
+    }
     y = yi + ((yl - yi) * y | 0)
     if (y >= yl) y = yl - 1
     cell = lines[y] && lines[y][x]
@@ -1963,7 +2032,8 @@ Element.prototype.render = function () {
         attr = this.sattr(this.style.track,
           this.style.track.fg || this.style.fg,
           this.style.track.bg || this.style.bg)
-        this.screen.fillRegion(attr, ch, x, x + 1, yi, yl) }
+        this.screen.fillRegion(attr, ch, x, x + 1, yi, yl)
+      }
       ch = this.scrollbar.ch || ' '
       attr = this.sattr(this.style.scrollbar,
         this.style.scrollbar.fg || this.style.fg,
@@ -2223,7 +2293,8 @@ Element.prototype.insertLine = function (i, line) {
   while (this._clines.fake.length < i) {
     this._clines.fake.push('')
     this._clines.ftor.push([ this._clines.push('') - 1 ])
-    this._clines.rtof(this._clines.fake.length - 1) }
+    this._clines.rtof(this._clines.fake.length - 1)
+  }
 
   // NOTE: Could possibly compare the first and last ftor line numbers to see
   // if they're the same, or if they fit in the visible region entirely.
@@ -2239,7 +2310,8 @@ Element.prototype.insertLine = function (i, line) {
   }
 
   for (let j = 0; j < line.length; j++) {
-    this._clines.fake.splice(i + j, 0, line[j]) }
+    this._clines.fake.splice(i + j, 0, line[j])
+  }
   this.setContent(this._clines.fake.join('\n'), true)
 
   diff = this._clines.length - start
@@ -2253,7 +2325,8 @@ Element.prototype.insertLine = function (i, line) {
       this.screen.insertLine(diff,
         pos.yi + this.itop + real - base,
         pos.yi,
-        pos.yl - this.ibottom - 1) }
+        pos.yl - this.ibottom - 1)
+    }
   }
 }
 
@@ -2272,7 +2345,8 @@ Element.prototype.deleteLine = function (i, n) {
   let diff
   const real = this._clines.ftor[i][0]
   while (n--) {
-    this._clines.fake.splice(i, 1) }
+    this._clines.fake.splice(i, 1)
+  }
   this.setContent(this._clines.fake.join('\n'), true)
 
   diff = start - this._clines.length
@@ -2290,26 +2364,31 @@ Element.prototype.deleteLine = function (i, n) {
       this.screen.deleteLine(diff,
         pos.yi + this.itop + real - base,
         pos.yi,
-        pos.yl - this.ibottom - 1) }
+        pos.yl - this.ibottom - 1)
+    }
   }
   if (this._clines.length < height) {
-    this.clearPos() }
+    this.clearPos()
+  }
 }
 
 Element.prototype.insertTop = function (line) {
   const fake = this._clines.rtof[this.childBase || 0]
-  return this.insertLine(fake, line) }
+  return this.insertLine(fake, line)
+}
 
 Element.prototype.insertBottom = function (line) {
   const h  = (this.childBase || 0) + this.height - this.iheight
     , i    = Math.min(h, this._clines.length)
     , fake = this._clines.rtof[i - 1] + 1
 
-  return this.insertLine(fake, line) }
+  return this.insertLine(fake, line)
+}
 
 Element.prototype.deleteTop = function (n) {
   const fake = this._clines.rtof[this.childBase || 0]
-  return this.deleteLine(fake, n) }
+  return this.deleteLine(fake, n)
+}
 
 Element.prototype.deleteBottom = function (n) {
   const h  = (this.childBase || 0) + this.height - 1 - this.iheight
@@ -2318,18 +2397,22 @@ Element.prototype.deleteBottom = function (n) {
 
   n = n || 1
 
-  return this.deleteLine(fake - (n - 1), n) }
+  return this.deleteLine(fake - (n - 1), n)
+}
 
 Element.prototype.setLine = function (i, line) {
   i = Math.max(i, 0)
   while (this._clines.fake.length < i) {
-    this._clines.fake.push('') }
+    this._clines.fake.push('')
+  }
   this._clines.fake[i] = line
-  return this.setContent(this._clines.fake.join('\n'), true) }
+  return this.setContent(this._clines.fake.join('\n'), true)
+}
 
 Element.prototype.setBaseLine = function (i, line) {
   const fake = this._clines.rtof[this.childBase || 0]
-  return this.setLine(fake + i, line) }
+  return this.setLine(fake + i, line)
+}
 
 Element.prototype.getLine = function (i) {
   i = Math.max(i, 0)
@@ -2339,34 +2422,43 @@ Element.prototype.getLine = function (i) {
 
 Element.prototype.getBaseLine = function (i) {
   const fake = this._clines.rtof[this.childBase || 0]
-  return this.getLine(fake + i) }
+  return this.getLine(fake + i)
+}
 
 Element.prototype.clearLine = function (i) {
   i = Math.min(i, this._clines.fake.length - 1)
-  return this.setLine(i, '') }
+  return this.setLine(i, '')
+}
 
 Element.prototype.clearBaseLine = function (i) {
   const fake = this._clines.rtof[this.childBase || 0]
-  return this.clearLine(fake + i) }
+  return this.clearLine(fake + i)
+}
 
 Element.prototype.unshiftLine = function (line) {
-  return this.insertLine(0, line) }
+  return this.insertLine(0, line)
+}
 
 Element.prototype.shiftLine = function (n) {
-  return this.deleteLine(0, n) }
+  return this.deleteLine(0, n)
+}
 
 Element.prototype.pushLine = function (line) {
   if (!this.content) return this.setLine(0, line)
-  return this.insertLine(this._clines.fake.length, line) }
+  return this.insertLine(this._clines.fake.length, line)
+}
 
 Element.prototype.popLine = function (n) {
-  return this.deleteLine(this._clines.fake.length - 1, n) }
+  return this.deleteLine(this._clines.fake.length - 1, n)
+}
 
 Element.prototype.getLines = function () {
-  return this._clines.fake.slice() }
+  return this._clines.fake.slice()
+}
 
 Element.prototype.getScreenLines = function () {
-  return this._clines.slice() }
+  return this._clines.slice()
+}
 
 Element.prototype.strWidth = function (text) {
   text = this.parseTags
@@ -2380,17 +2472,20 @@ Element.prototype.strWidth = function (text) {
 Element.prototype.screenshot = function (xi, xl, yi, yl) {
   xi = this.lpos.xi + this.ileft + (xi || 0)
   if (xl != null) {
-    xl = this.lpos.xi + this.ileft + (xl || 0) }
+    xl = this.lpos.xi + this.ileft + (xl || 0)
+  }
   else {
     xl = this.lpos.xl - this.iright
   }
   yi = this.lpos.yi + this.itop + (yi || 0)
   if (yl != null) {
-    yl = this.lpos.yi + this.itop + (yl || 0) }
+    yl = this.lpos.yi + this.itop + (yl || 0)
+  }
   else {
     yl = this.lpos.yl - this.ibottom
   }
-  return this.screen.screenshot(xi, xl, yi, yl) }
+  return this.screen.screenshot(xi, xl, yi, yl)
+}
 
 /**
  * Expose

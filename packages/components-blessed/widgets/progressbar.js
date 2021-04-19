@@ -15,13 +15,15 @@ const
 function ProgressBar(options) {
   const self = this
   if (!(this instanceof Node)) {
-    return new ProgressBar(options) }
+    return new ProgressBar(options)
+  }
   options = options || {}
 
   Input.call(this, options)
   this.filled = options.filled || 0
   if (typeof this.filled === 'string') {
-    this.filled = +this.filled.slice(0, -1) }
+    this.filled = +this.filled.slice(0, -1)
+  }
   this.value = this.filled
   this.pch = options.pch || ' '
 
@@ -60,7 +62,8 @@ function ProgressBar(options) {
         self.screen.render()
         return
       }
-    }) }
+    })
+  }
   if (options.mouse) {
     this.on('click', function (data) {
       let x, y, m, p
@@ -75,7 +78,9 @@ function ProgressBar(options) {
         m = (self.lpos.yl - self.lpos.yi) - self.iheight
         p = y / m * 100 | 0
       }
-      self.setProgress(p) }) }
+      self.setProgress(p)
+    })
+  }
 }
 
 ProgressBar.prototype.__proto__ = Input.prototype
@@ -95,7 +100,8 @@ ProgressBar.prototype.render = function () {
     xl = xi + ((xl - xi) * (this.filled / 100)) | 0
   }
   else if (this.orientation === 'vertical') {
-    yi = yi + ((yl - yi) - (((yl - yi) * (this.filled / 100)) | 0)) }
+    yi = yi + ((yl - yi) - (((yl - yi) * (this.filled / 100)) | 0))
+  }
 
   dattr = this.sattr(this.style.bar)
   this.screen.fillRegion(dattr, this.pch, xi, xl, yi, yl)
@@ -115,13 +121,15 @@ ProgressBar.prototype.progress = function (filled) {
   if (this.filled < 0) this.filled = 0
   else if (this.filled > 100) this.filled = 100
   if (this.filled === 100) {
-    this.emit('complete') }
+    this.emit('complete')
+  }
   this.value = this.filled
 }
 
 ProgressBar.prototype.setProgress = function (filled) {
   this.filled = 0
-  this.progress(filled) }
+  this.progress(filled)
+}
 
 ProgressBar.prototype.reset = function () {
   this.emit('reset')

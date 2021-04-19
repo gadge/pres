@@ -12,8 +12,7 @@ const
  */
 
 function Line(options) {
-  if (!(this instanceof Node)) {
-    return new Line(options) }
+  if (!(this instanceof Node)) { return new Line(options) }
   options = options || {}
   const orientation = options.orientation || 'vertical'
   delete options.orientation

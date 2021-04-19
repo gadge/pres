@@ -14,8 +14,7 @@ const
  */
 
 function Prompt(options) {
-  if (!(this instanceof Node)) {
-    return new Prompt(options) }
+  if (!(this instanceof Node)) { return new Prompt(options) }
   options = options || {}
   options.hidden = true
 
@@ -54,7 +53,8 @@ function Prompt(options) {
     hoverBg: 'blue',
     autoFocus: false,
     mouse: true
-  }) }
+  })
+}
 
 Prompt.prototype.__proto__ = Box.prototype
 
@@ -79,16 +79,20 @@ Prompt.prototype.input =
       this._.input.value = value
       this.screen.saveFocus()
       this._.okay.on('press', okay = function () {
-        self._.input.submit() })
+        self._.input.submit()
+      })
       this._.cancel.on('press', cancel = function () {
-        self._.input.cancel() })
+        self._.input.cancel()
+      })
       this._.input.readInput(function (err, data) {
         self.hide()
         self.screen.restoreFocus()
         self._.okay.removeListener('press', okay)
         self._.cancel.removeListener('press', cancel)
-        return callback(err, data) })
-      this.screen.render() }
+        return callback(err, data)
+      })
+      this.screen.render()
+    }
 
 /**
  * Expose

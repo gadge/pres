@@ -16,7 +16,8 @@ const
 function Listbar(options) {
   const self = this
   if (!(this instanceof Node)) {
-    return new Listbar(options) }
+    return new Listbar(options)
+  }
   options = options || {}
   Box.call(this, options)
   this.items = []
@@ -32,7 +33,8 @@ function Listbar(options) {
     this.style.item = {}
   }
   if (options.commands || options.items) {
-    this.setItems(options.commands || options.items) }
+    this.setItems(options.commands || options.items)
+  }
   if (options.keys) {
     this.on('keypress', function (ch, key) {
       if (key.name === 'left'
@@ -59,7 +61,8 @@ function Listbar(options) {
         self.emit('select', self.items[self.selected], self.selected)
         const item = self.items[self.selected]
         if (item._.cmd.callback) {
-          item._.cmd.callback() }
+          item._.cmd.callback()
+        }
         self.screen.render()
         return
       }
@@ -68,16 +71,21 @@ function Listbar(options) {
         self.emit('cancel')
         return
       }
-    }) }
+    })
+  }
   if (options.autoCommandKeys) {
     this.onScreenEvent('keypress', function (ch) {
       if (/^[0-9]$/.test(ch)) {
         let i = +ch - 1
         if (!~i) i = 9
-        return self.selectTab(i) }
-    }) }
+        return self.selectTab(i)
+      }
+    })
+  }
   this.on('focus', function () {
-    self.select(self.selected) }) }
+    self.select(self.selected)
+  })
+}
 
 Listbar.prototype.__proto__ = Box.prototype
 
@@ -106,16 +114,20 @@ Listbar.prototype.setItems = function (commands) {
       obj.push(cmd)
 
       return obj
-    }, []) }
+    }, [])
+  }
   this.items.forEach(function (el) {
-    el.detach() })
+    el.detach()
+  })
   this.items = []
   this.ritems = []
   this.commands = []
 
   commands.forEach(function (cmd) {
-    self.add(cmd) })
-  this.emit('set items') }
+    self.add(cmd)
+  })
+  this.emit('set items')
+}
 
 Listbar.prototype.add =
   Listbar.prototype.addItem =
@@ -205,12 +217,16 @@ Listbar.prototype.add =
             self.emit('action', el, self.selected)
             self.emit('select', el, self.selected)
             if (el._.cmd.callback) {
-              el._.cmd.callback() }
+              el._.cmd.callback()
+            }
             self.select(el)
-            self.screen.render() }) }
+            self.screen.render()
+          })
+        }
       }
       if (this.items.length === 1) {
-        this.select(0) }
+        this.select(0)
+      }
 
       // XXX May be affected by new element.options.mouse option.
       if (this.mouse) {
@@ -218,10 +234,14 @@ Listbar.prototype.add =
           self.emit('action', el, self.selected)
           self.emit('select', el, self.selected)
           if (el._.cmd.callback) {
-            el._.cmd.callback() }
+            el._.cmd.callback()
+          }
           self.select(el)
-          self.screen.render() }) }
-      this.emit('add item') }
+          self.screen.render()
+        })
+      }
+      this.emit('add item')
+    }
 
 Listbar.prototype.render = function () {
   const self = this
@@ -231,18 +251,22 @@ Listbar.prototype.render = function () {
   }
   this.items.forEach(function (el, i) {
     if (i < self.leftBase) {
-      el.hide() }
+      el.hide()
+    }
     else {
       el.rleft = drawn + 1
       drawn += el.width + 2
-      el.show() }
+      el.show()
+    }
   })
 
-  return this._render() }
+  return this._render()
+}
 
 Listbar.prototype.select = function (offset) {
   if (typeof offset !== 'number') {
-    offset = this.items.indexOf(offset) }
+    offset = this.items.indexOf(offset)
+  }
   if (offset < 0) {
     offset = 0
   }
@@ -294,7 +318,8 @@ Listbar.prototype.select = function (offset) {
   }
 
   // XXX Move `action` and `select` events here.
-  this.emit('select item', el, offset) }
+  this.emit('select item', el, offset)
+}
 
 Listbar.prototype.removeItem = function (child) {
   const i = typeof child !== 'number'
@@ -306,27 +331,35 @@ Listbar.prototype.removeItem = function (child) {
     this.commands.splice(i, 1)
     this.remove(child)
     if (i === this.selected) {
-      this.select(i - 1) }
+      this.select(i - 1)
+    }
   }
-  this.emit('remove item') }
+  this.emit('remove item')
+}
 
 Listbar.prototype.move = function (offset) {
-  this.select(this.selected + offset) }
+  this.select(this.selected + offset)
+}
 
 Listbar.prototype.moveLeft = function (offset) {
-  this.move(-(offset || 1)) }
+  this.move(-(offset || 1))
+}
 
 Listbar.prototype.moveRight = function (offset) {
-  this.move(offset || 1) }
+  this.move(offset || 1)
+}
 
 Listbar.prototype.selectTab = function (index) {
   const item = this.items[index]
   if (item) {
     if (item._.cmd.callback) {
-      item._.cmd.callback() }
+      item._.cmd.callback()
+    }
     this.select(index)
-    this.screen.render() }
-  this.emit('select tab', item, index) }
+    this.screen.render()
+  }
+  this.emit('select tab', item, index)
+}
 
 /**
  * Expose

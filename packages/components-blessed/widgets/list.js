@@ -15,8 +15,7 @@ const
 
 function List(options) {
   const self = this
-  if (!(this instanceof Node)) {
-    return new List(options) }
+  if (!(this instanceof Node)) { return new List(options) }
   options = options || {}
   options.ignoreKeys = true
   // Possibly put this here: this.items = [];
@@ -68,16 +67,20 @@ function List(options) {
   this.mouse = options.mouse || false
   if (options.items) {
     this.ritems = options.items
-    options.items.forEach(this.add.bind(this)) }
+    options.items.forEach(this.add.bind(this))
+  }
   this.select(0)
   if (options.mouse) {
     this.screen._listenMouse(this)
     this.on('element wheeldown', function () {
       self.select(self.selected + 2)
-      self.screen.render() })
+      self.screen.render()
+    })
     this.on('element wheelup', function () {
       self.select(self.selected - 2)
-      self.screen.render() }) }
+      self.screen.render()
+    })
+  }
   if (options.keys) {
     this.on('keypress', function (ch, key) {
       if (key.name === 'up' || (options.vi && key.name === 'k')) {
@@ -164,8 +167,11 @@ function List(options) {
           }
           if (err || !value) return self.screen.render()
           self.select(self.fuzzyFind(value, key.ch === '?'))
-          self.screen.render() }) }
-    }) }
+          self.screen.render()
+        })
+      }
+    })
+  }
   this.on('resize', function () {
     const visible = self.height - self.iheight
     // if (self.selected < visible - 1) {
@@ -188,7 +194,9 @@ function List(options) {
   // Ensure children are removed from the
   // item list if they are items.
   this.on('remove', function (el) {
-    self.removeItem(el) }) }
+    self.removeItem(el)
+  })
+}
 
 List.prototype.__proto__ = Box.prototype
 
@@ -214,7 +222,8 @@ List.prototype.createItem = function (content) {
   if (!this.screen.autoPadding) {
     options.top = 1
     options.left = this.ileft
-    options.right = this.iright + (this.scrollbar ? 1 : 0) }
+    options.right = this.iright + (this.scrollbar ? 1 : 0)
+  }
 
   // if (this.shrink) {
   // XXX NOTE: Maybe just do this on all shrinkage once autoPadding is default?
@@ -247,7 +256,9 @@ List.prototype.createItem = function (content) {
         return
       }
       self.select(item)
-      self.screen.render() }) }
+      self.screen.render()
+    })
+  }
   this.emit('create item')
 
   return item
@@ -266,7 +277,8 @@ List.prototype.add =
       this.items.push(item)
       this.append(item)
       if (this.items.length === 1) {
-        this.select(0) }
+        this.select(0)
+      }
       this.emit('add item')
 
       return item
@@ -282,7 +294,8 @@ List.prototype.removeItem = function (child) {
       this.items[j].position.top--
     }
     if (i === this.selected) {
-      this.select(i - 1) }
+      this.select(i - 1)
+    }
   }
   this.emit('remove item')
   return child
@@ -302,8 +315,10 @@ List.prototype.insertItem = function (child, content) {
   this.items.splice(i, 0, item)
   this.append(item)
   if (i === this.selected) {
-    this.select(i + 1) }
-  this.emit('insert item') }
+    this.select(i + 1)
+  }
+  this.emit('insert item')
+}
 
 List.prototype.getItem = function (child) {
   return this.items[this.getItemIndex(child)]
@@ -318,7 +333,8 @@ List.prototype.setItem = function (child, content) {
 }
 
 List.prototype.clearItems = function () {
-  return this.setItems([]) }
+  return this.setItems([])
+}
 
 List.prototype.setItems = function (items) {
   const original = this.items.slice()
@@ -331,24 +347,31 @@ List.prototype.setItems = function (items) {
 
   for (; i < items.length; i++) {
     if (this.items[i]) {
-      this.items[i].setContent(items[i]) }
+      this.items[i].setContent(items[i])
+    }
     else {
-      this.add(items[i]) }
+      this.add(items[i])
+    }
   }
 
   for (; i < original.length; i++) {
-    this.remove(original[i]) }
+    this.remove(original[i])
+  }
   this.ritems = items
 
   // Try to find our old item if it still exists.
   sel = items.indexOf(sel)
   if (~sel) {
-    this.select(sel) }
+    this.select(sel)
+  }
   else if (items.length === original.length) {
-    this.select(selected) }
+    this.select(selected)
+  }
   else {
-    this.select(Math.min(selected, items.length - 1)) }
-  this.emit('set items') }
+    this.select(Math.min(selected, items.length - 1))
+  }
+  this.emit('set items')
+}
 
 List.prototype.pushItem = function (content) {
   this.appendItem(content)
@@ -356,7 +379,8 @@ List.prototype.pushItem = function (content) {
 }
 
 List.prototype.popItem = function () {
-  return this.removeItem(this.items.length - 1) }
+  return this.removeItem(this.items.length - 1)
+}
 
 List.prototype.unshiftItem = function (content) {
   this.insertItem(0, content)
@@ -364,7 +388,8 @@ List.prototype.unshiftItem = function (content) {
 }
 
 List.prototype.shiftItem = function () {
-  return this.removeItem(0) }
+  return this.removeItem(0)
+}
 
 List.prototype.spliceItem = function (child, n) {
   const self = this
@@ -373,9 +398,11 @@ List.prototype.spliceItem = function (child, n) {
   const items = Array.prototype.slice.call(arguments, 2)
   const removed = []
   while (n--) {
-    removed.push(this.removeItem(i)) }
+    removed.push(this.removeItem(i))
+  }
   items.forEach(function (item) {
-    self.insertItem(i++, item) })
+    self.insertItem(i++, item)
+  })
   return removed
 }
 
@@ -386,14 +413,16 @@ List.prototype.find =
     if (typeof search === 'number') search += ''
     if (search && search[0] === '/' && search[search.length - 1] === '/') {
       try {
-        search = new RegExp(search.slice(1, -1)) } catch (e) { }
+        search = new RegExp(search.slice(1, -1))
+      } catch (e) { }
     }
     const test = typeof search === 'string'
       ? function (item) { return !!~item.indexOf(search) }
       : (search.test ? search.test.bind(search) : search)
     if (typeof test !== 'function') {
       if (this.screen.options.debug) {
-        throw new Error('fuzzyFind(): `test` is not a function.') }
+        throw new Error('fuzzyFind(): `test` is not a function.')
+      }
       return this.selected
     }
     if (!back) {
@@ -431,7 +460,8 @@ List.prototype.getItemIndex = function (child) {
     return -1
   }
   else {
-    return this.items.indexOf(child) }
+    return this.items.indexOf(child)
+  }
 }
 
 List.prototype.select = function (index) {
@@ -445,7 +475,8 @@ List.prototype.select = function (index) {
     return
   }
   if (typeof index === 'object') {
-    index = this.items.indexOf(index) }
+    index = this.items.indexOf(index)
+  }
   if (index < 0) {
     index = 0
   }
@@ -460,16 +491,20 @@ List.prototype.select = function (index) {
   this.scrollTo(this.selected)
 
   // XXX Move `action` and `select` events here.
-  this.emit('select item', this.items[this.selected], this.selected) }
+  this.emit('select item', this.items[this.selected], this.selected)
+}
 
 List.prototype.move = function (offset) {
-  this.select(this.selected + offset) }
+  this.select(this.selected + offset)
+}
 
 List.prototype.up = function (offset) {
-  this.move(-(offset || 1)) }
+  this.move(-(offset || 1))
+}
 
 List.prototype.down = function (offset) {
-  this.move(offset || 1) }
+  this.move(offset || 1)
+}
 
 List.prototype.pick = function (label, callback) {
   if (!callback) {
@@ -477,7 +512,8 @@ List.prototype.pick = function (label, callback) {
     label = null
   }
   if (!this.interactive) {
-    return callback() }
+    return callback()
+  }
   const self = this
   const focused = this.screen.focused
   if (focused && focused._done) focused._done('stop')
@@ -498,17 +534,21 @@ List.prototype.pick = function (label, callback) {
     self.hide()
     self.screen.render()
     if (!el) return callback()
-    return callback(null, helpers.cleanTags(self.ritems[selected])) }) }
+    return callback(null, helpers.cleanTags(self.ritems[selected]))
+  })
+}
 
 List.prototype.enterSelected = function (i) {
   if (i != null) this.select(i)
   this.emit('action', this.items[this.selected], this.selected)
-  this.emit('select', this.items[this.selected], this.selected) }
+  this.emit('select', this.items[this.selected], this.selected)
+}
 
 List.prototype.cancelSelected = function (i) {
   if (i != null) this.select(i)
   this.emit('action')
-  this.emit('cancel') }
+  this.emit('cancel')
+}
 
 /**
  * Expose

@@ -14,16 +14,14 @@ const
  */
 
 function Terminal(options) {
-  if (!(this instanceof Node)) {
-    return new Terminal(options) }
+  if (!(this instanceof Node)) { return new Terminal(options) }
   options = options || {}
   options.scrollable = false
 
   Box.call(this, options)
 
   // XXX Workaround for all motion
-  if (this.screen.program.tmux && this.screen.program.tmuxVersion >= 2) {
-    this.screen.program.enableMouse() }
+  if (this.screen.program.tmux && this.screen.program.tmuxVersion >= 2) { this.screen.program.enableMouse() }
   this.handler = options.handler
   this.shell = options.shell || process.env.SHELL || 'sh'
   this.args = options.args || []
@@ -37,7 +35,8 @@ function Terminal(options) {
     || options.term
     || process.env.TERM
     || 'xterm'
-  this.bootstrap() }
+  this.bootstrap()
+}
 
 Terminal.prototype.__proto__ = Box.prototype
 
@@ -87,7 +86,8 @@ Terminal.prototype.bootstrap = function () {
     screenKeys: this.screenKeys
   })
   this.term.refresh = function () {
-    self.screen.render() }
+    self.screen.render()
+  }
   this.term.keyDown = function () {}
   this.term.keyPress = function () {}
   this.term.open(element)
@@ -106,7 +106,8 @@ Terminal.prototype.bootstrap = function () {
   // NOTE: Cannot pass mouse events - coordinates will be off!
   this.screen.program.input.on('data', this._onData = function (data) {
     if (self.screen.focused === self && !self._isMouse(data)) {
-      self.handler(data) }
+      self.handler(data)
+    }
   })
   this.onScreenEvent('mouse', function (data) {
     if (self.screen.focused !== self) return
@@ -139,7 +140,8 @@ Terminal.prototype.bootstrap = function () {
         b -= 32
       }
       s = '\x1b[<' + b + ';' + x + ';' + y
-        + (data.action === 'mousedown' ? 'M' : 'm') }
+        + (data.action === 'mousedown' ? 'M' : 'm')
+    }
     else {
       if (self.screen.program.sgrMouse) {
         b += 32
@@ -147,27 +149,37 @@ Terminal.prototype.bootstrap = function () {
       s = '\x1b[M'
         + String.fromCharCode(b)
         + String.fromCharCode(x + 32)
-        + String.fromCharCode(y + 32) }
+        + String.fromCharCode(y + 32)
+    }
 
-    self.handler(s) })
+    self.handler(s)
+  })
   this.on('focus', function () {
-    self.term.focus() })
+    self.term.focus()
+  })
   this.on('blur', function () {
-    self.term.blur() })
+    self.term.blur()
+  })
   this.term.on('title', function (title) {
     self.title = title
-    self.emit('title', title) })
+    self.emit('title', title)
+  })
   this.term.on('passthrough', function (data) {
     self.screen.program.flush()
-    self.screen.program._owrite(data) })
+    self.screen.program._owrite(data)
+  })
   this.on('resize', function () {
     nextTick(function () {
-      self.term.resize(self.width - self.iwidth, self.height - self.iheight) }) })
+      self.term.resize(self.width - self.iwidth, self.height - self.iheight)
+    })
+  })
   this.once('render', function () {
-    self.term.resize(self.width - self.iwidth, self.height - self.iheight) })
+    self.term.resize(self.width - self.iwidth, self.height - self.iheight)
+  })
   this.on('destroy', function () {
     self.kill()
-    self.screen.program.input.removeListener('data', self._onData) })
+    self.screen.program.input.removeListener('data', self._onData)
+  })
   if (this.handler) {
     return
   }
@@ -181,22 +193,30 @@ Terminal.prototype.bootstrap = function () {
   this.on('resize', function () {
     nextTick(function () {
       try {
-        self.pty.resize(self.width - self.iwidth, self.height - self.iheight) } catch (e) { }
-    }) })
+        self.pty.resize(self.width - self.iwidth, self.height - self.iheight)
+      } catch (e) { }
+    })
+  })
   this.handler = function (data) {
     self.pty.write(data)
-    self.screen.render() }
+    self.screen.render()
+  }
   this.pty.on('data', function (data) {
     self.write(data)
-    self.screen.render() })
+    self.screen.render()
+  })
   this.pty.on('exit', function (code) {
-    self.emit('exit', code || null) })
+    self.emit('exit', code || null)
+  })
   this.onScreenEvent('keypress', function () {
-    self.screen.render() })
-  this.screen._listenKeys(this) }
+    self.screen.render()
+  })
+  this.screen._listenKeys(this)
+}
 
 Terminal.prototype.write = function (data) {
-  return this.term.write(data) }
+  return this.term.write(data)
+}
 
 Terminal.prototype.render = function () {
   const ret = this._render()
@@ -234,9 +254,11 @@ Terminal.prototype.render = function () {
           continue
         }
         else if (this.cursor === 'underline') {
-          line[x][0] = this.dattr | (2 << 18) }
+          line[x][0] = this.dattr | (2 << 18)
+        }
         else if (this.cursor === 'block' || !this.cursor) {
-          line[x][0] = this.dattr | (8 << 18) }
+          line[x][0] = this.dattr | (8 << 18)
+        }
       }
 
       line[x][1] = this.term.lines[scrollback + y - yi][x - xi][1]
@@ -265,9 +287,11 @@ Terminal.prototype._isMouse = function (buf) {
   if (Buffer.isBuffer(s)) {
     if (s[0] > 127 && s[1] === undefined) {
       s[0] -= 128
-      s = '\x1b' + s.toString('utf-8') }
+      s = '\x1b' + s.toString('utf-8')
+    }
     else {
-      s = s.toString('utf-8') }
+      s = s.toString('utf-8')
+    }
   }
   return (buf[0] === 0x1b && buf[1] === 0x5b && buf[2] === 0x4d)
     || /^\x1b\[M([\x00\u0020-\uffff]{3})/.test(s)
@@ -275,12 +299,14 @@ Terminal.prototype._isMouse = function (buf) {
     || /^\x1b\[<(\d+;\d+;\d+)([mM])/.test(s)
     || /^\x1b\[<(\d+;\d+;\d+;\d+)&w/.test(s)
     || /^\x1b\[24([0135])~\[(\d+),(\d+)\]\r/.test(s)
-    || /^\x1b\[(O|I)/.test(s) }
+    || /^\x1b\[(O|I)/.test(s)
+}
 
 Terminal.prototype.setScroll =
   Terminal.prototype.scrollTo = function (offset) {
     this.term.ydisp = offset
-    return this.emit('scroll') }
+    return this.emit('scroll')
+  }
 
 Terminal.prototype.getScroll = function () {
   return this.term.ydisp
@@ -288,12 +314,14 @@ Terminal.prototype.getScroll = function () {
 
 Terminal.prototype.scroll = function (offset) {
   this.term.scrollDisp(offset)
-  return this.emit('scroll') }
+  return this.emit('scroll')
+}
 
 Terminal.prototype.resetScroll = function () {
   this.term.ydisp = 0
   this.term.ybase = 0
-  return this.emit('scroll') }
+  return this.emit('scroll')
+}
 
 Terminal.prototype.getScrollHeight = function () {
   return this.term.rows - 1
@@ -304,32 +332,39 @@ Terminal.prototype.getScrollPerc = function () {
 }
 
 Terminal.prototype.setScrollPerc = function (i) {
-  return this.setScroll((i / 100) * this.term.ybase | 0) }
+  return this.setScroll((i / 100) * this.term.ybase | 0)
+}
 
 Terminal.prototype.screenshot = function (xi, xl, yi, yl) {
   xi = 0 + (xi || 0)
   if (xl != null) {
-    xl = 0 + (xl || 0) }
+    xl = 0 + (xl || 0)
+  }
   else {
     xl = this.term.lines[0].length
   }
   yi = 0 + (yi || 0)
   if (yl != null) {
-    yl = 0 + (yl || 0) }
+    yl = 0 + (yl || 0)
+  }
   else {
     yl = this.term.lines.length
   }
-  return this.screen.screenshot(xi, xl, yi, yl, this.term) }
+  return this.screen.screenshot(xi, xl, yi, yl, this.term)
+}
 
 Terminal.prototype.kill = function () {
   if (this.pty) {
     this.pty.destroy()
-    this.pty.kill() }
+    this.pty.kill()
+  }
   this.term.refresh = function () {}
   this.term.write('\x1b[H\x1b[J')
   if (this.term._blink) {
-    clearInterval(this.term._blink) }
-  this.term.destroy() }
+    clearInterval(this.term._blink)
+  }
+  this.term.destroy()
+}
 
 /**
  * Expose

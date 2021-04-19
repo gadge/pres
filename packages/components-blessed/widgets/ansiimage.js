@@ -21,7 +21,8 @@ const
 function ANSIImage(options) {
   const self = this
   if (!(this instanceof Node)) {
-    return new ANSIImage(options) }
+    return new ANSIImage(options)
+  }
   options = options || {}
   options.shrink = true
 
@@ -30,14 +31,18 @@ function ANSIImage(options) {
   this.options.animate = this.options.animate !== false
   this._noFill = true
   if (this.options.file) {
-    this.setImage(this.options.file) }
+    this.setImage(this.options.file)
+  }
   this.screen.on('prerender', function () {
     const lpos = self.lpos
     if (!lpos) return
     // prevent image from blending with itself if there are alpha channels
-    self.screen.clearRegion(lpos.xi, lpos.xl, lpos.yi, lpos.yl) })
+    self.screen.clearRegion(lpos.xi, lpos.xl, lpos.yi, lpos.yl)
+  })
   this.on('destroy', function () {
-    self.stop() }) }
+    self.stop()
+  })
+}
 
 ANSIImage.prototype.__proto__ = Box.prototype
 
@@ -47,17 +52,21 @@ ANSIImage.curl = function (url) {
   try {
     return cp.execFileSync('curl',
       [ '-s', '-A', '', url ],
-      { stdio: [ 'ignore', 'pipe', 'ignore' ] }) } catch (e) { }
+      { stdio: [ 'ignore', 'pipe', 'ignore' ] })
+  } catch (e) { }
   try {
     return cp.execFileSync('wget',
       [ '-U', '', '-O', '-', url ],
-      { stdio: [ 'ignore', 'pipe', 'ignore' ] }) } catch (e) { }
-  throw new Error('curl or wget failed.') }
+      { stdio: [ 'ignore', 'pipe', 'ignore' ] })
+  } catch (e) { }
+  throw new Error('curl or wget failed.')
+}
 
 ANSIImage.prototype.setImage = function (file) {
   this.file = typeof file === 'string' ? file : null
   if (/^https?:/.test(file)) {
-    file = ANSIImage.curl(file) }
+    file = ANSIImage.curl(file)
+  }
   let width = this.position.width
   let height = this.position.height
   if (width != null) {
@@ -83,7 +92,8 @@ ANSIImage.prototype.setImage = function (file) {
       this.height = this.img.cellmap.length
     }
     if (this.img.frames && this.options.animate) {
-      this.play() }
+      this.play()
+    }
     else {
       this.cellmap = this.img.cellmap
     }
@@ -99,15 +109,19 @@ ANSIImage.prototype.play = function () {
   if (!this.img) return
   return this.img.play(function (bmp, cellmap) {
     self.cellmap = cellmap
-    self.screen.render() }) }
+    self.screen.render()
+  })
+}
 
 ANSIImage.prototype.pause = function () {
   if (!this.img) return
-  return this.img.pause() }
+  return this.img.pause()
+}
 
 ANSIImage.prototype.stop = function () {
   if (!this.img) return
-  return this.img.stop() }
+  return this.img.stop()
+}
 
 ANSIImage.prototype.clearImage = function () {
   this.stop()
@@ -120,7 +134,8 @@ ANSIImage.prototype.render = function () {
   const coords = this._render()
   if (!coords) return
   if (this.img && this.cellmap) {
-    this.img.renderElement(this.cellmap, this) }
+    this.img.renderElement(this.cellmap, this)
+  }
 
   return coords
 }

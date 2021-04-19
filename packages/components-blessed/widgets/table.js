@@ -13,8 +13,7 @@ const
 
 function Table(options) {
   const self = this
-  if (!(this instanceof Node)) {
-    return new Table(options) }
+  if (!(this instanceof Node)) { return new Table(options) }
   options = options || {}
   options.shrink = true
   options.style = options.style || {}
@@ -34,11 +33,14 @@ function Table(options) {
   this.setData(options.rows || options.data)
   this.on('attach', function () {
     self.setContent('')
-    self.setData(self.rows) })
+    self.setData(self.rows)
+  })
   this.on('resize', function () {
     self.setContent('')
     self.setData(self.rows)
-    self.screen.render() }) }
+    self.screen.render()
+  })
+}
 
 Table.prototype.__proto__ = Box.prototype
 
@@ -55,7 +57,8 @@ Table.prototype._calculateMaxes = function () {
       if (!maxes[i] || maxes[i] < clen) {
         maxes[i] = clen
       }
-    }) })
+    })
+  })
   let total = maxes.reduce(function (total, max) {
     return total + max
   }, 0)
@@ -76,11 +79,13 @@ Table.prototype._calculateMaxes = function () {
         return max + w + wr
       }
       return max + w
-    }) }
+    })
+  }
   else {
     maxes = maxes.map(function (max) {
       return max + self.pad
-    }) }
+    })
+  }
 
   return this._maxes = maxes
 }
@@ -322,7 +327,8 @@ Table.prototype.render = function () {
         rx++
       }
       rx++
-    }) }
+    })
+  }
 
   return coords
 }

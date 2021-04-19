@@ -14,7 +14,8 @@ const
 
 function Question(options) {
   if (!(this instanceof Node)) {
-    return new Question(options) }
+    return new Question(options)
+  }
   options = options || {}
   options.hidden = true
 
@@ -47,7 +48,8 @@ function Question(options) {
     hoverBg: 'blue',
     autoFocus: false,
     mouse: true
-  }) }
+  })
+}
 
 Question.prototype.__proto__ = Box.prototype
 
@@ -72,11 +74,14 @@ Question.prototype.ask = function (text, callback) {
       && key.name !== 'n') {
       return
     }
-    done(null, key.name === 'enter' || key.name === 'y') })
+    done(null, key.name === 'enter' || key.name === 'y')
+  })
   this._.okay.on('press', okay = function () {
-    done(null, true) })
+    done(null, true)
+  })
   this._.cancel.on('press', cancel = function () {
-    done(null, false) })
+    done(null, false)
+  })
   this.screen.saveFocus()
   this.focus()
 
@@ -86,8 +91,10 @@ Question.prototype.ask = function (text, callback) {
     self.removeScreenEvent('keypress', press)
     self._.okay.removeListener('press', okay)
     self._.cancel.removeListener('press', cancel)
-    return callback(err, data) }
-  this.screen.render() }
+    return callback(err, data)
+  }
+  this.screen.render()
+}
 
 /**
  * Expose

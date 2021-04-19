@@ -13,11 +13,13 @@ const
 
 function Message(options) {
   if (!(this instanceof Node)) {
-    return new Message(options) }
+    return new Message(options)
+  }
   options = options || {}
   options.tags = true
 
-  Box.call(this, options) }
+  Box.call(this, options)
+}
 
 Message.prototype.__proto__ = Box.prototype
 
@@ -39,7 +41,8 @@ Message.prototype.log =
     if (this.scrollable) {
       this.screen.saveFocus()
       this.focus()
-      this.scrollTo(0) }
+      this.scrollTo(0)
+    }
     this.show()
     this.setContent(text)
     this.screen.render()
@@ -49,11 +52,13 @@ Message.prototype.log =
         end.done = true
         if (self.scrollable) {
           try {
-            self.screen.restoreFocus() } catch (e) { }
+            self.screen.restoreFocus()
+          } catch (e) { }
         }
         self.hide()
         self.screen.render()
-        if (callback) callback() }
+        if (callback) callback()
+      }
 
       setTimeout(function () {
         self.onScreenEvent('keypress', function fn(ch, key) {
@@ -74,13 +79,16 @@ Message.prototype.log =
             return
           }
           self.removeScreenEvent('keypress', fn)
-          end() })
+          end()
+        })
         // XXX May be affected by new element.options.mouse option.
         if (!self.options.mouse) return
         self.onScreenEvent('mouse', function fn(data) {
           if (data.action === 'mousemove') return
           self.removeScreenEvent('mouse', fn)
-          end() }) }, 10)
+          end()
+        })
+      }, 10)
 
       return
     }
@@ -88,10 +96,13 @@ Message.prototype.log =
     setTimeout(function () {
       self.hide()
       self.screen.render()
-      if (callback) callback() }, time * 1000) }
+      if (callback) callback()
+    }, time * 1000)
+  }
 
 Message.prototype.error = function (text, time, callback) {
-  return this.display('{red-fg}Error: ' + text + '{/red-fg}', time, callback) }
+  return this.display('{red-fg}Error: ' + text + '{/red-fg}', time, callback)
+}
 
 /**
  * Expose

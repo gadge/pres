@@ -15,7 +15,8 @@ const
 
 function BigText(options) {
   if (!(this instanceof Node)) {
-    return new BigText(options) }
+    return new BigText(options)
+  }
   options = options || {}
   options.font = options.font
     || __dirname + '/../../usr/fonts/ter-u14n.json'
@@ -48,7 +49,8 @@ BigText.prototype.loadFont = function (filename) {
     let line, i
     while (lines.length > self.ratio.height) {
       lines.shift()
-      lines.pop() }
+      lines.pop()
+    }
 
     lines = lines.map(function (line) {
       let chs = line.split('')
@@ -56,14 +58,17 @@ BigText.prototype.loadFont = function (filename) {
         return ch === ' ' ? 0 : 1
       })
       while (chs.length < self.ratio.width) {
-        chs.push(0) }
+        chs.push(0)
+      }
       return chs
     })
     while (lines.length < self.ratio.height) {
       line = []
       for (i = 0; i < self.ratio.width; i++) {
-        line.push(0) }
-      lines.push(line) }
+        line.push(0)
+      }
+      lines.push(line)
+    }
 
     return lines
   }

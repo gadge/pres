@@ -13,8 +13,7 @@ const
  */
 
 function Loading(options) {
-  if (!(this instanceof Node)) {
-    return new Loading(options) }
+  if (!(this instanceof Node)) { return new Loading(options) }
   options = options || {}
 
   Box.call(this, options)
@@ -26,7 +25,8 @@ function Loading(options) {
     right: 1,
     height: 1,
     content: '|'
-  }) }
+  })
+}
 
 Loading.prototype.__proto__ = Box.prototype
 
@@ -41,19 +41,20 @@ Loading.prototype.load = function (text) {
   // parent.append(this);
   this.show()
   this.setContent(text)
-  if (this._.timer) {
-    this.stop() }
+  if (this._.timer) { this.stop() }
   this.screen.lockKeys = true
   this._.timer = setInterval(function () {
-    if (self._.icon.content === '|') {
-      self._.icon.setContent('/') }
-    else if (self._.icon.content === '/') {
-      self._.icon.setContent('-') }
+    if (self._.icon.content === '|') { self._.icon.setContent('/') }
+    else if (self._.icon.content === '/') { self._.icon.setContent('-') }
     else if (self._.icon.content === '-') {
-      self._.icon.setContent('\\') }
+      self._.icon.setContent('\\')
+    }
     else if (self._.icon.content === '\\') {
-      self._.icon.setContent('|') }
-    self.screen.render() }, 200) }
+      self._.icon.setContent('|')
+    }
+    self.screen.render()
+  }, 200)
+}
 
 Loading.prototype.stop = function () {
   this.screen.lockKeys = false
@@ -62,7 +63,8 @@ Loading.prototype.stop = function () {
     clearInterval(this._.timer)
     delete this._.timer
   }
-  this.screen.render() }
+  this.screen.render()
+}
 
 /**
  * Expose

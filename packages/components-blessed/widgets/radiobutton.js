@@ -14,7 +14,8 @@ const
 function RadioButton(options) {
   const self = this
   if (!(this instanceof Node)) {
-    return new RadioButton(options) }
+    return new RadioButton(options)
+  }
   options = options || {}
 
   Checkbox.call(this, options)
@@ -29,7 +30,10 @@ function RadioButton(options) {
       if (el.type !== 'radio-button' || el === self) {
         return
       }
-      el.uncheck() }) }) }
+      el.uncheck()
+    })
+  })
+}
 
 RadioButton.prototype.__proto__ = Checkbox.prototype
 
@@ -38,7 +42,8 @@ RadioButton.prototype.type = 'radio-button'
 RadioButton.prototype.render = function () {
   this.clearPos(true)
   this.setContent('(' + (this.checked ? '*' : ' ') + ') ' + this.text, true)
-  return this._render() }
+  return this._render()
+}
 
 RadioButton.prototype.toggle = RadioButton.prototype.check
 

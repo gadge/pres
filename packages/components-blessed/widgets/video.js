@@ -41,21 +41,19 @@ function Video(options) {
     width: this.width - this.iwidth,
     height: this.height - this.iheight,
     shell: shell,
-    args: args.slice() }
+    args: args.slice()
+  }
   this.now = Date.now() / 1000 | 0
   this.start = opts.start || 0
   if (this.start) {
-    if (shell === 'mplayer') {
-      opts.args.unshift('-ss', this.start + '') }
-    else if (shell === 'mpv') {
-      opts.args.unshift('--start', this.start + '') }
+    if (shell === 'mplayer') { opts.args.unshift('-ss', this.start + '') }
+    else if (shell === 'mpv') { opts.args.unshift('--start', this.start + '') }
   }
   const DISPLAY = process.env.DISPLAY
   delete process.env.DISPLAY
   this.tty = new Terminal(opts)
   process.env.DISPLAY = DISPLAY
-  this.on('click', function () {
-    self.tty.pty.write('p') })
+  this.on('click', function () { self.tty.pty.write('p') })
 
   // mplayer/mpv cannot resize itself in the terminal, so we have
   // to restart it at the correct start time.
@@ -68,19 +66,24 @@ function Video(options) {
       width: self.width - self.iwidth,
       height: self.height - self.iheight,
       shell: shell,
-      args: args.slice() }
+      args: args.slice()
+    }
     const watched = (Date.now() / 1000 | 0) - self.now
     self.now = Date.now() / 1000 | 0
     self.start += watched
     if (shell === 'mplayer') {
-      opts.args.unshift('-ss', self.start + '') }
+      opts.args.unshift('-ss', self.start + '')
+    }
     else if (shell === 'mpv') {
-      opts.args.unshift('--start', self.start + '') }
+      opts.args.unshift('--start', self.start + '')
+    }
     const DISPLAY = process.env.DISPLAY
     delete process.env.DISPLAY
     self.tty = new Terminal(opts)
     process.env.DISPLAY = DISPLAY
-    self.screen.render() }) }
+    self.screen.render()
+  })
+}
 
 Video.prototype.__proto__ = Box.prototype
 
@@ -90,7 +93,8 @@ Video.prototype.exists = function (program) {
   try {
     return !!+cp.execSync('type '
       + program + ' > /dev/null 2> /dev/null'
-      + ' && echo 1', { encoding: 'utf8' }).trim() } catch (e) {
+      + ' && echo 1', { encoding: 'utf8' }).trim()
+  } catch (e) {
     return false
   }
 }

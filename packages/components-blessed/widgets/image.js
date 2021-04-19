@@ -12,8 +12,7 @@ const
  */
 
 function Image(options) {
-  if (!(this instanceof Node)) {
-    return new Image(options) }
+  if (!(this instanceof Node)) { return new Image(options) }
   options = options || {}
   options.type = options.itype || options.type || 'ansi'
 
@@ -23,7 +22,8 @@ function Image(options) {
     Object.getOwnPropertyNames(ANSIImage.prototype).forEach(function (key) {
       if (key === 'type') return
       Object.defineProperty(this, key,
-        Object.getOwnPropertyDescriptor(ANSIImage.prototype, key)) }, this)
+        Object.getOwnPropertyDescriptor(ANSIImage.prototype, key))
+    }, this)
     ANSIImage.call(this, options)
     return this
   }
@@ -32,12 +32,14 @@ function Image(options) {
     Object.getOwnPropertyNames(OverlayImage.prototype).forEach(function (key) {
       if (key === 'type') return
       Object.defineProperty(this, key,
-        Object.getOwnPropertyDescriptor(OverlayImage.prototype, key)) }, this)
+        Object.getOwnPropertyDescriptor(OverlayImage.prototype, key))
+    }, this)
     OverlayImage.call(this, options)
     return this
   }
 
-  throw new Error('`type` must either be `ansi` or `overlay`.') }
+  throw new Error('`type` must either be `ansi` or `overlay`.')
+}
 
 Image.prototype.__proto__ = Box.prototype
 

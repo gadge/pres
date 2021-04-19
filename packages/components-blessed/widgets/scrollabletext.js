@@ -13,11 +13,11 @@ const
  */
 
 function ScrollableText(options) {
-  if (!(this instanceof Node)) {
-    return new ScrollableText(options) }
+  if (!(this instanceof Node)) { return new ScrollableText(options) }
   options = options || {}
   options.alwaysScroll = true
-  ScrollableBox.call(this, options) }
+  ScrollableBox.call(this, options)
+}
 
 ScrollableText.prototype.__proto__ = ScrollableBox.prototype
 

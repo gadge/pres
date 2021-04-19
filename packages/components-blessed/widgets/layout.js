@@ -12,14 +12,12 @@ const
  */
 
 function Layout(options) {
-  if (!(this instanceof Node)) {
-    return new Layout(options) }
+  if (!(this instanceof Node)) { return new Layout(options) }
   options = options || {}
   if ((options.width == null
     && (options.left == null && options.right == null))
     || (options.height == null
-      && (options.top == null && options.bottom == null))) {
-    throw new Error('`Layout` must have a width and height!') }
+      && (options.top == null && options.bottom == null))) { throw new Error('`Layout` must have a width and height!') }
   options.layout = options.layout || 'inline'
 
   Element.call(this, options)
@@ -80,7 +78,8 @@ Layout.prototype.renderer = function (coords) {
     var highWidth = this.children.reduce(function (out, el) {
       out = Math.max(out, el.width)
       return out
-    }, 0) }
+    }, 0)
+  }
 
   return function iterator(el, i) {
     // Make our children shrinkable. If they don't have a height, for
@@ -106,7 +105,8 @@ Layout.prototype.renderer = function (coords) {
         // Compensate with width:
         // el.position.width = el.width + (highWidth - el.width);
         // Compensate with position:
-        el.position.left += highWidth - (last.lpos.xl - last.lpos.xi) }
+        el.position.left += highWidth - (last.lpos.xl - last.lpos.xi)
+      }
 
       // If our child does not overlap the right side of the Layout, set it's
       // `top`/`y` to the current `rowOffset` (the coordinate for the current
