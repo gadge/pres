@@ -33,13 +33,13 @@ export class Textarea extends Input {
         if (key.name === 'e') return self.readEditor()
       })
     if (options.mouse)
-      this.on(CLICK, data => {
+      this.on(CLICK, (data) => {
         if (self._reading) return
         if (data.button !== 'right') return
         self.readEditor()
       })
     this.type = 'textarea'
-    console.log(`>>> constructed ${this.type}`)
+    // console.log(`>>> constructed ${this.type}`)
   }
   _updateCursor(get) {
     if (this.screen.focused !== this) return
@@ -80,26 +80,27 @@ export class Textarea extends Input {
     if (cy === program.y) {
       if (cx > program.x) {
         program.cuf(cx - program.x)
-      } else
-        if (cx < program.x) {
-          program.cub(program.x - cx)
-        }
-    } else
-      if (cx === program.x) {
-        if (cy > program.y) {
-          program.cud(cy - program.y)
-        } else
-          if (cy < program.y) {
-            program.cuu(program.y - cy)
-          }
-      } else {
-        program.cup(cy, cx)
       }
+      else if (cx < program.x) {
+        program.cub(program.x - cx)
+      }
+    }
+    else if (cx === program.x) {
+      if (cy > program.y) {
+        program.cud(cy - program.y)
+      }
+      else if (cy < program.y) {
+        program.cuu(program.y - cy)
+      }
+    }
+    else {
+      program.cup(cy, cx)
+    }
   }
   input = this.readInput
   setInput = this.readInput
   readInput(callback) {
-    console.log('>>> calling textarea.readInput')
+    // console.log('>>> calling textarea.readInput')
     const self    = this,
           focused = this.screen.focused === this
     if (this._reading) return
@@ -114,56 +115,35 @@ export class Textarea extends Input {
     this.screen.program.showCursor()
     //this.screen.program.sgr('normal');
     this._done = function fn(err, value) {
-      if (!self._reading) return
-
-      if (fn.done) return
+      if (!self._reading) return void 0
+      if (fn.done) return void 0
       fn.done = true
-
       self._reading = false
-
       delete self._callback
       delete self._done
-
       self.removeListener(KEYPRESS, self.__listener)
       delete self.__listener
-
       self.removeListener(BLUR, self.__done)
       delete self.__done
-
       self.screen.program.hideCursor()
       self.screen.grabKeys = false
-
-      if (!focused) {
-        self.screen.restoreFocus()
-      }
-
-      if (self.options.inputOnFocus) {
-        self.screen.rewindFocus()
-      }
-
+      if (!focused) self.screen.restoreFocus()
+      if (self.options.inputOnFocus) self.screen.rewindFocus()
       // Ugly
-      if (err === 'stop') return
-
-      if (err) {
-        self.emit(ERROR, err)
-      } else
-        if (value != null) {
-          self.emit(SUBMIT, value)
-        } else {
-          self.emit(CANCEL, value)
-        }
+      if (err === 'stop') return void 0
+      if (err) { self.emit(ERROR, err) }
+      else if (value != null) { self.emit(SUBMIT, value) }
+      else { self.emit(CANCEL, value) }
       self.emit(ACTION, value)
-
-      if (!callback) return
-
+      if (!callback) return void 0
       return err
         ? callback(err)
         : callback(null, value)
     }
     // Put this in a nextTick so the current
     // key event doesn't trigger any keys input.
-    nextTick(function () {
-      console.log('>>> calling nextTick in TextArea')
+    nextTick(() => {
+      // console.log('>>> calling nextTick in TextArea')
       self.__listener = self._listener.bind(self)
       self.on(KEYPRESS, self.__listener)
     })
@@ -171,6 +151,7 @@ export class Textarea extends Input {
     this.on(BLUR, this.__done)
   }
   _listener(ch, key) {
+    // console.log('>>> calling _listener in TextArea')
     const done  = this._done,
           value = this.value
     if (key.name === 'return') return
@@ -180,24 +161,18 @@ export class Textarea extends Input {
     if (this.options.keys && key.ctrl && key.name === 'e') { return this.readEditor() }
     // TODO: Optimize typing by writing directly
     // to the screen and screen buffer here.
-    if (key.name === 'escape') { done(null, null) } else
-      if (key.name === 'backspace') {
-        if (this.value.length) {
-          if (this.screen.fullUnicode) {
-            // || unicode.isCombining(this.value, this.value.length - 1)) {
-            if (unicode.isSurrogate(this.value, this.value.length - 2)) {
-              this.value = this.value.slice(0, -2)
-            } else {
-              this.value = this.value.slice(0, -1)
-            }
-          } else {
-            this.value = this.value.slice(0, -1)
-          }
+    if (key.name === 'escape') { done(null, null) }
+    else if (key.name === 'backspace') {
+      if (this.value.length) {
+        if (this.screen.fullUnicode) {
+          // || unicode.isCombining(this.value, this.value.length - 1)) {
+          if (unicode.isSurrogate(this.value, this.value.length - 2)) { this.value = this.value.slice(0, -2) }
+          else { this.value = this.value.slice(0, -1) }
         }
-      } else
-        if (ch) {
-          if (!/^[\x00-\x08\x0b-\x0c\x0e-\x1f\x7f]$/.test(ch)) { this.value += ch }
-        }
+        else { this.value = this.value.slice(0, -1) }
+      }
+    }
+    else if (ch) { if (!/^[\x00-\x08\x0b-\x0c\x0e-\x1f\x7f]$/.test(ch)) { this.value += ch } }
     if (this.value !== value) { this.screen.render() }
   }
   _typeScroll() {
@@ -233,12 +208,13 @@ export class Textarea extends Input {
   editor = this.readEditor
   setEditor = this.readEditor
   readEditor(callback) {
+    // console.log('>>> readEditor in textarea')
     const self = this
     if (this._reading) {
       const _cb = this._callback,
             cb  = callback
       this._done('stop')
-      callback = function (err, value) {
+      callback = (err, value) => {
         if (_cb) _cb(err, value)
         if (cb) cb(err, value)
       }

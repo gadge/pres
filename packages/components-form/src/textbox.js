@@ -14,15 +14,14 @@ export class Textbox extends Textarea {
     this.secret = options.secret
     this.censor = options.censor
     this.type = 'textbox'
-    console.log(`>>> constructed ${this.type}`)
+    // console.log(`>>> constructed ${this.type}`)
   }
-  __olistener = Textbox.prototype._listener
+  __olistener = super._listener
   _listener(ch, key) {
-    if (key.name === 'enter') {
-      this._done(null, this.value)
-      return
-    }
-    return this.__olistener(ch, key)
+    // console.log('>>> calling _listener in Textbox')
+    return key.name === 'enter'
+      ? void this._done(null, this.value)
+      : this.__olistener(ch, key)
   }
   setValue(value) {
     let visible, val
@@ -31,19 +30,17 @@ export class Textbox extends Textarea {
       value = value.replace(/\n/g, '')
       this.value = value
       this._value = value
-      if (this.secret) { this.setContent('') } else
-        if (this.censor) {
-          this.setContent(Array(this.value.length + 1).join('*'))
-        } else {
-          visible = -(this.width - this.iwidth - 1)
-          val = this.value.replace(/\t/g, this.screen.tabc)
-          this.setContent(val.slice(visible))
-        }
+      if (this.secret) { this.setContent('') }
+      else if (this.censor) {
+        this.setContent(Array(this.value.length + 1).join('*'))
+      }
+      else {
+        visible = -(this.width - this.iwidth - 1)
+        val = this.value.replace(/\t/g, this.screen.tabc)
+        this.setContent(val.slice(visible))
+      }
       this._updateCursor()
     }
   }
-  submit() {
-    if (!this.__listener) return
-    return this.__listener('\r', { name: 'enter' })
-  }
+  submit() { return this.__listener ? this.__listener('\r', { name: 'enter' }) : void 0 }
 }
