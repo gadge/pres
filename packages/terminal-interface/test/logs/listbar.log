@@ -1,0 +1,410 @@
+OUT: >>> [this.input._presInput = undefined]\n
+-
+OUT: >>> [Program.prototype._listenInput]\n
+-
+OUT: ^[[?1049h^[[?1h^[=^[[1;18r^[[?25l^[[1;1H^[[H^[[2J^[[?1000h^[[?1002h^[[?1003h^[[?1005h^[7^[[1;1H^[[205C...^[[16;1H^[[3C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[17;1H^[[17;4Hx^[[42m^[(B ^[[m^[[41m ^[[m^[[41;90m15^[[m^[[41m:fifteen  ^[[m^[[42m                                                                                                                                                                                          ^[[m^[(0x^[[18;1H^[[18;4Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8^[7^[[8;1H^[[91C^[(0lq^[[1C^[[1;31m^[(BWARNING^[[1C^[[m^[(0qqqqqqqqqqqqqk^[[9;1H^[[9;92Hx^[[23Cx^[[10;1H^[[10;92Hx^[[1C^[[1m^[(BTerminfo parse error.^[[1C^[[m^[(0x^[[11;1H^[[11;92Hx^[[23Cx^[[12;1H^[[12;92Hmqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+-
+IN: ^[[M#b!
+-
+IN: ^[[M#a!
+-
+IN: ^[[M#`!
+-
+IN: ^[[M#`"
+-
+IN: ^[[M#_"
+-
+IN: ^[[M#^"
+-
+IN: ^[[M#^#
+-
+IN: ^[[M#]#
+-
+IN: ^[[M#\#
+-
+IN: ^[[M#\$
+-
+IN: ^[[M#[$
+-
+IN: ^[[M#Z$
+-
+IN: ^[[M#Y%
+-
+IN: ^[[M#X%
+-
+IN: ^[[M#W%
+-
+IN: ^[[M#W&
+-
+IN: ^[[M#V&
+-
+IN: ^[[M#U&
+-
+IN: ^[[M#T&
+-
+IN: ^[[M#T'
+-
+IN: ^[[M#S'
+-
+IN: ^[[M#R'
+-
+IN: ^[[M#Q'
+-
+IN: ^[[M#Q(
+-
+IN: ^[[M#P(
+-
+IN: ^[[M#O(
+-
+IN: ^[[M#N)
+-
+IN: ^[[M#M)
+-
+IN: ^[[M#L)
+-
+IN: ^[[M#L*
+-
+IN: ^[[M#K*
+-
+IN: ^[[M#J*
+-
+IN: ^[[M#J+
+-
+IN: ^[[M#I+
+-
+IN: ^[[M#H+
+-
+IN: ^[[M#G+
+-
+IN: ^[[M#F+
+-
+IN: ^[[M#F,
+-
+IN: ^[[M#E,
+-
+IN: ^[[M#D,
+-
+IN: ^[[M#C,
+-
+IN: ^[[M#C-
+-
+IN: ^[[M#B-
+-
+IN: ^[[M#A-
+-
+IN: ^[[M#A.
+-
+IN: ^[[M#@.
+-
+IN: ^[[M#?.
+-
+IN: ^[[M#?/
+-
+IN: ^[[M#>/
+-
+IN: ^[[M#=/
+-
+IN: ^[[M#</
+-
+IN: ^[[M#<0
+-
+IN: ^[[M#;0
+-
+IN: ^[[M#:0
+-
+IN: ^[[M#90
+-
+IN: ^[[M#91
+-
+IN: ^[[M#81
+-
+IN: ^[[M#71
+-
+IN: ^[[M#61
+-
+IN: ^[[M#51
+-
+IN: ^[[M#41
+-
+OUT: ^[7^[[8;1H^[[91C  ^[[1C       ^[[1C              ^[[9;1H^[[9;92H ^[[23C ^[[10;1H^[[10;92H ^[[1C                     ^[[1C ^[[11;1H^[[11;92H ^[[23C ^[[12;1H^[[12;92H                         ^[8
+-
+IN: ^[[M#31
+-
+IN: ^[[M#21
+-
+IN: ^[[M#11
+-
+IN: ^[[M#01
+-
+IN: ^[[M#/1
+-
+IN: ^[[M#01
+-
+IN: ^[[M#11
+-
+IN: ^[[M#21
+-
+IN: ^[[M#31
+-
+IN: ^[[M#41
+-
+IN: ^[[M#51
+-
+IN: ^[[M#61
+-
+IN: ^[[M#71
+-
+IN: ^[[M#81
+-
+IN: ^[[M#91
+-
+IN: ^[[M#:1
+-
+IN: ^[[M#;1
+-
+IN: ^[[M#<1
+-
+IN: ^[[M#=1
+-
+IN: ^[[M#>1
+-
+IN: ^[[M#?1
+-
+IN: ^[[M#@1
+-
+IN: ^[[M#A1
+-
+IN: ^[[M#B1
+-
+IN: ^[[M#C1
+-
+IN: ^[[M#D1
+-
+IN: ^[[M#E1
+-
+IN: ^[[M#F1
+-
+IN: ^[[M#G1
+-
+IN: ^[[M#H1
+-
+IN: ^[[M#I1
+-
+IN: ^[[M#J1
+-
+IN: ^[[M#K1
+-
+IN: ^[[M#L1
+-
+IN: ^[[M#M1
+-
+IN: ^[[M#N1
+-
+IN: ^[[M#O1
+-
+IN: ^[[M#P1
+-
+IN: ^[[M#Q1
+-
+IN: ^[[M#R1
+-
+IN: ^[[M#R0
+-
+IN: ^[[M#S0
+-
+IN: ^[[M#T0
+-
+IN: ^[[M#U0
+-
+IN: ^[[M#U/
+-
+IN: ^[[M#V/
+-
+IN: ^[[M#W/
+-
+IN: ^[[M#X/
+-
+IN: ^[[M#X.
+-
+IN: ^[[M#Y.
+-
+IN: ^[[M#Z.
+-
+IN: ^[[M#[.
+-
+IN: ^[[M#[-
+-
+IN: ^[[M#\-
+-
+IN: ^[[M#]-
+-
+IN: ^[[M#^-
+-
+IN: ^[[M#^,
+-
+IN: ^[[M#_,
+-
+IN: ^[[M#`,
+-
+IN: ^[[M#`+
+-
+IN: ^[[M#a+
+-
+IN: ^[[M#b+
+-
+IN: ^[[M#b*
+-
+IN: ^[[M#c*
+-
+IN: ^[[M#d*
+-
+IN: ^[[M#e*
+-
+IN: ^[[M#f*
+-
+IN: ^[[M#g*
+-
+IN: ^[[M#h*
+-
+IN: ^[[M#i*
+-
+IN: ^[[M#j)
+-
+IN: ^[[M#k)
+-
+IN: ^[[M#l)
+-
+IN: ^[[M#m)
+-
+IN: ^[[M#n)
+-
+IN: ^[[M#n*
+-
+IN: ^[[M#o*
+-
+IN: ^[[M#p*
+-
+IN: ^[[M#q*
+-
+IN: ^[[M#r*
+-
+IN: ^[[M#s*
+-
+IN: ^[[M#t*
+-
+IN: ^[[M#u*
+-
+IN: ^[[M#v*
+-
+IN: ^[[M#w*
+-
+IN: ^[[M#x*
+-
+IN: ^[[M#y*
+-
+IN: ^[[M#z*
+-
+IN: ^[[M#z+
+-
+IN: ^[[M#{+
+-
+IN: ^[[M#|+
+-
+IN: ^[[M#|,
+-
+IN: ^[[M#},
+-
+IN: ^[[M#}-
+-
+IN: ^[[M#~-
+-
+IN: ^[[M#^?-
+-
+IN: ^[[M#^@-
+-
+IN: ^[[M ^@-
+-
+IN: ^[[M#\x81-
+-
+IN: ^[[M \x81-
+-
+IN: ^[[M#\x81-
+-
+IN: ^[OD
+-
+IN: ^[OD
+-
+IN: ^[OC
+-
+IN: ^[OC
+-
+IN: ^[OD
+-
+IN: ^[[M#\x81-
+-
+IN: ^[[M#\x82-
+-
+IN: ^[[M#\x83-
+-
+IN: ^[[M#\x84-
+-
+IN: ^[[M#\x85-
+-
+IN: ^[[M#\x86-
+-
+IN: ^[[M#\x87-
+-
+IN: ^[[M#\x88,
+-
+IN: ^[[M#\x89,
+-
+IN: ^[[M#\x8a,
+-
+IN: ^[[M#\x8b,
+-
+IN: ^[[M#\x8b+
+-
+IN: ^[[M#\x8c+
+-
+IN: ^[[M#\x8d+
+-
+IN: ^[[M#\x8d*
+-
+IN: ^[[M#\x8e*
+-
+IN: ^[[M#\x8f*
+-
+IN: ^[[M#\x8f)
+-
+IN: ^[[M#\x90)
+-
+IN: ^[[M#\x90(
+-
+IN: ^[[M#\x91(
+-
+IN: ^[[M#\x92(
+-
+IN: ^[[M#\x92'
+-
+IN: ^[[M#\x93'
+-
+IN: ^[[M#\x93&
+-
+IN: ^[[M#\x94&
+-
+IN: ^[[M#\x95%
+-
+IN: ^[[M#\x96$
+-
+IN: ^[[M#\x97$
+-
+IN: ^[[M#\x97#
+-
+IN: ^[[M#\x98#
+-
+IN: ^[[M#\x99"
+-
+IN: ^[[M#\x9a!
+-
+OUT: ^[[?1l^[>
+-
