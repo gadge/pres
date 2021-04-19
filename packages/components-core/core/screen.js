@@ -2050,5 +2050,4 @@ const angleTable = {
 }
 Object.keys(angleTable).forEach(function (key) {
   angleTable[parseInt(key, 2)] = angleTable[key]
-  delete angleTable[key]
-})
+  delete angleTable[key]})

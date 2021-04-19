@@ -85,9 +85,7 @@ Terminal.prototype.bootstrap = function () {
     cursorBlink: this.cursorBlink,
     screenKeys: this.screenKeys
   })
-  this.term.refresh = function () {
-    self.screen.render()
-  }
+  this.term.refresh = function () { self.screen.render() }
   this.term.keyDown = function () {}
   this.term.keyPress = function () {}
   this.term.open(element)
@@ -105,9 +103,7 @@ Terminal.prototype.bootstrap = function () {
   // Incoming keys and mouse inputs.
   // NOTE: Cannot pass mouse events - coordinates will be off!
   this.screen.program.input.on('data', this._onData = function (data) {
-    if (self.screen.focused === self && !self._isMouse(data)) {
-      self.handler(data)
-    }
+    if (self.screen.focused === self && !self._isMouse(data)) { self.handler(data) }
   })
   this.onScreenEvent('mouse', function (data) {
     if (self.screen.focused !== self) return
@@ -126,19 +122,16 @@ Terminal.prototype.bootstrap = function () {
       return
     }
     let b = data.raw[0]
-    const x = data.x - self.aleft
-      , y   = data.y - self.atop
+    const
+      x = data.x - self.aleft,
+      y = data.y - self.atop
     let s
     if (self.term.urxvtMouse) {
-      if (self.screen.program.sgrMouse) {
-        b += 32
-      }
+      if (self.screen.program.sgrMouse) b += 32
       s = '\x1b[' + b + ';' + (x + 32) + ';' + (y + 32) + 'M'
     }
     else if (self.term.sgrMouse) {
-      if (!self.screen.program.sgrMouse) {
-        b -= 32
-      }
+      if (!self.screen.program.sgrMouse) b -= 32
       s = '\x1b[<' + b + ';' + x + ';' + y
         + (data.action === 'mousedown' ? 'M' : 'm')
     }

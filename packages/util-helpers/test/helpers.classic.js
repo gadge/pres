@@ -151,12 +151,10 @@ helpers.__defineGetter__('Screen', function () {
   if (!helpers._screen) {
     helpers._screen = require('../widgets/screen')
   }
-  return helpers._screen
-})
+  return helpers._screen})
 
 helpers.__defineGetter__('Element', function () {
   if (!helpers._element) {
     helpers._element = require('../widgets/element')
   }
-  return helpers._element
-})
+  return helpers._element})

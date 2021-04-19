@@ -207,21 +207,17 @@ Screen.prototype.__proto__ = Node.prototype
 Screen.prototype.type = 'screen'
 
 Screen.prototype.__defineGetter__('title', function () {
-  return this.program.title
-})
+  return this.program.title})
 
 Screen.prototype.__defineSetter__('title', function (title) {
-  return this.program.title = title
-})
+  return this.program.title = title})
 
 Screen.prototype.__defineGetter__('terminal', function () {
-  return this.program.terminal
-})
+  return this.program.terminal})
 
 Screen.prototype.__defineSetter__('terminal', function (terminal) {
   this.setTerminal(terminal)
-  return this.program.terminal
-})
+  return this.program.terminal})
 
 Screen.prototype.setTerminal = function (terminal) {
   const entered = !!this.program.isAlt
@@ -605,20 +601,16 @@ Screen.prototype._initHover = function () {
 }
 
 Screen.prototype.__defineGetter__('cols', function () {
-  return this.program.cols
-})
+  return this.program.cols})
 
 Screen.prototype.__defineGetter__('rows', function () {
-  return this.program.rows
-})
+  return this.program.rows})
 
 Screen.prototype.__defineGetter__('width', function () {
-  return this.program.cols
-})
+  return this.program.cols})
 
 Screen.prototype.__defineGetter__('height', function () {
-  return this.program.rows
-})
+  return this.program.rows})
 
 Screen.prototype.alloc = function (dirty) {
   let x, y
@@ -1586,12 +1578,10 @@ Screen.prototype._focus = function (self, old) {
 }
 
 Screen.prototype.__defineGetter__('focused', function () {
-  return this.history[this.history.length - 1]
-})
+  return this.history[this.history.length - 1]})
 
 Screen.prototype.__defineSetter__('focused', function (el) {
-  return this.focusPush(el)
-})
+  return this.focusPush(el)})
 
 Screen.prototype.clearRegion = function (xi, xl, yi, yl, override) {
   return this.fillRegion(this.dattr, ' ', xi, xl, yi, yl, override)
@@ -2149,8 +2139,7 @@ var angleTable = {
 
 Object.keys(angleTable).forEach(function (key) {
   angleTable[parseInt(key, 2)] = angleTable[key]
-  delete angleTable[key]
-})
+  delete angleTable[key]})
 
 /**
  * Expose

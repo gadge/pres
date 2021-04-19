@@ -310,13 +310,11 @@ Program.prototype.setupTput = function () {
 }
 
 Program.prototype.__defineGetter__('terminal', function () {
-  return this._terminal
-})
+  return this._terminal})
 
 Program.prototype.__defineSetter__('terminal', function (terminal) {
   this.setTerminal(terminal)
-  return this.terminal
-})
+  return this.terminal})
 
 Program.prototype.setTerminal = function (terminal) {
   this._terminal = terminal.toLowerCase()
@@ -1802,13 +1800,11 @@ Program.prototype.repeat = function (ch, i) {
 }
 
 Program.prototype.__defineGetter__(TITLE, function () {
-  return this._title
-})
+  return this._title})
 
 Program.prototype.__defineSetter__(TITLE, function (title) {
   this.setTitle(title)
-  return this._title
-})
+  return this._title})
 
 // Specific to iTerm2, but I think it's really cool.
 // Example:

@@ -159,8 +159,7 @@ ScrollableBox.prototype.type = 'scrollable-box'
 // XXX Potentially use this in place of scrollable checks elsewhere.
 ScrollableBox.prototype.__defineGetter__('reallyScrollable', function () {
   if (this.shrink) return this.scrollable
-  return this.getScrollHeight() > this.height
-})
+  return this.getScrollHeight() > this.height})
 
 ScrollableBox.prototype._scrollBottom = function () {
   if (!this.scrollable) return 0

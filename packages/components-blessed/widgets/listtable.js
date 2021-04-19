@@ -188,8 +188,7 @@ ListTable.prototype.render = function () {
       if (!lines[yi + ry][xi + rx + 1]) return
       // center
       if (ry === 0) {
-        // top
-        rx++
+        rx++ // top
         lines[yi + ry][xi + rx][0] = battr
         lines[yi + ry][xi + rx][1] = '\u252c' // '┬'
         // XXX If we alter iheight and itop for no borders - nothing should be written here

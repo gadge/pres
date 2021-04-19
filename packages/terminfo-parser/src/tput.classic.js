@@ -2350,8 +2350,7 @@ Tput.alias = {};
     Tput.alias[key] = [ aliases[0] ]
     Tput.alias[key].terminfo = aliases[0]
     Tput.alias[key].termcap = aliases[1]
-  })
-})
+  })})
 
 // Bools
 Tput.alias.no_esc_ctlc.push('beehive_glitch')
@@ -2368,8 +2367,7 @@ Tput.aliasMap = {}
 
 Object.keys(Tput.alias).forEach(function (key) {
   Tput.aliasMap[key] = key
-  Tput.alias[key].forEach(k => Tput.aliasMap[k] = key)
-})
+  Tput.alias[key].forEach(k => Tput.aliasMap[k] = key)})
 
 Tput.prototype.has = function (name) {
   name = Tput.aliasMap[name]

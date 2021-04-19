@@ -28,8 +28,8 @@ function Form(options) {
         || (options.vi && key.name === 'j')) {
         if (el.type === 'textbox' || el.type === 'textarea') {
           if (key.name === 'j') return
+          // Workaround, since we can't stop the tab from being added.
           if (key.name === 'tab') {
-            // Workaround, since we can't stop the tab from being added.
             el.emit('keypress', null, { name: 'backspace' })
           }
           el.emit('keypress', '\x1b', { name: 'escape' })

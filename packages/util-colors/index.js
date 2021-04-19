@@ -252,8 +252,7 @@ export const colors = (() => {
     push(i, l, l, l)
   }
 
-  return cols
-})()
+  return cols})()
 
 // // Map higher colors to the first 8 colors.
 // // This allows translation of high colors to low colors on 8-color terminals.
@@ -493,5 +492,4 @@ Object.keys(ccolors).forEach(function (name) {
       ccolors[i] = colorNames[name]
     }
   })
-  delete ccolors[name]
-})
+  delete ccolors[name]})

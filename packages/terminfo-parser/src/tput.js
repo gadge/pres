@@ -2832,8 +2832,7 @@ export class Tput {
     Tput.alias[key] = [ aliases[0] ]
     Tput.alias[key].terminfo = aliases[0]
     Tput.alias[key].termcap = aliases[1]
-  })
-})
+  })})
 // Bools
 Tput.alias.no_esc_ctlc.push('beehive_glitch')
 Tput.alias.dest_tabs_magic_smso.push('teleray_glitch')
@@ -2841,8 +2840,7 @@ Tput.alias.dest_tabs_magic_smso.push('teleray_glitch')
 Tput.alias.micro_col_size.push('micro_char_size')
 Object.keys(Tput.alias).forEach(function (key) {
   Tput.aliasMap[key] = key
-  Tput.alias[key].forEach(k => Tput.aliasMap[k] = key)
-})
+  Tput.alias[key].forEach(k => Tput.aliasMap[k] = key)})
 
 /**
  * Helpers

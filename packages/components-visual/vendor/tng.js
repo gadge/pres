@@ -859,8 +859,7 @@ PNG.prototype.getOutch = (function () {
       , outch  = dchars[lumi * (dchars.length - 1) | 0]
 
     return outch
-  }
-})()
+  }})()
 
 PNG.prototype.compileFrames = function (frames) {
   return this.optimization === 'mem'
@@ -1324,8 +1323,7 @@ PNG.prototype.crc32 = (function () {
       crc = crcTable[(crc ^ buf[i]) & 0xff] ^ (crc >>> 8)
     }
     return crc ^ -1
-  }
-})()
+  }})()
 
 PNG.prototype._debug = function () {
   if (!this.options.log) return

@@ -92,8 +92,7 @@ Listbar.prototype.__proto__ = Box.prototype
 Listbar.prototype.type = 'listbar'
 
 Listbar.prototype.__defineGetter__('selected', function () {
-  return this.leftBase + this.leftOffset
-})
+  return this.leftBase + this.leftOffset})
 
 Listbar.prototype.setItems = function (commands) {
   const self = this
