@@ -3,14 +3,11 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
+const
+  fs   = require('fs'),
+  Node = require('./node'),
+  Box  = require('./box')
 
-/**
- * Modules
- */
-const fs = require('fs')
-
-const Node = require('./node')
-const Box = require('./box')
 
 /**
  * BigText
@@ -18,8 +15,7 @@ const Box = require('./box')
 
 function BigText(options) {
   if (!(this instanceof Node)) {
-    return new BigText(options)
-  }
+    return new BigText(options) }
   options = options || {}
   options.font = options.font
     || __dirname + '/../../usr/fonts/ter-u14n.json'
@@ -45,17 +41,14 @@ BigText.prototype.loadFont = function (filename) {
     , font
 
   data = JSON.parse(fs.readFileSync(filename, 'utf8'))
-
   this.ratio.width = data.width
   this.ratio.height = data.height
 
   function convertLetter(ch, lines) {
     let line, i
-
     while (lines.length > self.ratio.height) {
       lines.shift()
-      lines.pop()
-    }
+      lines.pop() }
 
     lines = lines.map(function (line) {
       let chs = line.split('')
@@ -63,18 +56,14 @@ BigText.prototype.loadFont = function (filename) {
         return ch === ' ' ? 0 : 1
       })
       while (chs.length < self.ratio.width) {
-        chs.push(0)
-      }
+        chs.push(0) }
       return chs
     })
-
     while (lines.length < self.ratio.height) {
       line = []
       for (i = 0; i < self.ratio.width; i++) {
-        line.push(0)
-      }
-      lines.push(line)
-    }
+        line.push(0) }
+      lines.push(line) }
 
     return lines
   }
@@ -108,22 +97,18 @@ BigText.prototype.render = function () {
     this._shrinkHeight = true
     // }
   }
-
   const coords = this._render()
   if (!coords) return
-
   const lines = this.screen.lines
     , left    = coords.xi + this.ileft
     , top     = coords.yi + this.itop
     , right   = coords.xl - this.iright
     , bottom  = coords.yl - this.ibottom
-
   const dattr = this.sattr(this.style)
     , bg      = dattr & 0x1ff
     , fg      = (dattr >> 9) & 0x1ff
     , flags   = (dattr >> 18) & 0x1ff
     , attr    = (flags << 18) | (bg << 9) | fg
-
   let x = left, i = 0
   for (; x < right; x += this.ratio.width, i++) {
     const ch = this.text[i]
@@ -140,7 +125,8 @@ BigText.prototype.render = function () {
         if (this.fch && this.fch !== ' ') {
           lines[y][x + mx][0] = dattr
           lines[y][x + mx][1] = mcell === 1 ? this.fch : this.ch
-        } else {
+        }
+        else {
           lines[y][x + mx][0] = mcell === 1 ? attr : dattr
           lines[y][x + mx][1] = mcell === 1 ? ' ' : this.ch
         }

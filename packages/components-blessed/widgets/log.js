@@ -3,16 +3,12 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
+const
+  util           = require('util'),
+  nextTick       = global.setImmediate || process.nextTick.bind(process),
+  Node           = require('./node'),
+  ScrollableText = require('./scrollabletext')
 
-/**
- * Modules
- */
-const util = require('util')
-
-const nextTick = global.setImmediate || process.nextTick.bind(process)
-
-const Node = require('./node')
-const ScrollableText = require('./scrollabletext')
 
 /**
  * Log
@@ -20,63 +16,53 @@ const ScrollableText = require('./scrollabletext')
 
 function Log(options) {
   const self = this
-
   if (!(this instanceof Node)) {
-    return new Log(options);
-  }
+    return new Log(options) }
+  options = options || {}
 
-  options = options || {};
-
-  ScrollableText.call(this, options);
-
+  ScrollableText.call(this, options)
   this.scrollback = options.scrollback != null
     ? options.scrollback
-    : Infinity;
-  this.scrollOnInput = options.scrollOnInput;
-
-  this.on('set content', function() {
+    : Infinity
+  this.scrollOnInput = options.scrollOnInput
+  this.on('set content', function () {
     if (!self._userScrolled || self.scrollOnInput) {
-      nextTick(function() {
-        self.setScrollPerc(100);
-        self._userScrolled = false;
-        self.screen.render();
-      });
-    }
-  });
-}
+      nextTick(function () {
+        self.setScrollPerc(100)
+        self._userScrolled = false
+        self.screen.render() }) }
+  }) }
 
-Log.prototype.__proto__ = ScrollableText.prototype;
+Log.prototype.__proto__ = ScrollableText.prototype
 
-Log.prototype.type = 'log';
+Log.prototype.type = 'log'
 
 Log.prototype.log =
-Log.prototype.add = function() {
-  const args = Array.prototype.slice.call(arguments)
-  if (typeof args[0] === 'object') {
-    args[0] = util.inspect(args[0], true, 20, true);
+  Log.prototype.add = function () {
+    const args = Array.prototype.slice.call(arguments)
+    if (typeof args[0] === 'object') {
+      args[0] = util.inspect(args[0], true, 20, true) }
+    const text = util.format.apply(util, args)
+    this.emit('log', text)
+    const ret = this.pushLine(text)
+    if (this._clines.fake.length > this.scrollback) {
+      this.shiftLine(0, (this.scrollback / 3) | 0) }
+    return ret
   }
-  const text = util.format.apply(util, args)
-  this.emit('log', text);
-  const ret = this.pushLine(text)
-  if (this._clines.fake.length > this.scrollback) {
-    this.shiftLine(0, (this.scrollback / 3) | 0);
-  }
-  return ret;
-};
 
-Log.prototype._scroll = Log.prototype.scroll;
-Log.prototype.scroll = function(offset, always) {
-  if (offset === 0) return this._scroll(offset, always);
-  this._userScrolled = true;
+Log.prototype._scroll = Log.prototype.scroll
+Log.prototype.scroll = function (offset, always) {
+  if (offset === 0) return this._scroll(offset, always)
+  this._userScrolled = true
   const ret = this._scroll(offset, always)
   if (this.getScrollPerc() === 100) {
-    this._userScrolled = false;
+    this._userScrolled = false
   }
-  return ret;
-};
+  return ret
+}
 
 /**
  * Expose
  */
 
-module.exports = Log;
+module.exports = Log

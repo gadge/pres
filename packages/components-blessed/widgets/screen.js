@@ -4,25 +4,19 @@
  * https://github.com/chjj/blessed
  */
 
-/**
- * Modules
- */
-const path = require('path')
-  , fs     = require('fs')
-  , cp     = require('child_process')
+const path     = require('path'),
+      fs       = require('fs'),
+      cp       = require('child_process'),
+      colors   = require('../colors'),
+      program  = require('../program'),
+      unicode  = require('../unicode'),
+      nextTick = global.setImmediate || process.nextTick.bind(process),
+      helpers  = require('../helpers'),
+      Node     = require('./node'),
+      Log      = require('./log'),
+      Element  = require('./element'),
+      Box      = require('./box')
 
-const colors = require('../colors')
-  , program  = require('../program')
-  , unicode  = require('../unicode')
-
-const nextTick = global.setImmediate || process.nextTick.bind(process)
-
-const helpers = require('../helpers')
-
-const Node = require('./node')
-const Log = require('./log')
-const Element = require('./element')
-const Box = require('./box')
 
 /**
  * Screen
@@ -31,10 +25,10 @@ const Box = require('./box')
 function Screen(options) {
   const self = this
   if (!(this instanceof Node)) return new Screen(options)
-  Screen.bind(this);
-  options = options || {};
+  Screen.bind(this)
+  options = options || {}
   if (options.rsety && options.listen) options = { program: options }
-  this.program = options.program;
+  this.program = options.program
   if (!this.program) {
     this.program = program({
       input: options.input,
@@ -48,77 +42,65 @@ function Screen(options) {
       tput: true,
       buffer: true,
       zero: true
-    });
-  } else {
-    this.program.setupTput();
-    this.program.useBuffer = true;
-    this.program.zero = true;
-    this.program.options.resizeTimeout = options.resizeTimeout;
+    }) }
+  else {
+    this.program.setupTput()
+    this.program.useBuffer = true
+    this.program.zero = true
+    this.program.options.resizeTimeout = options.resizeTimeout
     if (options.forceUnicode != null) {
-      this.program.tput.features.unicode = options.forceUnicode;
-      this.program.tput.unicode = options.forceUnicode;
+      this.program.tput.features.unicode = options.forceUnicode
+      this.program.tput.unicode = options.forceUnicode
     }
   }
-  this.tput = this.program.tput;
-  Node.call(this, options);
-
-  this.autoPadding = options.autoPadding !== false;
-  this.tabc = Array((options.tabSize || 4) + 1).join(' ');
-  this.dockBorders = options.dockBorders;
-
-  this.ignoreLocked = options.ignoreLocked || [];
-
-  this._unicode = this.tput.unicode || this.tput.numbers.U8 === 1;
-  this.fullUnicode = this.options.fullUnicode && this._unicode;
-
-  this.dattr = ((0 << 18) | (0x1ff << 9)) | 0x1ff;
-
-  this.renders = 0;
+  this.tput = this.program.tput
+  Node.call(this, options)
+  this.autoPadding = options.autoPadding !== false
+  this.tabc = Array((options.tabSize || 4) + 1).join(' ')
+  this.dockBorders = options.dockBorders
+  this.ignoreLocked = options.ignoreLocked || []
+  this._unicode = this.tput.unicode || this.tput.numbers.U8 === 1
+  this.fullUnicode = this.options.fullUnicode && this._unicode
+  this.dattr = ((0 << 18) | (0x1ff << 9)) | 0x1ff
+  this.renders = 0
   this.position = {
     left: this.left = this.aleft = this.rleft = 0,
     right: this.right = this.aright = this.rright = 0,
     top: this.top = this.atop = this.rtop = 0,
     bottom: this.bottom = this.abottom = this.rbottom = 0,
-    get height() { return self.height; },
-    get width() { return self.width; }
-  };
-
-  this.ileft = 0;
-  this.itop = 0;
-  this.iright = 0;
-  this.ibottom = 0;
-  this.iheight = 0;
-  this.iwidth = 0;
-
+    get height() { return self.height },
+    get width() { return self.width }
+  }
+  this.ileft = 0
+  this.itop = 0
+  this.iright = 0
+  this.ibottom = 0
+  this.iheight = 0
+  this.iwidth = 0
   this.padding = {
     left: 0,
     top: 0,
     right: 0,
     bottom: 0
-  };
-
-  this.hover = null;
-  this.history = [];
-  this.clickable = [];
-  this.keyable = [];
-  this.grabKeys = false;
-  this.lockKeys = false;
-  this.focused;
-  this._buf = '';
-
-  this._ci = -1;
-
-  if (options.title) {
-    this.title = options.title;
   }
-
+  this.hover = null
+  this.history = []
+  this.clickable = []
+  this.keyable = []
+  this.grabKeys = false
+  this.lockKeys = false
+  this.focused
+  this._buf = ''
+  this._ci = -1
+  if (options.title) {
+    this.title = options.title
+  }
   options.cursor = options.cursor || {
     artificial: options.artificialCursor,
     shape: options.cursorShape,
     blink: options.cursorBlink,
     color: options.cursorColor
-  };
-
+  }
   this.cursor = {
     artificial: options.cursor.artificial || false,
     shape: options.cursor.shape || 'block',
@@ -127,34 +109,23 @@ function Screen(options) {
     _set: false,
     _state: 1,
     _hidden: true
-  };
-
-  this.program.on('resize', function() {
-    self.alloc();
+  }
+  this.program.on('resize', function () {
+    self.alloc()
     self.render();
     (function emit(el) {
-      el.emit('resize');
-      el.children.forEach(emit);
-    })(self);
-  });
-
-  this.program.on('focus', function() {
-    self.emit('focus');
-  });
-
-  this.program.on('blur', function() {
-    self.emit('blur');
-  });
-
-  this.program.on('warning', function(text) {
-    self.emit('warning', text);
-  });
-
+      el.emit('resize')
+      el.children.forEach(emit) })(self) })
+  this.program.on('focus', function () {
+    self.emit('focus') })
+  this.program.on('blur', function () {
+    self.emit('blur') })
+  this.program.on('warning', function (text) {
+    self.emit('warning', text) })
   this.on('newListener', function fn(type) {
     if (type === 'keypress' || type.indexOf('key ') === 0 || type === 'mouse') {
-      if (type === 'keypress' || type.indexOf('key ') === 0) self._listenKeys();
-      if (type === 'mouse') self._listenMouse();
-    }
+      if (type === 'keypress' || type.indexOf('key ') === 0) self._listenKeys()
+      if (type === 'mouse') self._listenMouse() }
     if (type === 'mouse'
       || type === 'click'
       || type === 'mouseover'
@@ -165,161 +136,129 @@ function Screen(options) {
       || type === 'wheeldown'
       || type === 'wheelup'
       || type === 'mousemove') {
-      self._listenMouse();
-    }
-  });
+      self._listenMouse() }
+  })
+  this.setMaxListeners(Infinity)
+  this.enter()
+  this.postEnter() }
 
-  this.setMaxListeners(Infinity);
+Screen.global = null
 
-  this.enter();
+Screen.total = 0
 
-  this.postEnter();
-}
+Screen.instances = []
 
-Screen.global = null;
-
-Screen.total = 0;
-
-Screen.instances = [];
-
-Screen.bind = function(screen) {
+Screen.bind = function (screen) {
   if (!Screen.global) {
-    Screen.global = screen;
+    Screen.global = screen
   }
-
   if (!~Screen.instances.indexOf(screen)) {
-    Screen.instances.push(screen);
-    screen.index = Screen.total;
-    Screen.total++;
+    Screen.instances.push(screen)
+    screen.index = Screen.total
+    Screen.total++
   }
+  if (Screen._bound) return
+  Screen._bound = true
 
-  if (Screen._bound) return;
-  Screen._bound = true;
-
-  process.on('uncaughtException', Screen._exceptionHandler = function(err) {
+  process.on('uncaughtException', Screen._exceptionHandler = function (err) {
     if (process.listeners('uncaughtException').length > 1) {
-      return;
+      return
     }
-    Screen.instances.slice().forEach(function(screen) {
-      screen.destroy();
-    });
-    err = err || new Error('Uncaught Exception.');
-    console.error(err.stack ? err.stack + '' : err + '');
-    nextTick(function() {
-      process.exit(1);
-    });
-  });
+    Screen.instances.slice().forEach(function (screen) {
+      screen.destroy() })
+    err = err || new Error('Uncaught Exception.')
+    console.error(err.stack ? err.stack + '' : err + '')
+    nextTick(function () {
+      process.exit(1) }) });
 
-  ['SIGTERM', 'SIGINT', 'SIGQUIT'].forEach(function(signal) {
+  [ 'SIGTERM', 'SIGINT', 'SIGQUIT' ].forEach(function (signal) {
     const name = '_' + signal.toLowerCase() + 'Handler'
-    process.on(signal, Screen[name] = function() {
+    process.on(signal, Screen[name] = function () {
       if (process.listeners(signal).length > 1) {
-        return;
+        return
       }
-      nextTick(function() {
-        process.exit(0);
-      });
-    });
-  });
+      nextTick(function () {
+        process.exit(0) }) }) })
 
-  process.on('exit', Screen._exitHandler = function() {
-    Screen.instances.slice().forEach(function(screen) {
-      screen.destroy();
-    });
-  });
-};
+  process.on('exit', Screen._exitHandler = function () {
+    Screen.instances.slice().forEach(function (screen) {
+      screen.destroy() }) }) }
 
-Screen.prototype.__proto__ = Node.prototype;
+Screen.prototype.__proto__ = Node.prototype
 
-Screen.prototype.type = 'screen';
+Screen.prototype.type = 'screen'
 
-Screen.prototype.__defineGetter__('title', function() {
-  return this.program.title;
-});
+Screen.prototype.__defineGetter__('title', function () {
+  return this.program.title
+})
 
-Screen.prototype.__defineSetter__('title', function(title) {
-  return this.program.title = title;
-});
+Screen.prototype.__defineSetter__('title', function (title) {
+  return this.program.title = title
+})
 
-Screen.prototype.__defineGetter__('terminal', function() {
-  return this.program.terminal;
-});
+Screen.prototype.__defineGetter__('terminal', function () {
+  return this.program.terminal
+})
 
-Screen.prototype.__defineSetter__('terminal', function(terminal) {
-  this.setTerminal(terminal);
-  return this.program.terminal;
-});
+Screen.prototype.__defineSetter__('terminal', function (terminal) {
+  this.setTerminal(terminal)
+  return this.program.terminal
+})
 
-Screen.prototype.setTerminal = function(terminal) {
+Screen.prototype.setTerminal = function (terminal) {
   const entered = !!this.program.isAlt
   if (entered) {
-    this._buf = '';
-    this.program._buf = '';
-    this.leave();
-  }
-  this.program.setTerminal(terminal);
-  this.tput = this.program.tput;
-  if (entered) {
-    this.enter();
-  }
-};
+    this._buf = ''
+    this.program._buf = ''
+    this.leave() }
+  this.program.setTerminal(terminal)
+  this.tput = this.program.tput
+  if (entered) this.enter() }
 
-Screen.prototype.enter = function() {
-  if (this.program.isAlt) return;
+Screen.prototype.enter = function () {
+  if (this.program.isAlt) return
   if (!this.cursor._set) {
     if (this.options.cursor.shape) {
-      this.cursorShape(this.cursor.shape, this.cursor.blink);
-    }
+      this.cursorShape(this.cursor.shape, this.cursor.blink) }
     if (this.options.cursor.color) {
-      this.cursorColor(this.cursor.color);
-    }
+      this.cursorColor(this.cursor.color) }
   }
   if (process.platform === 'win32') {
     try {
-      cp.execSync('cls', { stdio: 'ignore', timeout: 1000 });
-    } catch (e) {
-      ;
-    }
+      cp.execSync('cls', { stdio: 'ignore', timeout: 1000 }) } catch (e) { }
   }
-  this.program.alternateBuffer();
-  this.program.put.keypad_xmit();
-  this.program.csr(0, this.height - 1);
-  this.program.hideCursor();
-  this.program.cup(0, 0);
+  this.program.alternateBuffer()
+  this.program.put.keypad_xmit()
+  this.program.csr(0, this.height - 1)
+  this.program.hideCursor()
+  this.program.cup(0, 0)
   // We need this for tmux now:
   if (this.tput.strings.ena_acs) {
-    this.program._write(this.tput.enacs());
-  }
-  this.alloc();
-};
+    this.program._write(this.tput.enacs()) }
+  this.alloc() }
 
-Screen.prototype.leave = function() {
-  if (!this.program.isAlt) return;
-  this.program.put.keypad_local();
+Screen.prototype.leave = function () {
+  if (!this.program.isAlt) return
+  this.program.put.keypad_local()
   if (this.program.scrollTop !== 0
-      || this.program.scrollBottom !== this.rows - 1) {
-    this.program.csr(0, this.height - 1);
-  }
+    || this.program.scrollBottom !== this.rows - 1) {
+    this.program.csr(0, this.height - 1) }
   // XXX For some reason if alloc/clear() is before this
   // line, it doesn't work on linux console.
-  this.program.showCursor();
-  this.alloc();
+  this.program.showCursor()
+  this.alloc()
   if (this._listenedMouse) {
-    this.program.disableMouse();
-  }
-  this.program.normalBuffer();
-  if (this.cursor._set) this.cursorReset();
-  this.program.flush();
+    this.program.disableMouse() }
+  this.program.normalBuffer()
+  if (this.cursor._set) this.cursorReset()
+  this.program.flush()
   if (process.platform === 'win32') {
     try {
-      cp.execSync('cls', { stdio: 'ignore', timeout: 1000 });
-    } catch (e) {
-      ;
-    }
+      cp.execSync('cls', { stdio: 'ignore', timeout: 1000 }) } catch (e) { }
   }
-};
+}
 
-Screen.prototype.postEnter = function() {
+Screen.prototype.postEnter = function () {
   const self = this
   if (this.options.debug) {
     this.debugLog = new Log({
@@ -346,27 +285,21 @@ Screen.prototype.postEnter = function() {
           inverse: true
         }
       }
-    });
-
-    this.debugLog.toggle = function() {
+    })
+    this.debugLog.toggle = function () {
       if (self.debugLog.hidden) {
-        self.saveFocus();
-        self.debugLog.show();
-        self.debugLog.setFront();
-        self.debugLog.focus();
-      } else {
-        self.debugLog.hide();
-        self.restoreFocus();
-      }
-      self.render();
-    };
-
-    this.debugLog.key(['q', 'escape'], self.debugLog.toggle);
-    this.key('f12', self.debugLog.toggle);
-  }
-
+        self.saveFocus()
+        self.debugLog.show()
+        self.debugLog.setFront()
+        self.debugLog.focus() }
+      else {
+        self.debugLog.hide()
+        self.restoreFocus() }
+      self.render() }
+    this.debugLog.key([ 'q', 'escape' ], self.debugLog.toggle)
+    this.key('f12', self.debugLog.toggle) }
   if (this.options.warnings) {
-    this.on('warning', function(text) {
+    this.on('warning', function (text) {
       const warning = new Box({
         screen: self,
         parent: self,
@@ -382,150 +315,127 @@ Screen.prototype.postEnter = function() {
         content: '{bold}' + text + '{/bold}',
         tags: true
       })
-      self.render();
+      self.render()
       const timeout = setTimeout(function () {
         warning.destroy()
-        self.render()
-      }, 1500)
+        self.render() }, 1500)
       if (timeout.unref) {
-        timeout.unref();
-      }
-    });
-  }
-};
+        timeout.unref() }
+    }) }
+}
 
-Screen.prototype._destroy = Screen.prototype.destroy;
-Screen.prototype.destroy = function() {
-  this.leave();
-
+Screen.prototype._destroy = Screen.prototype.destroy
+Screen.prototype.destroy = function () {
+  this.leave()
   const index = Screen.instances.indexOf(this)
   if (~index) {
-    Screen.instances.splice(index, 1);
-    Screen.total--;
+    Screen.instances.splice(index, 1)
+    Screen.total--
 
-    Screen.global = Screen.instances[0];
-
+    Screen.global = Screen.instances[0]
     if (Screen.total === 0) {
-      Screen.global = null;
+      Screen.global = null
 
-      process.removeListener('uncaughtException', Screen._exceptionHandler);
-      process.removeListener('SIGTERM', Screen._sigtermHandler);
-      process.removeListener('SIGINT', Screen._sigintHandler);
-      process.removeListener('SIGQUIT', Screen._sigquitHandler);
-      process.removeListener('exit', Screen._exitHandler);
-      delete Screen._exceptionHandler;
-      delete Screen._sigtermHandler;
-      delete Screen._sigintHandler;
-      delete Screen._sigquitHandler;
-      delete Screen._exitHandler;
+      process.removeListener('uncaughtException', Screen._exceptionHandler)
+      process.removeListener('SIGTERM', Screen._sigtermHandler)
+      process.removeListener('SIGINT', Screen._sigintHandler)
+      process.removeListener('SIGQUIT', Screen._sigquitHandler)
+      process.removeListener('exit', Screen._exitHandler)
+      delete Screen._exceptionHandler
+      delete Screen._sigtermHandler
+      delete Screen._sigintHandler
+      delete Screen._sigquitHandler
+      delete Screen._exitHandler
 
-      delete Screen._bound;
+      delete Screen._bound
     }
+    this.destroyed = true
+    this.emit('destroy')
+    this._destroy() }
+  this.program.destroy() }
 
-    this.destroyed = true;
-    this.emit('destroy');
-    this._destroy();
-  }
+Screen.prototype.log = function () {
+  return this.program.log.apply(this.program, arguments) }
 
-  this.program.destroy();
-};
-
-Screen.prototype.log = function() {
-  return this.program.log.apply(this.program, arguments);
-};
-
-Screen.prototype.debug = function() {
+Screen.prototype.debug = function () {
   if (this.debugLog) {
-    this.debugLog.log.apply(this.debugLog, arguments);
-  }
-  return this.program.debug.apply(this.program, arguments);
-};
+    this.debugLog.log.apply(this.debugLog, arguments) }
+  return this.program.debug.apply(this.program, arguments) }
 
-Screen.prototype._listenMouse = function(el) {
+Screen.prototype._listenMouse = function (el) {
   const self = this
-
   if (el && !~this.clickable.indexOf(el)) {
-    el.clickable = true;
-    this.clickable.push(el);
-  }
-
-  if (this._listenedMouse) return;
-  this._listenedMouse = true;
-
-  this.program.enableMouse();
+    el.clickable = true
+    this.clickable.push(el) }
+  if (this._listenedMouse) return
+  this._listenedMouse = true
+  this.program.enableMouse()
   if (this.options.sendFocus) {
-    this.program.setMouse({ sendFocus: true }, true);
-  }
-
-  this.on('render', function() {
-    self._needsClickableSort = true;
-  });
-
-  this.program.on('mouse', function(data) {
-    if (self.lockKeys) return;
-
+    this.program.setMouse({ sendFocus: true }, true) }
+  this.on('render', function () {
+    self._needsClickableSort = true
+  })
+  this.program.on('mouse', function (data) {
+    if (self.lockKeys) return
     if (self._needsClickableSort) {
-      self.clickable = helpers.hsort(self.clickable);
-      self._needsClickableSort = false;
+      self.clickable = helpers.hsort(self.clickable)
+      self._needsClickableSort = false
     }
-
     let i = 0
       , el
       , set
       , pos
 
     for (; i < self.clickable.length; i++) {
-      el = self.clickable[i];
-
+      el = self.clickable[i]
       if (el.detached || !el.visible) {
-        continue;
+        continue
       }
 
       // if (self.grabMouse && self.focused !== el
       //     && !el.hasAncestor(self.focused)) continue;
 
-      pos = el.lpos;
-      if (!pos) continue;
-
+      pos = el.lpos
+      if (!pos) continue
       if (data.x >= pos.xi && data.x < pos.xl
-          && data.y >= pos.yi && data.y < pos.yl) {
-        el.emit('mouse', data);
+        && data.y >= pos.yi && data.y < pos.yl) {
+        el.emit('mouse', data)
         if (data.action === 'mousedown') {
-          self.mouseDown = el;
-        } else if (data.action === 'mouseup') {
-          (self.mouseDown || el).emit('click', data);
-          self.mouseDown = null;
-        } else if (data.action === 'mousemove') {
+          self.mouseDown = el
+        }
+        else if (data.action === 'mouseup') {
+          (self.mouseDown || el).emit('click', data)
+          self.mouseDown = null
+        }
+        else if (data.action === 'mousemove') {
           if (self.hover && el.index > self.hover.index) {
-            set = false;
+            set = false
           }
           if (self.hover !== el && !set) {
             if (self.hover) {
-              self.hover.emit('mouseout', data);
-            }
-            el.emit('mouseover', data);
-            self.hover = el;
+              self.hover.emit('mouseout', data) }
+            el.emit('mouseover', data)
+            self.hover = el
           }
-          set = true;
+          set = true
         }
-        el.emit(data.action, data);
-        break;
+        el.emit(data.action, data)
+        break
       }
     }
 
     // Just mouseover?
     if ((data.action === 'mousemove'
-        || data.action === 'mousedown'
-        || data.action === 'mouseup')
-        && self.hover
-        && !set) {
-      self.hover.emit('mouseout', data);
-      self.hover = null;
+      || data.action === 'mousedown'
+      || data.action === 'mouseup')
+      && self.hover
+      && !set) {
+      self.hover.emit('mouseout', data)
+      self.hover = null
     }
 
-    self.emit('mouse', data);
-    self.emit(data.action, data);
-  });
+    self.emit('mouse', data)
+    self.emit(data.action, data) })
 
   // Autofocus highest element.
   // this.on('element click', function(el, data) {
@@ -539,27 +449,21 @@ Screen.prototype._listenMouse = function(el) {
   // });
 
   // Autofocus elements with the appropriate option.
-  this.on('element click', function(el) {
+  this.on('element click', function (el) {
     if (el.clickable === true && el.options.autoFocus !== false) {
-      el.focus();
-    }
-  });
-};
+      el.focus() }
+  }) }
 
-Screen.prototype.enableMouse = function(el) {
-  this._listenMouse(el);
-};
+Screen.prototype.enableMouse = function (el) {
+  this._listenMouse(el) }
 
-Screen.prototype._listenKeys = function(el) {
+Screen.prototype._listenKeys = function (el) {
   const self = this
-
   if (el && !~this.keyable.indexOf(el)) {
-    el.keyable = true;
-    this.keyable.push(el);
-  }
-
-  if (this._listenedKeys) return;
-  this._listenedKeys = true;
+    el.keyable = true
+    this.keyable.push(el) }
+  if (this._listenedKeys) return
+  this._listenedKeys = true
 
   // NOTE: The event emissions used to be reversed:
   // element + screen
@@ -568,47 +472,37 @@ Screen.prototype._listenKeys = function(el) {
   // After the first keypress emitted, the handler
   // checks to make sure grabKeys, lockKeys, and focused
   // weren't changed, and handles those situations appropriately.
-  this.program.on('keypress', function(ch, key) {
+  this.program.on('keypress', function (ch, key) {
     if (self.lockKeys && !~self.ignoreLocked.indexOf(key.full)) {
-      return;
+      return
     }
-
     const focused = self.focused
       , grabKeys  = self.grabKeys
-
     if (!grabKeys || ~self.ignoreLocked.indexOf(key.full)) {
-      self.emit('keypress', ch, key);
-      self.emit('key ' + key.full, ch, key);
-    }
+      self.emit('keypress', ch, key)
+      self.emit('key ' + key.full, ch, key) }
 
     // If something changed from the screen key handler, stop.
     if (self.grabKeys !== grabKeys || self.lockKeys) {
-      return;
+      return
     }
-
     if (focused && focused.keyable) {
-      focused.emit('keypress', ch, key);
-      focused.emit('key ' + key.full, ch, key);
-    }
-  });
-};
+      focused.emit('keypress', ch, key)
+      focused.emit('key ' + key.full, ch, key) }
+  }) }
 
-Screen.prototype.enableKeys = function(el) {
-  this._listenKeys(el);
-};
+Screen.prototype.enableKeys = function (el) {
+  this._listenKeys(el) }
 
-Screen.prototype.enableInput = function(el) {
-  this._listenMouse(el);
-  this._listenKeys(el);
-};
+Screen.prototype.enableInput = function (el) {
+  this._listenMouse(el)
+  this._listenKeys(el) }
 
-Screen.prototype._initHover = function() {
+Screen.prototype._initHover = function () {
   const self = this
-
   if (this._hoverText) {
-    return;
+    return
   }
-
   this._hoverText = new Box({
     screen: this,
     left: 0,
@@ -624,93 +518,77 @@ Screen.prototype._initHover = function() {
       bg: 'default',
       fg: 'default'
     }
-  });
-
-  this.on('mousemove', function(data) {
-    if (self._hoverText.detached) return;
-    self._hoverText.rleft = data.x + 1;
-    self._hoverText.rtop = data.y;
-    self.render();
-  });
-
-  this.on('element mouseover', function(el, data) {
-    if (!el._hoverOptions) return;
-    self._hoverText.parseTags = el.parseTags;
-    self._hoverText.setContent(el._hoverOptions.text);
-    self.append(self._hoverText);
-    self._hoverText.rleft = data.x + 1;
-    self._hoverText.rtop = data.y;
-    self.render();
-  });
-
-  this.on('element mouseout', function() {
-    if (self._hoverText.detached) return;
-    self._hoverText.detach();
-    self.render();
-  });
+  })
+  this.on('mousemove', function (data) {
+    if (self._hoverText.detached) return
+    self._hoverText.rleft = data.x + 1
+    self._hoverText.rtop = data.y
+    self.render() })
+  this.on('element mouseover', function (el, data) {
+    if (!el._hoverOptions) return
+    self._hoverText.parseTags = el.parseTags
+    self._hoverText.setContent(el._hoverOptions.text)
+    self.append(self._hoverText)
+    self._hoverText.rleft = data.x + 1
+    self._hoverText.rtop = data.y
+    self.render() })
+  this.on('element mouseout', function () {
+    if (self._hoverText.detached) return
+    self._hoverText.detach()
+    self.render() })
 
   // XXX This can cause problems if the
   // terminal does not support allMotion.
   // Workaround: check to see if content is set.
-  this.on('element mouseup', function(el) {
-    if (!self._hoverText.getContent()) return;
-    if (!el._hoverOptions) return;
-    self.append(self._hoverText);
-    self.render();
-  });
-};
+  this.on('element mouseup', function (el) {
+    if (!self._hoverText.getContent()) return
+    if (!el._hoverOptions) return
+    self.append(self._hoverText)
+    self.render() }) }
 
-Screen.prototype.__defineGetter__('cols', function() {
-  return this.program.cols;
-});
+Screen.prototype.__defineGetter__('cols', function () {
+  return this.program.cols
+})
 
-Screen.prototype.__defineGetter__('rows', function() {
-  return this.program.rows;
-});
+Screen.prototype.__defineGetter__('rows', function () {
+  return this.program.rows
+})
 
-Screen.prototype.__defineGetter__('width', function() {
-  return this.program.cols;
-});
+Screen.prototype.__defineGetter__('width', function () {
+  return this.program.cols
+})
 
-Screen.prototype.__defineGetter__('height', function() {
-  return this.program.rows;
-});
+Screen.prototype.__defineGetter__('height', function () {
+  return this.program.rows
+})
 
-Screen.prototype.alloc = function(dirty) {
+Screen.prototype.alloc = function (dirty) {
   let x, y
-
-  this.lines = [];
+  this.lines = []
   for (y = 0; y < this.rows; y++) {
-    this.lines[y] = [];
+    this.lines[y] = []
     for (x = 0; x < this.cols; x++) {
-      this.lines[y][x] = [this.dattr, ' '];
+      this.lines[y][x] = [ this.dattr, ' ' ]
     }
-    this.lines[y].dirty = !!dirty;
+    this.lines[y].dirty = !!dirty
   }
-
-  this.olines = [];
+  this.olines = []
   for (y = 0; y < this.rows; y++) {
-    this.olines[y] = [];
+    this.olines[y] = []
     for (x = 0; x < this.cols; x++) {
-      this.olines[y][x] = [this.dattr, ' '];
+      this.olines[y][x] = [ this.dattr, ' ' ]
     }
   }
+  this.program.clear() }
 
-  this.program.clear();
-};
+Screen.prototype.realloc = function () {
+  return this.alloc(true) }
 
-Screen.prototype.realloc = function() {
-  return this.alloc(true);
-};
-
-Screen.prototype.render = function() {
+Screen.prototype.render = function () {
   const self = this
-
-  if (this.destroyed) return;
-
-  this.emit('prerender');
-
-  this._borderStops = {};
+  if (this.destroyed) return
+  this.emit('prerender')
+  this._borderStops = {}
 
   // TODO: Possibly get rid of .dirty altogether.
   // TODO: Could possibly drop .dirty and just clear the `lines` buffer every
@@ -719,145 +597,116 @@ Screen.prototype.render = function() {
   // element used to be (e.g. when an element moves or is hidden). There could
   // be some overhead though.
   // this.screen.clearRegion(0, this.cols, 0, this.rows);
-  this._ci = 0;
-  this.children.forEach(function(el) {
-    el.index = self._ci++;
+  this._ci = 0
+  this.children.forEach(function (el) {
+    el.index = self._ci++
     //el._rendering = true;
-    el.render();
+    el.render()
     //el._rendering = false;
-  });
-  this._ci = -1;
-
+  })
+  this._ci = -1
   if (this.screen.dockBorders) {
-    this._dockBorders();
-  }
-
-  this.draw(0, this.lines.length - 1);
+    this._dockBorders() }
+  this.draw(0, this.lines.length - 1)
 
   // XXX Workaround to deal with cursor pos before the screen has rendered and
   // lpos is not reliable (stale).
   if (this.focused && this.focused._updateCursor) {
-    this.focused._updateCursor(true);
-  }
+    this.focused._updateCursor(true) }
+  this.renders++
+  this.emit('render') }
 
-  this.renders++;
-
-  this.emit('render');
-};
-
-Screen.prototype.blankLine = function(ch, dirty) {
+Screen.prototype.blankLine = function (ch, dirty) {
   const out = []
   for (let x = 0; x < this.cols; x++) {
-    out[x] = [this.dattr, ch || ' '];
+    out[x] = [ this.dattr, ch || ' ' ]
   }
-  out.dirty = dirty;
-  return out;
-};
+  out.dirty = dirty
+  return out
+}
 
-Screen.prototype.insertLine = function(n, y, top, bottom) {
+Screen.prototype.insertLine = function (n, y, top, bottom) {
   // if (y === top) return this.insertLineNC(n, y, top, bottom);
-
   if (!this.tput.strings.change_scroll_region
-      || !this.tput.strings.delete_line
-      || !this.tput.strings.insert_line) return;
-
-  this._buf += this.tput.csr(top, bottom);
-  this._buf += this.tput.cup(y, 0);
-  this._buf += this.tput.il(n);
-  this._buf += this.tput.csr(0, this.height - 1);
-
+    || !this.tput.strings.delete_line
+    || !this.tput.strings.insert_line) return
+  this._buf += this.tput.csr(top, bottom)
+  this._buf += this.tput.cup(y, 0)
+  this._buf += this.tput.il(n)
+  this._buf += this.tput.csr(0, this.height - 1)
   const j = bottom + 1
-
   while (n--) {
-    this.lines.splice(y, 0, this.blankLine());
-    this.lines.splice(j, 1);
-    this.olines.splice(y, 0, this.blankLine());
-    this.olines.splice(j, 1);
-  }
-};
+    this.lines.splice(y, 0, this.blankLine())
+    this.lines.splice(j, 1)
+    this.olines.splice(y, 0, this.blankLine())
+    this.olines.splice(j, 1) }
+}
 
-Screen.prototype.deleteLine = function(n, y, top, bottom) {
+Screen.prototype.deleteLine = function (n, y, top, bottom) {
   // if (y === top) return this.deleteLineNC(n, y, top, bottom);
-
   if (!this.tput.strings.change_scroll_region
-      || !this.tput.strings.delete_line
-      || !this.tput.strings.insert_line) return;
-
-  this._buf += this.tput.csr(top, bottom);
-  this._buf += this.tput.cup(y, 0);
-  this._buf += this.tput.dl(n);
-  this._buf += this.tput.csr(0, this.height - 1);
-
+    || !this.tput.strings.delete_line
+    || !this.tput.strings.insert_line) return
+  this._buf += this.tput.csr(top, bottom)
+  this._buf += this.tput.cup(y, 0)
+  this._buf += this.tput.dl(n)
+  this._buf += this.tput.csr(0, this.height - 1)
   const j = bottom + 1
-
   while (n--) {
-    this.lines.splice(j, 0, this.blankLine());
-    this.lines.splice(y, 1);
-    this.olines.splice(j, 0, this.blankLine());
-    this.olines.splice(y, 1);
-  }
-};
+    this.lines.splice(j, 0, this.blankLine())
+    this.lines.splice(y, 1)
+    this.olines.splice(j, 0, this.blankLine())
+    this.olines.splice(y, 1) }
+}
 
 // This is how ncurses does it.
 // Scroll down (up cursor-wise).
 // This will only work for top line deletion as opposed to arbitrary lines.
-Screen.prototype.insertLineNC = function(n, y, top, bottom) {
+Screen.prototype.insertLineNC = function (n, y, top, bottom) {
   if (!this.tput.strings.change_scroll_region
-      || !this.tput.strings.delete_line) return;
-
-  this._buf += this.tput.csr(top, bottom);
-  this._buf += this.tput.cup(top, 0);
-  this._buf += this.tput.dl(n);
-  this._buf += this.tput.csr(0, this.height - 1);
-
+    || !this.tput.strings.delete_line) return
+  this._buf += this.tput.csr(top, bottom)
+  this._buf += this.tput.cup(top, 0)
+  this._buf += this.tput.dl(n)
+  this._buf += this.tput.csr(0, this.height - 1)
   const j = bottom + 1
-
   while (n--) {
-    this.lines.splice(j, 0, this.blankLine());
-    this.lines.splice(y, 1);
-    this.olines.splice(j, 0, this.blankLine());
-    this.olines.splice(y, 1);
-  }
-};
+    this.lines.splice(j, 0, this.blankLine())
+    this.lines.splice(y, 1)
+    this.olines.splice(j, 0, this.blankLine())
+    this.olines.splice(y, 1) }
+}
 
 // This is how ncurses does it.
 // Scroll up (down cursor-wise).
 // This will only work for bottom line deletion as opposed to arbitrary lines.
-Screen.prototype.deleteLineNC = function(n, y, top, bottom) {
+Screen.prototype.deleteLineNC = function (n, y, top, bottom) {
   if (!this.tput.strings.change_scroll_region
-      || !this.tput.strings.delete_line) return;
-
-  this._buf += this.tput.csr(top, bottom);
-  this._buf += this.tput.cup(bottom, 0);
-  this._buf += Array(n + 1).join('\n');
-  this._buf += this.tput.csr(0, this.height - 1);
-
+    || !this.tput.strings.delete_line) return
+  this._buf += this.tput.csr(top, bottom)
+  this._buf += this.tput.cup(bottom, 0)
+  this._buf += Array(n + 1).join('\n')
+  this._buf += this.tput.csr(0, this.height - 1)
   const j = bottom + 1
-
   while (n--) {
-    this.lines.splice(j, 0, this.blankLine());
-    this.lines.splice(y, 1);
-    this.olines.splice(j, 0, this.blankLine());
-    this.olines.splice(y, 1);
-  }
-};
+    this.lines.splice(j, 0, this.blankLine())
+    this.lines.splice(y, 1)
+    this.olines.splice(j, 0, this.blankLine())
+    this.olines.splice(y, 1) }
+}
 
-Screen.prototype.insertBottom = function(top, bottom) {
-  return this.deleteLine(1, top, top, bottom);
-};
+Screen.prototype.insertBottom = function (top, bottom) {
+  return this.deleteLine(1, top, top, bottom) }
 
-Screen.prototype.insertTop = function(top, bottom) {
-  return this.insertLine(1, top, top, bottom);
-};
+Screen.prototype.insertTop = function (top, bottom) {
+  return this.insertLine(1, top, top, bottom) }
 
-Screen.prototype.deleteBottom = function(top, bottom) {
-  return this.clearRegion(0, this.width, bottom, bottom);
-};
+Screen.prototype.deleteBottom = function (top, bottom) {
+  return this.clearRegion(0, this.width, bottom, bottom) }
 
-Screen.prototype.deleteTop = function(top, bottom) {
+Screen.prototype.deleteTop = function (top, bottom) {
   // Same as: return this.insertBottom(top, bottom);
-  return this.deleteLine(1, top, top, bottom);
-};
+  return this.deleteLine(1, top, top, bottom) }
 
 // Parse the sides of an element to determine
 // whether an element has uniform cells on
@@ -868,33 +717,28 @@ Screen.prototype.deleteTop = function(top, bottom) {
 // but will it be less or greater than the
 // performance hit of slow-rendering scrollable
 // boxes with clean sides?
-Screen.prototype.cleanSides = function(el) {
+Screen.prototype.cleanSides = function (el) {
   const pos = el.lpos
-
   if (!pos) {
-    return false;
+    return false
   }
-
   if (pos._cleanSides != null) {
-    return pos._cleanSides;
+    return pos._cleanSides
   }
-
   if (pos.xi <= 0 && pos.xl >= this.width) {
-    return pos._cleanSides = true;
+    return pos._cleanSides = true
   }
-
   if (this.options.fastCSR) {
     // Maybe just do this instead of parsing.
-    if (pos.yi < 0) return pos._cleanSides = false;
-    if (pos.yl > this.height) return pos._cleanSides = false;
+    if (pos.yi < 0) return pos._cleanSides = false
+    if (pos.yl > this.height) return pos._cleanSides = false
     if (this.width - (pos.xl - pos.xi) < 40) {
-      return pos._cleanSides = true;
+      return pos._cleanSides = true
     }
-    return pos._cleanSides = false;
+    return pos._cleanSides = false
   }
-
   if (!this.options.smartCSR) {
-    return false;
+    return false
   }
 
   // The scrollbar can't update properly, and there's also a
@@ -908,47 +752,45 @@ Screen.prototype.cleanSides = function(el) {
   // if ((pos.yl - el.ibottom) - (pos.yi + el.itop) <= 1) {
   //   return pos._cleanSides = false;
   // }
-
   const yi = pos.yi + el.itop
     , yl   = pos.yl - el.ibottom
   let first
     , ch
     , x
     , y
-
-  if (pos.yi < 0) return pos._cleanSides = false;
-  if (pos.yl > this.height) return pos._cleanSides = false;
-  if (pos.xi - 1 < 0) return pos._cleanSides = true;
-  if (pos.xl > this.width) return pos._cleanSides = true;
+  if (pos.yi < 0) return pos._cleanSides = false
+  if (pos.yl > this.height) return pos._cleanSides = false
+  if (pos.xi - 1 < 0) return pos._cleanSides = true
+  if (pos.xl > this.width) return pos._cleanSides = true
 
   for (x = pos.xi - 1; x >= 0; x--) {
-    if (!this.olines[yi]) break;
-    first = this.olines[yi][x];
+    if (!this.olines[yi]) break
+    first = this.olines[yi][x]
     for (y = yi; y < yl; y++) {
-      if (!this.olines[y] || !this.olines[y][x]) break;
-      ch = this.olines[y][x];
+      if (!this.olines[y] || !this.olines[y][x]) break
+      ch = this.olines[y][x]
       if (ch[0] !== first[0] || ch[1] !== first[1]) {
-        return pos._cleanSides = false;
+        return pos._cleanSides = false
       }
     }
   }
 
   for (x = pos.xl; x < this.width; x++) {
-    if (!this.olines[yi]) break;
-    first = this.olines[yi][x];
+    if (!this.olines[yi]) break
+    first = this.olines[yi][x]
     for (y = yi; y < yl; y++) {
-      if (!this.olines[y] || !this.olines[y][x]) break;
-      ch = this.olines[y][x];
+      if (!this.olines[y] || !this.olines[y][x]) break
+      ch = this.olines[y][x]
       if (ch[0] !== first[0] || ch[1] !== first[1]) {
-        return pos._cleanSides = false;
+        return pos._cleanSides = false
       }
     }
   }
 
-  return pos._cleanSides = true;
-};
+  return pos._cleanSides = true
+}
 
-Screen.prototype._dockBorders = function() {
+Screen.prototype._dockBorders = function () {
   const lines = this.lines
   let stops = this._borderStops
     , i
@@ -969,53 +811,49 @@ Screen.prototype._dockBorders = function() {
   //   for (x = stop.xi; x < stop.xl; x++) {
 
   stops = Object.keys(stops)
-    .map(function(k) { return +k; })
-    .sort(function(a, b) { return a - b; });
+    .map(function (k) { return +k })
+    .sort(function (a, b) { return a - b })
 
   for (i = 0; i < stops.length; i++) {
-    y = stops[i];
-    if (!lines[y]) continue;
+    y = stops[i]
+    if (!lines[y]) continue
     for (x = 0; x < this.width; x++) {
-      ch = lines[y][x][1];
+      ch = lines[y][x][1]
       if (angles[ch]) {
-        lines[y][x][1] = this._getAngle(lines, x, y);
-        lines[y].dirty = true;
+        lines[y][x][1] = this._getAngle(lines, x, y)
+        lines[y].dirty = true
       }
     }
   }
-};
+}
 
-Screen.prototype._getAngle = function(lines, x, y) {
+Screen.prototype._getAngle = function (lines, x, y) {
   let angle = 0
   const attr = lines[y][x][0]
     , ch     = lines[y][x][1]
-
   if (lines[y][x - 1] && langles[lines[y][x - 1][1]]) {
     if (!this.options.ignoreDockContrast) {
-      if (lines[y][x - 1][0] !== attr) return ch;
+      if (lines[y][x - 1][0] !== attr) return ch
     }
-    angle |= 1 << 3;
+    angle |= 1 << 3
   }
-
   if (lines[y - 1] && uangles[lines[y - 1][x][1]]) {
     if (!this.options.ignoreDockContrast) {
-      if (lines[y - 1][x][0] !== attr) return ch;
+      if (lines[y - 1][x][0] !== attr) return ch
     }
-    angle |= 1 << 2;
+    angle |= 1 << 2
   }
-
   if (lines[y][x + 1] && rangles[lines[y][x + 1][1]]) {
     if (!this.options.ignoreDockContrast) {
-      if (lines[y][x + 1][0] !== attr) return ch;
+      if (lines[y][x + 1][0] !== attr) return ch
     }
-    angle |= 1 << 1;
+    angle |= 1 << 1
   }
-
   if (lines[y + 1] && dangles[lines[y + 1][x][1]]) {
     if (!this.options.ignoreDockContrast) {
-      if (lines[y + 1][x][0] !== attr) return ch;
+      if (lines[y + 1][x][0] !== attr) return ch
     }
-    angle |= 1 << 0;
+    angle |= 1 << 0
   }
 
   // Experimental: fixes this situation:
@@ -1035,12 +873,11 @@ Screen.prototype._getAngle = function(lines, x, y) {
   //   }
   // }
 
-  return angleTable[angle] || ch;
-};
+  return angleTable[angle] || ch
+}
 
-Screen.prototype.draw = function(start, end) {
+Screen.prototype.draw = function (start, end) {
   // this.emit('predraw');
-
   let x
     , y
     , line
@@ -1051,87 +888,80 @@ Screen.prototype.draw = function(start, end) {
     , fg
     , bg
     , flags
-
   let main = ''
     , pre
     , post
-
   let clr
     , neq
     , xx
-
   let lx = -1
     , ly = -1
     , o
-
   let acs
-
   if (this._buf) {
-    main += this._buf;
-    this._buf = '';
+    main += this._buf
+    this._buf = ''
   }
 
   for (y = start; y <= end; y++) {
-    line = this.lines[y];
-    o = this.olines[y];
-
+    line = this.lines[y]
+    o = this.olines[y]
     if (!line.dirty && !(this.cursor.artificial && y === this.program.y)) {
-      continue;
+      continue
     }
-    line.dirty = false;
+    line.dirty = false
 
-    out = '';
-    attr = this.dattr;
+    out = ''
+    attr = this.dattr
 
     for (x = 0; x < line.length; x++) {
-      data = line[x][0];
-      ch = line[x][1];
+      data = line[x][0]
+      ch = line[x][1]
 
       // Render the artificial cursor.
       if (this.cursor.artificial
-          && !this.cursor._hidden
-          && this.cursor._state
-          && x === this.program.x
-          && y === this.program.y) {
+        && !this.cursor._hidden
+        && this.cursor._state
+        && x === this.program.x
+        && y === this.program.y) {
         const cattr = this._cursorAttr(this.cursor, data)
-        if (cattr.ch) ch = cattr.ch;
-        data = cattr.attr;
+        if (cattr.ch) ch = cattr.ch
+        data = cattr.attr
       }
 
       // Take advantage of xterm's back_color_erase feature by using a
       // lookahead. Stop spitting out so many damn spaces. NOTE: Is checking
       // the bg for non BCE terminals worth the overhead?
       if (this.options.useBCE
-          && ch === ' '
-          && (this.tput.bools.back_color_erase
+        && ch === ' '
+        && (this.tput.bools.back_color_erase
           || (data & 0x1ff) === (this.dattr & 0x1ff))
-          && ((data >> 18) & 8) === ((this.dattr >> 18) & 8)) {
-        clr = true;
-        neq = false;
+        && ((data >> 18) & 8) === ((this.dattr >> 18) & 8)) {
+        clr = true
+        neq = false
 
         for (xx = x; xx < line.length; xx++) {
           if (line[xx][0] !== data || line[xx][1] !== ' ') {
-            clr = false;
-            break;
+            clr = false
+            break
           }
           if (line[xx][0] !== o[xx][0] || line[xx][1] !== o[xx][1]) {
-            neq = true;
+            neq = true
           }
         }
-
         if (clr && neq) {
-          lx = -1, ly = -1;
+          lx = -1, ly = -1
           if (data !== attr) {
-            out += this.codeAttr(data);
-            attr = data;
+            out += this.codeAttr(data)
+            attr = data
           }
-          out += this.tput.cup(y, x);
-          out += this.tput.el();
+          out += this.tput.cup(y, x)
+          out += this.tput.el()
           for (xx = x; xx < line.length; xx++) {
-            o[xx][0] = data;
-            o[xx][1] = ' ';
+            o[xx][0] = data
+            o[xx][1] = ' '
           }
-          break;
+          break
         }
 
         // If there's more than 10 spaces, use EL regardless
@@ -1184,92 +1014,92 @@ Screen.prototype.draw = function(start, end) {
       // buffer to the pending output buffer.
       if (data === o[x][0] && ch === o[x][1]) {
         if (lx === -1) {
-          lx = x;
-          ly = y;
+          lx = x
+          ly = y
         }
-        continue;
-      } else if (lx !== -1) {
+        continue
+      }
+      else if (lx !== -1) {
         if (this.tput.strings.parm_right_cursor) {
           out += y === ly
             ? this.tput.cuf(x - lx)
-            : this.tput.cup(y, x);
-        } else {
-          out += this.tput.cup(y, x);
-        }
-        lx = -1, ly = -1;
+            : this.tput.cup(y, x) }
+        else {
+          out += this.tput.cup(y, x) }
+        lx = -1, ly = -1
       }
-      o[x][0] = data;
-      o[x][1] = ch;
-
+      o[x][0] = data
+      o[x][1] = ch
       if (data !== attr) {
         if (attr !== this.dattr) {
-          out += '\x1b[m';
+          out += '\x1b[m'
         }
         if (data !== this.dattr) {
-          out += '\x1b[';
+          out += '\x1b['
 
-          bg = data & 0x1ff;
-          fg = (data >> 9) & 0x1ff;
-          flags = data >> 18;
+          bg = data & 0x1ff
+          fg = (data >> 9) & 0x1ff
+          flags = data >> 18
 
           // bold
           if (flags & 1) {
-            out += '1;';
+            out += '1;'
           }
 
           // underline
           if (flags & 2) {
-            out += '4;';
+            out += '4;'
           }
 
           // blink
           if (flags & 4) {
-            out += '5;';
+            out += '5;'
           }
 
           // inverse
           if (flags & 8) {
-            out += '7;';
+            out += '7;'
           }
 
           // invisible
           if (flags & 16) {
-            out += '8;';
+            out += '8;'
           }
-
           if (bg !== 0x1ff) {
-            bg = this._reduceColor(bg);
+            bg = this._reduceColor(bg)
             if (bg < 16) {
               if (bg < 8) {
-                bg += 40;
-              } else if (bg < 16) {
-                bg -= 8;
-                bg += 100;
+                bg += 40
               }
-              out += bg + ';';
-            } else {
-              out += '48;5;' + bg + ';';
+              else if (bg < 16) {
+                bg -= 8
+                bg += 100
+              }
+              out += bg + ';'
+            }
+            else {
+              out += '48;5;' + bg + ';'
             }
           }
-
           if (fg !== 0x1ff) {
-            fg = this._reduceColor(fg);
+            fg = this._reduceColor(fg)
             if (fg < 16) {
               if (fg < 8) {
-                fg += 30;
-              } else if (fg < 16) {
-                fg -= 8;
-                fg += 90;
+                fg += 30
               }
-              out += fg + ';';
-            } else {
-              out += '38;5;' + fg + ';';
+              else if (fg < 16) {
+                fg -= 8
+                fg += 90
+              }
+              out += fg + ';'
+            }
+            else {
+              out += '38;5;' + fg + ';'
             }
           }
+          if (out[out.length - 1] === ';') out = out.slice(0, -1)
 
-          if (out[out.length - 1] === ';') out = out.slice(0, -1);
-
-          out += 'm';
+          out += 'm'
         }
       }
 
@@ -1286,16 +1116,17 @@ Screen.prototype.draw = function(start, end) {
           if (x === line.length - 1 || angles[line[x + 1][1]]) {
             // If we're at the end, we don't have enough space for a
             // double-width. Overwrite it with a space and ignore.
-            ch = ' ';
-            o[x][1] = '\0';
-          } else {
+            ch = ' '
+            o[x][1] = '\0'
+          }
+          else {
             // ALWAYS refresh double-width chars because this special cursor
             // behavior is needed. There may be a more efficient way of doing
             // this. See above.
-            o[x][1] = '\0';
+            o[x][1] = '\0'
             // Eat the next character by moving forward and marking as a
             // space (which it is).
-            o[++x][1] = '\0';
+            o[++x][1] = '\0'
           }
         }
       }
@@ -1314,23 +1145,26 @@ Screen.prototype.draw = function(start, end) {
       // Maybe remove !this.tput.unicode check, however,
       // this seems to be the way ncurses does it.
       if (this.tput.strings.enter_alt_charset_mode
-          && !this.tput.brokenACS && (this.tput.acscr[ch] || acs)) {
+        && !this.tput.brokenACS && (this.tput.acscr[ch] || acs)) {
         // Fun fact: even if this.tput.brokenACS wasn't checked here,
         // the linux console would still work fine because the acs
         // table would fail the check of: this.tput.acscr[ch]
         if (this.tput.acscr[ch]) {
           if (acs) {
-            ch = this.tput.acscr[ch];
-          } else {
-            ch = this.tput.smacs()
-              + this.tput.acscr[ch];
-            acs = true;
+            ch = this.tput.acscr[ch]
           }
-        } else if (acs) {
-          ch = this.tput.rmacs() + ch;
-          acs = false;
+          else {
+            ch = this.tput.smacs()
+              + this.tput.acscr[ch]
+            acs = true
+          }
         }
-      } else {
+        else if (acs) {
+          ch = this.tput.rmacs() + ch
+          acs = false
+        }
+      }
+      else {
         // U8 is not consistently correct. Some terminfo's
         // terminals that do not declare it may actually
         // support utf8 (e.g. urxvt), but if the terminal
@@ -1342,160 +1176,161 @@ Screen.prototype.draw = function(start, end) {
         // is all that matters in some cases:
         // if (!this.tput.unicode && ch > '~') {
         if (!this.tput.unicode && this.tput.numbers.U8 !== 1 && ch > '~') {
-          ch = this.tput.utoa[ch] || '?';
+          ch = this.tput.utoa[ch] || '?'
         }
       }
 
-      out += ch;
-      attr = data;
+      out += ch
+      attr = data
     }
-
     if (attr !== this.dattr) {
-      out += '\x1b[m';
+      out += '\x1b[m'
     }
-
     if (out) {
-      main += this.tput.cup(y, 0) + out;
+      main += this.tput.cup(y, 0) + out
     }
   }
-
   if (acs) {
-    main += this.tput.rmacs();
-    acs = false;
+    main += this.tput.rmacs()
+    acs = false
   }
-
   if (main) {
-    pre = '';
-    post = '';
+    pre = ''
+    post = ''
 
-    pre += this.tput.sc();
-    post += this.tput.rc();
-
+    pre += this.tput.sc()
+    post += this.tput.rc()
     if (!this.program.cursorHidden) {
-      pre += this.tput.civis();
-      post += this.tput.cnorm();
-    }
+      pre += this.tput.civis()
+      post += this.tput.cnorm() }
 
     // this.program.flush();
     // this.program._owrite(pre + main + post);
-    this.program._write(pre + main + post);
-  }
+    this.program._write(pre + main + post) }
 
   // this.emit('draw');
-};
+}
 
-Screen.prototype._reduceColor = function(color) {
-  return colors.reduce(color, this.tput.colors);
-};
+Screen.prototype._reduceColor = function (color) {
+  return colors.reduce(color, this.tput.colors) }
 
 // Convert an SGR string to our own attribute format.
-Screen.prototype.attrCode = function(code, cur, def) {
+Screen.prototype.attrCode = function (code, cur, def) {
   let flags = (cur >> 18) & 0x1ff
     , fg    = (cur >> 9) & 0x1ff
     , bg    = cur & 0x1ff
     , c
     , i
 
-  code = code.slice(2, -1).split(';');
-  if (!code[0]) code[0] = '0';
+  code = code.slice(2, -1).split(';')
+  if (!code[0]) code[0] = '0'
 
   for (i = 0; i < code.length; i++) {
-    c = +code[i] || 0;
+    c = +code[i] || 0
     switch (c) {
       case 0: // normal
-        bg = def & 0x1ff;
-        fg = (def >> 9) & 0x1ff;
-        flags = (def >> 18) & 0x1ff;
-        break;
+        bg = def & 0x1ff
+        fg = (def >> 9) & 0x1ff
+        flags = (def >> 18) & 0x1ff
+        break
       case 1: // bold
-        flags |= 1;
-        break;
+        flags |= 1
+        break
       case 22:
-        flags = (def >> 18) & 0x1ff;
-        break;
+        flags = (def >> 18) & 0x1ff
+        break
       case 4: // underline
-        flags |= 2;
-        break;
+        flags |= 2
+        break
       case 24:
-        flags = (def >> 18) & 0x1ff;
-        break;
+        flags = (def >> 18) & 0x1ff
+        break
       case 5: // blink
-        flags |= 4;
-        break;
+        flags |= 4
+        break
       case 25:
-        flags = (def >> 18) & 0x1ff;
-        break;
+        flags = (def >> 18) & 0x1ff
+        break
       case 7: // inverse
-        flags |= 8;
-        break;
+        flags |= 8
+        break
       case 27:
-        flags = (def >> 18) & 0x1ff;
-        break;
+        flags = (def >> 18) & 0x1ff
+        break
       case 8: // invisible
-        flags |= 16;
-        break;
+        flags |= 16
+        break
       case 28:
-        flags = (def >> 18) & 0x1ff;
-        break;
+        flags = (def >> 18) & 0x1ff
+        break
       case 39: // default fg
-        fg = (def >> 9) & 0x1ff;
-        break;
+        fg = (def >> 9) & 0x1ff
+        break
       case 49: // default bg
-        bg = def & 0x1ff;
-        break;
+        bg = def & 0x1ff
+        break
       case 100: // default fg/bg
-        fg = (def >> 9) & 0x1ff;
-        bg = def & 0x1ff;
-        break;
+        fg = (def >> 9) & 0x1ff
+        bg = def & 0x1ff
+        break
       default: // color
-        if (c === 48 && +code[i+1] === 5) {
-          i += 2;
-          bg = +code[i];
-          break;
-        } else if (c === 48 && +code[i+1] === 2) {
-          i += 2;
-          bg = colors.match(+code[i], +code[i+1], +code[i+2]);
-          if (bg === -1) bg = def & 0x1ff;
-          i += 2;
-          break;
-        } else if (c === 38 && +code[i+1] === 5) {
-          i += 2;
-          fg = +code[i];
-          break;
-        } else if (c === 38 && +code[i+1] === 2) {
-          i += 2;
-          fg = colors.match(+code[i], +code[i+1], +code[i+2]);
-          if (fg === -1) fg = (def >> 9) & 0x1ff;
-          i += 2;
-          break;
+        if (c === 48 && +code[i + 1] === 5) {
+          i += 2
+          bg = +code[i]
+          break
+        }
+        else if (c === 48 && +code[i + 1] === 2) {
+          i += 2
+          bg = colors.match(+code[i], +code[i + 1], +code[i + 2])
+          if (bg === -1) bg = def & 0x1ff
+          i += 2
+          break
+        }
+        else if (c === 38 && +code[i + 1] === 5) {
+          i += 2
+          fg = +code[i]
+          break
+        }
+        else if (c === 38 && +code[i + 1] === 2) {
+          i += 2
+          fg = colors.match(+code[i], +code[i + 1], +code[i + 2])
+          if (fg === -1) fg = (def >> 9) & 0x1ff
+          i += 2
+          break
         }
         if (c >= 40 && c <= 47) {
-          bg = c - 40;
-        } else if (c >= 100 && c <= 107) {
-          bg = c - 100;
-          bg += 8;
-        } else if (c === 49) {
-          bg = def & 0x1ff;
-        } else if (c >= 30 && c <= 37) {
-          fg = c - 30;
-        } else if (c >= 90 && c <= 97) {
-          fg = c - 90;
-          fg += 8;
-        } else if (c === 39) {
-          fg = (def >> 9) & 0x1ff;
-        } else if (c === 100) {
-          fg = (def >> 9) & 0x1ff;
-          bg = def & 0x1ff;
+          bg = c - 40
         }
-        break;
+        else if (c >= 100 && c <= 107) {
+          bg = c - 100
+          bg += 8
+        }
+        else if (c === 49) {
+          bg = def & 0x1ff
+        }
+        else if (c >= 30 && c <= 37) {
+          fg = c - 30
+        }
+        else if (c >= 90 && c <= 97) {
+          fg = c - 90
+          fg += 8
+        }
+        else if (c === 39) {
+          fg = (def >> 9) & 0x1ff
+        }
+        else if (c === 100) {
+          fg = (def >> 9) & 0x1ff
+          bg = def & 0x1ff
+        }
+        break
     }
   }
 
-  return (flags << 18) | (fg << 9) | bg;
-};
+  return (flags << 18) | (fg << 9) | bg
+}
 
 // Convert our own attribute format to an SGR string.
-Screen.prototype.codeAttr = function(code) {
+Screen.prototype.codeAttr = function (code) {
   const flags = (code >> 18) & 0x1ff
   let fg  = (code >> 9) & 0x1ff
     , bg  = code & 0x1ff
@@ -1503,153 +1338,143 @@ Screen.prototype.codeAttr = function(code) {
 
   // bold
   if (flags & 1) {
-    out += '1;';
+    out += '1;'
   }
 
   // underline
   if (flags & 2) {
-    out += '4;';
+    out += '4;'
   }
 
   // blink
   if (flags & 4) {
-    out += '5;';
+    out += '5;'
   }
 
   // inverse
   if (flags & 8) {
-    out += '7;';
+    out += '7;'
   }
 
   // invisible
   if (flags & 16) {
-    out += '8;';
+    out += '8;'
   }
-
   if (bg !== 0x1ff) {
-    bg = this._reduceColor(bg);
+    bg = this._reduceColor(bg)
     if (bg < 16) {
       if (bg < 8) {
-        bg += 40;
-      } else if (bg < 16) {
-        bg -= 8;
-        bg += 100;
+        bg += 40
       }
-      out += bg + ';';
-    } else {
-      out += '48;5;' + bg + ';';
+      else if (bg < 16) {
+        bg -= 8
+        bg += 100
+      }
+      out += bg + ';'
+    }
+    else {
+      out += '48;5;' + bg + ';'
     }
   }
-
   if (fg !== 0x1ff) {
-    fg = this._reduceColor(fg);
+    fg = this._reduceColor(fg)
     if (fg < 16) {
       if (fg < 8) {
-        fg += 30;
-      } else if (fg < 16) {
-        fg -= 8;
-        fg += 90;
+        fg += 30
       }
-      out += fg + ';';
-    } else {
-      out += '38;5;' + fg + ';';
+      else if (fg < 16) {
+        fg -= 8
+        fg += 90
+      }
+      out += fg + ';'
+    }
+    else {
+      out += '38;5;' + fg + ';'
     }
   }
+  if (out[out.length - 1] === ';') out = out.slice(0, -1)
 
-  if (out[out.length - 1] === ';') out = out.slice(0, -1);
+  return '\x1b[' + out + 'm'
+}
 
-  return '\x1b[' + out + 'm';
-};
-
-Screen.prototype.focusOffset = function(offset) {
+Screen.prototype.focusOffset = function (offset) {
   const shown = this.keyable.filter(function (el) {
     return !el.detached && el.visible
   }).length
-
   if (!shown || !offset) {
-    return;
+    return
   }
-
   let i = this.keyable.indexOf(this.focused)
-  if (!~i) return;
-
+  if (!~i) return
   if (offset > 0) {
     while (offset--) {
-      if (++i > this.keyable.length - 1) i = 0;
-      if (this.keyable[i].detached || !this.keyable[i].visible) offset++;
+      if (++i > this.keyable.length - 1) i = 0
+      if (this.keyable[i].detached || !this.keyable[i].visible) offset++
     }
-  } else {
-    offset = -offset;
+  }
+  else {
+    offset = -offset
     while (offset--) {
-      if (--i < 0) i = this.keyable.length - 1;
-      if (this.keyable[i].detached || !this.keyable[i].visible) offset++;
+      if (--i < 0) i = this.keyable.length - 1
+      if (this.keyable[i].detached || !this.keyable[i].visible) offset++
     }
   }
 
-  return this.keyable[i].focus();
-};
+  return this.keyable[i].focus() }
 
 Screen.prototype.focusPrev =
-Screen.prototype.focusPrevious = function() {
-  return this.focusOffset(-1);
-};
+  Screen.prototype.focusPrevious = function () {
+    return this.focusOffset(-1) }
 
-Screen.prototype.focusNext = function() {
-  return this.focusOffset(1);
-};
+Screen.prototype.focusNext = function () {
+  return this.focusOffset(1) }
 
-Screen.prototype.focusPush = function(el) {
-  if (!el) return;
+Screen.prototype.focusPush = function (el) {
+  if (!el) return
   const old = this.history[this.history.length - 1]
   if (this.history.length === 10) {
-    this.history.shift();
-  }
-  this.history.push(el);
-  this._focus(el, old);
-};
+    this.history.shift() }
+  this.history.push(el)
+  this._focus(el, old) }
 
-Screen.prototype.focusPop = function() {
+Screen.prototype.focusPop = function () {
   const old = this.history.pop()
   if (this.history.length) {
-    this._focus(this.history[this.history.length - 1], old);
-  }
-  return old;
-};
+    this._focus(this.history[this.history.length - 1], old) }
+  return old
+}
 
-Screen.prototype.saveFocus = function() {
-  return this._savedFocus = this.focused;
-};
+Screen.prototype.saveFocus = function () {
+  return this._savedFocus = this.focused
+}
 
-Screen.prototype.restoreFocus = function() {
-  if (!this._savedFocus) return;
-  this._savedFocus.focus();
-  delete this._savedFocus;
-  return this.focused;
-};
+Screen.prototype.restoreFocus = function () {
+  if (!this._savedFocus) return
+  this._savedFocus.focus()
+  delete this._savedFocus
+  return this.focused
+}
 
-Screen.prototype.rewindFocus = function() {
+Screen.prototype.rewindFocus = function () {
   const old = this.history.pop()
   let el
-
   while (this.history.length) {
-    el = this.history.pop();
+    el = this.history.pop()
     if (!el.detached && el.visible) {
-      this.history.push(el);
-      this._focus(el, old);
-      return el;
+      this.history.push(el)
+      this._focus(el, old)
+      return el
     }
   }
-
   if (old) {
-    old.emit('blur');
-  }
-};
+    old.emit('blur') }
+}
 
-Screen.prototype._focus = function(self, old) {
+Screen.prototype._focus = function (self, old) {
   // Find a scrollable ancestor if we have one.
   let el = self
   while (el = el.parent) {
-    if (el.scrollable) break;
+    if (el.scrollable) break
   }
 
   // If we're in a scrollable element,
@@ -1660,106 +1485,88 @@ Screen.prototype._focus = function(self, old) {
     // it.
     const visible = self.screen.height - el.atop - el.itop - el.abottom - el.ibottom
     if (self.rtop < el.childBase) {
-      el.scrollTo(self.rtop);
-      self.screen.render();
-    } else if (self.rtop + self.height - self.ibottom > el.childBase + visible) {
+      el.scrollTo(self.rtop)
+      self.screen.render() }
+    else if (self.rtop + self.height - self.ibottom > el.childBase + visible) {
       // Explanation for el.itop here: takes into account scrollable elements
       // with borders otherwise the element gets covered by the bottom border:
-      el.scrollTo(self.rtop - (el.height - self.height) + el.itop, true);
-      self.screen.render();
-    }
+      el.scrollTo(self.rtop - (el.height - self.height) + el.itop, true)
+      self.screen.render() }
   }
-
   if (old) {
-    old.emit('blur', self);
-  }
+    old.emit('blur', self) }
 
-  self.emit('focus', old);
-};
+  self.emit('focus', old) }
 
-Screen.prototype.__defineGetter__('focused', function() {
-  return this.history[this.history.length - 1];
-});
+Screen.prototype.__defineGetter__('focused', function () {
+  return this.history[this.history.length - 1]
+})
 
-Screen.prototype.__defineSetter__('focused', function(el) {
-  return this.focusPush(el);
-});
+Screen.prototype.__defineSetter__('focused', function (el) {
+  return this.focusPush(el) })
 
-Screen.prototype.clearRegion = function(xi, xl, yi, yl, override) {
-  return this.fillRegion(this.dattr, ' ', xi, xl, yi, yl, override);
-};
+Screen.prototype.clearRegion = function (xi, xl, yi, yl, override) {
+  return this.fillRegion(this.dattr, ' ', xi, xl, yi, yl, override) }
 
-Screen.prototype.fillRegion = function(attr, ch, xi, xl, yi, yl, override) {
+Screen.prototype.fillRegion = function (attr, ch, xi, xl, yi, yl, override) {
   const lines = this.lines
   let cell
     , xx
-
-  if (xi < 0) xi = 0;
-  if (yi < 0) yi = 0;
+  if (xi < 0) xi = 0
+  if (yi < 0) yi = 0
 
   for (; yi < yl; yi++) {
-    if (!lines[yi]) break;
+    if (!lines[yi]) break
     for (xx = xi; xx < xl; xx++) {
-      cell = lines[yi][xx];
-      if (!cell) break;
+      cell = lines[yi][xx]
+      if (!cell) break
       if (override || attr !== cell[0] || ch !== cell[1]) {
-        lines[yi][xx][0] = attr;
-        lines[yi][xx][1] = ch;
-        lines[yi].dirty = true;
+        lines[yi][xx][0] = attr
+        lines[yi][xx][1] = ch
+        lines[yi].dirty = true
       }
     }
   }
-};
+}
 
-Screen.prototype.key = function() {
-  return this.program.key.apply(this, arguments);
-};
+Screen.prototype.key = function () {
+  return this.program.key.apply(this, arguments) }
 
-Screen.prototype.onceKey = function() {
-  return this.program.onceKey.apply(this, arguments);
-};
+Screen.prototype.onceKey = function () {
+  return this.program.onceKey.apply(this, arguments) }
 
 Screen.prototype.unkey =
-Screen.prototype.removeKey = function() {
-  return this.program.unkey.apply(this, arguments);
-};
+  Screen.prototype.removeKey = function () {
+    return this.program.unkey.apply(this, arguments) }
 
-Screen.prototype.spawn = function(file, args, options) {
+Screen.prototype.spawn = function (file, args, options) {
   if (!Array.isArray(args)) {
-    options = args;
-    args = [];
+    options = args
+    args = []
   }
-
   const screen = this
     , program  = screen.program
     , spawn    = require('child_process').spawn
     , mouse    = program.mouseEnabled
   let ps
+  options = options || {}
+  options.stdio = options.stdio || 'inherit'
 
-  options = options || {};
-
-  options.stdio = options.stdio || 'inherit';
-
-  program.lsaveCursor('spawn');
+  program.lsaveCursor('spawn')
   // program.csr(0, program.rows - 1);
-  program.normalBuffer();
-  program.showCursor();
-  if (mouse) program.disableMouse();
-
+  program.normalBuffer()
+  program.showCursor()
+  if (mouse) program.disableMouse()
   const write = program.output.write
-  program.output.write = function() {};
-  program.input.pause();
+  program.output.write = function () {}
+  program.input.pause()
   if (program.input.setRawMode) {
-    program.input.setRawMode(false);
-  }
-
+    program.input.setRawMode(false) }
   const resume = function () {
     if (resume.done) return
     resume.done = true
-
     if (program.input.setRawMode) {
-      program.input.setRawMode(true)
-    }
+      program.input.setRawMode(true) }
     program.input.resume()
     program.output.write = write
 
@@ -1768,57 +1575,49 @@ Screen.prototype.spawn = function(file, args, options) {
     if (mouse) {
       program.enableMouse()
       if (screen.options.sendFocus) {
-        screen.program.setMouse({ sendFocus: true }, true)
-      }
+        screen.program.setMouse({ sendFocus: true }, true) }
     }
 
     screen.alloc()
     screen.render()
 
-    screen.program.lrestoreCursor('spawn', true)
-  }
+    screen.program.lrestoreCursor('spawn', true) }
 
-  ps = spawn(file, args, options);
+  ps = spawn(file, args, options)
 
-  ps.on('error', resume);
+  ps.on('error', resume)
 
-  ps.on('exit', resume);
+  ps.on('exit', resume)
 
-  return ps;
-};
+  return ps
+}
 
-Screen.prototype.exec = function(file, args, options, callback) {
+Screen.prototype.exec = function (file, args, options, callback) {
   const ps = this.spawn(file, args, options)
 
-  ps.on('error', function(err) {
-    if (!callback) return;
-    return callback(err, false);
-  });
+  ps.on('error', function (err) {
+    if (!callback) return
+    return callback(err, false) })
 
-  ps.on('exit', function(code) {
-    if (!callback) return;
-    return callback(null, code === 0);
-  });
+  ps.on('exit', function (code) {
+    if (!callback) return
+    return callback(null, code === 0) })
 
-  return ps;
-};
+  return ps
+}
 
-Screen.prototype.readEditor = function(options, callback) {
+Screen.prototype.readEditor = function (options, callback) {
   if (typeof options === 'string') {
-    options = { editor: options };
+    options = { editor: options }
   }
-
   if (!callback) {
-    callback = options;
-    options = null;
+    callback = options
+    options = null
   }
-
   if (!callback) {
-    callback = function() {};
+    callback = function () {}
   }
-
-  options = options || {};
-
+  options = options || {}
   const self = this
     , editor = options.editor || process.env.EDITOR || 'vi'
     , name   = options.name || process.title || 'blessed'
@@ -1831,279 +1630,240 @@ Screen.prototype.readEditor = function(options, callback) {
     stdio: 'inherit',
     env: process.env,
     cwd: process.env.HOME
-  };
+  }
 
   function writeFile(callback) {
-    if (!options.value) return callback();
-    return fs.writeFile(file, options.value, callback);
-  }
+    if (!options.value) return callback()
+    return fs.writeFile(file, options.value, callback) }
 
-  return writeFile(function(err) {
-    if (err) return callback(err);
-    return self.exec(editor, args, opt, function(err, success) {
-      if (err) return callback(err);
-      return fs.readFile(file, 'utf8', function(err, data) {
-        return fs.unlink(file, function() {
-          if (!success) return callback(new Error('Unsuccessful.'));
-          if (err) return callback(err);
-          return callback(null, data);
-        });
-      });
-    });
-  });
-};
+  return writeFile(function (err) {
+    if (err) return callback(err)
+    return self.exec(editor, args, opt, function (err, success) {
+      if (err) return callback(err)
+      return fs.readFile(file, 'utf8', function (err, data) {
+        return fs.unlink(file, function () {
+          if (!success) return callback(new Error('Unsuccessful.'))
+          if (err) return callback(err)
+          return callback(null, data) }) }) }) }) }
 
-Screen.prototype.displayImage = function(file, callback) {
+Screen.prototype.displayImage = function (file, callback) {
   if (!file) {
-    if (!callback) return;
-    return callback(new Error('No image.'));
-  }
+    if (!callback) return
+    return callback(new Error('No image.')) }
 
-  file = path.resolve(process.cwd(), file);
-
+  file = path.resolve(process.cwd(), file)
   if (!~file.indexOf('://')) {
-    file = 'file://' + file;
+    file = 'file://' + file
   }
-
   const args = [ 'w3m', '-T', 'text/html' ]
-
   const input = '<title>press q to exit</title>'
     + '<img align="center" src="' + file + '">'
-
   const opt = {
     stdio: [ 'pipe', 1, 2 ],
     env: process.env,
     cwd: process.env.HOME
   }
-
   const ps = this.spawn(args[0], args.slice(1), opt)
 
-  ps.on('error', function(err) {
-    if (!callback) return;
-    return callback(err);
-  });
+  ps.on('error', function (err) {
+    if (!callback) return
+    return callback(err) })
 
-  ps.on('exit', function(code) {
-    if (!callback) return;
-    if (code !== 0) return callback(new Error('Exit Code: ' + code));
-    return callback(null, code === 0);
-  });
+  ps.on('exit', function (code) {
+    if (!callback) return
+    if (code !== 0) return callback(new Error('Exit Code: ' + code))
+    return callback(null, code === 0) })
 
-  ps.stdin.write(input + '\n');
-  ps.stdin.end();
-};
+  ps.stdin.write(input + '\n')
+  ps.stdin.end() }
 
-Screen.prototype.setEffects = function(el, fel, over, out, effects, temp) {
-  if (!effects) return;
-
+Screen.prototype.setEffects = function (el, fel, over, out, effects, temp) {
+  if (!effects) return
   const tmp = {}
-  if (temp) el[temp] = tmp;
-
+  if (temp) el[temp] = tmp
   if (typeof el !== 'function') {
     const _el = el
-    el = function() { return _el; };
+    el = function () { return _el }
   }
 
-  fel.on(over, function() {
+  fel.on(over, function () {
     const element = el()
-    Object.keys(effects).forEach(function(key) {
+    Object.keys(effects).forEach(function (key) {
       const val = effects[key]
       if (val !== null && typeof val === 'object') {
-        tmp[key] = tmp[key] || {};
+        tmp[key] = tmp[key] || {}
         // element.style[key] = element.style[key] || {};
-        Object.keys(val).forEach(function(k) {
+        Object.keys(val).forEach(function (k) {
           const v = val[k]
-          tmp[key][k] = element.style[key][k];
-          element.style[key][k] = v;
-        });
-        return;
+          tmp[key][k] = element.style[key][k]
+          element.style[key][k] = v
+        })
+        return
       }
-      tmp[key] = element.style[key];
-      element.style[key] = val;
-    });
-    element.screen.render();
-  });
+      tmp[key] = element.style[key]
+      element.style[key] = val
+    })
+    element.screen.render() })
 
-  fel.on(out, function() {
+  fel.on(out, function () {
     const element = el()
-    Object.keys(effects).forEach(function(key) {
+    Object.keys(effects).forEach(function (key) {
       const val = effects[key]
       if (val !== null && typeof val === 'object') {
-        tmp[key] = tmp[key] || {};
+        tmp[key] = tmp[key] || {}
         // element.style[key] = element.style[key] || {};
-        Object.keys(val).forEach(function(k) {
+        Object.keys(val).forEach(function (k) {
           if (tmp[key].hasOwnProperty(k)) {
-            element.style[key][k] = tmp[key][k];
+            element.style[key][k] = tmp[key][k]
           }
-        });
-        return;
+        })
+        return
       }
       if (tmp.hasOwnProperty(key)) {
-        element.style[key] = tmp[key];
+        element.style[key] = tmp[key]
       }
-    });
-    element.screen.render();
-  });
-};
+    })
+    element.screen.render() }) }
 
-Screen.prototype.sigtstp = function(callback) {
+Screen.prototype.sigtstp = function (callback) {
   const self = this
-  this.program.sigtstp(function() {
-    self.alloc();
-    self.render();
-    self.program.lrestoreCursor('pause', true);
-    if (callback) callback();
-  });
-};
+  this.program.sigtstp(function () {
+    self.alloc()
+    self.render()
+    self.program.lrestoreCursor('pause', true)
+    if (callback) callback() }) }
 
-Screen.prototype.copyToClipboard = function(text) {
-  return this.program.copyToClipboard(text);
-};
+Screen.prototype.copyToClipboard = function (text) {
+  return this.program.copyToClipboard(text) }
 
-Screen.prototype.cursorShape = function(shape, blink) {
+Screen.prototype.cursorShape = function (shape, blink) {
   const self = this
-
-  this.cursor.shape = shape || 'block';
-  this.cursor.blink = blink || false;
-  this.cursor._set = true;
-
+  this.cursor.shape = shape || 'block'
+  this.cursor.blink = blink || false
+  this.cursor._set = true
   if (this.cursor.artificial) {
     if (!this.program.hideCursor_old) {
       const hideCursor = this.program.hideCursor
-      this.program.hideCursor_old = this.program.hideCursor;
-      this.program.hideCursor = function() {
-        hideCursor.call(self.program);
-        self.cursor._hidden = true;
-        if (self.renders) self.render();
-      };
+      this.program.hideCursor_old = this.program.hideCursor
+      this.program.hideCursor = function () {
+        hideCursor.call(self.program)
+        self.cursor._hidden = true
+        if (self.renders) self.render() }
     }
     if (!this.program.showCursor_old) {
       const showCursor = this.program.showCursor
-      this.program.showCursor_old = this.program.showCursor;
-      this.program.showCursor = function() {
-        self.cursor._hidden = false;
-        if (self.program._exiting) showCursor.call(self.program);
-        if (self.renders) self.render();
-      };
+      this.program.showCursor_old = this.program.showCursor
+      this.program.showCursor = function () {
+        self.cursor._hidden = false
+        if (self.program._exiting) showCursor.call(self.program)
+        if (self.renders) self.render() }
     }
     if (!this._cursorBlink) {
-      this._cursorBlink = setInterval(function() {
-        if (!self.cursor.blink) return;
-        self.cursor._state ^= 1;
-        if (self.renders) self.render();
-      }, 500);
+      this._cursorBlink = setInterval(function () {
+        if (!self.cursor.blink) return
+        self.cursor._state ^= 1
+        if (self.renders) self.render() }, 500)
       if (this._cursorBlink.unref) {
-        this._cursorBlink.unref();
-      }
+        this._cursorBlink.unref() }
     }
-    return true;
+    return true
   }
 
-  return this.program.cursorShape(this.cursor.shape, this.cursor.blink);
-};
+  return this.program.cursorShape(this.cursor.shape, this.cursor.blink) }
 
-Screen.prototype.cursorColor = function(color) {
+Screen.prototype.cursorColor = function (color) {
   this.cursor.color = color != null
     ? colors.convert(color)
-    : null;
-  this.cursor._set = true;
-
+    : null
+  this.cursor._set = true
   if (this.cursor.artificial) {
-    return true;
+    return true
   }
 
-  return this.program.cursorColor(colors.ncolors[this.cursor.color]);
-};
+  return this.program.cursorColor(colors.ncolors[this.cursor.color]) }
 
 Screen.prototype.cursorReset =
-Screen.prototype.resetCursor = function() {
-  this.cursor.shape = 'block';
-  this.cursor.blink = false;
-  this.cursor.color = null;
-  this.cursor._set = false;
-
-  if (this.cursor.artificial) {
-    this.cursor.artificial = false;
-    if (this.program.hideCursor_old) {
-      this.program.hideCursor = this.program.hideCursor_old;
-      delete this.program.hideCursor_old;
+  Screen.prototype.resetCursor = function () {
+    this.cursor.shape = 'block'
+    this.cursor.blink = false
+    this.cursor.color = null
+    this.cursor._set = false
+    if (this.cursor.artificial) {
+      this.cursor.artificial = false
+      if (this.program.hideCursor_old) {
+        this.program.hideCursor = this.program.hideCursor_old
+        delete this.program.hideCursor_old
+      }
+      if (this.program.showCursor_old) {
+        this.program.showCursor = this.program.showCursor_old
+        delete this.program.showCursor_old
+      }
+      if (this._cursorBlink) {
+        clearInterval(this._cursorBlink)
+        delete this._cursorBlink
+      }
+      return true
     }
-    if (this.program.showCursor_old) {
-      this.program.showCursor = this.program.showCursor_old;
-      delete this.program.showCursor_old;
-    }
-    if (this._cursorBlink) {
-      clearInterval(this._cursorBlink);
-      delete this._cursorBlink;
-    }
-    return true;
-  }
 
-  return this.program.cursorReset();
-};
+    return this.program.cursorReset() }
 
-Screen.prototype._cursorAttr = function(cursor, dattr) {
+Screen.prototype._cursorAttr = function (cursor, dattr) {
   let attr = dattr || this.dattr
     , cattr
     , ch
-
   if (cursor.shape === 'line') {
-    attr &= ~(0x1ff << 9);
-    attr |= 7 << 9;
-    ch = '\u2502';
-  } else if (cursor.shape === 'underline') {
-    attr &= ~(0x1ff << 9);
-    attr |= 7 << 9;
-    attr |= 2 << 18;
-  } else if (cursor.shape === 'block') {
-    attr &= ~(0x1ff << 9);
-    attr |= 7 << 9;
-    attr |= 8 << 18;
-  } else if (typeof cursor.shape === 'object' && cursor.shape) {
-    cattr = Element.prototype.sattr.call(cursor, cursor.shape);
-
+    attr &= ~(0x1ff << 9)
+    attr |= 7 << 9
+    ch = '\u2502'
+  }
+  else if (cursor.shape === 'underline') {
+    attr &= ~(0x1ff << 9)
+    attr |= 7 << 9
+    attr |= 2 << 18
+  }
+  else if (cursor.shape === 'block') {
+    attr &= ~(0x1ff << 9)
+    attr |= 7 << 9
+    attr |= 8 << 18
+  }
+  else if (typeof cursor.shape === 'object' && cursor.shape) {
+    cattr = Element.prototype.sattr.call(cursor, cursor.shape)
     if (cursor.shape.bold || cursor.shape.underline
-        || cursor.shape.blink || cursor.shape.inverse
-        || cursor.shape.invisible) {
-      attr &= ~(0x1ff << 18);
-      attr |= ((cattr >> 18) & 0x1ff) << 18;
+      || cursor.shape.blink || cursor.shape.inverse
+      || cursor.shape.invisible) {
+      attr &= ~(0x1ff << 18)
+      attr |= ((cattr >> 18) & 0x1ff) << 18
     }
-
     if (cursor.shape.fg) {
-      attr &= ~(0x1ff << 9);
-      attr |= ((cattr >> 9) & 0x1ff) << 9;
+      attr &= ~(0x1ff << 9)
+      attr |= ((cattr >> 9) & 0x1ff) << 9
     }
-
     if (cursor.shape.bg) {
-      attr &= ~(0x1ff << 0);
-      attr |= cattr & 0x1ff;
+      attr &= ~(0x1ff << 0)
+      attr |= cattr & 0x1ff
     }
-
     if (cursor.shape.ch) {
-      ch = cursor.shape.ch;
+      ch = cursor.shape.ch
     }
   }
-
   if (cursor.color != null) {
-    attr &= ~(0x1ff << 9);
-    attr |= cursor.color << 9;
+    attr &= ~(0x1ff << 9)
+    attr |= cursor.color << 9
   }
 
   return {
     ch: ch,
     attr: attr
-  };
-};
+  }
+}
 
-Screen.prototype.screenshot = function(xi, xl, yi, yl, term) {
-  if (xi == null) xi = 0;
-  if (xl == null) xl = this.cols;
-  if (yi == null) yi = 0;
-  if (yl == null) yl = this.rows;
-
-  if (xi < 0) xi = 0;
-  if (yi < 0) yi = 0;
-
+Screen.prototype.screenshot = function (xi, xl, yi, yl, term) {
+  if (xi == null) xi = 0
+  if (xl == null) xl = this.cols
+  if (yi == null) yi = 0
+  if (yl == null) yl = this.rows
+  if (xi < 0) xi = 0
+  if (yi < 0) yi = 0
   let x
     , y
     , line
@@ -2111,84 +1871,75 @@ Screen.prototype.screenshot = function(xi, xl, yi, yl, term) {
     , ch
     , data
     , attr
-
   const sdattr = this.dattr
-
   if (term) {
-    this.dattr = term.defAttr;
+    this.dattr = term.defAttr
   }
-
   let main = ''
 
   for (y = yi; y < yl; y++) {
     line = term
       ? term.lines[y]
-      : this.lines[y];
+      : this.lines[y]
+    if (!line) break
 
-    if (!line) break;
-
-    out = '';
-    attr = this.dattr;
+    out = ''
+    attr = this.dattr
 
     for (x = xi; x < xl; x++) {
-      if (!line[x]) break;
+      if (!line[x]) break
 
-      data = line[x][0];
-      ch = line[x][1];
-
+      data = line[x][0]
+      ch = line[x][1]
       if (data !== attr) {
         if (attr !== this.dattr) {
-          out += '\x1b[m';
+          out += '\x1b[m'
         }
         if (data !== this.dattr) {
           let _data = data
           if (term) {
-            if (((_data >> 9) & 0x1ff) === 257) _data |= 0x1ff << 9;
-            if ((_data & 0x1ff) === 256) _data |= 0x1ff;
+            if (((_data >> 9) & 0x1ff) === 257) _data |= 0x1ff << 9
+            if ((_data & 0x1ff) === 256) _data |= 0x1ff
           }
-          out += this.codeAttr(_data);
-        }
+          out += this.codeAttr(_data) }
       }
-
       if (this.fullUnicode) {
         if (unicode.charWidth(line[x][1]) === 2) {
           if (x === xl - 1) {
-            ch = ' ';
-          } else {
-            x++;
+            ch = ' '
+          }
+          else {
+            x++
           }
         }
       }
 
-      out += ch;
-      attr = data;
+      out += ch
+      attr = data
     }
-
     if (attr !== this.dattr) {
-      out += '\x1b[m';
+      out += '\x1b[m'
     }
-
     if (out) {
-      main += (y > 0 ? '\n' : '') + out;
+      main += (y > 0 ? '\n' : '') + out
     }
   }
 
-  main = main.replace(/(?:\s*\x1b\[40m\s*\x1b\[m\s*)*$/, '') + '\n';
-
+  main = main.replace(/(?:\s*\x1b\[40m\s*\x1b\[m\s*)*$/, '') + '\n'
   if (term) {
-    this.dattr = sdattr;
+    this.dattr = sdattr
   }
 
-  return main;
-};
+  return main
+}
 
 /**
  * Positioning
  */
 
-Screen.prototype._getPos = function() {
-  return this;
-};
+Screen.prototype._getPos = function () {
+  return this
+}
 
 /**
  * Angle Table
@@ -2206,7 +1957,7 @@ var angles = {
   '\u252c': true, // '┬'
   '\u2502': true, // '│'
   '\u2500': true  // '─'
-};
+}
 
 var langles = {
   '\u250c': true, // '┌'
@@ -2216,7 +1967,7 @@ var langles = {
   '\u2534': true, // '┴'
   '\u252c': true, // '┬'
   '\u2500': true  // '─'
-};
+}
 
 var uangles = {
   '\u2510': true, // '┐'
@@ -2226,7 +1977,7 @@ var uangles = {
   '\u2524': true, // '┤'
   '\u252c': true, // '┬'
   '\u2502': true  // '│'
-};
+}
 
 var rangles = {
   '\u2518': true, // '┘'
@@ -2236,7 +1987,7 @@ var rangles = {
   '\u2534': true, // '┴'
   '\u252c': true, // '┬'
   '\u2500': true  // '─'
-};
+}
 
 var dangles = {
   '\u2518': true, // '┘'
@@ -2246,7 +1997,7 @@ var dangles = {
   '\u2524': true, // '┤'
   '\u2534': true, // '┴'
   '\u2502': true  // '│'
-};
+}
 
 // var cdangles = {
 //   '\u250c': true  // '┌'
@@ -2272,15 +2023,15 @@ var angleTable = {
   '1101': '\u2524', // '┤'
   '1110': '\u2534', // '┴'
   '1111': '\u253c'  // '┼'
-};
+}
 
-Object.keys(angleTable).forEach(function(key) {
-  angleTable[parseInt(key, 2)] = angleTable[key];
-  delete angleTable[key];
-});
+Object.keys(angleTable).forEach(function (key) {
+  angleTable[parseInt(key, 2)] = angleTable[key]
+  delete angleTable[key]
+})
 
 /**
  * Expose
  */
 
-module.exports = Screen;
+module.exports = Screen

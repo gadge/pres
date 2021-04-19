@@ -3,12 +3,9 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-/**
- * Modules
- */
-const Node = require('./node')
-const Box = require('./box')
+const
+  Node = require('./node'),
+  Box  = require('./box')
 
 /**
  * Form
@@ -16,251 +13,219 @@ const Box = require('./box')
 
 function Form(options) {
   const self = this
-
   if (!(this instanceof Node)) {
-    return new Form(options);
-  }
-
-  options = options || {};
-
-  options.ignoreKeys = true;
-  Box.call(this, options);
-
+    return new Form(options) }
+  options = options || {}
+  options.ignoreKeys = true
+  Box.call(this, options)
   if (options.keys) {
-    this.screen._listenKeys(this);
-    this.on('element keypress', function(el, ch, key) {
+    this.screen._listenKeys(this)
+    this.on('element keypress', function (el, ch, key) {
       if ((key.name === 'tab' && !key.shift)
-          || (el.type === 'textbox' && options.autoNext && key.name === 'enter')
-          || key.name === 'down'
-          || (options.vi && key.name === 'j')) {
+        || (el.type === 'textbox' && options.autoNext && key.name === 'enter')
+        || key.name === 'down'
+        || (options.vi && key.name === 'j')) {
         if (el.type === 'textbox' || el.type === 'textarea') {
-          if (key.name === 'j') return;
+          if (key.name === 'j') return
           if (key.name === 'tab') {
             // Workaround, since we can't stop the tab from being added.
-            el.emit('keypress', null, { name: 'backspace' });
-          }
-          el.emit('keypress', '\x1b', { name: 'escape' });
-        }
-        self.focusNext();
-        return;
+            el.emit('keypress', null, { name: 'backspace' }) }
+          el.emit('keypress', '\x1b', { name: 'escape' }) }
+        self.focusNext()
+        return
       }
-
       if ((key.name === 'tab' && key.shift)
-          || key.name === 'up'
-          || (options.vi && key.name === 'k')) {
+        || key.name === 'up'
+        || (options.vi && key.name === 'k')) {
         if (el.type === 'textbox' || el.type === 'textarea') {
-          if (key.name === 'k') return;
-          el.emit('keypress', '\x1b', { name: 'escape' });
-        }
-        self.focusPrevious();
-        return;
+          if (key.name === 'k') return
+          el.emit('keypress', '\x1b', { name: 'escape' }) }
+        self.focusPrevious()
+        return
       }
-
       if (key.name === 'escape') {
-        self.focus();
-        return;
+        self.focus()
+        return
       }
-    });
-  }
+    }) }
 }
 
-Form.prototype.__proto__ = Box.prototype;
+Form.prototype.__proto__ = Box.prototype
 
-Form.prototype.type = 'form';
+Form.prototype.type = 'form'
 
-Form.prototype._refresh = function() {
+Form.prototype._refresh = function () {
   // XXX Possibly remove this if statement and refresh on every focus.
   // Also potentially only include *visible* focusable elements.
   // This would remove the need to check for _selected.visible in previous()
   // and next().
   if (!this._children) {
     const out = []
-
     this.children.forEach(function fn(el) {
-      if (el.keyable) out.push(el);
-      el.children.forEach(fn);
-    });
-
-    this._children = out;
+      if (el.keyable) out.push(el)
+      el.children.forEach(fn) })
+    this._children = out
   }
-};
+}
 
-Form.prototype._visible = function() {
-  return !!this._children.filter(function(el) {
-    return el.visible;
-  }).length;
-};
+Form.prototype._visible = function () {
+  return !!this._children.filter(function (el) {
+    return el.visible
+  }).length
+}
 
-Form.prototype.next = function() {
-  this._refresh();
-
-  if (!this._visible()) return;
-
+Form.prototype.next = function () {
+  this._refresh()
+  if (!this._visible()) return
   if (!this._selected) {
-    this._selected = this._children[0];
-    if (!this._selected.visible) return this.next();
-    if (this.screen.focused !== this._selected) return this._selected;
+    this._selected = this._children[0]
+    if (!this._selected.visible) return this.next()
+    if (this.screen.focused !== this._selected) return this._selected
   }
-
   const i = this._children.indexOf(this._selected)
   if (!~i || !this._children[i + 1]) {
-    this._selected = this._children[0];
-    if (!this._selected.visible) return this.next();
-    return this._selected;
+    this._selected = this._children[0]
+    if (!this._selected.visible) return this.next()
+    return this._selected
   }
+  this._selected = this._children[i + 1]
+  if (!this._selected.visible) return this.next()
+  return this._selected
+}
 
-  this._selected = this._children[i + 1];
-  if (!this._selected.visible) return this.next();
-  return this._selected;
-};
-
-Form.prototype.previous = function() {
-  this._refresh();
-
-  if (!this._visible()) return;
-
+Form.prototype.previous = function () {
+  this._refresh()
+  if (!this._visible()) return
   if (!this._selected) {
-    this._selected = this._children[this._children.length - 1];
-    if (!this._selected.visible) return this.previous();
-    if (this.screen.focused !== this._selected) return this._selected;
+    this._selected = this._children[this._children.length - 1]
+    if (!this._selected.visible) return this.previous()
+    if (this.screen.focused !== this._selected) return this._selected
   }
-
   const i = this._children.indexOf(this._selected)
   if (!~i || !this._children[i - 1]) {
-    this._selected = this._children[this._children.length - 1];
-    if (!this._selected.visible) return this.previous();
-    return this._selected;
+    this._selected = this._children[this._children.length - 1]
+    if (!this._selected.visible) return this.previous()
+    return this._selected
   }
+  this._selected = this._children[i - 1]
+  if (!this._selected.visible) return this.previous()
+  return this._selected
+}
 
-  this._selected = this._children[i - 1];
-  if (!this._selected.visible) return this.previous();
-  return this._selected;
-};
-
-Form.prototype.focusNext = function() {
+Form.prototype.focusNext = function () {
   const next = this.next()
-  if (next) next.focus();
-};
+  if (next) next.focus() }
 
-Form.prototype.focusPrevious = function() {
+Form.prototype.focusPrevious = function () {
   const previous = this.previous()
-  if (previous) previous.focus();
-};
+  if (previous) previous.focus() }
 
-Form.prototype.resetSelected = function() {
-  this._selected = null;
-};
+Form.prototype.resetSelected = function () {
+  this._selected = null
+}
 
-Form.prototype.focusFirst = function() {
-  this.resetSelected();
-  this.focusNext();
-};
+Form.prototype.focusFirst = function () {
+  this.resetSelected()
+  this.focusNext() }
 
-Form.prototype.focusLast = function() {
-  this.resetSelected();
-  this.focusPrevious();
-};
+Form.prototype.focusLast = function () {
+  this.resetSelected()
+  this.focusPrevious() }
 
-Form.prototype.submit = function() {
+Form.prototype.submit = function () {
   const out = {}
-
   this.children.forEach(function fn(el) {
     if (el.value != null) {
       const name = el.name || el.type
       if (Array.isArray(out[name])) {
-        out[name].push(el.value);
-      } else if (out[name]) {
-        out[name] = [out[name], el.value];
-      } else {
-        out[name] = el.value;
+        out[name].push(el.value) }
+      else if (out[name]) {
+        out[name] = [ out[name], el.value ]
+      }
+      else {
+        out[name] = el.value
       }
     }
-    el.children.forEach(fn);
-  });
+    el.children.forEach(fn) })
+  this.emit('submit', out)
 
-  this.emit('submit', out);
+  return this.submission = out
+}
 
-  return this.submission = out;
-};
+Form.prototype.cancel = function () {
+  this.emit('cancel') }
 
-Form.prototype.cancel = function() {
-  this.emit('cancel');
-};
-
-Form.prototype.reset = function() {
+Form.prototype.reset = function () {
   this.children.forEach(function fn(el) {
     switch (el.type) {
       case 'screen':
-        break;
+        break
       case 'box':
-        break;
+        break
       case 'text':
-        break;
+        break
       case 'line':
-        break;
+        break
       case 'scrollable-box':
-        break;
+        break
       case 'list':
-        el.select(0);
-        return;
+        el.select(0)
+        return
       case 'form':
-        break;
+        break
       case 'input':
-        break;
+        break
       case 'textbox':
-        el.clearInput();
-        return;
+        el.clearInput()
+        return
       case 'textarea':
-        el.clearInput();
-        return;
+        el.clearInput()
+        return
       case 'button':
-        delete el.value;
-        break;
+        delete el.value
+        break
       case 'progress-bar':
-        el.setProgress(0);
-        break;
+        el.setProgress(0)
+        break
       case 'file-manager':
-        el.refresh(el.options.cwd);
-        return;
+        el.refresh(el.options.cwd)
+        return
       case 'checkbox':
-        el.uncheck();
-        return;
+        el.uncheck()
+        return
       case 'radio-set':
-        break;
+        break
       case 'radio-button':
-        el.uncheck();
-        return;
+        el.uncheck()
+        return
       case 'prompt':
-        break;
+        break
       case 'question':
-        break;
+        break
       case 'message':
-        break;
+        break
       case 'info':
-        break;
+        break
       case 'loading':
-        break;
+        break
       case 'list-bar':
         //el.select(0);
-        break;
+        break
       case 'dir-manager':
-        el.refresh(el.options.cwd);
-        return;
+        el.refresh(el.options.cwd)
+        return
       case 'terminal':
-        el.write('');
-        return;
+        el.write('')
+        return
       case 'image':
         //el.clearImage();
-        return;
+        return
     }
-    el.children.forEach(fn);
-  });
-
-  this.emit('reset');
-};
+    el.children.forEach(fn) })
+  this.emit('reset') }
 
 /**
  * Expose
  */
 
-module.exports = Form;
+module.exports = Form

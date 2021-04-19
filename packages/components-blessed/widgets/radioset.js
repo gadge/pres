@@ -4,11 +4,9 @@
  * https://github.com/chjj/blessed
  */
 
-/**
- * Modules
- */
-const Node = require('./node')
-const Box = require('./box')
+const
+  Node = require('./node'),
+  Box  = require('./box')
 
 /**
  * RadioSet
@@ -16,20 +14,18 @@ const Box = require('./box')
 
 function RadioSet(options) {
   if (!(this instanceof Node)) {
-    return new RadioSet(options);
-  }
-  options = options || {};
+    return new RadioSet(options) }
+  options = options || {}
   // Possibly inherit parent's style.
   // options.style = this.parent.style;
-  Box.call(this, options);
-}
+  Box.call(this, options) }
 
-RadioSet.prototype.__proto__ = Box.prototype;
+RadioSet.prototype.__proto__ = Box.prototype
 
-RadioSet.prototype.type = 'radio-set';
+RadioSet.prototype.type = 'radio-set'
 
 /**
  * Expose
  */
 
-module.exports = RadioSet;
+module.exports = RadioSet

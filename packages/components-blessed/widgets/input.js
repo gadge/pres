@@ -3,12 +3,9 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-/**
- * Modules
- */
-const Node = require('./node')
-const Box = require('./box')
+const
+  Node = require('./node'),
+  Box  = require('./box')
 
 /**
  * Input
@@ -16,18 +13,16 @@ const Box = require('./box')
 
 function Input(options) {
   if (!(this instanceof Node)) {
-    return new Input(options);
-  }
-  options = options || {};
-  Box.call(this, options);
-}
+    return new Input(options) }
+  options = options || {}
+  Box.call(this, options) }
 
-Input.prototype.__proto__ = Box.prototype;
+Input.prototype.__proto__ = Box.prototype
 
-Input.prototype.type = 'input';
+Input.prototype.type = 'input'
 
 /**
  * Expose
  */
 
-module.exports = Input;
+module.exports = Input

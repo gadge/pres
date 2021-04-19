@@ -3,20 +3,14 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
+const
+  assert   = require('assert'),
+  colors   = require('../colors'),
+  unicode  = require('../unicode'),
+  nextTick = global.setImmediate || process.nextTick.bind(process),
+  helpers  = require('../helpers'),
+  Node     = require('./node')
 
-/**
- * Modules
- */
-const assert = require('assert')
-
-const colors = require('../colors')
-  , unicode  = require('../unicode')
-
-const nextTick = global.setImmediate || process.nextTick.bind(process)
-
-const helpers = require('../helpers')
-
-const Node = require('./node')
 
 /**
  * Element
@@ -24,11 +18,8 @@ const Node = require('./node')
 
 function Element(options) {
   const self = this
-
   if (!(this instanceof Node)) {
-    return new Element(options)
-  }
-
+    return new Element(options) }
   options = options || {}
 
   // Workaround to get a `scrollable` option.
@@ -38,8 +29,7 @@ function Element(options) {
       .getOwnPropertyNames(ScrollableBox.prototype)
       .forEach(function (key) {
         if (key === 'type') return
-        Object.defineProperty(this, key, Object.getOwnPropertyDescriptor(ScrollableBox.prototype, key))
-      }, this)
+        Object.defineProperty(this, key, Object.getOwnPropertyDescriptor(ScrollableBox.prototype, key)) }, this)
     this._ignore = true
     ScrollableBox.call(this, options)
     delete this._ignore
@@ -47,9 +37,7 @@ function Element(options) {
   }
 
   Node.call(this, options)
-
   this.name = options.name
-
   options.position = options.position || {
     left: options.left,
     right: options.right,
@@ -58,7 +46,6 @@ function Element(options) {
     width: options.width,
     height: options.height
   }
-
   if (
     options.position.width === 'shrink' ||
     options.position.height === 'shrink'
@@ -71,15 +58,11 @@ function Element(options) {
     }
     options.shrink = true
   }
-
   this.position = options.position
-
   this.noOverflow = options.noOverflow
   this.dockBorders = options.dockBorders
   this.shadow = options.shadow
-
   this.style = options.style
-
   if (!this.style) {
     this.style = {}
     this.style.fg = options.fg
@@ -91,7 +74,6 @@ function Element(options) {
     this.style.invisible = options.invisible
     this.style.transparent = options.transparent
   }
-
   this.hidden = options.hidden || false
   this.fixed = options.fixed || false
   this.align = options.align || 'left'
@@ -100,7 +82,6 @@ function Element(options) {
   this.shrink = options.shrink
   this.fixed = options.fixed
   this.ch = options.ch || ' '
-
   if (typeof options.padding === 'number' || !options.padding) {
     options.padding = {
       left: options.padding,
@@ -109,14 +90,12 @@ function Element(options) {
       bottom: options.padding
     }
   }
-
   this.padding = {
     left: options.padding.left || 0,
     top: options.padding.top || 0,
     right: options.padding.right || 0,
     bottom: options.padding.bottom || 0
   }
-
   this.border = options.border
   if (this.border) {
     if (typeof this.border === 'string') {
@@ -140,24 +119,15 @@ function Element(options) {
 
   // if (options.mouse || options.clickable) {
   if (options.clickable) {
-    this.screen._listenMouse(this)
-  }
-
+    this.screen._listenMouse(this) }
   if (options.input || options.keyable) {
-    this.screen._listenKeys(this)
-  }
-
+    this.screen._listenKeys(this) }
   this.parseTags = options.parseTags || options.tags
-
   this.setContent(options.content || '', true)
-
   if (options.label) {
-    this.setLabel(options.label)
-  }
-
+    this.setLabel(options.label) }
   if (options.hoverText) {
-    this.setHover(options.hoverText)
-  }
+    this.setHover(options.hoverText) }
 
   // TODO: Possibly move this to Node for onScreenEvent('mouse', ...).
   this.on('newListener', function fn(type) {
@@ -172,38 +142,27 @@ function Element(options) {
       || type === 'wheeldown'
       || type === 'wheelup'
       || type === 'mousemove') {
-      self.screen._listenMouse(self)
-    } else
-      if (type === 'keypress' || type.indexOf('key ') === 0) {
-        self.screen._listenKeys(self)
-      }
+      self.screen._listenMouse(self) }
+    else if (type === 'keypress' || type.indexOf('key ') === 0) {
+      self.screen._listenKeys(self) }
   })
-
   this.on('resize', function () {
-    self.parseContent()
-  })
-
+    self.parseContent() })
   this.on('attach', function () {
-    self.parseContent()
-  })
-
+    self.parseContent() })
   this.on('detach', function () {
     delete self.lpos
   })
-
   if (options.hoverBg != null) {
     options.hoverEffects = options.hoverEffects || {}
     options.hoverEffects.bg = options.hoverBg
   }
-
   if (this.style.hover) {
     options.hoverEffects = this.style.hover
   }
-
   if (this.style.focus) {
     options.focusEffects = this.style.focus
   }
-
   if (options.effects) {
     if (options.effects.hover) options.hoverEffects = options.effects.hover
     if (options.effects.focus) options.focusEffects = options.effects.focus
@@ -212,16 +171,12 @@ function Element(options) {
   [ [ 'hoverEffects', 'mouseover', 'mouseout', '_htemp' ],
     [ 'focusEffects', 'focus', 'blur', '_ftemp' ] ].forEach(function (props) {
     const pname = props[0], over = props[1], out = props[2], temp = props[3]
-    self.screen.setEffects(self, self, over, out, self.options[pname], temp)
-  })
-
+    self.screen.setEffects(self, self, over, out, self.options[pname], temp) })
   if (this.options.draggable) {
     this.draggable = true
   }
-
   if (options.focused) {
-    this.focus()
-  }
+    this.focus() }
 }
 
 Element.prototype.__proto__ = Node.prototype
@@ -252,7 +207,6 @@ Element.prototype.sattr = function (style, fg, bg) {
   if (typeof blink === 'function') blink = blink(this)
   if (typeof inverse === 'function') inverse = inverse(this)
   if (typeof invisible === 'function') invisible = invisible(this)
-
   if (typeof fg === 'function') fg = fg(this)
   if (typeof bg === 'function') bg = bg(this)
 
@@ -264,14 +218,12 @@ Element.prototype.sattr = function (style, fg, bg) {
     | ((underline ? 2 : 0) << 18)
     | ((bold ? 1 : 0) << 18)
     | (colors.convert(fg) << 9)
-    | colors.convert(bg)
-}
+    | colors.convert(bg) }
 
 Element.prototype.onScreenEvent = function (type, handler) {
   const listeners = this._slisteners = this._slisteners || []
   listeners.push({ type: type, handler: handler })
-  this.screen.on(type, handler)
-}
+  this.screen.on(type, handler) }
 
 Element.prototype.onceScreenEvent = function (type, handler) {
   const listeners = this._slisteners = this._slisteners || []
@@ -280,9 +232,7 @@ Element.prototype.onceScreenEvent = function (type, handler) {
   this.screen.once(type, function () {
     const i = listeners.indexOf(entry)
     if (~i) listeners.splice(i, 1)
-    return handler.apply(this, arguments)
-  })
-}
+    return handler.apply(this, arguments) }) }
 
 Element.prototype.removeScreenEvent = function (type, handler) {
   const listeners = this._slisteners = this._slisteners || []
@@ -296,15 +246,13 @@ Element.prototype.removeScreenEvent = function (type, handler) {
       break
     }
   }
-  this.screen.removeListener(type, handler)
-}
+  this.screen.removeListener(type, handler) }
 
 Element.prototype.free = function () {
   const listeners = this._slisteners = this._slisteners || []
   for (let i = 0; i < listeners.length; i++) {
     const listener = listeners[i]
-    this.screen.removeListener(listener.type, listener.handler)
-  }
+    this.screen.removeListener(listener.type, listener.handler) }
   delete this._slisteners
 }
 
@@ -314,19 +262,16 @@ Element.prototype.hide = function () {
   this.hidden = true
   this.emit('hide')
   if (this.screen.focused === this) {
-    this.screen.rewindFocus()
-  }
+    this.screen.rewindFocus() }
 }
 
 Element.prototype.show = function () {
   if (!this.hidden) return
   this.hidden = false
-  this.emit('show')
-}
+  this.emit('show') }
 
 Element.prototype.toggle = function () {
-  return this.hidden ? this.show() : this.hide()
-}
+  return this.hidden ? this.show() : this.hide() }
 
 Element.prototype.focus = function () {
   return this.screen.focused = this
@@ -336,27 +281,22 @@ Element.prototype.setContent = function (content, noClear, noTags) {
   if (!noClear) this.clearPos()
   this.content = content || ''
   this.parseContent(noTags)
-  this.emit('set content')
-}
+  this.emit('set content') }
 
 Element.prototype.getContent = function () {
   if (!this._clines) return ''
-  return this._clines.fake.join('\n')
-}
+  return this._clines.fake.join('\n') }
 
 Element.prototype.setText = function (content, noClear) {
   content = content || ''
   content = content.replace(/\x1b\[[\d;]*m/g, '')
-  return this.setContent(content, noClear, true)
-}
+  return this.setContent(content, noClear, true) }
 
 Element.prototype.getText = function () {
-  return this.getContent().replace(/\x1b\[[\d;]*m/g, '')
-}
+  return this.getContent().replace(/\x1b\[[\d;]*m/g, '') }
 
 Element.prototype.parseContent = function (noTags) {
   if (this.detached) return false
-
   const width = this.width - this.iwidth
   if (this._clines == null
     || this._clines.width !== width
@@ -368,16 +308,15 @@ Element.prototype.parseContent = function (noTags) {
       .replace(/\x1b(?!\[[\d;]*m)/g, '')
       .replace(/\r\n|\r/g, '\n')
       .replace(/\t/g, this.screen.tabc)
-
     if (this.screen.fullUnicode) {
       // double-width chars will eat the next char after render. create a
       // blank character after it so it doesn't eat the real next char.
       content = content.replace(unicode.chars.all, '$1\x03')
       // iTerm2 cannot render combining characters properly.
       if (this.screen.program.isiTerm2) {
-        content = content.replace(unicode.chars.combining, '')
-      }
-    } else {
+        content = content.replace(unicode.chars.combining, '') }
+    }
+    else {
       // no double-width: replace them with question-marks.
       content = content.replace(unicode.chars.all, '??')
       // delete combining characters since they're 0-width anyway.
@@ -391,9 +330,7 @@ Element.prototype.parseContent = function (noTags) {
       // XXX Deduplicate code here:
       // content = helpers.dropUnicode(content);
     }
-
     if (!noTags) content = this._parseTags(content)
-
     this._clines = this._wrapContent(content, width)
     this._clines.width = width
     this._clines.content = this.content
@@ -403,7 +340,6 @@ Element.prototype.parseContent = function (noTags) {
       this._clines.ci.push(total)
       return total + line.length + 1
     }.bind(this), 0)
-
     this._pcontent = this._clines.join('\n')
     this.emit('parsed content')
 
@@ -420,7 +356,6 @@ Element.prototype.parseContent = function (noTags) {
 Element.prototype._parseTags = function (text) {
   if (!this.parseTags) return text
   if (!/{\/?[\w\-,;!#]*}/.test(text)) return text
-
   const program = this.screen.program
   let out = ''
     , state
@@ -439,69 +374,67 @@ Element.prototype._parseTags = function (text) {
       esc = true
       continue
     }
-
     if (esc && (cap = /^([\s\S]+?){\/escape}/.exec(text))) {
       text = text.substring(cap[0].length)
       out += cap[1]
       esc = false
       continue
     }
-
     if (esc) {
       // throw new Error('Unterminated escape tag.');
       out += text
       break
     }
-
     if (cap = /^{(\/?)([\w\-,;!#]*)}/.exec(text)) {
       text = text.substring(cap[0].length)
       slash = cap[1] === '/'
       param = cap[2].replace(/-/g, ' ')
-
       if (param === 'open') {
         out += '{'
         continue
-      } else
-        if (param === 'close') {
-          out += '}'
-          continue
-        }
-
+      }
+      else if (param === 'close') {
+        out += '}'
+        continue
+      }
       if (param.slice(-3) === ' bg') state = bg
-      else
-        if (param.slice(-3) === ' fg') state = fg
-        else state = flag
-
+      else if (param.slice(-3) === ' fg') state = fg
+      else state = flag
       if (slash) {
         if (!param) {
           out += program._attr('normal')
           bg.length = 0
           fg.length = 0
           flag.length = 0
-        } else {
+        }
+        else {
           attr = program._attr(param, false)
           if (attr == null) {
             out += cap[0]
-          } else {
+          }
+          else {
             // if (param !== state[state.length - 1]) {
             //   throw new Error('Misnested tags.');
             // }
             state.pop()
             if (state.length) {
-              out += program._attr(state[state.length - 1])
-            } else {
+              out += program._attr(state[state.length - 1]) }
+            else {
               out += attr
             }
           }
         }
-      } else {
+      }
+      else {
         if (!param) {
           out += cap[0]
-        } else {
+        }
+        else {
           attr = program._attr(param)
           if (attr == null) {
             out += cap[0]
-          } else {
+          }
+          else {
             state.push(param)
             out += attr
           }
@@ -510,7 +443,6 @@ Element.prototype._parseTags = function (text) {
 
       continue
     }
-
     if (cap = /^[\s\S]+?(?={\/?[\w\-,;!#]*})/.exec(text)) {
       text = text.substring(cap[0].length)
       out += cap[0]
@@ -532,7 +464,6 @@ Element.prototype._parseAttr = function (lines) {
     , i
     , j
     , c
-
   if (lines[0].attr === attr) {
     return
   }
@@ -556,33 +487,29 @@ Element.prototype._parseAttr = function (lines) {
 Element.prototype._align = function (line, width, align) {
   if (!align) return line
   //if (!align && !~line.indexOf('{|}')) return line;
-
   const cline = line.replace(/\x1b\[[\d;]*m/g, '')
     , len     = cline.length
   let s = width - len
-
   if (this.shrink) {
     s = 0
   }
-
   if (len === 0) return line
   if (s < 0) return line
-
   if (align === 'center') {
     s = Array(((s / 2) | 0) + 1).join(' ')
     return s + line + s
-  } else
-    if (align === 'right') {
-      s = Array(s + 1).join(' ')
-      return s + line
-    } else
-      if (this.parseTags && ~line.indexOf('{|}')) {
-        const parts = line.split('{|}')
-        const cparts = cline.split('{|}')
-        s = Math.max(width - cparts[0].length - cparts[1].length, 0)
-        s = Array(s + 1).join(' ')
-        return parts[0] + s + parts[1]
-      }
+  }
+  else if (align === 'right') {
+    s = Array(s + 1).join(' ')
+    return s + line
+  }
+  else if (this.parseTags && ~line.indexOf('{|}')) {
+    const parts = line.split('{|}')
+    const cparts = cline.split('{|}')
+    s = Math.max(width - cparts[0].length - cparts[1].length, 0)
+    s = Array(s + 1).join(' ')
+    return parts[0] + s + parts[1]
+  }
 
   return line
 }
@@ -607,7 +534,6 @@ Element.prototype._wrapContent = function (content, width) {
     , rest
 
   lines = content.split('\n')
-
   if (!content) {
     out.push(content)
     out.rtof = [ 0 ]
@@ -617,7 +543,6 @@ Element.prototype._wrapContent = function (content, width) {
     out.mwidth = 0
     return out
   }
-
   if (this.scrollbar) margin++
   if (this.type === 'textarea') margin++
   if (width > margin) width -= margin
@@ -649,9 +574,7 @@ Element.prototype._wrapContent = function (content, width) {
         // Measure the real width of the string.
         for (i = 0, total = 0; i < line.length; i++) {
           while (line[i] === '\x1b') {
-            while (line[i] && line[i++] !== 'm') {
-
-            }
+            while (line[i] && line[i++] !== 'm') { }
           }
           if (!line[i]) break
           if (++total === width) {
@@ -673,7 +596,8 @@ Element.prototype._wrapContent = function (content, width) {
                 while (j > i - 10 && j > 0 && line[--j] !== ' ')
                   if (line[j] === ' ') i = j + 1
               }
-            } else {
+            }
+            else {
               // Try to find a character to break on.
               if (i !== line.length) {
                 // <XXX>
@@ -733,8 +657,7 @@ Element.prototype._wrapContent = function (content, width) {
 
       out.push(this._align(line, width, align))
       ftor[no].push(out.length - 1)
-      rtof.push(no)
-    }
+      rtof.push(no) }
 
   out.rtof = rtof
   out.ftor = ftor
@@ -772,37 +695,29 @@ Element.prototype.__defineGetter__('_detached', function () {
 })
 
 Element.prototype.enableMouse = function () {
-  this.screen._listenMouse(this)
-}
+  this.screen._listenMouse(this) }
 
 Element.prototype.enableKeys = function () {
-  this.screen._listenKeys(this)
-}
+  this.screen._listenKeys(this) }
 
 Element.prototype.enableInput = function () {
   this.screen._listenMouse(this)
-  this.screen._listenKeys(this)
-}
+  this.screen._listenKeys(this) }
 
 Element.prototype.__defineGetter__('draggable', function () {
   return this._draggable === true
 })
 
 Element.prototype.__defineSetter__('draggable', function (draggable) {
-  return draggable ? this.enableDrag(draggable) : this.disableDrag()
-})
+  return draggable ? this.enableDrag(draggable) : this.disableDrag() })
 
 Element.prototype.enableDrag = function (verify) {
   const self = this
-
   if (this._draggable) return true
-
   if (typeof verify !== 'function') {
     verify = function () { return true }
   }
-
   this.enableMouse()
-
   this.on('mousedown', this._dragMD = function (data) {
     if (self.screen._dragging) return
     if (!verify(data)) return
@@ -811,12 +726,9 @@ Element.prototype.enableDrag = function (verify) {
       x: data.x - self.aleft,
       y: data.y - self.atop
     }
-    self.setFront()
-  })
-
+    self.setFront() })
   this.onScreenEvent('mouse', this._dragM = function (data) {
     if (self.screen._dragging !== self) return
-
     if (data.action !== 'mousedown' && data.action !== 'mousemove') {
       delete self.screen._dragging
       delete self._drag
@@ -826,33 +738,27 @@ Element.prototype.enableDrag = function (verify) {
     // This can happen in edge cases where the user is
     // already dragging and element when it is detached.
     if (!self.parent) return
-
     const ox = self._drag.x
       , oy   = self._drag.y
       , px   = self.parent.aleft
       , py   = self.parent.atop
       , x    = data.x - px - ox
       , y    = data.y - py - oy
-
     if (self.position.right != null) {
       if (self.position.left != null) {
-        self.width = '100%-' + (self.parent.width - self.width)
-      }
+        self.width = '100%-' + (self.parent.width - self.width) }
       self.position.right = null
     }
-
     if (self.position.bottom != null) {
       if (self.position.top != null) {
-        self.height = '100%-' + (self.parent.height - self.height)
-      }
+        self.height = '100%-' + (self.parent.height - self.height) }
       self.position.bottom = null
     }
 
     self.rleft = x
     self.rtop = y
 
-    self.screen.render()
-  })
+    self.screen.render() })
 
   return this._draggable = true
 }
@@ -867,42 +773,33 @@ Element.prototype.disableDrag = function () {
 }
 
 Element.prototype.key = function () {
-  return this.screen.program.key.apply(this, arguments)
-}
+  return this.screen.program.key.apply(this, arguments) }
 
 Element.prototype.onceKey = function () {
-  return this.screen.program.onceKey.apply(this, arguments)
-}
+  return this.screen.program.onceKey.apply(this, arguments) }
 
 Element.prototype.unkey =
   Element.prototype.removeKey = function () {
-    return this.screen.program.unkey.apply(this, arguments)
-  }
+    return this.screen.program.unkey.apply(this, arguments) }
 
 Element.prototype.setIndex = function (index) {
   if (!this.parent) return
-
   if (index < 0) {
     index = this.parent.children.length + index
   }
 
   index = Math.max(index, 0)
   index = Math.min(index, this.parent.children.length - 1)
-
   const i = this.parent.children.indexOf(this)
   if (!~i) return
-
   const item = this.parent.children.splice(i, 1)[0]
-  this.parent.children.splice(index, 0, item)
-}
+  this.parent.children.splice(index, 0, item) }
 
 Element.prototype.setFront = function () {
-  return this.setIndex(-1)
-}
+  return this.setIndex(-1) }
 
 Element.prototype.setBack = function () {
-  return this.setIndex(0)
-}
+  return this.setIndex(0) }
 
 Element.prototype.clearPos = function (get, override) {
   if (this.detached) return
@@ -911,17 +808,14 @@ Element.prototype.clearPos = function (get, override) {
   this.screen.clearRegion(
     lpos.xi, lpos.xl,
     lpos.yi, lpos.yl,
-    override)
-}
+    override) }
 
 Element.prototype.setLabel = function (options) {
   const self = this
   const Box = require('./box')
-
   if (typeof options === 'string') {
     options = { text: options }
   }
-
   if (this._label) {
     this._label.setContent(options.text)
     if (options.side !== 'right') {
@@ -930,7 +824,8 @@ Element.prototype.setLabel = function (options) {
       if (!this.screen.autoPadding) {
         this._label.rleft = 2
       }
-    } else {
+    }
+    else {
       this._label.rright = 2 + (this.border ? -1 : 0)
       this._label.position.left = undefined
       if (!this.screen.autoPadding) {
@@ -939,7 +834,6 @@ Element.prototype.setLabel = function (options) {
     }
     return
   }
-
   this._label = new Box({
     screen: this.screen,
     parent: this,
@@ -949,42 +843,32 @@ Element.prototype.setLabel = function (options) {
     shrink: true,
     style: this.style.label
   })
-
   if (options.side !== 'right') {
     this._label.rleft = 2 - this.ileft
-  } else {
+  }
+  else {
     this._label.rright = 2 - this.iright
   }
-
   this._label._isLabel = true
-
   if (!this.screen.autoPadding) {
     if (options.side !== 'right') {
       this._label.rleft = 2
-    } else {
+    }
+    else {
       this._label.rright = 2
     }
     this._label.rtop = 0
   }
-
   const reposition = function () {
     self._label.rtop = (self.childBase || 0) - self.itop
     if (!self.screen.autoPadding) {
-      self._label.rtop = (self.childBase || 0)
-    }
-    self.screen.render()
-  }
-
+      self._label.rtop = (self.childBase || 0) }
+    self.screen.render() }
   this.on('scroll', this._labelScroll = function () {
-    reposition()
-  })
-
+    reposition() })
   this.on('resize', this._labelResize = function () {
     nextTick(function () {
-      reposition()
-    })
-  })
-}
+      reposition() }) }) }
 
 Element.prototype.removeLabel = function () {
   if (!this._label) return
@@ -1000,18 +884,15 @@ Element.prototype.setHover = function (options) {
   if (typeof options === 'string') {
     options = { text: options }
   }
-
   this._hoverOptions = options
   this.enableMouse()
-  this.screen._initHover()
-}
+  this.screen._initHover() }
 
 Element.prototype.removeHover = function () {
   delete this._hoverOptions
   if (!this.screen._hoverText || this.screen._hoverText.detached) return
   this.screen._hoverText.detach()
-  this.screen.render()
-}
+  this.screen.render() }
 
 /**
  * Positioning
@@ -1036,7 +917,6 @@ Element.prototype._getPos = function () {
   const pos = this.lpos
 
   assert.ok(pos)
-
   if (pos.aleft != null) return pos
 
   pos.aleft = pos.xi
@@ -1058,7 +938,6 @@ Element.prototype._getWidth = function (get) {
   let width = this.position.width
     , left
     , expr
-
   if (typeof width === 'string') {
     if (width === 'half') width = '50%'
     expr = width.split(/(?=\+|-)/)
@@ -1083,8 +962,7 @@ Element.prototype._getWidth = function (get) {
       left = expr[0]
       left = +left.slice(0, -1) / 100
       left = parent.width * left | 0
-      left += +(expr[1] || 0)
-    }
+      left += +(expr[1] || 0) }
     width = parent.width - (this.position.right || 0) - left
     if (this.screen.autoPadding) {
       if ((this.position.left != null || this.position.right == null)
@@ -1099,15 +977,13 @@ Element.prototype._getWidth = function (get) {
 }
 
 Element.prototype.__defineGetter__('width', function () {
-  return this._getWidth(false)
-})
+  return this._getWidth(false) })
 
 Element.prototype._getHeight = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
   let height = this.position.height
     , top
     , expr
-
   if (typeof height === 'string') {
     if (height === 'half') height = '50%'
     expr = height.split(/(?=\+|-)/)
@@ -1132,8 +1008,7 @@ Element.prototype._getHeight = function (get) {
       top = expr[0]
       top = +top.slice(0, -1) / 100
       top = parent.height * top | 0
-      top += +(expr[1] || 0)
-    }
+      top += +(expr[1] || 0) }
     height = parent.height - (this.position.bottom || 0) - top
     if (this.screen.autoPadding) {
       if ((this.position.top != null
@@ -1149,14 +1024,12 @@ Element.prototype._getHeight = function (get) {
 }
 
 Element.prototype.__defineGetter__('height', function () {
-  return this._getHeight(false)
-})
+  return this._getHeight(false) })
 
 Element.prototype._getLeft = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
   let left = this.position.left || 0
     , expr
-
   if (typeof left === 'string') {
     if (left === 'center') left = '50%'
     expr = left.split(/(?=\+|-)/)
@@ -1168,11 +1041,8 @@ Element.prototype._getLeft = function (get) {
       left -= this._getWidth(get) / 2 | 0
     }
   }
-
   if (this.position.left == null && this.position.right != null) {
-    return this.screen.cols - this._getWidth(get) - this._getRight(get)
-  }
-
+    return this.screen.cols - this._getWidth(get) - this._getRight(get) }
   if (this.screen.autoPadding) {
     if ((this.position.left != null
       || this.position.right == null)
@@ -1185,13 +1055,11 @@ Element.prototype._getLeft = function (get) {
 }
 
 Element.prototype.__defineGetter__('aleft', function () {
-  return this._getLeft(false)
-})
+  return this._getLeft(false) })
 
 Element.prototype._getRight = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
   let right
-
   if (this.position.right == null && this.position.left != null) {
     right = this.screen.cols - (this._getLeft(get) + this._getWidth(get))
     if (this.screen.autoPadding) {
@@ -1201,7 +1069,6 @@ Element.prototype._getRight = function (get) {
   }
 
   right = (parent.aright || 0) + (this.position.right || 0)
-
   if (this.screen.autoPadding) {
     right += this.parent.iright
   }
@@ -1210,14 +1077,12 @@ Element.prototype._getRight = function (get) {
 }
 
 Element.prototype.__defineGetter__('aright', function () {
-  return this._getRight(false)
-})
+  return this._getRight(false) })
 
 Element.prototype._getTop = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
   let top = this.position.top || 0
     , expr
-
   if (typeof top === 'string') {
     if (top === 'center') top = '50%'
     expr = top.split(/(?=\+|-)/)
@@ -1229,11 +1094,8 @@ Element.prototype._getTop = function (get) {
       top -= this._getHeight(get) / 2 | 0
     }
   }
-
   if (this.position.top == null && this.position.bottom != null) {
-    return this.screen.rows - this._getHeight(get) - this._getBottom(get)
-  }
-
+    return this.screen.rows - this._getHeight(get) - this._getBottom(get) }
   if (this.screen.autoPadding) {
     if ((this.position.top != null
       || this.position.bottom == null)
@@ -1246,13 +1108,11 @@ Element.prototype._getTop = function (get) {
 }
 
 Element.prototype.__defineGetter__('atop', function () {
-  return this._getTop(false)
-})
+  return this._getTop(false) })
 
 Element.prototype._getBottom = function (get) {
   const parent = get ? this.parent._getPos() : this.parent
   let bottom
-
   if (this.position.bottom == null && this.position.top != null) {
     bottom = this.screen.rows - (this._getTop(get) + this._getHeight(get))
     if (this.screen.autoPadding) {
@@ -1262,7 +1122,6 @@ Element.prototype._getBottom = function (get) {
   }
 
   bottom = (parent.abottom || 0) + (this.position.bottom || 0)
-
   if (this.screen.autoPadding) {
     bottom += this.parent.ibottom
   }
@@ -1271,8 +1130,7 @@ Element.prototype._getBottom = function (get) {
 }
 
 Element.prototype.__defineGetter__('abottom', function () {
-  return this._getBottom(false)
-})
+  return this._getBottom(false) })
 
 Element.prototype.__defineGetter__('rleft', function () {
   return this.aleft - this.parent.aleft
@@ -1321,13 +1179,13 @@ Element.prototype.__defineSetter__('aleft', function (val) {
     if (val === 'center') {
       val = this.screen.width / 2 | 0
       val -= this.width / 2 | 0
-    } else {
+    }
+    else {
       expr = val.split(/(?=\+|-)/)
       val = expr[0]
       val = +val.slice(0, -1) / 100
       val = this.screen.width * val | 0
-      val += +(expr[1] || 0)
-    }
+      val += +(expr[1] || 0) }
   }
   val -= this.parent.aleft
   if (this.position.left === val) return
@@ -1350,13 +1208,13 @@ Element.prototype.__defineSetter__('atop', function (val) {
     if (val === 'center') {
       val = this.screen.height / 2 | 0
       val -= this.height / 2 | 0
-    } else {
+    }
+    else {
       expr = val.split(/(?=\+|-)/)
       val = expr[0]
       val = +val.slice(0, -1) / 100
       val = this.screen.height * val | 0
-      val += +(expr[1] || 0)
-    }
+      val += +(expr[1] || 0) }
   }
   val -= this.parent.atop
   if (this.position.top === val) return
@@ -1486,7 +1344,6 @@ Element.prototype._getShrinkBox = function (xi, xl, yi, yl, get) {
   if (!this.children.length) {
     return { xi: xi, xl: xi + 1, yi: yi, yl: yi + 1 }
   }
-
   let i, el, ret, mxi = xi, mxl = xi + 1, myi = yi, myl = yi + 1
 
   // This is a chicken and egg problem. We need to determine how the children
@@ -1508,7 +1365,6 @@ Element.prototype._getShrinkBox = function (xi, xl, yi, yl, get) {
 
     // Or just (seemed to work, but probably not good):
     // ret = el.lpos || this.lpos;
-
     if (!ret) continue
 
     // Since the parent element is shrunk, and the child elements think it's
@@ -1535,18 +1391,15 @@ Element.prototype._getShrinkBox = function (xi, xl, yi, yl, get) {
         ret.yi += this.itop
       }
     }
-
     if (ret.xi < mxi) mxi = ret.xi
     if (ret.xl > mxl) mxl = ret.xl
     if (ret.yi < myi) myi = ret.yi
     if (ret.yl > myl) myl = ret.yl
   }
-
   if (get) {
     this.lpos = _lpos
     //this.shrink = true;
   }
-
   if (this.position.width == null
     && (this.position.left == null
       || this.position.right == null)) {
@@ -1554,10 +1407,12 @@ Element.prototype._getShrinkBox = function (xi, xl, yi, yl, get) {
       xi = xl - (mxl - mxi)
       if (!this.screen.autoPadding) {
         xi -= this.padding.left + this.padding.right
-      } else {
+      }
+      else {
         xi -= this.ileft
       }
-    } else {
+    }
+    else {
       xl = mxl
       if (!this.screen.autoPadding) {
         xl += this.padding.left + this.padding.right
@@ -1570,13 +1425,13 @@ Element.prototype._getShrinkBox = function (xi, xl, yi, yl, get) {
           xl -= this.padding.left + this.padding.right
           xl += this.iright
         }
-      } else {
+      }
+      else {
         //xl += this.padding.right;
         xl += this.iright
       }
     }
   }
-
   if (this.position.height == null
     && (this.position.top == null
       || this.position.bottom == null)
@@ -1592,14 +1447,17 @@ Element.prototype._getShrinkBox = function (xi, xl, yi, yl, get) {
       yi = yl - (myl - myi)
       if (!this.screen.autoPadding) {
         yi -= this.padding.top + this.padding.bottom
-      } else {
+      }
+      else {
         yi -= this.itop
       }
-    } else {
+    }
+    else {
       yl = myl
       if (!this.screen.autoPadding) {
         yl += this.padding.top + this.padding.bottom
-      } else {
+      }
+      else {
         yl += this.ibottom
       }
     }
@@ -1611,24 +1469,24 @@ Element.prototype._getShrinkBox = function (xi, xl, yi, yl, get) {
 Element.prototype._getShrinkContent = function (xi, xl, yi, yl) {
   const h = this._clines.length
     , w   = this._clines.mwidth || 1
-
   if (this.position.width == null
     && (this.position.left == null
       || this.position.right == null)) {
     if (this.position.left == null && this.position.right != null) {
       xi = xl - w - this.iwidth
-    } else {
+    }
+    else {
       xl = xi + w + this.iwidth
     }
   }
-
   if (this.position.height == null
     && (this.position.top == null
       || this.position.bottom == null)
     && (!this.scrollable || this._isList)) {
     if (this.position.top == null && this.position.bottom != null) {
       yi = yl - h - this.iheight
-    } else {
+    }
+    else {
       yl = yi + h + this.iheight
     }
   }
@@ -1646,15 +1504,16 @@ Element.prototype._getShrink = function (xi, xl, yi, yl, get) {
   if (shrinkBox.xl - shrinkBox.xi > shrinkContent.xl - shrinkContent.xi) {
     xi = shrinkBox.xi
     xl = shrinkBox.xl
-  } else {
+  }
+  else {
     xi = shrinkContent.xi
     xl = shrinkContent.xl
   }
-
   if (shrinkBox.yl - shrinkBox.yi > shrinkContent.yl - shrinkContent.yi) {
     yi = shrinkBox.yi
     yl = shrinkBox.yl
-  } else {
+  }
+  else {
     yi = shrinkContent.yi
     yl = shrinkContent.yl
   }
@@ -1665,7 +1524,6 @@ Element.prototype._getShrink = function (xi, xl, yi, yl, get) {
     xi += xll
     xl += xll
   }
-
   if (yl < yll && this.position.top === 'center') {
     yll = (yll - yl) / 2 | 0
     yi += yll
@@ -1681,7 +1539,6 @@ Element.prototype._getCoords = function (get, noscroll) {
   // if (this.parent._rendering) {
   //   get = true;
   // }
-
   let xi    = this._getLeft(get)
     , xl    = xi + this._getWidth(get)
     , yi    = this._getTop(get)
@@ -1726,7 +1583,6 @@ Element.prototype._getCoords = function (get, noscroll) {
   // with lots of boxes in it was within a scrollable element.
   // See: $ node test/widget-shrink-fail.js
   // var thisparent = this.parent;
-
   const thisparent = el
   if (el && !noscroll) {
     ppos = thisparent.lpos
@@ -1736,7 +1592,6 @@ Element.prototype._getCoords = function (get, noscroll) {
     // if (!get && !thisparent.shrink) {
     //   ppos = thisparent._getCoords();
     // }
-
     if (!ppos) return
 
     // TODO: Figure out how to fix base (and cbase to only
@@ -1756,12 +1611,12 @@ Element.prototype._getCoords = function (get, noscroll) {
     if (this._isLabel) {
       b = 0
     }
-
     if (yi < ppos.yi + b) {
       if (yl - 1 < ppos.yi + b) {
         // Is above.
         return
-      } else {
+      }
+      else {
         // Is partially covered above.
         notop = true
         v = ppos.yi - yi
@@ -1770,20 +1625,21 @@ Element.prototype._getCoords = function (get, noscroll) {
         base += v
         yi += v
       }
-    } else
-      if (yl > ppos.yl - b) {
-        if (yi > ppos.yl - 1 - b) {
-          // Is below.
-          return
-        } else {
-          // Is partially covered below.
-          nobot = true
-          v = yl - ppos.yl
-          if (this.border) v--
-          if (thisparent.border) v++
-          yl -= v
-        }
+    }
+    else if (yl > ppos.yl - b) {
+      if (yi > ppos.yl - 1 - b) {
+        // Is below.
+        return
       }
+      else {
+        // Is partially covered below.
+        nobot = true
+        v = yl - ppos.yl
+        if (this.border) v--
+        if (thisparent.border) v++
+        yl -= v
+      }
+    }
 
     // Shouldn't be necessary.
     // assert.ok(yi < yl);
@@ -1806,7 +1662,6 @@ Element.prototype._getCoords = function (get, noscroll) {
     //if (xi > xl) return;
     if (xi >= xl) return
   }
-
   if (this.noOverflow && this.parent.lpos) {
     if (xi < this.parent.lpos.xi + this.parent.ileft) {
       xi = this.parent.lpos.xi + this.parent.ileft
@@ -1843,25 +1698,20 @@ Element.prototype._getCoords = function (get, noscroll) {
 
 Element.prototype.render = function () {
   this._emit('prerender')
-
   this.parseContent()
-
   const coords = this._getCoords(true)
   if (!coords) {
     delete this.lpos
     return
   }
-
   if (coords.xl - coords.xi <= 0) {
     coords.xl = Math.max(coords.xl, coords.xi)
     return
   }
-
   if (coords.yl - coords.yi <= 0) {
     coords.yl = Math.max(coords.yl, coords.yi)
     return
   }
-
   const lines = this.screen.lines
   let xi = coords.xi
     , xl = coords.xl
@@ -1905,13 +1755,10 @@ Element.prototype.render = function () {
   //   }
   //   content = clines.join('\n');
   // }
-
   if (coords.base >= this._clines.ci.length) {
     ci = this._pcontent.length
   }
-
   this.lpos = coords
-
   if (this.border && this.border.type === 'line') {
     this.screen._borderStops[coords.yi] = true
     this.screen._borderStops[coords.yl - 1] = true
@@ -1936,7 +1783,6 @@ Element.prototype.render = function () {
   if (ci > 0) {
     attr = this._clines.attr[Math.min(coords.base, this._clines.length - 1)]
   }
-
   if (this.border) xi++, xl--, yi++, yl--
 
   // If we have padding/valign, that means the
@@ -1954,11 +1800,10 @@ Element.prototype.render = function () {
           lines[y].dirty = true
         }
       }
-    } else {
-      this.screen.fillRegion(dattr, bch, xi, xl, yi, yl)
     }
+    else {
+      this.screen.fillRegion(dattr, bch, xi, xl, yi, yl) }
   }
-
   if (this.tpadding) {
     xi += this.padding.left, xl -= this.padding.right
     yi += this.padding.top, yl -= this.padding.bottom
@@ -1971,12 +1816,11 @@ Element.prototype.render = function () {
       if (this.valign === 'middle') {
         visible = visible / 2 | 0
         visible -= this._clines.length / 2 | 0
-      } else
-        if (this.valign === 'bottom') {
-          visible -= this._clines.length
-        }
-      ci -= visible * (xl - xi)
-    }
+      }
+      else if (this.valign === 'bottom') {
+        visible -= this._clines.length
+      }
+      ci -= visible * (xl - xi) }
   }
 
   // Draw the content and background.
@@ -1984,7 +1828,8 @@ Element.prototype.render = function () {
     if (!lines[y]) {
       if (y >= this.screen.height || yl < this.ibottom) {
         break
-      } else {
+      }
+      else {
         continue
       }
     }
@@ -1993,7 +1838,8 @@ Element.prototype.render = function () {
       if (!cell) {
         if (x >= this.screen.width || xl < this.iright) {
           break
-        } else {
+        }
+        else {
           continue
         }
       }
@@ -2013,11 +1859,11 @@ Element.prototype.render = function () {
           if (this.parent._isList && this.parent.interactive
             && this.parent.items[this.parent.selected] === this
             && this.parent.options.invertSelected !== false) {
-            attr = (attr & ~(0x1ff << 9)) | (dattr & (0x1ff << 9))
-          }
+            attr = (attr & ~(0x1ff << 9)) | (dattr & (0x1ff << 9)) }
           ch = content[ci] || bch
           ci++
-        } else {
+        }
+        else {
           break
         }
       }
@@ -2042,7 +1888,8 @@ Element.prototype.render = function () {
             lines[y][x][0] = colors.blend(attr, lines[y][x][0])
             if (content[ci]) lines[y][x][1] = ch
             lines[y].dirty = true
-          } else {
+          }
+          else {
             if (attr !== cell[0] || ch !== cell[1]) {
               lines[y][x][0] = attr
               lines[y][x][1] = ch
@@ -2052,7 +1899,6 @@ Element.prototype.render = function () {
         }
         continue
       }
-
       if (this.screen.fullUnicode && content[ci - 1]) {
         const point = unicode.codePointAt(content, ci - 1)
         // Handle combining chars:
@@ -2064,10 +1910,10 @@ Element.prototype.render = function () {
           }
           if (x - 1 >= xi) {
             lines[y][x - 1][1] += ch
-          } else
-            if (y - 1 >= yi) {
-              lines[y - 1][xl - 1][1] += ch
-            }
+          }
+          else if (y - 1 >= yi) {
+            lines[y - 1][xl - 1][1] += ch
+          }
           x--
           continue
         }
@@ -2078,14 +1924,13 @@ Element.prototype.render = function () {
           ci++
         }
       }
-
       if (this._noFill) continue
-
       if (this.style.transparent) {
         lines[y][x][0] = colors.blend(attr, lines[y][x][0])
         if (content[ci]) lines[y][x][1] = ch
         lines[y].dirty = true
-      } else {
+      }
+      else {
         if (attr !== cell[0] || ch !== cell[1]) {
           lines[y][x][0] = attr
           lines[y][x][1] = ch
@@ -2100,17 +1945,15 @@ Element.prototype.render = function () {
   if (this.scrollbar) {
     // XXX
     // i = this.getScrollHeight();
-    i = Math.max(this._clines.length, this._scrollBottom())
-  }
+    i = Math.max(this._clines.length, this._scrollBottom()) }
   if (coords.notop || coords.nobot) i = -Infinity
   if (this.scrollbar && (yl - yi) < i) {
     x = xl - 1
     if (this.scrollbar.ignoreBorder && this.border) x++
     if (this.alwaysScroll) {
-      y = this.childBase / (i - (yl - yi))
-    } else {
-      y = (this.childBase + this.childOffset) / (i - 1)
-    }
+      y = this.childBase / (i - (yl - yi)) }
+    else {
+      y = (this.childBase + this.childOffset) / (i - 1) }
     y = yi + ((yl - yi) * y | 0)
     if (y >= yl) y = yl - 1
     cell = lines[y] && lines[y][x]
@@ -2120,8 +1963,7 @@ Element.prototype.render = function () {
         attr = this.sattr(this.style.track,
           this.style.track.fg || this.style.fg,
           this.style.track.bg || this.style.bg)
-        this.screen.fillRegion(attr, ch, x, x + 1, yi, yl)
-      }
+        this.screen.fillRegion(attr, ch, x, x + 1, yi, yl) }
       ch = this.scrollbar.ch || ' '
       attr = this.sattr(this.style.scrollbar,
         this.style.scrollbar.fg || this.style.fg,
@@ -2133,9 +1975,7 @@ Element.prototype.render = function () {
       }
     }
   }
-
   if (this.border) xi--, xl++, yi--, yl++
-
   if (this.tpadding) {
     xi -= this.padding.left, xl += this.padding.right
     yi -= this.padding.top, yl += this.padding.bottom
@@ -2158,35 +1998,40 @@ Element.prototype.render = function () {
           if (!this.border.left) {
             if (this.border.top) {
               ch = '\u2500' // '─'
-            } else {
+            }
+            else {
               continue
             }
-          } else {
+          }
+          else {
             if (!this.border.top) {
               ch = '\u2502' // '│'
             }
           }
-        } else
-          if (x === xl - 1) {
-            ch = '\u2510' // '┐'
-            if (!this.border.right) {
-              if (this.border.top) {
-                ch = '\u2500' // '─'
-              } else {
-                continue
-              }
-            } else {
-              if (!this.border.top) {
-                ch = '\u2502' // '│'
-              }
-            }
-          } else {
-            ch = '\u2500' // '─'
-          }
-      } else
-        if (this.border.type === 'bg') {
-          ch = this.border.ch
         }
+        else if (x === xl - 1) {
+          ch = '\u2510' // '┐'
+          if (!this.border.right) {
+            if (this.border.top) {
+              ch = '\u2500' // '─'
+            }
+            else {
+              continue
+            }
+          }
+          else {
+            if (!this.border.top) {
+              ch = '\u2502' // '│'
+            }
+          }
+        }
+        else {
+          ch = '\u2500' // '─'
+        }
+      }
+      else if (this.border.type === 'bg') {
+        ch = this.border.ch
+      }
       if (!this.border.top && x !== xi && x !== xl - 1) {
         ch = ' '
         if (dattr !== cell[0] || ch !== cell[1]) {
@@ -2210,17 +2055,18 @@ Element.prototype.render = function () {
         if (this.border.left) {
           if (this.border.type === 'line') {
             ch = '\u2502' // '│'
-          } else
-            if (this.border.type === 'bg') {
-              ch = this.border.ch
-            }
+          }
+          else if (this.border.type === 'bg') {
+            ch = this.border.ch
+          }
           if (!coords.noleft)
             if (battr !== cell[0] || ch !== cell[1]) {
               lines[y][xi][0] = battr
               lines[y][xi][1] = ch
               lines[y].dirty = true
             }
-        } else {
+        }
+        else {
           ch = ' '
           if (dattr !== cell[0] || ch !== cell[1]) {
             lines[y][xi][0] = dattr
@@ -2234,17 +2080,18 @@ Element.prototype.render = function () {
         if (this.border.right) {
           if (this.border.type === 'line') {
             ch = '\u2502' // '│'
-          } else
-            if (this.border.type === 'bg') {
-              ch = this.border.ch
-            }
+          }
+          else if (this.border.type === 'bg') {
+            ch = this.border.ch
+          }
           if (!coords.noright)
             if (battr !== cell[0] || ch !== cell[1]) {
               lines[y][xl - 1][0] = battr
               lines[y][xl - 1][1] = ch
               lines[y].dirty = true
             }
-        } else {
+        }
+        else {
           ch = ' '
           if (dattr !== cell[0] || ch !== cell[1]) {
             lines[y][xl - 1][0] = dattr
@@ -2268,35 +2115,40 @@ Element.prototype.render = function () {
           if (!this.border.left) {
             if (this.border.bottom) {
               ch = '\u2500' // '─'
-            } else {
+            }
+            else {
               continue
             }
-          } else {
+          }
+          else {
             if (!this.border.bottom) {
               ch = '\u2502' // '│'
             }
           }
-        } else
-          if (x === xl - 1) {
-            ch = '\u2518' // '┘'
-            if (!this.border.right) {
-              if (this.border.bottom) {
-                ch = '\u2500' // '─'
-              } else {
-                continue
-              }
-            } else {
-              if (!this.border.bottom) {
-                ch = '\u2502' // '│'
-              }
-            }
-          } else {
-            ch = '\u2500' // '─'
-          }
-      } else
-        if (this.border.type === 'bg') {
-          ch = this.border.ch
         }
+        else if (x === xl - 1) {
+          ch = '\u2518' // '┘'
+          if (!this.border.right) {
+            if (this.border.bottom) {
+              ch = '\u2500' // '─'
+            }
+            else {
+              continue
+            }
+          }
+          else {
+            if (!this.border.bottom) {
+              ch = '\u2502' // '│'
+            }
+          }
+        }
+        else {
+          ch = '\u2500' // '─'
+        }
+      }
+      else if (this.border.type === 'bg') {
+        ch = this.border.ch
+      }
       if (!this.border.bottom && x !== xi && x !== xl - 1) {
         ch = ' '
         if (dattr !== cell[0] || ch !== cell[1]) {
@@ -2313,7 +2165,6 @@ Element.prototype.render = function () {
       }
     }
   }
-
   if (this.shadow) {
     // right
     y = Math.max(yi + 1, 0)
@@ -2339,7 +2190,6 @@ Element.prototype.render = function () {
       }
     }
   }
-
   this.children.forEach(function (el) {
     if (el.screen._ci !== -1) {
       el.index = el.screen._ci++
@@ -2352,7 +2202,6 @@ Element.prototype.render = function () {
     //   el._rendering = false;
     // }
   })
-
   this._emit('render', [ coords ])
 
   return coords
@@ -2366,60 +2215,50 @@ Element.prototype._render = Element.prototype.render
 
 Element.prototype.insertLine = function (i, line) {
   if (typeof line === 'string') line = line.split('\n')
-
   if (i !== i || i == null) {
     i = this._clines.ftor.length
   }
 
   i = Math.max(i, 0)
-
   while (this._clines.fake.length < i) {
     this._clines.fake.push('')
     this._clines.ftor.push([ this._clines.push('') - 1 ])
-    this._clines.rtof(this._clines.fake.length - 1)
-  }
+    this._clines.rtof(this._clines.fake.length - 1) }
 
   // NOTE: Could possibly compare the first and last ftor line numbers to see
   // if they're the same, or if they fit in the visible region entirely.
   const start = this._clines.length
   let diff
     , real
-
   if (i >= this._clines.ftor.length) {
     real = this._clines.ftor[this._clines.ftor.length - 1]
     real = real[real.length - 1] + 1
-  } else {
+  }
+  else {
     real = this._clines.ftor[i][0]
   }
 
   for (let j = 0; j < line.length; j++) {
-    this._clines.fake.splice(i + j, 0, line[j])
-  }
-
+    this._clines.fake.splice(i + j, 0, line[j]) }
   this.setContent(this._clines.fake.join('\n'), true)
 
   diff = this._clines.length - start
-
   if (diff > 0) {
     const pos = this._getCoords()
     if (!pos) return
-
     const height = pos.yl - pos.yi - this.iheight
       , base     = this.childBase || 0
       , visible  = real >= base && real - base < height
-
     if (pos && visible && this.screen.cleanSides(this)) {
       this.screen.insertLine(diff,
         pos.yi + this.itop + real - base,
         pos.yi,
-        pos.yl - this.ibottom - 1)
-    }
+        pos.yl - this.ibottom - 1) }
   }
 }
 
 Element.prototype.deleteLine = function (i, n) {
   n = n || 1
-
   if (i !== i || i == null) {
     i = this._clines.ftor.length - 1
   }
@@ -2432,57 +2271,45 @@ Element.prototype.deleteLine = function (i, n) {
   const start = this._clines.length
   let diff
   const real = this._clines.ftor[i][0]
-
   while (n--) {
-    this._clines.fake.splice(i, 1)
-  }
-
+    this._clines.fake.splice(i, 1) }
   this.setContent(this._clines.fake.join('\n'), true)
 
   diff = start - this._clines.length
 
   // XXX clearPos() without diff statement?
   let height = 0
-
   if (diff > 0) {
     const pos = this._getCoords()
     if (!pos) return
 
     height = pos.yl - pos.yi - this.iheight
-
     const base  = this.childBase || 0
       , visible = real >= base && real - base < height
-
     if (pos && visible && this.screen.cleanSides(this)) {
       this.screen.deleteLine(diff,
         pos.yi + this.itop + real - base,
         pos.yi,
-        pos.yl - this.ibottom - 1)
-    }
+        pos.yl - this.ibottom - 1) }
   }
-
   if (this._clines.length < height) {
-    this.clearPos()
-  }
+    this.clearPos() }
 }
 
 Element.prototype.insertTop = function (line) {
   const fake = this._clines.rtof[this.childBase || 0]
-  return this.insertLine(fake, line)
-}
+  return this.insertLine(fake, line) }
 
 Element.prototype.insertBottom = function (line) {
   const h  = (this.childBase || 0) + this.height - this.iheight
     , i    = Math.min(h, this._clines.length)
     , fake = this._clines.rtof[i - 1] + 1
 
-  return this.insertLine(fake, line)
-}
+  return this.insertLine(fake, line) }
 
 Element.prototype.deleteTop = function (n) {
   const fake = this._clines.rtof[this.childBase || 0]
-  return this.deleteLine(fake, n)
-}
+  return this.deleteLine(fake, n) }
 
 Element.prototype.deleteBottom = function (n) {
   const h  = (this.childBase || 0) + this.height - 1 - this.iheight
@@ -2491,22 +2318,18 @@ Element.prototype.deleteBottom = function (n) {
 
   n = n || 1
 
-  return this.deleteLine(fake - (n - 1), n)
-}
+  return this.deleteLine(fake - (n - 1), n) }
 
 Element.prototype.setLine = function (i, line) {
   i = Math.max(i, 0)
   while (this._clines.fake.length < i) {
-    this._clines.fake.push('')
-  }
+    this._clines.fake.push('') }
   this._clines.fake[i] = line
-  return this.setContent(this._clines.fake.join('\n'), true)
-}
+  return this.setContent(this._clines.fake.join('\n'), true) }
 
 Element.prototype.setBaseLine = function (i, line) {
   const fake = this._clines.rtof[this.childBase || 0]
-  return this.setLine(fake + i, line)
-}
+  return this.setLine(fake + i, line) }
 
 Element.prototype.getLine = function (i) {
   i = Math.max(i, 0)
@@ -2516,43 +2339,34 @@ Element.prototype.getLine = function (i) {
 
 Element.prototype.getBaseLine = function (i) {
   const fake = this._clines.rtof[this.childBase || 0]
-  return this.getLine(fake + i)
-}
+  return this.getLine(fake + i) }
 
 Element.prototype.clearLine = function (i) {
   i = Math.min(i, this._clines.fake.length - 1)
-  return this.setLine(i, '')
-}
+  return this.setLine(i, '') }
 
 Element.prototype.clearBaseLine = function (i) {
   const fake = this._clines.rtof[this.childBase || 0]
-  return this.clearLine(fake + i)
-}
+  return this.clearLine(fake + i) }
 
 Element.prototype.unshiftLine = function (line) {
-  return this.insertLine(0, line)
-}
+  return this.insertLine(0, line) }
 
 Element.prototype.shiftLine = function (n) {
-  return this.deleteLine(0, n)
-}
+  return this.deleteLine(0, n) }
 
 Element.prototype.pushLine = function (line) {
   if (!this.content) return this.setLine(0, line)
-  return this.insertLine(this._clines.fake.length, line)
-}
+  return this.insertLine(this._clines.fake.length, line) }
 
 Element.prototype.popLine = function (n) {
-  return this.deleteLine(this._clines.fake.length - 1, n)
-}
+  return this.deleteLine(this._clines.fake.length - 1, n) }
 
 Element.prototype.getLines = function () {
-  return this._clines.fake.slice()
-}
+  return this._clines.fake.slice() }
 
 Element.prototype.getScreenLines = function () {
-  return this._clines.slice()
-}
+  return this._clines.slice() }
 
 Element.prototype.strWidth = function (text) {
   text = this.parseTags
@@ -2566,18 +2380,17 @@ Element.prototype.strWidth = function (text) {
 Element.prototype.screenshot = function (xi, xl, yi, yl) {
   xi = this.lpos.xi + this.ileft + (xi || 0)
   if (xl != null) {
-    xl = this.lpos.xi + this.ileft + (xl || 0)
-  } else {
+    xl = this.lpos.xi + this.ileft + (xl || 0) }
+  else {
     xl = this.lpos.xl - this.iright
   }
   yi = this.lpos.yi + this.itop + (yi || 0)
   if (yl != null) {
-    yl = this.lpos.yi + this.itop + (yl || 0)
-  } else {
+    yl = this.lpos.yi + this.itop + (yl || 0) }
+  else {
     yl = this.lpos.yl - this.ibottom
   }
-  return this.screen.screenshot(xi, xl, yi, yl)
-}
+  return this.screen.screenshot(xi, xl, yi, yl) }
 
 /**
  * Expose

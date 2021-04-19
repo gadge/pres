@@ -3,14 +3,11 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-/**
- * Modules
- */
-const Node = require('./node')
-const Box = require('./box')
-const Button = require('./button')
-const Textbox = require('./textbox')
+const
+  Node    = require('./node'),
+  Box     = require('./box'),
+  Button  = require('./button'),
+  Textbox = require('./textbox')
 
 /**
  * Prompt
@@ -18,15 +15,11 @@ const Textbox = require('./textbox')
 
 function Prompt(options) {
   if (!(this instanceof Node)) {
-    return new Prompt(options);
-  }
+    return new Prompt(options) }
+  options = options || {}
+  options.hidden = true
 
-  options = options || {};
-
-  options.hidden = true;
-
-  Box.call(this, options);
-
+  Box.call(this, options)
   this._.input = new Textbox({
     parent: this,
     top: 3,
@@ -34,8 +27,7 @@ function Prompt(options) {
     left: 2,
     right: 2,
     bg: 'black'
-  });
-
+  })
   this._.okay = new Button({
     parent: this,
     top: 5,
@@ -48,8 +40,7 @@ function Prompt(options) {
     hoverBg: 'blue',
     autoFocus: false,
     mouse: true
-  });
-
+  })
   this._.cancel = new Button({
     parent: this,
     top: 5,
@@ -63,57 +54,44 @@ function Prompt(options) {
     hoverBg: 'blue',
     autoFocus: false,
     mouse: true
-  });
-}
+  }) }
 
-Prompt.prototype.__proto__ = Box.prototype;
+Prompt.prototype.__proto__ = Box.prototype
 
-Prompt.prototype.type = 'prompt';
+Prompt.prototype.type = 'prompt'
 
 Prompt.prototype.input =
-Prompt.prototype.setInput =
-Prompt.prototype.readInput = function(text, value, callback) {
-  const self = this
-  let okay, cancel
+  Prompt.prototype.setInput =
+    Prompt.prototype.readInput = function (text, value, callback) {
+      const self = this
+      let okay, cancel
+      if (!callback) {
+        callback = value
+        value = ''
+      }
 
-  if (!callback) {
-    callback = value;
-    value = '';
-  }
-
-  // Keep above:
-  // var parent = this.parent;
-  // this.detach();
-  // parent.append(this);
-
-  this.show();
-  this.setContent(' ' + text);
-
-  this._.input.value = value;
-
-  this.screen.saveFocus();
-
-  this._.okay.on('press', okay = function() {
-    self._.input.submit();
-  });
-
-  this._.cancel.on('press', cancel = function() {
-    self._.input.cancel();
-  });
-
-  this._.input.readInput(function(err, data) {
-    self.hide();
-    self.screen.restoreFocus();
-    self._.okay.removeListener('press', okay);
-    self._.cancel.removeListener('press', cancel);
-    return callback(err, data);
-  });
-
-  this.screen.render();
-};
+      // Keep above:
+      // var parent = this.parent;
+      // this.detach();
+      // parent.append(this);
+      this.show()
+      this.setContent(' ' + text)
+      this._.input.value = value
+      this.screen.saveFocus()
+      this._.okay.on('press', okay = function () {
+        self._.input.submit() })
+      this._.cancel.on('press', cancel = function () {
+        self._.input.cancel() })
+      this._.input.readInput(function (err, data) {
+        self.hide()
+        self.screen.restoreFocus()
+        self._.okay.removeListener('press', okay)
+        self._.cancel.removeListener('press', cancel)
+        return callback(err, data) })
+      this.screen.render() }
 
 /**
  * Expose
  */
 
-module.exports = Prompt;
+module.exports = Prompt

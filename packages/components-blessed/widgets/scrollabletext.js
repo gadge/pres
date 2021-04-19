@@ -4,11 +4,9 @@
  * https://github.com/chjj/blessed
  */
 
-/**
- * Modules
- */
-const Node = require('./node')
-const ScrollableBox = require('./scrollablebox')
+const
+  Node          = require('./node'),
+  ScrollableBox = require('./scrollablebox')
 
 /**
  * ScrollableText
@@ -16,19 +14,17 @@ const ScrollableBox = require('./scrollablebox')
 
 function ScrollableText(options) {
   if (!(this instanceof Node)) {
-    return new ScrollableText(options);
-  }
-  options = options || {};
-  options.alwaysScroll = true;
-  ScrollableBox.call(this, options);
-}
+    return new ScrollableText(options) }
+  options = options || {}
+  options.alwaysScroll = true
+  ScrollableBox.call(this, options) }
 
-ScrollableText.prototype.__proto__ = ScrollableBox.prototype;
+ScrollableText.prototype.__proto__ = ScrollableBox.prototype
 
-ScrollableText.prototype.type = 'scrollable-text';
+ScrollableText.prototype.type = 'scrollable-text'
 
 /**
  * Expose
  */
 
-module.exports = ScrollableText;
+module.exports = ScrollableText

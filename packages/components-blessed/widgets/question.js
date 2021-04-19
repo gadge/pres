@@ -3,13 +3,10 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-/**
- * Modules
- */
-const Node = require('./node')
-const Box = require('./box')
-const Button = require('./button')
+const
+  Node   = require('./node'),
+  Box    = require('./box'),
+  Button = require('./button')
 
 /**
  * Question
@@ -17,14 +14,11 @@ const Button = require('./button')
 
 function Question(options) {
   if (!(this instanceof Node)) {
-    return new Question(options);
-  }
+    return new Question(options) }
+  options = options || {}
+  options.hidden = true
 
-  options = options || {};
-  options.hidden = true;
-
-  Box.call(this, options);
-
+  Box.call(this, options)
   this._.okay = new Button({
     screen: this.screen,
     parent: this,
@@ -38,8 +32,7 @@ function Question(options) {
     hoverBg: 'blue',
     autoFocus: false,
     mouse: true
-  });
-
+  })
   this._.cancel = new Button({
     screen: this.screen,
     parent: this,
@@ -54,14 +47,13 @@ function Question(options) {
     hoverBg: 'blue',
     autoFocus: false,
     mouse: true
-  });
-}
+  }) }
 
-Question.prototype.__proto__ = Box.prototype;
+Question.prototype.__proto__ = Box.prototype
 
-Question.prototype.type = 'question';
+Question.prototype.type = 'question'
 
-Question.prototype.ask = function(text, callback) {
+Question.prototype.ask = function (text, callback) {
   const self = this
   let press, okay, cancel
 
@@ -69,47 +61,36 @@ Question.prototype.ask = function(text, callback) {
   // var parent = this.parent;
   // this.detach();
   // parent.append(this);
-
-  this.show();
-  this.setContent(' ' + text);
-
-  this.onScreenEvent('keypress', press = function(ch, key) {
-    if (key.name === 'mouse') return;
+  this.show()
+  this.setContent(' ' + text)
+  this.onScreenEvent('keypress', press = function (ch, key) {
+    if (key.name === 'mouse') return
     if (key.name !== 'enter'
-        && key.name !== 'escape'
-        && key.name !== 'q'
-        && key.name !== 'y'
-        && key.name !== 'n') {
-      return;
+      && key.name !== 'escape'
+      && key.name !== 'q'
+      && key.name !== 'y'
+      && key.name !== 'n') {
+      return
     }
-    done(null, key.name === 'enter' || key.name === 'y');
-  });
-
-  this._.okay.on('press', okay = function() {
-    done(null, true);
-  });
-
-  this._.cancel.on('press', cancel = function() {
-    done(null, false);
-  });
-
-  this.screen.saveFocus();
-  this.focus();
+    done(null, key.name === 'enter' || key.name === 'y') })
+  this._.okay.on('press', okay = function () {
+    done(null, true) })
+  this._.cancel.on('press', cancel = function () {
+    done(null, false) })
+  this.screen.saveFocus()
+  this.focus()
 
   function done(err, data) {
-    self.hide();
-    self.screen.restoreFocus();
-    self.removeScreenEvent('keypress', press);
-    self._.okay.removeListener('press', okay);
-    self._.cancel.removeListener('press', cancel);
-    return callback(err, data);
-  }
-
-  this.screen.render();
-};
+    self.hide()
+    self.screen.restoreFocus()
+    self.removeScreenEvent('keypress', press)
+    self._.okay.removeListener('press', okay)
+    self._.cancel.removeListener('press', cancel)
+    return callback(err, data) }
+  this.screen.render() }
 
 /**
  * Expose
  */
 
-module.exports = Question;
+module.exports = Question
