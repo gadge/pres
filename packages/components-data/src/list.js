@@ -162,7 +162,6 @@ export class List extends Box {
           self.screen.render()
           return
         }
-
         if (options.vi && (key.ch === '/' || key.ch === '?')) {
           if (typeof self.options.search !== 'function') {
             return
@@ -207,7 +206,6 @@ export class List extends Box {
   }
   createItem(content) {
     const self = this
-
     // Note: Could potentially use Button here.
     const options = {
       screen: this.screen,
@@ -222,20 +220,17 @@ export class List extends Box {
       focusEffects: this.mouse ? this.style.item.focus : null,
       autoFocus: false
     }
-
     if (!this.screen.autoPadding) {
       options.top = 1
       options.left = this.ileft
       options.right = this.iright + (this.scrollbar ? 1 : 0)
     }
-
     // if (this.shrink) {
     // XXX NOTE: Maybe just do this on all shrinkage once autoPadding is default?
     if (this.shrink && this.options.normalShrink) {
       delete options.right
       options.width = 'shrink'
     }
-
     [ 'bg', 'fg', 'bold', 'underline',
       'blink', 'inverse', 'invisible' ].forEach(function (name) {
       options[name] = function () {
@@ -246,13 +241,10 @@ export class List extends Box {
         return attr
       }
     })
-
     if (this.style.transparent) {
       options.transparent = true
     }
-
     var item = new Box(options)
-
     if (this.mouse) {
       item.on(CLICK, function () {
         self.focus()
@@ -265,30 +257,23 @@ export class List extends Box {
         self.screen.render()
       })
     }
-
     this.emit(CREATE_ITEM)
-
     return item
   }
   appendItem(content) {
     content = typeof content === 'string' ? content : content.getContent()
-
     const item = this.createItem(content)
     item.position.top = this.items.length
     if (!this.screen.autoPadding) {
       item.position.top = this.itop + this.items.length
     }
-
     this.ritems.push(content)
     this.items.push(item)
     this.append(item)
-
     if (this.items.length === 1) {
       this.select(0)
     }
-
     this.emit(ADD_ITEM)
-
     return item
   }
   removeItem(child) {
@@ -345,9 +330,7 @@ export class List extends Box {
         i   = 0
 
     items = items.slice()
-
     this.select(0)
-
     for (; i < items.length; i++) {
       if (this.items[i]) {
         this.items[i].setContent(items[i])
@@ -356,13 +339,10 @@ export class List extends Box {
         this.add(items[i])
       }
     }
-
     for (; i < original.length; i++) {
       this.remove(original[i])
     }
-
     this.ritems = items
-
     // Try to find our old item if it still exists.
     sel = items.indexOf(sel)
     if (~sel) {
@@ -374,7 +354,6 @@ export class List extends Box {
     else {
       this.select(Math.min(selected, items.length - 1))
     }
-
     this.emit(SET_ITEMS)
   }
   pushItem(content) {
@@ -408,9 +387,7 @@ export class List extends Box {
   fuzzyFind(search, back) {
     const start = this.selected + (back ? -1 : 1)
     let i
-
     if (typeof search === 'number') search += ''
-
     if (search && search[0] === '/' && search[search.length - 1] === '/') {
       try {
         search = new RegExp(search.slice(1, -1))
@@ -418,18 +395,15 @@ export class List extends Box {
 
       }
     }
-
     const test = typeof search === 'string'
       ? function (item) { return !!~item.indexOf(search) }
       : (search.test ? search.test.bind(search) : search)
-
     if (typeof test !== 'function') {
       if (this.screen.options.debug) {
         throw new Error('fuzzyFind(): `test` is not a function.')
       }
       return this.selected
     }
-
     if (!back) {
       for (i = start; i < this.ritems.length; i++) {
         if (test(helpers.cleanTags(this.ritems[i]))) return i
@@ -446,7 +420,6 @@ export class List extends Box {
         if (test(helpers.cleanTags(this.ritems[i]))) return i
       }
     }
-
     return this.selected
   }
   getItemIndex(child) {
@@ -471,33 +444,27 @@ export class List extends Box {
     if (!this.interactive) {
       return
     }
-
     if (!this.items.length) {
       this.selected = 0
       this.value = ''
       this.scrollTo(0)
       return
     }
-
     if (typeof index === 'object') {
       index = this.items.indexOf(index)
     }
-
     if (index < 0) {
       index = 0
     }
     else if (index >= this.items.length) {
       index = this.items.length - 1
     }
-
     if (this.selected === index && this._listInitialized) return
     this._listInitialized = true
-
     this.selected = index
     this.value = helpers.cleanTags(this.ritems[this.selected])
     if (!this.parent) return
     this.scrollTo(this.selected)
-
     // XXX Move `action` and `select` events here.
     this.emit(SELECT_ITEM, this.items[this.selected], this.selected)
   }
@@ -515,21 +482,17 @@ export class List extends Box {
       callback = label
       label = null
     }
-
     if (!this.interactive) {
       return callback()
     }
-
     const self = this
     const focused = this.screen.focused
     if (focused && focused._done) focused._done('stop')
     this.screen.saveFocus()
-
     // XXX Keep above:
     // var parent = this.parent;
     // this.detach();
     // parent.append(this);
-
     this.focus()
     this.show()
     this.select(0)
@@ -555,6 +518,5 @@ export class List extends Box {
     this.emit(CANCEL)
   }
 }
-
 
 

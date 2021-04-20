@@ -45,11 +45,8 @@ export class Table extends Box {
   _calculateMaxes() {
     const self = this
     let maxes = []
-
     if (this.detached) return
-
     this.rows = this.rows || []
-
     this.rows.forEach(function (row) {
       row.forEach(function (cell, i) {
         const clen = self.strWidth(cell)
@@ -58,19 +55,16 @@ export class Table extends Box {
         }
       })
     })
-
     let total = maxes.reduce(function (total, max) {
       return total + max
     }, 0)
     total += maxes.length + 1
-
     // XXX There might be an issue with resizing where on the first resize event
     // width appears to be less than total if it's a percentage or left/right
     // combination.
     if (this.width < total) {
       delete this.position.width
     }
-
     if (this.position.width != null) {
       const missing = this.width - total
       const w = missing / maxes.length | 0
@@ -87,30 +81,23 @@ export class Table extends Box {
         return max + self.pad
       })
     }
-
     return this._maxes = maxes
   }
   setData(rows) {
     const self = this
     let text = ''
     const align = this.align
-
     this.rows = rows || []
-
     this._calculateMaxes()
-
     if (!this._maxes) return
-
     this.rows.forEach(function (row, i) {
       const isFooter = i === self.rows.length - 1
       row.forEach(function (cell, i) {
         const width = self._maxes[i]
         let clen = self.strWidth(cell)
-
         if (i !== 0) {
           text += ' '
         }
-
         while (clen < width) {
           if (align === 'center') {
             cell = ' ' + cell + ' '
@@ -125,7 +112,6 @@ export class Table extends Box {
             clen += 1
           }
         }
-
         if (clen > width) {
           if (align === 'center') {
             cell = cell.substring(1)
@@ -140,14 +126,12 @@ export class Table extends Box {
             clen--
           }
         }
-
         text += cell
       })
       if (!isFooter) {
         text += '\n\n'
       }
     })
-
     delete this.align
     this.setContent(text)
     this.align = align
@@ -287,7 +271,6 @@ export class Table extends Box {
       })
       ry += 2
     }
-
     // Draw internal borders.
     for (ry = 1; ry < self.rows.length * 2; ry++) {
       if (!lines[yi + ry]) break
@@ -333,11 +316,9 @@ export class Table extends Box {
         rx++
       })
     }
-
     return coords
   }
 }
-
 
 /**
  * Expose

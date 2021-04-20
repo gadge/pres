@@ -56,12 +56,9 @@ export class FileManager extends List {
       callback = cwd
       cwd = null
     }
-
     const self = this
-
     if (cwd) this.cwd = cwd
     else cwd = this.cwd
-
     return fs.readdir(cwd, function (err, list) {
       if (err && err.code === 'ENOENT') {
         self.cwd = cwd !== process.env.HOME
@@ -69,17 +66,14 @@ export class FileManager extends List {
           : '/'
         return self.refresh(callback)
       }
-
       if (err) {
         if (callback) return callback(err)
         return self.emit(ERROR, err, cwd)
       }
-
       let dirs  = [],
           files = []
 
       list.unshift('..')
-
       list.forEach(function (name) {
         const f = path.resolve(cwd, name)
         let stat
@@ -89,7 +83,6 @@ export class FileManager extends List {
         } catch (e) {
 
         }
-
         if ((stat && stat.isDirectory()) || name === '..') {
           dirs.push({
             name: name,
@@ -112,20 +105,15 @@ export class FileManager extends List {
           })
         }
       })
-
       dirs = helpers.asort(dirs)
       files = helpers.asort(files)
-
       list = dirs.concat(files).map(function (data) {
         return data.text
       })
-
       self.setItems(list)
       self.select(0)
       self.screen.render()
-
       self.emit(REFRESH)
-
       if (callback) callback()
     })
   }
@@ -134,7 +122,6 @@ export class FileManager extends List {
       callback = cwd
       cwd = null
     }
-
     const self    = this,
           focused = this.screen.focused === this,
           hidden  = this.hidden
@@ -152,29 +139,23 @@ export class FileManager extends List {
       }
       self.screen.render()
     }
-
     this.on(FILE, onfile = function (file) {
       resume()
       return callback(null, file)
     })
-
     this.on(CANCEL, oncancel = function () {
       resume()
       return callback()
     })
-
     this.refresh(cwd, function (err) {
       if (err) return callback(err)
-
       if (hidden) {
         self.show()
       }
-
       if (!focused) {
         self.screen.saveFocus()
         self.focus()
       }
-
       self.screen.render()
     })
   }
@@ -187,7 +168,6 @@ export class FileManager extends List {
     this.refresh(callback)
   }
 }
-
 
 
 

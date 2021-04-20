@@ -135,7 +135,6 @@ export class ScrollableBox extends Box {
         if (options.vi && key.name === 'g' && key.shift) {
           self.scrollTo(self.getScrollHeight())
           self.screen.render()
-
         }
       })
     }
@@ -238,7 +237,6 @@ export class ScrollableBox extends Box {
     this.childBase = Math.min(this.childBase, Math.max(emax, max))
     if (this.childBase < 0) { this.childBase = 0 }
     else if (this.childBase > this.baseLimit) { this.childBase = this.baseLimit }
-
     // Optimize scrolling with CSR + IL/DL.
     p = this.lpos
     // Only really need _getCoords() if we want
@@ -260,16 +258,13 @@ export class ScrollableBox extends Box {
         this.screen.insertLine(d, t, t, b)
       }
     }
-
     return this.emit(SCROLL)
   }
   _recalculateIndex() {
     let max, emax
-
     if (this.detached || !this.scrollable) {
       return 0
     }
-
     // XXX
     // max = this.getScrollHeight() - (this.height - this.iheight);
 
@@ -277,9 +272,7 @@ export class ScrollableBox extends Box {
     if (max < 0) max = 0
     emax = this._scrollBottom() - (this.height - this.iheight)
     if (emax < 0) emax = 0
-
     this.childBase = Math.min(this.childBase, Math.max(emax, max))
-
     if (this.childBase < 0) { this.childBase = 0 }
     else if (this.childBase > this.baseLimit) { this.childBase = this.baseLimit }
   }

@@ -57,4 +57,3 @@ export class Loading extends Box {
     this.screen.render()
   }
 }
-

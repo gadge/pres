@@ -25,12 +25,10 @@ export const scrollabletext = (options) => new ScrollableText(options)
 export const layout = (options) => new Layout(options)
 export const line = (options) => new Line(options)
 export const terminal = (options) => new Terminal(options)
-
 export const list = (options) => new List(options)
 export const listbar = (options) => new Listbar(options)
 export const listtable = (options) => new ListTable(options)
 export const table = (options) => new Table(options)
-
 export const button = (options) => new Button(options)
 export const checkbox = (options) => new Checkbox(options)
 export const filemanager = (options) => new FileManager(options)
@@ -42,20 +40,16 @@ export const radiobutton = (options) => new RadioButton(options)
 export const radioset = (options) => new RadioSet(options)
 export const textbox = (options) => new Textbox(options)
 export const textarea = (options) => new Textarea(options)
-
 export const loading = (options) => new Loading(options)
 export const message = (options) => new Message(options)
 export const progressbar = (options) => new ProgressBar(options)
-
 export const text = (options) => new Text(options)
-
 export const ansiimage = (options) => new ANSIImage(options)
 export const bigtext = (options) => new BigText(options)
 export const image = (options) => new Image(options)
 export const overlayimage = (options) => new OverlayImage(options)
 export const png = (options) => new PNG(options)
 export const video = (options) => new Video(options)
-
 
 
 

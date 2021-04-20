@@ -60,32 +60,24 @@ export class Prompt extends Box {
   readInput(text, value, callback) {
     const self = this
     let okay, cancel
-
     if (!callback) {
       callback = value
       value = ''
     }
-
     // Keep above:
     // var parent = this.parent;
     // this.detach();
     // parent.append(this);
-
     this.show()
     this.setContent(' ' + text)
-
     this._.input.value = value
-
     this.screen.saveFocus()
-
     this._.okay.on(PRESS, okay = function () {
       self._.input.submit()
     })
-
     this._.cancel.on(PRESS, cancel = function () {
       self._.input.cancel()
     })
-
     this._.input.readInput(function (err, data) {
       self.hide()
       self.screen.restoreFocus()
@@ -93,11 +85,9 @@ export class Prompt extends Box {
       self._.cancel.removeListener(PRESS, cancel)
       return callback(err, data)
     })
-
     this.screen.render()
   }
 }
-
 
 
 

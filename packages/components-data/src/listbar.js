@@ -69,7 +69,6 @@ export class Listbar extends Box {
         }
       })
     }
-
     if (options.autoCommandKeys) {
       this.onScreenEvent(KEYPRESS, function (ch) {
         if (/^[0-9]$/.test(ch)) {
@@ -79,7 +78,6 @@ export class Listbar extends Box {
         }
       })
     }
-
     this.on(FOCUS, function () {
       self.select(self.selected)
     })
@@ -88,34 +86,26 @@ export class Listbar extends Box {
   get selected() { return this.leftBase + this.leftOffset }
   setItems(commands) {
     const self = this
-
     if (!Array.isArray(commands)) {
       commands = Object.keys(commands).reduce(function (obj, key, i) {
         let cmd = commands[key],
             cb
-
         if (typeof cmd === 'function') {
           cb = cmd
           cmd = { callback: cb }
         }
-
         if (cmd.text == null) cmd.text = key
         if (cmd.prefix == null) cmd.prefix = ++i + ''
-
         if (cmd.text == null && cmd.callback) {
           cmd.text = cmd.callback.name
         }
-
         obj.push(cmd)
-
         return obj
       }, [])
     }
-
     this.items.forEach(function (el) {
       el.detach()
     })
-
     this.items = []
     this.ritems = []
     this.commands = []
@@ -123,7 +113,6 @@ export class Listbar extends Box {
     commands.forEach(function (cmd) {
       self.add(cmd)
     })
-
     this.emit(SET_ITEMS)
   }
   appendItem(item, callback) {
@@ -133,7 +122,6 @@ export class Listbar extends Box {
         cmd,
         title,
         len
-
     if (!this.parent) {
       drawn = 0
     }
@@ -143,12 +131,10 @@ export class Listbar extends Box {
         drawn += this.ileft
       }
     }
-
     if (typeof item === 'object') {
       cmd = item
       if (cmd.prefix == null) cmd.prefix = (this.items.length + 1) + ''
     }
-
     if (typeof item === 'string') {
       cmd = {
         prefix: (this.items.length + 1) + '',
@@ -156,7 +142,6 @@ export class Listbar extends Box {
         callback: callback
       }
     }
-
     if (typeof item === 'function') {
       cmd = {
         prefix: (this.items.length + 1) + '',
@@ -164,17 +149,13 @@ export class Listbar extends Box {
         callback: item
       }
     }
-
     if (cmd.keys && cmd.keys[0]) {
       cmd.prefix = cmd.keys[0]
     }
-
     const t = helpers.generateTags(this.style.prefix || { fg: 'lightblack' })
-
     title = (cmd.prefix != null ? t.open + cmd.prefix + t.close + ':' : '') + cmd.text
 
     len = ((cmd.prefix != null ? cmd.prefix + ':' : '') + cmd.text).length
-
     const options = {
       screen: this.screen,
       top: 0,
@@ -189,12 +170,10 @@ export class Listbar extends Box {
       style: helpers.merge({}, this.style.item),
       noOverflow: true
     }
-
     if (!this.screen.autoPadding) {
       options.top += this.itop
       options.left += this.ileft
     }
-
     [ 'bg', 'fg', 'bold', 'underline',
       'blink', 'inverse', 'invisible' ].forEach(function (name) {
       options.style[name] = function () {
@@ -205,18 +184,14 @@ export class Listbar extends Box {
         return attr
       }
     })
-
     var el = new Box(options)
-
     this._[cmd.text] = el
     cmd.element = el
     el._.cmd = cmd
-
     this.ritems.push(cmd.text)
     this.items.push(el)
     this.commands.push(cmd)
     this.append(el)
-
     if (cmd.callback) {
       if (cmd.keys) {
         this.screen.key(cmd.keys, function () {
@@ -230,11 +205,9 @@ export class Listbar extends Box {
         })
       }
     }
-
     if (this.items.length === 1) {
       this.select(0)
     }
-
     // XXX May be affected by new element.options.mouse option.
     if (this.mouse) {
       el.on(CLICK, function () {
@@ -247,17 +220,14 @@ export class Listbar extends Box {
         self.screen.render()
       })
     }
-
     this.emit(ADD_ITEM)
   }
   render() {
     const self = this
     let drawn = 0
-
     if (!this.screen.autoPadding) {
       drawn += this.ileft
     }
-
     this.items.forEach(function (el, i) {
       if (i < self.leftBase) {
         el.hide()
@@ -268,29 +238,24 @@ export class Listbar extends Box {
         el.show()
       }
     })
-
     return this._render()
   }
   select(offset) {
     if (typeof offset !== 'number') {
       offset = this.items.indexOf(offset)
     }
-
     if (offset < 0) {
       offset = 0
     }
     else if (offset >= this.items.length) {
       offset = this.items.length - 1
     }
-
     if (!this.parent) {
       this.emit(SELECT_ITEM, this.items[offset], offset)
       return
     }
-
     const lpos = this._getCoords()
     if (!lpos) return
-
     const self  = this,
           width = (lpos.xl - lpos.xi) - this.iwidth
     let drawn   = 0,
@@ -299,20 +264,15 @@ export class Listbar extends Box {
 
     el = this.items[offset]
     if (!el) return
-
     this.items.forEach(function (el, i) {
       if (i < self.leftBase) return
-
       const lpos = el._getCoords()
       if (!lpos) return
-
       if (lpos.xl - lpos.xi <= 0) return
 
       drawn += (lpos.xl - lpos.xi) + 2
-
       if (drawn <= width) visible++
     })
-
     let diff = offset - (this.leftBase + this.leftOffset)
     if (offset > this.leftBase + this.leftOffset) {
       if (offset > this.leftBase + visible - 1) {
@@ -333,7 +293,6 @@ export class Listbar extends Box {
         this.leftOffset -= diff
       }
     }
-
     // XXX Move `action` and `select` events here.
     this.emit(SELECT_ITEM, el, offset)
   }
@@ -341,7 +300,6 @@ export class Listbar extends Box {
     const i = typeof child !== 'number'
       ? this.items.indexOf(child)
       : child
-
     if (~i && this.items[i]) {
       child = this.items.splice(i, 1)[0]
       this.ritems.splice(i, 1)
@@ -351,7 +309,6 @@ export class Listbar extends Box {
         this.select(i - 1)
       }
     }
-
     this.emit(REMOVE_ITEM)
   }
   move(offset) {

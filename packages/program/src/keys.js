@@ -15,7 +15,6 @@ function listenerCount(stream, event) {
     ? EventEmitter.listenerCount(stream, event)
     : stream.listeners(event).length
 }
-
 /**
  * accepts a readable Stream instance and makes it emit "keypress" events
  */
@@ -23,7 +22,6 @@ function listenerCount(stream, event) {
 export function emitKeypressEvents(stream) {
   if (stream._keypressDecoder) return
   stream._keypressDecoder = new StringDecoder('utf8')
-
   function onData(b) {
     if (listenerCount(stream, KEYPRESS) > 0) {
       const r = stream._keypressDecoder.write(b)
@@ -35,14 +33,12 @@ export function emitKeypressEvents(stream) {
       stream.on(NEW_LISTENER, onNewListener)
     }
   }
-
   function onNewListener(event) {
     if (event === KEYPRESS) {
       stream.on(DATA, onData)
       stream.removeListener(NEW_LISTENER, onNewListener)
     }
   }
-
   if (listenerCount(stream, KEYPRESS) > 0) {
     stream.on(DATA, onData)
   }
@@ -50,7 +46,6 @@ export function emitKeypressEvents(stream) {
     stream.on(NEW_LISTENER, onNewListener)
   }
 }
-
 /*
   Some patterns seen in terminal key escape codes, derived from combos seen
   at http://www.midnight-commander.org/browser/lib/tty/key.c
@@ -93,7 +88,6 @@ const functionKeyCodeRe = new RegExp('^' + functionKeyCodeReAnywhere.source)
 const escapeCodeReAnywhere = new RegExp([
   functionKeyCodeReAnywhere.source, metaKeyCodeReAnywhere.source, /\x1b./.source
 ].join('|'))
-
 function emitKeys(stream, s) {
   if (Buffer.isBuffer(s)) {
     if (s[0] > 127 && s[1] === undefined) {
@@ -104,9 +98,7 @@ function emitKeys(stream, s) {
       s = s.toString(stream.encoding || 'utf-8')
     }
   }
-
   if (isMouse(s)) return
-
   let buffer = []
   let match
   while ((match = escapeCodeReAnywhere.exec(s))) {
@@ -115,7 +107,6 @@ function emitKeys(stream, s) {
     s = s.slice(match.index + match[0].length)
   }
   buffer = buffer.concat(s.split(''))
-
   buffer.forEach(function (s) {
     let ch,
         key = {
@@ -126,7 +117,6 @@ function emitKeys(stream, s) {
           shift: false
         },
         parts
-
     if (s === '\r') {
       // carriage return
       key.name = RETURN
@@ -149,18 +139,15 @@ function emitKeys(stream, s) {
       // backspace or ctrl+h
       key.name = BACKSPACE
       key.meta = (s.charAt(0) === '\x1b')
-
     }
     else if (s === '\x1b' || s === '\x1b\x1b') {
       // escape key
       key.name = ESCAPE
       key.meta = (s.length === 2)
-
     }
     else if (s === ' ' || s === '\x1b ') {
       key.name = SPACE
       key.meta = (s.length === 2)
-
     }
     else if (s.length === 1 && s <= '\x1a') {
       // ctrl+letter
@@ -184,23 +171,19 @@ function emitKeys(stream, s) {
       key.name = parts[1].toLowerCase()
       key.meta = true
       key.shift = /^[A-Z]$/.test(parts[1])
-
     }
     else if ((parts = functionKeyCodeRe.exec(s))) {
       // ansi escape sequence
-
       // reassemble the key code leaving out leading \x1b's,
       // the modifier key bitflag and any meaningless "1;" sequence
       const code     = (parts[1] || '') + (parts[2] || '') +
         (parts[4] || '') + (parts[9] || ''),
             modifier = (parts[3] || parts[8] || 1) - 1
-
       // Parse the key modifier
       key.ctrl = !!(modifier & 4)
       key.meta = !!(modifier & 10)
       key.shift = !!(modifier & 1)
       key.code = code
-
       // Parse the key itself
       switch (code) {
         /* xterm/gnome ESC O letter */
@@ -460,16 +443,13 @@ function emitKeys(stream, s) {
 
       }
     }
-
     // Don't emit a key if no name was found
     if (key.name === undefined) {
       key = undefined
     }
-
     if (s.length === 1) {
       ch = s
     }
-
     if (key || ch) {
       stream.emit(KEYPRESS, ch, key)
       // if (key && key.name === 'return') {
@@ -483,7 +463,6 @@ function emitKeys(stream, s) {
     }
   })
 }
-
 function isMouse(s) {
   return /\x1b\[M/.test(s)
     || /\x1b\[M([\x00\u0020-\uffff]{3})/.test(s)

@@ -10,7 +10,6 @@ import util                   from 'util'
 import { ScrollableText }     from './scrollabletext'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
-
 export class Log extends ScrollableText {
   type = 'log'
   log = this.add // log() { return this.add() }
@@ -26,7 +25,6 @@ export class Log extends ScrollableText {
       ? options.scrollback
       : Infinity
     this.scrollOnInput = options.scrollOnInput
-
     this.on(SET_CONTENT, function () {
       if (!self._userScrolled || self.scrollOnInput) {
         nextTick(function () {

@@ -13,6 +13,4 @@ export class TerminalInterface {
   static colors = colors
   static Tput = Tput
 }
-
 Object.assign(TerminalInterface, components)
-

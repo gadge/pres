@@ -53,15 +53,12 @@ export class Question extends Box {
   ask(text, callback) {
     const self = this
     let press, okay, cancel
-
     // Keep above:
     // var parent = this.parent;
     // this.detach();
     // parent.append(this);
-
     this.show()
     this.setContent(' ' + text)
-
     this.onScreenEvent(KEYPRESS, press = function (ch, key) {
       if (key.name === MOUSE) return
       if (key.name !== ENTER
@@ -73,18 +70,14 @@ export class Question extends Box {
       }
       done(null, key.name === ENTER || key.name === 'y')
     })
-
     this._.okay.on(PRESS, okay = function () {
       done(null, true)
     })
-
     this._.cancel.on(PRESS, cancel = function () {
       done(null, false)
     })
-
     this.screen.saveFocus()
     this.focus()
-
     function done(err, data) {
       self.hide()
       self.screen.restoreFocus()
@@ -93,11 +86,9 @@ export class Question extends Box {
       self._.cancel.removeListener(PRESS, cancel)
       return callback(err, data)
     }
-
     this.screen.render()
   }
 }
-
 
 
 

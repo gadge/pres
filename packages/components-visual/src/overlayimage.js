@@ -3,8 +3,7 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-import { Box } from '@pres/components-core'
-
+import { Box }                                                            from '@pres/components-core'
 import { ATTACH, DATA, DETACH, ERROR, EXIT, HIDE, RENDER, RESIZE, SHOW, } from '@pres/enum-events'
 import * as helpers                                                       from '@pres/util-helpers'
 import cp                                                                 from 'child_process'
@@ -20,11 +19,9 @@ export class OverlayImage extends Box {
     super(options)
     const self = this
     // if (!(this instanceof Node)) { return new OverlayImage(options) }
-
     if (options.w3m) {
       OverlayImage.w3mdisplay = options.w3m
     }
-
     if (OverlayImage.hasW3MDisplay == null) {
       if (fs.existsSync(OverlayImage.w3mdisplay)) {
         OverlayImage.hasW3MDisplay = true
@@ -42,31 +39,25 @@ export class OverlayImage extends Box {
         }
       }
     }
-
     this.on(HIDE, function () {
       self._lastFile = self.file
       self.clearImage()
     })
-
     this.on(SHOW, function () {
       if (!self._lastFile) return
       self.setImage(self._lastFile)
     })
-
     this.on(DETACH, function () {
       self._lastFile = self.file
       self.clearImage()
     })
-
     this.on(ATTACH, function () {
       if (!self._lastFile) return
       self.setImage(self._lastFile)
     })
-
     this.onScreenEvent(RESIZE, function () {
       self._needsRatio = true
     })
-
     // Get images to overlap properly. Maybe not worth it:
     // this.onScreenEvent(RENDER, function() {
     //   self.screen.program.flush();
@@ -93,14 +84,12 @@ export class OverlayImage extends Box {
     //   }
     //   recurse(self.screen);
     // });
-
     this.onScreenEvent(RENDER, function () {
       self.screen.program.flush()
       if (!self._noImage) {
         self.setImage(self.file)
       }
     })
-
     if (this.options.file || this.options.img) {
       this.setImage(this.options.file || this.options.img)
     }
@@ -112,30 +101,25 @@ export class OverlayImage extends Box {
 
     opt = opt || {}
     ps = spawn(file, args, opt)
-
     ps.on(ERROR, function (err) {
       if (!callback) return
       return callback(err)
     })
-
     ps.on(EXIT, function (code) {
       if (!callback) return
       if (code !== 0) return callback(new Error('Exit Code: ' + code))
       return callback(null, code === 0)
     })
-
     return ps
   }
   setImage(img, callback) {
     const self = this
-
     if (this._settingImage) {
       this._queue = this._queue || []
       this._queue.push([ img, callback ])
       return
     }
     this._settingImage = true
-
     const reset = function () {
       self._settingImage = false
       self._queue = self._queue || []
@@ -144,35 +128,29 @@ export class OverlayImage extends Box {
         self.setImage(item[0], item[1])
       }
     }
-
     if (OverlayImage.hasW3MDisplay === false) {
       reset()
       if (!callback) return
       return callback(new Error('W3M Image Display not available.'))
     }
-
     if (!img) {
       reset()
       if (!callback) return
       return callback(new Error('No image.'))
     }
-
     this.file = img
-
     return this.getPixelRatio(function (err, ratio) {
       if (err) {
         reset()
         if (!callback) return
         return callback(err)
       }
-
       return self.renderImage(img, ratio, function (err, success) {
         if (err) {
           reset()
           if (!callback) return
           return callback(err)
         }
-
         if (self.shrink || self.options.autofit) {
           delete self.shrink
           delete self.options.shrink
@@ -183,7 +161,6 @@ export class OverlayImage extends Box {
               if (!callback) return
               return callback(err)
             }
-
             if (self._lastSize
               && ratio.tw === self._lastSize.tw
               && ratio.th === self._lastSize.th
@@ -195,7 +172,6 @@ export class OverlayImage extends Box {
               if (!callback) return
               return callback(null, success)
             }
-
             self._lastSize = {
               tw: ratio.tw,
               th: ratio.th,
@@ -204,10 +180,8 @@ export class OverlayImage extends Box {
               aleft: self.aleft,
               atop: self.atop
             }
-
             self.position.width = size.width / ratio.tw | 0
             self.position.height = size.height / ratio.th | 0
-
             self._noImage = true
             self.screen.render()
             self._noImage = false
@@ -216,7 +190,6 @@ export class OverlayImage extends Box {
             return self.renderImage(img, ratio, callback)
           })
         }
-
         reset()
         if (!callback) return
         return callback(null, success)
@@ -225,7 +198,6 @@ export class OverlayImage extends Box {
   }
   renderImage(img, ratio, callback) {
     const self = this
-
     if (cp.execSync) {
       callback = callback || function (err, result) { return result }
       try {
@@ -234,44 +206,36 @@ export class OverlayImage extends Box {
         return callback(e)
       }
     }
-
     if (OverlayImage.hasW3MDisplay === false) {
       if (!callback) return
       return callback(new Error('W3M Image Display not available.'))
     }
-
     if (!ratio) {
       if (!callback) return
       return callback(new Error('No ratio.'))
     }
-
     // clearImage unsets these:
     const _file = self.file
     const _lastSize = self._lastSize
     return self.clearImage(function (err) {
       if (err) return callback(err)
-
       self.file = _file
       self._lastSize = _lastSize
-
       const opt = {
         stdio: 'pipe',
         env: process.env,
         cwd: process.env.HOME
       }
-
       const ps = self.spawn(OverlayImage.w3mdisplay, [], opt, function (err, success) {
         if (!callback) return
         return err
           ? callback(err)
           : callback(null, success)
       })
-
       const width  = self.width * ratio.tw | 0,
             height = self.height * ratio.th | 0,
             aleft  = self.aleft * ratio.tw | 0,
             atop   = self.atop * ratio.th | 0
-
       const input = '0;1;'
         + aleft + ';'
         + atop + ';'
@@ -279,14 +243,12 @@ export class OverlayImage extends Box {
         + height + ';;;;;'
         + img
         + '\n4;\n3;\n'
-
       self._props = {
         aleft: aleft,
         atop: atop,
         width: width,
         height: height
       }
-
       ps.stdin.write(input)
       ps.stdin.end()
     })
@@ -300,42 +262,35 @@ export class OverlayImage extends Box {
         return callback(e)
       }
     }
-
     if (OverlayImage.hasW3MDisplay === false) {
       if (!callback) return
       return callback(new Error('W3M Image Display not available.'))
     }
-
     if (!this._props) {
       if (!callback) return
       return callback(null)
     }
-
     const opt = {
       stdio: 'pipe',
       env: process.env,
       cwd: process.env.HOME
     }
-
     const ps = this.spawn(OverlayImage.w3mdisplay, [], opt, function (err, success) {
       if (!callback) return
       return err
         ? callback(err)
         : callback(null, success)
     })
-
     let width  = this._props.width + 2,
         height = this._props.height + 2,
         aleft  = this._props.aleft,
         atop   = this._props.atop
-
     if (this._drag) {
       aleft -= 10
       atop -= 10
       width += 10
       height += 10
     }
-
     const input = '6;'
       + aleft + ';'
       + atop + ';'
@@ -352,7 +307,6 @@ export class OverlayImage extends Box {
   }
   imageSize(callback) {
     const img = this.file
-
     if (cp.execSync) {
       callback = callback || function (err, result) { return result }
       try {
@@ -361,38 +315,30 @@ export class OverlayImage extends Box {
         return callback(e)
       }
     }
-
     if (OverlayImage.hasW3MDisplay === false) {
       if (!callback) return
       return callback(new Error('W3M Image Display not available.'))
     }
-
     if (!img) {
       if (!callback) return
       return callback(new Error('No image.'))
     }
-
     const opt = {
       stdio: 'pipe',
       env: process.env,
       cwd: process.env.HOME
     }
-
     const ps = this.spawn(OverlayImage.w3mdisplay, [], opt)
-
     let buf = ''
 
     ps.stdout.setEncoding('utf8')
-
     ps.stdout.on(DATA, function (data) {
       buf += data
     })
-
     ps.on(ERROR, function (err) {
       if (!callback) return
       return callback(err)
     })
-
     ps.on(EXIT, function () {
       if (!callback) return
       const size = buf.trim().split(/\s+/)
@@ -402,7 +348,6 @@ export class OverlayImage extends Box {
         height: +size[1]
       })
     })
-
     const input = '5;' + img + '\n'
 
     ps.stdin.write(input)
@@ -410,7 +355,6 @@ export class OverlayImage extends Box {
   }
   termSize(callback) {
     const self = this
-
     if (cp.execSync) {
       callback = callback || function (err, result) { return result }
       try {
@@ -419,56 +363,44 @@ export class OverlayImage extends Box {
         return callback(e)
       }
     }
-
     if (OverlayImage.hasW3MDisplay === false) {
       if (!callback) return
       return callback(new Error('W3M Image Display not available.'))
     }
-
     const opt = {
       stdio: 'pipe',
       env: process.env,
       cwd: process.env.HOME
     }
-
     const ps = this.spawn(OverlayImage.w3mdisplay, [ '-test' ], opt)
-
     let buf = ''
 
     ps.stdout.setEncoding('utf8')
-
     ps.stdout.on(DATA, function (data) {
       buf += data
     })
-
     ps.on(ERROR, function (err) {
       if (!callback) return
       return callback(err)
     })
-
     ps.on(EXIT, function () {
       if (!callback) return
-
       if (!buf.trim()) {
         // Bug: w3mimgdisplay will sometimes
         // output nothing. Try again:
         return self.termSize(callback)
       }
-
       const size = buf.trim().split(/\s+/)
-
       return callback(null, {
         raw: buf.trim(),
         width: +size[0],
         height: +size[1]
       })
     })
-
     ps.stdin.end()
   }
   getPixelRatio(callback) {
     const self = this
-
     if (cp.execSync) {
       callback = callback || function (err, result) { return result }
       try {
@@ -477,23 +409,18 @@ export class OverlayImage extends Box {
         return callback(e)
       }
     }
-
     // XXX We could cache this, but sometimes it's better
     // to recalculate to be pixel perfect.
     if (this._ratio && !this._needsRatio) {
       return callback(null, this._ratio)
     }
-
     return this.termSize(function (err, dimensions) {
       if (err) return callback(err)
-
       self._ratio = {
         tw: dimensions.width / self.screen.width,
         th: dimensions.height / self.screen.height
       }
-
       self._needsRatio = false
-
       return callback(null, self._ratio)
     })
   }
@@ -501,25 +428,19 @@ export class OverlayImage extends Box {
     if (OverlayImage.hasW3MDisplay === false) {
       throw new Error('W3M Image Display not available.')
     }
-
     if (!ratio) {
       throw new Error('No ratio.')
     }
-
     // clearImage unsets these:
     const _file = this.file
     const _lastSize = this._lastSize
-
     this.clearImageSync()
-
     this.file = _file
     this._lastSize = _lastSize
-
     const width  = this.width * ratio.tw | 0,
           height = this.height * ratio.th | 0,
           aleft  = this.aleft * ratio.tw | 0,
           atop   = this.atop * ratio.th | 0
-
     const input = '0;1;'
       + aleft + ';'
       + atop + ';'
@@ -527,14 +448,12 @@ export class OverlayImage extends Box {
       + height + ';;;;;'
       + img
       + '\n4;\n3;\n'
-
     this._props = {
       aleft: aleft,
       atop: atop,
       width: width,
       height: height
     }
-
     try {
       cp.execFileSync(OverlayImage.w3mdisplay, [], {
         env: process.env,
@@ -545,30 +464,25 @@ export class OverlayImage extends Box {
     } catch (e) {
 
     }
-
     return true
   }
   clearImageSync() {
     if (OverlayImage.hasW3MDisplay === false) {
       throw new Error('W3M Image Display not available.')
     }
-
     if (!this._props) {
       return false
     }
-
     let width  = this._props.width + 2,
         height = this._props.height + 2,
         aleft  = this._props.aleft,
         atop   = this._props.atop
-
     if (this._drag) {
       aleft -= 10
       atop -= 10
       width += 10
       height += 10
     }
-
     const input = '6;'
       + aleft + ';'
       + atop + ';'
@@ -590,20 +504,16 @@ export class OverlayImage extends Box {
     } catch (e) {
 
     }
-
     return true
   }
   imageSizeSync() {
     const img = this.file
-
     if (OverlayImage.hasW3MDisplay === false) {
       throw new Error('W3M Image Display not available.')
     }
-
     if (!img) {
       throw new Error('No image.')
     }
-
     let buf = ''
     const input = '5;' + img + '\n'
 
@@ -617,9 +527,7 @@ export class OverlayImage extends Box {
     } catch (e) {
 
     }
-
     const size = buf.trim().split(/\s+/)
-
     return {
       raw: buf.trim(),
       width: +size[0],
@@ -630,7 +538,6 @@ export class OverlayImage extends Box {
     if (OverlayImage.hasW3MDisplay === false) {
       throw new Error('W3M Image Display not available.')
     }
-
     let buf = ''
 
     try {
@@ -642,7 +549,6 @@ export class OverlayImage extends Box {
     } catch (e) {
 
     }
-
     if (!buf.trim()) {
       // Bug: w3mimgdisplay will sometimes
       // output nothing. Try again:
@@ -652,9 +558,7 @@ export class OverlayImage extends Box {
       }
       return this.termSizeSync(_, recurse)
     }
-
     const size = buf.trim().split(/\s+/)
-
     return {
       raw: buf.trim(),
       width: +size[0],
@@ -668,21 +572,17 @@ export class OverlayImage extends Box {
       return this._ratio
     }
     this._needsRatio = false
-
     const dimensions = this.termSizeSync()
-
     this._ratio = {
       tw: dimensions.width / this.screen.width,
       th: dimensions.height / this.screen.height
     }
-
     return this._ratio
   }
   displayImage(callback) {
     return this.screen.displayImage(this.file, callback)
   }
 }
-
 
 OverlayImage.w3mdisplay = '/usr/lib/w3m/w3mimgdisplay'
 

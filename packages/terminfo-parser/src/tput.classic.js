@@ -34,22 +34,18 @@ function Tput(options) {
   if (!(this instanceof Tput)) return new Tput(options)
   options = options || {}
   if (typeof options === 'string') options = { terminal: options }
-
   this.options = options
   this.terminal = options.terminal
     || options.term
     || process.env.TERM
     || (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
-
   this.terminal = this.terminal.toLowerCase()
-
   this.debug = options.debug
   this.padding = options.padding
   this.extended = options.extended
   this.printf = options.printf
   this.termcap = options.termcap
   this.error = null
-
   this.terminfoPrefix = options.terminfoPrefix
   this.terminfoFile = options.terminfoFile
   this.termcapFile = options.termcapFile
@@ -621,9 +617,7 @@ Tput.prototype.compile = function (info) {
   if (!info) {
     throw new Error('Terminal not found.')
   }
-
   this.detectFeatures(info)
-
   this._debug(info)
 
   info.all = {}
@@ -676,7 +670,6 @@ Tput.prototype.inject = function (info) {
       return methods[key].call(self, args)
     }
   })
-
   this.info = info
   this.all = info.all
   this.methods = info.methods
@@ -687,7 +680,6 @@ Tput.prototype.inject = function (info) {
   if (!~info.names.indexOf(this.terminal)) {
     this.terminal = info.name
   }
-
   this.features = info.features
   Object.keys(info.features).forEach(function (key) {
     if (key === 'padding') {
@@ -705,7 +697,6 @@ Tput.prototype.inject = function (info) {
 // ~/ncurses/ncurses/tinfo/comp_scan.c
 Tput.prototype._compile = function (info, key, str) {
   let v
-
   this._debug('Compiling %s: %s', key, JSON.stringify(str))
 
   switch (typeof str) {
@@ -1455,7 +1446,6 @@ Tput.prototype.translateTermcap = function (info) {
         out  = {}
 
   if (!info) return
-
   this._debug(info);
 
   [ 'name', 'names', 'desc', FILE, 'termcap' ].forEach(function (key) {
@@ -2016,7 +2006,6 @@ Tput.prototype.getAll = function () {
 Tput.prototype.compileAll = function (start) {
   const self = this,
         all  = {}
-
   this.getAll().forEach(function (name) {
     if (start && name !== start) {
       return

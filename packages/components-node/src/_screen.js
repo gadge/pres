@@ -5,7 +5,6 @@
  */
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
-
 import { EXIT, SIGINT, SIGQUIT, SIGTERM, UNCAUGHT_EXCEPTION, } from '@pres/enum-events'
 
 export class _Screen {

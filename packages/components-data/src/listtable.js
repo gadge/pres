@@ -82,32 +82,23 @@ export class ListTable extends List {
           selected = this.selected,
           original = this.items.slice()
     let sel = this.ritems[this.selected]
-
     if (this.visible && this.lpos) {
       this.clearPos()
     }
-
     this.clearItems()
-
     this.rows = rows || []
-
     this._calculateMaxes()
-
     if (!this._maxes) return
-
     this.addItem('')
-
     this.rows.forEach(function (row, i) {
       const isHeader = i === 0
       let text = ''
       row.forEach(function (cell, i) {
         const width = self._maxes[i]
         let clen = self.strWidth(cell)
-
         if (i !== 0) {
           text += ' '
         }
-
         while (clen < width) {
           if (align === 'center') {
             cell = ' ' + cell + ' '
@@ -122,7 +113,6 @@ export class ListTable extends List {
             clen += 1
           }
         }
-
         if (clen > width) {
           if (align === 'center') {
             cell = cell.substring(1)
@@ -137,7 +127,6 @@ export class ListTable extends List {
             clen--
           }
         }
-
         text += cell
       })
       if (isHeader) {
@@ -147,9 +136,7 @@ export class ListTable extends List {
         self.addItem(text)
       }
     })
-
     this._header.setFront()
-
     // Try to find our old item if it still exists.
     sel = this.ritems.indexOf(sel)
     if (~sel) {
@@ -169,32 +156,23 @@ export class ListTable extends List {
   }
   render() {
     const self = this
-
     const coords = this._render()
     if (!coords) return
-
     this._calculateMaxes()
-
     if (!this._maxes) return coords
-
     const lines = this.screen.lines,
           xi    = coords.xi,
           yi    = coords.yi
     let rx,
         ry,
         i
-
     const battr = this.sattr(this.style.border)
-
     const height = coords.yl - coords.yi - this.ibottom
-
     let border = this.border
     if (!this.border && this.options.border) {
       border = this.options.border
     }
-
     if (!border || this.options.noCellBorders) return coords
-
     // Draw border with correct angles.
     ry = 0
     for (i = 0; i < height + 1; i++) {
@@ -233,7 +211,6 @@ export class ListTable extends List {
       })
       ry += 1
     }
-
     // Draw internal borders.
     for (ry = 1; ry < height; ry++) {
       if (!lines[yi + ry]) break
@@ -254,7 +231,6 @@ export class ListTable extends List {
         lines[yi + ry].dirty = true
       })
     }
-
     return coords
   }
 }

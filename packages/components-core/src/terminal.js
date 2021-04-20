@@ -15,7 +15,6 @@ import { Box } from '../core/box'
  * Modules
  */
 const nextTick = global.setImmediate || process.nextTick.bind(process)
-
 export class Terminal extends Box {
   setScroll = this.scrollTo
   /**
@@ -25,44 +24,35 @@ export class Terminal extends Box {
     options.scrollable = false
     super(options)
     // if (!(this instanceof Node)) return new Terminal(options)
-
     // XXX Workaround for all motion
     if (this.screen.program.tmux && this.screen.program.tmuxVersion >= 2)
       this.screen.program.enableMouse()
-
     this.handler = options.handler
     this.shell = options.shell || process.env.SHELL || 'sh'
     this.args = options.args || []
-
     this.cursor = this.options.cursor
     this.cursorBlink = this.options.cursorBlink
     this.screenKeys = this.options.screenKeys
-
     this.style = this.style || {}
     this.style.bg = this.style.bg || 'default'
     this.style.fg = this.style.fg || 'default'
-
     this.termName = options.terminal
       || options.term
       || process.env.TERM
       || 'xterm'
-
     this.bootstrap()
     this.type = 'terminal'
   }
   bootstrap() {
     const self = this
-
     const element = {
       // window
       get document() { return element },
       navigator: { userAgent: 'node.js' },
-
       // document
       get defaultView() { return element },
       get documentElement() { return element },
       createElement: function () { return element },
-
       // element
       get ownerDocument() { return element },
       addEventListener: function () {},
@@ -80,10 +70,8 @@ export class Terminal extends Box {
       blur: function () {},
       console: console
     }
-
     element.parentNode = element
     element.offsetParent = element
-
     this.term = require('term.js')({
       termName: this.termName,
       cols: this.width - this.iwidth,
@@ -95,12 +83,10 @@ export class Terminal extends Box {
       cursorBlink: this.cursorBlink,
       screenKeys: this.screenKeys
     })
-
     this.term.refresh = function () { self.screen.render() }
     this.term.keyDown = function () {}
     this.term.keyPress = function () {}
     this.term.open(element)
-
     // Emits key sequences in html-land.
     // Technically not necessary here.
     // In reality if we wanted to be neat, we would overwrite the keyDown and
@@ -110,7 +96,6 @@ export class Terminal extends Box {
     // this.term.on(DATA, function(data) {
     //   self.handler(data);
     // });
-
     // Incoming keys and mouse inputs.
     // NOTE: Cannot pass mouse events - coordinates will be off!
     this.screen.program.input.on(DATA, this._onData = function (data) {
@@ -118,15 +103,12 @@ export class Terminal extends Box {
         self.handler(data)
       }
     })
-
     this.onScreenEvent(MOUSE, function (data) {
       if (self.screen.focused !== self) return
-
       if (data.x < self.aleft + self.ileft) return
       if (data.y < self.atop + self.itop) return
       if (data.x > self.aleft - self.ileft + self.width) return
       if (data.y > self.atop - self.itop + self.height) return
-
       if (self.term.x10Mouse
         || self.term.vt200Mouse
         || self.term.normalMouse
@@ -139,12 +121,10 @@ export class Terminal extends Box {
       else {
         return
       }
-
       let b = data.raw[0]
       const x = data.x - self.aleft,
             y = data.y - self.atop
       let s
-
       if (self.term.urxvtMouse) {
         if (self.screen.program.sgrMouse) {
           b += 32
@@ -167,47 +147,37 @@ export class Terminal extends Box {
           + String.fromCharCode(x + 32)
           + String.fromCharCode(y + 32)
       }
-
       self.handler(s)
     })
-
     this.on(FOCUS, function () {
       self.term.focus()
     })
-
     this.on(BLUR, function () {
       self.term.blur()
     })
-
     this.term.on(TITLE, function (title) {
       self.title = title
       self.emit(TITLE, title)
     })
-
     this.term.on(PASSTHROUGH, function (data) {
       self.screen.program.flush()
       self.screen.program._owrite(data)
     })
-
     this.on(RESIZE, function () {
       nextTick(function () {
         self.term.resize(self.width - self.iwidth, self.height - self.iheight)
       })
     })
-
     this.once(RENDER, function () {
       self.term.resize(self.width - self.iwidth, self.height - self.iheight)
     })
-
     this.on(DESTROY, function () {
       self.kill()
       self.screen.program.input.removeListener(DATA, self._onData)
     })
-
     if (this.handler) {
       return
     }
-
     this.pty = require('pty.js').fork(this.shell, this.args, {
       name: this.termName,
       cols: this.width - this.iwidth,
@@ -215,7 +185,6 @@ export class Terminal extends Box {
       cwd: process.env.HOME,
       env: this.options.env || process.env
     })
-
     this.on(RESIZE, function () {
       nextTick(function () {
         try {
@@ -225,25 +194,20 @@ export class Terminal extends Box {
         }
       })
     })
-
     this.handler = function (data) {
       self.pty.write(data)
       self.screen.render()
     }
-
     this.pty.on(DATA, function (data) {
       self.write(data)
       self.screen.render()
     })
-
     this.pty.on(EXIT, function (code) {
       self.emit(EXIT, code || null)
     })
-
     this.onScreenEvent(KEYPRESS, function () {
       self.screen.render()
     })
-
     this.screen._listenKeys(this)
   }
   write(data) {
@@ -252,21 +216,16 @@ export class Terminal extends Box {
   render() {
     const ret = this._render()
     if (!ret) return
-
     this.dattr = this.sattr(this.style)
-
     const xi = ret.xi + this.ileft,
           xl = ret.xl - this.iright,
           yi = ret.yi + this.itop,
           yl = ret.yl - this.ibottom
     let cursor
-
     const scrollback = this.term.lines.length - (yl - yi)
-
     for (let y = Math.max(yi, 0); y < yl; y++) {
       const line = this.screen.lines[y]
       if (!line || !this.term.lines[scrollback + y - yi]) break
-
       if (y === yi + this.term.y
         && this.term.cursorState
         && this.screen.focused === this
@@ -277,12 +236,10 @@ export class Terminal extends Box {
       else {
         cursor = -1
       }
-
       for (let x = Math.max(xi, 0); x < xl; x++) {
         if (!line[x] || !this.term.lines[scrollback + y - yi][x - xi]) break
 
         line[x][0] = this.term.lines[scrollback + y - yi][x - xi][0]
-
         if (x === cursor) {
           if (this.cursor === 'line') {
             line[x][0] = this.dattr
@@ -296,25 +253,20 @@ export class Terminal extends Box {
             line[x][0] = this.dattr | (8 << 18)
           }
         }
-
         line[x][1] = this.term.lines[scrollback + y - yi][x - xi][1]
-
         // default foreground = 257
         if (((line[x][0] >> 9) & 0x1ff) === 257) {
           line[x][0] &= ~(0x1ff << 9)
           line[x][0] |= ((this.dattr >> 9) & 0x1ff) << 9
         }
-
         // default background = 256
         if ((line[x][0] & 0x1ff) === 256) {
           line[x][0] &= ~0x1ff
           line[x][0] |= this.dattr & 0x1ff
         }
       }
-
       line.dirty = true
     }
-
     return ret
   }
   _isMouse(buf) {

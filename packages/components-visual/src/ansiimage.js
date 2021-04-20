@@ -4,8 +4,7 @@
  * https://github.com/chjj/blessed
  */
 
-import { Box } from '@pres/components-core'
-
+import { Box }                 from '@pres/components-core'
 import { DESTROY, PRERENDER, } from '@pres/enum-events'
 import * as colors             from '@pres/util-colors'
 import cp                      from 'child_process'
@@ -20,22 +19,18 @@ export class ANSIImage extends Box {
     super(options)
     const self = this
     // if (!(this instanceof Node)) { return new ANSIImage(options) }
-
     this.scale = this.options.scale || 1.0
     this.options.animate = this.options.animate !== false
     this._noFill = true
-
     if (this.options.file) {
       this.setImage(this.options.file)
     }
-
     this.screen.on(PRERENDER, function () {
       const lpos = self.lpos
       if (!lpos) return
       // prevent image from blending with itself if there are alpha channels
       self.screen.clearRegion(lpos.xi, lpos.xl, lpos.yi, lpos.yl)
     })
-
     this.on(DESTROY, function () {
       self.stop()
     })
@@ -60,22 +55,17 @@ export class ANSIImage extends Box {
   }
   setImage(file) {
     this.file = typeof file === 'string' ? file : null
-
     if (/^https?:/.test(file)) {
       file = ANSIImage.curl(file)
     }
-
     let width = this.position.width
     let height = this.position.height
-
     if (width != null) {
       width = this.width
     }
-
     if (height != null) {
       height = this.height
     }
-
     try {
       this.setContent('')
       this.img = png(file, {
@@ -87,12 +77,10 @@ export class ANSIImage extends Box {
         speed: this.options.speed,
         filename: this.file
       })
-
       if (width == null || height == null) {
         this.width = this.img.cellmap[0].length
         this.height = this.img.cellmap.length
       }
-
       if (this.img.frames && this.options.animate) {
         this.play()
       }
@@ -130,15 +118,12 @@ export class ANSIImage extends Box {
   render() {
     const coords = this._render()
     if (!coords) return
-
     if (this.img && this.cellmap) {
       this.img.renderElement(this.cellmap, this)
     }
-
     return coords
   }
 }
-
 
 /**
  * Expose

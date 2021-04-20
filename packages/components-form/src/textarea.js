@@ -11,7 +11,6 @@ import { Input }                                                                
 
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
-
 export class Textarea extends Input {
   input = this.readInput
   setInput = this.readInput
@@ -57,7 +56,6 @@ export class Textarea extends Input {
     let line,
         cx,
         cy
-
     // Stop a situation where the textarea begins scrolling
     // and the last cline appears to always be empty from the
     // _typeScroll `+ '\n'` thing.
@@ -65,19 +63,15 @@ export class Textarea extends Input {
     if (last === '' && this.value[this.value.length - 1] !== '\n') {
       last = this._clines[this._clines.length - 2] || ''
     }
-
     line = Math.min(
       this._clines.length - 1 - (this.childBase || 0),
       (lpos.yl - lpos.yi) - this.iheight - 1)
-
     // When calling clearValue() on a full textarea with a border, the first
     // argument in the above Math.min call ends up being -2. Make sure we stay
     // positive.
     line = Math.max(0, line)
-
     cy = lpos.yi + this.itop + line
     cx = lpos.xi + this.ileft + this.strWidth(last)
-
     // XXX Not sure, but this may still sometimes
     // cause problems when leaving editor.
     if (cy === program.y && cx === program.x) return
@@ -216,7 +210,6 @@ export class Textarea extends Input {
     })
   }
 }
-
 
 
 

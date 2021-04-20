@@ -109,7 +109,6 @@ export class EventEmitter {
     return true
   }
 }
-
 // For hooking into the main EventEmitter if we want to.
 // Might be better to do things this way being that it
 // will always be compatible with node, not to mention

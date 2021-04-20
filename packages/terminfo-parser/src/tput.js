@@ -122,7 +122,6 @@ export class Tput {
     'semi_auto_right_margin',
     'cpi_changes_res',
     'lpi_changes_res',
-
     // #ifdef __INTERNAL_CAPS_VISIBLE
     'backspaces_with_bs',
     'crt_no_scrolling',
@@ -166,7 +165,6 @@ export class Tput {
     'buttons',
     'bit_image_entwining',
     'bit_image_type',
-
     // #ifdef __INTERNAL_CAPS_VISIBLE
     'magic_cookie_glitch_ul',
     'carriage_return_delay',
@@ -570,7 +568,6 @@ export class Tput {
     'enter_vertical_hl_mode',
     'set_a_attributes',
     'set_pglen_inch',
-
     // #ifdef __INTERNAL_CAPS_VISIBLE
     'termcap_init2',
     'termcap_reset',
@@ -664,28 +661,22 @@ export class Tput {
   constructor(options = {}) {
     if (!(this instanceof Tput)) return new Tput(options)
     if (typeof options === 'string') options = { terminal: options }
-
     this.options = options
     this.terminal = options.terminal
       || options.term
       || process.env.TERM
       || (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
-
     this.terminal = this.terminal.toLowerCase()
-
     this.debug = options.debug
     this.padding = options.padding
     this.extended = options.extended
     this.printf = options.printf
     this.termcap = options.termcap
     this.error = null
-
     this.terminfoPrefix = options.terminfoPrefix
     this.terminfoFile = options.terminfoFile
     this.termcapFile = options.termcapFile
-
     if (options.terminal || options.term) this.setup()
-
     // Convert ACS unicode characters to the
     // most similar-looking ascii characters.
     this.utoa = {
@@ -733,14 +724,12 @@ export class Tput {
 //   strTableSize: 1388,
   static _tprefix(prefix, term, soft) {
     if (!prefix) return
-
     let file,
         dir,
         i,
         sdiff,
         sfile,
         list
-
     if (Array.isArray(prefix)) {
       for (i = 0; i < prefix.length; i++) {
         file = this._tprefix(prefix[i], term, soft)
@@ -748,7 +737,6 @@ export class Tput {
       }
       return
     }
-
     const find = function (word) {
       let file, ch
 
@@ -757,7 +745,6 @@ export class Tput {
         fs.statSync(file)
         return file
       } catch (e) { }
-
       ch = word[0].charCodeAt(0).toString(16)
       if (ch.length < 2) ch = '0' + ch
 
@@ -767,7 +754,6 @@ export class Tput {
         return file
       } catch (e) { }
     }
-
     if (!term) {
       // Make sure the directory's sub-directories
       // are all one-letter, or hex digits.
@@ -780,17 +766,13 @@ export class Tput {
       } catch (e) {}
       return
     }
-
     term = path.basename(term)
     dir = find(term)
-
     if (!dir) return
-
     if (soft) {
       try {
         list = fs.readdirSync(dir)
       } catch (e) { return }
-
       list.forEach(function (file) {
         if (file.indexOf(term) === 0) {
           const diff = file.length - term.length
@@ -800,12 +782,10 @@ export class Tput {
           }
         }
       })
-
       return sfile && (soft || sdiff === 0)
         ? path.resolve(dir, sfile)
         : null
     }
-
     file = path.resolve(dir, term)
     try {
       fs.statSync(file)
@@ -823,20 +803,15 @@ export class Tput {
         return this.terminfoFile
       }
     }
-
     const paths = Tput.ipaths.slice()
     let file
-
     if (this.terminfoPrefix) paths.unshift(this.terminfoPrefix)
-
     // Try exact matches.
     file = this._tprefix(paths, term)
     if (file) return file
-
     // Try similar matches.
     file = this._tprefix(paths, term, true)
     if (file) return file
-
     // Not found.
     throw new Error('Terminfo directory not found.')
   }
@@ -927,33 +902,26 @@ export class Tput {
         return this.terminfoFile
       }
     }
-
     const paths = Tput.ipaths.slice()
     let file
-
     if (this.terminfoPrefix) paths.unshift(this.terminfoPrefix)
-
     // Try exact matches.
     file = this._tprefix(paths, term)
     if (file) return file
-
     // Try similar matches.
     file = this._tprefix(paths, term, true)
     if (file) return file
-
     // Not found.
     throw new Error('Terminfo directory not found.')
   }
   _tprefix(prefix, term, soft) {
     if (!prefix) return
-
     let file,
         dir,
         i,
         sdiff,
         sfile,
         list
-
     if (Array.isArray(prefix)) {
       for (i = 0; i < prefix.length; i++) {
         file = this._tprefix(prefix[i], term, soft)
@@ -961,7 +929,6 @@ export class Tput {
       }
       return
     }
-
     const find = function (word) {
       let file, ch
 
@@ -970,7 +937,6 @@ export class Tput {
         fs.statSync(file)
         return file
       } catch (e) { }
-
       ch = word[0].charCodeAt(0).toString(16)
       if (ch.length < 2) ch = '0' + ch
 
@@ -980,7 +946,6 @@ export class Tput {
         return file
       } catch (e) { }
     }
-
     if (!term) {
       // Make sure the directory's sub-directories
       // are all one-letter, or hex digits.
@@ -993,17 +958,13 @@ export class Tput {
       } catch (e) {}
       return
     }
-
     term = path.basename(term)
     dir = find(term)
-
     if (!dir) return
-
     if (soft) {
       try {
         list = fs.readdirSync(dir)
       } catch (e) { return }
-
       list.forEach(function (file) {
         if (file.indexOf(term) === 0) {
           const diff = file.length - term.length
@@ -1013,12 +974,10 @@ export class Tput {
           }
         }
       })
-
       return sfile && (soft || sdiff === 0)
         ? path.resolve(dir, sfile)
         : null
     }
-
     file = path.resolve(dir, term)
     try {
       fs.statSync(file)
@@ -1036,7 +995,6 @@ export class Tput {
         i = 0,
         v,
         o
-
     const h = info.header = {
       dataSize: data.length,
       headerSize: 12,
@@ -1047,7 +1005,6 @@ export class Tput {
       strCount: (data[9] << 8) | data[8],
       strTableSize: (data[11] << 8) | data[10]
     }
-
     h.total = h.headerSize
       + h.namesSize
       + h.boolCount
@@ -1056,13 +1013,11 @@ export class Tput {
       + h.strTableSize
 
     i += h.headerSize
-
     // Names Section
     const names = data.toString('ascii', i, i + h.namesSize - 1),
           parts = names.split('|'),
           name  = parts[0],
           desc  = parts.pop()
-
     info.name = name
     info.names = parts
     info.desc = desc
@@ -1071,11 +1026,9 @@ export class Tput {
     info.file = file
 
     i += h.namesSize - 1
-
     // Names is nul-terminated.
     assert.equal(data[i], 0)
     i++
-
     // Booleans Section
     // One byte for each flag
     // Same order as <term.h>
@@ -1086,13 +1039,11 @@ export class Tput {
       v = Tput.bools[o++]
       info.bools[v] = data[i] === 1
     }
-
     // Null byte in between to make sure numbers begin on an even byte.
     if (i % 2) {
       assert.equal(data[i], 0)
       i++
     }
-
     // Numbers Section
     info.numbers = {}
     l = i + h.numCount * 2
@@ -1106,7 +1057,6 @@ export class Tput {
         info.numbers[v] = (data[i + 1] << 8) | data[i]
       }
     }
-
     // Strings Section
     info.strings = {}
     l = i + h.strCount * 2
@@ -1120,14 +1070,12 @@ export class Tput {
         info.strings[v] = (data[i + 1] << 8) | data[i]
       }
     }
-
     // String Table
     Object.keys(info.strings).forEach(function (key) {
       if (info.strings[key] === -1) {
         delete info.strings[key]
         return
       }
-
       // Workaround: fix an odd bug in the screen-256color terminfo where it tries
       // to set -1, but it appears to have {0xfe, 0xff} instead of {0xff, 0xff}.
       // TODO: Possibly handle errors gracefully below, as well as in the
@@ -1136,17 +1084,13 @@ export class Tput {
         delete info.strings[key]
         return
       }
-
       const s = i + info.strings[key]
       let j = s
-
       while (data[j]) j++
 
       assert(j < data.length)
-
       info.strings[key] = data.toString('ascii', s, j)
     })
-
     // Extended Header
     if (this.extended !== false) {
       i--
@@ -1171,7 +1115,6 @@ export class Tput {
         })
       }
     }
-
     return info
   }
 // For some reason TERM=linux has smacs/rmacs, but it maps to `^[[11m`
@@ -1189,7 +1132,6 @@ export class Tput {
     const info = {}
     let l = data.length,
         i = 0
-
     const h = info.header = {
       dataSize: data.length,
       headerSize: 10,
@@ -1199,7 +1141,6 @@ export class Tput {
       strTableSize: (data[i + 7] << 8) | data[i + 6],
       lastStrTableOffset: (data[i + 9] << 8) | data[i + 8]
     }
-
     // h.symOffsetCount = h.strTableSize - h.strCount;
 
     h.total = h.headerSize
@@ -1209,7 +1150,6 @@ export class Tput {
       + h.strTableSize
 
     i += h.headerSize
-
     // Booleans Section
     // One byte for each flag
     const _bools = []
@@ -1217,13 +1157,11 @@ export class Tput {
     for (; i < l; i++) {
       _bools.push(data[i] === 1)
     }
-
     // Null byte in between to make sure numbers begin on an even byte.
     if (i % 2) {
       assert.equal(data[i], 0)
       i++
     }
-
     // Numbers Section
     const _numbers = []
     l = i + h.numCount * 2
@@ -1235,7 +1173,6 @@ export class Tput {
         _numbers.push((data[i + 1] << 8) | data[i])
       }
     }
-
     // Strings Section
     const _strings = []
     l = i + h.strCount * 2
@@ -1247,12 +1184,10 @@ export class Tput {
         _strings.push((data[i + 1] << 8) | data[i])
       }
     }
-
     // Pass over the sym offsets and get to the string table.
     i = data.length - h.lastStrTableOffset
     // Might be better to do this instead if the file has trailing bytes:
     // i += h.symOffsetCount * 2;
-
     // String Table
     let high = 0
     _strings.forEach(function (offset, k) {
@@ -1260,23 +1195,18 @@ export class Tput {
         _strings[k] = ''
         return
       }
-
       const s = i + offset
       let j = s
-
       while (data[j]) j++
 
       assert(j < data.length)
-
       // Find out where the string table ends by
       // getting the highest string length.
       if (high < j - i) {
         high = j - i
       }
-
       _strings[k] = data.toString('ascii', s, j)
     })
-
     // Symbol Table
     // Add one to the highest string length because we didn't count \0.
     i += high + 1
@@ -1291,7 +1221,6 @@ export class Tput {
       sym.push(data.toString('ascii', i, j))
       i = j
     }
-
     // Identify by name
     j = 0
 
@@ -1299,20 +1228,16 @@ export class Tput {
     _bools.forEach(function (bool) {
       info.bools[sym[j++]] = bool
     })
-
     info.numbers = {}
     _numbers.forEach(function (number) {
       info.numbers[sym[j++]] = number
     })
-
     info.strings = {}
     _strings.forEach(function (string) {
       info.strings[sym[j++]] = string
     })
-
     // Should be the very last bit of data.
     assert.equal(i, data.length)
-
     return info
   }
 // If enter_pc_charset is the same as enter_alt_charset,
@@ -1330,15 +1255,11 @@ export class Tput {
    */
   compile(info) {
     const self = this
-
     if (!info) {
       throw new Error('Terminal not found.')
     }
-
     this.detectFeatures(info)
-
     this._debug(info)
-
     info.all = {}
     info.methods = {};
 
@@ -1348,19 +1269,15 @@ export class Tput {
         info.methods[key] = self._compile(info, key, info.all[key])
       })
     })
-
     Tput.bools.forEach(function (key) {
       if (info.methods[key] == null) info.methods[key] = false
     })
-
     Tput.numbers.forEach(function (key) {
       if (info.methods[key] == null) info.methods[key] = -1
     })
-
     Tput.strings.forEach(function (key) {
       if (!info.methods[key]) info.methods[key] = noop
     })
-
     Object.keys(info.methods).forEach(function (key) {
       if (!Tput.alias[key]) return
       Tput.alias[key].forEach(function (alias) {
@@ -1371,7 +1288,6 @@ export class Tput {
       //   info.methods[key] = info.methods[Tput.aliasMap[key]];
       // });
     })
-
     return info
   }
 // Some data to help understand:
@@ -1389,18 +1305,15 @@ export class Tput {
         return methods[key].call(self, args)
       }
     })
-
     this.info = info
     this.all = info.all
     this.methods = info.methods
     this.bools = info.bools
     this.numbers = info.numbers
     this.strings = info.strings
-
     if (!~info.names.indexOf(this.terminal)) {
       this.terminal = info.name
     }
-
     this.features = info.features
     Object.keys(info.features).forEach(function (key) {
       if (key === 'padding') {
@@ -1415,9 +1328,7 @@ export class Tput {
 // ~/ncurses/ncurses/tinfo/comp_scan.c
   _compile(info, key, str) {
     let v
-
     this._debug('Compiling %s: %s', key, JSON.stringify(str))
-
     switch (typeof str) {
       case 'boolean':
         return str
@@ -1428,11 +1339,9 @@ export class Tput {
       default:
         return noop
     }
-
     if (!str) {
       return noop
     }
-
     // See:
     // ~/ncurses/progs/tput.c - tput() - L149
     // ~/ncurses/progs/tset.c - set_init() - L992
@@ -1451,7 +1360,6 @@ export class Tput {
         return noop
       }
     }
-
     const tkey   = info.name + '.' + key,
           header = 'var v, dyn = {}, stat = {}, stack = [], out = [];',
           footer = ';return out.join("");'
@@ -1473,40 +1381,33 @@ export class Tput {
       if (!no) clear()
       return cap
     }
-
     function stmt(c) {
       if (code[code.length - 1] === ',') {
         code = code.slice(0, -1)
       }
       code += c
     }
-
     function expr(c) {
       code += c + ','
     }
-
     function echo(c) {
       if (c === '""') return
       expr('out.push(' + c + ')')
     }
-
     function print(c) {
       buff += c
     }
-
     function clear() {
       if (buff) {
         echo(JSON.stringify(buff).replace(/\\u00([0-9a-fA-F]{2})/g, '\\x$1'))
         buff = ''
       }
     }
-
     while (val) {
       // Ignore newlines
       if (read(/^\n /, true)) {
         continue
       }
-
       // '^A' -> ^A
       if (read(/^\^(.)/i, true)) {
         if (!(ch >= ' ' && ch <= '~')) {
@@ -1528,13 +1429,11 @@ export class Tput {
         print(ch)
         continue
       }
-
       // 3 octal digits -> character
       if (read(/^\\([0-7]{3})/, true)) {
         print(String.fromCharCode(parseInt(ch, 8)))
         continue
       }
-
       // '\e' -> ^[
       // '\n' -> \n
       // '\r' -> \r
@@ -1592,20 +1491,17 @@ export class Tput {
         print(ch)
         continue
       }
-
       // $<5> -> padding
       // e.g. flash_screen: '\u001b[?5h$<100/>\u001b[?5l',
       if (read(/^\$<(\d+)([*\/]{0,2})>/, true)) {
         if (this.padding) print(cap[0])
         continue
       }
-
       // %%   outputs `%'
       if (read(/^%%/, true)) {
         print('%')
         continue
       }
-
       // %[[:]flags][width[.precision]][doxXs]
       //   as in printf, flags are [-+#] and space.  Use a `:' to allow the
       //   next character to be a `-' flag, avoiding interpreting "%-" as an
@@ -1629,35 +1525,30 @@ export class Tput {
         }
         continue
       }
-
       // %p[1-9]
       //   push i'th parameter
       if (read(/^%p([1-9])/)) {
         expr('(stack.push(v = params[' + (ch - 1) + ']), v)')
         continue
       }
-
       // %P[a-z]
       //   set dynamic variable [a-z] to pop()
       if (read(/^%P([a-z])/)) {
         expr('dyn.' + ch + ' = stack.pop()')
         continue
       }
-
       // %g[a-z]
       //   get dynamic variable [a-z] and push it
       if (read(/^%g([a-z])/)) {
         expr('(stack.push(dyn.' + ch + '), dyn.' + ch + ')')
         continue
       }
-
       // %P[A-Z]
       //   set static variable [a-z] to pop()
       if (read(/^%P([A-Z])/)) {
         expr('stat.' + ch + ' = stack.pop()')
         continue
       }
-
       // %g[A-Z]
       //   get static variable [a-z] and push it
       //   The  terms  "static"  and  "dynamic" are misleading.  Historically,
@@ -1669,7 +1560,6 @@ export class Tput {
         expr('(stack.push(v = stat.' + ch + '), v)')
         continue
       }
-
       // %'c' char constant c
       // NOTE: These are stored as c chars, exemplified by:
       // cursor_address: "\u001b=%p1%' '%+%c%p2%' '%+%c"
@@ -1677,20 +1567,17 @@ export class Tput {
         expr('(stack.push(v = ' + ch.charCodeAt(0) + '), v)')
         continue
       }
-
       // %{nn}
       //   integer constant nn
       if (read(/^%\{(\d+)\}/)) {
         expr('(stack.push(v = ' + ch + '), v)')
         continue
       }
-
       // %l   push strlen(pop)
       if (read(/^%l/)) {
         expr('(stack.push(v = (stack.pop() || "").length || 0), v)')
         continue
       }
-
       // %+ %- %* %/ %m
       //   arithmetic (%m is mod): push(pop() op pop())
       // %& %| %^
@@ -1904,11 +1791,9 @@ export class Tput {
   }
   _tryCap(file, term) {
     if (!file) return
-
     let terms,
         data,
         i
-
     if (Array.isArray(file)) {
       for (i = 0; i < file.length; i++) {
         data = this._tryCap(file[i], term)
@@ -1916,21 +1801,17 @@ export class Tput {
       }
       return
     }
-
     // If the termcap string starts with `/`,
     // ncurses considers it a filename.
     data = file[0] === '/'
       ? tryRead(file)
       : file
-
     if (!data) return
 
     terms = this.parseTermcap(data, file)
-
     if (term && !terms[term]) {
       return
     }
-
     return terms
   }
 //  :mi:al=\E[L:dc=\E[P:dl=\E[M:ei=\E[4l:im=\E[4h:
@@ -1945,22 +1826,17 @@ export class Tput {
         i,
         j,
         k
-
     // remove escaped newlines
     data = data.replace(/\\\n[ \t]*/g, '')
-
     // remove comments
     data = data.replace(/^#[^\n]+/gm, '')
-
     // split entries
     entries = data.trim().split(/\n+/)
-
     for (i = 0; i < entries.length; i++) {
       fields = entries[i].split(/:+/)
       for (j = 0; j < fields.length; j++) {
         field = fields[j].trim()
         if (!field) continue
-
         if (j === 0) {
           names = field.split('|')
           term = {
@@ -1972,18 +1848,14 @@ export class Tput {
               : file,
             termcap: true
           }
-
           for (k = 0; k < names.length; k++) {
             terms[names[k]] = term
           }
-
           term.bools = {}
           term.numbers = {}
           term.strings = {}
-
           continue
         }
-
         if (~field.indexOf('=')) {
           parts = field.split('=')
           term.strings[parts[0]] = parts.slice(1).join('=')
@@ -1997,7 +1869,6 @@ export class Tput {
         }
       }
     }
-
     return terms
   }
   /**
@@ -2007,27 +1878,21 @@ export class Tput {
   translateTermcap(info) {
     const self = this,
           out  = {}
-
     if (!info) return
-
     this._debug(info);
 
     [ 'name', 'names', 'desc', 'file', 'termcap' ].forEach(function (key) {
       out[key] = info[key]
     })
-
     // Separate aliases for termcap
     const map = (function () {
       const out = {}
-
       Object.keys(Tput.alias).forEach(function (key) {
         const aliases = Tput.alias[key]
         out[aliases.termcap] = key
       })
-
       return out
     })()
-
       // Translate termcap cap names to terminfo cap names.
       // e.g. `up` -> `cursor_up`
       ['bools', 'numbers', 'strings'].forEach(function (key) {
@@ -2049,7 +1914,6 @@ export class Tput {
         }
       })
     })
-
     return out
   }
 // A small helper function if we want
@@ -2083,16 +1947,12 @@ export class Tput {
    */
   _captoinfo(cap, s, parameterized) {
     const self = this
-
     let capstart
-
     if (parameterized == null) {
       parameterized = 0
     }
-
     const MAX_PUSHED = 16,
           stack      = []
-
     let stackptr = 0,
         onstack  = 0,
         seenm    = 0,
@@ -2107,20 +1967,16 @@ export class Tput {
       args[0] = 'captoinfo: ' + (args[0] || '')
       return self._debug.apply(self, args)
     }
-
     function isdigit(ch) {
       return ch >= '0' && ch <= '9'
     }
-
     function isgraph(ch) {
       return ch > ' ' && ch <= '~'
     }
-
     // convert a character to a terminfo push
     function cvtchar(sp) {
       let c = '\0',
           len
-
       let j = i
 
       switch (sp[j]) {
@@ -2181,10 +2037,8 @@ export class Tput {
           c.charCodeAt(0) % 10 + '0'.charCodeAt(0))
         out += '}'
       }
-
       return len
     }
-
     // push n copies of param on the terminfo stack if not already there
     function getparm(parm, n) {
       if (seenr) {
@@ -2195,7 +2049,6 @@ export class Tput {
           parm = 1
         }
       }
-
       if (onstack === parm) {
         if (n > 1) {
           warn('string may not be optimal')
@@ -2206,27 +2059,21 @@ export class Tput {
         }
         return
       }
-
       if (onstack !== 0) {
         push()
       }
-
       onstack = parm
-
       while (n--) {
         out += '%p'
         out += String.fromCharCode('0'.charCodeAt(0) + parm)
       }
-
       if (seenn && parm < 3) {
         out += '%{96}%^'
       }
-
       if (seenm && parm < 3) {
         out += '%{127}%^'
       }
     }
-
     // push onstack on to the stack
     function push() {
       if (stackptr >= MAX_PUSHED) {
@@ -2236,7 +2083,6 @@ export class Tput {
         stack[stackptr++] = onstack
       }
     }
-
     // pop the top of the stack into onstack
     function pop() {
       if (stackptr === 0) {
@@ -2252,24 +2098,20 @@ export class Tput {
       }
       param++
     }
-
     function see03() {
       getparm(param, 1)
       out += '%3d'
       pop()
     }
-
     function invalid() {
       out += '%'
       i--
       warn('unknown %% code %s (%#x) in %s',
         JSON.stringify(s[i]), s[i].charCodeAt(0), cap)
     }
-
     // skip the initial padding (if we haven't been told not to)
     capstart = null
     if (s == null) s = ''
-
     if (parameterized >= 0 && isdigit(s[i])) {
       for (capstart = i; ; i++) {
         if (!(isdigit(s[i]) || s[i] === '*' || s[i] === '.')) {
@@ -2277,7 +2119,6 @@ export class Tput {
         }
       }
     }
-
     while (s[i]) {
       switch (s[i]) {
         case '%':
@@ -2525,7 +2366,6 @@ export class Tput {
         // #endif
       }
     }
-
     // Now, if we stripped off some leading padding, add it at the end
     // of the string as mandatory padding.
     if (capstart != null) {
@@ -2540,12 +2380,10 @@ export class Tput {
       }
       out += '/>'
     }
-
     if (s !== out) {
       warn('Translating %s from %s to %s.',
         cap, JSON.stringify(s), JSON.stringify(out))
     }
-
     return out
   }
   /**
@@ -2560,7 +2398,6 @@ export class Tput {
       const terms = asort(fs.readdirSync(path.resolve(dir, letter)))
       infos.push.apply(infos, terms)
     })
-
     function asort(obj) {
       return obj.sort(function (a, b) {
         a = a.toLowerCase().charCodeAt(0)
@@ -2568,13 +2405,11 @@ export class Tput {
         return a - b
       })
     }
-
     return infos
   }
   compileAll(start) {
     const self = this,
           all  = {}
-
     this.getAll().forEach(function (name) {
       if (start && name !== start) {
         return
@@ -2584,7 +2419,6 @@ export class Tput {
       }
       all[name] = self.compileTerminfo(name)
     })
-
     return all
   }
   /**
@@ -2610,25 +2444,21 @@ export class Tput {
     if (process.env.NCURSES_NO_UTF8_ACS != null) {
       return !!+process.env.NCURSES_NO_UTF8_ACS
     }
-
     // If the terminal supports unicode, we don't need ACS.
     if (info.numbers.U8 >= 0) {
       return !!info.numbers.U8
     }
-
     // The linux console is just broken for some reason.
     // Apparently the Linux console does not support ACS,
     // but it does support the PC ROM character set.
     if (info.name === 'linux') {
       return true
     }
-
     // PC alternate charset
     // if (acsc.indexOf('+\x10,\x11-\x18.\x190') === 0) {
     if (this.detectPCRomSet(info)) {
       return true
     }
-
     // screen termcap is bugged?
     if (this.termcap
       && info.name.indexOf('screen') === 0
@@ -2642,7 +2472,6 @@ export class Tput {
         return true
       }
     }
-
     return false
   }
 // See: ~/ncurses/ncurses/tinfo/lib_acs.c
@@ -2666,45 +2495,36 @@ export class Tput {
   }
   parseACS(info) {
     const data = {}
-
     data.acsc = {}
     data.acscr = {}
-
     // Possibly just return an empty object, as done here, instead of
     // specifically saying ACS is "broken" above. This would be more
     // accurate to ncurses logic. But it doesn't really matter.
     if (this.detectPCRomSet(info)) {
       return data
     }
-
     // See: ~/ncurses/ncurses/tinfo/lib_acs.c: L208
     Object.keys(Tput.acsc).forEach(function (ch) {
       const acs_chars = info.strings.acs_chars || '',
             i         = acs_chars.indexOf(ch),
             next      = acs_chars[i + 1]
-
       if (!next || i === -1 || !Tput.acsc[next]) {
         return
       }
-
       data.acsc[ch] = Tput.acsc[next]
       data.acscr[Tput.acsc[next]] = ch
     })
-
     return data
   }
   GetConsoleCP() {
     let ccp
-
     if (process.platform !== 'win32') {
       return -1
     }
-
     // Allow unicode on all windows consoles for now:
     if (+process.env.NCURSES_NO_WINDOWS_UNICODE !== 1) {
       return 65001
     }
-
     // cp.execSync('chcp 65001', { stdio: 'ignore', timeout: 1500 });
 
     try {
@@ -2722,28 +2542,20 @@ export class Tput {
     } catch (e) {
 
     }
-
     ccp = /\d+/.exec(ccp)
-
     if (!ccp) {
       return -1
     }
-
     ccp = +ccp[0]
-
     return ccp
   }
   has(name) {
     name = Tput.aliasMap[name]
-
     const val = this.all[name]
-
     if (!name) return false
-
     if (typeof val === 'number') {
       return val !== -1
     }
-
     return !!val
   }
   readTermcap(term) {
@@ -2755,7 +2567,6 @@ export class Tput {
       paths
 
     term = term || this.terminal
-
     // Termcap has a bunch of terminals usually stored in one file/string,
     // so we need to find the one containing our desired terminal.
     if (~term.indexOf(path.sep) && (terms = this._tryCap(path.resolve(term)))) {
@@ -2772,38 +2583,28 @@ export class Tput {
     }
     else {
       paths = Tput.cpaths.slice()
-
       if (this.termcapFile) {
         paths.unshift(this.termcapFile)
       }
-
       paths.push(Tput.termcap)
-
       terms = this._tryCap(paths, term)
     }
-
     if (!terms) {
       throw new Error('Cannot find termcap for: ' + term)
     }
-
     root = terms[term]
-
     if (this.debug) {
       this._termcap = terms
     }
-
     (function tc(term) {
       if (term && term.strings.tc) {
         root.inherits = root.inherits || []
         root.inherits.push(term.strings.tc)
-
         const names = terms[term.strings.tc]
           ? terms[term.strings.tc].names
           : [ term.strings.tc ]
-
         self._debug('%s inherits from %s.',
           term.names.join('/'), names.join('/'))
-
         const inherit = tc(terms[term.strings.tc])
         if (inherit) {
           [ 'bools', 'numbers', 'strings' ].forEach(function (type) {
@@ -2813,10 +2614,8 @@ export class Tput {
       }
       return term
     })(root)
-
     // Translate termcap names to terminfo-style names.
     root = this.translateTermcap(root)
-
     return root
   }
 // DEC Special Character and Line Drawing Set.
@@ -2824,16 +2623,13 @@ export class Tput {
     if (process.env.NCURSES_FORCE_UNICODE != null) {
       return !!+process.env.NCURSES_FORCE_UNICODE
     }
-
     if (this.options.forceUnicode != null) {
       return this.options.forceUnicode
     }
-
     const LANG = process.env.LANG
       + ':' + process.env.LANGUAGE
       + ':' + process.env.LC_ALL
       + ':' + process.env.LC_CTYPE
-
     return /utf-?8/i.test(LANG) || (this.GetConsoleCP() === 65001)
   }
   readTerminfo(term) {
@@ -2846,15 +2642,12 @@ export class Tput {
     file = path.normalize(this._prefix(term))
     data = fs.readFileSync(file)
     info = this.parseTerminfo(data, file)
-
     if (this.debug) {
       this._terminfo = info
     }
-
     return info
   }
 }
-
 [ 'bools', 'numbers', 'strings' ].forEach(function (type) {
   Object.keys(Tput._alias[type]).forEach(function (key) {
     const aliases = Tput._alias[type][key]
@@ -2872,7 +2665,6 @@ Object.keys(Tput.alias).forEach(function (key) {
   Tput.aliasMap[key] = key
   Tput.alias[key].forEach(k => Tput.aliasMap[k] = key)
 })
-
 /**
  * Helpers
  */
@@ -2904,7 +2696,6 @@ export function sprintf(src) {
   const params = Array.prototype.slice.call(arguments, 1),
         rule   = /%([\-+# ]{1,4})?(\d+(?:\.\d+)?)?([doxXsc])/g
   let i = 0
-
   return src.replace(rule, function (_, flag, width, type) {
     const flags = (flag || '').split('')
     let param = params[i] != null ? params[i] : ''
@@ -2936,7 +2727,6 @@ export function sprintf(src) {
           : ''
         break
     }
-
     flags.forEach(function (flag) {
       switch (flag) {
         // left-justify by width
@@ -2959,9 +2749,7 @@ export function sprintf(src) {
           break
       }
     })
-
     width = +width.split('.')[0]
-
     // Should this be for opt.left too?
     // Example: %2.2X - turns 0 into 00
     if (width && !opt.left) {
@@ -2970,19 +2758,16 @@ export function sprintf(src) {
         param = '0' + param
       }
     }
-
     if (opt.signs) {
       if (+initial >= 0) {
         pre += '+'
       }
     }
-
     if (opt.space) {
       if (!opt.signs && +initial >= 0) {
         pre += ' '
       }
     }
-
     if (opt.hexpoint) {
       switch (type) {
         case 'o': // unsigned octal
@@ -2996,14 +2781,12 @@ export function sprintf(src) {
           break
       }
     }
-
     if (opt.left) {
       if (width > (pre.length + param.length)) {
         width -= pre.length + param.length
         pre = Array(width + 1).join(' ') + pre
       }
     }
-
     return pre + param
   })
 }

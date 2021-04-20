@@ -24,29 +24,23 @@ export class Message extends Box {
   }
   display(text, time, callback) {
     const self = this
-
     if (typeof time === 'function') {
       callback = time
       time = null
     }
-
     if (time == null) time = 3
-
     // Keep above:
     // var parent = this.parent;
     // this.detach();
     // parent.append(this);
-
     if (this.scrollable) {
       this.screen.saveFocus()
       this.focus()
       this.scrollTo(0)
     }
-
     this.show()
     this.setContent(text)
     this.screen.render()
-
     if (time === Infinity || time === -1 || time === 0) {
       const end = function () {
         if (end.done) return
@@ -62,7 +56,6 @@ export class Message extends Box {
         self.screen.render()
         if (callback) callback()
       }
-
       setTimeout(function () {
         self.onScreenEvent(KEYPRESS, function fn(ch, key) {
           if (key.name === MOUSE) return
@@ -92,10 +85,8 @@ export class Message extends Box {
           end()
         })
       }, 10)
-
       return
     }
-
     setTimeout(function () {
       self.hide()
       self.screen.render()
@@ -106,7 +97,6 @@ export class Message extends Box {
     return this.display('{red-fg}Error: ' + text + '{/red-fg}', time, callback)
   }
 }
-
 
 /**
  * Expose

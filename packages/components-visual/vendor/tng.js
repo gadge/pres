@@ -21,18 +21,14 @@ function PNG(file, options) {
     , chunks
     , idat
     , pixels
-
   if (!(this instanceof PNG)) {
     return new PNG(file, options)
   }
-
   if (!file) throw new Error('no file')
-
   this.options = options || {}
   this.colors = options.colors || colors
   this.optimization = this.options.optimization || 'mem'
   this.speed = this.options.speed || 1
-
   if (Buffer.isBuffer(file)) {
     this.file = this.options.filename || null
     buf = file
@@ -42,12 +38,10 @@ function PNG(file, options) {
     this.file = path.resolve(process.cwd(), file)
     buf = fs.readFileSync(this.file)
   }
-
   this.format = buf.readUInt32BE(0) === 0x89504e47 ? 'png'
     : buf.slice(0, 3).toString('ascii') === 'GIF' ? 'gif'
       : buf.readUInt16BE(0) === 0xffd8 ? 'jpg'
         : path.extname(this.file).slice(1).toLowerCase() || 'png'
-
   if (this.format !== 'png') {
     try {
       return this.toPNG(buf)
@@ -55,16 +49,13 @@ function PNG(file, options) {
       throw e
     }
   }
-
   chunks = this.parseRaw(buf)
   idat = this.parseChunks(chunks)
   pixels = this.parseLines(idat)
-
   this.bmp = this.createBitmap(pixels)
   this.cellmap = this.createCellmap(this.bmp)
   this.frames = this.compileFrames(this.frames)
 }
-
 PNG.prototype.parseRaw = function (buf) {
   var chunks = []
     , index  = 0
@@ -81,16 +72,12 @@ PNG.prototype.parseRaw = function (buf) {
     , conforming
     , copysafe
     , pos
-
   this._debug(this.file)
-
   if (buf.readUInt32BE(0) !== 0x89504e47
     || buf.readUInt32BE(4) !== 0x0d0a1a0a) {
     throw new Error('bad header')
   }
-
   i += 8
-
   while (i < buf.length) {
     try {
       len = buf.readUInt32BE(i)
@@ -135,10 +122,8 @@ PNG.prototype.parseRaw = function (buf) {
       }
     })
   }
-
   return chunks
 }
-
 PNG.prototype.parseChunks = function (chunks) {
   let i
     , chunk
@@ -289,9 +274,7 @@ PNG.prototype.parseChunks = function (chunks) {
     }
     chunk.info = info
   }
-
   this._debug(chunks)
-
   if (this.frames) {
     this.frames = this.frames.map(function (frame, i) {
       frame.fdat = this.decompress(frame.fdat)
@@ -299,13 +282,10 @@ PNG.prototype.parseChunks = function (chunks) {
       return frame
     }, this)
   }
-
   idat = this.decompress(this.idat)
   if (!idat.length) throw new Error('no data')
-
   return idat
 }
-
 PNG.prototype.parseLines = function (data) {
   const pixels = []
   let x
@@ -320,7 +300,6 @@ PNG.prototype.parseLines = function (data) {
     , i
     , toShift
     , sample
-
   this.sampleDepth =
     this.colorType === 0 ? 1
       : this.colorType === 2 ? 3
@@ -332,11 +311,9 @@ PNG.prototype.parseLines = function (data) {
   this.bytesPerPixel = Math.ceil(this.bitsPerPixel / 8)
   this.wastedBits = ((this.width * this.bitsPerPixel) / 8) - ((this.width * this.bitsPerPixel / 8) | 0)
   this.byteWidth = Math.ceil(this.width * (this.bitsPerPixel / 8))
-
   this.shiftStart = ((this.bitDepth + (8 / this.bitDepth - this.bitDepth)) - 1) | 0
   this.shiftMult = this.bitDepth >= 8 ? 0 : this.bitDepth
   this.mask = this.bitDepth === 32 ? 0xffffffff : (1 << this.bitDepth) - 1
-
   if (this.interlace === 1) {
     samples = this.sampleInterlacedLines(data)
     for (i = 0; i < samples.length; i += this.sampleDepth) {
@@ -344,7 +321,6 @@ PNG.prototype.parseLines = function (data) {
     }
     return pixels
   }
-
   for (p = 0; p < data.length; p += this.byteWidth) {
     prior = line || []
     filter = data[p++]
@@ -355,10 +331,8 @@ PNG.prototype.parseLines = function (data) {
       pixels.push(samples.slice(i, i + this.sampleDepth))
     }
   }
-
   return pixels
 }
-
 PNG.prototype.unfilterLine = function (filter, line, prior) {
   for (let x = 0; x < line.length; x++) {
     if (filter === 0) {
@@ -379,7 +353,6 @@ PNG.prototype.unfilterLine = function (filter, line, prior) {
   }
   return line
 }
-
 PNG.prototype.sampleLine = function (line, width) {
   let samples = []
     , x       = 0
@@ -389,7 +362,6 @@ PNG.prototype.sampleLine = function (line, width) {
     , sample
     , shiftStart
     , toShift
-
   while (x < line.length) {
     pendingSamples = this.sampleDepth
     while (pendingSamples--) {
@@ -426,15 +398,12 @@ PNG.prototype.sampleLine = function (line, width) {
       x++
     }
   }
-
   // Needed for deinterlacing?
   if (width != null) {
     samples = samples.slice(0, width * this.sampleDepth)
   }
-
   return samples
 }
-
 // http://www.w3.org/TR/PNG-Filters.html
 PNG.prototype.filters = {
   sub: function Sub(x, line, prior, bpp) {
@@ -469,7 +438,6 @@ PNG.prototype.filters = {
     return c
   }
 }
-
 /**
  * Adam7 deinterlacing ported to javascript from PyPNG:
  * pypng - Pure Python library for PNG image encoding/decoding
@@ -522,7 +490,6 @@ PNG.prototype.sampleInterlacedLines = function (raw) {
     , j
     , k
     , f
-
   const adam7 = [
     [ 0, 0, 8, 8 ],
     [ 4, 0, 8, 8 ],
@@ -532,19 +499,15 @@ PNG.prototype.sampleInterlacedLines = function (raw) {
     [ 1, 0, 2, 2 ],
     [ 0, 1, 1, 2 ]
   ]
-
   // Fractional bytes per pixel
   psize = (this.bitDepth / 8) * this.sampleDepth
-
   // Values per row (of the target image)
   vpr = this.width * this.sampleDepth
-
   // Make a result array, and make it big enough. Interleaving
   // writes to the output array randomly (well, not quite), so the
   // entire output array must be in memory.
   samples = new Buffer(vpr * this.height)
   samples.fill(0)
-
   source_offset = 0
 
   for (i = 0; i < adam7.length; i++) {
@@ -589,14 +552,11 @@ PNG.prototype.sampleInterlacedLines = function (raw) {
       }
     }
   }
-
   return samples
 }
-
 PNG.prototype.createBitmap = function (pixels) {
   const bmp = []
   let i
-
   if (this.colorType === 0) {
     pixels = pixels.map(function (sample) {
       return { r: sample[0], g: sample[0], b: sample[0], a: 255 }
@@ -623,14 +583,11 @@ PNG.prototype.createBitmap = function (pixels) {
       return { r: sample[0], g: sample[1], b: sample[2], a: sample[3] }
     })
   }
-
   for (i = 0; i < pixels.length; i += this.width) {
     bmp.push(pixels.slice(i, i + this.width))
   }
-
   return bmp
 }
-
 PNG.prototype.createCellmap = function (bmp, options) {
   var bmp      = bmp || this.bmp
     , options  = options || this.options
@@ -648,22 +605,18 @@ PNG.prototype.createCellmap = function (bmp, options) {
     , scale
     , xs
     , ys
-
   if (cmwidth) {
     scale = cmwidth / width
   }
   else if (cmheight) {
     scale = cmheight / height
   }
-
   if (!cmheight) {
     cmheight = Math.round(height * scale)
   }
-
   if (!cmwidth) {
     cmwidth = Math.round(width * scale)
   }
-
   ys = height / cmheight
   xs = width / cmwidth
 
@@ -678,10 +631,8 @@ PNG.prototype.createCellmap = function (bmp, options) {
     }
     cellmap.push(line)
   }
-
   return cellmap
 }
-
 PNG.prototype.renderANSI = function (bmp) {
   const self = this
   let out = ''
@@ -693,10 +644,8 @@ PNG.prototype.renderANSI = function (bmp) {
     })
     out += '\n'
   })
-
   return out
 }
-
 PNG.prototype.renderContent = function (bmp, el) {
   const self = this
   let out = ''
@@ -708,12 +657,9 @@ PNG.prototype.renderContent = function (bmp, el) {
     })
     out += '\n'
   })
-
   el.setContent(out)
-
   return out
 }
-
 PNG.prototype.renderScreen = function (bmp, screen, xi, xl, yi, yl) {
   const self = this
     , lines  = screen.lines
@@ -736,7 +682,6 @@ PNG.prototype.renderScreen = function (bmp, screen, xi, xl, yi, yl) {
     cellLines.push(cellLine)
     return cellLines
   }, [])
-
   for (y = yi; y < yl; y++) {
     yy = y - yi
     for (x = xi; x < xl; x++) {
@@ -763,16 +708,13 @@ PNG.prototype.renderScreen = function (bmp, screen, xi, xl, yi, yl) {
     }
   }
 }
-
 PNG.prototype.renderElement = function (bmp, el) {
   const xi = el.aleft + el.ileft
     , xl   = el.aleft + el.width - el.iright
     , yi   = el.atop + el.itop
     , yl   = el.atop + el.height - el.ibottom
-
   return this.renderScreen(bmp, el.screen, xi, xl, yi, yl)
 }
-
 PNG.prototype.pixelToSGR = function (pixel, ch) {
   const bga = 1.0
     , fga   = 0.5
@@ -784,7 +726,6 @@ PNG.prototype.pixelToSGR = function (pixel, ch) {
     pixel.r * a * bga | 0,
     pixel.g * a * bga | 0,
     pixel.b * a * bga | 0)
-
   if (ch && this.options.ascii) {
     fg = this.colors.match(
       pixel.r * a * fga | 0,
@@ -795,12 +736,9 @@ PNG.prototype.pixelToSGR = function (pixel, ch) {
     }
     return '\x1b[38;5;' + fg + 'm\x1b[48;5;' + bg + 'm' + ch + '\x1b[m'
   }
-
   if (a === 0) return ' '
-
   return '\x1b[48;5;' + bg + 'm \x1b[m'
 }
-
 PNG.prototype.pixelToTags = function (pixel, ch) {
   const bga = 1.0
     , fga   = 0.5
@@ -812,7 +750,6 @@ PNG.prototype.pixelToTags = function (pixel, ch) {
     pixel.r * a * bga | 0,
     pixel.g * a * bga | 0,
     pixel.b * a * bga | 0)
-
   if (ch && this.options.ascii) {
     fg = this.colors.RGBtoHex(
       pixel.r * a * fga | 0,
@@ -823,12 +760,9 @@ PNG.prototype.pixelToTags = function (pixel, ch) {
     }
     return '{' + fg + '-fg}{' + bg + '-bg}' + ch + '{/}'
   }
-
   if (a === 0) return ' '
-
   return '{' + bg + '-bg} {/' + bg + '-bg}'
 }
-
 PNG.prototype.pixelToCell = function (pixel, ch) {
   const bga = 1.0
     , fga   = 0.5
@@ -840,7 +774,6 @@ PNG.prototype.pixelToCell = function (pixel, ch) {
     pixel.r * bga | 0,
     pixel.g * bga | 0,
     pixel.b * bga | 0)
-
   if (ch && this.options.ascii) {
     fg = this.colors.match(
       pixel.r * fga | 0,
@@ -851,50 +784,39 @@ PNG.prototype.pixelToCell = function (pixel, ch) {
     fg = 0x1ff
     ch = null
   }
-
   // if (a === 0) bg = 0x1ff;
-
   return [ (0 << 18) | (fg << 9) | (bg << 0), ch || ' ', a ]
 }
-
 // Taken from libcaca:
 PNG.prototype.getOutch = (function () {
   const dchars = '????8@8@#8@8##8#MKXWwz$&%x><\\/xo;+=|^-:i\'.`,  `.        '
-
   const luminance = function (pixel) {
     const a = pixel.a / 255
       , r   = pixel.r * a
       , g   = pixel.g * a
       , b   = pixel.b * a
       , l   = 0.2126 * r + 0.7152 * g + 0.0722 * b
-
     return l / 255
   }
-
   return function (x, y, line, pixel) {
     const lumi = luminance(pixel)
       , outch  = dchars[lumi * (dchars.length - 1) | 0]
-
     return outch
   }
 })()
-
 PNG.prototype.compileFrames = function (frames) {
   return this.optimization === 'mem'
     ? this.compileFrames_lomem(frames)
     : this.compileFrames_locpu(frames)
 }
-
 PNG.prototype.compileFrames_lomem = function (frames) {
   if (!this.actl) return
   return frames.map(function (frame, i) {
     this.width = frame.fctl.width
     this.height = frame.fctl.height
-
     const pixels = frame._pixels || this.parseLines(frame.fdat)
       , bmp      = frame._bmp || this.createBitmap(pixels)
       , fc       = frame.fctl
-
     return {
       actl: this.actl,
       fctl: frame.fctl,
@@ -903,23 +825,18 @@ PNG.prototype.compileFrames_lomem = function (frames) {
     }
   }, this)
 }
-
 PNG.prototype.compileFrames_locpu = function (frames) {
   if (!this.actl) return
-
   this._curBmp = null
   this._lastBmp = null
-
   return frames.map(function (frame, i) {
     this.width = frame.fctl.width
     this.height = frame.fctl.height
-
     const pixels  = frame._pixels || this.parseLines(frame.fdat)
       , bmp       = frame._bmp || this.createBitmap(pixels)
       , renderBmp = this.renderFrame(bmp, frame, i)
       , cellmap   = this.createCellmap(renderBmp)
       , fc        = frame.fctl
-
     return {
       actl: this.actl,
       fctl: frame.fctl,
@@ -929,7 +846,6 @@ PNG.prototype.compileFrames_locpu = function (frames) {
     }
   }, this)
 }
-
 PNG.prototype.renderFrame = function (bmp, frame, i) {
   const first = this.frames[0]
     , last    = this.frames[i - 1]
@@ -942,7 +858,6 @@ PNG.prototype.renderFrame = function (bmp, frame, i) {
     , y
     , line
     , p
-
   if (!this._curBmp) {
     this._curBmp = []
     for (y = 0; y < first.fctl.height; y++) {
@@ -954,7 +869,6 @@ PNG.prototype.renderFrame = function (bmp, frame, i) {
       this._curBmp.push(line)
     }
   }
-
   if (last && last.fctl.disposeOp !== 0) {
     lxo = last.fctl.xOffset
     lyo = last.fctl.yOffset
@@ -975,7 +889,6 @@ PNG.prototype.renderFrame = function (bmp, frame, i) {
       }
     }
   }
-
   if (frame.fctl.disposeOp === 2) {
     this._lastBmp = []
     for (y = 0; y < frame.fctl.height; y++) {
@@ -990,7 +903,6 @@ PNG.prototype.renderFrame = function (bmp, frame, i) {
   else {
     this._lastBmp = null
   }
-
   for (y = 0; y < frame.fctl.height; y++) {
     for (x = 0; x < frame.fctl.width; x++) {
       p = bmp[y][x]
@@ -1006,26 +918,20 @@ PNG.prototype.renderFrame = function (bmp, frame, i) {
       }
     }
   }
-
   return this._curBmp
 }
-
 PNG.prototype._animate = function (callback) {
   if (!this.frames) {
     return callback(this.bmp, this.cellmap)
   }
-
   const self = this
   let numPlays = this.actl.numPlays || Infinity
   let running = 0
     , i       = -1
-
   this._curBmp = null
   this._lastBmp = null
-
   const next_lomem = function () {
     if (!running) return
-
     const frame = self.frames[++i]
     if (!frame) {
       if (!--numPlays) return callback()
@@ -1035,15 +941,12 @@ PNG.prototype._animate = function (callback) {
       self._lastBmp = null
       return setImmediate(next)
     }
-
     const bmp     = frame.bmp
       , renderBmp = self.renderFrame(bmp, frame, i)
       , cellmap   = self.createCellmap(renderBmp)
-
     callback(renderBmp, cellmap)
     return setTimeout(next, frame.delay / self.speed | 0)
   }
-
   const next_locpu = function () {
     if (!running) return
     const frame = self.frames[++i]
@@ -1055,11 +958,9 @@ PNG.prototype._animate = function (callback) {
     callback(frame.bmp, frame.cellmap)
     return setTimeout(next, frame.delay / self.speed | 0)
   }
-
   var next = this.optimization === 'mem'
     ? next_lomem
     : next_locpu
-
   this._control = function (state) {
     if (state === -1) {
       i = -1
@@ -1074,10 +975,8 @@ PNG.prototype._animate = function (callback) {
     running = state
     return next()
   }
-
   this._control(1)
 }
-
 PNG.prototype.play = function (callback) {
   if (!this._control || callback) {
     this.stop()
@@ -1085,17 +984,14 @@ PNG.prototype.play = function (callback) {
   }
   this._control(1)
 }
-
 PNG.prototype.pause = function () {
   if (!this._control) return
   this._control(0)
 }
-
 PNG.prototype.stop = function () {
   if (!this._control) return
   this._control(-1)
 }
-
 PNG.prototype.toPNG = function (input) {
   const options = this.options
     , file      = this.file
@@ -1106,7 +1002,6 @@ PNG.prototype.toPNG = function (input) {
     , i
     , control
     , disposeOp
-
   if (format !== 'gif') {
     buf = exec('convert', [ format + ':-', 'png:-' ],
       { stdio: [ 'pipe', 'pipe', 'ignore' ], input: input })
@@ -1114,9 +1009,7 @@ PNG.prototype.toPNG = function (input) {
     img.file = file
     return img
   }
-
   gif = GIF(input, options)
-
   this.width = gif.width
   this.height = gif.height
   this.frames = []
@@ -1145,10 +1038,8 @@ PNG.prototype.toPNG = function (input) {
       _bmp: img.bmp
     })
   }
-
   this.bmp = this.frames[0]._bmp
   this.cellmap = this.createCellmap(this.bmp)
-
   if (this.frames.length > 1) {
     this.actl = { numFrames: gif.images.length, numPlays: gif.numPlays || 0 }
     this.frames = this.compileFrames(this.frames)
@@ -1156,10 +1047,8 @@ PNG.prototype.toPNG = function (input) {
   else {
     this.frames = undefined
   }
-
   return this
 }
-
 // Convert a gif to an apng using imagemagick. Unfortunately imagemagick
 // doesn't support apngs, so we coalesce the gif frames into one image and then
 // slice them into frames.
@@ -1185,26 +1074,21 @@ PNG.prototype.gifMagick = function (input) {
   buf = exec('convert',
     [ format + ':-', '-coalesce', '+append', 'png:-' ],
     { stdio: [ 'pipe', 'pipe', 'ignore' ], input: input })
-
   fmt = '{"W":%W,"H":%H,"w":%w,"h":%h,"d":%T,"x":"%X","y":"%Y"},'
   frames = exec('identify', [ '-format', fmt, format + ':-' ],
     { encoding: 'utf8', stdio: [ 'pipe', 'pipe', 'ignore' ], input: input })
   frames = JSON.parse('[' + frames.trim().slice(0, -1) + ']')
-
   img = PNG(buf, options)
   img.file = file
   Object.keys(img).forEach(function (key) {
     this[key] = img[key]
   }, this)
-
   width = frames[0].W
   height = frames[0].H
   iwidth = 0
   twidth = 0
-
   this.width = width
   this.height = height
-
   this.frames = []
 
   for (i = 0; i < frames.length; i++) {
@@ -1223,7 +1107,6 @@ PNG.prototype.gifMagick = function (input) {
       }
       lines.push(line)
     }
-
     this.frames.push({
       fctl: {
         sequenceNumber: i,
@@ -1241,10 +1124,8 @@ PNG.prototype.gifMagick = function (input) {
       _bmp: lines
     })
   }
-
   this.bmp = this.frames[0]._bmp
   this.cellmap = this.createCellmap(this.bmp)
-
   if (this.frames.length > 1) {
     this.actl = { numFrames: frames.length, numPlays: 0 }
     this.frames = this.compileFrames(this.frames)
@@ -1252,16 +1133,13 @@ PNG.prototype.gifMagick = function (input) {
   else {
     this.frames = undefined
   }
-
   return this
 }
-
 PNG.prototype.decompress = function (buffers) {
   return zlib.inflateSync(new Buffer(buffers.reduce(function (out, data) {
     return out.concat(Array.prototype.slice.call(data))
   }, [])))
 }
-
 /**
  * node-crc
  * https://github.com/alexgorbatchev/node-crc
@@ -1337,7 +1215,6 @@ PNG.prototype.crc32 = (function () {
     0x54de5729, 0x23d967bf, 0xb3667a2e, 0xc4614ab8, 0x5d681b02, 0x2a6f2b94,
     0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d
   ]
-
   return function crc32(buf) {
     //var crc = previous === 0 ? 0 : ~~previous ^ -1;
     let crc = -1
@@ -1349,23 +1226,19 @@ PNG.prototype.crc32 = (function () {
     return crc ^ -1
   }
 })()
-
 PNG.prototype._debug = function () {
   if (!this.options.log) return
   return this.options.log.apply(null, arguments)
 }
-
 /**
  * GIF
  */
 
 function GIF(file, options) {
   const self = this
-
   if (!(this instanceof GIF)) {
     return new GIF(file, options)
   }
-
   const info = {}
   let p = 0
     , buf
@@ -1377,19 +1250,14 @@ function GIF(file, options) {
     , ext
     , label
     , size
-
   if (!file) throw new Error('no file')
-
   options = options || {}
-
   this.options = options
-
   // XXX If the gif is not optimized enough
   // it may OOM the process with too many frames.
   // TODO: Implement in PNG reader.
   this.pixelLimit = this.options.pixelLimit || 7622550
   this.totalPixels = 0
-
   if (Buffer.isBuffer(file)) {
     buf = file
     file = null
@@ -1398,23 +1266,18 @@ function GIF(file, options) {
     file = path.resolve(process.cwd(), file)
     buf = fs.readFileSync(file)
   }
-
   sig = buf.slice(0, 6).toString('ascii')
   if (sig !== 'GIF87a' && sig !== 'GIF89a') {
     throw new Error('bad header: ' + sig)
   }
-
   this.width = buf.readUInt16LE(6)
   this.height = buf.readUInt16LE(8)
-
   this.flags = buf.readUInt8(10)
   this.gct = !!(this.flags & 0x80)
   this.gctsize = (this.flags & 0x07) + 1
-
   this.bgIndex = buf.readUInt8(11)
   this.aspect = buf.readUInt8(12)
   p += 13
-
   if (this.gct) {
     this.colors = []
     total = 1 << this.gctsize
@@ -1422,7 +1285,6 @@ function GIF(file, options) {
       this.colors.push([ buf[p], buf[p + 1], buf[p + 2], 255 ])
     }
   }
-
   this.images = []
   this.extensions = []
 
@@ -1432,7 +1294,6 @@ function GIF(file, options) {
       p += 1
       if (desc === 0x2c) {
         img = {}
-
         img.left = buf.readUInt16LE(p)
         p += 2
         img.top = buf.readUInt16LE(p)
@@ -1449,7 +1310,6 @@ function GIF(file, options) {
         img.lct = !!(img.flags & 0x80)
         img.ilace = !!(img.flags & 0x40)
         img.lctsize = (img.flags & 0x07) + 1
-
         if (img.lct) {
           img.lcolors = []
           total = 1 << img.lctsize
@@ -1457,7 +1317,6 @@ function GIF(file, options) {
             img.lcolors.push([ buf[p], buf[p + 1], buf[p + 2], 255 ])
           }
         }
-
         img.codeSize = buf.readUInt8(p)
         p += 1
 
@@ -1466,7 +1325,6 @@ function GIF(file, options) {
 
         img.lzw = [ buf.slice(p, p + img.size) ]
         p += img.size
-
         while (buf[p] !== 0x00) {
           // Some gifs screw up their size.
           // XXX Same for all subblocks?
@@ -1479,18 +1337,13 @@ function GIF(file, options) {
           img.lzw.push(buf.slice(p, p + size))
           p += size
         }
-
         assert.equal(buf.readUInt8(p), 0x00)
         p += 1
-
         if (ext && ext.label === 0xf9) {
           img.control = ext
         }
-
         this.totalPixels += img.width * img.height
-
         this.images.push(img)
-
         if (this.totalPixels >= this.pixelLimit) {
           break
         }
@@ -1611,21 +1464,18 @@ function GIF(file, options) {
       throw e
     }
   }
-
   this.images = this.images.map(function (img, imageIndex) {
     const control = img.control || this
 
     img.lzw = new Buffer(img.lzw.reduce(function (out, data) {
       return out.concat(Array.prototype.slice.call(data))
     }, []))
-
     try {
       img.data = this.decompress(img.lzw, img.codeSize)
     } catch (e) {
       if (options.debug) throw e
       return
     }
-
     const interlacing = [
       [ 0, 8 ],
       [ 4, 8 ],
@@ -1633,7 +1483,6 @@ function GIF(file, options) {
       [ 1, 2 ],
       [ 0, 0 ]
     ]
-
     const table = img.lcolors || this.colors
     let row = 0
       , col = 0
@@ -1678,12 +1527,10 @@ function GIF(file, options) {
         }
       }
     }
-
     img.pixels = []
     for (i = 0; i < img.samples.length; i += 4) {
       img.pixels.push(img.samples.slice(i, i + 4))
     }
-
     img.bmp = []
     for (y = 0, p = 0; y < img.height; y++) {
       line = []
@@ -1698,15 +1545,12 @@ function GIF(file, options) {
       }
       img.bmp.push(line)
     }
-
     return img
   }, this).filter(Boolean)
-
   if (!this.images.length) {
     throw new Error('no image data or bad decompress')
   }
 }
-
 // Rewritten version of:
 // https://github.com/lbv/ka-cs-programs/blob/master/lib/gif-reader.js
 GIF.prototype.decompress = function (input, codeSize) {
@@ -1749,11 +1593,9 @@ GIF.prototype.decompress = function (input, codeSize) {
         buffer >>= n
       }
       code = ans
-
       if (code === EOI) {
         break
       }
-
       if (code === CC) {
         table = []
         for (i = 0; i < CC; ++i) {
@@ -1765,13 +1607,11 @@ GIF.prototype.decompress = function (input, codeSize) {
         oldCode = null
         continue
       }
-
       if (oldCode === null) {
         oldCode = code
         buf.push(table[code][0])
         continue
       }
-
       if (code < ntable) {
         for (i = code; i >= 0; i = table[i][1]) {
           stack.push(table[i][0])
@@ -1789,7 +1629,6 @@ GIF.prototype.decompress = function (input, codeSize) {
           stack.push(table[i][0])
         }
       }
-
       oldCode = code
       if (ntable === maxElem) {
         maxElem = 1 << (++bitDepth)
@@ -1800,10 +1639,8 @@ GIF.prototype.decompress = function (input, codeSize) {
     if (b == null) break
     buf.push(b)
   }
-
   return buf
 }
-
 /**
  * Expose
  */

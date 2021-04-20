@@ -144,7 +144,6 @@ export class _Scrollable extends Node {
   }
   _scrollBottom() {
     if (!this.scrollable) return 0
-
     // We could just calculate the children, but we can
     // optimize for lists by just returning the items.length.
     if (this._isList) {
@@ -153,7 +152,6 @@ export class _Scrollable extends Node {
     if (this.lpos && this.lpos._scrollBottom) {
       return this.lpos._scrollBottom
     }
-
     const bottom = this.children.reduce(function (current, el) {
       // el.height alone does not calculate the shrunken height, we need to use
       // getCoords. A shrunken box inside a scrollable element will not grow any
@@ -169,11 +167,9 @@ export class _Scrollable extends Node {
       }
       return Math.max(current, el.rtop + el.height)
     }, 0)
-
     // XXX Use this? Makes .getScrollHeight() useless!
     // if (bottom < this._clines.length) bottom = this._clines.length;
     if (this.lpos) this.lpos._scrollBottom = bottom
-
     return bottom
   }
   scrollTo(offset, always) {
@@ -188,7 +184,6 @@ export class _Scrollable extends Node {
   scroll(offset, always) {
     if (!this.scrollable) return
     if (this.detached) return
-
     // Handle scrolling.
     const visible = this.height - this.iheight,
           base    = this.childBase
@@ -223,19 +218,16 @@ export class _Scrollable extends Node {
     else if (this.childBase > this.baseLimit) {
       this.childBase = this.baseLimit
     }
-
     // Find max "bottom" value for
     // content and descendant elements.
     // Scroll the content if necessary.
     if (this.childBase === base) {
       return this.emit(SCROLL)
     }
-
     // When scrolling text, we want to be able to handle SGR codes as well as line
     // feeds. This allows us to take preformatted text output from other programs
     // and put it in a scrollable text box.
     this.parseContent()
-
     // XXX
     // max = this.getScrollHeight() - (this.height - this.iheight);
 
@@ -250,7 +242,6 @@ export class _Scrollable extends Node {
     else if (this.childBase > this.baseLimit) {
       this.childBase = this.baseLimit
     }
-
     // Optimize scrolling with CSR + IL/DL.
     p = this.lpos
     // Only really need _getCoords() if we want
@@ -272,7 +263,6 @@ export class _Scrollable extends Node {
         this.screen.insertLine(d, t, t, b)
       }
     }
-
     return this.emit(SCROLL)
   }
   _recalculateIndex() {
@@ -303,7 +293,6 @@ export class _Scrollable extends Node {
   getScrollPerc(s) {
     const pos = this.lpos || this._getCoords()
     if (!pos) return s ? -1 : 0
-
     const height = (pos.yl - pos.yi) - this.iheight,
           i      = this.getScrollHeight()
     let p
@@ -316,7 +305,6 @@ export class _Scrollable extends Node {
       }
       return p * 100
     }
-
     return s ? -1 : 0
   }
   setScrollPerc(i) {

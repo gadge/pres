@@ -57,7 +57,6 @@ function send_config(socket, Gpm_Connect, callback) {
     if (callback) callback()
   })
 }
-
 // typedef struct Gpm_Event {
 //   unsigned char buttons, modifiers;  // try to be a multiple of 4
 //   unsigned short vc;
@@ -91,9 +90,7 @@ function parseEvent(raw) {
   evnt.wdy = raw.readInt16LE(26)
   return evnt
 }
-
 export const gpmClient = options => new GpmClient(options)
-
 export class GpmClient extends EventEmitter {
   constructor(options = {}) {
     super()

@@ -87,21 +87,16 @@ export class Node extends EventEmitter {
   }
   remove(element) {
     if (element.parent !== this) return
-
     let i = this.children.indexOf(element)
     if (!~i) return
 
     element.clearPos()
-
     element.parent = null
-
     this.children.splice(i, 1)
-
     i = this.screen.clickable.indexOf(element)
     if (~i) this.screen.clickable.splice(i, 1)
     i = this.screen.keyable.indexOf(element)
     if (~i) this.screen.keyable.splice(i, 1)
-
     element.emit(REPARENT, null)
     this.emit(REMOVE, element);
 
@@ -111,7 +106,6 @@ export class Node extends EventEmitter {
       if (n) el.emit(DETACH)
       el.children.forEach(emit)
     })(element)
-
     if (this.screen.focused === element) {
       this.screen.rewindFocus()
     }
@@ -161,11 +155,9 @@ export class Node extends EventEmitter {
   emitDescendants() {
     const args = Array.prototype.slice(arguments)
     let iter
-
     if (typeof args[args.length - 1] === 'function') {
       iter = args.pop()
     }
-
     return this.forDescendants(function (el) {
       if (iter) iter(el)
       el.emit.apply(el, args)
@@ -174,11 +166,9 @@ export class Node extends EventEmitter {
   emitAncestors() {
     const args = Array.prototype.slice(arguments)
     let iter
-
     if (typeof args[args.length - 1] === 'function') {
       iter = args.pop()
     }
-
     return this.forAncestors(function (el) {
       if (iter) iter(el)
       el.emit.apply(el, args)
@@ -209,5 +199,4 @@ export class Node extends EventEmitter {
     return this.data[name] = value
   }
 }
-
 // Node.prototype.__proto__ = EventEmitter.prototype

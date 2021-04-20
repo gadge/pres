@@ -196,11 +196,9 @@ export class Form extends Box {
       }
       el.children.forEach(fn)
     })
-
     this.emit(RESET)
   }
 }
-
 
 
 

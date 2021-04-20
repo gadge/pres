@@ -16,13 +16,10 @@ export class Button extends Input {
     if (options.autoFocus == null) options.autoFocus = false
     super(options)
     const self = this
-
     // if (!(this instanceof Node)) return new Button(options)
-
     this.on(KEYPRESS, function (ch, key) {
       if (key.name === ENTER || key.name === SPACE) return self.press()
     })
-
     if (this.options.mouse) {
       this.on(CLICK, function () {
         return self.press()
@@ -38,7 +35,6 @@ export class Button extends Input {
     return result
   }
 }
-
 
 
 

@@ -41,7 +41,6 @@ function Program(options) {
       output: arguments[1]
     }
   }
-
   this.options = options
   this.input = options.input || process.stdin
   this.output = options.output || process.stdout
@@ -51,26 +50,20 @@ function Program(options) {
     this._logger = fs.createWriteStream(options.log)
     if (options.dump) this.setupDump()
   }
-
   this.zero = options.zero !== false
   this.useBuffer = options.buffer
-
   this.x = 0
   this.y = 0
   this.savedX = 0
   this.savedY = 0
-
   this.cols = this.output.columns || 1
   this.rows = this.output.rows || 1
-
   this.scrollTop = 0
   this.scrollBottom = this.rows - 1
-
   this._terminal = options.terminal
     || options.term
     || process.env.TERM
     || (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
-
   this._terminal = this._terminal.toLowerCase()
 
   // OSX
@@ -93,7 +86,6 @@ function Program(options) {
   // xterm and rxvt - not accurate
   this.isRxvt = /rxvt/i.test(process.env.COLORTERM)
   this.isXterm = false
-
   this.tmux = !!process.env.TMUX
   this.tmuxVersion = (function () {
     if (!self.tmux) return 2
@@ -104,14 +96,12 @@ function Program(options) {
       return 2
     }
   })()
-
   this._buf = ''
   this._flush = this.flush.bind(this)
 
   if (options.tput !== false) {
     this.setupTput()
   }
-
   this.listen()
 }
 
@@ -227,11 +217,9 @@ Program.prototype.setupDump = function () {
       return '^' + ch
     })
   }
-
   this.input.on(DATA, function (data) {
     self._log('IN', stringify(decoder.write(data)))
   })
-
   this.output.write = function (data) {
     self._log('OUT', stringify(data))
     return write.apply(this, arguments)
@@ -266,7 +254,6 @@ Program.prototype.setupTput = function () {
       self.emit(WARNING, 'Terminfo padding has been enabled.')
     })
   }
-
   this.put = function () {
     const args = slice.call(arguments),
           cap  = args.shift()
@@ -344,7 +331,6 @@ Program.prototype.listen = function () {
   else {
     this.input._blessedInput++
   }
-
   this.on(NEW_LISTENER, this._newHandler = function fn(type) {
     if (type === KEYPRESS || type === MOUSE) {
       self.removeListener(NEW_LISTENER, fn)
@@ -354,7 +340,6 @@ Program.prototype.listen = function () {
       }
     }
   })
-
   this.on(NEW_LISTENER, function fn(type) {
     if (type === MOUSE) {
       self.removeListener(NEW_LISTENER, fn)
@@ -412,7 +397,6 @@ Program.prototype._listenInput = function () {
       program.emit('key ' + name, ch, key)
     })
   })
-
   this.input.on(DATA, this.input._dataHandler = function (data) {
     Program.instances.forEach(function (program) {
       if (program.input !== self.input) return
@@ -441,7 +425,6 @@ Program.prototype._listenOutput = function () {
       program.emit(RESIZE)
     })
   }
-
   this.output.on(RESIZE, this.output._resizeHandler = function () {
     Program.instances.forEach(function (program) {
       if (program.output !== self.output) return
@@ -466,7 +449,6 @@ Program.prototype.destroy = function () {
   if (~index) {
     Program.instances.splice(index, 1)
     Program.total--
-
     this.flush()
     this._exiting = true
 
@@ -480,7 +462,6 @@ Program.prototype.destroy = function () {
 
       delete Program._bound
     }
-
     this.input._blessedInput--
     this.output._blessedOutput--
 
@@ -504,10 +485,8 @@ Program.prototype.destroy = function () {
       this.output.removeListener(RESIZE, this.output._resizeHandler)
       delete this.output._resizeHandler
     }
-
     this.removeListener(NEW_LISTENER, this._newHandler)
     delete this._newHandler
-
     this.destroyed = true
     this.emit(DESTROY)
   }
@@ -560,7 +539,6 @@ Program.prototype.bindMouse = function () {
 
   const decoder = new StringDecoder('utf8'),
         self    = this
-
   this.on(DATA, function (data) {
     const text = decoder.write(data)
     if (!text) return
@@ -924,9 +902,7 @@ Program.prototype.enableGpm = function () {
   const gpmclient = require('../src/gpmclient')
 
   if (this.gpm) return
-
   this.gpm = gpmclient()
-
   this.gpm.on(BTNDOWN, function (btn, modifier, x, y) {
     x--, y--
 
@@ -945,7 +921,6 @@ Program.prototype.enableGpm = function () {
 
     self.emit(MOUSE, key)
   })
-
   this.gpm.on(BTNUP, function (btn, modifier, x, y) {
     x--, y--
 
@@ -964,7 +939,6 @@ Program.prototype.enableGpm = function () {
 
     self.emit(MOUSE, key)
   })
-
   this.gpm.on(MOVE, function (btn, modifier, x, y) {
     x--, y--
 
@@ -983,7 +957,6 @@ Program.prototype.enableGpm = function () {
 
     self.emit(MOUSE, key)
   })
-
   this.gpm.on(DRAG, function (btn, modifier, x, y) {
     x--, y--
 
@@ -1002,7 +975,6 @@ Program.prototype.enableGpm = function () {
 
     self.emit(MOUSE, key)
   })
-
   this.gpm.on(MOUSEWHEEL, function (btn, modifier, x, y, dx, dy) {
     const key = {
       name: MOUSE,
@@ -1035,7 +1007,6 @@ Program.prototype.bindResponse = function () {
 
   const decoder = new StringDecoder('utf8'),
         self    = this
-
   this.on(DATA, function (data) {
     data = decoder.write(data)
     if (!data) return
@@ -1166,7 +1137,6 @@ Program.prototype._bindResponse = function (s) {
 
     // LEGACY
     out.deviceAttributes = out
-
     this.emit(RESPONSE, out)
     this.emit('response ' + out.event, out)
 
@@ -1199,7 +1169,6 @@ Program.prototype._bindResponse = function (s) {
 
       // LEGACY
       out.deviceStatus = out.status
-
       this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
@@ -1214,7 +1183,6 @@ Program.prototype._bindResponse = function (s) {
 
       // LEGACY
       out.printerStatus = out.status
-
       this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
@@ -1229,7 +1197,6 @@ Program.prototype._bindResponse = function (s) {
 
       // LEGACY
       out.UDKStatus = out.status
-
       this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
@@ -1246,7 +1213,6 @@ Program.prototype._bindResponse = function (s) {
 
       // LEGACY
       out.keyboardStatus = out.status
-
       this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
@@ -1261,7 +1227,6 @@ Program.prototype._bindResponse = function (s) {
 
       // LEGACY
       out.locator = out.status
-
       this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
@@ -1273,7 +1238,6 @@ Program.prototype._bindResponse = function (s) {
 
     // LEGACY
     out.error = out.text
-
     this.emit(RESPONSE, out)
     this.emit('response ' + out.event, out)
 
@@ -1305,7 +1269,6 @@ Program.prototype._bindResponse = function (s) {
 
     // LEGACY
     out.cursor = out.status
-
     this.emit(RESPONSE, out)
     this.emit('response ' + out.event, out)
 
@@ -1340,7 +1303,6 @@ Program.prototype._bindResponse = function (s) {
 
       // LEGACY
       out.windowState = out.state
-
       this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
@@ -1359,7 +1321,6 @@ Program.prototype._bindResponse = function (s) {
 
       // LEGACY
       out.windowPosition = out.position
-
       this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
@@ -1377,7 +1338,6 @@ Program.prototype._bindResponse = function (s) {
 
       // LEGACY
       out.windowSizePixels = out.size
-
       this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
@@ -1395,7 +1355,6 @@ Program.prototype._bindResponse = function (s) {
 
       // LEGACY
       out.textAreaSizeCharacters = out.size
-
       this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
@@ -1413,7 +1372,6 @@ Program.prototype._bindResponse = function (s) {
 
       // LEGACY
       out.screenSizeCharacters = out.size
-
       this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
@@ -1425,7 +1383,6 @@ Program.prototype._bindResponse = function (s) {
 
     // LEGACY
     out.error = out.text
-
     this.emit(RESPONSE, out)
     this.emit('response ' + out.event, out)
 
@@ -1466,7 +1423,6 @@ Program.prototype._bindResponse = function (s) {
 
       // LEGACY
       out.windowIconLabel = out.text
-
       this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
@@ -1479,7 +1435,6 @@ Program.prototype._bindResponse = function (s) {
 
       // LEGACY
       out.windowTitle = out.text
-
       this.emit(RESPONSE, out)
       this.emit('response ' + out.event, out)
 
@@ -1491,7 +1446,6 @@ Program.prototype._bindResponse = function (s) {
 
     // LEGACY
     out.error = out.text
-
     this.emit(RESPONSE, out)
     this.emit('response ' + out.event, out)
 
@@ -1582,7 +1536,6 @@ Program.prototype._bindResponse = function (s) {
 
     // LEGACY
     out.locatorPosition = out
-
     this.emit(RESPONSE, out)
     this.emit('response ' + out.event, out)
 
@@ -1614,7 +1567,6 @@ Program.prototype.response = function (name, text, callback, noBypass) {
   if (!callback) {
     callback = function () {}
   }
-
   this.bindResponse()
 
   name = name
@@ -1622,7 +1574,6 @@ Program.prototype.response = function (name, text, callback, noBypass) {
     : RESPONSE
 
   let onresponse
-
   this.once(name, onresponse = function (event) {
     if (timeout) clearTimeout(timeout)
     if (event.type === 'error') {
@@ -1658,7 +1609,6 @@ Program.prototype._buffer = function (text) {
     this._buf += text
     return
   }
-
   this._buf = text
 
   nextTick(this._flush)
@@ -4256,7 +4206,6 @@ Program.prototype.pause = function (callback) {
   const self         = this,
         isAlt        = this.isAlt,
         mouseEnabled = this.mouseEnabled
-
   this.lsaveCursor('pause')
   //this.csr(0, screen.height - 1);
   if (isAlt) this.normalBuffer()

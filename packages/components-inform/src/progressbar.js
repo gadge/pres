@@ -55,11 +55,9 @@ export class ProgressBar extends Input {
         if (key.name === forward[0] || (options.vi && key.name === forward[1])) {
           self.progress(5)
           self.screen.render()
-
         }
       })
     }
-
     if (options.mouse) {
       this.on(CLICK, function (data) {
         let x, y, m, p
@@ -82,27 +80,21 @@ export class ProgressBar extends Input {
   render() {
     const ret = this._render()
     if (!ret) return
-
     let
       xi = ret.xi,
       xl = ret.xl,
       yi = ret.yi,
       yl = ret.yl,
       dattr
-
     if (this.border) xi++, yi++, xl--, yl--
-
     if (this.orientation === 'horizontal') {
       xl = xi + ((xl - xi) * (this.filled / 100)) | 0
     }
     else if (this.orientation === 'vertical') {
       yi = yi + ((yl - yi) - (((yl - yi) * (this.filled / 100)) | 0))
     }
-
     dattr = this.sattr(this.style.bar)
-
     this.screen.fillRegion(dattr, this.pch, xi, xl, yi, yl)
-
     if (this.content) {
       const line = this.screen.lines[yi]
       for (let i = 0; i < this.content.length; i++) {
@@ -110,7 +102,6 @@ export class ProgressBar extends Input {
       }
       line.dirty = true
     }
-
     return ret
   }
   progress(filled) {
@@ -132,5 +123,4 @@ export class ProgressBar extends Input {
     this.value = this.filled
   }
 }
-
 

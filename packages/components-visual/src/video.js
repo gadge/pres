@@ -4,8 +4,7 @@
  * https://github.com/chjj/blessed
  */
 
-import { Box, Terminal } from '@pres/components-core'
-
+import { Box, Terminal }  from '@pres/components-core'
 import { CLICK, RESIZE, } from '@pres/enum-events'
 import cp                 from 'child_process'
 
@@ -34,7 +33,6 @@ export class Video extends Box {
         + ' mplayer or mpv not installed.{/red-fg}')
       return this
     }
-
     const opts = {
       parent: this,
       left: 0,
@@ -44,7 +42,6 @@ export class Video extends Box {
       shell: shell,
       args: args.slice()
     }
-
     this.now = Date.now() / 1000 | 0
     this.start = opts.start || 0
     if (this.start) {
@@ -55,21 +52,17 @@ export class Video extends Box {
         opts.args.unshift('--start', this.start + '')
       }
     }
-
     const DISPLAY = process.env.DISPLAY
     delete process.env.DISPLAY
     this.tty = new Terminal(opts)
     process.env.DISPLAY = DISPLAY
-
     this.on(CLICK, function () {
       self.tty.pty.write('p')
     })
-
     // mplayer/mpv cannot resize itself in the terminal, so we have
     // to restart it at the correct start time.
     this.on(RESIZE, function () {
       self.tty.destroy()
-
       const opts = {
         parent: self,
         left: 0,
@@ -79,7 +72,6 @@ export class Video extends Box {
         shell: shell,
         args: args.slice()
       }
-
       const watched = (Date.now() / 1000 | 0) - self.now
       self.now = Date.now() / 1000 | 0
       self.start += watched
@@ -89,7 +81,6 @@ export class Video extends Box {
       else if (shell === 'mpv') {
         opts.args.unshift('--start', self.start + '')
       }
-
       const DISPLAY = process.env.DISPLAY
       delete process.env.DISPLAY
       self.tty = new Terminal(opts)
@@ -108,7 +99,6 @@ export class Video extends Box {
     }
   }
 }
-
 
 /**
  * Expose
