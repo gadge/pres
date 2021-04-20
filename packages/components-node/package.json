@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-node",
-  "version": "0.0.15",
+  "version": "0.0.16",
   "description": "Node component for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@pres/enum-events": "^0.0.15",
-    "@pres/events": "^0.0.15"
+    "@pres/events": "^0.0.16"
   },
   "repository": {
     "type": "git",
