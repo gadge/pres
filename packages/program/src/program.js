@@ -630,10 +630,7 @@ export class Program extends EventEmitter {
       if (key.name === UNDEFINED) return
       if (key.name === ENTER && key.sequence === '\n') key.name = 'linefeed'
       if (key.name === RETURN && key.sequence === '\r') self.input.emit(KEYPRESS, ch, merge({}, key, { name: ENTER }))
-      const name = (key.ctrl ? 'C-' : '')
-        + (key.meta ? 'M-' : '')
-        + (key.shift && key.name ? 'S-' : '')
-        + (key.name || ch)
+      const name = (key.ctrl ? 'C-' : '') + (key.meta ? 'M-' : '') + (key.shift && key.name ? 'S-' : '') + (key.name || ch)
       key.full = name
       Program.instances.forEach(function (program) {
         if (program.input !== self.input) return
@@ -641,12 +638,12 @@ export class Program extends EventEmitter {
         program.emit('key ' + name, ch, key)
       })
     })
-    this.input.on(DATA, this.input._dataHandler = function (data) {
-      Program.instances.forEach(function (program) {
-        if (program.input !== self.input) return
-        program.emit(DATA, data)
-      })
-    })
+    this.input.on(DATA,
+      this.input._dataHandler =
+        data => Program.instances.forEach(
+          program => program.input !== self.input ? void 0 : void program.emit(DATA, data)
+        )
+    )
     emitKeypressEvents(this.input)
   }
   _listenOutput() {
@@ -1048,11 +1045,7 @@ export class Program extends EventEmitter {
       key.y = y
       if (this.zero) key.x--, key.y--
       key.action = MOUSEDOWN
-      key.button =
-        b === 1 ? LEFT
-          : b === 2 ? MIDDLE
-          : b === 5 ? RIGHT
-            : UNKNOWN
+      key.button = b === 1 ? LEFT : b === 2 ? MIDDLE : b === 5 ? RIGHT : UNKNOWN
       self.emit(MOUSE, key)
       return
     }

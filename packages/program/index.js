@@ -1,3 +1,1 @@
-import { build, Program } from './src/program'
-
-export { build, Program }
+export { Program } from './src/program'

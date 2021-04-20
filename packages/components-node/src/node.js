@@ -106,16 +106,10 @@ export class Node extends EventEmitter {
       if (n) el.emit(DETACH)
       el.children.forEach(emit)
     })(element)
-    if (this.screen.focused === element) {
-      this.screen.rewindFocus()
-    }
+    if (this.screen.focused === element) { this.screen.rewindFocus() }
   }
-  detach() {
-    if (this.parent) this.parent.remove(this)
-  }
-  free() {
-
-  }
+  detach() { if (this.parent) this.parent.remove(this) }
+  free() { }
   destroy() {
     this.detach()
     this.forDescendants(function (el) {
@@ -134,30 +128,22 @@ export class Node extends EventEmitter {
   forAncestors(iter, s) {
     let el = this
     if (s) iter(this)
-    while ((el = el.parent)) {
-      iter(el)
-    }
+    while ((el = el.parent)) { iter(el) }
   }
   collectDescendants(s) {
     const out = []
-    this.forDescendants(function (el) {
-      out.push(el)
-    }, s)
+    this.forDescendants(el => out.push(el), s)
     return out
   }
   collectAncestors(s) {
     const out = []
-    this.forAncestors(function (el) {
-      out.push(el)
-    }, s)
+    this.forAncestors(el => out.push(el), s)
     return out
   }
   emitDescendants() {
     const args = Array.prototype.slice(arguments)
     let iter
-    if (typeof args[args.length - 1] === 'function') {
-      iter = args.pop()
-    }
+    if (typeof args[args.length - 1] === 'function') { iter = args.pop() }
     return this.forDescendants(function (el) {
       if (iter) iter(el)
       el.emit.apply(el, args)
@@ -177,12 +163,8 @@ export class Node extends EventEmitter {
   hasDescendant(target) {
     return (function find(el) {
       for (let i = 0; i < el.children.length; i++) {
-        if (el.children[i] === target) {
-          return true
-        }
-        if (find(el.children[i]) === true) {
-          return true
-        }
+        if (el.children[i] === target) { return true }
+        if (find(el.children[i]) === true) { return true }
       }
       return false
     })(this)
@@ -192,11 +174,7 @@ export class Node extends EventEmitter {
     while ((el = el.parent)) if (el === target) return true
     return false
   }
-  get(name, value) {
-    return this.data.hasOwnProperty(name) ? this.data[name] : value
-  }
-  set(name, value) {
-    return this.data[name] = value
-  }
+  get(name, value) { return this.data.hasOwnProperty(name) ? this.data[name] : value }
+  set(name, value) { return this.data[name] = value }
 }
 // Node.prototype.__proto__ = EventEmitter.prototype
