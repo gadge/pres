@@ -168,8 +168,7 @@ function emitKeys(stream, s) {
       // ansi escape sequence
       // reassemble the key code leaving out leading \x1b's,
       // the modifier key bitflag and any meaningless "1;" sequence
-      const code     = (parts[1] || '') + (parts[2] || '') +
-        (parts[4] || '') + (parts[9] || ''),
+      const code     = (parts[1] || '') + (parts[2] || '') + (parts[4] || '') + (parts[9] || ''),
             modifier = (parts[3] || parts[8] || 1) - 1
       // Parse the key modifier
       key.ctrl = !!(modifier & 4)
