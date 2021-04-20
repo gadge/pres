@@ -10,17 +10,17 @@
 import {
   BLUR, BTNDOWN, BTNUP, DATA, DESTROY, DRAG, EXIT, FOCUS, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEUP, MOUSEWHEEL,
   MOVE, NEW_LISTENER, RESIZE, RESPONSE, WARNING, WHEELDOWN, WHEELUP,
-}                                              from '@pres/enum-events'
-import { ENTER, LEFT, MIDDLE, RIGHT, UNKNOWN } from '@pres/enum-key-names'
-import { EventEmitter }                        from '@pres/events'
-import { Tput }                                from '@pres/terminfo-parser'
-import * as colors                             from '@pres/util-colors'
-import cp                                      from 'child_process'
-import fs                                      from 'fs'
-import { StringDecoder }                       from 'string_decoder'
-import util                                    from 'util'
-import { gpmClient }                           from './gpmclient'
-import { emitKeypressEvents }                  from './keys'
+}                                                                 from '@pres/enum-events'
+import { ENTER, LEFT, MIDDLE, RETURN, RIGHT, UNDEFINED, UNKNOWN } from '@pres/enum-key-names'
+import { EventEmitter }                                           from '@pres/events'
+import { Tput }                                                   from '@pres/terminfo-parser'
+import * as colors                                                from '@pres/util-colors'
+import cp                                                         from 'child_process'
+import fs                                                         from 'fs'
+import { StringDecoder }                                          from 'string_decoder'
+import util                                                       from 'util'
+import { gpmClient }                                              from './gpmclient'
+import { emitKeypressEvents }                                     from './keys'
 
 const slice = Array.prototype.slice
 
@@ -628,11 +628,11 @@ export class Program extends EventEmitter {
     this.input.on(KEYPRESS, this.input._keypressHandler = function (ch, key) {
       key = key || { ch: ch }
       // A mouse sequence. The `keys` module doesn't understand these.
-      if (key.name === 'undefined' && (key.code === '[M' || key.code === '[I' || key.code === '[O')) return
+      if (key.name === UNDEFINED && (key.code === '[M' || key.code === '[I' || key.code === '[O')) return
       // Not sure what this is, but we should probably ignore it.
-      if (key.name === 'undefined') return
+      if (key.name === UNDEFINED) return
       if (key.name === ENTER && key.sequence === '\n') key.name = 'linefeed'
-      if (key.name === 'return' && key.sequence === '\r') self.input.emit(KEYPRESS, ch, merge({}, key, { name: ENTER }))
+      if (key.name === RETURN && key.sequence === '\r') self.input.emit(KEYPRESS, ch, merge({}, key, { name: ENTER }))
       const name = (key.ctrl ? 'C-' : '')
         + (key.meta ? 'M-' : '')
         + (key.shift && key.name ? 'S-' : '')

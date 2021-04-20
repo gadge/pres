@@ -117,22 +117,17 @@ function emitKeys(stream, s) {
           shift: false
         },
         parts
-    if (s === '\r') {
-      // carriage return
-      key.name = RETURN
-
-    }
+    // carriage return
+    if (s === '\r') { key.name = RETURN }
     else if (s === '\n') {
       // enter, should have been called linefeed
       key.name = ENTER
       // linefeed
       // key.name = 'linefeed';
-
     }
     else if (s === '\t') {
       // tab
       key.name = TAB
-
     }
     else if (s === '\b' || s === '\x7f' ||
       s === '\x1b\x7f' || s === '\x1b\b') {
@@ -153,18 +148,15 @@ function emitKeys(stream, s) {
       // ctrl+letter
       key.name = String.fromCharCode(s.charCodeAt(0) + 'a'.charCodeAt(0) - 1)
       key.ctrl = true
-
     }
     else if (s.length === 1 && s >= 'a' && s <= 'z') {
       // lowercase letter
       key.name = s
-
     }
     else if (s.length === 1 && s >= 'A' && s <= 'Z') {
       // shift+letter
       key.name = s.toLowerCase()
       key.shift = true
-
     }
     else if ((parts = metaKeyCodeRe.exec(s))) {
       // meta+character key
@@ -452,7 +444,7 @@ function emitKeys(stream, s) {
     }
     if (key || ch) {
       stream.emit(KEYPRESS, ch, key)
-      // if (key && key.name === 'return') {
+      // if (key && key.name === RETURN) {
       //   var nkey = {};
       //   Object.keys(key).forEach(function(k) {
       //     nkey[k] = key[k];
