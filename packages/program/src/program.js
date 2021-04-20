@@ -624,7 +624,7 @@ export class Program extends EventEmitter {
   term(is) { return this.terminal.indexOf(is) === 0 }
   listen() {
     const self = this
-    console.log(`>>> [this.input._presInput = ${this.input._presInput}]`)
+    // console.log(`>>> [this.input._presInput = ${this.input._presInput}]`)
     // Potentially reset window title on exit:
     // if (!this.isRxvt) {
     //   if (!this.isVTE) this.setTitleModeFeature(3);
@@ -674,21 +674,12 @@ export class Program extends EventEmitter {
     // Input
     this.input.on(KEYPRESS, this.input._keypressHandler = function (ch, key) {
       key = key || { ch: ch }
-      if (key.name === 'undefined'
-        && (key.code === '[M' || key.code === '[I' || key.code === '[O')) {
-        // A mouse sequence. The `keys` module doesn't understand these.
-        return
-      }
-      if (key.name === 'undefined') {
-        // Not sure what this is, but we should probably ignore it.
-        return
-      }
-      if (key.name === 'enter' && key.sequence === '\n') {
-        key.name = 'linefeed'
-      }
-      if (key.name === 'return' && key.sequence === '\r') {
-        self.input.emit(KEYPRESS, ch, merge({}, key, { name: 'enter' }))
-      }
+      // A mouse sequence. The `keys` module doesn't understand these.
+      if (key.name === 'undefined' && (key.code === '[M' || key.code === '[I' || key.code === '[O')) return
+      // Not sure what this is, but we should probably ignore it.
+      if (key.name === 'undefined') return
+      if (key.name === 'enter' && key.sequence === '\n') key.name = 'linefeed'
+      if (key.name === 'return' && key.sequence === '\r') self.input.emit(KEYPRESS, ch, merge({}, key, { name: 'enter' }))
       const name = (key.ctrl ? 'C-' : '')
         + (key.meta ? 'M-' : '')
         + (key.shift && key.name ? 'S-' : '')
@@ -710,26 +701,20 @@ export class Program extends EventEmitter {
   }
   _listenOutput() {
     const self = this
-    if (!this.output.isTTY) {
-      nextTick(function () {
-        self.emit(WARNING, 'Output is not a TTY')
-      })
-    }
+    if (!this.output.isTTY) nextTick(() => self.emit(WARNING, 'Output is not a TTY'))
     // Output
     function resize() {
-      Program.instances.forEach(function (program) {
+      Program.instances.forEach(program => {
         if (program.output !== self.output) return
         program.cols = program.output.columns
         program.rows = program.output.rows
         program.emit(RESIZE)
       })
     }
-    this.output.on(RESIZE, this.output._resizeHandler = function () {
-      Program.instances.forEach(function (program) {
+    this.output.on(RESIZE, this.output._resizeHandler = () => {
+      Program.instances.forEach(program => {
         if (program.output !== self.output) return
-        if (!program.options.resizeTimeout) {
-          return resize()
-        }
+        if (!program.options.resizeTimeout) return resize()
         if (program._resizeTimer) {
           clearTimeout(program._resizeTimer)
           delete program._resizeTimer
@@ -767,15 +752,12 @@ export class Program extends EventEmitter {
           if (!this.input.destroyed) { this.input.pause() }
         }
       }
-
       if (this.output._presOutput === 0) {
         this.output.removeListener(RESIZE, this.output._resizeHandler)
         delete this.output._resizeHandler
       }
-
       this.removeListener(NEW_LISTENER, this._newHandler)
       delete this._newHandler
-
       this.destroyed = true
       this.emit(DESTROY)
     }
@@ -823,10 +805,8 @@ export class Program extends EventEmitter {
   bindMouse() {
     if (this._boundMouse) return
     this._boundMouse = true
-
     const decoder = new StringDecoder('utf8'),
           self    = this
-
     this.on(DATA, function (data) {
       const text = decoder.write(data)
       if (!text) return

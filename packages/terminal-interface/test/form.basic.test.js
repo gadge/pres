@@ -2,7 +2,8 @@ import { TerminalInterface as blessed } from '../index'
 
 const screen = blessed.screen({
   dump: __dirname + '/logs/form.log',
-  warnings: true})
+  warnings: true
+})
 
 var form = blessed.form({
   parent: screen,
@@ -31,19 +32,22 @@ var form = blessed.form({
   scrollbar: {
     ch: ' '
   }
-  //alwaysScroll: true})
-
+  //alwaysScroll: true
+})
 form.on('submit', function (data) {
   output.setContent(JSON.stringify(data, null, 2))
-  screen.render()})
+  screen.render()
+})
 
 form.key('d', function () {
   form.scroll(1, true)
-  screen.render()})
+  screen.render()
+})
 
 form.key('u', function () {
   form.scroll(-1, true)
-  screen.render()})
+  screen.render()
+})
 
 var set = blessed.radioset({
   parent: form,
@@ -54,7 +58,8 @@ var set = blessed.radioset({
   //content: 'f',
   style: {
     bg: 'magenta'
-  }})
+  }
+})
 
 var radio1 = blessed.radiobutton({
   parent: set,
@@ -68,7 +73,8 @@ var radio1 = blessed.radiobutton({
   left: 0,
   top: 0,
   name: 'radio1',
-  content: 'radio1'})
+  content: 'radio1'
+})
 
 var radio2 = blessed.radiobutton({
   parent: set,
@@ -82,7 +88,8 @@ var radio2 = blessed.radiobutton({
   left: 15,
   top: 0,
   name: 'radio2',
-  content: 'radio2'})
+  content: 'radio2'
+})
 
 var text = blessed.textbox({
   parent: form,
@@ -95,10 +102,12 @@ var text = blessed.textbox({
   width: 20,
   left: 1,
   top: 3,
-  name: 'text'})
+  name: 'text'
+})
 
 text.on('focus', function () {
-  text.readInput()})
+  text.readInput()
+})
 
 var check = blessed.checkbox({
   parent: form,
@@ -112,7 +121,8 @@ var check = blessed.checkbox({
   left: 28,
   top: 1,
   name: 'check',
-  content: 'check'})
+  content: 'check'
+})
 
 var check2 = blessed.checkbox({
   parent: form,
@@ -126,7 +136,8 @@ var check2 = blessed.checkbox({
   left: 28,
   top: 14,
   name: 'foooooooo2',
-  content: 'foooooooo2'})
+  content: 'foooooooo2'
+})
 
 var submit = blessed.button({
   parent: form,
@@ -146,10 +157,12 @@ var submit = blessed.button({
     focus: {
       bg: 'red'
     }
-  }})
+  }
+})
 
 submit.on('press', function () {
-  form.submit()})
+  form.submit()
+})
 
 var box1 = blessed.box({
   parent: form,
@@ -160,7 +173,8 @@ var box1 = blessed.box({
   content: 'one',
   style: {
     bg: 'cyan'
-  }})
+  }
+})
 
 var box2 = blessed.box({
   parent: box1,
@@ -171,7 +185,8 @@ var box2 = blessed.box({
   content: 'two',
   style: {
     bg: 'magenta'
-  }})
+  }
+})
 
 var box3 = blessed.box({
   parent: box2,
@@ -182,7 +197,8 @@ var box3 = blessed.box({
   content: 'three',
   style: {
     bg: 'yellow'
-  }})
+  }
+})
 
 var box4 = blessed.box({
   parent: box3,
@@ -193,7 +209,8 @@ var box4 = blessed.box({
   content: 'four',
   style: {
     bg: 'blue'
-  }})
+  }
+})
 
 var output = blessed.scrollabletext({
   parent: form,
@@ -206,7 +223,8 @@ var output = blessed.scrollabletext({
   style: {
     bg: 'red'
   },
-  content: 'foobar'})
+  content: 'foobar'
+})
 
 var bottom = blessed.line({
   parent: form,
@@ -217,10 +235,12 @@ var bottom = blessed.line({
   top: 50,
   style: {
     fg: 'blue'
-  }})
+  }
+})
 
 screen.key('q', function () {
-  return screen.destroy()})
+  return screen.destroy()
+})
 
 form.focus()
 

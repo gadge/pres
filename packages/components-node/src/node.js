@@ -20,40 +20,32 @@ export class Node extends EventEmitter {
     if (!options.lazy) this.setup(options)
   }
   setup(options) {
+    // console.log(`>>> called setup on Node by ${this.type}`)
     const self = this
     this.options = options
     this.screen = this.screen || options.screen
     if (!this.screen) {
       // console.log(`>>> this.type = ${this.type}`)
-      if (this.type === 'screen') {
-        this.screen = this
-      } else
-        if (_Screen.total === 1) {
-          this.screen = _Screen.global
-        } else
-          if (options.parent) {
-            this.screen = options.parent
-            while (this.screen && this.screen.type !== 'screen') {
-              this.screen = this.screen.parent
-            }
-          } else
-            if (_Screen.total) {
-              // This _should_ work in most cases as long as the element is appended
-              // synchronously after the screen's creation. Throw error if not.
-              this.screen = _Screen.instances[_Screen.instances.length - 1]
-              process.nextTick(function () {
-                if (!self.parent) {
-                  throw new Error('Element (' + self.type + ')'
-                    + ' was not appended synchronously after the'
-                    + ' screen\'s creation. Please set a `parent`'
-                    + ' or `screen` option in the element\'s constructor'
-                    + ' if you are going to use multiple screens and'
-                    + ' append the element later.')
-                }
-              })
-            } else {
-              throw new Error('No active screen.')
-            }
+      if (this.type === 'screen') { this.screen = this }
+      else if (_Screen.total === 1) { this.screen = _Screen.global }
+      else if (options.parent) {
+        this.screen = options.parent
+        while (this.screen && this.screen.type !== 'screen') this.screen = this.screen.parent
+      }
+      else if (_Screen.total) {
+        // This _should_ work in most cases as long as the element is appended
+        // synchronously after the screen's creation. Throw error if not.
+        this.screen = _Screen.instances[_Screen.instances.length - 1]
+        process.nextTick(() => {
+          if (!self.parent) throw new Error('Element (' + self.type + ')'
+            + ' was not appended synchronously after the'
+            + ' screen\'s creation. Please set a `parent`'
+            + ' or `screen` option in the element\'s constructor'
+            + ' if you are going to use multiple screens and'
+            + ' append the element later.')
+        })
+      }
+      else { throw new Error('No active screen.') }
     }
     this.parent = options.parent || null
     this.children = []
@@ -66,44 +58,25 @@ export class Node extends EventEmitter {
   }
   insert(element, i) {
     const self = this
-
-    if (element.screen && element.screen !== this.screen) {
-      throw new Error('Cannot switch a node\'s screen.')
-    }
-
+    if (element.screen && element.screen !== this.screen) throw new Error('Cannot switch a node\'s screen.')
     element.detach()
     element.parent = this
     element.screen = this.screen
-
-    if (i === 0) {
-      this.children.unshift(element)
-    } else
-      if (i === this.children.length) {
-        this.children.push(element)
-      } else {
-        this.children.splice(i, 0, element)
-      }
-
+    if (i === 0) { this.children.unshift(element) }
+    else if (i === this.children.length) { this.children.push(element) }
+    else { this.children.splice(i, 0, element) }
     element.emit(REPARENT, this)
     this.emit(ADOPT, element);
-
     (function emit(el) {
       const n = el.detached !== self.detached
       el.detached = self.detached
       if (n) el.emit(ATTACH)
       el.children.forEach(emit)
     })(element)
-
-    if (!this.screen.focused) {
-      this.screen.focused = element
-    }
+    if (!this.screen.focused) { this.screen.focused = element }
   }
-  prepend(element) {
-    this.insert(element, 0)
-  }
-  append(element) {
-    this.insert(element, this.children.length)
-  }
+  prepend(element) { this.insert(element, 0) }
+  append(element) { this.insert(element, this.children.length) }
   insertBefore(element, other) {
     const i = this.children.indexOf(other)
     if (~i) this.insert(element, i)

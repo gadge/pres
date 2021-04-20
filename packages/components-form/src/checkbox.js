@@ -45,9 +45,10 @@ export class Checkbox extends Input {
       self.screen.program.lrestoreCursor('checkbox', true)
     })
     this.type = 'checkbox'
+    // console.log(`>>> ${this.type} created, uid = ${this.uid}`)
   }
   render() {
-    console.log('>>> checkbox rendered')
+    // console.log('>>> checkbox rendered')
     this.clearPos(true)
     this.setContent('[' + (this.checked ? 'x' : ' ') + '] ' + this.text, true)
     return this._render()

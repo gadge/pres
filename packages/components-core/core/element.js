@@ -28,7 +28,7 @@ export class Element extends Node {
   constructor(options = {}) {
     super(options)
     if (options.scrollable && !this._ignore && this.type !== 'scrollable-box') {
-      console.log(Reflect.ownKeys(_Scrollable.prototype))
+      // console.log(Reflect.ownKeys(_Scrollable.prototype))
       Mixin.assign(this, _Scrollable.prototype)
       // console.log(Reflect.ownKeys(this))
     }
@@ -132,10 +132,10 @@ export class Element extends Node {
         || type === WHEELUP
         || type === MOUSEMOVE) {
         self.screen._listenMouse(self)
-      } else
-        if (type === KEYPRESS || type.indexOf('key ') === 0) {
-          self.screen._listenKeys(self)
-        }
+      }
+      else if (type === KEYPRESS || type.indexOf('key ') === 0) {
+        self.screen._listenKeys(self)
+      }
     })
     this.on(RESIZE, function () { self.parseContent() })
     this.on(ATTACH, function () { self.parseContent() })
@@ -218,7 +218,8 @@ export class Element extends Node {
       if (val === 'center') {
         val = this.screen.width / 2 | 0
         val -= this.width / 2 | 0
-      } else {
+      }
+      else {
         expr = val.split(/(?=\+|-)/)
         val = expr[0]
         val = +val.slice(0, -1) / 100
@@ -247,7 +248,8 @@ export class Element extends Node {
       if (val === 'center') {
         val = this.screen.height / 2 | 0
         val -= this.height / 2 | 0
-      } else {
+      }
+      else {
         expr = val.split(/(?=\+|-)/)
         val = expr[0]
         val = +val.slice(0, -1) / 100
@@ -475,7 +477,8 @@ export class Element extends Node {
         if (this.screen.program.isiTerm2) {
           content = content.replace(unicode.chars.combining, '')
         }
-      } else {
+      }
+      else {
         // no double-width: replace them with question-marks.
         content = content.replace(unicode.chars.all, '??')
         // delete combining characters since they're 0-width anyway.
@@ -560,16 +563,15 @@ export class Element extends Node {
         if (param === 'open') {
           out += '{'
           continue
-        } else
-          if (param === 'close') {
-            out += '}'
-            continue
-          }
+        }
+        else if (param === 'close') {
+          out += '}'
+          continue
+        }
 
         if (param.slice(-3) === ' bg') state = bg
-        else
-          if (param.slice(-3) === ' fg') state = fg
-          else state = flag
+        else if (param.slice(-3) === ' fg') state = fg
+        else state = flag
 
         if (slash) {
           if (!param) {
@@ -577,30 +579,36 @@ export class Element extends Node {
             bg.length = 0
             fg.length = 0
             flag.length = 0
-          } else {
+          }
+          else {
             attr = program._attr(param, false)
             if (attr == null) {
               out += cap[0]
-            } else {
+            }
+            else {
               // if (param !== state[state.length - 1]) {
               //   throw new Error('Misnested tags.');
               // }
               state.pop()
               if (state.length) {
                 out += program._attr(state[state.length - 1])
-              } else {
+              }
+              else {
                 out += attr
               }
             }
           }
-        } else {
+        }
+        else {
           if (!param) {
             out += cap[0]
-          } else {
+          }
+          else {
             attr = program._attr(param)
             if (attr == null) {
               out += cap[0]
-            } else {
+            }
+            else {
               state.push(param)
               out += attr
             }
@@ -668,18 +676,18 @@ export class Element extends Node {
     if (align === 'center') {
       s = Array(((s / 2) | 0) + 1).join(' ')
       return s + line + s
-    } else
-      if (align === 'right') {
-        s = Array(s + 1).join(' ')
-        return s + line
-      } else
-        if (this.parseTags && ~line.indexOf('{|}')) {
-          const parts = line.split('{|}')
-          const cparts = cline.split('{|}')
-          s = Math.max(width - cparts[0].length - cparts[1].length, 0)
-          s = Array(s + 1).join(' ')
-          return parts[0] + s + parts[1]
-        }
+    }
+    else if (align === 'right') {
+      s = Array(s + 1).join(' ')
+      return s + line
+    }
+    else if (this.parseTags && ~line.indexOf('{|}')) {
+      const parts = line.split('{|}')
+      const cparts = cline.split('{|}')
+      s = Math.max(width - cparts[0].length - cparts[1].length, 0)
+      s = Array(s + 1).join(' ')
+      return parts[0] + s + parts[1]
+    }
 
     return line
   }
@@ -769,7 +777,8 @@ export class Element extends Node {
                   while (j > i - 10 && j > 0 && line[--j] !== ' ')
                     if (line[j] === ' ') i = j + 1
                 }
-              } else {
+              }
+              else {
                 // Try to find a character to break on.
                 if (i !== line.length) {
                   // <XXX>
@@ -987,7 +996,8 @@ export class Element extends Node {
         if (!this.screen.autoPadding) {
           this._label.rleft = 2
         }
-      } else {
+      }
+      else {
         this._label.rright = 2 + (this.border ? -1 : 0)
         this._label.position.left = undefined
         if (!this.screen.autoPadding) {
@@ -1009,7 +1019,8 @@ export class Element extends Node {
 
     if (options.side !== 'right') {
       this._label.rleft = 2 - this.ileft
-    } else {
+    }
+    else {
       this._label.rright = 2 - this.iright
     }
 
@@ -1018,7 +1029,8 @@ export class Element extends Node {
     if (!this.screen.autoPadding) {
       if (options.side !== 'right') {
         this._label.rleft = 2
-      } else {
+      }
+      else {
         this._label.rright = 2
       }
       this._label.rtop = 0
@@ -1365,10 +1377,12 @@ export class Element extends Node {
         xi = xl - (mxl - mxi)
         if (!this.screen.autoPadding) {
           xi -= this.padding.left + this.padding.right
-        } else {
+        }
+        else {
           xi -= this.ileft
         }
-      } else {
+      }
+      else {
         xl = mxl
         if (!this.screen.autoPadding) {
           xl += this.padding.left + this.padding.right
@@ -1381,7 +1395,8 @@ export class Element extends Node {
             xl -= this.padding.left + this.padding.right
             xl += this.iright
           }
-        } else {
+        }
+        else {
           //xl += this.padding.right;
           xl += this.iright
         }
@@ -1403,14 +1418,17 @@ export class Element extends Node {
         yi = yl - (myl - myi)
         if (!this.screen.autoPadding) {
           yi -= this.padding.top + this.padding.bottom
-        } else {
+        }
+        else {
           yi -= this.itop
         }
-      } else {
+      }
+      else {
         yl = myl
         if (!this.screen.autoPadding) {
           yl += this.padding.top + this.padding.bottom
-        } else {
+        }
+        else {
           yl += this.ibottom
         }
       }
@@ -1427,7 +1445,8 @@ export class Element extends Node {
         || this.position.right == null)) {
       if (this.position.left == null && this.position.right != null) {
         xi = xl - w - this.iwidth
-      } else {
+      }
+      else {
         xl = xi + w + this.iwidth
       }
     }
@@ -1438,7 +1457,8 @@ export class Element extends Node {
       && (!this.scrollable || this._isList)) {
       if (this.position.top == null && this.position.bottom != null) {
         yi = yl - h - this.iheight
-      } else {
+      }
+      else {
         yl = yi + h + this.iheight
       }
     }
@@ -1455,7 +1475,8 @@ export class Element extends Node {
     if (shrinkBox.xl - shrinkBox.xi > shrinkContent.xl - shrinkContent.xi) {
       xi = shrinkBox.xi
       xl = shrinkBox.xl
-    } else {
+    }
+    else {
       xi = shrinkContent.xi
       xl = shrinkContent.xl
     }
@@ -1463,7 +1484,8 @@ export class Element extends Node {
     if (shrinkBox.yl - shrinkBox.yi > shrinkContent.yl - shrinkContent.yi) {
       yi = shrinkBox.yi
       yl = shrinkBox.yl
-    } else {
+    }
+    else {
       yi = shrinkContent.yi
       yl = shrinkContent.yl
     }
@@ -1569,7 +1591,8 @@ export class Element extends Node {
         if (yl - 1 < ppos.yi + b) {
           // Is above.
           return
-        } else {
+        }
+        else {
           // Is partially covered above.
           notop = true
           v = ppos.yi - yi
@@ -1578,20 +1601,21 @@ export class Element extends Node {
           base += v
           yi += v
         }
-      } else
-        if (yl > ppos.yl - b) {
-          if (yi > ppos.yl - 1 - b) {
-            // Is below.
-            return
-          } else {
-            // Is partially covered below.
-            nobot = true
-            v = yl - ppos.yl
-            if (this.border) v--
-            if (thisparent.border) v++
-            yl -= v
-          }
+      }
+      else if (yl > ppos.yl - b) {
+        if (yi > ppos.yl - 1 - b) {
+          // Is below.
+          return
         }
+        else {
+          // Is partially covered below.
+          nobot = true
+          v = yl - ppos.yl
+          if (this.border) v--
+          if (thisparent.border) v++
+          yl -= v
+        }
+      }
 
       // Shouldn't be necessary.
       // assert.ok(yi < yl);
@@ -1648,8 +1672,7 @@ export class Element extends Node {
       renders: this.screen.renders
     }
   }
-  render = this._render
-  _render() {
+  render() {
     // console.log(`>>> calling element._render`)
     this._emit(PRERENDER)
     this.parseContent()
@@ -1708,9 +1731,7 @@ export class Element extends Node {
     //   }
     //   content = clines.join('\n');
     // }
-    if (coords.base >= this._clines.ci.length) {
-      ci = this._pcontent.length
-    }
+    if (coords.base >= this._clines.ci.length) ci = this._pcontent.length
     this.lpos = coords
     if (this.border && this.border.type === 'line') {
       this.screen._borderStops[coords.yi] = true
@@ -1731,9 +1752,7 @@ export class Element extends Node {
     attr = dattr
     // If we're in a scrollable text box, check to
     // see which attributes this line starts with.
-    if (ci > 0) {
-      attr = this._clines.attr[Math.min(coords.base, this._clines.length - 1)]
-    }
+    if (ci > 0) attr = this._clines.attr[Math.min(coords.base, this._clines.length - 1)]
     if (this.border) xi++, xl--, yi++, yl--
     // If we have padding/valign, that means the
     // content-drawing loop will skip a few cells/lines.
@@ -1750,7 +1769,8 @@ export class Element extends Node {
             lines[y].dirty = true
           }
         }
-      } else {
+      }
+      else {
         this.screen.fillRegion(dattr, bch, xi, xl, yi, yl)
       }
     }
@@ -1765,34 +1785,26 @@ export class Element extends Node {
         if (this.valign === 'middle') {
           visible = visible / 2 | 0
           visible -= this._clines.length / 2 | 0
-        } else
-          if (this.valign === 'bottom') {
-            visible -= this._clines.length
-          }
+        }
+        else if (this.valign === 'bottom') {
+          visible -= this._clines.length
+        }
         ci -= visible * (xl - xi)
       }
     }
     // Draw the content and background.
     for (y = yi; y < yl; y++) {
       if (!lines[y]) {
-        if (y >= this.screen.height || yl < this.ibottom) {
-          break
-        } else {
-          continue
-        }
+        if (y >= this.screen.height || yl < this.ibottom) { break }
+        else { continue }
       }
       for (x = xi; x < xl; x++) {
         cell = lines[y][x]
         if (!cell) {
-          if (x >= this.screen.width || xl < this.iright) {
-            break
-          } else {
-            continue
-          }
+          if (x >= this.screen.width || xl < this.iright) { break }
+          else { continue }
         }
-
         ch = content[ci++] || bch
-
         // if (!content[ci] && !coords._contentEnd) {
         //   coords._contentEnd = { x: x - xi, y: y - yi };
         // }
@@ -1810,7 +1822,8 @@ export class Element extends Node {
             }
             ch = content[ci] || bch
             ci++
-          } else {
+          }
+          else {
             break
           }
         }
@@ -1835,7 +1848,8 @@ export class Element extends Node {
               lines[y][x][0] = colors.blend(attr, lines[y][x][0])
               if (content[ci]) lines[y][x][1] = ch
               lines[y].dirty = true
-            } else {
+            }
+            else {
               if (attr !== cell[0] || ch !== cell[1]) {
                 lines[y][x][0] = attr
                 lines[y][x][1] = ch
@@ -1857,10 +1871,10 @@ export class Element extends Node {
             }
             if (x - 1 >= xi) {
               lines[y][x - 1][1] += ch
-            } else
-              if (y - 1 >= yi) {
-                lines[y - 1][xl - 1][1] += ch
-              }
+            }
+            else if (y - 1 >= yi) {
+              lines[y - 1][xl - 1][1] += ch
+            }
             x--
             continue
           }
@@ -1878,7 +1892,8 @@ export class Element extends Node {
           lines[y][x][0] = colors.blend(attr, lines[y][x][0])
           if (content[ci]) lines[y][x][1] = ch
           lines[y].dirty = true
-        } else {
+        }
+        else {
           if (attr !== cell[0] || ch !== cell[1]) {
             lines[y][x][0] = attr
             lines[y][x][1] = ch
@@ -1900,7 +1915,8 @@ export class Element extends Node {
       if (this.scrollbar.ignoreBorder && this.border) x++
       if (this.alwaysScroll) {
         y = this.childBase / (i - (yl - yi))
-      } else {
+      }
+      else {
         y = (this.childBase + this.childOffset) / (i - 1)
       }
       y = yi + ((yl - yi) * y | 0)
@@ -1947,35 +1963,40 @@ export class Element extends Node {
             if (!this.border.left) {
               if (this.border.top) {
                 ch = '\u2500' // '─'
-              } else {
+              }
+              else {
                 continue
               }
-            } else {
+            }
+            else {
               if (!this.border.top) {
                 ch = '\u2502' // '│'
               }
             }
-          } else
-            if (x === xl - 1) {
-              ch = '\u2510' // '┐'
-              if (!this.border.right) {
-                if (this.border.top) {
-                  ch = '\u2500' // '─'
-                } else {
-                  continue
-                }
-              } else {
-                if (!this.border.top) {
-                  ch = '\u2502' // '│'
-                }
-              }
-            } else {
-              ch = '\u2500' // '─'
-            }
-        } else
-          if (this.border.type === 'bg') {
-            ch = this.border.ch
           }
+          else if (x === xl - 1) {
+            ch = '\u2510' // '┐'
+            if (!this.border.right) {
+              if (this.border.top) {
+                ch = '\u2500' // '─'
+              }
+              else {
+                continue
+              }
+            }
+            else {
+              if (!this.border.top) {
+                ch = '\u2502' // '│'
+              }
+            }
+          }
+          else {
+            ch = '\u2500' // '─'
+          }
+        }
+        else if (this.border.type === 'bg') {
+          ch = this.border.ch
+        }
         if (!this.border.top && x !== xi && x !== xl - 1) {
           ch = ' '
           if (dattr !== cell[0] || ch !== cell[1]) {
@@ -1999,17 +2020,18 @@ export class Element extends Node {
           if (this.border.left) {
             if (this.border.type === 'line') {
               ch = '\u2502' // '│'
-            } else
-              if (this.border.type === 'bg') {
-                ch = this.border.ch
-              }
+            }
+            else if (this.border.type === 'bg') {
+              ch = this.border.ch
+            }
             if (!coords.noleft)
               if (battr !== cell[0] || ch !== cell[1]) {
                 lines[y][xi][0] = battr
                 lines[y][xi][1] = ch
                 lines[y].dirty = true
               }
-          } else {
+          }
+          else {
             ch = ' '
             if (dattr !== cell[0] || ch !== cell[1]) {
               lines[y][xi][0] = dattr
@@ -2023,17 +2045,18 @@ export class Element extends Node {
           if (this.border.right) {
             if (this.border.type === 'line') {
               ch = '\u2502' // '│'
-            } else
-              if (this.border.type === 'bg') {
-                ch = this.border.ch
-              }
+            }
+            else if (this.border.type === 'bg') {
+              ch = this.border.ch
+            }
             if (!coords.noright)
               if (battr !== cell[0] || ch !== cell[1]) {
                 lines[y][xl - 1][0] = battr
                 lines[y][xl - 1][1] = ch
                 lines[y].dirty = true
               }
-          } else {
+          }
+          else {
             ch = ' '
             if (dattr !== cell[0] || ch !== cell[1]) {
               lines[y][xl - 1][0] = dattr
@@ -2057,35 +2080,40 @@ export class Element extends Node {
             if (!this.border.left) {
               if (this.border.bottom) {
                 ch = '\u2500' // '─'
-              } else {
+              }
+              else {
                 continue
               }
-            } else {
+            }
+            else {
               if (!this.border.bottom) {
                 ch = '\u2502' // '│'
               }
             }
-          } else
-            if (x === xl - 1) {
-              ch = '\u2518' // '┘'
-              if (!this.border.right) {
-                if (this.border.bottom) {
-                  ch = '\u2500' // '─'
-                } else {
-                  continue
-                }
-              } else {
-                if (!this.border.bottom) {
-                  ch = '\u2502' // '│'
-                }
-              }
-            } else {
-              ch = '\u2500' // '─'
-            }
-        } else
-          if (this.border.type === 'bg') {
-            ch = this.border.ch
           }
+          else if (x === xl - 1) {
+            ch = '\u2518' // '┘'
+            if (!this.border.right) {
+              if (this.border.bottom) {
+                ch = '\u2500' // '─'
+              }
+              else {
+                continue
+              }
+            }
+            else {
+              if (!this.border.bottom) {
+                ch = '\u2502' // '│'
+              }
+            }
+          }
+          else {
+            ch = '\u2500' // '─'
+          }
+        }
+        else if (this.border.type === 'bg') {
+          ch = this.border.ch
+        }
         if (!this.border.bottom && x !== xi && x !== xl - 1) {
           ch = ' '
           if (dattr !== cell[0] || ch !== cell[1]) {
@@ -2142,6 +2170,7 @@ export class Element extends Node {
     this._emit(RENDER, [ coords ])
     return coords
   }
+  _render = Element.prototype.render
   /**
    * Content Methods
    */
@@ -2169,7 +2198,8 @@ export class Element extends Node {
     if (i >= this._clines.ftor.length) {
       real = this._clines.ftor[this._clines.ftor.length - 1]
       real = real[real.length - 1] + 1
-    } else {
+    }
+    else {
       real = this._clines.ftor[i][0]
     }
 
@@ -2329,13 +2359,15 @@ export class Element extends Node {
     xi = this.lpos.xi + this.ileft + (xi || 0)
     if (xl != null) {
       xl = this.lpos.xi + this.ileft + (xl || 0)
-    } else {
+    }
+    else {
       xl = this.lpos.xl - this.iright
     }
     yi = this.lpos.yi + this.itop + (yi || 0)
     if (yl != null) {
       yl = this.lpos.yi + this.itop + (yl || 0)
-    } else {
+    }
+    else {
       yl = this.lpos.yl - this.ibottom
     }
     return this.screen.screenshot(xi, xl, yi, yl)

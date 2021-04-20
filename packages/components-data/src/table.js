@@ -154,31 +154,24 @@ export class Table extends Box {
     this.align = align
   }
   render() {
-    console.log(`>>> calling table.render`)
+    // console.log(`>>> calling table.render`)
     const self = this
-
     const coords = this._render()
     if (!coords) return
-
     this._calculateMaxes()
-
     if (!this._maxes) return coords
-
     const lines = this.screen.lines,
           xi    = coords.xi,
           yi    = coords.yi
     let rx,
         ry,
         i
-
     const dattr = this.sattr(this.style),
           hattr = this.sattr(this.style.header),
           cattr = this.sattr(this.style.cell),
           battr = this.sattr(this.style.border)
-
     const width  = coords.xl - coords.xi - this.iright,
           height = coords.yl - coords.yi - this.ibottom
-
     // Apply attributes to header cells and cells.
     for (let y = this.itop; y < height; y++) {
       if (!lines[yi + y]) break
@@ -194,9 +187,7 @@ export class Table extends Box {
         lines[yi + y].dirty = true
       }
     }
-
     if (!this.border || this.options.noCellBorders) return coords
-
     // Draw border with correct angles.
     ry = 0
     for (i = 0; i < self.rows.length + 1; i++) {

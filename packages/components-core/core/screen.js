@@ -42,7 +42,8 @@ export class Screen extends Node {
         buffer: true,
         zero: true
       })
-    } else {
+    }
+    else {
       this.program.setupTput()
       this.program.useBuffer = true
       this.program.zero = true
@@ -92,9 +93,7 @@ export class Screen extends Node {
     this.focused
     this._buf = ''
     this._ci = -1
-    if (options.title) {
-      this.title = options.title
-    }
+    if (options.title) this.title = options.title
     options.cursor = options.cursor || {
       artificial: options.artificialCursor,
       shape: options.cursorShape,
@@ -126,25 +125,23 @@ export class Screen extends Node {
         if (type === KEYPRESS || type.indexOf('key ') === 0) self._listenKeys()
         if (type === MOUSE) self._listenMouse()
       }
-      if (type === MOUSE
-        || type === CLICK
-        || type === MOUSEOVER
-        || type === MOUSEOUT
-        || type === MOUSEDOWN
-        || type === MOUSEUP
-        || type === MOUSEWHEEL
-        || type === WHEELDOWN
-        || type === WHEELUP
-        || type === MOUSEMOVE) {
-        self._listenMouse()
-      }
+      if (
+        type === MOUSE ||
+        type === CLICK ||
+        type === MOUSEOVER ||
+        type === MOUSEOUT ||
+        type === MOUSEDOWN ||
+        type === MOUSEUP ||
+        type === MOUSEWHEEL ||
+        type === WHEELDOWN ||
+        type === WHEELUP ||
+        type === MOUSEMOVE
+      ) self._listenMouse()
     })
     this.setMaxListeners(Infinity)
     this.enter()
     this.postEnter()
   }
-
-
   focusPrev = this.focusPrevious
   unkey = this.removeKey
   cursorReset = this.resetCursor
@@ -167,7 +164,7 @@ export class Screen extends Node {
     }
     this.program.setTerminal(terminal)
     this.tput = this.program.tput
-    if (entered) { this.enter()}
+    if (entered) this.enter()
   }
   enter() {
     if (this.program.isAlt) return
@@ -175,11 +172,10 @@ export class Screen extends Node {
       if (this.options.cursor.shape) { this.cursorShape(this.cursor.shape, this.cursor.blink)}
       if (this.options.cursor.color) { this.cursorColor(this.cursor.color)}
     }
-    if (process.platform === 'win32') {
+    if (process.platform === 'win32')
       try {
         cp.execSync('cls', { stdio: 'ignore', timeout: 1000 })
       } catch (e) {}
-    }
     this.program.alternateBuffer()
     this.program.put.keypad_xmit()
     this.program.csr(0, this.height - 1)
@@ -192,10 +188,7 @@ export class Screen extends Node {
   leave() {
     if (!this.program.isAlt) return
     this.program.put.keypad_local()
-    if (this.program.scrollTop !== 0
-      || this.program.scrollBottom !== this.rows - 1) {
-      this.program.csr(0, this.height - 1)
-    }
+    if (this.program.scrollTop !== 0 || this.program.scrollBottom !== this.rows - 1) this.program.csr(0, this.height - 1)
     // XXX For some reason if alloc/clear() is before this
     // line, it doesn't work on linux console.
     this.program.showCursor()
@@ -204,11 +197,10 @@ export class Screen extends Node {
     this.program.normalBuffer()
     if (this.cursor._set) this.cursorReset()
     this.program.flush()
-    if (process.platform === 'win32') {
+    if (process.platform === 'win32')
       try {
         cp.execSync('cls', { stdio: 'ignore', timeout: 1000 })
       } catch (e) {}
-    }
   }
   postEnter() {
     const self = this
@@ -240,7 +232,8 @@ export class Screen extends Node {
           self.debugLog.show()
           self.debugLog.setFront()
           self.debugLog.focus()
-        } else {
+        }
+        else {
           self.debugLog.hide()
           self.restoreFocus()
         }
@@ -251,7 +244,7 @@ export class Screen extends Node {
     }
 
     if (this.options.warnings) {
-      this.on(WARNING, function (text) {
+      this.on(WARNING, text => {
         const warning = new Box({
           screen: self,
           parent: self,
@@ -268,13 +261,8 @@ export class Screen extends Node {
           tags: true
         })
         self.render()
-        const timeout = setTimeout(function () {
-          warning.destroy()
-          self.render()
-        }, 1500)
-        if (timeout.unref) {
-          timeout.unref()
-        }
+        const timeout = setTimeout(function () { warning.destroy(), self.render() }, 1500)
+        if (timeout.unref) { timeout.unref() }
       })
     }
   }
@@ -285,9 +273,7 @@ export class Screen extends Node {
     if (~index) {
       _Screen.instances.splice(index, 1)
       _Screen.total--
-
       _Screen.global = _Screen.instances[0]
-
       if (_Screen.total === 0) {
         _Screen.global = null
         process.removeListener(UNCAUGHT_EXCEPTION, _Screen._exceptionHandler)
@@ -315,22 +301,15 @@ export class Screen extends Node {
   }
   _listenMouse(el) {
     const self = this
-
     if (el && !~this.clickable.indexOf(el)) {
       el.clickable = true
       this.clickable.push(el)
     }
-
     if (this._listenedMouse) return
     this._listenedMouse = true
-
     this.program.enableMouse()
-    if (this.options.sendFocus) {
-      this.program.setMouse({ sendFocus: true }, true)
-    }
-
+    if (this.options.sendFocus) this.program.setMouse({ sendFocus: true }, true)
     this.on(RENDER, function () { self._needsClickableSort = true })
-
     this.program.on(MOUSE, function (data) {
       if (self.lockKeys) return
       if (self._needsClickableSort) {
@@ -351,36 +330,30 @@ export class Screen extends Node {
         if (data.x >= pos.xi && data.x < pos.xl
           && data.y >= pos.yi && data.y < pos.yl) {
           el.emit(MOUSE, data)
-          if (data.action === MOUSEDOWN) {
-            self.mouseDown = el
-          } else
-            if (data.action === MOUSEUP) {
-              (self.mouseDown || el).emit(CLICK, data)
-              self.mouseDown = null
-            } else
-              if (data.action === MOUSEMOVE) {
-                if (self.hover && el.index > self.hover.index) {
-                  set = false
-                }
-                if (self.hover !== el && !set) {
-                  if (self.hover) {
-                    self.hover.emit(MOUSEOUT, data)
-                  }
-                  el.emit(MOUSEOVER, data)
-                  self.hover = el
-                }
-                set = true
-              }
+          if (data.action === MOUSEDOWN) { self.mouseDown = el }
+          else if (data.action === MOUSEUP) {
+            (self.mouseDown || el).emit(CLICK, data)
+            self.mouseDown = null
+          }
+          else if (data.action === MOUSEMOVE) {
+            if (self.hover && el.index > self.hover.index) { set = false }
+            if (self.hover !== el && !set) {
+              if (self.hover) { self.hover.emit(MOUSEOUT, data) }
+              el.emit(MOUSEOVER, data)
+              self.hover = el
+            }
+            set = true
+          }
           el.emit(data.action, data)
           break
         }
       }
       // Just mouseover?
-      if ((data.action === MOUSEMOVE
-        || data.action === MOUSEDOWN
-        || data.action === MOUSEUP)
+      if (
+        (data.action === MOUSEMOVE || data.action === MOUSEDOWN || data.action === MOUSEUP)
         && self.hover
-        && !set) {
+        && !set
+      ) {
         self.hover.emit(MOUSEOUT, data)
         self.hover = null
       }
@@ -400,10 +373,8 @@ export class Screen extends Node {
     // });
 
     // Autofocus elements with the appropriate option.
-    this.on(ELEMENT_CLICK, function (el) {
-      if (el.clickable === true && el.options.autoFocus !== false) {
-        el.focus()
-      }
+    this.on(ELEMENT_CLICK, el => {
+      if (el.clickable === true && el.options.autoFocus !== false) el.focus()
     })
   }
   enableMouse(el) { this._listenMouse(el) }
@@ -468,7 +439,6 @@ export class Screen extends Node {
       self._hoverText.rtop = data.y
       self.render()
     })
-
     this.on(ELEMENT_MOUSEOVER, function (el, data) {
       if (!el._hoverOptions) return
       self._hoverText.parseTags = el.parseTags
@@ -478,13 +448,11 @@ export class Screen extends Node {
       self._hoverText.rtop = data.y
       self.render()
     })
-
     this.on(ELEMENT_MOUSEOUT, function () {
       if (self._hoverText.detached) return
       self._hoverText.detach()
       self.render()
     })
-
     // XXX This can cause problems if the
     // terminal does not support allMotion.
     // Workaround: check to see if content is set.
@@ -497,38 +465,25 @@ export class Screen extends Node {
   }
   alloc(dirty) {
     let x, y
-
     this.lines = []
     for (y = 0; y < this.rows; y++) {
       this.lines[y] = []
-      for (x = 0; x < this.cols; x++) {
-        this.lines[y][x] = [ this.dattr, ' ' ]
-      }
+      for (x = 0; x < this.cols; x++) { this.lines[y][x] = [ this.dattr, ' ' ] }
       this.lines[y].dirty = !!dirty
     }
-
     this.olines = []
     for (y = 0; y < this.rows; y++) {
       this.olines[y] = []
-      for (x = 0; x < this.cols; x++) {
-        this.olines[y][x] = [ this.dattr, ' ' ]
-      }
+      for (x = 0; x < this.cols; x++) { this.olines[y][x] = [ this.dattr, ' ' ] }
     }
-
     this.program.clear()
   }
-  realloc() {
-    return this.alloc(true)
-  }
+  realloc() { return this.alloc(true) }
   render() {
     const self = this
-
     if (this.destroyed) return
-
     this.emit(PRERENDER)
-
     this._borderStops = {}
-
     // TODO: Possibly get rid of .dirty altogether.
     // TODO: Could possibly drop .dirty and just clear the `lines` buffer every
     // time before a screen.render. This way clearRegion doesn't have to be
@@ -537,28 +492,14 @@ export class Screen extends Node {
     // be some overhead though.
     // this.screen.clearRegion(0, this.cols, 0, this.rows);
     this._ci = 0
-    this.children.forEach(function (el) {
-      el.index = self._ci++
-      //el._rendering = true;
-      el.render()
-      //el._rendering = false;
-    })
+    this.children.forEach(el => { (el.index = self._ci++), el.render() })
     this._ci = -1
-
-    if (this.screen.dockBorders) {
-      this._dockBorders()
-    }
-
+    if (this.screen.dockBorders) { this._dockBorders() }
     this.draw(0, this.lines.length - 1)
-
     // XXX Workaround to deal with cursor pos before the screen has rendered and
     // lpos is not reliable (stale).
-    if (this.focused && this.focused._updateCursor) {
-      this.focused._updateCursor(true)
-    }
-
+    if (this.focused && this.focused._updateCursor) { this.focused._updateCursor(true) }
     this.renders++
-
     this.emit(RENDER)
   }
 
@@ -566,9 +507,7 @@ export class Screen extends Node {
 // Scroll down (up cursor-wise).
   blankLine(ch, dirty) {
     const out = []
-    for (let x = 0; x < this.cols; x++) {
-      out[x] = [ this.dattr, ch || ' ' ]
-    }
+    for (let x = 0; x < this.cols; x++) { out[x] = [ this.dattr, ch || ' ' ] }
     out.dirty = dirty
     return out
   }
@@ -577,18 +516,12 @@ export class Screen extends Node {
 // Scroll up (down cursor-wise).
   insertLine(n, y, top, bottom) {
     // if (y === top) return this.insertLineNC(n, y, top, bottom);
-
-    if (!this.tput.strings.change_scroll_region
-      || !this.tput.strings.delete_line
-      || !this.tput.strings.insert_line) return
-
+    if (!this.tput.strings.change_scroll_region || !this.tput.strings.delete_line || !this.tput.strings.insert_line) return
     this._buf += this.tput.csr(top, bottom)
     this._buf += this.tput.cup(y, 0)
     this._buf += this.tput.il(n)
     this._buf += this.tput.csr(0, this.height - 1)
-
     const j = bottom + 1
-
     while (n--) {
       this.lines.splice(y, 0, this.blankLine())
       this.lines.splice(j, 1)
@@ -598,18 +531,12 @@ export class Screen extends Node {
   }
   deleteLine(n, y, top, bottom) {
     // if (y === top) return this.deleteLineNC(n, y, top, bottom);
-
-    if (!this.tput.strings.change_scroll_region
-      || !this.tput.strings.delete_line
-      || !this.tput.strings.insert_line) return
-
+    if (!this.tput.strings.change_scroll_region || !this.tput.strings.delete_line || !this.tput.strings.insert_line) return
     this._buf += this.tput.csr(top, bottom)
     this._buf += this.tput.cup(y, 0)
     this._buf += this.tput.dl(n)
     this._buf += this.tput.csr(0, this.height - 1)
-
     const j = bottom + 1
-
     while (n--) {
       this.lines.splice(j, 0, this.blankLine())
       this.lines.splice(y, 1)
@@ -619,16 +546,12 @@ export class Screen extends Node {
   }
 // This will only work for top line deletion as opposed to arbitrary lines.
   insertLineNC(n, y, top, bottom) {
-    if (!this.tput.strings.change_scroll_region
-      || !this.tput.strings.delete_line) return
-
+    if (!this.tput.strings.change_scroll_region || !this.tput.strings.delete_line) return
     this._buf += this.tput.csr(top, bottom)
     this._buf += this.tput.cup(top, 0)
     this._buf += this.tput.dl(n)
     this._buf += this.tput.csr(0, this.height - 1)
-
     const j = bottom + 1
-
     while (n--) {
       this.lines.splice(j, 0, this.blankLine())
       this.lines.splice(y, 1)
@@ -638,16 +561,12 @@ export class Screen extends Node {
   }
 // This will only work for bottom line deletion as opposed to arbitrary lines.
   deleteLineNC(n, y, top, bottom) {
-    if (!this.tput.strings.change_scroll_region
-      || !this.tput.strings.delete_line) return
-
+    if (!this.tput.strings.change_scroll_region || !this.tput.strings.delete_line) return
     this._buf += this.tput.csr(top, bottom)
     this._buf += this.tput.cup(bottom, 0)
     this._buf += Array(n + 1).join('\n')
     this._buf += this.tput.csr(0, this.height - 1)
-
     const j = bottom + 1
-
     while (n--) {
       this.lines.splice(j, 0, this.blankLine())
       this.lines.splice(y, 1)
@@ -655,44 +574,26 @@ export class Screen extends Node {
       this.olines.splice(y, 1)
     }
   }
-  insertBottom(top, bottom) {
-    return this.deleteLine(1, top, top, bottom)
-  }
+  insertBottom(top, bottom) { return this.deleteLine(1, top, top, bottom) }
 
-// Parse the sides of an element to determine
-// whether an element has uniform cells on
-// both sides. If it does, we can use CSR to
-// optimize scrolling on a scrollable element.
-// Not exactly sure how worthwile this is.
-// This will cause a performance/cpu-usage hit,
-// but will it be less or greater than the
-// performance hit of slow-rendering scrollable
-  insertTop(top, bottom) {
-    return this.insertLine(1, top, top, bottom)
-  }
-  deleteBottom(top, bottom) {
-    return this.clearRegion(0, this.width, bottom, bottom)
-  }
-  deleteTop(top, bottom) {
-    // Same as: return this.insertBottom(top, bottom);
-    return this.deleteLine(1, top, top, bottom)
-  }
-// boxes with clean sides?
+  // Parse the sides of an element to determine
+  // whether an element has uniform cells on
+  // both sides. If it does, we can use CSR to
+  // optimize scrolling on a scrollable element.
+  // Not exactly sure how worthwile this is.
+  // This will cause a performance/cpu-usage hit,
+  // but will it be less or greater than the
+  // performance hit of slow-rendering scrollable
+  insertTop(top, bottom) { return this.insertLine(1, top, top, bottom) }
+  deleteBottom(top, bottom) { return this.clearRegion(0, this.width, bottom, bottom) }
+  // Same as: return this.insertBottom(top, bottom);
+  deleteTop(top, bottom) { return this.deleteLine(1, top, top, bottom) }
+  // boxes with clean sides?
   cleanSides(el) {
     const pos = el.lpos
-
-    if (!pos) {
-      return false
-    }
-
-    if (pos._cleanSides != null) {
-      return pos._cleanSides
-    }
-
-    if (pos.xi <= 0 && pos.xl >= this.width) {
-      return pos._cleanSides = true
-    }
-
+    if (!pos) { return false }
+    if (pos._cleanSides != null) { return pos._cleanSides }
+    if (pos.xi <= 0 && pos.xl >= this.width) { return pos._cleanSides = true }
     if (this.options.fastCSR) {
       // Maybe just do this instead of parsing.
       if (pos.yi < 0) return pos._cleanSides = false
@@ -702,10 +603,7 @@ export class Screen extends Node {
       }
       return pos._cleanSides = false
     }
-
-    if (!this.options.smartCSR) {
-      return false
-    }
+    if (!this.options.smartCSR) { return false }
 
     // The scrollbar can't update properly, and there's also a
     // chance that the scrollbar may get moved around senselessly.
@@ -725,12 +623,10 @@ export class Screen extends Node {
         ch,
         x,
         y
-
     if (pos.yi < 0) return pos._cleanSides = false
     if (pos.yl > this.height) return pos._cleanSides = false
     if (pos.xi - 1 < 0) return pos._cleanSides = true
     if (pos.xl > this.width) return pos._cleanSides = true
-
     for (x = pos.xi - 1; x >= 0; x--) {
       if (!this.olines[yi]) break
       first = this.olines[yi][x]
@@ -742,7 +638,6 @@ export class Screen extends Node {
         }
       }
     }
-
     for (x = pos.xl; x < this.width; x++) {
       if (!this.olines[yi]) break
       first = this.olines[yi][x]
@@ -754,7 +649,6 @@ export class Screen extends Node {
         }
       }
     }
-
     return pos._cleanSides = true
   }
   _dockBorders() {
@@ -764,7 +658,6 @@ export class Screen extends Node {
         y,
         x,
         ch
-
     // var keys, stop;
     //
     // keys = Object.keys(this._borderStops)
@@ -776,11 +669,10 @@ export class Screen extends Node {
     //   if (!lines[y]) continue;
     //   stop = this._borderStops[y];
     //   for (x = stop.xi; x < stop.xl; x++) {
-
-    stops = Object.keys(stops)
+    stops = Object
+      .keys(stops)
       .map(function (k) { return +k })
       .sort(function (a, b) { return a - b })
-
     for (i = 0; i < stops.length; i++) {
       y = stops[i]
       if (!lines[y]) continue
@@ -797,35 +689,28 @@ export class Screen extends Node {
     let angle = 0
     const attr = lines[y][x][0],
           ch   = lines[y][x][1]
-
     if (lines[y][x - 1] && langles[lines[y][x - 1][1]]) {
       if (!this.options.ignoreDockContrast) {
         if (lines[y][x - 1][0] !== attr) return ch
       }
       angle |= 1 << 3
     }
-
     if (lines[y - 1] && uangles[lines[y - 1][x][1]]) {
       if (!this.options.ignoreDockContrast) {
         if (lines[y - 1][x][0] !== attr) return ch
       }
       angle |= 1 << 2
     }
-
     if (lines[y][x + 1] && rangles[lines[y][x + 1][1]]) {
       if (!this.options.ignoreDockContrast) {
         if (lines[y][x + 1][0] !== attr) return ch
       }
       angle |= 1 << 1
     }
-
     if (lines[y + 1] && dangles[lines[y + 1][x][1]]) {
-      if (!this.options.ignoreDockContrast) {
-        if (lines[y + 1][x][0] !== attr) return ch
-      }
+      if (!this.options.ignoreDockContrast) { if (lines[y + 1][x][0] !== attr) return ch }
       angle |= 1 << 0
     }
-
     // Experimental: fixes this situation:
     // +----------+
     //            | <-- empty space here, should be a T angle
@@ -842,7 +727,6 @@ export class Screen extends Node {
     //     angle |= 1 << 0;
     //   }
     // }
-
     return angleTable[angle] || ch
   }
   draw(start, end) {
@@ -995,17 +879,18 @@ export class Screen extends Node {
             ly = y
           }
           continue
-        } else
-          if (lx !== -1) {
-            if (this.tput.strings.parm_right_cursor) {
-              out += y === ly
-                ? this.tput.cuf(x - lx)
-                : this.tput.cup(y, x)
-            } else {
-              out += this.tput.cup(y, x)
-            }
-            lx = -1, ly = -1
+        }
+        else if (lx !== -1) {
+          if (this.tput.strings.parm_right_cursor) {
+            out += y === ly
+              ? this.tput.cuf(x - lx)
+              : this.tput.cup(y, x)
           }
+          else {
+            out += this.tput.cup(y, x)
+          }
+          lx = -1, ly = -1
+        }
         o[x][0] = data
         o[x][1] = ch
 
@@ -1050,13 +935,14 @@ export class Screen extends Node {
               if (bg < 16) {
                 if (bg < 8) {
                   bg += 40
-                } else
-                  if (bg < 16) {
-                    bg -= 8
-                    bg += 100
-                  }
+                }
+                else if (bg < 16) {
+                  bg -= 8
+                  bg += 100
+                }
                 out += bg + ';'
-              } else {
+              }
+              else {
                 out += '48;5;' + bg + ';'
               }
             }
@@ -1066,13 +952,14 @@ export class Screen extends Node {
               if (fg < 16) {
                 if (fg < 8) {
                   fg += 30
-                } else
-                  if (fg < 16) {
-                    fg -= 8
-                    fg += 90
-                  }
+                }
+                else if (fg < 16) {
+                  fg -= 8
+                  fg += 90
+                }
                 out += fg + ';'
-              } else {
+              }
+              else {
                 out += '38;5;' + fg + ';'
               }
             }
@@ -1098,7 +985,8 @@ export class Screen extends Node {
               // double-width. Overwrite it with a space and ignore.
               ch = ' '
               o[x][1] = '\0'
-            } else {
+            }
+            else {
               // ALWAYS refresh double-width chars because this special cursor
               // behavior is needed. There may be a more efficient way of doing
               // this. See above.
@@ -1131,17 +1019,19 @@ export class Screen extends Node {
           if (this.tput.acscr[ch]) {
             if (acs) {
               ch = this.tput.acscr[ch]
-            } else {
+            }
+            else {
               ch = this.tput.smacs()
                 + this.tput.acscr[ch]
               acs = true
             }
-          } else
-            if (acs) {
-              ch = this.tput.rmacs() + ch
-              acs = false
-            }
-        } else {
+          }
+          else if (acs) {
+            ch = this.tput.rmacs() + ch
+            acs = false
+          }
+        }
+        else {
           // U8 is not consistently correct. Some terminfo's
           // terminals that do not declare it may actually
           // support utf8 (e.g. urxvt), but if the terminal
@@ -1261,50 +1151,50 @@ export class Screen extends Node {
             i += 2
             bg = +code[i]
             break
-          } else
-            if (c === 48 && +code[i + 1] === 2) {
-              i += 2
-              bg = colors.match(+code[i], +code[i + 1], +code[i + 2])
-              if (bg === -1) bg = def & 0x1ff
-              i += 2
-              break
-            } else
-              if (c === 38 && +code[i + 1] === 5) {
-                i += 2
-                fg = +code[i]
-                break
-              } else
-                if (c === 38 && +code[i + 1] === 2) {
-                  i += 2
-                  fg = colors.match(+code[i], +code[i + 1], +code[i + 2])
-                  if (fg === -1) fg = (def >> 9) & 0x1ff
-                  i += 2
-                  break
-                }
+          }
+          else if (c === 48 && +code[i + 1] === 2) {
+            i += 2
+            bg = colors.match(+code[i], +code[i + 1], +code[i + 2])
+            if (bg === -1) bg = def & 0x1ff
+            i += 2
+            break
+          }
+          else if (c === 38 && +code[i + 1] === 5) {
+            i += 2
+            fg = +code[i]
+            break
+          }
+          else if (c === 38 && +code[i + 1] === 2) {
+            i += 2
+            fg = colors.match(+code[i], +code[i + 1], +code[i + 2])
+            if (fg === -1) fg = (def >> 9) & 0x1ff
+            i += 2
+            break
+          }
           if (c >= 40 && c <= 47) {
             bg = c - 40
-          } else
-            if (c >= 100 && c <= 107) {
-              bg = c - 100
-              bg += 8
-            } else
-              if (c === 49) {
-                bg = def & 0x1ff
-              } else
-                if (c >= 30 && c <= 37) {
-                  fg = c - 30
-                } else
-                  if (c >= 90 && c <= 97) {
-                    fg = c - 90
-                    fg += 8
-                  } else
-                    if (c === 39) {
-                      fg = (def >> 9) & 0x1ff
-                    } else
-                      if (c === 100) {
-                        fg = (def >> 9) & 0x1ff
-                        bg = def & 0x1ff
-                      }
+          }
+          else if (c >= 100 && c <= 107) {
+            bg = c - 100
+            bg += 8
+          }
+          else if (c === 49) {
+            bg = def & 0x1ff
+          }
+          else if (c >= 30 && c <= 37) {
+            fg = c - 30
+          }
+          else if (c >= 90 && c <= 97) {
+            fg = c - 90
+            fg += 8
+          }
+          else if (c === 39) {
+            fg = (def >> 9) & 0x1ff
+          }
+          else if (c === 100) {
+            fg = (def >> 9) & 0x1ff
+            bg = def & 0x1ff
+          }
           break
       }
     }
@@ -1348,13 +1238,14 @@ export class Screen extends Node {
       if (bg < 16) {
         if (bg < 8) {
           bg += 40
-        } else
-          if (bg < 16) {
-            bg -= 8
-            bg += 100
-          }
+        }
+        else if (bg < 16) {
+          bg -= 8
+          bg += 100
+        }
         out += bg + ';'
-      } else {
+      }
+      else {
         out += '48;5;' + bg + ';'
       }
     }
@@ -1364,13 +1255,14 @@ export class Screen extends Node {
       if (fg < 16) {
         if (fg < 8) {
           fg += 30
-        } else
-          if (fg < 16) {
-            fg -= 8
-            fg += 90
-          }
+        }
+        else if (fg < 16) {
+          fg -= 8
+          fg += 90
+        }
         out += fg + ';'
-      } else {
+      }
+      else {
         out += '38;5;' + fg + ';'
       }
     }
@@ -1394,7 +1286,8 @@ export class Screen extends Node {
         if (++i > this.keyable.length - 1) i = 0
         if (this.keyable[i].detached || !this.keyable[i].visible) offset++
       }
-    } else {
+    }
+    else {
       offset = -offset
       while (offset--) {
         if (--i < 0) i = this.keyable.length - 1
@@ -1467,13 +1360,13 @@ export class Screen extends Node {
       if (self.rtop < el.childBase) {
         el.scrollTo(self.rtop)
         self.screen.render()
-      } else
-        if (self.rtop + self.height - self.ibottom > el.childBase + visible) {
-          // Explanation for el.itop here: takes into account scrollable elements
-          // with borders otherwise the element gets covered by the bottom border:
-          el.scrollTo(self.rtop - (el.height - self.height) + el.itop, true)
-          self.screen.render()
-        }
+      }
+      else if (self.rtop + self.height - self.ibottom > el.childBase + visible) {
+        // Explanation for el.itop here: takes into account scrollable elements
+        // with borders otherwise the element gets covered by the bottom border:
+        el.scrollTo(self.rtop - (el.height - self.height) + el.itop, true)
+        self.screen.render()
+      }
     }
 
     if (old) {
@@ -1790,9 +1683,7 @@ export class Screen extends Node {
       : null
     this.cursor._set = true
 
-    if (this.cursor.artificial) {
-      return true
-    }
+    if (this.cursor.artificial) { return true }
 
     return this.program.cursorColor(colors.ncolors[this.cursor.color])
   }
@@ -1831,41 +1722,41 @@ export class Screen extends Node {
       attr &= ~(0x1ff << 9)
       attr |= 7 << 9
       ch = '\u2502'
-    } else
-      if (cursor.shape === 'underline') {
+    }
+    else if (cursor.shape === 'underline') {
+      attr &= ~(0x1ff << 9)
+      attr |= 7 << 9
+      attr |= 2 << 18
+    }
+    else if (cursor.shape === 'block') {
+      attr &= ~(0x1ff << 9)
+      attr |= 7 << 9
+      attr |= 8 << 18
+    }
+    else if (typeof cursor.shape === OBJ && cursor.shape) {
+      cattr = Element.prototype.sattr.call(cursor, cursor.shape)
+
+      if (cursor.shape.bold || cursor.shape.underline
+        || cursor.shape.blink || cursor.shape.inverse
+        || cursor.shape.invisible) {
+        attr &= ~(0x1ff << 18)
+        attr |= ((cattr >> 18) & 0x1ff) << 18
+      }
+
+      if (cursor.shape.fg) {
         attr &= ~(0x1ff << 9)
-        attr |= 7 << 9
-        attr |= 2 << 18
-      } else
-        if (cursor.shape === 'block') {
-          attr &= ~(0x1ff << 9)
-          attr |= 7 << 9
-          attr |= 8 << 18
-        } else
-          if (typeof cursor.shape === OBJ && cursor.shape) {
-            cattr = Element.prototype.sattr.call(cursor, cursor.shape)
+        attr |= ((cattr >> 9) & 0x1ff) << 9
+      }
 
-            if (cursor.shape.bold || cursor.shape.underline
-              || cursor.shape.blink || cursor.shape.inverse
-              || cursor.shape.invisible) {
-              attr &= ~(0x1ff << 18)
-              attr |= ((cattr >> 18) & 0x1ff) << 18
-            }
+      if (cursor.shape.bg) {
+        attr &= ~(0x1ff << 0)
+        attr |= cattr & 0x1ff
+      }
 
-            if (cursor.shape.fg) {
-              attr &= ~(0x1ff << 9)
-              attr |= ((cattr >> 9) & 0x1ff) << 9
-            }
-
-            if (cursor.shape.bg) {
-              attr &= ~(0x1ff << 0)
-              attr |= cattr & 0x1ff
-            }
-
-            if (cursor.shape.ch) {
-              ch = cursor.shape.ch
-            }
-          }
+      if (cursor.shape.ch) {
+        ch = cursor.shape.ch
+      }
+    }
 
     if (cursor.color != null) {
       attr &= ~(0x1ff << 9)
@@ -1937,7 +1828,8 @@ export class Screen extends Node {
           if (unicode.charWidth(line[x][1]) === 2) {
             if (x === xl - 1) {
               ch = ' '
-            } else {
+            }
+            else {
               x++
             }
           }
@@ -2050,4 +1942,5 @@ const angleTable = {
 }
 Object.keys(angleTable).forEach(function (key) {
   angleTable[parseInt(key, 2)] = angleTable[key]
-  delete angleTable[key]})
+  delete angleTable[key]
+})

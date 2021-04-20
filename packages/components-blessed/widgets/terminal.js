@@ -147,12 +147,8 @@ Terminal.prototype.bootstrap = function () {
 
     self.handler(s)
   })
-  this.on('focus', function () {
-    self.term.focus()
-  })
-  this.on('blur', function () {
-    self.term.blur()
-  })
+  this.on('focus', function () { self.term.focus() })
+  this.on('blur', function () { self.term.blur() })
   this.term.on('title', function (title) {
     self.title = title
     self.emit('title', title)
