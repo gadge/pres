@@ -25,11 +25,81 @@ import { emitKeypressEvents }                                     from './keys'
 const slice = Array.prototype.slice
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
-export function build(options) {
-  console.log('>>> [about to create pres program]')
-  return new Program(options)
-}
+
 export class Program extends EventEmitter {
+  constructor(options = {}) {
+    super()
+    console.log(">>> [Program constructed]")
+    const self = this
+    // if (!(this instanceof Program)) return new Program(options)
+    Program.configSingleton(this)
+    // EventEmitter.call(this)
+    if (!options || options.__proto__ !== Object.prototype) {
+      const [ input, output ] = arguments
+      options = { input, output }
+    }
+    this.options = options
+    this.input = options.input || process.stdin
+    this.output = options.output || process.stdout
+    options.log = options.log || options.dump
+    if (options.log) {
+      this._logger = fs.createWriteStream(options.log)
+      if (options.dump) this.setupDump()
+    }
+    this.zero = options.zero !== false
+    this.useBuffer = options.buffer
+    this.x = 0
+    this.y = 0
+    this.savedX = 0
+    this.savedY = 0
+    this.cols = this.output.columns || 1
+    this.rows = this.output.rows || 1
+    this.scrollTop = 0
+    this.scrollBottom = this.rows - 1
+    this._terminal = options.terminal ||
+      options.term ||
+      process.env.TERM ||
+      (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
+    this._terminal = this._terminal.toLowerCase()
+    // OSX
+    this.isOSXTerm = process.env.TERM_PROGRAM === 'Apple_Terminal'
+    this.isiTerm2 =
+      process.env.TERM_PROGRAM === 'iTerm.app' ||
+      !!process.env.ITERM_SESSION_ID
+    // VTE
+    // NOTE: lxterminal does not provide an env variable to check for.
+    // NOTE: gnome-terminal and sakura use a later version of VTE
+    // which provides VTE_VERSION as well as supports SGR events.
+    this.isXFCE = /xfce/i.test(process.env.COLORTERM)
+    this.isTerminator = !!process.env.TERMINATOR_UUID
+    this.isLXDE = false
+    this.isVTE =
+      !!process.env.VTE_VERSION ||
+      this.isXFCE ||
+      this.isTerminator ||
+      this.isLXDE
+    // xterm and rxvt - not accurate
+    this.isRxvt = /rxvt/i.test(process.env.COLORTERM)
+    this.isXterm = false
+    this.tmux = !!process.env.TMUX
+    this.tmuxVersion = (function () {
+      if (!self.tmux) return 2
+      try {
+        const version = cp.execFileSync('tmux', [ '-V' ], { encoding: 'utf8' })
+        return +/^tmux ([\d.]+)/i.exec(version.trim().split('\n')[0])[1]
+      } catch (e) {
+        return 2
+      }
+    })()
+    this._buf = ''
+    this._flush = this.flush.bind(this)
+    if (options.tput !== false) this.setupTput()
+    this.listen()
+  }
+  static build(options) {
+    console.log('>>> [about to create pres program]')
+    return new Program(options)
+  }
   static global = null
   static total = 0
   static instances = []
@@ -269,75 +339,6 @@ export class Program extends EventEmitter {
   // CSI Ps D
 // Cursor Preceding Line Ps Times (default = 1) (CNL).
   write = this._owrite
-  constructor(options = {}) {
-    super()
-    console.log(">>> [Program constructed]")
-    const self = this
-    // if (!(this instanceof Program)) return new Program(options)
-    Program.configSingleton(this)
-    // EventEmitter.call(this)
-    if (!options || options.__proto__ !== Object.prototype) {
-      const [ input, output ] = arguments
-      options = { input, output }
-    }
-    this.options = options
-    this.input = options.input || process.stdin
-    this.output = options.output || process.stdout
-    options.log = options.log || options.dump
-    if (options.log) {
-      this._logger = fs.createWriteStream(options.log)
-      if (options.dump) this.setupDump()
-    }
-    this.zero = options.zero !== false
-    this.useBuffer = options.buffer
-    this.x = 0
-    this.y = 0
-    this.savedX = 0
-    this.savedY = 0
-    this.cols = this.output.columns || 1
-    this.rows = this.output.rows || 1
-    this.scrollTop = 0
-    this.scrollBottom = this.rows - 1
-    this._terminal = options.terminal ||
-      options.term ||
-      process.env.TERM ||
-      (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
-    this._terminal = this._terminal.toLowerCase()
-    // OSX
-    this.isOSXTerm = process.env.TERM_PROGRAM === 'Apple_Terminal'
-    this.isiTerm2 =
-      process.env.TERM_PROGRAM === 'iTerm.app' ||
-      !!process.env.ITERM_SESSION_ID
-    // VTE
-    // NOTE: lxterminal does not provide an env variable to check for.
-    // NOTE: gnome-terminal and sakura use a later version of VTE
-    // which provides VTE_VERSION as well as supports SGR events.
-    this.isXFCE = /xfce/i.test(process.env.COLORTERM)
-    this.isTerminator = !!process.env.TERMINATOR_UUID
-    this.isLXDE = false
-    this.isVTE =
-      !!process.env.VTE_VERSION ||
-      this.isXFCE ||
-      this.isTerminator ||
-      this.isLXDE
-    // xterm and rxvt - not accurate
-    this.isRxvt = /rxvt/i.test(process.env.COLORTERM)
-    this.isXterm = false
-    this.tmux = !!process.env.TMUX
-    this.tmuxVersion = (function () {
-      if (!self.tmux) return 2
-      try {
-        const version = cp.execFileSync('tmux', [ '-V' ], { encoding: 'utf8' })
-        return +/^tmux ([\d.]+)/i.exec(version.trim().split('\n')[0])[1]
-      } catch (e) {
-        return 2
-      }
-    })()
-    this._buf = ''
-    this._flush = this.flush.bind(this)
-    if (options.tput !== false) this.setupTput()
-    this.listen()
-  }
   get terminal() { return this._terminal }
   set terminal(terminal) { return this.setTerminal(terminal), this.terminal }
 // CSI Ps ; Ps H
@@ -351,10 +352,6 @@ export class Program extends EventEmitter {
 // CSI ? Ps J
 //   Erase in Display (DECSED).
 //     Ps = 0  -> Selective Erase Below (default).
-  static build(options) {
-    console.log('>>> [about to create pres program]')
-    return new Program(options)
-  }
 //     Ps = 1  -> Selective Erase Above.
   static configSingleton(program) {
     if (!Program.global) Program.global = program
@@ -3767,6 +3764,7 @@ export class Program extends EventEmitter {
     if (this._resume) return this._resume()
   }
 }
+
 /**
  * Helpers
  */
