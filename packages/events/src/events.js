@@ -9,6 +9,8 @@ import { EVENT, NEW_LISTENER, REMOVE_LISTENER, } from '@pres/enum-events'
 const slice = Array.prototype.slice
 
 export class EventEmitter {
+  on = this.addListener
+  off = this.removeListener
   /**
    * EventEmitter
    */
@@ -18,14 +20,14 @@ export class EventEmitter {
   }
   build() { return new EventEmitter() }
   setMaxListeners(n) { this._maxListeners = n }
-  on = this.addListener
-  off = this.removeListener
   addListener(type, listener) {
     if (!this._events[type]) {
       this._events[type] = listener
-    } else if (typeof this._events[type] === 'function') {
+    }
+    else if (typeof this._events[type] === 'function') {
       this._events[type] = [ this._events[type], listener ]
-    } else {
+    }
+    else {
       this._events[type].push(listener)
     }
     this._emit(NEW_LISTENER, [ type, listener ])
@@ -49,7 +51,8 @@ export class EventEmitter {
   removeAllListeners(type) {
     if (type) {
       delete this._events[type]
-    } else {
+    }
+    else {
       this._events = {}
     }
   }

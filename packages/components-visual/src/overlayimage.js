@@ -6,7 +6,7 @@
 import { Box } from '@pres/components-core'
 
 import { ATTACH, DATA, DETACH, ERROR, EXIT, HIDE, RENDER, RESIZE, SHOW, } from '@pres/enum-events'
-import * as helpers                                                        from '@pres/util-helpers'
+import * as helpers                                                       from '@pres/util-helpers'
 import cp                                                                 from 'child_process'
 import fs                                                                 from 'fs'
 
@@ -28,14 +28,16 @@ export class OverlayImage extends Box {
     if (OverlayImage.hasW3MDisplay == null) {
       if (fs.existsSync(OverlayImage.w3mdisplay)) {
         OverlayImage.hasW3MDisplay = true
-      } else if (options.search !== false) {
+      }
+      else if (options.search !== false) {
         const file = helpers.findFile('/usr', 'w3mimgdisplay')
           || helpers.findFile('/lib', 'w3mimgdisplay')
           || helpers.findFile('/bin', 'w3mimgdisplay')
         if (file) {
           OverlayImage.hasW3MDisplay = true
           OverlayImage.w3mdisplay = file
-        } else {
+        }
+        else {
           OverlayImage.hasW3MDisplay = false
         }
       }

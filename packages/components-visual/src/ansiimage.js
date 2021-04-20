@@ -95,7 +95,8 @@ export class ANSIImage extends Box {
 
       if (this.img.frames && this.options.animate) {
         this.play()
-      } else {
+      }
+      else {
         this.cellmap = this.img.cellmap
       }
     } catch (e) {

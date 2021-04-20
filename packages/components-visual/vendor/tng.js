@@ -36,7 +36,8 @@ function PNG(file, options) {
   if (Buffer.isBuffer(file)) {
     this.file = this.options.filename || null
     buf = file
-  } else {
+  }
+  else {
     this.options.filename = file
     this.file = path.resolve(process.cwd(), file)
     buf = fs.readFileSync(this.file)
@@ -261,7 +262,8 @@ PNG.prototype.parseChunks = function (chunks) {
             fctl: info,
             fdat: this.idat
           })
-        } else {
+        }
+        else {
           this.frames.push({
             fctl: info,
             fdat: []
@@ -361,13 +363,17 @@ PNG.prototype.unfilterLine = function (filter, line, prior) {
   for (let x = 0; x < line.length; x++) {
     if (filter === 0) {
       break
-    } else if (filter === 1) {
+    }
+    else if (filter === 1) {
       line[x] = this.filters.sub(x, line, prior, this.bytesPerPixel)
-    } else if (filter === 2) {
+    }
+    else if (filter === 2) {
       line[x] = this.filters.up(x, line, prior, this.bytesPerPixel)
-    } else if (filter === 3) {
+    }
+    else if (filter === 3) {
       line[x] = this.filters.average(x, line, prior, this.bytesPerPixel)
-    } else if (filter === 4) {
+    }
+    else if (filter === 4) {
       line[x] = this.filters.paeth(x, line, prior, this.bytesPerPixel)
     }
   }
@@ -390,11 +396,14 @@ PNG.prototype.sampleLine = function (line, width) {
       ch = line[x]
       if (this.bitDepth === 16) {
         ch = (ch << 8) | line[++x]
-      } else if (this.bitDepth === 24) {
+      }
+      else if (this.bitDepth === 24) {
         ch = (ch << 16) | (line[++x] << 8) | line[++x]
-      } else if (this.bitDepth === 32) {
+      }
+      else if (this.bitDepth === 32) {
         ch = (ch << 24) | (line[++x] << 16) | (line[++x] << 8) | line[++x]
-      } else if (this.bitDepth > 32) {
+      }
+      else if (this.bitDepth > 32) {
         throw new Error('bitDepth ' + this.bitDepth + ' unsupported.')
       }
       shiftStart = this.shiftStart
@@ -406,7 +415,8 @@ PNG.prototype.sampleLine = function (line, width) {
             // sample = sample * (0xff / this.mask) | 0; // would work too
             sample *= 0xff / this.mask
             sample |= 0
-          } else if (this.bitDepth > 8) {
+          }
+          else if (this.bitDepth > 8) {
             sample = (sample / this.mask) * 255 | 0
           }
         }
@@ -566,7 +576,8 @@ PNG.prototype.sampleInterlacedLines = function (raw) {
         for (k = offset, f = 0; k < offset + vpr; k++, f++) {
           samples[k] = flat[f]
         }
-      } else {
+      }
+      else {
         offset = y * vpr + xstart * this.sampleDepth
         end_offset = (y + 1) * vpr
         skip = this.sampleDepth * xstep
@@ -590,20 +601,24 @@ PNG.prototype.createBitmap = function (pixels) {
     pixels = pixels.map(function (sample) {
       return { r: sample[0], g: sample[0], b: sample[0], a: 255 }
     })
-  } else if (this.colorType === 2) {
+  }
+  else if (this.colorType === 2) {
     pixels = pixels.map(function (sample) {
       return { r: sample[0], g: sample[1], b: sample[2], a: 255 }
     })
-  } else if (this.colorType === 3) {
+  }
+  else if (this.colorType === 3) {
     pixels = pixels.map(function (sample) {
       if (!this.palette[sample[0]]) throw new Error('bad palette index')
       return this.palette[sample[0]]
     }, this)
-  } else if (this.colorType === 4) {
+  }
+  else if (this.colorType === 4) {
     pixels = pixels.map(function (sample) {
       return { r: sample[0], g: sample[0], b: sample[0], a: sample[1] }
     })
-  } else if (this.colorType === 6) {
+  }
+  else if (this.colorType === 6) {
     pixels = pixels.map(function (sample) {
       return { r: sample[0], g: sample[1], b: sample[2], a: sample[3] }
     })
@@ -636,7 +651,8 @@ PNG.prototype.createCellmap = function (bmp, options) {
 
   if (cmwidth) {
     scale = cmwidth / width
-  } else if (cmheight) {
+  }
+  else if (cmheight) {
     scale = cmheight / height
   }
 
@@ -830,7 +846,8 @@ PNG.prototype.pixelToCell = function (pixel, ch) {
       pixel.r * fga | 0,
       pixel.g * fga | 0,
       pixel.b * fga | 0)
-  } else {
+  }
+  else {
     fg = 0x1ff
     ch = null
   }
@@ -859,7 +876,8 @@ PNG.prototype.getOutch = (function () {
       , outch  = dchars[lumi * (dchars.length - 1) | 0]
 
     return outch
-  }})()
+  }
+})()
 
 PNG.prototype.compileFrames = function (frames) {
   return this.optimization === 'mem'
@@ -944,10 +962,12 @@ PNG.prototype.renderFrame = function (bmp, frame, i) {
       for (x = 0; x < last.fctl.width; x++) {
         if (last.fctl.disposeOp === 0) {
           // none / keep
-        } else if (last.fctl.disposeOp === 1) {
+        }
+        else if (last.fctl.disposeOp === 1) {
           // background / clear
           this._curBmp[lyo + y][lxo + x] = { r: 0, g: 0, b: 0, a: 0 }
-        } else if (last.fctl.disposeOp === 2) {
+        }
+        else if (last.fctl.disposeOp === 2) {
           // previous / restore
           p = this._lastBmp[y][x]
           this._curBmp[lyo + y][lxo + x] = { r: p.r, g: p.g, b: p.b, a: p.a }
@@ -966,7 +986,8 @@ PNG.prototype.renderFrame = function (bmp, frame, i) {
       }
       this._lastBmp.push(line)
     }
-  } else {
+  }
+  else {
     this._lastBmp = null
   }
 
@@ -976,7 +997,8 @@ PNG.prototype.renderFrame = function (bmp, frame, i) {
       if (fc.blendOp === 0) {
         // source
         this._curBmp[yo + y][xo + x] = { r: p.r, g: p.g, b: p.b, a: p.a }
-      } else if (fc.blendOp === 1) {
+      }
+      else if (fc.blendOp === 1) {
         // over
         if (p.a !== 0) {
           this._curBmp[yo + y][xo + x] = { r: p.r, g: p.g, b: p.b, a: p.a }
@@ -1130,7 +1152,8 @@ PNG.prototype.toPNG = function (input) {
   if (this.frames.length > 1) {
     this.actl = { numFrames: gif.images.length, numPlays: gif.numPlays || 0 }
     this.frames = this.compileFrames(this.frames)
-  } else {
+  }
+  else {
     this.frames = undefined
   }
 
@@ -1225,7 +1248,8 @@ PNG.prototype.gifMagick = function (input) {
   if (this.frames.length > 1) {
     this.actl = { numFrames: frames.length, numPlays: 0 }
     this.frames = this.compileFrames(this.frames)
-  } else {
+  }
+  else {
     this.frames = undefined
   }
 
@@ -1323,7 +1347,8 @@ PNG.prototype.crc32 = (function () {
       crc = crcTable[(crc ^ buf[i]) & 0xff] ^ (crc >>> 8)
     }
     return crc ^ -1
-  }})()
+  }
+})()
 
 PNG.prototype._debug = function () {
   if (!this.options.log) return
@@ -1368,7 +1393,8 @@ function GIF(file, options) {
   if (Buffer.isBuffer(file)) {
     buf = file
     file = null
-  } else {
+  }
+  else {
     file = path.resolve(process.cwd(), file)
     buf = fs.readFileSync(file)
   }
@@ -1468,7 +1494,8 @@ function GIF(file, options) {
         if (this.totalPixels >= this.pixelLimit) {
           break
         }
-      } else if (desc === 0x21) {
+      }
+      else if (desc === 0x21) {
         // Extensions:
         // http://www.w3.org/Graphics/GIF/spec-gif89a.txt
         ext = {}
@@ -1498,7 +1525,8 @@ function GIF(file, options) {
           this.transparentColor = ext.transparentColor
           this.disposeMethod = ext.disposeMethod
           this.useTransparent = ext.useTransparent
-        } else if (label === 0xff) {
+        }
+        else if (label === 0xff) {
           // https://wiki.whatwg.org/wiki/GIF#Specifications
           size = buf.readUInt8(p)
           p += 1
@@ -1529,7 +1557,8 @@ function GIF(file, options) {
               // http://graphcomp.com/info/specs/ani_gif.html
               ext.numPlays = ext.data.readUInt16LE(1)
               this.numPlays = ext.numPlays
-            } else if (ext.data.readUInt8(0) === 0x02) {
+            }
+            else if (ext.data.readUInt8(0) === 0x02) {
               // Netscape buffering extension
               this.minBuffer = ext.data
             }
@@ -1552,7 +1581,8 @@ function GIF(file, options) {
           }
           assert.equal(buf.readUInt8(p), 0x00)
           p += 1
-        } else {
+        }
+        else {
           ext.data = []
           while (buf[p] !== 0x00) {
             size = buf.readUInt8(p)
@@ -1564,12 +1594,15 @@ function GIF(file, options) {
           p += 1
         }
         this.extensions.push(ext)
-      } else if (desc === 0x3b) {
+      }
+      else if (desc === 0x3b) {
         break
-      } else if (p === buf.length - 1) {
+      }
+      else if (p === buf.length - 1) {
         // } else if (desc === 0x00 && p === buf.length - 1) {
         break
-      } else {
+      }
+      else {
         throw new Error('unknown block')
       }
     }
@@ -1639,7 +1672,8 @@ function GIF(file, options) {
           if (row >= img.height) {
             row = interlacing[++ilp][0]
           }
-        } else {
+        }
+        else {
           row++
         }
       }
@@ -1747,7 +1781,8 @@ GIF.prototype.decompress = function (input, codeSize) {
           oldCode,
           table[oldCode][2]
         ]
-      } else {
+      }
+      else {
         K = table[oldCode][2]
         table[ntable++] = [ K, oldCode, K ]
         for (i = code; i >= 0; i = table[i][1]) {

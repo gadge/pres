@@ -122,7 +122,8 @@ export class BigText extends Box {
           if (this.fch && this.fch !== ' ') {
             lines[y][x + mx][0] = dattr
             lines[y][x + mx][1] = mcell === 1 ? this.fch : this.ch
-          } else {
+          }
+          else {
             lines[y][x + mx][0] = mcell === 1 ? attr : dattr
             lines[y][x + mx][1] = mcell === 1 ? ' ' : this.ch
           }

@@ -5,27 +5,8 @@
  */
 
 import {
-  BLUR,
-  BTNDOWN,
-  BTNUP,
-  DATA,
-  DESTROY,
-  DRAG,
-  EXIT,
-  FOCUS,
-  KEYPRESS,
-  MOUSE,
-  MOUSEDOWN,
-  MOUSEMOVE,
-  MOUSEWHEEL,
-  MOVE,
-  NEW_LISTENER,
-  RESIZE,
-  RESPONSE,
-  TITLE,
-  WARNING,
-  WHEELDOWN,
-  WHEELUP,
+  BLUR, BTNDOWN, BTNUP, DATA, DESTROY, DRAG, EXIT, FOCUS, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEWHEEL, MOVE,
+  NEW_LISTENER, RESIZE, RESPONSE, TITLE, WARNING, WHEELDOWN, WHEELUP,
 }                        from '@pres/enum-events'
 import { EventEmitter }  from '@pres/events'
 import { Tput }          from '@pres/terminfo-parser'
@@ -214,24 +195,32 @@ Program.prototype.setupDump = function () {
     return data.replace(/[\0\x80\x1b-\x1f\x7f\x01-\x1a]/g, function (ch) {
       if (ch === '\0' || ch === '\x80') {
         ch = '@'
-      } else if (ch === '\x1b') {
+      }
+      else if (ch === '\x1b') {
         ch = '['
-      } else if (ch === '\x1c') {
+      }
+      else if (ch === '\x1c') {
         ch = '\\'
-      } else if (ch === '\x1d') {
+      }
+      else if (ch === '\x1d') {
         ch = ']'
-      } else if (ch === '\x1e') {
+      }
+      else if (ch === '\x1e') {
         ch = '^'
-      } else if (ch === '\x1f') {
+      }
+      else if (ch === '\x1f') {
         ch = '_'
-      } else if (ch === '\x7f') {
+      }
+      else if (ch === '\x7f') {
         ch = '?'
-      } else {
+      }
+      else {
         ch = ch.charCodeAt(0)
         // From ('A' - 64) to ('Z' - 64).
         if (ch >= 1 && ch <= 26) {
           ch = String.fromCharCode(ch + 64)
-        } else {
+        }
+        else {
           return String.fromCharCode(ch)
         }
       }
@@ -301,7 +290,8 @@ Program.prototype.setupTput = function () {
       self.put[key] = function () {
         return tput._print(tput[key].apply(tput, arguments), write)
       }
-    } else {
+    }
+    else {
       self.put[key] = function () {
         return self._write(tput[key].apply(tput, arguments))
       }
@@ -310,11 +300,13 @@ Program.prototype.setupTput = function () {
 }
 
 Program.prototype.__defineGetter__('terminal', function () {
-  return this._terminal})
+  return this._terminal
+})
 
 Program.prototype.__defineSetter__('terminal', function (terminal) {
   this.setTerminal(terminal)
-  return this.terminal})
+  return this.terminal
+})
 
 Program.prototype.setTerminal = function (terminal) {
   this._terminal = terminal.toLowerCase()
@@ -348,7 +340,8 @@ Program.prototype.listen = function () {
   if (!this.input._blessedInput) {
     this.input._blessedInput = 1
     this._listenInput()
-  } else {
+  }
+  else {
     this.input._blessedInput++
   }
 
@@ -373,7 +366,8 @@ Program.prototype.listen = function () {
   if (!this.output._blessedOutput) {
     this.output._blessedOutput = 1
     this._listenOutput()
-  } else {
+  }
+  else {
     this.output._blessedOutput++
   }
 }
@@ -597,7 +591,8 @@ Program.prototype._bindMouse = function (s, buf) {
     if (s[0] > 127 && s[1] === undefined) {
       s[0] -= 128
       s = '\x1b' + s.toString('utf-8')
-    } else {
+    }
+    else {
       s = s.toString('utf-8')
     }
   }
@@ -673,13 +668,15 @@ Program.prototype._bindMouse = function (s, buf) {
     if ((b >> 6) & 1) {
       key.action = b & 1 ? WHEELDOWN : WHEELUP
       key.button = 'middle'
-    } else if (b === 3) {
+    }
+    else if (b === 3) {
       // NOTE: x10 and urxvt have no way
       // of telling which button mouseup used.
       key.action = 'mouseup'
       key.button = this._lastButton || 'unknown'
       delete this._lastButton
-    } else {
+    }
+    else {
       key.action = MOUSEDOWN
       button = b & 3
       key.button =
@@ -745,13 +742,15 @@ Program.prototype._bindMouse = function (s, buf) {
     if ((b >> 6) & 1) {
       key.action = b & 1 ? WHEELDOWN : WHEELUP
       key.button = 'middle'
-    } else if (b === 3) {
+    }
+    else if (b === 3) {
       // NOTE: x10 and urxvt have no way
       // of telling which button mouseup used.
       key.action = 'mouseup'
       key.button = this._lastButton || 'unknown'
       delete this._lastButton
-    } else {
+    }
+    else {
       key.action = MOUSEDOWN
       button = b & 3
       key.button =
@@ -810,7 +809,8 @@ Program.prototype._bindMouse = function (s, buf) {
     if ((b >> 6) & 1) {
       key.action = b & 1 ? WHEELDOWN : WHEELUP
       key.button = 'middle'
-    } else {
+    }
+    else {
       key.action = down
         ? MOUSEDOWN
         : 'mouseup'
@@ -1051,7 +1051,8 @@ Program.prototype._bindResponse = function (s) {
     if (s[0] > 127 && s[1] === undefined) {
       s[0] -= 128
       s = '\x1b' + s.toString('utf-8')
-    } else {
+    }
+    else {
       s = s.toString('utf-8')
     }
   }
@@ -1074,16 +1075,20 @@ Program.prototype._bindResponse = function (s) {
       if (parts[0] === 1 && parts[2] === 2) {
         out.term = 'vt100'
         out.advancedVideo = true
-      } else if (parts[0] === 1 && parts[2] === 0) {
+      }
+      else if (parts[0] === 1 && parts[2] === 0) {
         out.term = 'vt101'
-      } else if (parts[0] === 6) {
+      }
+      else if (parts[0] === 6) {
         out.term = 'vt102'
-      } else if (parts[0] === 60
+      }
+      else if (parts[0] === 60
         && parts[1] === 1 && parts[2] === 2
         && parts[3] === 6 && parts[4] === 8
         && parts[5] === 9 && parts[6] === 15) {
         out.term = 'vt220'
-      } else {
+      }
+      else {
         // VT200-style params:
         parts.forEach(function (attr) {
           switch (attr) {
@@ -1120,7 +1125,8 @@ Program.prototype._bindResponse = function (s) {
           }
         })
       }
-    } else {
+    }
+    else {
       out.type = 'secondary-attribute'
       switch (parts[0]) {
         case 0:
@@ -1744,7 +1750,8 @@ Program.prototype.omove = function (x, y) {
   if (!this.zero) {
     x = (x || 1) - 1
     y = (y || 1) - 1
-  } else {
+  }
+  else {
     x = x || 0
     y = y || 0
   }
@@ -1754,16 +1761,20 @@ Program.prototype.omove = function (x, y) {
   if (y === this.y) {
     if (x > this.x) {
       this.cuf(x - this.x)
-    } else if (x < this.x) {
+    }
+    else if (x < this.x) {
       this.cub(this.x - x)
     }
-  } else if (x === this.x) {
+  }
+  else if (x === this.x) {
     if (y > this.y) {
       this.cud(y - this.y)
-    } else if (y < this.y) {
+    }
+    else if (y < this.y) {
       this.cuu(this.y - y)
     }
-  } else {
+  }
+  else {
     if (!this.zero) x++, y++
     this.cup(y, x)
   }
@@ -1800,11 +1811,13 @@ Program.prototype.repeat = function (ch, i) {
 }
 
 Program.prototype.__defineGetter__(TITLE, function () {
-  return this._title})
+  return this._title
+})
 
 Program.prototype.__defineSetter__(TITLE, function (title) {
   this.setTitle(title)
-  return this._title})
+  return this._title
+})
 
 // Specific to iTerm2, but I think it's really cool.
 // Example:
@@ -1826,46 +1839,53 @@ Program.prototype.cursorShape = function (shape, blink) {
       case 'block':
         if (!blink) {
           this._twrite('\x1b]50;CursorShape=0;BlinkingCursorEnabled=0\x07')
-        } else {
+        }
+        else {
           this._twrite('\x1b]50;CursorShape=0;BlinkingCursorEnabled=1\x07')
         }
         break
       case 'underline':
         if (!blink) {
           // this._twrite('\x1b]50;CursorShape=n;BlinkingCursorEnabled=0\x07');
-        } else {
+        }
+        else {
           // this._twrite('\x1b]50;CursorShape=n;BlinkingCursorEnabled=1\x07');
         }
         break
       case 'line':
         if (!blink) {
           this._twrite('\x1b]50;CursorShape=1;BlinkingCursorEnabled=0\x07')
-        } else {
+        }
+        else {
           this._twrite('\x1b]50;CursorShape=1;BlinkingCursorEnabled=1\x07')
         }
         break
     }
     return true
-  } else if (this.term('xterm') || this.term('screen')) {
+  }
+  else if (this.term('xterm') || this.term('screen')) {
     switch (shape) {
       case 'block':
         if (!blink) {
           this._twrite('\x1b[0 q')
-        } else {
+        }
+        else {
           this._twrite('\x1b[1 q')
         }
         break
       case 'underline':
         if (!blink) {
           this._twrite('\x1b[2 q')
-        } else {
+        }
+        else {
           this._twrite('\x1b[3 q')
         }
         break
       case 'line':
         if (!blink) {
           this._twrite('\x1b[4 q')
-        } else {
+        }
+        else {
           this._twrite('\x1b[5 q')
         }
         break
@@ -2065,7 +2085,8 @@ Program.prototype.lrestoreCursor = function (key, hide) {
   if (hide && pos.hidden !== this.cursorHidden) {
     if (pos.hidden) {
       this.hideCursor()
-    } else {
+    }
+    else {
       this.showCursor()
     }
   }
@@ -2345,7 +2366,8 @@ Program.prototype.cup =
       if (!this.zero) {
         row = (row || 1) - 1
         col = (col || 1) - 1
-      } else {
+      }
+      else {
         row = row || 0
         col = col || 0
       }
@@ -2527,7 +2549,8 @@ Program.prototype._attr = function (param, val) {
   if (Array.isArray(param)) {
     parts = param
     param = parts[0] || 'normal'
-  } else {
+  }
+  else {
     param = param || 'normal'
     parts = param.split(/\s*[,;]\s*/)
   }
@@ -2550,7 +2573,8 @@ Program.prototype._attr = function (param, val) {
   if (param.indexOf('no ') === 0) {
     param = param.substring(3)
     val = false
-  } else if (param.indexOf('!') === 0) {
+  }
+  else if (param.indexOf('!') === 0) {
     param = param.substring(1)
     val = false
   }
@@ -2781,14 +2805,17 @@ Program.prototype._attr = function (param, val) {
           if (m[2] === 'fg') {
             if (color < 8) {
               color += 30
-            } else if (color < 16) {
+            }
+            else if (color < 16) {
               color -= 8
               color += 90
             }
-          } else if (m[2] === 'bg') {
+          }
+          else if (m[2] === 'bg') {
             if (color < 8) {
               color += 40
-            } else if (color < 16) {
+            }
+            else if (color < 16) {
               color -= 8
               color += 100
             }
@@ -2922,7 +2949,8 @@ Program.prototype.cha =
   Program.prototype.cursorCharAbsolute = function (param) {
     if (!this.zero) {
       param = (param || 1) - 1
-    } else {
+    }
+    else {
       param = param || 0
     }
     this.x = param
@@ -3065,7 +3093,8 @@ Program.prototype.hvp =
     if (!this.zero) {
       row = (row || 1) - 1
       col = (col || 1) - 1
-    } else {
+    }
+    else {
       row = row || 0
       col = col || 0
     }
@@ -3446,7 +3475,8 @@ Program.prototype.setMouse = function (opt, enable) {
     }
     this._currentMouse = opt
     this.mouseEnabled = true
-  } else if (enable === false) {
+  }
+  else if (enable === false) {
     delete this._currentMouse
     this.mouseEnabled = false
   }
@@ -3494,7 +3524,8 @@ Program.prototype.setMouse = function (opt, enable) {
     if (this.tmux && this.tmuxVersion >= 2) {
       if (opt.allMotion) this._twrite('\x1b[?1003h')
       else this._twrite('\x1b[?1003l')
-    } else {
+    }
+    else {
       if (opt.allMotion) this.setMode('?1003')
       else this.resetMode('?1003')
     }
@@ -3562,7 +3593,8 @@ Program.prototype.decstbm =
       if (!this.zero) {
         top = (top || 1) - 1
         bottom = (bottom || this.rows) - 1
-      } else {
+      }
+      else {
         top = top || 0
         bottom = bottom || (this.rows - 1)
       }

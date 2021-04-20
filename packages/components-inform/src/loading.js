@@ -40,10 +40,10 @@ export class Loading extends Box {
     this.screen.lockKeys = true
     this._.timer = setInterval(() => {
       const { icon } = self._, { content } = icon
-      if (content === '|') { icon.setContent('/') } else
-        if (content === '/') { icon.setContent('-') } else
-          if (content === '-') { icon.setContent('\\') } else
-            if (content === '\\') { icon.setContent('|') }
+      if (content === '|') { icon.setContent('/') }
+      else if (content === '/') { icon.setContent('-') }
+      else if (content === '-') { icon.setContent('\\') }
+      else if (content === '\\') { icon.setContent('|') }
       self.screen.render()
     }, 200)
   }

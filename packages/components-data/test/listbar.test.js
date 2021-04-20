@@ -7,7 +7,8 @@ const auto = true
 screen = blessed.screen({
   dump: __dirname + '/logs/listbar.log',
   autoPadding: auto,
-  warnings: true})
+  warnings: true
+})
 
 const box = blessed.box({
   parent: screen,
@@ -15,7 +16,8 @@ const box = blessed.box({
   right: 0,
   width: 'shrink',
   height: 'shrink',
-  content: '...'})
+  content: '...'
+})
 
 const bar = blessed.listbar({
   //parent: screen,
@@ -107,13 +109,15 @@ const bar = blessed.listbar({
       box.setContent('Pressed fifteen.')
       screen.render()
     }
-  }})
+  }
+})
 
 screen.append(bar)
 
 bar.focus()
 
 screen.key('q', function () {
-  return screen.destroy()})
+  return screen.destroy()
+})
 
 screen.render()

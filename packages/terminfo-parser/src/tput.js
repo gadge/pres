@@ -656,6 +656,7 @@ export class Tput {
 //      numCount: 1,
 //      strCount: 57,
 //      strTableSize: 117,
+  _readTermcap = this.readTermcap
 //      lastStrTableOffset: 680,
   /**
    * Tput
@@ -721,7 +722,6 @@ export class Tput {
       '\u00b7': '*'  // '·'
     }
   }
-  _readTermcap = this.readTermcap
 // For xterm, non-extended header:
 // { dataSize: 3270,
 //   headerSize: 12,
@@ -861,7 +861,8 @@ export class Tput {
           this.error = new Error('Termcap parse error.')
           this._useInternalCap(this.terminal)
         }
-      } else {
+      }
+      else {
         try {
           this.injectTerminfo()
         } catch (e) {
@@ -1100,7 +1101,8 @@ export class Tput {
       v = Tput.numbers[o++]
       if (data[i + 1] === 0xff && data[i] === 0xff) {
         info.numbers[v] = -1
-      } else {
+      }
+      else {
         info.numbers[v] = (data[i + 1] << 8) | data[i]
       }
     }
@@ -1113,7 +1115,8 @@ export class Tput {
       v = Tput.strings[o++]
       if (data[i + 1] === 0xff && data[i] === 0xff) {
         info.strings[v] = -1
-      } else {
+      }
+      else {
         info.strings[v] = (data[i + 1] << 8) | data[i]
       }
     }
@@ -1227,7 +1230,8 @@ export class Tput {
     for (; i < l; i += 2) {
       if (data[i + 1] === 0xff && data[i] === 0xff) {
         _numbers.push(-1)
-      } else {
+      }
+      else {
         _numbers.push((data[i + 1] << 8) | data[i])
       }
     }
@@ -1238,7 +1242,8 @@ export class Tput {
     for (; i < l; i += 2) {
       if (data[i + 1] === 0xff && data[i] === 0xff) {
         _strings.push(-1)
-      } else {
+      }
+      else {
         _strings.push((data[i + 1] << 8) | data[i])
       }
     }
@@ -1514,7 +1519,8 @@ export class Tput {
         }
         if (ch === '?') {
           ch = '\x7f'
-        } else {
+        }
+        else {
           ch = ch.charCodeAt(0) & 31
           if (ch === 0) ch = 128
           ch = String.fromCharCode(ch)
@@ -1613,10 +1619,12 @@ export class Tput {
       if (read(/^%((?::-|[+# ]){1,4})?(\d+(?:\.\d+)?)?([doxXsc])/)) {
         if (this.printf || cap[1] || cap[2] || ~'oxX'.indexOf(cap[3])) {
           echo('sprintf("' + cap[0].replace(':-', '-') + '", stack.pop())')
-        } else if (cap[3] === 'c') {
+        }
+        else if (cap[3] === 'c') {
           echo('(v = stack.pop(), isFinite(v) '
             + '? String.fromCharCode(v || 0200) : "")')
-        } else {
+        }
+        else {
           echo('stack.pop()')
         }
         continue
@@ -1760,7 +1768,8 @@ export class Tput {
           && (fi === -1 || then < fi)
           && (els === -1 || then < els)) {
           stmt('} else if (')
-        } else {
+        }
+        else {
           stmt('} else {')
         }
         continue
@@ -1785,9 +1794,11 @@ export class Tput {
     v = code.slice(header.length, -footer.length)
     if (!v.length) {
       code = 'return "";'
-    } else if ((v = /^out\.push\(("(?:[^"]|\\")+")\)$/.exec(v))) {
+    }
+    else if ((v = /^out\.push\(("(?:[^"]|\\")+")\)$/.exec(v))) {
       code = 'return ' + v[1] + ';'
-    } else {
+    }
+    else {
       // Turn `(stack.push(v = params[0]), v),out.push(stack.pop())`
       // into `out.push(params[0])`.
       code = code.replace(
@@ -1976,10 +1987,12 @@ export class Tput {
         if (~field.indexOf('=')) {
           parts = field.split('=')
           term.strings[parts[0]] = parts.slice(1).join('=')
-        } else if (~field.indexOf('#')) {
+        }
+        else if (~field.indexOf('#')) {
           parts = field.split('#')
           term.numbers[parts[0]] = +parts.slice(1).join('#')
-        } else {
+        }
+        else {
           term.bools[field] = true
         }
       }
@@ -2025,7 +2038,8 @@ export class Tput {
         }
         if (map[cap]) {
           out[key][map[cap]] = info[key][cap]
-        } else {
+        }
+        else {
           // NOTE: Possibly include all termcap names
           // in a separate alias.js file. Some are
           // missing from the terminfo alias.js file
@@ -2152,7 +2166,8 @@ export class Tput {
         out += '%\''
         out += c
         out += '\''
-      } else {
+      }
+      else {
         out += '%{'
         if (c.charCodeAt(0) > 99) {
           out += String.fromCharCode(
@@ -2175,7 +2190,8 @@ export class Tput {
       if (seenr) {
         if (parm === 1) {
           parm = 2
-        } else if (parm === 2) {
+        }
+        else if (parm === 2) {
           parm = 1
         }
       }
@@ -2215,7 +2231,8 @@ export class Tput {
     function push() {
       if (stackptr >= MAX_PUSHED) {
         warn('string too complex to convert')
-      } else {
+      }
+      else {
         stack[stackptr++] = onstack
       }
     }
@@ -2225,10 +2242,12 @@ export class Tput {
       if (stackptr === 0) {
         if (onstack === 0) {
           warn('I\'m confused')
-        } else {
+        }
+        else {
           onstack = 0
         }
-      } else {
+      }
+      else {
         onstack = stack[--stackptr]
       }
       param++
@@ -2327,7 +2346,8 @@ export class Tput {
                     param--
                   }
                   l++
-                } else {
+                }
+                else {
                   i += 2, l += cvtchar(s), i -= 2
                 }
                 switch (s[i]) {
@@ -2347,12 +2367,15 @@ export class Tput {
                     if (seenr) {
                       if (param === 1) {
                         onstack = 2
-                      } else if (param === 2) {
+                      }
+                      else if (param === 2) {
                         onstack = 1
-                      } else {
+                      }
+                      else {
                         onstack = param
                       }
-                    } else {
+                    }
+                    else {
                       onstack = param
                     }
                     break
@@ -2396,7 +2419,8 @@ export class Tput {
               if (s[i] === '3') {
                 see03() // goto
                 break
-              } else if (s[i] !== '2') {
+              }
+              else if (s[i] !== '2') {
                 invalid() // goto
                 break
               }
@@ -2509,7 +2533,8 @@ export class Tput {
       for (i = capstart; ; i++) {
         if (isdigit(s[i]) || s[i] === '*' || s[i] === '.') {
           out += s[i]
-        } else {
+        }
+        else {
           break
         }
       }
@@ -2553,7 +2578,8 @@ export class Tput {
     this.getAll().forEach(function (name) {
       if (start && name !== start) {
         return
-      } else {
+      }
+      else {
         start = null
       }
       all[name] = self.compileTerminfo(name)
@@ -2736,12 +2762,15 @@ export class Tput {
       term_ = path.basename(term).split('.')[0]
       if (terms[process.env.TERM]) {
         term = process.env.TERM
-      } else if (terms[term_]) {
+      }
+      else if (terms[term_]) {
         term = term_
-      } else {
+      }
+      else {
         term = Object.keys(terms)[0]
       }
-    } else {
+    }
+    else {
       paths = Tput.cpaths.slice()
 
       if (this.termcapFile) {
@@ -2832,7 +2861,8 @@ export class Tput {
     Tput.alias[key] = [ aliases[0] ]
     Tput.alias[key].terminfo = aliases[0]
     Tput.alias[key].termcap = aliases[1]
-  })})
+  })
+})
 // Bools
 Tput.alias.no_esc_ctlc.push('beehive_glitch')
 Tput.alias.dest_tabs_magic_smso.push('teleray_glitch')
@@ -2840,7 +2870,8 @@ Tput.alias.dest_tabs_magic_smso.push('teleray_glitch')
 Tput.alias.micro_col_size.push('micro_char_size')
 Object.keys(Tput.alias).forEach(function (key) {
   Tput.aliasMap[key] = key
-  Tput.alias[key].forEach(k => Tput.aliasMap[k] = key)})
+  Tput.alias[key].forEach(k => Tput.aliasMap[k] = key)
+})
 
 /**
  * Helpers

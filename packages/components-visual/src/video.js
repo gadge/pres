@@ -23,10 +23,12 @@ export class Video extends Box {
     if (this.exists('mplayer')) {
       shell = 'mplayer'
       args = [ '-vo', 'caca', '-quiet', options.file ]
-    } else if (this.exists('mpv')) {
+    }
+    else if (this.exists('mpv')) {
       shell = 'mpv'
       args = [ '--vo', 'caca', '--really-quiet', options.file ]
-    } else {
+    }
+    else {
       this.parseTags = true
       this.setContent('{red-fg}{bold}Error:{/bold}'
         + ' mplayer or mpv not installed.{/red-fg}')
@@ -48,7 +50,8 @@ export class Video extends Box {
     if (this.start) {
       if (shell === 'mplayer') {
         opts.args.unshift('-ss', this.start + '')
-      } else if (shell === 'mpv') {
+      }
+      else if (shell === 'mpv') {
         opts.args.unshift('--start', this.start + '')
       }
     }
@@ -82,7 +85,8 @@ export class Video extends Box {
       self.start += watched
       if (shell === 'mplayer') {
         opts.args.unshift('-ss', self.start + '')
-      } else if (shell === 'mpv') {
+      }
+      else if (shell === 'mpv') {
         opts.args.unshift('--start', self.start + '')
       }
 

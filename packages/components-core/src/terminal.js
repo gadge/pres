@@ -5,19 +5,7 @@
  */
 
 import {
-  BLUR,
-  DATA,
-  DESTROY,
-  EXIT,
-  FOCUS,
-  KEYPRESS,
-  MOUSE,
-  MOUSEDOWN,
-  PASSTHROUGH,
-  RENDER,
-  RESIZE,
-  SCROLL,
-  TITLE,
+  BLUR, DATA, DESTROY, EXIT, FOCUS, KEYPRESS, MOUSE, MOUSEDOWN, PASSTHROUGH, RENDER, RESIZE, SCROLL, TITLE,
 }              from '@pres/enum-events'
 // import pty     from 'pty.js'
 // import term    from 'term.js'
@@ -29,6 +17,7 @@ import { Box } from '../core/box'
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
 export class Terminal extends Box {
+  setScroll = this.scrollTo
   /**
    * Terminal
    */
@@ -146,7 +135,8 @@ export class Terminal extends Box {
         || self.term.sgrMouse
         || self.term.urxvtMouse) {
 
-      } else {
+      }
+      else {
         return
       }
 
@@ -160,13 +150,15 @@ export class Terminal extends Box {
           b += 32
         }
         s = '\x1b[' + b + ';' + (x + 32) + ';' + (y + 32) + 'M'
-      } else if (self.term.sgrMouse) {
+      }
+      else if (self.term.sgrMouse) {
         if (!self.screen.program.sgrMouse) {
           b -= 32
         }
         s = '\x1b[<' + b + ';' + x + ';' + y
           + (data.action === MOUSEDOWN ? 'M' : 'm')
-      } else {
+      }
+      else {
         if (self.screen.program.sgrMouse) {
           b += 32
         }
@@ -281,7 +273,8 @@ export class Terminal extends Box {
         && (this.term.ydisp === this.term.ybase || this.term.selectMode)
         && !this.term.cursorHidden) {
         cursor = xi + this.term.x
-      } else {
+      }
+      else {
         cursor = -1
       }
 
@@ -295,9 +288,11 @@ export class Terminal extends Box {
             line[x][0] = this.dattr
             line[x][1] = '\u2502'
             continue
-          } else if (this.cursor === 'underline') {
+          }
+          else if (this.cursor === 'underline') {
             line[x][0] = this.dattr | (2 << 18)
-          } else if (this.cursor === 'block' || !this.cursor) {
+          }
+          else if (this.cursor === 'block' || !this.cursor) {
             line[x][0] = this.dattr | (8 << 18)
           }
         }
@@ -328,7 +323,8 @@ export class Terminal extends Box {
       if (s[0] > 127 && s[1] === undefined) {
         s[0] -= 128
         s = '\x1b' + s.toString('utf-8')
-      } else {
+      }
+      else {
         s = s.toString('utf-8')
       }
     }
@@ -340,7 +336,6 @@ export class Terminal extends Box {
       || /^\x1b\[24([0135])~\[(\d+),(\d+)\]\r/.test(s)
       || /^\x1b\[(O|I)/.test(s)
   }
-  setScroll = this.scrollTo
   scrollTo(offset) {
     this.term.ydisp = offset
     return this.emit(SCROLL)
@@ -370,13 +365,15 @@ export class Terminal extends Box {
     xi = 0 + (xi || 0)
     if (xl != null) {
       xl = 0 + (xl || 0)
-    } else {
+    }
+    else {
       xl = this.term.lines[0].length
     }
     yi = 0 + (yi || 0)
     if (yl != null) {
       yl = 0 + (yl || 0)
-    } else {
+    }
+    else {
       yl = this.term.lines.length
     }
     return this.screen.screenshot(xi, xl, yi, yl, this.term)

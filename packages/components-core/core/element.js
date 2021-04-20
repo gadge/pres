@@ -11,7 +11,7 @@ import {
   NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
 }                        from '@pres/enum-events'
 import * as colors       from '@pres/util-colors'
-import * as helpers       from '@pres/util-helpers'
+import * as helpers      from '@pres/util-helpers'
 import * as unicode      from '@pres/util-unicode'
 import { FUN, NUM, STR } from '@typen/enum-data-types'
 import assert            from 'assert'
@@ -22,6 +22,7 @@ const nextTick = global.setImmediate || process.nextTick.bind(process)
 
 export class Element extends Node {
   type = 'element'
+  _render = Element.prototype.render
   /**
    * Element
    */
@@ -143,7 +144,6 @@ export class Element extends Node {
     if (options.focused) this.focus()
     this.constructScrollable?.call(this, options)
   }
-
   get focused() { return this.screen.focused === this}
   get visible() {
     let el = this
@@ -165,7 +165,6 @@ export class Element extends Node {
   }
   get draggable() { return this._draggable === true}
   set draggable(draggable) { return draggable ? this.enableDrag(draggable) : this.disableDrag() }
-
   /**
    * Positioning
    */
@@ -312,7 +311,6 @@ export class Element extends Node {
     return (this.border ? 2 : 0) + this.padding.top + this.padding.bottom
   }
   get tpadding() { return this.padding.left + this.padding.top + this.padding.right + this.padding.bottom }
-
   /**
    * Relative coordinates as default properties
    */
@@ -325,7 +323,6 @@ export class Element extends Node {
   set top(val) { return this.rtop = val }
   get bottom() { return this.rbottom }
   set bottom(val) { return this.rbottom = val }
-
   sattr(style, fg, bg) {
     let
       bold      = style.bold,
@@ -1054,12 +1051,6 @@ export class Element extends Node {
     this.enableMouse()
     this.screen._initHover()
   }
-  removeHover() {
-    delete this._hoverOptions
-    if (!this.screen._hoverText || this.screen._hoverText.detached) return
-    this.screen._hoverText.detach()
-    this.screen.render()
-  }
 // The below methods are a bit confusing: basically
 // whenever Box.render is called `lpos` gets set on
 // the element, an object containing the rendered
@@ -1073,6 +1064,12 @@ export class Element extends Node {
 // rendered first, in which case we can use the
 // parant's lpos instead of recalculating it's
 // position (since that might be wrong because
+  removeHover() {
+    delete this._hoverOptions
+    if (!this.screen._hoverText || this.screen._hoverText.detached) return
+    this.screen._hoverText.detach()
+    this.screen.render()
+  }
 // it doesn't handle content shrinkage).
   _getPos() {
     const pos = this.lpos
@@ -2152,7 +2149,6 @@ export class Element extends Node {
     this._emit(RENDER, [ coords ])
     return coords
   }
-  _render = Element.prototype.render
   /**
    * Content Methods
    */

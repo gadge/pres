@@ -88,7 +88,8 @@ export class Layout extends Element {
       if (!last) {
         el.position.left = 0
         el.position.top = 0
-      } else {
+      }
+      else {
         // Otherwise, figure out where to place this child. We'll start by
         // setting it's `left`/`x` coordinate to right after the previous
         // rendered element. This child will end up directly to the right of it.
@@ -107,7 +108,8 @@ export class Layout extends Element {
         // row).
         if (el.position.left + el.width <= width) {
           el.position.top = rowOffset
-        } else {
+        }
+        else {
           // Otherwise we need to start a new row and calculate a new
           // `rowOffset` and `rowIndex` (the index of the child on the current
           // row).

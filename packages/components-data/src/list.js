@@ -10,7 +10,7 @@ import {
   REMOVE, REMOVE_ITEM, RESIZE, SELECT, SELECT_ITEM, SET_ITEMS,
 }                                        from '@pres/enum-events'
 import { DOWN, ENTER, ESCAPE, LEFT, UP } from '@pres/enum-key-names'
-import * as helpers                       from '@pres/util-helpers'
+import * as helpers                      from '@pres/util-helpers'
 
 export class List extends Box {
   add = this.appendItem

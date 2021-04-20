@@ -12,7 +12,7 @@ import {
 }                        from '@pres/enum-events'
 import { Program }       from '@pres/program'
 import * as colors       from '@pres/util-colors'
-import * as helpers       from '@pres/util-helpers'
+import * as helpers      from '@pres/util-helpers'
 import { FUN, OBJ, STR } from '@typen/enum-data-types'
 import cp, { spawn }     from 'child_process'
 import { Log }           from '../src/log'
@@ -20,6 +20,10 @@ import { Box }           from './box'
 
 export class Screen extends Node {
   type = 'screen'
+  focusPrev = this.focusPrevious
+  unkey = this.removeKey
+  cursorReset = this.resetCursor
+  destroy = this._destroy
   constructor(options = {}) {
     options.lazy = true
     super(options)
@@ -142,9 +146,6 @@ export class Screen extends Node {
     this.enter()
     this.postEnter()
   }
-  focusPrev = this.focusPrevious
-  unkey = this.removeKey
-  cursorReset = this.resetCursor
   get title() { return this.program.title }
   set title(title) { return this.program.title = title }
   get terminal() { return this.program.terminal }
@@ -266,7 +267,6 @@ export class Screen extends Node {
       })
     }
   }
-  destroy = this._destroy
   _destroy() {
     this.leave()
     const index = _Screen.instances.indexOf(this)

@@ -42,7 +42,8 @@ export class ProgressBar extends Input {
         if (self.orientation === 'horizontal') {
           back = [ 'left', 'h' ]
           forward = [ 'right', 'l' ]
-        } else if (self.orientation === 'vertical') {
+        }
+        else if (self.orientation === 'vertical') {
           back = [ 'down', 'j' ]
           forward = [ 'up', 'k' ]
         }
@@ -67,7 +68,8 @@ export class ProgressBar extends Input {
           x = data.x - self.lpos.xi
           m = (self.lpos.xl - self.lpos.xi) - self.iwidth
           p = x / m * 100 | 0
-        } else if (self.orientation === 'vertical') {
+        }
+        else if (self.orientation === 'vertical') {
           y = data.y - self.lpos.yi
           m = (self.lpos.yl - self.lpos.yi) - self.iheight
           p = y / m * 100 | 0
@@ -92,7 +94,8 @@ export class ProgressBar extends Input {
 
     if (this.orientation === 'horizontal') {
       xl = xi + ((xl - xi) * (this.filled / 100)) | 0
-    } else if (this.orientation === 'vertical') {
+    }
+    else if (this.orientation === 'vertical') {
       yi = yi + ((yl - yi) - (((yl - yi) * (this.filled / 100)) | 0))
     }
 

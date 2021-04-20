@@ -5,7 +5,8 @@ const screen = blessed.screen({
   dump: __dirname + '/logs/logger.log',
   smartCSR: true,
   autoPadding: false,
-  warnings: true})
+  warnings: true
+})
 
 const logger = blessed.log({
   parent: screen,
@@ -27,7 +28,8 @@ const logger = blessed.log({
     style: {
       inverse: true
     }
-  }})
+  }
+})
 
 logger.focus()
 

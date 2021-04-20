@@ -13,7 +13,8 @@ export class Line extends Box {
   constructor(options = {}) {
     if ((options.orientation || 'vertical') === 'vertical') {
       options.width = 1
-    } else {
+    }
+    else {
       options.height = 1
     }
     super(options)

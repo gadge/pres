@@ -1,47 +1,18 @@
 import {
-  Box,
-  Element,
-  Layout,
-  Line,
-  Log,
-  Node,
-  Screen,
-  ScrollableBox,
-  ScrollableText,
-  Terminal,
+  Box, Element, Layout, Line, Log, Node, Screen, ScrollableBox, ScrollableText, Terminal,
 }                from '@pres/components-core'
 import {
-  List,
-  Listbar,
-  ListTable,
-  Table,
+  List, Listbar, ListTable, Table,
 }                from '@pres/components-data'
 import {
-  Button,
-  Checkbox,
-  FileManager,
-  Form,
-  Input,
-  Prompt,
-  Question,
-  RadioButton,
-  RadioSet,
-  Textarea,
-  Textbox,
+  Button, Checkbox, FileManager, Form, Input, Prompt, Question, RadioButton, RadioSet, Textarea, Textbox,
 }                from '@pres/components-form'
 import {
-  Loading,
-  Message,
-  ProgressBar,
+  Loading, Message, ProgressBar,
 }                from '@pres/components-inform'
 import { Text, } from '@pres/components-text'
 import {
-  ANSIImage,
-  BigText,
-  Image,
-  OverlayImage,
-  PNG,
-  Video,
+  ANSIImage, BigText, Image, OverlayImage, PNG, Video,
 }                from '@pres/components-visual'
 
 export const box = (options) => new Box(options)
