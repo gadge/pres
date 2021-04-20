@@ -22,33 +22,28 @@ export class ScrollableBox extends Box {
     this.childBase = 0
     this.baseLimit = options.baseLimit || Infinity
     this.alwaysScroll = options.alwaysScroll
-    this.scrollbar = options.scrollbar
-    if (this.scrollbar) {
-      this.scrollbar.ch = this.scrollbar.ch || ' '
-      this.style.scrollbar = this.style.scrollbar || this.scrollbar.style
-      if (!this.style.scrollbar) {
-        this.style.scrollbar = {}
-        this.style.scrollbar.fg = this.scrollbar.fg
-        this.style.scrollbar.bg = this.scrollbar.bg
-        this.style.scrollbar.bold = this.scrollbar.bold
-        this.style.scrollbar.underline = this.scrollbar.underline
-        this.style.scrollbar.inverse = this.scrollbar.inverse
-        this.style.scrollbar.invisible = this.scrollbar.invisible
+    const scrollbar = this.scrollbar = options.scrollbar
+    if (scrollbar) {
+      if (!scrollbar.ch) scrollbar.ch = ' '
+      this.style.scrollbar = this.style.scrollbar ?? scrollbar.style ?? {
+        fg: scrollbar.fg,
+        bg: scrollbar.bg,
+        bold: scrollbar.bold,
+        underline: scrollbar.underline,
+        inverse: scrollbar.inverse,
+        invisible: scrollbar.invisible,
       }
-      //this.scrollbar.style = this.style.scrollbar;
-      if (this.track || this.scrollbar.track) {
-        this.track = this.scrollbar.track || this.track
+      if (this.track || scrollbar.track) {
+        this.track = scrollbar.track || this.track
         this.style.track = this.style.scrollbar.track || this.style.track
         this.track.ch = this.track.ch || ' '
-        this.style.track = this.style.track || this.track.style
-        if (!this.style.track) {
-          this.style.track = {}
-          this.style.track.fg = this.track.fg
-          this.style.track.bg = this.track.bg
-          this.style.track.bold = this.track.bold
-          this.style.track.underline = this.track.underline
-          this.style.track.inverse = this.track.inverse
-          this.style.track.invisible = this.track.invisible
+        this.style.track = this.style.track ?? this.track.style ?? {
+          fg: this.track.fg,
+          bg: this.track.bg,
+          bold: this.track.bold,
+          underline: this.track.underline,
+          inverse: this.track.inverse,
+          invisible: this.track.invisible,
         }
         this.track.style = this.style.track
       }
@@ -91,17 +86,17 @@ export class ScrollableBox extends Box {
       }
     }
     if (options.mouse) {
-      this.on(WHEELDOWN, function () {
+      this.on(WHEELDOWN, () => {
         self.scroll(self.height / 2 | 0 || 1)
         self.screen.render()
       })
-      this.on(WHEELUP, function () {
+      this.on(WHEELUP, () => {
         self.scroll(-(self.height / 2 | 0) || -1)
         self.screen.render()
       })
     }
     if (options.keys && !options.ignoreKeys) {
-      this.on(KEYPRESS, function (ch, key) {
+      this.on(KEYPRESS, (ch, key) => {
         if (key.name === 'up' || (options.vi && key.name === 'k')) {
           self.scroll(-1)
           self.screen.render()
@@ -154,18 +149,11 @@ export class ScrollableBox extends Box {
   }
   _scrollBottom() {
     if (!this.scrollable) return 0
-
     // We could just calculate the children, but we can
     // optimize for lists by just returning the items.length.
-    if (this._isList) {
-      return this.items ? this.items.length : 0
-    }
-
-    if (this.lpos && this.lpos._scrollBottom) {
-      return this.lpos._scrollBottom
-    }
-
-    const bottom = this.children.reduce(function (current, el) {
+    if (this._isList) { return this.items ? this.items.length : 0 }
+    if (this.lpos && this.lpos._scrollBottom) { return this.lpos._scrollBottom }
+    const bottom = this.children.reduce((current, el) => {
       // el.height alone does not calculate the shrunken height, we need to use
       // getCoords. A shrunken box inside a scrollable element will not grow any
       // larger than the scrollable element's context regardless of how much
@@ -174,18 +162,13 @@ export class ScrollableBox extends Box {
       // See: $ node test/widget-shrink-fail-2.js
       if (!el.detached) {
         const lpos = el._getCoords(false, true)
-        if (lpos) {
-          return Math.max(current, el.rtop + (lpos.yl - lpos.yi))
-        }
+        if (lpos) { return Math.max(current, el.rtop + (lpos.yl - lpos.yi)) }
       }
       return Math.max(current, el.rtop + el.height)
     }, 0)
-
     // XXX Use this? Makes .getScrollHeight() useless!
     // if (bottom < this._clines.length) bottom = this._clines.length;
-
     if (this.lpos) this.lpos._scrollBottom = bottom
-
     return bottom
   }
   setScroll(offset, always) {
@@ -200,14 +183,10 @@ export class ScrollableBox extends Box {
     this.scroll(0)
     return this.scroll(offset - (this.childBase + this.childOffset), always)
   }
-  getScroll() {
-    return this.childBase + this.childOffset
-  }
+  getScroll() { return this.childBase + this.childOffset }
   scroll(offset, always) {
     if (!this.scrollable) return
-
     if (this.detached) return
-
     // Handle scrolling.
     const visible = this.height - this.iheight,
           base    = this.childBase
@@ -217,62 +196,48 @@ export class ScrollableBox extends Box {
         b,
         max,
         emax
-
     if (this.alwaysScroll || always) {
       // Semi-workaround
       this.childOffset = offset > 0
         ? visible - 1 + offset
         : offset
-    } else {
+    }
+    else {
       this.childOffset += offset
     }
-
     if (this.childOffset > visible - 1) {
       d = this.childOffset - (visible - 1)
       this.childOffset -= d
       this.childBase += d
-    } else
-      if (this.childOffset < 0) {
-        d = this.childOffset
-        this.childOffset += -d
-        this.childBase += d
-      }
-
+    }
+    else if (this.childOffset < 0) {
+      d = this.childOffset
+      this.childOffset += -d
+      this.childBase += d
+    }
     if (this.childBase < 0) {
       this.childBase = 0
-    } else
-      if (this.childBase > this.baseLimit) {
-        this.childBase = this.baseLimit
-      }
-
+    }
+    else if (this.childBase > this.baseLimit) {
+      this.childBase = this.baseLimit
+    }
     // Find max "bottom" value for
     // content and descendant elements.
     // Scroll the content if necessary.
-    if (this.childBase === base) {
-      return this.emit(SCROLL)
-    }
-
+    if (this.childBase === base) { return this.emit(SCROLL) }
     // When scrolling text, we want to be able to handle SGR codes as well as line
     // feeds. This allows us to take preformatted text output from other programs
     // and put it in a scrollable text box.
     this.parseContent()
-
     // XXX
     // max = this.getScrollHeight() - (this.height - this.iheight);
-
     max = this._clines.length - (this.height - this.iheight)
     if (max < 0) max = 0
     emax = this._scrollBottom() - (this.height - this.iheight)
     if (emax < 0) emax = 0
-
     this.childBase = Math.min(this.childBase, Math.max(emax, max))
-
-    if (this.childBase < 0) {
-      this.childBase = 0
-    } else
-      if (this.childBase > this.baseLimit) {
-        this.childBase = this.baseLimit
-      }
+    if (this.childBase < 0) { this.childBase = 0 }
+    else if (this.childBase > this.baseLimit) { this.childBase = this.baseLimit }
 
     // Optimize scrolling with CSR + IL/DL.
     p = this.lpos
@@ -285,16 +250,15 @@ export class ScrollableBox extends Box {
       t = p.yi + this.itop
       b = p.yl - this.ibottom - 1
       d = this.childBase - base
-
+      // scrolled down
       if (d > 0 && d < visible) {
-        // scrolled down
         this.screen.deleteLine(d, t, t, b)
-      } else
-        if (d < 0 && -d < visible) {
-          // scrolled up
-          d = -d
-          this.screen.insertLine(d, t, t, b)
-        }
+      }
+      // scrolled up
+      else if (d < 0 && -d < visible) {
+        d = -d
+        this.screen.insertLine(d, t, t, b)
+      }
     }
 
     return this.emit(SCROLL)
@@ -316,8 +280,8 @@ export class ScrollableBox extends Box {
 
     this.childBase = Math.min(this.childBase, Math.max(emax, max))
 
-    if (this.childBase < 0) { this.childBase = 0 } else
-      if (this.childBase > this.baseLimit) { this.childBase = this.baseLimit }
+    if (this.childBase < 0) { this.childBase = 0 }
+    else if (this.childBase > this.baseLimit) { this.childBase = this.baseLimit }
   }
   resetScroll() {
     if (!this.scrollable) return
@@ -337,7 +301,8 @@ export class ScrollableBox extends Box {
     if (height < i) {
       if (this.alwaysScroll) {
         p = this.childBase / (i - height)
-      } else {
+      }
+      else {
         p = (this.childBase + this.childOffset) / (i - 1)
       }
       return p * 100
