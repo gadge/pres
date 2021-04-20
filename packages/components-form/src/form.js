@@ -6,7 +6,7 @@
 
 import { Box }                                                from '@pres/components-core'
 import { CANCEL, ELEMENT_KEYPRESS, KEYPRESS, RESET, SUBMIT, } from '@pres/enum-events'
-import { DOWN, ENTER, ESCAPE, TAB, UP, }                      from '@pres/enum-keyboard'
+import { DOWN, ENTER, ESCAPE, TAB, UP, }                      from '@pres/enum-key-names'
 
 
 export class Form extends Box {

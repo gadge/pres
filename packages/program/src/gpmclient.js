@@ -4,6 +4,7 @@
  * https://github.com/chjj/blessed
  */
 import { BTNDOWN, BTNUP, CLICK, CONNECT, DATA, DBLCLICK, DRAG, ERROR, MOUSEWHEEL, MOVE, } from '@pres/enum-events'
+import { LEFT, RIGHT }                                                                    from '@pres/enum-key-names'
 import { EventEmitter }                                                                   from '@pres/events'
 import fs                                                                                 from 'fs'
 import net                                                                                from 'net'
@@ -42,7 +43,8 @@ function send_config(socket, Gpm_Connect, callback) {
     buffer.writeUInt16LE(Gpm_Connect.maxMod, 10)
     buffer.writeInt16LE(process.pid, 12)
     buffer.writeInt16LE(Gpm_Connect.vc, 16)
-  } else {
+  }
+  else {
     buffer = new Buffer(16)
     buffer.writeUInt16LE(Gpm_Connect.eventMask, 0)
     buffer.writeUInt16LE(Gpm_Connect.defaultMask, 2)
@@ -183,9 +185,9 @@ export class GpmClient extends EventEmitter {
     delete this.gpm
   }
   ButtonName(btn) {
-    if (btn & 4) return 'left'
-    if (btn & 2) return 'middle'
-    if (btn & 1) return 'right'
+    if (btn & 4) return LEFT
+    if (btn & 2) return MIDDLE
+    if (btn & 1) return RIGHT
     return ''
   }
   hasShiftKey(mod) { return (mod & 1) ? true : false }

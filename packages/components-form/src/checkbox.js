@@ -5,7 +5,7 @@
  */
 
 import { BLUR, CHECK, CLICK, FOCUS, KEYPRESS, UNCHECK, } from '@pres/enum-events'
-import { ENTER, SPACE, }                                 from '@pres/enum-keyboard'
+import { ENTER, SPACE, }                                 from '@pres/enum-key-names'
 import { Input }                                         from './input'
 
 export class Checkbox extends Input {

@@ -18,7 +18,7 @@
     "@pres/components-core": "^0.0.13",
     "@pres/components-data": "^0.0.13",
     "@pres/enum-events": "^0.0.13",
-    "@pres/enum-keyboard": "^0.0.13",
+    "@pres/enum-key-names": "^0.0.13",
     "@pres/util-helpers": "^0.0.13"
   },
   "repository": {

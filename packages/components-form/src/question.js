@@ -6,7 +6,7 @@
 
 import { Box }                     from '@pres/components-core'
 import { KEYPRESS, MOUSE, PRESS, } from '@pres/enum-events'
-import { ENTER, ESCAPE, }          from '@pres/enum-keyboard'
+import { ENTER, ESCAPE, }          from '@pres/enum-key-names'
 import { Button }                  from './button'
 
 

@@ -5,7 +5,7 @@
  */
 
 import { ACTION, BLUR, CANCEL, CLICK, ERROR, FOCUS, KEYPRESS, MOVE, RESIZE, SUBMIT, } from '@pres/enum-events'
-import { DOWN, ENTER, ESCAPE, LEFT, RETURN, RIGHT, UP, }                              from '@pres/enum-keyboard'
+import { DOWN, ENTER, ESCAPE, LEFT, RETURN, RIGHT, UP, }                              from '@pres/enum-key-names'
 import * as unicode                                                                   from '@pres/util-unicode'
 import { Input }                                                                      from './input'
 

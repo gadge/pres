@@ -8,37 +8,19 @@
  * Program
  */
 import {
-  BLUR,
-  BTNDOWN,
-  BTNUP,
-  DATA,
-  DESTROY,
-  DRAG,
-  EXIT,
-  FOCUS,
-  KEYPRESS,
-  MOUSE,
-  MOUSEDOWN,
-  MOUSEMOVE,
-  MOUSEUP,
-  MOUSEWHEEL,
-  MOVE,
-  NEW_LISTENER,
-  RESIZE,
-  RESPONSE,
-  WARNING,
-  WHEELDOWN,
-  WHEELUP,
-}                             from '@pres/enum-events'
-import { EventEmitter }       from '@pres/events'
-import { Tput }               from '@pres/terminfo-parser'
-import * as colors            from '@pres/util-colors'
-import cp                     from 'child_process'
-import fs                     from 'fs'
-import { StringDecoder }      from 'string_decoder'
-import util                   from 'util'
-import { gpmClient }          from './gpmclient'
-import { emitKeypressEvents } from './keys'
+  BLUR, BTNDOWN, BTNUP, DATA, DESTROY, DRAG, EXIT, FOCUS, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEUP, MOUSEWHEEL,
+  MOVE, NEW_LISTENER, RESIZE, RESPONSE, WARNING, WHEELDOWN, WHEELUP,
+}                                              from '@pres/enum-events'
+import { ENTER, LEFT, MIDDLE, RIGHT, UNKNOWN } from '@pres/enum-key-names'
+import { EventEmitter }                        from '@pres/events'
+import { Tput }                                from '@pres/terminfo-parser'
+import * as colors                             from '@pres/util-colors'
+import cp                                      from 'child_process'
+import fs                                      from 'fs'
+import { StringDecoder }                       from 'string_decoder'
+import util                                    from 'util'
+import { gpmClient }                           from './gpmclient'
+import { emitKeypressEvents }                  from './keys'
 
 const slice = Array.prototype.slice
 
@@ -50,7 +32,259 @@ export function build(options) {
 }
 
 export class Program extends EventEmitter {
+  static global = null
+  static total = 0
+  static instances = []
   type = 'program'
+  unkey = this.removeKey
+  echo = this.print
+  cursorReset = this.resetCursor
+  bel = this.bell
+  ff = this.form
+  kbs = this.backspace
+  ht = this.tab
+  cr = this.return
+  nel = this.feed
+  newline = this.feed
+  /**
+   * Esc
+   */
+
+  // ESC D Index (IND is 0x84).
+  ind = this.index
+  // ESC M Reverse Index (RI is 0x8d).
+  ri = this.reverseIndex
+  reverse = this.reverseIndex
+  // ESC 7 Save Cursor (DECSC).
+  sc = this.saveCursor
+  // ESC 8 Restore Cursor (DECRC).
+  rc = this.restoreCursor
+  enter_alt_charset_mode = this.smacs
+  as = this.smacs
+  exit_alt_charset_mode = this.rmacs
+  ae = this.rmacs
+  /**
+   * CSI
+   */
+
+  // CSI Ps A
+  // Cursor Up Ps Times (default = 1) (CUU).
+  cuu = this.cursorUp
+  // left click: ^[[M 3<^[[M#3<
+  up = this.cursorUp
+
+  // XTerm mouse events
+  // http://invisible-island.net/xterm/ctlseqs/ctlseqs.html#Mouse%20Tracking
+  // To better understand these
+  // the xterm code is very helpful:
+  // Relevant files:
+  //   button.c, charproc.c, misc.c
+  // Relevant functions in xterm/button.c:
+  //   BtnCode, EmitButtonCode, EditorButton, SendMousePosition
+  // send a mouse event:
+  // regular/utf8: ^[[M Cb Cx Cy
+  // urxvt: ^[[ Cb ; Cx ; Cy M
+  // sgr: ^[[ Cb ; Cx ; Cy M/m
+  // vt300: ^[[ 24(1/3/5)~ [ Cx , Cy ] \r
+  // locator: CSI P e ; P b ; P r ; P c ; P p & w
+  // motion example of a left click:
+  // ^[[M 3<^[[M@4<^[[M@5<^[[M@6<^[[M@7<^[[M#7<
+  // mouseup, mousedown, mousewheel
+  // Cursor Down Ps Times (default = 1) (CUD).
+  cud = this.cursorDown
+  down = this.cursorDown
+  // Cursor Forward Ps Times (default = 1) (CUF).
+  cuf = this.cursorForward
+  right = this.cursorForward
+  forward = this.cursorForward
+  // Cursor Backward Ps Times (default = 1) (CUB).
+  cub = this.cursorBackward
+  left = this.cursorBackward
+  back = this.cursorBackward
+  // Cursor Position [row;column] (default = [1,1]) (CUP).
+  cup = this.cursorPos
+  pos = this.cursorPos
+  // Ps = 2  -> Selective Erase All.
+  ed = this.eraseInDisplay
+  //     Ps = 2  -> Selective Erase All.
+  el = this.eraseInLine
+
+  // Example: `DCS tmux; ESC Pt ST`
+  //     Ps.
+  sgr = this.charAttributes
+  attr = this.charAttributes
+  fg = this.setForeground
+  bg = this.setBackground
+  //   CSI ? 5 0  n  No Locator, if not.
+  dsr = this.deviceStatus
+  /**
+   * Additions
+   */
+
+  // CSI Ps @
+  // Insert Ps (Blank) Character(s) (default = 1) (ICH).
+  ich = this.insertChars
+  // same as CSI Ps B ?
+  cnl = this.cursorNextLine
+  // reuse CSI Ps A ?
+  cpl = this.cursorPrecedingLine
+  // Cursor Character Absolute  [column] (default = [row,1]) (CHA).
+  cha = this.cursorCharAbsolute
+  // Insert Ps Line(s) (default = 1) (IL).
+  il = this.insertLines
+  // Delete Ps Line(s) (default = 1) (DL).
+  dl = this.deleteLines
+  // Delete Ps Character(s) (default = 1) (DCH).
+  dch = this.deleteChars
+  // Erase Ps Character(s) (default = 1) (ECH).
+  ech = this.deleteChars
+  //   [column] (default = [row,1]) (HPA).
+  hpa = this.charPosAbsolute
+  // reuse CSI Ps C ?
+  hpr = this.HPositionRelative
+
+  // Specific to iTerm2, but I think it's really cool.
+  // Example:
+  //  if (!screen.copyToClipboard(text)) {
+  //    execClipboardProgram(text);
+  //   vim responds with ^[[?0c or ^[[?1c after the terminal's response (?)
+  da = this.sendDeviceAttributes
+  // NOTE: Can't find in terminfo, no idea why it has multiple params.
+  vpa = this.linePosAbsolute
+  // reuse CSI Ps B ?
+  vpr = this.VPositionRelative
+  //   [1,1]) (HVP).
+  hvp = this.HVPosition
+  //   http://vt100.net/docs/vt220-rm/chapter4.html
+  sm = this.setMode
+  dectcem = this.showCursor
+  cnorm = this.showCursor
+  cvvis = this.showCursor
+  alternate = this.alternateBuffer
+  smcup = this.alternateBuffer
+  //     Ps = 2 0 0 4  -> Reset bracketed paste mode.
+  rm = this.resetMode
+  dectcemh = this.hideCursor
+  cursor_invisible = this.hideCursor
+  vi = this.hideCursor
+  civis = this.hideCursor
+  rmcup = this.normalBuffer
+  // CSI ? Pm r
+  decstbm = this.setScrollRegion
+  csr = this.setScrollRegion
+  //   Save cursor (ANSI.SYS).
+  scA = this.saveCursorA
+  //   Restore cursor (ANSI.SYS).
+  rcA = this.restoreCursorA
+  /**
+   * Lesser Used
+   */
+
+  // CSI Ps I
+  //   Cursor Forward Tabulation Ps tab stops (default = 1) (CHT).
+  cht = this.cursorForwardTab
+  // CSI Ps S  Scroll up Ps lines (default = 1) (SU).
+  su = this.scrollUp
+  // CSI Ps T  Scroll down Ps lines (default = 1) (SD).
+  sd = this.scrollDown
+  // CSI Ps Z  Cursor Backward Tabulation Ps tab stops (default = 1) (CBT).
+  cbt = this.cursorBackwardTab
+  // CSI Ps b  Repeat the preceding graphic character Ps times (REP).
+  rep = this.repeatPrecedingCharacter
+  //   http://vt100.net/annarbor/aaa-ug/section6.html
+  tbc = this.tabClear
+  //     Ps = 1  1  -> Print all pages.
+  mc = this.mediaCopy
+  print_screen = this.mc0
+  ps = this.mc0
+  prtr_on = this.mc5
+  po = this.mc5
+  prtr_off = this.mc4
+  pf = this.mc4
+  prtr_non = this.mc5p
+  pO = this.mc5p
+  // http://vt100.net/docs/vt220-rm/table4-10.html
+  decstr = this.softReset
+  rs2 = this.softReset
+  //     4 - permanently reset
+  decrqm = this.requestAnsiMode
+  //   as in the ANSI DECRQM.
+  decrqmp = this.requestPrivateMode
+  //     Ps = 2  -> 8-bit controls.
+  decscl = this.setConformanceLevel
+  //     Ps = 2  3  -> Extinguish Scroll Lock.
+  decll = this.loadLEDs
+  //     Ps = 4  -> steady underline.
+  decscusr = this.setCursorStyle
+  //     Ps = 2  -> DECSED and DECSEL can erase.
+  decsca = this.setCharProtectionAttr
+  // NOTE: xterm doesn't enable this code by default.
+  deccara = this.setAttrInRectangle
+  // NOTE: xterm doesn't enable this code by default.
+  decrara = this.reverseAttrInRectangle
+  //     Ps = 5 , 6 , 7 , or 8  -> high.
+  decswbv = this.setWarningBellVolume
+
+  // ESC N
+  // Single Shift Select of G2 Character Set
+  // ( SS2 is 0x8e). This affects next character only.
+  // ESC O
+  // Single Shift Select of G3 Character Set
+  // ( SS3 is 0x8f). This affects next character only.
+  // ESC n
+  // Invoke the G2 Character Set as GL (LS2).
+  // ESC o
+  // Invoke the G3 Character Set as GL (LS3).
+  // ESC |
+  // Invoke the G3 Character Set as GR (LS3R).
+  // ESC }
+  // Invoke the G2 Character Set as GR (LS2R).
+  // ESC ~
+  //     Ps = 0 , 5 , 6 , 7 , or 8  -> high.
+  decsmbv = this.setMarginBellVolume
+  // NOTE: xterm doesn't enable this code by default.
+  deccra = this.copyRectangle
+
+  // OSC Ps ; Pt ST
+  // OSC Ps ; Pt BEL
+  //   cels any prevous rectangle definition.
+  decefr = this.enableFilterRectangle
+
+  // OSC Ps ; Pt ST
+  // OSC Ps ; Pt BEL
+  //     Pn = 0  <- STP flags.
+  decreqtparm = this.requestParameters
+
+  // OSC Ps ; Pt ST
+  // OSC Ps ; Pt BEL
+  //     Ps = 2  -> rectangle (exact).
+  decsace = this.selectChangeExtent
+  // NOTE: xterm doesn't enable this code by default.
+  decfra = this.fillRectangle
+  //     Pu = 2  <- character cells.
+  decelr = this.enableLocatorReporting
+  // NOTE: xterm doesn't enable this code by default.
+  decera = this.eraseRectangle
+
+  // CSI Ps B
+  //     Ps = 4  -> do not report button up transitions.
+  decsle = this.setLocatorEvents
+  //     Pt; Pl; Pb; Pr denotes the rectangle.
+  decsera = this.selectiveEraseRectangle
+  //   ted.
+  decrqlp = this.requestLocatorPosition
+
+  // CSI Ps C
+  req_mouse_pos = this.requestLocatorPosition
+  reqmp = this.requestLocatorPosition
+  // NOTE: xterm doesn't enable this code by default.
+  decic = this.insertColumns
+  // NOTE: xterm doesn't enable this code by default.
+  decdc = this.deleteColumns
+
+  // CSI Ps D
+// Cursor Preceding Line Ps Times (default = 1) (CNL).
+  write = this._owrite
   constructor(options = {}) {
     super()
     console.log(">>> [Program constructed]")
@@ -133,269 +367,11 @@ export class Program extends EventEmitter {
 
     this.listen()
   }
-
-  static global = null
-  static total = 0
-  static instances = []
-
-  unkey = this.removeKey
-  echo = this.print
-  cursorReset = this.resetCursor
-  bel = this.bell
-  ff = this.form
-  kbs = this.backspace
-  ht = this.tab
-  cr = this.return
-  nel = this.feed
-  newline = this.feed
-  /**
-   * Esc
-   */
-
-  // ESC D Index (IND is 0x84).
-  ind = this.index
-  // ESC M Reverse Index (RI is 0x8d).
-  ri = this.reverseIndex
-  reverse = this.reverseIndex
-  // ESC 7 Save Cursor (DECSC).
-  sc = this.saveCursor
-  // ESC 8 Restore Cursor (DECRC).
-  rc = this.restoreCursor
-  enter_alt_charset_mode = this.smacs
-  as = this.smacs
-  exit_alt_charset_mode = this.rmacs
-  ae = this.rmacs
-  /**
-   * CSI
-   */
-
-  // CSI Ps A
-  // Cursor Up Ps Times (default = 1) (CUU).
-  cuu = this.cursorUp
-
-  // XTerm mouse events
-  // http://invisible-island.net/xterm/ctlseqs/ctlseqs.html#Mouse%20Tracking
-  // To better understand these
-  // the xterm code is very helpful:
-  // Relevant files:
-  //   button.c, charproc.c, misc.c
-  // Relevant functions in xterm/button.c:
-  //   BtnCode, EmitButtonCode, EditorButton, SendMousePosition
-  // send a mouse event:
-  // regular/utf8: ^[[M Cb Cx Cy
-  // urxvt: ^[[ Cb ; Cx ; Cy M
-  // sgr: ^[[ Cb ; Cx ; Cy M/m
-  // vt300: ^[[ 24(1/3/5)~ [ Cx , Cy ] \r
-  // locator: CSI P e ; P b ; P r ; P c ; P p & w
-  // motion example of a left click:
-  // ^[[M 3<^[[M@4<^[[M@5<^[[M@6<^[[M@7<^[[M#7<
-  // mouseup, mousedown, mousewheel
-  // left click: ^[[M 3<^[[M#3<
-  up = this.cursorUp
-  // Cursor Down Ps Times (default = 1) (CUD).
-  cud = this.cursorDown
-  down = this.cursorDown
-  // Cursor Forward Ps Times (default = 1) (CUF).
-  cuf = this.cursorForward
-  right = this.cursorForward
-  forward = this.cursorForward
-  // Cursor Backward Ps Times (default = 1) (CUB).
-  cub = this.cursorBackward
-  left = this.cursorBackward
-  back = this.cursorBackward
-  // Cursor Position [row;column] (default = [1,1]) (CUP).
-  cup = this.cursorPos
-  pos = this.cursorPos
-  // Ps = 2  -> Selective Erase All.
-  ed = this.eraseInDisplay
-
-  // Example: `DCS tmux; ESC Pt ST`
-  //     Ps = 2  -> Selective Erase All.
-  el = this.eraseInLine
-  //     Ps.
-  sgr = this.charAttributes
-  attr = this.charAttributes
-  fg = this.setForeground
-  bg = this.setBackground
-  //   CSI ? 5 0  n  No Locator, if not.
-  dsr = this.deviceStatus
-  /**
-   * Additions
-   */
-
-  // CSI Ps @
-  // Insert Ps (Blank) Character(s) (default = 1) (ICH).
-  ich = this.insertChars
-  // same as CSI Ps B ?
-  cnl = this.cursorNextLine
-  // reuse CSI Ps A ?
-  cpl = this.cursorPrecedingLine
-  // Cursor Character Absolute  [column] (default = [row,1]) (CHA).
-  cha = this.cursorCharAbsolute
-  // Insert Ps Line(s) (default = 1) (IL).
-  il = this.insertLines
-  // Delete Ps Line(s) (default = 1) (DL).
-  dl = this.deleteLines
-  // Delete Ps Character(s) (default = 1) (DCH).
-  dch = this.deleteChars
-  // Erase Ps Character(s) (default = 1) (ECH).
-  ech = this.deleteChars
-  //   [column] (default = [row,1]) (HPA).
-  hpa = this.charPosAbsolute
-
-  // Specific to iTerm2, but I think it's really cool.
-  // Example:
-  //  if (!screen.copyToClipboard(text)) {
-  //    execClipboardProgram(text);
-  // reuse CSI Ps C ?
-  hpr = this.HPositionRelative
-  //   vim responds with ^[[?0c or ^[[?1c after the terminal's response (?)
-  da = this.sendDeviceAttributes
-  // NOTE: Can't find in terminfo, no idea why it has multiple params.
-  vpa = this.linePosAbsolute
-  // reuse CSI Ps B ?
-  vpr = this.VPositionRelative
-  //   [1,1]) (HVP).
-  hvp = this.HVPosition
-  //   http://vt100.net/docs/vt220-rm/chapter4.html
-  sm = this.setMode
-  dectcem = this.showCursor
-  cnorm = this.showCursor
-  cvvis = this.showCursor
-  alternate = this.alternateBuffer
-  smcup = this.alternateBuffer
-  //     Ps = 2 0 0 4  -> Reset bracketed paste mode.
-  rm = this.resetMode
-  dectcemh = this.hideCursor
-  cursor_invisible = this.hideCursor
-  vi = this.hideCursor
-  civis = this.hideCursor
-  rmcup = this.normalBuffer
-  // CSI ? Pm r
-  decstbm = this.setScrollRegion
-  csr = this.setScrollRegion
-  //   Save cursor (ANSI.SYS).
-  scA = this.saveCursorA
-  //   Restore cursor (ANSI.SYS).
-  rcA = this.restoreCursorA
-  /**
-   * Lesser Used
-   */
-
-  // CSI Ps I
-  //   Cursor Forward Tabulation Ps tab stops (default = 1) (CHT).
-  cht = this.cursorForwardTab
-  // CSI Ps S  Scroll up Ps lines (default = 1) (SU).
-  su = this.scrollUp
-  // CSI Ps T  Scroll down Ps lines (default = 1) (SD).
-  sd = this.scrollDown
-  // CSI Ps Z  Cursor Backward Tabulation Ps tab stops (default = 1) (CBT).
-  cbt = this.cursorBackwardTab
-  // CSI Ps b  Repeat the preceding graphic character Ps times (REP).
-  rep = this.repeatPrecedingCharacter
-  //   http://vt100.net/annarbor/aaa-ug/section6.html
-  tbc = this.tabClear
-  //     Ps = 1  1  -> Print all pages.
-  mc = this.mediaCopy
-  print_screen = this.mc0
-  ps = this.mc0
-  prtr_on = this.mc5
-  po = this.mc5
-  prtr_off = this.mc4
-  pf = this.mc4
-  prtr_non = this.mc5p
-  pO = this.mc5p
-  // http://vt100.net/docs/vt220-rm/table4-10.html
-  decstr = this.softReset
-  rs2 = this.softReset
-  //     4 - permanently reset
-  decrqm = this.requestAnsiMode
-  //   as in the ANSI DECRQM.
-  decrqmp = this.requestPrivateMode
-  //     Ps = 2  -> 8-bit controls.
-  decscl = this.setConformanceLevel
-  //     Ps = 2  3  -> Extinguish Scroll Lock.
-  decll = this.loadLEDs
-  //     Ps = 4  -> steady underline.
-  decscusr = this.setCursorStyle
-  //     Ps = 2  -> DECSED and DECSEL can erase.
-  decsca = this.setCharProtectionAttr
-  // NOTE: xterm doesn't enable this code by default.
-  deccara = this.setAttrInRectangle
-  // NOTE: xterm doesn't enable this code by default.
-  decrara = this.reverseAttrInRectangle
-
-  // ESC N
-  // Single Shift Select of G2 Character Set
-  // ( SS2 is 0x8e). This affects next character only.
-  // ESC O
-  // Single Shift Select of G3 Character Set
-  // ( SS3 is 0x8f). This affects next character only.
-  // ESC n
-  // Invoke the G2 Character Set as GL (LS2).
-  // ESC o
-  // Invoke the G3 Character Set as GL (LS3).
-  // ESC |
-  // Invoke the G3 Character Set as GR (LS3R).
-  // ESC }
-  // Invoke the G2 Character Set as GR (LS2R).
-  // ESC ~
-  //     Ps = 5 , 6 , 7 , or 8  -> high.
-  decswbv = this.setWarningBellVolume
-  //     Ps = 0 , 5 , 6 , 7 , or 8  -> high.
-  decsmbv = this.setMarginBellVolume
-
-  // OSC Ps ; Pt ST
-  // OSC Ps ; Pt BEL
-  // NOTE: xterm doesn't enable this code by default.
-  deccra = this.copyRectangle
-
-  // OSC Ps ; Pt ST
-  // OSC Ps ; Pt BEL
-  //   cels any prevous rectangle definition.
-  decefr = this.enableFilterRectangle
-
-  // OSC Ps ; Pt ST
-  // OSC Ps ; Pt BEL
-  //     Pn = 0  <- STP flags.
-  decreqtparm = this.requestParameters
-  //     Ps = 2  -> rectangle (exact).
-  decsace = this.selectChangeExtent
-  // NOTE: xterm doesn't enable this code by default.
-  decfra = this.fillRectangle
-  //     Pu = 2  <- character cells.
-  decelr = this.enableLocatorReporting
-
-  // CSI Ps B
-  // NOTE: xterm doesn't enable this code by default.
-  decera = this.eraseRectangle
-  //     Ps = 4  -> do not report button up transitions.
-  decsle = this.setLocatorEvents
-  //     Pt; Pl; Pb; Pr denotes the rectangle.
-  decsera = this.selectiveEraseRectangle
-
-  // CSI Ps C
-  //   ted.
-  decrqlp = this.requestLocatorPosition
-  req_mouse_pos = this.requestLocatorPosition
-  reqmp = this.requestLocatorPosition
-  // NOTE: xterm doesn't enable this code by default.
-  decic = this.insertColumns
-
-  // CSI Ps D
-  // NOTE: xterm doesn't enable this code by default.
-  decdc = this.deleteColumns
-
   get terminal() { return this._terminal }
   set terminal(terminal) { return this.setTerminal(terminal), this.terminal }
-
 // CSI Ps ; Ps H
   get title() { return this._title }
   set title(title) { return this.setTitle(title), this._title }
-  static build(options) {
-    console.log('>>> [about to create pres program]')
-    return new Program(options)
-  }
 
 // CSI Ps J  Erase in Display (ED).
 //     Ps = 0  -> Erase Below (default).
@@ -405,6 +381,10 @@ export class Program extends EventEmitter {
 // CSI ? Ps J
 //   Erase in Display (DECSED).
 //     Ps = 0  -> Selective Erase Below (default).
+  static build(options) {
+    console.log('>>> [about to create pres program]')
+    return new Program(options)
+  }
 //     Ps = 1  -> Selective Erase Above.
   static configSingleton(program) {
     if (!Program.global) Program.global = program
@@ -431,11 +411,6 @@ export class Program extends EventEmitter {
     })
   }
   log() { return this._log('LOG', util.format.apply(util, arguments)) }
-  debug() {
-    return !this.options.debug
-      ? void 0
-      : this._log('DEBUG', util.format.apply(util, arguments))
-  }
 
 // CSI Ps K  Erase in Line (EL).
 //     Ps = 0  -> Erase to Right (default).
@@ -444,66 +419,15 @@ export class Program extends EventEmitter {
 // CSI ? Ps K
 //   Erase in Line (DECSEL).
 //     Ps = 0  -> Selective Erase to Right (default).
+  debug() {
+    return !this.options.debug
+      ? void 0
+      : this._log('DEBUG', util.format.apply(util, arguments))
+  }
 //     Ps = 1  -> Selective Erase to Left.
   _log(pre, msg) {
     if (!this._logger) return
     return this._logger.write(pre + ': ' + msg + '\n-\n')
-  }
-  setupDump() {
-    const
-      self    = this,
-      write   = this.output.write,
-      decoder = new StringDecoder('utf8')
-    function stringify(data) {
-      return caret(data
-        .replace(/\r/g, '\\r')
-        .replace(/\n/g, '\\n')
-        .replace(/\t/g, '\\t'))
-        .replace(/[^ -~]/g, ch => {
-          if (ch.charCodeAt(0) > 0xff) return ch
-          ch = ch.charCodeAt(0).toString(16)
-          if (ch.length > 2) {
-            if (ch.length < 4) ch = '0' + ch
-            return '\\u' + ch
-          }
-          if (ch.length < 2) ch = '0' + ch
-          return '\\x' + ch
-        })
-    }
-
-    function caret(data) {
-      return data.replace(/[\0\x80\x1b-\x1f\x7f\x01-\x1a]/g, function (ch) {
-        if (ch === '\0' || ch === '\x80') {
-          ch = '@'
-        } else if (ch === '\x1b') {
-          ch = '['
-        } else if (ch === '\x1c') {
-          ch = '\\'
-        } else if (ch === '\x1d') {
-          ch = ']'
-        } else if (ch === '\x1e') {
-          ch = '^'
-        } else if (ch === '\x1f') {
-          ch = '_'
-        } else if (ch === '\x7f') {
-          ch = '?'
-        } else {
-          ch = ch.charCodeAt(0)
-          // From ('A' - 64) to ('Z' - 64).
-          if (ch >= 1 && ch <= 26) {
-            ch = String.fromCharCode(ch + 64)
-          } else {
-            return String.fromCharCode(ch)
-          }
-        }
-        return '^' + ch
-      })
-    }
-    this.input.on(DATA, data => self._log('IN', stringify(decoder.write(data))))
-    this.output.write = function (data) {
-      self._log('OUT', stringify(data))
-      return write.apply(this, arguments)
-    }
   }
 
 // CSI Pm m  Character Attributes (SGR).
@@ -566,6 +490,70 @@ export class Program extends EventEmitter {
 //   If 88- or 256-color support is compiled, the following apply.
 //     Ps = 3 8  ; 5  ; Ps -> Set foreground color to the second
 //     Ps.
+  setupDump() {
+    const
+      self    = this,
+      write   = this.output.write,
+      decoder = new StringDecoder('utf8')
+    function stringify(data) {
+      return caret(data
+        .replace(/\r/g, '\\r')
+        .replace(/\n/g, '\\n')
+        .replace(/\t/g, '\\t'))
+        .replace(/[^ -~]/g, ch => {
+          if (ch.charCodeAt(0) > 0xff) return ch
+          ch = ch.charCodeAt(0).toString(16)
+          if (ch.length > 2) {
+            if (ch.length < 4) ch = '0' + ch
+            return '\\u' + ch
+          }
+          if (ch.length < 2) ch = '0' + ch
+          return '\\x' + ch
+        })
+    }
+
+    function caret(data) {
+      return data.replace(/[\0\x80\x1b-\x1f\x7f\x01-\x1a]/g, function (ch) {
+        if (ch === '\0' || ch === '\x80') {
+          ch = '@'
+        }
+        else if (ch === '\x1b') {
+          ch = '['
+        }
+        else if (ch === '\x1c') {
+          ch = '\\'
+        }
+        else if (ch === '\x1d') {
+          ch = ']'
+        }
+        else if (ch === '\x1e') {
+          ch = '^'
+        }
+        else if (ch === '\x1f') {
+          ch = '_'
+        }
+        else if (ch === '\x7f') {
+          ch = '?'
+        }
+        else {
+          ch = ch.charCodeAt(0)
+          // From ('A' - 64) to ('Z' - 64).
+          if (ch >= 1 && ch <= 26) {
+            ch = String.fromCharCode(ch + 64)
+          }
+          else {
+            return String.fromCharCode(ch)
+          }
+        }
+        return '^' + ch
+      })
+    }
+    this.input.on(DATA, data => self._log('IN', stringify(decoder.write(data))))
+    this.output.write = function (data) {
+      self._log('OUT', stringify(data))
+      return write.apply(this, arguments)
+    }
+  }
 //     Ps = 4 8  ; 5  ; Ps -> Set background color to the second
   setupTput() {
     if (this._tputSetup) return
@@ -610,7 +598,8 @@ export class Program extends EventEmitter {
       }
       if (tput.padding) {
         self.put[key] = function () { return tput._print(tput[key].apply(tput, arguments), write) }
-      } else {
+      }
+      else {
         self.put[key] = function () { return self._write(tput[key].apply(tput, arguments)) }
       }
     })
@@ -638,7 +627,8 @@ export class Program extends EventEmitter {
     if (!this.input._presInput) {
       this.input._presInput = 1
       this._listenInput()
-    } else {
+    }
+    else {
       this.input._presInput++
     }
 
@@ -663,7 +653,8 @@ export class Program extends EventEmitter {
     if (!this.output._presOutput) {
       this.output._presOutput = 1
       this._listenOutput()
-    } else {
+    }
+    else {
       this.output._presOutput++
     }
   }
@@ -678,8 +669,8 @@ export class Program extends EventEmitter {
       if (key.name === 'undefined' && (key.code === '[M' || key.code === '[I' || key.code === '[O')) return
       // Not sure what this is, but we should probably ignore it.
       if (key.name === 'undefined') return
-      if (key.name === 'enter' && key.sequence === '\n') key.name = 'linefeed'
-      if (key.name === 'return' && key.sequence === '\r') self.input.emit(KEYPRESS, ch, merge({}, key, { name: 'enter' }))
+      if (key.name === ENTER && key.sequence === '\n') key.name = 'linefeed'
+      if (key.name === 'return' && key.sequence === '\r') self.input.emit(KEYPRESS, ch, merge({}, key, { name: ENTER }))
       const name = (key.ctrl ? 'C-' : '')
         + (key.meta ? 'M-' : '')
         + (key.shift && key.name ? 'S-' : '')
@@ -762,12 +753,6 @@ export class Program extends EventEmitter {
       this.emit(DESTROY)
     }
   }
-  key(key, listener) {
-    if (typeof key === 'string') key = key.split(/\s*,\s*/)
-    key.forEach(function (key) {
-      return this.on('key ' + key, listener)
-    }, this)
-  }
 
 // CSI Ps n  Device Status Report (DSR).
 //     Ps = 5  -> Status Report.  Result (``OK'') is
@@ -788,6 +773,12 @@ export class Program extends EventEmitter {
 //   The last two parameters apply to VT400 & up, and denote key-
 //   board ready and LK01 respectively.
 //     Ps = 5 3  -> Report Locator status as
+  key(key, listener) {
+    if (typeof key === 'string') key = key.split(/\s*,\s*/)
+    key.forEach(function (key) {
+      return this.on('key ' + key, listener)
+    }, this)
+  }
 //   CSI ? 5 3  n  Locator available, if compiled-in, or
   onceKey(key, listener) {
     if (typeof key === 'string') key = key.split(/\s*,\s*/)
@@ -836,7 +827,8 @@ export class Program extends EventEmitter {
       if (s[0] > 127 && s[1] === undefined) {
         s[0] -= 128
         s = '\x1b' + s.toString('utf-8')
-      } else {
+      }
+      else {
         s = s.toString('utf-8')
       }
     }
@@ -914,21 +906,23 @@ export class Program extends EventEmitter {
 
       if ((b >> 6) & 1) {
         key.action = b & 1 ? WHEELDOWN : WHEELUP
-        key.button = 'middle'
-      } else if (b === 3) {
+        key.button = MIDDLE
+      }
+      else if (b === 3) {
         // NOTE: x10 and urxvt have no way
         // of telling which button mouseup used.
         key.action = MOUSEUP
-        key.button = this._lastButton || 'unknown'
+        key.button = this._lastButton || UNKNOWN
         delete this._lastButton
-      } else {
+      }
+      else {
         key.action = MOUSEDOWN
         button = b & 3
         key.button =
-          button === 0 ? 'left' :
-            button === 1 ? 'middle' :
-              button === 2 ? 'right' :
-                'unknown'
+          button === 0 ? LEFT :
+            button === 1 ? MIDDLE :
+              button === 2 ? RIGHT :
+                UNKNOWN
         this._lastButton = key.button
       }
 
@@ -941,7 +935,7 @@ export class Program extends EventEmitter {
       // gnome: 32, 36, 48, 40
       // xterm: 35, _, 51, _
       // urxvt: 35, _, _, _
-      // if (key.action === MOUSEDOWN && key.button === 'unknown') {
+      // if (key.action === MOUSEDOWN && key.button === UNKNOWN) {
       if (
         b === 35 || b === 39 || b === 51 || b === 43
         || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))
@@ -982,21 +976,23 @@ export class Program extends EventEmitter {
       b -= 32
       if ((b >> 6) & 1) {
         key.action = b & 1 ? WHEELDOWN : WHEELUP
-        key.button = 'middle'
-      } else if (b === 3) {
+        key.button = MIDDLE
+      }
+      else if (b === 3) {
         // NOTE: x10 and urxvt have no way
         // of telling which button mouseup used.
         key.action = MOUSEUP
-        key.button = this._lastButton || 'unknown'
+        key.button = this._lastButton || UNKNOWN
         delete this._lastButton
-      } else {
+      }
+      else {
         key.action = MOUSEDOWN
         button = b & 3
         key.button =
-          button === 0 ? 'left'
-            : button === 1 ? 'middle'
-            : button === 2 ? 'right'
-              : 'unknown'
+          button === 0 ? LEFT
+            : button === 1 ? MIDDLE
+            : button === 2 ? RIGHT
+              : UNKNOWN
         // NOTE: 0/32 = mousemove, 32/64 = mousemove with left down
         // if ((b >> 1) === 32)
         this._lastButton = key.button
@@ -1009,7 +1005,7 @@ export class Program extends EventEmitter {
       // none, shift, ctrl, alt
       // urxvt: 35, _, _, _
       // gnome: 32, 36, 48, 40
-      // if (key.action === MOUSEDOWN && key.button === 'unknown') {
+      // if (key.action === MOUSEDOWN && key.button === UNKNOWN) {
       if (b === 35 || b === 39 || b === 51 || b === 43
         || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
         delete key.button
@@ -1043,17 +1039,18 @@ export class Program extends EventEmitter {
 
       if ((b >> 6) & 1) {
         key.action = b & 1 ? WHEELDOWN : WHEELUP
-        key.button = 'middle'
-      } else {
+        key.button = MIDDLE
+      }
+      else {
         key.action = down
           ? MOUSEDOWN
           : MOUSEUP
         button = b & 3
         key.button =
-          button === 0 ? 'left'
-            : button === 1 ? 'middle'
-            : button === 2 ? 'right'
-              : 'unknown'
+          button === 0 ? LEFT
+            : button === 1 ? MIDDLE
+            : button === 2 ? RIGHT
+              : UNKNOWN
       }
 
       // Probably a movement.
@@ -1064,7 +1061,7 @@ export class Program extends EventEmitter {
       // none, shift, ctrl, alt
       // xterm: 35, _, 51, _
       // gnome: 32, 36, 48, 40
-      // if (key.action === MOUSEDOWN && key.button === 'unknown') {
+      // if (key.action === MOUSEDOWN && key.button === UNKNOWN) {
       if (b === 35 || b === 39 || b === 51 || b === 43
         || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
         delete key.button
@@ -1102,10 +1099,10 @@ export class Program extends EventEmitter {
         : MOUSEDOWN
 
       key.button =
-        b === 2 ? 'left'
-          : b === 4 ? 'middle'
-          : b === 6 ? 'right'
-            : 'unknown'
+        b === 2 ? LEFT
+          : b === 4 ? MIDDLE
+          : b === 6 ? RIGHT
+            : UNKNOWN
 
       self.emit(MOUSE, key)
 
@@ -1130,10 +1127,10 @@ export class Program extends EventEmitter {
 
       key.action = MOUSEDOWN
       key.button =
-        b === 1 ? 'left'
-          : b === 2 ? 'middle'
-          : b === 5 ? 'right'
-            : 'unknown'
+        b === 1 ? LEFT
+          : b === 2 ? MIDDLE
+          : b === 5 ? RIGHT
+            : UNKNOWN
       self.emit(MOUSE, key)
       return
     }
@@ -1242,6 +1239,8 @@ export class Program extends EventEmitter {
       delete this.gpm
     }
   }
+
+// CSI Ps E
 // All possible responses from the terminal
   bindResponse() {
     if (this._boundResponse) return
@@ -1254,8 +1253,6 @@ export class Program extends EventEmitter {
       self._bindResponse(data)
     })
   }
-
-// CSI Ps E
 // Cursor Next Line Ps Times (default = 1) (CNL).
   _bindResponse(s) {
     const out = {}
@@ -1264,7 +1261,8 @@ export class Program extends EventEmitter {
       if (s[0] > 127 && s[1] === undefined) {
         s[0] -= 128
         s = '\x1b' + s.toString('utf-8')
-      } else {
+      }
+      else {
         s = s.toString('utf-8')
       }
     }
@@ -1285,16 +1283,20 @@ export class Program extends EventEmitter {
         if (parts[0] === 1 && parts[2] === 2) {
           out.term = 'vt100'
           out.advancedVideo = true
-        } else if (parts[0] === 1 && parts[2] === 0) {
+        }
+        else if (parts[0] === 1 && parts[2] === 0) {
           out.term = 'vt101'
-        } else if (parts[0] === 6) {
+        }
+        else if (parts[0] === 6) {
           out.term = 'vt102'
-        } else if (parts[0] === 60
+        }
+        else if (parts[0] === 60
           && parts[1] === 1 && parts[2] === 2
           && parts[3] === 6 && parts[4] === 8
           && parts[5] === 9 && parts[6] === 15) {
           out.term = 'vt220'
-        } else {
+        }
+        else {
           // VT200-style params:
           parts.forEach(function (attr) {
             switch (attr) {
@@ -1331,7 +1333,8 @@ export class Program extends EventEmitter {
             }
           })
         }
-      } else {
+      }
+      else {
         out.type = 'secondary-attribute'
         switch (parts[0]) {
           case 0:
@@ -1733,6 +1736,8 @@ export class Program extends EventEmitter {
       this.emit('response ' + out.event, out)
     }
   }
+
+// CSI Ps F
   response(name, text, callback, noBypass) {
     const self = this
     if (arguments.length === 2) {
@@ -1761,10 +1766,6 @@ export class Program extends EventEmitter {
       ? this._write(text)
       : this._twrite(text)
   }
-
-// CSI Ps F
-// Cursor Preceding Line Ps Times (default = 1) (CNL).
-  write = this._owrite
   _owrite(text) {
     return !this.output.writable
       ? void 0
@@ -1858,7 +1859,8 @@ export class Program extends EventEmitter {
     if (!this.zero) {
       x = (x || 1) - 1
       y = (y || 1) - 1
-    } else {
+    }
+    else {
       x = x || 0
       y = y || 0
     }
@@ -1868,16 +1870,20 @@ export class Program extends EventEmitter {
     if (y === this.y) {
       if (x > this.x) {
         this.cuf(x - this.x)
-      } else if (x < this.x) {
+      }
+      else if (x < this.x) {
         this.cub(this.x - x)
       }
-    } else if (x === this.x) {
+    }
+    else if (x === this.x) {
       if (y > this.y) {
         this.cud(y - this.y)
-      } else if (y < this.y) {
+      }
+      else if (y < this.y) {
         this.cuu(this.y - y)
       }
-    } else {
+    }
+    else {
       if (!this.zero) x++, y++
       this.cup(y, x)
     }
@@ -1954,46 +1960,53 @@ export class Program extends EventEmitter {
         case 'block':
           if (!blink) {
             this._twrite('\x1b]50;CursorShape=0;BlinkingCursorEnabled=0\x07')
-          } else {
+          }
+          else {
             this._twrite('\x1b]50;CursorShape=0;BlinkingCursorEnabled=1\x07')
           }
           break
         case 'underline':
           if (!blink) {
             // this._twrite('\x1b]50;CursorShape=n;BlinkingCursorEnabled=0\x07');
-          } else {
+          }
+          else {
             // this._twrite('\x1b]50;CursorShape=n;BlinkingCursorEnabled=1\x07');
           }
           break
         case 'line':
           if (!blink) {
             this._twrite('\x1b]50;CursorShape=1;BlinkingCursorEnabled=0\x07')
-          } else {
+          }
+          else {
             this._twrite('\x1b]50;CursorShape=1;BlinkingCursorEnabled=1\x07')
           }
           break
       }
       return true
-    } else if (this.term('xterm') || this.term('screen')) {
+    }
+    else if (this.term('xterm') || this.term('screen')) {
       switch (shape) {
         case 'block':
           if (!blink) {
             this._twrite('\x1b[0 q')
-          } else {
+          }
+          else {
             this._twrite('\x1b[1 q')
           }
           break
         case 'underline':
           if (!blink) {
             this._twrite('\x1b[2 q')
-          } else {
+          }
+          else {
             this._twrite('\x1b[3 q')
           }
           break
         case 'line':
           if (!blink) {
             this._twrite('\x1b[4 q')
-          } else {
+          }
+          else {
             this._twrite('\x1b[5 q')
           }
           break
@@ -2328,7 +2341,8 @@ export class Program extends EventEmitter {
     if (hide && pos.hidden !== this.cursorHidden) {
       if (pos.hidden) {
         this.hideCursor()
-      } else {
+      }
+      else {
         this.showCursor()
       }
     }
@@ -2545,7 +2559,8 @@ export class Program extends EventEmitter {
     if (!this.zero) {
       row = (row || 1) - 1
       col = (col || 1) - 1
-    } else {
+    }
+    else {
       row = row || 0
       col = col || 0
     }
@@ -2597,13 +2612,13 @@ export class Program extends EventEmitter {
     if (this.tput) {
       //if (this.tput.back_color_erase) ...
       switch (param) {
-        case 'left':
+        case LEFT:
           param = 1
           break
         case 'all':
           param = 2
           break
-        case 'right':
+        case RIGHT:
         default:
           param = 0
           break
@@ -2611,11 +2626,11 @@ export class Program extends EventEmitter {
       return this.put.el(param)
     }
     switch (param) {
-      case 'left':
+      case LEFT:
         return this._write('\x1b[1K')
       case 'all':
         return this._write('\x1b[2K')
-      case 'right':
+      case RIGHT:
       default:
         return this._write('\x1b[K')
     }
@@ -2640,7 +2655,8 @@ export class Program extends EventEmitter {
     if (Array.isArray(param)) {
       parts = param
       param = parts[0] || 'normal'
-    } else {
+    }
+    else {
       param = param || 'normal'
       parts = param.split(/\s*[,;]\s*/)
     }
@@ -2663,7 +2679,8 @@ export class Program extends EventEmitter {
     if (param.indexOf('no ') === 0) {
       param = param.substring(3)
       val = false
-    } else if (param.indexOf('!') === 0) {
+    }
+    else if (param.indexOf('!') === 0) {
       param = param.substring(1)
       val = false
     }
@@ -2894,14 +2911,17 @@ export class Program extends EventEmitter {
             if (m[2] === 'fg') {
               if (color < 8) {
                 color += 30
-              } else if (color < 16) {
+              }
+              else if (color < 16) {
                 color -= 8
                 color += 90
               }
-            } else if (m[2] === 'bg') {
+            }
+            else if (m[2] === 'bg') {
               if (color < 8) {
                 color += 40
-              } else if (color < 16) {
+              }
+              else if (color < 16) {
                 color -= 8
                 color += 100
               }
@@ -3011,7 +3031,8 @@ export class Program extends EventEmitter {
   cursorCharAbsolute(param) {
     if (!this.zero) {
       param = (param || 1) - 1
-    } else {
+    }
+    else {
       param = param || 0
     }
     this.x = param
@@ -3078,7 +3099,8 @@ export class Program extends EventEmitter {
     if (!this.zero) {
       row = (row || 1) - 1
       col = (col || 1) - 1
-    } else {
+    }
+    else {
       row = row || 0
       col = col || 0
     }
@@ -3322,7 +3344,8 @@ export class Program extends EventEmitter {
       }
       this._currentMouse = opt
       this.mouseEnabled = true
-    } else if (enable === false) {
+    }
+    else if (enable === false) {
       delete this._currentMouse
       this.mouseEnabled = false
     }
@@ -3370,7 +3393,8 @@ export class Program extends EventEmitter {
       if (this.tmux && this.tmuxVersion >= 2) {
         if (opt.allMotion) this._twrite('\x1b[?1003h')
         else this._twrite('\x1b[?1003l')
-      } else {
+      }
+      else {
         if (opt.allMotion) this.setMode('?1003')
         else this.resetMode('?1003')
       }
@@ -3441,7 +3465,8 @@ export class Program extends EventEmitter {
     if (!this.zero) {
       top = (top || 1) - 1
       bottom = (bottom || this.rows) - 1
-    } else {
+    }
+    else {
       top = top || 0
       bottom = bottom || (this.rows - 1)
     }

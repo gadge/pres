@@ -9,7 +9,7 @@ import {
   ACTION, ADD_ITEM, ADOPT, CANCEL, CLICK, CREATE_ITEM, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, INSERT_ITEM, KEYPRESS,
   REMOVE, REMOVE_ITEM, RESIZE, SELECT, SELECT_ITEM, SET_ITEMS,
 }                                        from '@pres/enum-events'
-import { DOWN, ENTER, ESCAPE, LEFT, UP } from '@pres/enum-keyboard'
+import { DOWN, ENTER, ESCAPE, LEFT, UP } from '@pres/enum-key-names'
 import { helpers }                       from '@pres/util-helpers'
 
 export class List extends Box {

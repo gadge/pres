@@ -1,4 +1,4 @@
-# @pres/enum-keyboard
+# @pres/enum-key-names
 
 [![npm version][badge-npm-version]][url-npm]
 [![npm download monthly][badge-npm-download-monthly]][url-npm]
@@ -46,7 +46,7 @@ $ npm install @pres/cluster-fork
 #### Usage
 
 ```js
-import { Signaler } from '@pres/enum-keyboard'
+import { Signaler } from '@pres/enum-key-names'
 Signaler.register(instance,process,)
 ```
 

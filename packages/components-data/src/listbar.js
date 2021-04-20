@@ -8,7 +8,7 @@ import { Box }                             from '@pres/components-core'
 import {
   ACTION, ADD_ITEM, CANCEL, CLICK, FOCUS, KEYPRESS, REMOVE_ITEM, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS,
 }                                          from '@pres/enum-events'
-import { ENTER, ESCAPE, LEFT, RIGHT, TAB } from '@pres/enum-keyboard'
+import { ENTER, ESCAPE, LEFT, RIGHT, TAB } from '@pres/enum-key-names'
 import { helpers }                         from '@pres/util-helpers'
 
 export class Listbar extends Box {

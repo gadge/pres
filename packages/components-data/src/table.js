@@ -7,7 +7,7 @@
 import { Box } from '@pres/components-core'
 
 import { ATTACH, RESIZE, } from '@pres/enum-events'
-import { LEFT, RIGHT }     from '@pres/enum-keyboard'
+import { LEFT, RIGHT }     from '@pres/enum-key-names'
 
 export class Table extends Box {
   setRows = this.setData

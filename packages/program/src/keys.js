@@ -3,9 +3,10 @@
  * Copyright (c) 2010-2015, Joyent, Inc. and other contributors (MIT License)
  * https://github.com/chjj/blessed
  */
-import { DATA, KEYPRESS, NEW_LISTENER } from '@pres/enum-events'
-import { EventEmitter }                 from '@pres/events'
-import { StringDecoder }                from 'string_decoder' // lazy load
+import { DATA, KEYPRESS, NEW_LISTENER }                 from '@pres/enum-events'
+import { BACKSPACE, ENTER, ESCAPE, RETURN, SPACE, TAB } from '@pres/enum-key-names'
+import { EventEmitter }                                 from '@pres/events'
+import { StringDecoder }                                from 'string_decoder' // lazy load
 
 // NOTE: node <=v0.8.x has no EventEmitter.listenerCount
 
@@ -27,7 +28,8 @@ export function emitKeypressEvents(stream) {
     if (listenerCount(stream, KEYPRESS) > 0) {
       const r = stream._keypressDecoder.write(b)
       if (r) emitKeys(stream, r)
-    } else {
+    }
+    else {
       // Nobody's watching anyway
       stream.removeListener(DATA, onData)
       stream.on(NEW_LISTENER, onNewListener)
@@ -43,7 +45,8 @@ export function emitKeypressEvents(stream) {
 
   if (listenerCount(stream, KEYPRESS) > 0) {
     stream.on(DATA, onData)
-  } else {
+  }
+  else {
     stream.on(NEW_LISTENER, onNewListener)
   }
 }
@@ -96,7 +99,8 @@ function emitKeys(stream, s) {
     if (s[0] > 127 && s[1] === undefined) {
       s[0] -= 128
       s = '\x1b' + s.toString(stream.encoding || 'utf-8')
-    } else {
+    }
+    else {
       s = s.toString(stream.encoding || 'utf-8')
     }
   }
@@ -125,54 +129,64 @@ function emitKeys(stream, s) {
 
     if (s === '\r') {
       // carriage return
-      key.name = 'return'
+      key.name = RETURN
 
-    } else if (s === '\n') {
+    }
+    else if (s === '\n') {
       // enter, should have been called linefeed
-      key.name = 'enter'
+      key.name = ENTER
       // linefeed
       // key.name = 'linefeed';
 
-    } else if (s === '\t') {
+    }
+    else if (s === '\t') {
       // tab
-      key.name = 'tab'
+      key.name = TAB
 
-    } else if (s === '\b' || s === '\x7f' ||
+    }
+    else if (s === '\b' || s === '\x7f' ||
       s === '\x1b\x7f' || s === '\x1b\b') {
       // backspace or ctrl+h
-      key.name = 'backspace'
+      key.name = BACKSPACE
       key.meta = (s.charAt(0) === '\x1b')
 
-    } else if (s === '\x1b' || s === '\x1b\x1b') {
+    }
+    else if (s === '\x1b' || s === '\x1b\x1b') {
       // escape key
-      key.name = 'escape'
+      key.name = ESCAPE
       key.meta = (s.length === 2)
 
-    } else if (s === ' ' || s === '\x1b ') {
-      key.name = 'space'
+    }
+    else if (s === ' ' || s === '\x1b ') {
+      key.name = SPACE
       key.meta = (s.length === 2)
 
-    } else if (s.length === 1 && s <= '\x1a') {
+    }
+    else if (s.length === 1 && s <= '\x1a') {
       // ctrl+letter
       key.name = String.fromCharCode(s.charCodeAt(0) + 'a'.charCodeAt(0) - 1)
       key.ctrl = true
 
-    } else if (s.length === 1 && s >= 'a' && s <= 'z') {
+    }
+    else if (s.length === 1 && s >= 'a' && s <= 'z') {
       // lowercase letter
       key.name = s
 
-    } else if (s.length === 1 && s >= 'A' && s <= 'Z') {
+    }
+    else if (s.length === 1 && s >= 'A' && s <= 'Z') {
       // shift+letter
       key.name = s.toLowerCase()
       key.shift = true
 
-    } else if ((parts = metaKeyCodeRe.exec(s))) {
+    }
+    else if ((parts = metaKeyCodeRe.exec(s))) {
       // meta+character key
       key.name = parts[1].toLowerCase()
       key.meta = true
       key.shift = /^[A-Z]$/.test(parts[1])
 
-    } else if ((parts = functionKeyCodeRe.exec(s))) {
+    }
+    else if ((parts = functionKeyCodeRe.exec(s))) {
       // ansi escape sequence
 
       // reassemble the key code leaving out leading \x1b's,
@@ -463,7 +477,7 @@ function emitKeys(stream, s) {
       //   Object.keys(key).forEach(function(k) {
       //     nkey[k] = key[k];
       //   });
-      //   nkey.name = 'enter';
+      //   nkey.name = ENTER;
       //   stream.emit(KEYPRESS, ch, nkey);
       // }
     }

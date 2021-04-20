@@ -4,7 +4,7 @@
  * https://github.com/chjj/blessed
  */
 
-import { ENTER, }   from '@pres/enum-keyboard'
+import { ENTER, }   from '@pres/enum-key-names'
 import { Textarea } from './textarea'
 
 

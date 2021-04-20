@@ -17,6 +17,7 @@
   "dependencies": {
     "@ject/noop": "^0.0.11",
     "@pres/enum-events": "^0.0.13",
+    "@pres/enum-key-names": "^0.0.13",
     "@pres/events": "^0.0.13",
     "@pres/terminfo-parser": "^0.0.13",
     "@pres/util-colors": "^0.0.13",

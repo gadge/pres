@@ -10,7 +10,7 @@
 import { Box, Node } from '@pres/components-core'
 
 import { ATTACH, RESIZE, SCROLL, } from '@pres/enum-events'
-import { LEFT, RIGHT }             from '@pres/enum-keyboard'
+import { LEFT, RIGHT }             from '@pres/enum-key-names'
 import { List }                    from './list'
 import { Table }                   from './table'
 

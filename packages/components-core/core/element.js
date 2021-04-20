@@ -37,39 +37,32 @@ export class Element extends Node {
     // if (!(this instanceof Node)) { return new Element(options) }
     // config scrollable properties
     this.name = options.name
-    options.position = options.position || {
+    const position = this.position = (options.position ?? (options.position = {
       left: options.left,
       right: options.right,
       top: options.top,
       bottom: options.bottom,
       width: options.width,
       height: options.height
-    }
-    if (options.position.width === 'shrink'
-      || options.position.height === 'shrink') {
-      if (options.position.width === 'shrink') {
-        delete options.position.width
-      }
-      if (options.position.height === 'shrink') {
-        delete options.position.height
-      }
+    }))
+    if (position.width === 'shrink' || position.height === 'shrink') {
+      if (position.width === 'shrink') delete position.width
+      if (position.height === 'shrink') delete position.height
       options.shrink = true
     }
-    this.position = options.position
+    // this.position = position
     this.noOverflow = options.noOverflow
     this.dockBorders = options.dockBorders
     this.shadow = options.shadow
-    this.style = options.style
-    if (!this.style) {
-      this.style = {}
-      this.style.fg = options.fg
-      this.style.bg = options.bg
-      this.style.bold = options.bold
-      this.style.underline = options.underline
-      this.style.blink = options.blink
-      this.style.inverse = options.inverse
-      this.style.invisible = options.invisible
-      this.style.transparent = options.transparent
+    this.style = options.style ?? {
+      fg: options.fg,
+      bg: options.bg,
+      bold: options.bold,
+      underline: options.underline,
+      blink: options.blink,
+      inverse: options.inverse,
+      invisible: options.invisible,
+      transparent: options.transparent,
     }
     this.hidden = options.hidden || false
     this.fixed = options.fixed || false
@@ -79,13 +72,11 @@ export class Element extends Node {
     this.shrink = options.shrink
     this.fixed = options.fixed
     this.ch = options.ch || ' '
-    if (typeof options.padding === NUM || !options.padding) {
-      options.padding = {
-        left: options.padding,
-        top: options.padding,
-        right: options.padding,
-        bottom: options.padding
-      }
+    if (typeof options.padding === NUM || !options.padding) options.padding = {
+      left: options.padding,
+      top: options.padding,
+      right: options.padding,
+      bottom: options.padding
     }
     this.padding = {
       left: options.padding.left || 0,
@@ -121,21 +112,12 @@ export class Element extends Node {
     // TODO: Possibly move this to Node for onScreenEvent(MOUSE, ...).
     this.on(NEW_LISTENER, function fn(type) {
       // type = type.split(' ').slice(1).join(' ');
-      if (type === MOUSE
-        || type === CLICK
-        || type === MOUSEOVER
-        || type === MOUSEOUT
-        || type === MOUSEDOWN
-        || type === MOUSEUP
-        || type === MOUSEWHEEL
-        || type === WHEELDOWN
-        || type === WHEELUP
-        || type === MOUSEMOVE) {
-        self.screen._listenMouse(self)
-      }
-      else if (type === KEYPRESS || type.indexOf('key ') === 0) {
-        self.screen._listenKeys(self)
-      }
+      if (
+        type === CLICK || type === MOUSE || type === MOUSEDOWN || type === MOUSEUP ||
+        type === MOUSEMOVE || type === MOUSEOVER || type === MOUSEOUT || type === MOUSEWHEEL ||
+        type === WHEELDOWN || type === WHEELUP
+      ) { self.screen._listenMouse(self) }
+      else if (type === KEYPRESS || type.indexOf('key ') === 0) { self.screen._listenKeys(self) }
     })
     this.on(RESIZE, function () { self.parseContent() })
     this.on(ATTACH, function () { self.parseContent() })
