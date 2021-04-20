@@ -11,6 +11,11 @@ import { Input }                                                                
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
 export class Textarea extends Input {
+  input = this.readInput
+  setInput = this.readInput
+  clearInput = this.clearValue
+  editor = this.readEditor
+  setEditor = this.readEditor
   /**
    * Textarea
    */
@@ -97,8 +102,6 @@ export class Textarea extends Input {
       program.cup(cy, cx)
     }
   }
-  input = this.readInput
-  setInput = this.readInput
   readInput(callback) {
     // console.log('>>> calling textarea.readInput')
     const self    = this,
@@ -191,7 +194,6 @@ export class Textarea extends Input {
       this._updateCursor()
     }
   }
-  clearInput = this.clearValue
   clearValue() { return this.setValue('') }
   submit() {
     if (!this.__listener) return
@@ -205,8 +207,6 @@ export class Textarea extends Input {
     this.setValue()
     return this._render()
   }
-  editor = this.readEditor
-  setEditor = this.readEditor
   readEditor(callback) {
     // console.log('>>> readEditor in textarea')
     const self = this

@@ -7,6 +7,7 @@
 import { Textarea } from './textarea'
 
 export class Textbox extends Textarea {
+  __olistener = super._listener
   constructor(options = {}) {
     options.scrollable = false
     super(options)
@@ -16,7 +17,6 @@ export class Textbox extends Textarea {
     this.type = 'textbox'
     // console.log(`>>> constructed ${this.type}`)
   }
-  __olistener = super._listener
   _listener(ch, key) {
     // console.log('>>> calling _listener in Textbox')
     return key.name === 'enter'

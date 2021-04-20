@@ -11,6 +11,7 @@ import { CHECK, }   from '@pres/enum-events'
 import { Checkbox } from './checkbox'
 
 export class RadioButton extends Checkbox {
+  toggle = this.check
   /**
    * RadioButton
    */
@@ -34,7 +35,6 @@ export class RadioButton extends Checkbox {
     })
     this.type = 'radio-button'
   }
-  toggle = this.check
   render() {
     this.clearPos(true)
     this.setContent('(' + (this.checked ? '*' : ' ') + ') ' + this.text, true)

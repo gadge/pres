@@ -22,9 +22,7 @@ export class Button extends Input {
     // if (!(this instanceof Node)) return new Button(options)
 
     this.on(KEYPRESS, function (ch, key) {
-      if (key.name === 'enter' || key.name === 'space') {
-        return self.press()
-      }
+      if (key.name === 'enter' || key.name === 'space') return self.press()
     })
 
     if (this.options.mouse) {

@@ -142,9 +142,11 @@ export class Form extends Box {
         const name = el.name || el.type
         if (Array.isArray(out[name])) {
           out[name].push(el.value)
-        } else if (out[name]) {
+        }
+        else if (out[name]) {
           out[name] = [ out[name], el.value ]
-        } else {
+        }
+        else {
           out[name] = el.value
         }
       }

@@ -44,7 +44,8 @@ export class FileManager extends List {
             self._label.setContent(options.label.replace('%path', file))
           }
           self.refresh()
-        } else {
+        }
+        else {
           self.emit(FILE, file)
         }
       })
@@ -96,13 +97,15 @@ export class FileManager extends List {
             text: '{light-blue-fg}' + name + '{/light-blue-fg}/',
             dir: true
           })
-        } else if (stat && stat.isSymbolicLink()) {
+        }
+        else if (stat && stat.isSymbolicLink()) {
           files.push({
             name: name,
             text: '{light-cyan-fg}' + name + '{/light-cyan-fg}@',
             dir: false
           })
-        } else {
+        }
+        else {
           files.push({
             name: name,
             text: name,
