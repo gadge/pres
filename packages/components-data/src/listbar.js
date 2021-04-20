@@ -4,13 +4,16 @@
  * https://github.com/chjj/blessed
  */
 
-import { Box }     from '@pres/components-core'
+import { Box }                             from '@pres/components-core'
 import {
   ACTION, ADD_ITEM, CANCEL, CLICK, FOCUS, KEYPRESS, REMOVE_ITEM, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS,
-}                  from '@pres/enum-events'
-import { helpers } from '@pres/util-helpers'
+}                                          from '@pres/enum-events'
+import { ENTER, ESCAPE, LEFT, RIGHT, TAB } from '@pres/enum-keyboard'
+import { helpers }                         from '@pres/util-helpers'
 
 export class Listbar extends Box {
+  add = this.appendItem
+  addItem = this.appendItem
   /**
    * Listbar / HorizontalList
    */
@@ -30,25 +33,25 @@ export class Listbar extends Box {
     if (options.commands || options.items) this.setItems(options.commands || options.items)
     if (options.keys) {
       this.on(KEYPRESS, function (ch, key) {
-        if (key.name === 'left'
+        if (key.name === LEFT
           || (options.vi && key.name === 'h')
-          || (key.shift && key.name === 'tab')) {
+          || (key.shift && key.name === TAB)) {
           self.moveLeft()
           self.screen.render()
           // Stop propagation if we're in a form.
-          if (key.name === 'tab') return false
+          if (key.name === TAB) return false
           return void 0
         }
-        if (key.name === 'right'
+        if (key.name === RIGHT
           || (options.vi && key.name === 'l')
-          || key.name === 'tab') {
+          || key.name === TAB) {
           self.moveRight()
           self.screen.render()
           // Stop propagation if we're in a form.
-          if (key.name === 'tab') return false
+          if (key.name === TAB) return false
           return void 0
         }
-        if (key.name === 'enter'
+        if (key.name === ENTER
           || (options.vi && key.name === 'k' && !key.shift)) {
           self.emit(ACTION, self.items[self.selected], self.selected)
           self.emit(SELECT, self.items[self.selected], self.selected)
@@ -59,7 +62,7 @@ export class Listbar extends Box {
           self.screen.render()
           return void 0
         }
-        if (key.name === 'escape' || (options.vi && key.name === 'q')) {
+        if (key.name === ESCAPE || (options.vi && key.name === 'q')) {
           self.emit(ACTION)
           self.emit(CANCEL)
           return void 0
@@ -82,8 +85,6 @@ export class Listbar extends Box {
     })
     this.type = 'listbar'
   }
-  add = this.appendItem
-  addItem = this.appendItem
   get selected() { return this.leftBase + this.leftOffset }
   setItems(commands) {
     const self = this
@@ -135,7 +136,8 @@ export class Listbar extends Box {
 
     if (!this.parent) {
       drawn = 0
-    } else {
+    }
+    else {
       drawn = prev ? prev.aleft + prev.width : 0
       if (!this.screen.autoPadding) {
         drawn += this.ileft
@@ -259,7 +261,8 @@ export class Listbar extends Box {
     this.items.forEach(function (el, i) {
       if (i < self.leftBase) {
         el.hide()
-      } else {
+      }
+      else {
         el.rleft = drawn + 1
         drawn += el.width + 2
         el.show()
@@ -275,10 +278,10 @@ export class Listbar extends Box {
 
     if (offset < 0) {
       offset = 0
-    } else
-      if (offset >= this.items.length) {
-        offset = this.items.length - 1
-      }
+    }
+    else if (offset >= this.items.length) {
+      offset = this.items.length - 1
+    }
 
     if (!this.parent) {
       this.emit(SELECT_ITEM, this.items[offset], offset)
@@ -315,19 +318,21 @@ export class Listbar extends Box {
       if (offset > this.leftBase + visible - 1) {
         this.leftOffset = 0
         this.leftBase = offset
-      } else {
+      }
+      else {
         this.leftOffset += diff
       }
-    } else
-      if (offset < this.leftBase + this.leftOffset) {
-        diff = -diff
-        if (offset < this.leftBase) {
-          this.leftOffset = 0
-          this.leftBase = offset
-        } else {
-          this.leftOffset -= diff
-        }
+    }
+    else if (offset < this.leftBase + this.leftOffset) {
+      diff = -diff
+      if (offset < this.leftBase) {
+        this.leftOffset = 0
+        this.leftBase = offset
       }
+      else {
+        this.leftOffset -= diff
+      }
+    }
 
     // XXX Move `action` and `select` events here.
     this.emit(SELECT_ITEM, el, offset)

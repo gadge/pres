@@ -10,10 +10,13 @@
 import { Box, Node } from '@pres/components-core'
 
 import { ATTACH, RESIZE, SCROLL, } from '@pres/enum-events'
+import { LEFT, RIGHT }             from '@pres/enum-keyboard'
 import { List }                    from './list'
 import { Table }                   from './table'
 
 export class ListTable extends List {
+  setRows = this.setData
+  _select = this.select
   /**
    * ListTable
    */
@@ -73,7 +76,6 @@ export class ListTable extends List {
     this.type = 'list-table'
   }
   _calculateMaxes() { return Table.prototype._calculateMaxes.call(this) }
-  setRows = this.setData
   setData(rows) {
     const self     = this,
           align    = this.__align,
@@ -110,10 +112,12 @@ export class ListTable extends List {
           if (align === 'center') {
             cell = ' ' + cell + ' '
             clen += 2
-          } else if (align === 'left') {
+          }
+          else if (align === LEFT) {
             cell = cell + ' '
             clen += 1
-          } else if (align === 'right') {
+          }
+          else if (align === RIGHT) {
             cell = ' ' + cell
             clen += 1
           }
@@ -123,10 +127,12 @@ export class ListTable extends List {
           if (align === 'center') {
             cell = cell.substring(1)
             clen--
-          } else if (align === 'left') {
+          }
+          else if (align === LEFT) {
             cell = cell.slice(0, -1)
             clen--
-          } else if (align === 'right') {
+          }
+          else if (align === RIGHT) {
             cell = cell.substring(1)
             clen--
           }
@@ -136,7 +142,8 @@ export class ListTable extends List {
       })
       if (isHeader) {
         self._header.setContent(text)
-      } else {
+      }
+      else {
         self.addItem(text)
       }
     })
@@ -147,13 +154,14 @@ export class ListTable extends List {
     sel = this.ritems.indexOf(sel)
     if (~sel) {
       this.select(sel)
-    } else if (this.items.length === original.length) {
+    }
+    else if (this.items.length === original.length) {
       this.select(selected)
-    } else {
+    }
+    else {
       this.select(Math.min(selected, this.items.length - 1))
     }
   }
-  _select = this.select
   select(i) {
     if (i === 0) i = 1
     if (i <= this.childBase) this.setScroll(this.childBase - 1)
@@ -206,7 +214,8 @@ export class ListTable extends List {
             lines[yi + ry][xi + rx][1] = '\u2502' // '│'
           }
           lines[yi + ry].dirty = true
-        } else if (ry === height) {
+        }
+        else if (ry === height) {
           // bottom
           rx++
           lines[yi + ry][xi + rx][0] = battr
@@ -216,7 +225,8 @@ export class ListTable extends List {
             lines[yi + ry][xi + rx][1] = '\u2502' // '│'
           }
           lines[yi + ry].dirty = true
-        } else {
+        }
+        else {
           // middle
           rx++
         }
@@ -235,7 +245,8 @@ export class ListTable extends List {
           const lbg = lines[yi + ry][xi + rx][0] & 0x1ff
           rx++
           lines[yi + ry][xi + rx][0] = (battr & ~0x1ff) | lbg
-        } else {
+        }
+        else {
           rx++
           lines[yi + ry][xi + rx][0] = battr
         }

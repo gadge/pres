@@ -4,12 +4,10 @@
  * https://github.com/chjj/blessed
  */
 
-/**
- * Modules
- */
 import { Box } from '@pres/components-core'
 
 import { ATTACH, RESIZE, } from '@pres/enum-events'
+import { LEFT, RIGHT }     from '@pres/enum-keyboard'
 
 export class Table extends Box {
   setRows = this.setData
@@ -83,7 +81,8 @@ export class Table extends Box {
         }
         return max + w
       })
-    } else {
+    }
+    else {
       maxes = maxes.map(function (max) {
         return max + self.pad
       })
@@ -116,30 +115,30 @@ export class Table extends Box {
           if (align === 'center') {
             cell = ' ' + cell + ' '
             clen += 2
-          } else
-            if (align === 'left') {
-              cell = cell + ' '
-              clen += 1
-            } else
-              if (align === 'right') {
-                cell = ' ' + cell
-                clen += 1
-              }
+          }
+          else if (align === LEFT) {
+            cell = cell + ' '
+            clen += 1
+          }
+          else if (align === RIGHT) {
+            cell = ' ' + cell
+            clen += 1
+          }
         }
 
         if (clen > width) {
           if (align === 'center') {
             cell = cell.substring(1)
             clen--
-          } else
-            if (align === 'left') {
-              cell = cell.slice(0, -1)
-              clen--
-            } else
-              if (align === 'right') {
-                cell = cell.substring(1)
-                clen--
-              }
+          }
+          else if (align === LEFT) {
+            cell = cell.slice(0, -1)
+            clen--
+          }
+          else if (align === RIGHT) {
+            cell = cell.substring(1)
+            clen--
+          }
         }
 
         text += cell
@@ -181,7 +180,8 @@ export class Table extends Box {
         if (lines[yi + y][xi + x][0] !== dattr) continue
         if (y === this.itop) {
           lines[yi + y][xi + x][0] = hattr
-        } else {
+        }
+        else {
           lines[yi + y][xi + x][0] = cattr
         }
         lines[yi + y].dirty = true
@@ -202,49 +202,51 @@ export class Table extends Box {
             // top
             lines[yi + ry][xi + 0][0] = battr
             // lines[yi + ry][xi + 0][1] = '\u250c'; // '┌'
-          } else
-            if (ry / 2 === self.rows.length) {
-              // bottom
-              lines[yi + ry][xi + 0][0] = battr
-              // lines[yi + ry][xi + 0][1] = '\u2514'; // '└'
-            } else {
-              // middle
-              lines[yi + ry][xi + 0][0] = battr
-              lines[yi + ry][xi + 0][1] = '\u251c' // '├'
-              // XXX If we alter iwidth and ileft for no borders - nothing should be written here
-              if (!self.border.left) {
-                lines[yi + ry][xi + 0][1] = '\u2500' // '─'
-              }
-            }
-          lines[yi + ry].dirty = true
-        } else
-          if (i === self._maxes.length - 1) {
-            if (!lines[yi + ry][xi + rx + 1]) return
-            // right side
-            if (ry === 0) {
-              // top
-              rx++
-              lines[yi + ry][xi + rx][0] = battr
-              // lines[yi + ry][xi + rx][1] = '\u2510'; // '┐'
-            } else
-              if (ry / 2 === self.rows.length) {
-                // bottom
-                rx++
-                lines[yi + ry][xi + rx][0] = battr
-                // lines[yi + ry][xi + rx][1] = '\u2518'; // '┘'
-              } else {
-                // middle
-                rx++
-                lines[yi + ry][xi + rx][0] = battr
-                lines[yi + ry][xi + rx][1] = '\u2524' // '┤'
-                // XXX If we alter iwidth and iright for no borders - nothing should be written here
-                if (!self.border.right) {
-                  lines[yi + ry][xi + rx][1] = '\u2500' // '─'
-                }
-              }
-            lines[yi + ry].dirty = true
-            return
           }
+          else if (ry / 2 === self.rows.length) {
+            // bottom
+            lines[yi + ry][xi + 0][0] = battr
+            // lines[yi + ry][xi + 0][1] = '\u2514'; // '└'
+          }
+          else {
+            // middle
+            lines[yi + ry][xi + 0][0] = battr
+            lines[yi + ry][xi + 0][1] = '\u251c' // '├'
+            // XXX If we alter iwidth and ileft for no borders - nothing should be written here
+            if (!self.border.left) {
+              lines[yi + ry][xi + 0][1] = '\u2500' // '─'
+            }
+          }
+          lines[yi + ry].dirty = true
+        }
+        else if (i === self._maxes.length - 1) {
+          if (!lines[yi + ry][xi + rx + 1]) return
+          // right side
+          if (ry === 0) {
+            // top
+            rx++
+            lines[yi + ry][xi + rx][0] = battr
+            // lines[yi + ry][xi + rx][1] = '\u2510'; // '┐'
+          }
+          else if (ry / 2 === self.rows.length) {
+            // bottom
+            rx++
+            lines[yi + ry][xi + rx][0] = battr
+            // lines[yi + ry][xi + rx][1] = '\u2518'; // '┘'
+          }
+          else {
+            // middle
+            rx++
+            lines[yi + ry][xi + rx][0] = battr
+            lines[yi + ry][xi + rx][1] = '\u2524' // '┤'
+            // XXX If we alter iwidth and iright for no borders - nothing should be written here
+            if (!self.border.right) {
+              lines[yi + ry][xi + rx][1] = '\u2500' // '─'
+            }
+          }
+          lines[yi + ry].dirty = true
+          return
+        }
         if (!lines[yi + ry][xi + rx + 1]) return
         // center
         if (ry === 0) {
@@ -256,29 +258,31 @@ export class Table extends Box {
           if (!self.border.top) {
             lines[yi + ry][xi + rx][1] = '\u2502' // '│'
           }
-        } else
-          if (ry / 2 === self.rows.length) {
-            // bottom
+        }
+        else if (ry / 2 === self.rows.length) {
+          // bottom
+          rx++
+          lines[yi + ry][xi + rx][0] = battr
+          lines[yi + ry][xi + rx][1] = '\u2534' // '┴'
+          // XXX If we alter iheight and ibottom for no borders - nothing should be written here
+          if (!self.border.bottom) {
+            lines[yi + ry][xi + rx][1] = '\u2502' // '│'
+          }
+        }
+        else {
+          // middle
+          if (self.options.fillCellBorders) {
+            const lbg = (ry <= 2 ? hattr : cattr) & 0x1ff
+            rx++
+            lines[yi + ry][xi + rx][0] = (battr & ~0x1ff) | lbg
+          }
+          else {
             rx++
             lines[yi + ry][xi + rx][0] = battr
-            lines[yi + ry][xi + rx][1] = '\u2534' // '┴'
-            // XXX If we alter iheight and ibottom for no borders - nothing should be written here
-            if (!self.border.bottom) {
-              lines[yi + ry][xi + rx][1] = '\u2502' // '│'
-            }
-          } else {
-            // middle
-            if (self.options.fillCellBorders) {
-              const lbg = (ry <= 2 ? hattr : cattr) & 0x1ff
-              rx++
-              lines[yi + ry][xi + rx][0] = (battr & ~0x1ff) | lbg
-            } else {
-              rx++
-              lines[yi + ry][xi + rx][0] = battr
-            }
-            lines[yi + ry][xi + rx][1] = '\u253c' // '┼'
-            // rx++;
           }
+          lines[yi + ry][xi + rx][1] = '\u253c' // '┼'
+          // rx++;
+        }
         lines[yi + ry].dirty = true
       })
       ry += 2
@@ -296,13 +300,15 @@ export class Table extends Box {
             const lbg = (ry <= 2 ? hattr : cattr) & 0x1ff
             rx++
             lines[yi + ry][xi + rx][0] = (battr & ~0x1ff) | lbg
-          } else {
+          }
+          else {
             rx++
             lines[yi + ry][xi + rx][0] = battr
           }
           lines[yi + ry][xi + rx][1] = '\u2502' // '│'
           lines[yi + ry].dirty = true
-        } else {
+        }
+        else {
           rx++
         }
       })
@@ -315,7 +321,8 @@ export class Table extends Box {
             if (self.options.fillCellBorders) {
               const lbg = (ry <= 2 ? hattr : cattr) & 0x1ff
               lines[yi + ry][xi + rx][0] = (battr & ~0x1ff) | lbg
-            } else {
+            }
+            else {
               lines[yi + ry][xi + rx][0] = battr
             }
             lines[yi + ry][xi + rx][1] = '\u2500' // '─'

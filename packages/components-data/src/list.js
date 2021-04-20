@@ -4,26 +4,13 @@
  * https://github.com/chjj/blessed
  */
 
-import { Box }     from '@pres/components-core'
+import { Box }                           from '@pres/components-core'
 import {
-  ACTION,
-  ADD_ITEM,
-  ADOPT,
-  CANCEL,
-  CLICK,
-  CREATE_ITEM,
-  ELEMENT_WHEELDOWN,
-  ELEMENT_WHEELUP,
-  INSERT_ITEM,
-  KEYPRESS,
-  REMOVE,
-  REMOVE_ITEM,
-  RESIZE,
-  SELECT,
-  SELECT_ITEM,
-  SET_ITEMS,
-}                  from '@pres/enum-events'
-import { helpers } from '@pres/util-helpers'
+  ACTION, ADD_ITEM, ADOPT, CANCEL, CLICK, CREATE_ITEM, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, INSERT_ITEM, KEYPRESS,
+  REMOVE, REMOVE_ITEM, RESIZE, SELECT, SELECT_ITEM, SET_ITEMS,
+}                                        from '@pres/enum-events'
+import { DOWN, ENTER, ESCAPE, LEFT, UP } from '@pres/enum-keyboard'
+import { helpers }                       from '@pres/util-helpers'
 
 export class List extends Box {
   add = this.appendItem
@@ -103,22 +90,22 @@ export class List extends Box {
     }
     if (options.keys) {
       this.on(KEYPRESS, function (ch, key) {
-        if (key.name === 'up' || (options.vi && key.name === 'k')) {
+        if (key.name === UP || (options.vi && key.name === 'k')) {
           self.up()
           self.screen.render()
           return
         }
-        if (key.name === 'down' || (options.vi && key.name === 'j')) {
+        if (key.name === DOWN || (options.vi && key.name === 'j')) {
           self.down()
           self.screen.render()
           return
         }
-        if (key.name === 'enter'
+        if (key.name === ENTER
           || (options.vi && key.name === 'l' && !key.shift)) {
           self.enterSelected()
           return
         }
-        if (key.name === 'escape' || (options.vi && key.name === 'q')) {
+        if (key.name === ESCAPE || (options.vi && key.name === 'q')) {
           self.cancelSelected()
           return
         }
@@ -199,7 +186,8 @@ export class List extends Box {
       if (visible >= self.selected + 1) {
         self.childBase = 0
         self.childOffset = self.selected
-      } else {
+      }
+      else {
         // Is this supposed to be: self.childBase = visible - self.selected + 1; ?
         self.childBase = self.selected - visible + 1
         self.childOffset = visible - 1
@@ -224,7 +212,7 @@ export class List extends Box {
     const options = {
       screen: this.screen,
       content: content,
-      align: this.align || 'left',
+      align: this.align || LEFT,
       top: 0,
       left: 0,
       right: (this.scrollbar ? 1 : 0),
@@ -363,7 +351,8 @@ export class List extends Box {
     for (; i < items.length; i++) {
       if (this.items[i]) {
         this.items[i].setContent(items[i])
-      } else {
+      }
+      else {
         this.add(items[i])
       }
     }
@@ -378,9 +367,11 @@ export class List extends Box {
     sel = items.indexOf(sel)
     if (~sel) {
       this.select(sel)
-    } else if (items.length === original.length) {
+    }
+    else if (items.length === original.length) {
       this.select(selected)
-    } else {
+    }
+    else {
       this.select(Math.min(selected, items.length - 1))
     }
 
@@ -446,7 +437,8 @@ export class List extends Box {
       for (i = 0; i < start; i++) {
         if (test(helpers.cleanTags(this.ritems[i]))) return i
       }
-    } else {
+    }
+    else {
       for (i = start; i >= 0; i--) {
         if (test(helpers.cleanTags(this.ritems[i]))) return i
       }
@@ -460,7 +452,8 @@ export class List extends Box {
   getItemIndex(child) {
     if (typeof child === 'number') {
       return child
-    } else if (typeof child === 'string') {
+    }
+    else if (typeof child === 'string') {
       let i = this.ritems.indexOf(child)
       if (~i) return i
       for (i = 0; i < this.ritems.length; i++) {
@@ -469,7 +462,8 @@ export class List extends Box {
         }
       }
       return -1
-    } else {
+    }
+    else {
       return this.items.indexOf(child)
     }
   }
@@ -491,7 +485,8 @@ export class List extends Box {
 
     if (index < 0) {
       index = 0
-    } else if (index >= this.items.length) {
+    }
+    else if (index >= this.items.length) {
       index = this.items.length - 1
     }
 
