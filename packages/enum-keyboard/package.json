@@ -1,6 +1,6 @@
 {
   "name": "@pres/enum-keyboard",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Events for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
