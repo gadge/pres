@@ -17,7 +17,8 @@
   "dependencies": {
     "@pres/util-colors": "^0.0.15",
     "@pres/util-unicode": "^0.0.15",
-    "@typen/enum-data-types": "^0.1.16"
+    "@typen/enum-data-types": "^0.1.16",
+    "@typen/nullish": "^0.1.16"
   },
   "repository": {
     "type": "git",

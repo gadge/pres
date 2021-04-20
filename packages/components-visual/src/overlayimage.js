@@ -6,7 +6,7 @@
 import { Box } from '@pres/components-core'
 
 import { ATTACH, DATA, DETACH, ERROR, EXIT, HIDE, RENDER, RESIZE, SHOW, } from '@pres/enum-events'
-import { helpers }                                                        from '@pres/util-helpers'
+import * as helpers                                                        from '@pres/util-helpers'
 import cp                                                                 from 'child_process'
 import fs                                                                 from 'fs'
 

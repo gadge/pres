@@ -6,8 +6,7 @@
 
 import { Box }                                                from '@pres/components-core'
 import { CANCEL, ELEMENT_KEYPRESS, KEYPRESS, RESET, SUBMIT, } from '@pres/enum-events'
-import { DOWN, ENTER, ESCAPE, TAB, UP, }                      from '@pres/enum-key-names'
-
+import { BACKSPACE, DOWN, ENTER, ESCAPE, TAB, UP, }           from '@pres/enum-key-names'
 
 export class Form extends Box {
   constructor(options = {}) {
@@ -24,16 +23,13 @@ export class Form extends Box {
           || (options.vi && key.name === 'j')) {
           if (el.type === 'textbox' || el.type === 'textarea') {
             if (key.name === 'j') return
-            if (key.name === TAB) {
-              // Workaround, since we can't stop the tab from  being added.
-              el.emit(KEYPRESS, null, { name: BACKSPACE })
-            }
+            // Workaround, since we can't stop the tab from  being added.
+            if (key.name === TAB) el.emit(KEYPRESS, null, { name: BACKSPACE })
             el.emit(KEYPRESS, '\x1b', { name: ESCAPE })
           }
           self.focusNext()
           return
         }
-
         if ((key.name === TAB && key.shift)
           || key.name === UP
           || (options.vi && key.name === 'k')) {
@@ -44,10 +40,7 @@ export class Form extends Box {
           self.focusPrevious()
           return
         }
-
-        if (key.name === ESCAPE) {
-          self.focus()
-        }
+        if (key.name === ESCAPE) self.focus()
       })
     }
     this.type = 'form'
@@ -59,60 +52,46 @@ export class Form extends Box {
     // and next().
     if (!this._children) {
       const out = []
-
       this.children.forEach(function fn(el) {
         if (el.keyable) out.push(el)
         el.children.forEach(fn)
       })
-
       this._children = out
     }
   }
-  _visible() {
-    return !!this._children.filter(function (el) {
-      return el.visible
-    }).length
-  }
+  _visible() { return !!this._children.filter(el => el.visible).length }
   next() {
     this._refresh()
-
     if (!this._visible()) return
-
     if (!this._selected) {
       this._selected = this._children[0]
       if (!this._selected.visible) return this.next()
       if (this.screen.focused !== this._selected) return this._selected
     }
-
     const i = this._children.indexOf(this._selected)
     if (!~i || !this._children[i + 1]) {
       this._selected = this._children[0]
       if (!this._selected.visible) return this.next()
       return this._selected
     }
-
     this._selected = this._children[i + 1]
     if (!this._selected.visible) return this.next()
     return this._selected
   }
   previous() {
     this._refresh()
-
     if (!this._visible()) return
-
     if (!this._selected) {
       this._selected = this._children[this._children.length - 1]
       if (!this._selected.visible) return this.previous()
       if (this.screen.focused !== this._selected) return this._selected
     }
-
     const i = this._children.indexOf(this._selected)
     if (!~i || !this._children[i - 1]) {
       this._selected = this._children[this._children.length - 1]
       if (!this._selected.visible) return this.previous()
       return this._selected
     }
-
     this._selected = this._children[i - 1]
     if (!this._selected.visible) return this.previous()
     return this._selected
@@ -125,9 +104,7 @@ export class Form extends Box {
     const previous = this.previous()
     if (previous) previous.focus()
   }
-  resetSelected() {
-    this._selected = null
-  }
+  resetSelected() { this._selected = null }
   focusFirst() {
     this.resetSelected()
     this.focusNext()
@@ -138,30 +115,19 @@ export class Form extends Box {
   }
   submit() {
     const out = {}
-
     this.children.forEach(function fn(el) {
       if (el.value != null) {
         const name = el.name || el.type
-        if (Array.isArray(out[name])) {
-          out[name].push(el.value)
-        }
-        else if (out[name]) {
-          out[name] = [ out[name], el.value ]
-        }
-        else {
-          out[name] = el.value
-        }
+        if (Array.isArray(out[name])) { out[name].push(el.value) }
+        else if (out[name]) { out[name] = [ out[name], el.value ] }
+        else { out[name] = el.value }
       }
       el.children.forEach(fn)
     })
-
     this.emit(SUBMIT, out)
-
     return this.submission = out
   }
-  cancel() {
-    this.emit(CANCEL)
-  }
+  cancel() { this.emit(CANCEL) }
   reset() {
     this.children.forEach(function fn(el) {
       switch (el.type) {

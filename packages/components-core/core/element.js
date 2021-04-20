@@ -11,7 +11,7 @@ import {
   NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
 }                        from '@pres/enum-events'
 import * as colors       from '@pres/util-colors'
-import { helpers }       from '@pres/util-helpers'
+import * as helpers       from '@pres/util-helpers'
 import * as unicode      from '@pres/util-unicode'
 import { FUN, NUM, STR } from '@typen/enum-data-types'
 import assert            from 'assert'

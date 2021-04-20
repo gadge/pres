@@ -5,7 +5,7 @@
  */
 
 import { ACTION, BLUR, CANCEL, CLICK, ERROR, FOCUS, KEYPRESS, MOVE, RESIZE, SUBMIT, } from '@pres/enum-events'
-import { DOWN, ENTER, ESCAPE, LEFT, RETURN, RIGHT, UP, }                              from '@pres/enum-key-names'
+import { BACKSPACE, DOWN, ENTER, ESCAPE, LEFT, RETURN, RIGHT, UP, }                   from '@pres/enum-key-names'
 import * as unicode                                                                   from '@pres/util-unicode'
 import { Input }                                                                      from './input'
 
@@ -80,29 +80,16 @@ export class Textarea extends Input {
 
     // XXX Not sure, but this may still sometimes
     // cause problems when leaving editor.
-    if (cy === program.y && cx === program.x) {
-      return
-    }
-
+    if (cy === program.y && cx === program.x) return
     if (cy === program.y) {
-      if (cx > program.x) {
-        program.cuf(cx - program.x)
-      }
-      else if (cx < program.x) {
-        program.cub(program.x - cx)
-      }
+      if (cx > program.x) { program.cuf(cx - program.x) }
+      else if (cx < program.x) { program.cub(program.x - cx) }
     }
     else if (cx === program.x) {
-      if (cy > program.y) {
-        program.cud(cy - program.y)
-      }
-      else if (cy < program.y) {
-        program.cuu(program.y - cy)
-      }
+      if (cy > program.y) { program.cud(cy - program.y) }
+      else if (cy < program.y) { program.cuu(program.y - cy) }
     }
-    else {
-      program.cup(cy, cx)
-    }
+    else { program.cup(cy, cx) }
   }
   readInput(callback) {
     // console.log('>>> calling textarea.readInput')
@@ -160,10 +147,10 @@ export class Textarea extends Input {
     const done  = this._done,
           value = this.value
     if (key.name === RETURN) return
-    if (key.name === ENTER) { ch = '\n' }
+    if (key.name === ENTER) ch = '\n'
     // TODO: Handle directional keys.
     if (key.name === LEFT || key.name === RIGHT || key.name === UP || key.name === DOWN) {}
-    if (this.options.keys && key.ctrl && key.name === 'e') { return this.readEditor() }
+    if (this.options.keys && key.ctrl && key.name === 'e') return this.readEditor()
     // TODO: Optimize typing by writing directly
     // to the screen and screen buffer here.
     if (key.name === ESCAPE) { done(null, null) }
@@ -187,7 +174,7 @@ export class Textarea extends Input {
   }
   getValue() { return this.value }
   setValue(value) {
-    if (value == null) { value = this.value }
+    if (value == null) value = this.value
     if (this._value !== value) {
       this.value = value
       this._value = value
@@ -197,18 +184,9 @@ export class Textarea extends Input {
     }
   }
   clearValue() { return this.setValue('') }
-  submit() {
-    if (!this.__listener) return
-    return this.__listener('\x1b', { name: ESCAPE })
-  }
-  cancel() {
-    if (!this.__listener) return
-    return this.__listener('\x1b', { name: ESCAPE })
-  }
-  render() {
-    this.setValue()
-    return this._render()
-  }
+  submit() { return !this.__listener ? void 0 : this.__listener('\x1b', { name: ESCAPE }) }
+  cancel() { return !this.__listener ? void 0 : this.__listener('\x1b', { name: ESCAPE }) }
+  render() { return this.setValue(), this._render() }
   readEditor(callback) {
     // console.log('>>> readEditor in textarea')
     const self = this

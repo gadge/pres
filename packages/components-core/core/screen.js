@@ -12,7 +12,7 @@ import {
 }                        from '@pres/enum-events'
 import { Program }       from '@pres/program'
 import * as colors       from '@pres/util-colors'
-import { helpers }       from '@pres/util-helpers'
+import * as helpers       from '@pres/util-helpers'
 import { FUN, OBJ, STR } from '@typen/enum-data-types'
 import cp, { spawn }     from 'child_process'
 import { Log }           from '../src/log'
