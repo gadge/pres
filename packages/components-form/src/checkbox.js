@@ -5,6 +5,7 @@
  */
 
 import { BLUR, CHECK, CLICK, FOCUS, KEYPRESS, UNCHECK, } from '@pres/enum-events'
+import { ENTER, SPACE, }                                 from '@pres/enum-keyboard'
 import { Input }                                         from './input'
 
 export class Checkbox extends Input {
@@ -20,7 +21,7 @@ export class Checkbox extends Input {
     this.checked = this.value = options.checked || false
 
     this.on(KEYPRESS, function (ch, key) {
-      if (key.name === 'enter' || key.name === 'space') {
+      if (key.name === ENTER || key.name === SPACE) {
         self.toggle()
         self.screen.render()
       }

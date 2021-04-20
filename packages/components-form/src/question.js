@@ -4,13 +4,11 @@
  * https://github.com/chjj/blessed
  */
 
-/**
- * Modules
- */
-import { Box } from '@pres/components-core'
-
+import { Box }                     from '@pres/components-core'
 import { KEYPRESS, MOUSE, PRESS, } from '@pres/enum-events'
+import { ENTER, ESCAPE, }          from '@pres/enum-keyboard'
 import { Button }                  from './button'
+
 
 export class Question extends Box {
 
@@ -66,14 +64,14 @@ export class Question extends Box {
 
     this.onScreenEvent(KEYPRESS, press = function (ch, key) {
       if (key.name === MOUSE) return
-      if (key.name !== 'enter'
-        && key.name !== 'escape'
+      if (key.name !== ENTER
+        && key.name !== ESCAPE
         && key.name !== 'q'
         && key.name !== 'y'
         && key.name !== 'n') {
         return
       }
-      done(null, key.name === 'enter' || key.name === 'y')
+      done(null, key.name === ENTER || key.name === 'y')
     })
 
     this._.okay.on(PRESS, okay = function () {

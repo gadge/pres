@@ -6,6 +6,8 @@
 
 import { Box }                                                from '@pres/components-core'
 import { CANCEL, ELEMENT_KEYPRESS, KEYPRESS, RESET, SUBMIT, } from '@pres/enum-events'
+import { DOWN, ENTER, ESCAPE, TAB, UP, }                      from '@pres/enum-keyboard'
+
 
 export class Form extends Box {
   constructor(options = {}) {
@@ -16,34 +18,34 @@ export class Form extends Box {
     if (options.keys) {
       this.screen._listenKeys(this)
       this.on(ELEMENT_KEYPRESS, function (el, ch, key) {
-        if ((key.name === 'tab' && !key.shift)
-          || (el.type === 'textbox' && options.autoNext && key.name === 'enter')
-          || key.name === 'down'
+        if ((key.name === TAB && !key.shift)
+          || (el.type === 'textbox' && options.autoNext && key.name === ENTER)
+          || key.name === DOWN
           || (options.vi && key.name === 'j')) {
           if (el.type === 'textbox' || el.type === 'textarea') {
             if (key.name === 'j') return
-            if (key.name === 'tab') {
+            if (key.name === TAB) {
               // Workaround, since we can't stop the tab from  being added.
-              el.emit(KEYPRESS, null, { name: 'backspace' })
+              el.emit(KEYPRESS, null, { name: BACKSPACE })
             }
-            el.emit(KEYPRESS, '\x1b', { name: 'escape' })
+            el.emit(KEYPRESS, '\x1b', { name: ESCAPE })
           }
           self.focusNext()
           return
         }
 
-        if ((key.name === 'tab' && key.shift)
-          || key.name === 'up'
+        if ((key.name === TAB && key.shift)
+          || key.name === UP
           || (options.vi && key.name === 'k')) {
           if (el.type === 'textbox' || el.type === 'textarea') {
             if (key.name === 'k') return
-            el.emit(KEYPRESS, '\x1b', { name: 'escape' })
+            el.emit(KEYPRESS, '\x1b', { name: ESCAPE })
           }
           self.focusPrevious()
           return
         }
 
-        if (key.name === 'escape') {
+        if (key.name === ESCAPE) {
           self.focus()
         }
       })

@@ -4,7 +4,9 @@
  * https://github.com/chjj/blessed
  */
 
+import { ENTER, }   from '@pres/enum-keyboard'
 import { Textarea } from './textarea'
+
 
 export class Textbox extends Textarea {
   __olistener = super._listener
@@ -19,7 +21,7 @@ export class Textbox extends Textarea {
   }
   _listener(ch, key) {
     // console.log('>>> calling _listener in Textbox')
-    return key.name === 'enter'
+    return key.name === ENTER
       ? void this._done(null, this.value)
       : this.__olistener(ch, key)
   }
@@ -42,5 +44,5 @@ export class Textbox extends Textarea {
       this._updateCursor()
     }
   }
-  submit() { return this.__listener ? this.__listener('\r', { name: 'enter' }) : void 0 }
+  submit() { return this.__listener ? this.__listener('\r', { name: ENTER }) : void 0 }
 }

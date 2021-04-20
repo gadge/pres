@@ -5,9 +5,7 @@
  */
 
 import { CLICK, KEYPRESS, PRESS, } from '@pres/enum-events'
-/**
- * Modules
- */
+import { ENTER, SPACE, }           from '@pres/enum-keyboard'
 import { Input }                   from './input'
 
 export class Button extends Input {
@@ -22,7 +20,7 @@ export class Button extends Input {
     // if (!(this instanceof Node)) return new Button(options)
 
     this.on(KEYPRESS, function (ch, key) {
-      if (key.name === 'enter' || key.name === 'space') return self.press()
+      if (key.name === ENTER || key.name === SPACE) return self.press()
     })
 
     if (this.options.mouse) {

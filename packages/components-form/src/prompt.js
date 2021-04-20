@@ -4,14 +4,11 @@
  * https://github.com/chjj/blessed
  */
 
-/**
- * Modules
- */
-import { Box } from '@pres/components-core'
-
+import { Box }     from '@pres/components-core'
 import { PRESS, }  from '@pres/enum-events'
 import { Button }  from './button'
 import { Textbox } from './textbox'
+
 
 export class Prompt extends Box {
   input = this.readInput

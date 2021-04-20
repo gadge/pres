@@ -5,10 +5,8 @@
  */
 
 import { CHECK, }   from '@pres/enum-events'
-/**
- * Modules
- */
 import { Checkbox } from './checkbox'
+
 
 export class RadioButton extends Checkbox {
   toggle = this.check

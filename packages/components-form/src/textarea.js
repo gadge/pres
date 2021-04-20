@@ -5,8 +5,10 @@
  */
 
 import { ACTION, BLUR, CANCEL, CLICK, ERROR, FOCUS, KEYPRESS, MOVE, RESIZE, SUBMIT, } from '@pres/enum-events'
+import { DOWN, ENTER, ESCAPE, LEFT, RETURN, RIGHT, UP, }                              from '@pres/enum-keyboard'
 import * as unicode                                                                   from '@pres/util-unicode'
 import { Input }                                                                      from './input'
+
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
@@ -34,13 +36,13 @@ export class Textarea extends Input {
     if (!options.inputOnFocus && options.keys)
       this.on(KEYPRESS, (ch, key) => {
         if (self._reading) return
-        if (key.name === 'enter' || (options.vi && key.name === 'i')) return self.readInput()
+        if (key.name === ENTER || (options.vi && key.name === 'i')) return self.readInput()
         if (key.name === 'e') return self.readEditor()
       })
     if (options.mouse)
       this.on(CLICK, (data) => {
         if (self._reading) return
-        if (data.button !== 'right') return
+        if (data.button !== RIGHT) return
         self.readEditor()
       })
     this.type = 'textarea'
@@ -157,15 +159,15 @@ export class Textarea extends Input {
     // console.log('>>> calling _listener in TextArea')
     const done  = this._done,
           value = this.value
-    if (key.name === 'return') return
-    if (key.name === 'enter') { ch = '\n' }
+    if (key.name === RETURN) return
+    if (key.name === ENTER) { ch = '\n' }
     // TODO: Handle directional keys.
-    if (key.name === 'left' || key.name === 'right' || key.name === 'up' || key.name === 'down') {}
+    if (key.name === LEFT || key.name === RIGHT || key.name === UP || key.name === DOWN) {}
     if (this.options.keys && key.ctrl && key.name === 'e') { return this.readEditor() }
     // TODO: Optimize typing by writing directly
     // to the screen and screen buffer here.
-    if (key.name === 'escape') { done(null, null) }
-    else if (key.name === 'backspace') {
+    if (key.name === ESCAPE) { done(null, null) }
+    else if (key.name === BACKSPACE) {
       if (this.value.length) {
         if (this.screen.fullUnicode) {
           // || unicode.isCombining(this.value, this.value.length - 1)) {
@@ -197,11 +199,11 @@ export class Textarea extends Input {
   clearValue() { return this.setValue('') }
   submit() {
     if (!this.__listener) return
-    return this.__listener('\x1b', { name: 'escape' })
+    return this.__listener('\x1b', { name: ESCAPE })
   }
   cancel() {
     if (!this.__listener) return
-    return this.__listener('\x1b', { name: 'escape' })
+    return this.__listener('\x1b', { name: ESCAPE })
   }
   render() {
     this.setValue()

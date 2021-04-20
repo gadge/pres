@@ -4,10 +4,8 @@
  * https://github.com/chjj/blessed
  */
 
-/**
- * Modules
- */
 import { Box } from '@pres/components-core'
+
 
 export class RadioSet extends Box {
   /**

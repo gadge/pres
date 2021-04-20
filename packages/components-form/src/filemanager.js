@@ -4,8 +4,7 @@
  * https://github.com/chjj/blessed
  */
 
-import { List } from '@pres/components-data'
-
+import { List }                                      from '@pres/components-data'
 import { CANCEL, CD, ERROR, FILE, REFRESH, SELECT, } from '@pres/enum-events'
 import { helpers }                                   from '@pres/util-helpers'
 import fs                                            from 'fs'

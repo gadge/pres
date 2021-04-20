@@ -6,6 +6,7 @@
 
 import { Box } from '@pres/components-core'
 
+
 export class Input extends Box {
   constructor(options = {}) {
     super(options)
