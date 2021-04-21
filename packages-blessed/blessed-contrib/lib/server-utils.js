@@ -2,7 +2,6 @@
 import blessed from 'blessed'
 import url     from 'url'
 import contrib from '../index'
-
 function OutputBuffer(options) {
   this.isTTY = true
   this.columns = options.cols
@@ -13,7 +12,6 @@ function OutputBuffer(options) {
   }
   this.on = function () {}
 }
-
 function InputBuffer() {
   this.isTTY = true
   this.isRaw = true
@@ -23,7 +21,6 @@ function InputBuffer() {
   this.pause = function () {}
   this.on = function () {}
 }
-
 function serverError(req, res, err) {
   setTimeout(function () {
     if (!res.headersSent) res.writeHead(500, { 'Content-Type': 'text/plain' })
@@ -33,8 +30,6 @@ function serverError(req, res, err) {
   }, 0)
   return true
 }
-
-
 function createScreen(req, res) {
   const query = url.parse(req.url, true).query
   const cols = query.cols || 250
@@ -43,7 +38,6 @@ function createScreen(req, res) {
     serverError(req, res, 'cols must be bigger than 35 and rows must be bigger than 5')
     return null
   }
-
   res.writeHead(200, { 'Content-Type': 'text/plain' })
   const output = new contrib.OutputBuffer({ res: res, cols: cols, rows: rows })
   const input = new contrib.InputBuffer() //required to run under forever since it replaces stdin to non-tty
@@ -54,8 +48,6 @@ function createScreen(req, res) {
   const screen = blessed.screen({ program: program })
   return screen
 }
-
-
 exports.createScreen = createScreen
 exports.OutputBuffer = OutputBuffer
 exports.InputBuffer = InputBuffer

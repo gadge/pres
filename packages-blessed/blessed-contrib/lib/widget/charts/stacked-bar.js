@@ -2,9 +2,7 @@
 import blessed from 'blessed'
 import utils   from '../../utils.js'
 import Canvas  from '../canvas'
-
 const Node = blessed.Node
-
 function StackedBar(options) {
   if (!(this instanceof Node)) {
     return new StackedBar(options)
@@ -32,13 +30,10 @@ function StackedBar(options) {
     }
   })
 }
-
 StackedBar.prototype = Object.create(Canvas.prototype)
-
 StackedBar.prototype.calcSize = function () {
   this.canvasSize = { width: this.width - 2, height: this.height }
 }
-
 StackedBar.prototype.getSummedBars = function (bars) {
   const res = []
   bars.forEach(function (stackedValues) {
@@ -49,7 +44,6 @@ StackedBar.prototype.getSummedBars = function (bars) {
   })
   return res
 }
-
 StackedBar.prototype.setData = function (bars) {
   if (!this.ctx) {
     throw 'error: canvas context does not exist. setData() for bar charts must be called after the chart has been added to the screen via screen.append()'
@@ -66,7 +60,6 @@ StackedBar.prototype.setData = function (bars) {
   }
   this.addLegend(bars, x)
 }
-
 StackedBar.prototype.renderBar = function (x, bar, curBarSummedValue, maxBarValue, category) {
   /*
     var c = this.ctx
@@ -108,7 +101,6 @@ StackedBar.prototype.renderBar = function (x, bar, curBarSummedValue, maxBarValu
     availableBarHeight -= currStackHeight
   }
 }
-
 StackedBar.prototype.renderBarSection = function (
   x,
   y,
@@ -135,7 +127,6 @@ StackedBar.prototype.renderBarSection = function (
       this.options.barWidth,
       calcHeight
     )
-
     c.fillStyle = 'white'
     if (this.options.barFgColor)
       c.fillStyle = this.options.barFgColor
@@ -149,7 +140,6 @@ StackedBar.prototype.renderBarSection = function (
   }
   return currStackHeight
 }
-
 StackedBar.prototype.getOptionsPrototype = function () {
   return {
     barWidth: 1,
@@ -164,8 +154,6 @@ StackedBar.prototype.getOptionsPrototype = function () {
     }
   }
 }
-
-
 StackedBar.prototype.addLegend = function (bars, x) {
   const self = this
   if (!self.options.showLegend) return
@@ -188,7 +176,6 @@ StackedBar.prototype.addLegend = function (bars, x) {
     },
     screen: self.screen
   })
-
   let legandText = ''
   const maxChars = legendWidth - 2
   for (let i = 0; i < bars.stackedCategory.length; i++) {
@@ -198,7 +185,5 @@ StackedBar.prototype.addLegend = function (bars, x) {
   self.legend.setContent(legandText)
   self.append(self.legend)
 }
-
 StackedBar.prototype.type = 'bar'
-
 module.exports = StackedBar

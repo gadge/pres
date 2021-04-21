@@ -1,9 +1,7 @@
 'use strict'
 import blessed from 'blessed'
-
 const Node = blessed.Node,
       Box  = blessed.Box
-
 function Tree(options) {
   if (!(this instanceof Node)) {
     return new Tree(options)
@@ -16,15 +14,12 @@ function Tree(options) {
   this.nodeLines = []
   this.lineNbr = 0
   Box.call(this, options)
-
   options.extended = options.extended || false
   options.keys = options.keys || [ '+', 'space', 'enter' ]
-
   options.template = options.template || {}
   options.template.extend = options.template.extend || ' [+]'
   options.template.retract = options.template.retract || ' [-]'
   options.template.lines = options.template.lines || false
-
   // Do not set height, since this create a bug where the first line is not always displayed
   this.rows = blessed.list({
     top: 1,
@@ -49,16 +44,11 @@ function Tree(options) {
       self.setData(self.data)
       self.screen.render()
     }
-
     self.emit('select', selectedNode, this.getItemIndex(this.selected))
   })
-
 }
-
 Tree.prototype = Object.create(Box.prototype)
-
 Tree.prototype.walk = function (node, treeDepth) {
-
   let lines = []
   if (!node.parent) {
     // root level
@@ -72,20 +62,16 @@ Tree.prototype.walk = function (node, treeDepth) {
     lines.push(node.name)
     treeDepth = ' '
   }
-
   node.depth = treeDepth.length - 1
   if (node.children && node.extended) {
-
     let i = 0
     if (typeof node.children === 'function')
       node.childrenContent = node.children(node)
     if (!node.childrenContent)
       node.childrenContent = node.children
-
     for (let child in node.childrenContent) {
       if (!node.childrenContent[child].name)
         node.childrenContent[child].name = child
-
       child = node.childrenContent[child]
       child.parent = node
       child.position = i++
@@ -115,38 +101,30 @@ Tree.prototype.walk = function (node, treeDepth) {
       }
       if (!this.options.template.lines) treePrefix = '|-'
       if (this.options.template.spaces) treePrefix = ' '
-
       lines.push(treeDepth + treePrefix + child.name + suffix)
       this.nodeLines[this.lineNbr++] = child
-
       let parentTree
       if (isLastChild || !this.options.template.lines)
         parentTree = treeDepth + ' '
       else
         parentTree = treeDepth + '│'
-
       lines = lines.concat(this.walk(child, parentTree))
     }
   }
   return lines
 }
-
 Tree.prototype.focus = function () {
   this.rows.focus()
 }
-
 Tree.prototype.render = function () {
   if (this.screen.focused === this.rows) this.rows.focus()
   this.rows.width = this.width - 3
   this.rows.height = this.height - 3
   Box.prototype.render.call(this)
 }
-
 Tree.prototype.setData = function (nodes) {
   this.data = nodes
   this.rows.setItems(this.walk(nodes, ''))
 }
-
 Tree.prototype.type = 'tree'
-
 module.exports = Tree

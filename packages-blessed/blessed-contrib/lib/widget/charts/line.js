@@ -3,14 +3,11 @@ import blessed from 'blessed'
 import _       from 'lodash'
 import utils   from '../../utils.js'
 import Canvas  from '../canvas'
-
 const Node = blessed.Node
-
 function Line(options) {
   if (!(this instanceof Node)) {
     return new Line(options)
   }
-
   options.showNthLabel = options.showNthLabel || 1
   options.style = options.style || {}
   options.style.line = options.style.line || 'yellow'
@@ -22,23 +19,17 @@ function Line(options) {
   options.legend = options.legend || {}
   options.wholeNumbersOnly = options.wholeNumbersOnly || false
   options.minY = options.minY || 0
-
   Canvas.call(this, options)
 }
-
 Line.prototype = Object.create(Canvas.prototype)
-
 Line.prototype.calcSize = function () {
   this.canvasSize = { width: this.width * 2 - 12, height: this.height * 4 - 8 }
 }
-
 Line.prototype.type = 'line'
-
 Line.prototype.setData = function (data) {
   if (!this.ctx) {
     throw 'error: canvas context does not exist. setData() for line charts must be called after the chart has been added to the screen via screen.append()'
   }
-
   //compatability with older api
   if (!Array.isArray(data)) data = [ data ]
   const self = this
@@ -48,7 +39,6 @@ Line.prototype.setData = function (data) {
   const yPadding = 11
   const c = this.ctx
   const labels = data[0].x
-
   function addLegend() {
     if (!self.options.showLegend) return
     if (self.legend) self.remove(self.legend)
@@ -70,7 +60,6 @@ Line.prototype.setData = function (data) {
       },
       screen: self.screen
     })
-
     let legandText = ''
     const maxChars = legendWidth - 2
     for (let i = 0; i < data.length; i++) {
@@ -81,15 +70,12 @@ Line.prototype.setData = function (data) {
     self.legend.setContent(legandText)
     self.append(self.legend)
   }
-
   //iteratee for lodash _.max
   function getMaxY() {
     if (self.options.maxY) {
       return self.options.maxY
     }
-
     let max = -Infinity
-
     for (let i = 0; i < data.length; i++) {
       if (data[i].y.length) {
         const current = _.max(data[i].y, parseFloat)
@@ -100,13 +86,11 @@ Line.prototype.setData = function (data) {
     }
     return max + (max - self.options.minY) * 0.2
   }
-
   function formatYLabel(value, max, min, numLabels, wholeNumbersOnly, abbreviate) {
     const fixed = (((max - min) / numLabels) < 1 && value != 0 && !wholeNumbersOnly) ? 2 : 0
     const res = value.toFixed(fixed)
     return abbreviate ? utils.abbreviateNumber(res) : res
   }
-
   function getMaxXLabelPadding(numLabels, wholeNumbersOnly, abbreviate, min) {
     const max = getMaxY()
     return formatYLabel(max, max, min, numLabels, wholeNumbersOnly, abbreviate).length * 2
@@ -118,10 +102,8 @@ Line.prototype.setData = function (data) {
   if ((xPadding - xLabelPadding) < 0) {
     xPadding = xLabelPadding
   }
-
   function getMaxX() {
     let maxLength = 0
-
     for (let i = 0; i < labels.length; i++) {
       if (labels[i] === undefined) {
         // console.log("label[" + i + "] is undefined");
@@ -132,72 +114,52 @@ Line.prototype.setData = function (data) {
     }
     return maxLength
   }
-
   function getXPixel(val) {
     return ((self.canvasSize.width - xPadding) / labels.length) * val + (xPadding * 1.0) + 2
   }
-
   function getYPixel(val, minY) {
     let res = self.canvasSize.height - yPadding - (((self.canvasSize.height - yPadding) / (getMaxY() - minY)) * (val - minY))
     res -= 2 //to separate the baseline and the data line to separate chars so canvas will show separate colors
     return res
   }
-
   // Draw the line graph
   function drawLine(values, style, minY) {
     style = style || {}
     const color = self.options.style.line
     c.strokeStyle = style.line || color
-
     c.moveTo(0, 0)
     c.beginPath()
     c.lineTo(getXPixel(0), getYPixel(values[0], minY))
-
     for (let k = 1; k < values.length; k++) {
       c.lineTo(getXPixel(k), getYPixel(values[k], minY))
     }
-
     c.stroke()
   }
-
   addLegend()
-
   c.fillStyle = this.options.style.text
-
   c.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height)
-
-
   let yLabelIncrement = (getMaxY() - this.options.minY) / this.options.numYLabels
   if (this.options.wholeNumbersOnly) yLabelIncrement = Math.floor(yLabelIncrement)
   //if (getMaxY()>=10) {
   //  yLabelIncrement = yLabelIncrement + (10 - yLabelIncrement % 10)
   //}
-
   //yLabelIncrement = Math.max(yLabelIncrement, 1) // should not be zero
   if (yLabelIncrement == 0) yLabelIncrement = 1
-
   // Draw the Y value texts
   const maxY = getMaxY()
   for (var i = this.options.minY; i < maxY; i += yLabelIncrement) {
     c.fillText(formatYLabel(i, maxY, this.options.minY, this.options.numYLabels, this.options.wholeNumbersOnly, this.options.abbreviate), xPadding - xLabelPadding, getYPixel(i, this.options.minY))
   }
-
   for (let h = 0; h < data.length; h++) {
     drawLine(data[h].y, data[h].style, this.options.minY)
   }
-
-
   c.strokeStyle = this.options.style.baseline
-
   // Draw the axises
   c.beginPath()
-
   c.lineTo(xPadding, 0)
   c.lineTo(xPadding, this.canvasSize.height - yPadding)
   c.lineTo(this.canvasSize.width, this.canvasSize.height - yPadding)
-
   c.stroke()
-
   // Draw the X value texts
   const charsAvailable = (this.canvasSize.width - xPadding) / 2
   const maxLabelsPossible = charsAvailable / (getMaxX() + 2)
@@ -206,15 +168,12 @@ Line.prototype.setData = function (data) {
   if (showNthLabel < pointsPerMaxLabel) {
     showNthLabel = pointsPerMaxLabel
   }
-
   for (let i = 0; i < labels.length; i += showNthLabel) {
     if ((getXPixel(i) + (labels[i].length * 2)) <= this.canvasSize.width) {
       c.fillText(labels[i], getXPixel(i), this.canvasSize.height - yPadding + yLabelPadding)
     }
   }
-
 }
-
 Line.prototype.getOptionsPrototype = function () {
   return {
     width: 80,
@@ -247,5 +206,4 @@ Line.prototype.getOptionsPrototype = function () {
       } ]
   }
 }
-
 module.exports = Line

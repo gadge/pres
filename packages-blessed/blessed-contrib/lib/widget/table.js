@@ -1,10 +1,8 @@
 'use strict'
 import blessed   from 'blessed'
 import stripAnsi from 'strip-ansi'
-
 const Node = blessed.Node,
       Box  = blessed.Box
-
 function Table(options) {
   const self = this
   if (!(this instanceof Node)) {
@@ -18,7 +16,6 @@ function Table(options) {
   if (!options.columnWidth) {
     throw 'Error: A table must get columnWidth as a property. Please refer to the README.'
   }
-
   options = options || {}
   options.columnSpacing = options.columnSpacing == null ? 10 : options.columnSpacing
   options.bold = true
@@ -57,15 +54,11 @@ function Table(options) {
       self.setData(self.options.data)
     }
   })
-
 }
-
 Table.prototype = Object.create(Box.prototype)
-
 Table.prototype.focus = function () {
   this.rows.focus()
 }
-
 Table.prototype.render = function () {
   if (this.screen.focused == this.rows)
     this.rows.focus()
@@ -73,8 +66,6 @@ Table.prototype.render = function () {
   this.rows.height = this.height - 4
   Box.prototype.render.call(this)
 }
-
-
 Table.prototype.setData = function (table) {
   const self = this
   const dataToString = function (d) {
@@ -94,7 +85,6 @@ Table.prototype.setData = function (table) {
     return str
   }
   const formatted = []
-
   table.data.forEach(function (d) {
     const str = dataToString(d)
     formatted.push(str)
@@ -102,7 +92,6 @@ Table.prototype.setData = function (table) {
   this.setContent(dataToString(table.headers))
   this.rows.setItems(formatted)
 }
-
 Table.prototype.getOptionsPrototype = function () {
   return {
     keys: true,
@@ -122,7 +111,5 @@ Table.prototype.getOptionsPrototype = function () {
     }
   }
 }
-
 Table.prototype.type = 'table'
-
 module.exports = Table

@@ -1,14 +1,11 @@
 'use strict'
 import blessed from 'blessed'
 import Canvas  from './canvas'
-
 const Node = blessed.Node
-
 function Donut(options) {
   if (!(this instanceof Node)) {
     return new Donut(options)
   }
-
   options = options || {}
   this.options = options
   this.options.stroke = options.stroke || 'magenta'
@@ -19,16 +16,13 @@ function Donut(options) {
   this.options.yPadding = options.yPadding || 2
   this.options.remainColor = options.remainColor || 'black'
   this.options.data = options.data || []
-
   Canvas.call(this, options)
   const self = this
   this.on('attach', function () {
     this.setData(self.options.data)
   })
 }
-
 Donut.prototype = Object.create(Canvas.prototype)
-
 Donut.prototype.calcSize = function () {
   this.canvasSize = { width: Math.round(this.width * 2 - 5), height: this.height * 4 - 12 }
   if (this.canvasSize.width % 2 == 1)
@@ -36,9 +30,7 @@ Donut.prototype.calcSize = function () {
   if (this.canvasSize.height % 4 != 1)
     this.canvasSize.height += (this.canvasSize.height % 4)
 }
-
 Donut.prototype.type = 'donut'
-
 const cos = Math.cos
 const sin = Math.sin
 const pi = 3.141592635
@@ -52,14 +44,11 @@ Donut.prototype.update = function (data) {
   const c = this.ctx
   c.save()
   c.translate(0, -this.options.yPadding)
-
   c.strokeStyle = this.options.stroke
   c.fillStyle = this.options.fill
-
   c.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height)
   const cheight = this.canvasSize.height
   const cwidth = this.canvasSize.width
-
   function makeRound(percent, radius, width, cx, cy, color) {
     let s = 0
     const points = 370
@@ -89,8 +78,6 @@ Donut.prototype.update = function (data) {
   const remainColor = this.options.remainColor
   const middle = cheight / 2
   const spacing = (cwidth - (donuts * radius * 2)) / (donuts + 1)
-
-
   function drawDonut(label, percent, radius, width, cxx, middle, color) {
     makeRound(100, radius, width, cxx, middle, remainColor)
     makeRound(percent, radius, width, cxx, middle, color)
@@ -98,7 +85,6 @@ Donut.prototype.update = function (data) {
     c.fillText(ptext, cxx - Math.round(parseFloat((c.measureText(ptext).width) / 2)) + 3, middle)
     c.fillText(label, cxx - Math.round(parseFloat((c.measureText(label).width) / 2)) + 3, (middle + radius) + 5)
   }
-
   function makeDonut(stat, which) {
     const left = radius + (spacing * which) + (radius * 2 * (which - 1))
     let percent = stat.percent
@@ -119,13 +105,10 @@ Donut.prototype.update = function (data) {
     makeDonuts(data)
   }
   this.currentData = data
-
   c.strokeStyle = 'magenta'
-
   c.restore()
   return
 }
-
 Donut.prototype.getOptionsPrototype = function () {
   return {
     spacing: 1,
@@ -138,5 +121,4 @@ Donut.prototype.getOptionsPrototype = function () {
     ]
   }
 }
-
 module.exports = Donut

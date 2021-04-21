@@ -1,15 +1,12 @@
 'use strict'
 import blessed from 'blessed'
 import Canvas  from '../canvas'
-
 const Node = blessed.Node
-
 function Bar(options) {
   if (!(this instanceof Node)) {
     return new Bar(options)
   }
   const self = this
-
   Canvas.call(this, options, require('ansi-term'))
   this.options.barWidth = this.options.barWidth || 6
   this.options.barSpacing = this.options.barSpacing || 9
@@ -27,13 +24,10 @@ function Bar(options) {
     }
   })
 }
-
 Bar.prototype = Object.create(Canvas.prototype)
-
 Bar.prototype.calcSize = function () {
   this.canvasSize = { width: this.width - 2, height: this.height }
 }
-
 Bar.prototype.setData = function (bar) {
   if (!this.ctx) {
     throw 'error: canvas context does not exist. setData() for bar charts must be called after the chart has been added to the screen via screen.append()'
@@ -44,7 +38,6 @@ Bar.prototype.setData = function (bar) {
   max = Math.max(max, this.options.maxHeight)
   let x = this.options.xOffset
   const barY = this.canvasSize.height - 5
-
   for (let i = 0; i < bar.data.length; i++) {
     const h = Math.round(barY * (bar.data[i] / max))
     if (bar.data[i] > 0) {
@@ -56,7 +49,6 @@ Bar.prototype.setData = function (bar) {
     else {
       c.strokeStyle = 'normal'
     }
-
     c.fillStyle = 'white'
     if (this.options.barFgColor)
       c.fillStyle = this.options.barFgColor
@@ -68,11 +60,9 @@ Bar.prototype.setData = function (bar) {
       c.fillStyle = this.options.labelColor
     if (this.options.showText)
       c.fillText(bar.titles[i], x + 1, this.canvasSize.height - 3)
-
     x += this.options.barSpacing
   }
 }
-
 Bar.prototype.getOptionsPrototype = function () {
   return {
     barWidth: 1,
@@ -85,7 +75,5 @@ Bar.prototype.getOptionsPrototype = function () {
     }
   }
 }
-
 Bar.prototype.type = 'bar'
-
 module.exports = Bar

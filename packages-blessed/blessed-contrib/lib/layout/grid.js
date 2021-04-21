@@ -1,8 +1,6 @@
 'use strict'
 import utils from '../utils'
-
 const widgetSpacing = 0
-
 function Grid(options) {
   if (!options.screen) throw 'Error: A screen property must be specified in the grid options.\r\n' +
   'Note: Release 2.0.0 has breaking changes. Please refer to the README or to https://github.com/yaronn/blessed-contrib/issues/39'
@@ -11,7 +9,6 @@ function Grid(options) {
   this.cellWidth = ((100 - this.options.dashboardMargin * 2) / this.options.cols)
   this.cellHeight = ((100 - this.options.dashboardMargin * 2) / this.options.rows)
 }
-
 Grid.prototype.set = function (row, col, rowSpan, colSpan, obj, opts) {
   if (obj instanceof Grid) {
     throw 'Error: A Grid is not allowed to be nested inside another grid.\r\n' +
@@ -19,7 +16,6 @@ Grid.prototype.set = function (row, col, rowSpan, colSpan, obj, opts) {
   }
   const top = row * this.cellHeight + this.options.dashboardMargin
   const left = col * this.cellWidth + this.options.dashboardMargin
-
   //var options = JSON.parse(JSON.stringify(opts));
   let options = {}
   options = utils.MergeRecursive(options, opts)
@@ -33,5 +29,4 @@ Grid.prototype.set = function (row, col, rowSpan, colSpan, obj, opts) {
   this.options.screen.append(instance)
   return instance
 }
-
 module.exports = Grid

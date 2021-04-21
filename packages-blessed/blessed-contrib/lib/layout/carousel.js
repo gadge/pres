@@ -5,14 +5,12 @@ function Carousel(pages, options) {
   this.options = options
   this.screen = this.options.screen
 }
-
 Carousel.prototype.move = function () {
   let i = this.screen.children.length
   while (i--) this.screen.children[i].detach()
   this.pages[this.currPage](this.screen, this.currPage)
   this.screen.render()
 }
-
 Carousel.prototype.next = function () {
   this.currPage++
   if (this.currPage == this.pages.length) {
@@ -26,7 +24,6 @@ Carousel.prototype.next = function () {
   }
   this.move()
 }
-
 Carousel.prototype.prev = function () {
   this.currPage--
   if (this.currPage < 0) {
@@ -40,17 +37,14 @@ Carousel.prototype.prev = function () {
   }
   this.move()
 }
-
 Carousel.prototype.home = function () {
   this.currPage = 0
   this.move()
 }
-
 Carousel.prototype.end = function () {
   this.currPage = this.pages.length - 1
   this.move()
 }
-
 Carousel.prototype.start = function () {
   const self = this
   this.move()
@@ -65,7 +59,5 @@ Carousel.prototype.start = function () {
       if (key.name == 'end') self.end()
     })
   }
-
 }
-
 module.exports = Carousel

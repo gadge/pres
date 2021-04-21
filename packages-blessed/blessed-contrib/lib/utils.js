@@ -6,7 +6,6 @@ import x256 from 'x256'
 function MergeRecursive(obj1, obj2) {
   if (obj1 == null) return obj2
   if (obj2 == null) return obj1
-
   for (let p in obj2) {
     try {
       // property in destination object set; update its value
@@ -23,13 +22,10 @@ function MergeRecursive(obj1, obj2) {
   }
   return obj1
 }
-
-
 function getTypeName(thing) {
   if (thing === null) return '[object Null]' // special case
   return Object.prototype.toString.call(thing)
 }
-
 function abbreviateNumber(value) {
   let newValue = value
   if (value >= 1000) {
@@ -47,7 +43,6 @@ function abbreviateNumber(value) {
   }
   return newValue
 }
-
 function getColorCode(color) {
   if (Array.isArray(color) && color.length == 3) {
     return x256(color[0], color[1], color[2])
@@ -56,9 +51,7 @@ function getColorCode(color) {
     return color
   }
 }
-
 exports.MergeRecursive = MergeRecursive
 exports.getTypeName = getTypeName
 exports.abbreviateNumber = abbreviateNumber
 exports.getColorCode = getColorCode
-
