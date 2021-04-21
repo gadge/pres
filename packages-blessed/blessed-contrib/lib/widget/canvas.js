@@ -1,3 +1,4 @@
+import { ATTACH }                from '@pres/enum-events'
 import blessed                   from 'blessed'
 import { Canvas as InnerCanvas } from 'drawille-canvas-blessed-contrib'
 
@@ -9,7 +10,7 @@ function Canvas(options, canvasType) {
   options = options || {}
   this.options = options
   Box.call(this, options)
-  this.on('attach', function () {
+  this.on(ATTACH, function () {
     self.calcSize()
     self._canvas = new InnerCanvas(this.canvasSize.width, this.canvasSize.height, canvasType)
     self.ctx = self._canvas.getContext()
