@@ -1,11 +1,10 @@
 'use strict'
 import blessed from 'blessed'
+
 const Node = blessed.Node,
       Box  = blessed.Box
 function Tree(options) {
-  if (!(this instanceof Node)) {
-    return new Tree(options)
-  }
+  if (!(this instanceof Node)) { return new Tree(options) }
   const self = this
   options = options || {}
   options.bold = true

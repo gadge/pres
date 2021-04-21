@@ -1,13 +1,12 @@
 'use strict'
 import blessed   from 'blessed'
 import stripAnsi from 'strip-ansi'
+
 const Node = blessed.Node,
       Box  = blessed.Box
 function Table(options) {
   const self = this
-  if (!(this instanceof Node)) {
-    return new Table(options)
-  }
+  if (!(this instanceof Node)) { return new Table(options) }
   if (Array.isArray(options.columnSpacing)) {
     throw 'Error: columnSpacing cannot be an array.\r\n' +
     'Note: From release 2.0.0 use property columnWidth instead of columnSpacing.\r\n' +
@@ -26,8 +25,7 @@ function Table(options) {
   options.interactive = (typeof options.interactive === 'undefined') ? true : options.interactive
   this.options = options
   Box.call(this, options)
-  this.rows = blessed.list({
-    //height: 0,
+  this.rows = blessed.list({ //height: 0,
     top: 2,
     width: 0,
     left: 1,
@@ -50,9 +48,7 @@ function Table(options) {
   })
   this.append(this.rows)
   this.on('attach', function () {
-    if (self.options.data) {
-      self.setData(self.options.data)
-    }
+    if (self.options.data) { self.setData(self.options.data) }
   })
 }
 Table.prototype = Object.create(Box.prototype)

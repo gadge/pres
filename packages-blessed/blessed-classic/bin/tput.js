@@ -5,8 +5,7 @@ const
   argv = process.argv.slice(2),
   cmd = argv.shift()
 
-const tput = blessed.tput({
-  terminal: process.env.TERM,
+const tput = blessed.tput({ terminal: process.env.TERM,
   termcap: !!process.env.USE_TERMCAP,
   extended: true
 })

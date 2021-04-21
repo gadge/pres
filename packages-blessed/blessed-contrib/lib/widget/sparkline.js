@@ -1,13 +1,12 @@
 'use strict'
 import blessed   from 'blessed'
 import sparkline from 'sparkline'
+
 const Node = blessed.Node,
       Box  = blessed.Box
 function Sparkline(options) {
   const self = this
-  if (!(this instanceof Node)) {
-    return new Sparkline(options)
-  }
+  if (!(this instanceof Node)) { return new Sparkline(options) }
   options = options || {}
   options.bufferLength = options.bufferLength || 30
   options.style = options.style || {}
@@ -15,9 +14,7 @@ function Sparkline(options) {
   this.options = options
   Box.call(this, options)
   this.on('attach', function () {
-    if (self.options.data) {
-      self.setData(self.options.data.titles, self.options.data.data)
-    }
+    if (self.options.data) { self.setData(self.options.data.titles, self.options.data.data) }
   })
 }
 Sparkline.prototype = Object.create(Box.prototype)

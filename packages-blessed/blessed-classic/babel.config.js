@@ -1,5 +1,4 @@
-module.exports = function (api) {
-  api.cache(true)
+module.exports = function (api) { api.cache(true)
   const presets = ['@babel/preset-env']
   const plugins = [
     ['@babel/plugin-proposal-class-properties'],
@@ -10,8 +9,7 @@ module.exports = function (api) {
     ['@babel/transform-runtime', { helpers: false }]
   ]
   const ignore = ['node_modules/**']
-  return {
-    presets,
+  return { presets,
     plugins,
     ignore
   }

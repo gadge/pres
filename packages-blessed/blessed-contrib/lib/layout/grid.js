@@ -1,5 +1,6 @@
 'use strict'
 import utils from '../utils'
+
 const widgetSpacing = 0
 function Grid(options) {
   if (!options.screen) throw 'Error: A screen property must be specified in the grid options.\r\n' +

@@ -1,11 +1,10 @@
 'use strict'
 import blessed from 'blessed'
 import Canvas  from './canvas'
+
 const Node = blessed.Node
 function Gauge(options) {
-  if (!(this instanceof Node)) {
-    return new Gauge(options)
-  }
+  if (!(this instanceof Node)) { return new Gauge(options) }
   const self = this
   options = options || {}
   self.options = options

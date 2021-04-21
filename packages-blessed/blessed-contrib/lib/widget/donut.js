@@ -1,11 +1,10 @@
 'use strict'
 import blessed from 'blessed'
 import Canvas  from './canvas'
+
 const Node = blessed.Node
 function Donut(options) {
-  if (!(this instanceof Node)) {
-    return new Donut(options)
-  }
+  if (!(this instanceof Node)) { return new Donut(options) }
   options = options || {}
   this.options = options
   this.options.stroke = options.stroke || 'magenta'
@@ -18,9 +17,7 @@ function Donut(options) {
   this.options.data = options.data || []
   Canvas.call(this, options)
   const self = this
-  this.on('attach', function () {
-    this.setData(self.options.data)
-  })
+  this.on('attach', function () { this.setData(self.options.data) })
 }
 Donut.prototype = Object.create(Canvas.prototype)
 Donut.prototype.calcSize = function () {

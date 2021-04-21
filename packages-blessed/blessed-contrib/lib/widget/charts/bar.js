@@ -1,11 +1,10 @@
 'use strict'
 import blessed from 'blessed'
 import Canvas  from '../canvas'
+
 const Node = blessed.Node
 function Bar(options) {
-  if (!(this instanceof Node)) {
-    return new Bar(options)
-  }
+  if (!(this instanceof Node)) return new Bar(options)
   const self = this
   Canvas.call(this, options, require('ansi-term'))
   this.options.barWidth = this.options.barWidth || 6
@@ -19,9 +18,7 @@ function Bar(options) {
   else
     this.options.showText = true
   this.on('attach', function () {
-    if (self.options.data) {
-      self.setData(self.options.data)
-    }
+    if (self.options.data) { self.setData(self.options.data) }
   })
 }
 Bar.prototype = Object.create(Canvas.prototype)

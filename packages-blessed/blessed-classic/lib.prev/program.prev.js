@@ -29,14 +29,11 @@ const nextTick = global.setImmediate || process.nextTick.bind(process)
  * Program
  */
 
-function Program(options) {
-  const self = this
-  if (!(this instanceof Program)) {
-    console.log(`>>> [called w/o new]`)
+function Program(options) { const self = this
+  if (!(this instanceof Program)) { console.log(`>>> [called w/o new]`)
     console.log('self:', deco(self, { depth: 1, vert: 1 }))
     return new Program(options)
-  } else {
-    console.log(`>>> [called with new]`)
+  } else { console.log(`>>> [called with new]`)
     console.log('self:', deco(self, { depth: 1, vert: 1 }))
   }
   assign(this, new GeiaEventEmitter())

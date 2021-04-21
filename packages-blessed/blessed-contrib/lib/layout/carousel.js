@@ -52,7 +52,7 @@ Carousel.prototype.start = function () {
     setInterval(this.next.bind(this), this.options.interval)
   }
   if (this.options.controlKeys) {
-    this.screen.key([ 'right', 'left', 'home', 'end' ], function (ch, key) {
+    this.screen.key([ 'right', 'left', 'home', 'end' ], (ch, key) => {
       if (key.name == 'right') self.next()
       if (key.name == 'left') self.prev()
       if (key.name == 'home') self.home()

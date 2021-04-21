@@ -1,11 +1,10 @@
 'use strict'
 import blessed from 'blessed'
 import Canvas  from './canvas'
+
 const Node = blessed.Node
 function GaugeList(options) {
-  if (!(this instanceof Node)) {
-    return new GaugeList(options)
-  }
+  if (!(this instanceof Node)) { return new GaugeList(options) }
   const self = this
   options = options || {}
   self.options = options
@@ -34,9 +33,7 @@ GaugeList.prototype.setGauges = function (gauges) {
   }
   const c = this.ctx
   c.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height)
-  for (let i = 0; i < gauges.length; i++) {
-    this.setSingleGauge(gauges[i], i)
-  }
+  for (let i = 0; i < gauges.length; i++) { this.setSingleGauge(gauges[i], i) }
 }
 GaugeList.prototype.setSingleGauge = function (gauge, offset) {
   const colors = [ 'green', 'magenta', 'cyan', 'red', 'blue' ]

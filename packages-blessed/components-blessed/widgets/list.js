@@ -13,8 +13,7 @@ const
  * List
  */
 
-function List(options) {
-  const self = this
+function List(options) { const self = this
   if (!(this instanceof Node)) { return new List(options) }
   options = options || {}
   options.ignoreKeys = true
@@ -26,8 +25,7 @@ function List(options) {
   this.ritems = []
   this.selected = 0
   this._isList = true
-  if (!this.style.selected) {
-    this.style.selected = {}
+  if (!this.style.selected) { this.style.selected = {}
     this.style.selected.bg = options.selectedBg
     this.style.selected.fg = options.selectedFg
     this.style.selected.bold = options.selectedBold
@@ -36,8 +34,7 @@ function List(options) {
     this.style.selected.inverse = options.selectedInverse
     this.style.selected.invisible = options.selectedInvisible
   }
-  if (!this.style.item) {
-    this.style.item = {}
+  if (!this.style.item) { this.style.item = {}
     this.style.item.bg = options.itemBg
     this.style.item.fg = options.itemFg
     this.style.item.bold = options.itemBold
@@ -49,42 +46,30 @@ function List(options) {
 
   // Legacy: for apps written before the addition of item attributes.
   [ 'bg', 'fg', 'bold', 'underline',
-    'blink', 'inverse', 'invisible' ].forEach(function (name) {
-    if (self.style[name] != null && self.style.item[name] == null) {
-      self.style.item[name] = self.style[name]
+    'blink', 'inverse', 'invisible' ].forEach(function (name) { if (self.style[name] != null && self.style.item[name] == null) { self.style.item[name] = self.style[name]
     }
   })
-  if (this.options.itemHoverBg) {
-    this.options.itemHoverEffects = { bg: this.options.itemHoverBg }
+  if (this.options.itemHoverBg) { this.options.itemHoverEffects = { bg: this.options.itemHoverBg }
   }
-  if (this.options.itemHoverEffects) {
-    this.style.item.hover = this.options.itemHoverEffects
+  if (this.options.itemHoverEffects) { this.style.item.hover = this.options.itemHoverEffects
   }
-  if (this.options.itemFocusEffects) {
-    this.style.item.focus = this.options.itemFocusEffects
+  if (this.options.itemFocusEffects) { this.style.item.focus = this.options.itemFocusEffects
   }
   this.interactive = options.interactive !== false
   this.mouse = options.mouse || false
-  if (options.items) {
-    this.ritems = options.items
+  if (options.items) { this.ritems = options.items
     options.items.forEach(this.add.bind(this))
   }
   this.select(0)
-  if (options.mouse) {
-    this.screen._listenMouse(this)
-    this.on('element wheeldown', function () {
-      self.select(self.selected + 2)
+  if (options.mouse) { this.screen._listenMouse(this)
+    this.on('element wheeldown', function () { self.select(self.selected + 2)
       self.screen.render()
     })
-    this.on('element wheelup', function () {
-      self.select(self.selected - 2)
+    this.on('element wheelup', function () { self.select(self.selected - 2)
       self.screen.render()
     })
   }
-  if (options.keys) {
-    this.on('keypress', function (ch, key) {
-      if (key.name === 'up' || (options.vi && key.name === 'k')) {
-        self.up()
+  if (options.keys) { this.on('keypress', function (ch, key) { if (key.name === 'up' || (options.vi && key.name === 'k')) { self.up()
         self.screen.render()
         return
       }

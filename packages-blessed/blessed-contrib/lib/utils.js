@@ -7,16 +7,12 @@ function MergeRecursive(obj1, obj2) {
   if (obj1 == null) return obj2
   if (obj2 == null) return obj1
   for (let p in obj2) {
-    try {
-      // property in destination object set; update its value
-      if (obj2[p].constructor == Object) {
-        obj1[p] = MergeRecursive(obj1[p], obj2[p])
-      }
+    try { // property in destination object set; update its value
+      if (obj2[p].constructor == Object) { obj1[p] = MergeRecursive(obj1[p], obj2[p]) }
       else {
         obj1[p] = obj2[p]
       }
-    } catch (e) {
-      // property in destination object not set; create it and set its value
+    } catch (e) { // property in destination object not set; create it and set its value
       obj1[p] = obj2[p]
     }
   }
@@ -43,14 +39,7 @@ function abbreviateNumber(value) {
   }
   return newValue
 }
-function getColorCode(color) {
-  if (Array.isArray(color) && color.length == 3) {
-    return x256(color[0], color[1], color[2])
-  }
-  else {
-    return color
-  }
-}
+function getColorCode(color) { return Array.isArray(color) && color.length === 3 ? x256(color[0], color[1], color[2]) : color }
 exports.MergeRecursive = MergeRecursive
 exports.getTypeName = getTypeName
 exports.abbreviateNumber = abbreviateNumber

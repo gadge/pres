@@ -2,38 +2,24 @@
 import blessed from 'blessed'
 import utils   from '../../utils.js'
 import Canvas  from '../canvas'
+
 const Node = blessed.Node
 function StackedBar(options) {
-  if (!(this instanceof Node)) {
-    return new StackedBar(options)
-  }
+  if (!(this instanceof Node)) { return new StackedBar(options) }
   const self = this
   Canvas.call(this, options, require('ansi-term'))
   this.options.barWidth = this.options.barWidth || 6
   this.options.barSpacing = this.options.barSpacing || 9
-  if ((this.options.barSpacing - this.options.barWidth) < 3) {
+  if ((this.options.barSpacing - this.options.barWidth) < 3)
     this.options.barSpacing = this.options.barWidth + 3
-  }
   this.options.xOffset = this.options.xOffset == null ? 5 : this.options.xOffset
-  if (this.options.showText === false)
-    this.options.showText = false
-  else
-    this.options.showText = true
+  this.options.showText = this.options.showText === false ? false : true
   this.options.legend = this.options.legend || {}
-  if (this.options.showLegend === false)
-    this.options.showLegend = false
-  else
-    this.options.showLegend = true
-  this.on('attach', function () {
-    if (self.options.data) {
-      self.setData(self.options.data)
-    }
-  })
+  this.options.showLegend = this.options.showLegend === false ? false : true
+  this.on('attach', () => { if (self.options.data) self.setData(self.options.data) })
 }
 StackedBar.prototype = Object.create(Canvas.prototype)
-StackedBar.prototype.calcSize = function () {
-  this.canvasSize = { width: this.width - 2, height: this.height }
-}
+StackedBar.prototype.calcSize = function () { this.canvasSize = { width: this.width - 2, height: this.height } }
 StackedBar.prototype.getSummedBars = function (bars) {
   const res = []
   bars.forEach(function (stackedValues) {

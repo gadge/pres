@@ -2,12 +2,11 @@
 import blessed  from 'blessed'
 import InnerMap from 'map-canvas'
 import Canvas   from './canvas'
+
 const Node = blessed.Node
 function Map(options) {
   const self = this
-  if (!(this instanceof Node)) {
-    return new Map(options)
-  }
+  if (!(this instanceof Node)) { return new Map(options) }
   Canvas.call(this, options)
   this.on('attach', function () {
     options.style = options.style || {}

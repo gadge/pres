@@ -3,11 +3,10 @@ import blessed from 'blessed'
 import _       from 'lodash'
 import utils   from '../../utils.js'
 import Canvas  from '../canvas'
+
 const Node = blessed.Node
 function Line(options) {
-  if (!(this instanceof Node)) {
-    return new Line(options)
-  }
+  if (!(this instanceof Node)) { return new Line(options) }
   options.showNthLabel = options.showNthLabel || 1
   options.style = options.style || {}
   options.style.line = options.style.line || 'yellow'
@@ -22,14 +21,10 @@ function Line(options) {
   Canvas.call(this, options)
 }
 Line.prototype = Object.create(Canvas.prototype)
-Line.prototype.calcSize = function () {
-  this.canvasSize = { width: this.width * 2 - 12, height: this.height * 4 - 8 }
-}
+Line.prototype.calcSize = function () { this.canvasSize = { width: this.width * 2 - 12, height: this.height * 4 - 8 } }
 Line.prototype.type = 'line'
 Line.prototype.setData = function (data) {
-  if (!this.ctx) {
-    throw 'error: canvas context does not exist. setData() for line charts must be called after the chart has been added to the screen via screen.append()'
-  }
+  if (!this.ctx) { throw 'error: canvas context does not exist. setData() for line charts must be called after the chart has been added to the screen via screen.append()' }
   //compatability with older api
   if (!Array.isArray(data)) data = [ data ]
   const self = this
@@ -72,16 +67,12 @@ Line.prototype.setData = function (data) {
   }
   //iteratee for lodash _.max
   function getMaxY() {
-    if (self.options.maxY) {
-      return self.options.maxY
-    }
+    if (self.options.maxY) return self.options.maxY
     let max = -Infinity
     for (let i = 0; i < data.length; i++) {
       if (data[i].y.length) {
         const current = _.max(data[i].y, parseFloat)
-        if (current > max) {
-          max = current
-        }
+        if (current > max) max = current
       }
     }
     return max + (max - self.options.minY) * 0.2
@@ -96,27 +87,17 @@ Line.prototype.setData = function (data) {
     return formatYLabel(max, max, min, numLabels, wholeNumbersOnly, abbreviate).length * 2
   }
   const maxPadding = getMaxXLabelPadding(this.options.numYLabels, this.options.wholeNumbersOnly, this.options.abbreviate, this.options.minY)
-  if (xLabelPadding < maxPadding) {
-    xLabelPadding = maxPadding
-  }
-  if ((xPadding - xLabelPadding) < 0) {
-    xPadding = xLabelPadding
-  }
+  if (xLabelPadding < maxPadding) xLabelPadding = maxPadding
+  if ((xPadding - xLabelPadding) < 0) xPadding = xLabelPadding
   function getMaxX() {
     let maxLength = 0
     for (let i = 0; i < labels.length; i++) {
-      if (labels[i] === undefined) {
-        // console.log("label[" + i + "] is undefined");
-      }
-      else if (labels[i].length > maxLength) {
-        maxLength = labels[i].length
-      }
+      if (labels[i] === undefined) { } // console.log("label[" + i + "] is undefined");
+      else if (labels[i].length > maxLength) maxLength = labels[i].length
     }
     return maxLength
   }
-  function getXPixel(val) {
-    return ((self.canvasSize.width - xPadding) / labels.length) * val + (xPadding * 1.0) + 2
-  }
+  function getXPixel(val) { return ((self.canvasSize.width - xPadding) / labels.length) * val + (xPadding * 1.0) + 2 }
   function getYPixel(val, minY) {
     let res = self.canvasSize.height - yPadding - (((self.canvasSize.height - yPadding) / (getMaxY() - minY)) * (val - minY))
     res -= 2 //to separate the baseline and the data line to separate chars so canvas will show separate colors
@@ -130,9 +111,8 @@ Line.prototype.setData = function (data) {
     c.moveTo(0, 0)
     c.beginPath()
     c.lineTo(getXPixel(0), getYPixel(values[0], minY))
-    for (let k = 1; k < values.length; k++) {
+    for (let k = 1; k < values.length; k++)
       c.lineTo(getXPixel(k), getYPixel(values[k], minY))
-    }
     c.stroke()
   }
   addLegend()

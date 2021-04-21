@@ -3,11 +3,10 @@ import blessed          from 'blessed'
 import chalk            from 'chalk'
 import marked           from 'marked'
 import TerminalRenderer from 'marked-terminal'
+
 const Box = blessed.Box
 function Markdown(options) {
-  if (!(this instanceof Box)) {
-    return new Markdown(options)
-  }
+  if (!(this instanceof Box)) { return new Markdown(options) }
   options = options || {}
   const markdownOptions = {
     style: options.markdownStyle

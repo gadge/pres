@@ -1,13 +1,12 @@
 'use strict'
 import blessed                   from 'blessed'
 import { Canvas as InnerCanvas } from 'drawille-canvas-blessed-contrib'
+
 const Node = blessed.Node,
       Box  = blessed.Box
 function Canvas(options, canvasType) {
   const self = this
-  if (!(this instanceof Node)) {
-    return new Canvas(options)
-  }
+  if (!(this instanceof Node)) return new Canvas(options)
   options = options || {}
   this.options = options
   Box.call(this, options)
@@ -15,9 +14,7 @@ function Canvas(options, canvasType) {
     self.calcSize()
     self._canvas = new InnerCanvas(this.canvasSize.width, this.canvasSize.height, canvasType)
     self.ctx = self._canvas.getContext()
-    if (self.options.data) {
-      self.setData(self.options.data)
-    }
+    if (self.options.data) { self.setData(self.options.data) }
   })
 }
 Canvas.prototype = Object.create(Box.prototype)
