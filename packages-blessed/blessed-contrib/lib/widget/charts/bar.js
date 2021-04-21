@@ -1,8 +1,8 @@
-import blessed from '../../vendor/blessed'
-import Canvas  from '../canvas'
+import blessed    from '../../vendor/blessed'
+import { Canvas } from '../canvas'
 
 const Node = blessed.Node
-function Bar(options) {
+export function Bar(options) {
   if (!(this instanceof Node)) return new Bar(options)
   const self = this
   Canvas.call(this, options, require('ansi-term'))
@@ -55,4 +55,4 @@ Bar.prototype.getOptionsPrototype = function () {
   }
 }
 Bar.prototype.type = 'bar'
-export default Bar
+

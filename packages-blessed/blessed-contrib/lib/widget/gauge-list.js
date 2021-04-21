@@ -1,8 +1,8 @@
 import blessed    from '../vendor/blessed'
-import Canvas  from './canvas'
+import { Canvas } from './canvas'
 
 const Node = blessed.Node
-function GaugeList(options) {
+export function GaugeList(options) {
   if (!(this instanceof Node)) { return new GaugeList(options) }
   const self = this
   options = options || {}
@@ -70,4 +70,4 @@ GaugeList.prototype.setSingleGauge = function (gauge, offset) {
 GaugeList.prototype.getOptionsPrototype = function () {
   return { percent: 10 }
 }
-export default GaugeList
+

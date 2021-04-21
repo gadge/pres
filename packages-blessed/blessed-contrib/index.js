@@ -1,27 +1,48 @@
+export {
+  Canvas, canvas,
+  Donut, donut,
+  Gauge, gauge,
+  GaugeList, gaugeList,
+  LCD, lcd,
+  Log, log,
+  Map, map,
+  Markdown, markdown,
+  Picture, picture,
+  Sparkline, sparkline,
+  Table, table,
+  Tree, tree,
+  Bar, bar,
+  Line, line,
+  StackedBar, stackedBar,
+  Carousel, carousel,
+  Grid, grid,
+} from './lib/components'
 
-exports.grid = require('./lib/layout/grid')
-exports.carousel = require('./lib/layout/carousel')
+export {
+  createScreen,
+  InputBuffer,
+  OutputBuffer,
+  serverError
+} from './lib/server-utils'
 
-exports.map = require('./lib/widget/map')
-exports.canvas = require('./lib/widget/canvas')
-
-exports.gauge = require('./lib/widget/gauge.js')
-exports.gaugeList = require('./lib/widget/gauge-list.js')
-
-exports.lcd = require('./lib/widget/lcd.js')
-exports.donut = require('./lib/widget/donut.js')
-exports.log = require('./lib/widget/log.js')
-exports.picture = require('./lib/widget/picture.js')
-exports.sparkline = require('./lib/widget/sparkline.js')
-exports.table = require('./lib/widget/table.js')
-exports.tree = require('./lib/widget/tree.js')
-exports.markdown = require('./lib/widget/markdown.js')
-
-exports.bar = require('./lib/widget/charts/bar')
-exports.stackedBar = require('./lib/widget/charts/stacked-bar')
-exports.line = require('./lib/widget/charts/line')
-
-exports.OutputBuffer = require('./lib/server-utils').OutputBuffer
-exports.InputBuffer = require('./lib/server-utils').InputBuffer
-exports.createScreen = require('./lib/server-utils').createScreen
-exports.serverError = require('./lib/server-utils').serverError
+// exports.grid = lib
+// exports.carousel = lib0
+//
+// exports.map = lib01
+// exports.canvas = lib012
+//
+// exports.gauge = lib0123
+// exports.gaugeList = lib01234
+//
+// exports.lcd = lib012345
+// exports.donut = lib0123456
+// exports.log = lib01234567
+// exports.picture = lib012345678
+// exports.sparkline = lib0123456789
+// exports.table = lib012345678910
+// exports.tree = lib01234567891011
+// exports.markdown = lib0123456789101112
+//
+// exports.bar = lib012345678910111213
+// exports.stackedBar = lib01234567891011121314
+// exports.line = lib0123456789101112131415

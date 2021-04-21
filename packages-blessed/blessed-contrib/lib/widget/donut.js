@@ -1,8 +1,8 @@
 import blessed    from '../vendor/blessed'
-import Canvas  from './canvas'
+import { Canvas } from './canvas'
 
 const Node = blessed.Node
-function Donut(options) {
+export function Donut(options) {
   if (!(this instanceof Node)) { return new Donut(options) }
   options = options || {}
   this.options = options
@@ -113,4 +113,4 @@ Donut.prototype.getOptionsPrototype = function () {
     ]
   }
 }
-export default Donut
+

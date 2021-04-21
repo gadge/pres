@@ -1,8 +1,8 @@
-import blessed    from '../vendor/blessed'
-import Canvas  from './canvas'
+import blessed from '../vendor/blessed'
+import { Canvas }   from './canvas'
 
 const Node = blessed.Node
-function Gauge(options) {
+export function Gauge(options) {
   if (!(this instanceof Node)) { return new Gauge(options) }
   const self = this
   options = options || {}
@@ -92,4 +92,4 @@ Gauge.prototype.setStack = function (stack) {
 Gauge.prototype.getOptionsPrototype = function () {
   return { percent: 10 }
 }
-export default Gauge
+

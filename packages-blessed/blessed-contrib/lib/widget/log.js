@@ -1,8 +1,8 @@
-import blessed    from '../vendor/blessed'
+import blessed from '../vendor/blessed'
 
 const Node = blessed.Node,
       List = blessed.List
-function Log(options) {
+export function Log(options) {
   if (!(this instanceof Node)) { return new Log(options) }
   options = options || {}
   options.bufferLength = options.bufferLength || 30
@@ -19,4 +19,4 @@ Log.prototype.log = function (str) {
   this.scrollTo(this.logLines.length)
 }
 Log.prototype.type = 'log'
-export default Log
+

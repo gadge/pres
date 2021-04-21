@@ -1,4 +1,4 @@
-function Carousel(pages, options) {
+export function Carousel(pages, options) {
   this.currPage = 0
   this.pages = pages
   this.options = options
@@ -53,4 +53,3 @@ Carousel.prototype.start = function () {
     })
   }
 }
-export default Carousel

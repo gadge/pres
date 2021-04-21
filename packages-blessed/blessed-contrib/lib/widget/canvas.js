@@ -4,7 +4,8 @@ import blessed                   from '../vendor/blessed'
 
 const Node = blessed.Node,
       Box  = blessed.Box
-function Canvas(options, canvasType) {
+
+export function Canvas(options, canvasType) {
   const self = this
   if (!(this instanceof Node)) return new Canvas(options)
   options = options || {}
@@ -27,4 +28,4 @@ Canvas.prototype.render = function () {
   this.setContent(inner)
   return this._render()
 }
-export default Canvas
+

@@ -1,8 +1,8 @@
-import blessed    from '../vendor/blessed'
+import blessed from '../vendor/blessed'
 
 const Node = blessed.Node,
       Box  = blessed.Box
-function Tree(options) {
+export function Tree(options) {
   if (!(this instanceof Node)) { return new Tree(options) }
   const self = this
   options = options || {}
@@ -125,4 +125,4 @@ Tree.prototype.setData = function (nodes) {
   this.rows.setItems(this.walk(nodes, ''))
 }
 Tree.prototype.type = 'tree'
-export default Tree
+

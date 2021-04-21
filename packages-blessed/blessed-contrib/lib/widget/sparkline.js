@@ -1,9 +1,9 @@
-import blessed    from '../vendor/blessed'
 import sparkline from 'sparkline'
+import blessed   from '../vendor/blessed'
 
 const Node = blessed.Node,
       Box  = blessed.Box
-function Sparkline(options) {
+export function Sparkline(options) {
   const self = this
   if (!(this instanceof Node)) { return new Sparkline(options) }
   options = options || {}
@@ -41,4 +41,4 @@ Sparkline.prototype.getOptionsPrototype = function () {
   }
 }
 Sparkline.prototype.type = 'sparkline'
-export default Sparkline
+

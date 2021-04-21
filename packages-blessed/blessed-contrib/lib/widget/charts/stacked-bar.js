@@ -1,9 +1,9 @@
 import * as utils from '../../utils.js'
 import blessed    from '../../vendor/blessed'
-import Canvas     from '../canvas'
+import { Canvas } from '../canvas'
 
 const Node = blessed.Node
-function StackedBar(options) {
+export function StackedBar(options) {
   if (!(this instanceof Node)) { return new StackedBar(options) }
   const self = this
   Canvas.call(this, options, require('ansi-term'))
@@ -30,14 +30,11 @@ StackedBar.prototype.getSummedBars = function (bars) {
   return res
 }
 StackedBar.prototype.setData = function (bars) {
-  if (!this.ctx) {
-    throw 'error: canvas context does not exist. setData() for bar charts must be called after the chart has been added to the screen via screen.append()'
-  }
+  if (!this.ctx) throw 'error: canvas context does not exist. setData() for bar charts must be called after the chart has been added to the screen via screen.append()'
   this.clear()
   const summedBars = this.getSummedBars(bars.data)
   let maxBarValue = Math.max.apply(Math, summedBars)
-  if (this.options.maxValue)
-    maxBarValue = Math.max(maxBarValue, this.options.maxValue)
+  if (this.options.maxValue) maxBarValue = Math.max(maxBarValue, this.options.maxValue)
   let x = this.options.xOffset
   for (let i = 0; i < bars.data.length; i++) {
     this.renderBar(x, bars.data[i], summedBars[i], maxBarValue, bars.barCategory[i])
@@ -113,8 +110,7 @@ StackedBar.prototype.renderBarSection = function (
       calcHeight
     )
     c.fillStyle = 'white'
-    if (this.options.barFgColor)
-      c.fillStyle = this.options.barFgColor
+    if (this.options.barFgColor) c.fillStyle = this.options.barFgColor
     if (this.options.showText) {
       const str = utils.abbreviateNumber(data.toString())
       c.fillText(
@@ -171,4 +167,4 @@ StackedBar.prototype.addLegend = function (bars, x) {
   self.append(self.legend)
 }
 StackedBar.prototype.type = 'bar'
-export default StackedBar
+

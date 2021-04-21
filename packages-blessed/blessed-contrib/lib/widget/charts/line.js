@@ -1,10 +1,10 @@
-import blessed from '../../vendor/blessed'
-import _       from 'lodash'
-import * as utils   from '../../utils.js'
-import Canvas  from '../canvas'
+import _          from 'lodash'
+import * as utils from '../../utils.js'
+import blessed    from '../../vendor/blessed'
+import { Canvas } from '../canvas'
 
 const Node = blessed.Node
-function Line(options) {
+export function Line(options) {
   if (!(this instanceof Node)) { return new Line(options) }
   options.showNthLabel = options.showNthLabel || 1
   options.style = options.style || {}
@@ -185,4 +185,4 @@ Line.prototype.getOptionsPrototype = function () {
       } ]
   }
 }
-export default Line
+

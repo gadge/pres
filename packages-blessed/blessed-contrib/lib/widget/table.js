@@ -1,9 +1,9 @@
-import blessed    from '../vendor/blessed'
 import stripAnsi from 'strip-ansi'
+import blessed   from '../vendor/blessed'
 
 const Node = blessed.Node,
       Box  = blessed.Box
-function Table(options) {
+export function Table(options) {
   const self = this
   if (!(this instanceof Node)) { return new Table(options) }
   if (Array.isArray(options.columnSpacing)) {
@@ -107,4 +107,4 @@ Table.prototype.getOptionsPrototype = function () {
   }
 }
 Table.prototype.type = 'table'
-export default Table
+

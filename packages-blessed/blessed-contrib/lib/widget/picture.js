@@ -1,12 +1,12 @@
-import blessed    from '../vendor/blessed'
 import fs           from 'fs'
 import streams      from 'memory-streams'
 import MemoryStream from 'memorystream'
 import pictureTube  from 'picture-tuber'
+import blessed      from '../vendor/blessed'
 
 const Node = blessed.Node,
       Box  = blessed.Box
-function Picture(options) {
+export function Picture(options) {
   if (!(this instanceof Node)) { return new Picture(options) }
   options = options || {}
   options.cols = options.cols || 50
@@ -42,4 +42,4 @@ Picture.prototype.getOptionsPrototype = function () {
   }
 }
 Picture.prototype.type = 'picture'
-export default Picture
+

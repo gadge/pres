@@ -1,9 +1,9 @@
-import blessed    from '../vendor/blessed'
 import InnerMap from 'map-canvas'
-import Canvas   from './canvas'
+import blessed  from '../vendor/blessed'
+import { Canvas }    from './canvas'
 
 const Node = blessed.Node
-function Map(options) {
+export function Map(options) {
   const self = this
   if (!(this instanceof Node)) { return new Map(options) }
   Canvas.call(this, options)
@@ -63,4 +63,4 @@ Map.prototype.getOptionsPrototype = function () {
 Map.prototype.clearMarkers = function () {
   this.innerMap.draw()
 }
-export default Map
+

@@ -1,5 +1,5 @@
-import blessed from 'blessed'
-import contrib from '../'
+import blessed      from 'blessed'
+import * as contrib from '../'
 
 const screen = blessed.screen(),
       grid   = new contrib.grid({ rows: 12, cols: 12, hideBorder: true, screen: screen }),

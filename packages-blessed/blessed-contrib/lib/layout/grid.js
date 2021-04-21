@@ -1,7 +1,7 @@
 import * as utils from '../utils'
 
 const widgetSpacing = 0
-function Grid(options) {
+export function Grid(options) {
   if (!options.screen) throw 'Error: A screen property must be specified in the grid options.\r\n' +
   'Note: Release 2.0.0 has breaking changes. Please refer to the README or to https://github.com/yaronn/blessed-contrib/issues/39'
   this.options = options
@@ -29,4 +29,3 @@ Grid.prototype.set = function (row, col, rowSpan, colSpan, obj, opts) {
   this.options.screen.append(instance)
   return instance
 }
-export default Grid
