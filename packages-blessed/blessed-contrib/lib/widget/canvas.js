@@ -1,12 +1,13 @@
 'use strict';
-var blessed = require('blessed')
-  , Node = blessed.Node
-  , Box = blessed.Box
-  , InnerCanvas = require('drawille-canvas-blessed-contrib').Canvas;
+import blessed                   from 'blessed'
+import { Canvas as InnerCanvas } from 'drawille-canvas-blessed-contrib'
+
+const Node        = blessed.Node,
+   Box         = blessed.Box
 
 function Canvas(options, canvasType) {
 
-  var self = this;
+  const self = this
 
   if (!(this instanceof Node)) {
     return new Canvas(options);
@@ -15,7 +16,6 @@ function Canvas(options, canvasType) {
   options = options || {};
   this.options = options;
   Box.call(this, options);
-
   this.on('attach', function() {
     self.calcSize();
 
@@ -41,9 +41,8 @@ Canvas.prototype.clear = function() {
 };
 
 Canvas.prototype.render = function() {
-
   this.clearPos(true);
-  var inner = this.ctx._canvas.frame();
+  const inner = this.ctx._canvas.frame()
   this.setContent(inner);
   return this._render();
 };

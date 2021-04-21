@@ -1,14 +1,15 @@
 'use strict';
-var blessed = require('blessed'),
-  Node = blessed.Node,
-  Box = blessed.Box;
+import blessed from 'blessed'
+
+const Node = blessed.Node,
+      Box  = blessed.Box
 
 function Tree(options) {
   if (!(this instanceof Node)) {
     return new Tree(options);
   }
 
-  var self = this;
+  const self = this
   options = options || {};
   options.bold = true;
   this.options = options;
@@ -41,11 +42,9 @@ function Tree(options) {
     mouse: options.mouse,
     selectedBg: 'blue',
   });
-
   this.append(this.rows);
-
   this.rows.key(options.keys, function() {
-    var selectedNode = self.nodeLines[this.getItemIndex(this.selected)];
+    const selectedNode = self.nodeLines[this.getItemIndex(this.selected)]
     if (selectedNode.children) {
       selectedNode.extended = !selectedNode.extended;
       self.setData(self.data);
@@ -61,7 +60,7 @@ Tree.prototype = Object.create(Box.prototype);
 
 Tree.prototype.walk = function(node, treeDepth) {
 
-  var lines = [];
+  let lines = []
 
   if (!node.parent) {
     // root level
@@ -81,7 +80,7 @@ Tree.prototype.walk = function(node, treeDepth) {
 
   if (node.children && node.extended) {
 
-    var i = 0;
+    let i = 0
 
     if (typeof node.children === 'function')
       node.childrenContent = node.children(node);
@@ -89,7 +88,7 @@ Tree.prototype.walk = function(node, treeDepth) {
     if (!node.childrenContent)
       node.childrenContent = node.children;
 
-    for (var child in node.childrenContent) {
+    for (let child in node.childrenContent) {
 
       if (!node.childrenContent[child].name)
         node.childrenContent[child].name = child;
@@ -106,9 +105,9 @@ Tree.prototype.walk = function(node, treeDepth) {
       else
         child.childrenContent = child.children;
 
-      var isLastChild = child.position === Object.keys(child.parent.childrenContent).length - 1;
-      var treePrefix;
-      var suffix = '';
+      const isLastChild = child.position === Object.keys(child.parent.childrenContent).length - 1
+      let treePrefix
+      let suffix = ''
       if (isLastChild)
         treePrefix = '└';
       else
@@ -128,10 +127,9 @@ Tree.prototype.walk = function(node, treeDepth) {
       if (this.options.template.spaces) treePrefix = ' ';
 
       lines.push(treeDepth + treePrefix + child.name + suffix);
+  this.nodeLines[this.lineNbr++] = child;
 
-      this.nodeLines[this.lineNbr++] = child;
-
-      var parentTree;
+      let parentTree
       if (isLastChild || !this.options.template.lines)
         parentTree = treeDepth + ' ';
       else
@@ -149,7 +147,6 @@ Tree.prototype.focus = function() {
 
 Tree.prototype.render = function() {
   if (this.screen.focused === this.rows) this.rows.focus();
-
   this.rows.width = this.width - 3;
   this.rows.height = this.height - 3;
   Box.prototype.render.call(this);

@@ -1,9 +1,10 @@
 'use strict';
-var blessed = require('blessed')
-  , Node = blessed.Node
-  , Canvas = require('../canvas')
-  , utils = require('../../utils.js')
-  , _ = require('lodash');
+import blessed from 'blessed'
+import Canvas  from '../canvas'
+import utils   from '../../utils.js'
+import _       from 'lodash'
+
+const Node = blessed.Node
 
 function Line(options) {
   if (!(this instanceof Node)) {
@@ -42,18 +43,18 @@ Line.prototype.setData = function(data) {
   //compatability with older api
   if (!Array.isArray(data)) data = [data];
 
-  var self = this;
-  var xLabelPadding = this.options.xLabelPadding;
-  var yLabelPadding = 3;
-  var xPadding = this.options.xPadding;
-  var yPadding = 11;
-  var c = this.ctx;
-  var labels = data[0].x;
+  const self = this
+  let xLabelPadding = this.options.xLabelPadding
+  const yLabelPadding = 3
+  let xPadding = this.options.xPadding
+  const yPadding = 11
+  const c = this.ctx
+  const labels = data[0].x
 
   function addLegend() {
     if (!self.options.showLegend) return;
     if (self.legend) self.remove(self.legend);
-    var legendWidth = self.options.legend.width || 15;
+    const legendWidth = self.options.legend.width || 15
     self.legend = blessed.box({
       height: data.length+2,
       top: 1,
@@ -72,11 +73,11 @@ Line.prototype.setData = function(data) {
       screen: self.screen
     });
 
-    var legandText = '';
-    var maxChars = legendWidth-2;
+    let legandText = ''
+    const maxChars = legendWidth - 2
     for (let i=0; i<data.length; i++) {
-      var style = data[i].style || {};
-      var color = utils.getColorCode(style.line || self.options.style.line);
+      const style = data[i].style || {}
+      const color = utils.getColorCode(style.line || self.options.style.line)
       legandText += '{'+color+'-fg}'+ data[i].title.substring(0, maxChars)+'{/'+color+'-fg}\r\n';
     }
     self.legend.setContent(legandText);
@@ -89,11 +90,11 @@ Line.prototype.setData = function(data) {
       return self.options.maxY;
     }
 
-    var max = -Infinity;
+    let max = -Infinity
 
     for(let i = 0; i < data.length; i++) {
       if (data[i].y.length) {
-        var current = _.max(data[i].y, parseFloat);
+        const current = _.max(data[i].y, parseFloat)
         if (current > max) {
           max = current;
         }
@@ -104,18 +105,18 @@ Line.prototype.setData = function(data) {
   }
 
   function formatYLabel(value, max, min, numLabels, wholeNumbersOnly, abbreviate) {
-    var fixed = (((max - min) / numLabels) < 1 && value!=0 && !wholeNumbersOnly) ? 2 : 0;
-    var res = value.toFixed(fixed);
+    const fixed = (((max - min) / numLabels) < 1 && value != 0 && !wholeNumbersOnly) ? 2 : 0
+    const res = value.toFixed(fixed)
     return abbreviate?utils.abbreviateNumber(res):res;
   }
 
   function getMaxXLabelPadding(numLabels, wholeNumbersOnly, abbreviate, min) {
-    var max = getMaxY();
+    const max = getMaxY()
 
     return formatYLabel(max, max, min, numLabels, wholeNumbersOnly, abbreviate).length * 2;
   }
 
-  var maxPadding = getMaxXLabelPadding(this.options.numYLabels, this.options.wholeNumbersOnly, this.options.abbreviate, this.options.minY);
+  const maxPadding = getMaxXLabelPadding(this.options.numYLabels, this.options.wholeNumbersOnly, this.options.abbreviate, this.options.minY)
   if (xLabelPadding < maxPadding) {
     xLabelPadding = maxPadding;
   }
@@ -125,9 +126,9 @@ Line.prototype.setData = function(data) {
   }
 
   function getMaxX() {
-    var maxLength = 0;
+    let maxLength = 0
 
-    for(var i = 0; i < labels.length; i++) {
+    for(let i = 0; i < labels.length; i++) {
       if(labels[i] === undefined) {
         // console.log("label[" + i + "] is undefined");
       } else if(labels[i].length > maxLength) {
@@ -143,7 +144,7 @@ Line.prototype.setData = function(data) {
   }
 
   function getYPixel(val, minY) {
-    var res = self.canvasSize.height - yPadding - (((self.canvasSize.height - yPadding) / (getMaxY()-minY)) * (val-minY));
+    let res = self.canvasSize.height - yPadding - (((self.canvasSize.height - yPadding) / (getMaxY() - minY)) * (val - minY))
     res-=2; //to separate the baseline and the data line to separate chars so canvas will show separate colors
     return res;
   }
@@ -151,14 +152,14 @@ Line.prototype.setData = function(data) {
   // Draw the line graph
   function drawLine(values, style, minY) {
     style = style || {};
-    var color = self.options.style.line;
+    const color = self.options.style.line
     c.strokeStyle = style.line || color;
 
     c.moveTo(0, 0);
     c.beginPath();
     c.lineTo(getXPixel(0), getYPixel(values[0], minY));
 
-    for(var k = 1; k < values.length; k++) {
+    for(let k = 1; k < values.length; k++) {
       c.lineTo(getXPixel(k), getYPixel(values[k], minY));
     }
 
@@ -172,7 +173,7 @@ Line.prototype.setData = function(data) {
   c.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height);
 
 
-  var yLabelIncrement = (getMaxY()-this.options.minY)/this.options.numYLabels;
+  let yLabelIncrement = (getMaxY() - this.options.minY) / this.options.numYLabels
   if (this.options.wholeNumbersOnly) yLabelIncrement = Math.floor(yLabelIncrement);
   //if (getMaxY()>=10) {
   //  yLabelIncrement = yLabelIncrement + (10 - yLabelIncrement % 10)
@@ -183,12 +184,12 @@ Line.prototype.setData = function(data) {
   if (yLabelIncrement==0) yLabelIncrement = 1;
 
   // Draw the Y value texts
-  var maxY = getMaxY();
+  const maxY = getMaxY()
   for(var i = this.options.minY; i < maxY; i += yLabelIncrement) {
     c.fillText(formatYLabel(i, maxY, this.options.minY, this.options.numYLabels, this.options.wholeNumbersOnly, this.options.abbreviate), xPadding - xLabelPadding, getYPixel(i, this.options.minY));
   }
 
-  for (var h=0; h<data.length; h++) {
+  for (let h =0; h<data.length; h++) {
     drawLine(data[h].y, data[h].style, this.options.minY);
   }
 
@@ -205,10 +206,10 @@ Line.prototype.setData = function(data) {
   c.stroke();
 
   // Draw the X value texts
-  var charsAvailable = (this.canvasSize.width - xPadding) / 2;
-  var maxLabelsPossible = charsAvailable / (getMaxX() + 2);
-  var pointsPerMaxLabel = Math.ceil(data[0].y.length / maxLabelsPossible);
-  var showNthLabel = this.options.showNthLabel;
+  const charsAvailable = (this.canvasSize.width - xPadding) / 2
+  const maxLabelsPossible = charsAvailable / (getMaxX() + 2)
+  const pointsPerMaxLabel = Math.ceil(data[0].y.length / maxLabelsPossible)
+  let showNthLabel = this.options.showNthLabel
   if (showNthLabel < pointsPerMaxLabel) {
     showNthLabel = pointsPerMaxLabel;
   }
@@ -222,27 +223,27 @@ Line.prototype.setData = function(data) {
 };
 
 Line.prototype.getOptionsPrototype = function() {
-  return { width: 80
-    , height: 30
-    , left: 15
-    , top: 12
-    , xPadding: 5
-    , label: 'Title'
-    , showLegend: true
-    , legend: {width: 12}
-    , data: [ { title: 'us-east',
+  return { width: 80,
+   height: 30,
+   left: 15,
+   top: 12,
+   xPadding: 5,
+   label: 'Title',
+   showLegend: true,
+   legend: {width: 12},
+   data: [ { title: 'us-east',
       x: ['t1', 't2', 't3', 't4'],
       y: [5, 1, 7, 5],
       style: {
         line: 'red'
       }
-    }
-    , { title: 'us-west',
+    },
+   { title: 'us-west',
       x: ['t1', 't2', 't3', 't4'],
       y: [2, 4, 9, 8],
       style: {line: 'yellow'}
-    }
-    , {title: 'eu-north-with-some-long-string',
+    },
+   {title: 'eu-north-with-some-long-string',
       x: ['t1', 't2', 't3', 't4'],
       y: [22, 7, 12, 1],
       style: {line: 'blue'}

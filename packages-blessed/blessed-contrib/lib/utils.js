@@ -1,18 +1,13 @@
 'use strict';
-var x256 = require('x256');
-
+import x256 from 'x256'
 /*
 * Recursively merge properties of two objects
 */
 function MergeRecursive(obj1, obj2) {
-  if (obj1==null) {
-    return obj2;
-  }
-  if (obj2==null) {
-    return obj1;
-  }
+  if (obj1==null) return obj2
+  if (obj2==null) return obj1
 
-  for (var p in obj2) {
+  for (let p in obj2) {
     try {
       // property in destination object set; update its value
       if ( obj2[p].constructor==Object ) {
@@ -40,14 +35,14 @@ function getTypeName(thing){
 }
 
 function abbreviateNumber(value) {
-  var newValue = value;
+  let newValue = value
   if (value >= 1000) {
-    var suffixes = ['', 'k', 'm', 'b','t'];
-    var suffixNum = Math.floor( (''+value).length/3 );
-    var shortValue = '';
-    for (var precision = 2; precision >= 1; precision--) {
+    const suffixes = [ '', 'k', 'm', 'b', 't' ]
+    const suffixNum = Math.floor(('' + value).length / 3)
+    let shortValue = ''
+    for (let precision = 2; precision >= 1; precision--) {
       shortValue = parseFloat( (suffixNum != 0 ? (value / Math.pow(1000,suffixNum) ) : value).toPrecision(precision));
-      var dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g,'');
+      const dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g, '')
       if (dotLessShortValue.length <= 2) {
         break;
       }

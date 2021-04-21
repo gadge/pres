@@ -7,9 +7,8 @@ function Carousel(pages, options) {
 }
 
 Carousel.prototype.move = function() {
-  var i = this.screen.children.length;
+  let i = this.screen.children.length
   while (i--) this.screen.children[i].detach();
-
   this.pages[this.currPage](this.screen, this.currPage);
   this.screen.render();
 };
@@ -51,8 +50,7 @@ Carousel.prototype.end = function() {
 };
 
 Carousel.prototype.start = function() {
-  var self = this;
-
+  const self = this
   this.move();
 
   if (this.options.interval) {

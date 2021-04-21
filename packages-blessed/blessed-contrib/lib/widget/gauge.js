@@ -1,14 +1,15 @@
 'use strict';
-var blessed = require('blessed')
-  , Node = blessed.Node
-  , Canvas = require('./canvas');
+import blessed from 'blessed'
+import Canvas  from './canvas'
+
+const Node    = blessed.Node
 
 function Gauge(options) {
   if (!(this instanceof Node)) {
     return new Gauge(options);
   }
 
-  var self = this;
+  const self = this
 
   options = options || {};
   self.options = options;
@@ -18,13 +19,12 @@ function Gauge(options) {
   self.options.showLabel = options.showLabel !== false;
 
   Canvas.call(this, options, require('ansi-term'));
-
   this.on('attach', function() {
     if (self.options.stack) {
-      var stack = this.stack = self.options.stack;
+      const stack = this.stack = self.options.stack
       this.setStack(stack);
     } else {
-      var percent = this.percent = self.options.percent || 0;
+      const percent = this.percent = self.options.percent || 0
       this.setData(percent);
     }
   });
@@ -52,7 +52,7 @@ Gauge.prototype.setPercent = function(percent) {
     throw 'error: canvas context does not exist. setData() for gauges must be called after the gauge has been added to the screen via screen.append()';
   }
 
-  var c = this.ctx;
+  const c = this.ctx
 
   c.strokeStyle = this.options.stroke;//'magenta'
   c.fillStyle = this.options.fill;//'white'
@@ -61,10 +61,10 @@ Gauge.prototype.setPercent = function(percent) {
   if (percent < 1.001){
     percent = percent * 100;
   }
-  var width = percent/100*(this.canvasSize.width-3);
+  const width = percent / 100 * (this.canvasSize.width - 3)
   c.fillRect(1, 2, width, 2);
 
-  var textX = 7;
+  const textX = 7
   if (width<textX) {
     c.strokeStyle = 'normal';
   }
@@ -73,19 +73,19 @@ Gauge.prototype.setPercent = function(percent) {
 };
 
 Gauge.prototype.setStack = function(stack) {
-  var colors = ['green','magenta','cyan','red','blue'];
+  const colors = [ 'green', 'magenta', 'cyan', 'red', 'blue' ]
 
   if (!this.ctx) {
     throw 'error: canvas context does not exist. setData() for gauges must be called after the gauge has been added to the screen via screen.append()';
   }
 
-  var c = this.ctx;
-  var leftStart = 1;
-  var textLeft = 5;
+  const c = this.ctx
+  let leftStart = 1
+  let textLeft = 5
   c.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height);
 
-  for (var i = 0; i < stack.length; i++) {
-    var currentStack = stack[i];
+  for (let i = 0; i < stack.length; i++) {
+    const currentStack = stack[i]
 
     let percent;
     if (typeof(currentStack) == typeof({}))
@@ -100,13 +100,13 @@ Gauge.prototype.setStack = function(stack) {
     if (percent < 1.001){
       percent = percent * 100;
     }
-    var width = percent/100*(this.canvasSize.width-3);
+    const width = percent / 100 * (this.canvasSize.width - 3)
 
     c.fillRect(leftStart, 2, width, 2);
 
     textLeft = (width / 2) - 1;
     // if (textLeft)
-    var textX = leftStart+textLeft;
+    const textX = leftStart + textLeft
 
     if ((leftStart+width)<textX) {
       c.strokeStyle = 'normal';

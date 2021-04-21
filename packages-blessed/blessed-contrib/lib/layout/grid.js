@@ -1,7 +1,7 @@
 'use strict';
-var utils = require('../utils');
+import utils from '../utils'
 
-var widgetSpacing = 0;
+const widgetSpacing = 0
 
 function Grid(options) {
   if (!options.screen) throw 'Error: A screen property must be specified in the grid options.\r\n' +
@@ -19,11 +19,11 @@ Grid.prototype.set = function(row, col, rowSpan, colSpan, obj, opts) {
             'Note: Release 2.0.0 has breaking changes. Please refer to the README or to https://github.com/yaronn/blessed-contrib/issues/39';
   }
 
-  var top = row * this.cellHeight + this.options.dashboardMargin;
-  var left = col * this.cellWidth + this.options.dashboardMargin;
+  const top = row * this.cellHeight + this.options.dashboardMargin
+  const left = col * this.cellWidth + this.options.dashboardMargin
 
   //var options = JSON.parse(JSON.stringify(opts));
-  var options = {};
+  let options = {}
   options = utils.MergeRecursive(options, opts);
   options.top = top + '%';
   options.left = left + '%';
@@ -32,7 +32,7 @@ Grid.prototype.set = function(row, col, rowSpan, colSpan, obj, opts) {
   if (!this.options.hideBorder)
     options.border = {type: 'line', fg: this.options.color || 'cyan'};
 
-  var instance = obj(options);
+  const instance = obj(options)
   this.options.screen.append(instance);
   return instance;
 };

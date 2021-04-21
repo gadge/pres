@@ -1,7 +1,8 @@
 'use strict';
-var blessed = require('blessed')
-  , Node = blessed.Node
-  , List = blessed.List;
+import blessed from 'blessed'
+
+const Node    = blessed.Node,
+      List    = blessed.List
 
 function Log(options) {
   if (!(this instanceof Node)) {
@@ -12,7 +13,6 @@ function Log(options) {
   options.bufferLength = options.bufferLength || 30;
   this.options = options;
   List.call(this, options);
-
   this.logLines = [];
   this.interactive = false;
 }

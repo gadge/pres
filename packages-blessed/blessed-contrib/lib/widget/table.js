@@ -1,12 +1,13 @@
 'use strict';
-var blessed = require('blessed')
-  , Node = blessed.Node
-  , Box = blessed.Box
-  , stripAnsi = require('strip-ansi');
+import blessed   from 'blessed'
+import stripAnsi from 'strip-ansi'
+
+const Node = blessed.Node,
+      Box  = blessed.Box
 
 function Table(options) {
 
-  var self = this;
+  const self = this
 
   if (!(this instanceof Node)) {
     return new Table(options);
@@ -32,19 +33,18 @@ function Table(options) {
   options.interactive = (typeof options.interactive === 'undefined') ? true : options.interactive;
   this.options = options;
   Box.call(this, options);
-
   this.rows = blessed.list({
     //height: 0,
     top: 2,
     width: 0,
     left: 1,
     style: { selected: {
-      fg: options.selectedFg
-      , bg: options.selectedBg
-    }
-    , item: {
-      fg: options.fg
-      , bg: options.bg
+      fg: options.selectedFg,
+   bg: options.selectedBg
+    },
+   item: {
+      fg: options.fg,
+   bg: options.bg
     }},
     keys: options.keys,
     vi: options.vi,
@@ -53,9 +53,7 @@ function Table(options) {
     interactive: options.interactive,
     screen: this.screen
   });
-
   this.append(this.rows);
-
   this.on('attach', function() {
     if (self.options.data) {
       self.setData(self.options.data);
@@ -73,7 +71,6 @@ Table.prototype.focus = function(){
 Table.prototype.render = function() {
   if(this.screen.focused == this.rows)
     this.rows.focus();
-
   this.rows.width = this.width-3;
   this.rows.height = this.height-4;
   Box.prototype.render.call(this);
@@ -81,29 +78,29 @@ Table.prototype.render = function() {
 
 
 Table.prototype.setData = function(table) {
-  var self = this;
+  const self = this
 
-  var dataToString = function(d) {
-    var str = '';
-    d.forEach(function(r, i) {
-      var colsize = self.options.columnWidth[i]
-        , strip = stripAnsi(r.toString())
-        , ansiLen = r.toString().length - strip.length
-        , spaceLength = colsize - strip.length + self.options.columnSpacing;
-      r = r.toString().substring(0, colsize + ansiLen); //compensate for ansi len
+  const dataToString = function (d) {
+    let str = ''
+    d.forEach(function (r, i) {
+      const colsize = self.options.columnWidth[i],
+            strip   = stripAnsi(r.toString()),
+            ansiLen = r.toString().length - strip.length
+      let spaceLength = colsize - strip.length + self.options.columnSpacing
+      r = r.toString().substring(0, colsize + ansiLen) //compensate for ansi len
       if (spaceLength < 0) {
-        spaceLength = 0;
+        spaceLength = 0
       }
-      var spaces = new Array(spaceLength).join(' ');
-      str += r + spaces;
-    });
-    return str;
-  };
+      const spaces = new Array(spaceLength).join(' ')
+      str += r + spaces
+    })
+    return str
+  }
 
-  var formatted = [];
+  const formatted = []
 
   table.data.forEach(function(d) {
-    var str = dataToString(d);
+    const str = dataToString(d)
     formatted.push(str);
   });
   this.setContent(dataToString(table.headers));
@@ -111,19 +108,19 @@ Table.prototype.setData = function(table) {
 };
 
 Table.prototype.getOptionsPrototype = function() {
-  return  { keys: true
-    , fg: 'white'
-    , interactive: false
-    , label: 'Active Processes'
-    , width: '30%'
-    , height: '30%'
-    , border: {type: 'line', fg: 'cyan'}
-    , columnSpacing: 10
-    , columnWidth: [16, 12]
-    , data: { headers: ['col1', 'col2']
-      , data: [ ['a', 'b']
-        , ['5', 'u']
-        , ['x', '16.1'] ]}
+  return  { keys: true,
+   fg: 'white',
+   interactive: false,
+   label: 'Active Processes',
+   width: '30%',
+   height: '30%',
+   border: {type: 'line', fg: 'cyan'},
+   columnSpacing: 10,
+   columnWidth: [16, 12],
+   data: { headers: ['col1', 'col2'],
+   data: [ ['a', 'b'],
+   ['5', 'u'],
+   ['x', '16.1'] ]}
   };
 };
 

@@ -1,9 +1,10 @@
 'use strict';
-var blessed = require('blessed')
-  , Box = blessed.Box
-  , marked = require('marked')
-  , TerminalRenderer = require('marked-terminal')
-  , chalk = require('chalk');
+import blessed          from 'blessed'
+import marked           from 'marked'
+import TerminalRenderer from 'marked-terminal'
+import chalk            from 'chalk'
+
+const Box = blessed.Box
 
 
 function Markdown(options) {
@@ -16,11 +17,8 @@ function Markdown(options) {
   const markdownOptions = {
     style: options.markdownStyle
   };
-
   this.evalStyles(markdownOptions);
-
   this.setOptions(markdownOptions.style);
-
   this.options = options;
   Box.call(this, options);
 
@@ -41,12 +39,12 @@ Markdown.prototype.setOptions = function(style) {
 
 Markdown.prototype.evalStyles = function(options) {
   if (!options.style) return;
-  for (var st in options.style) {
+  for (let st in options.style) {
     if (typeof(options.style[st])!='string') continue;
 
-    var tokens = options.style[st].split('.');
+    const tokens = options.style[st].split('.')
     options.style[st] = chalk;
-    for (var j=1; j<tokens.length; j++) {
+    for (let j =1; j<tokens.length; j++) {
       options.style[st] = options.style[st][tokens[j]];
     }
   }

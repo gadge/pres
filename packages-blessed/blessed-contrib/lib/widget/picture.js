@@ -1,11 +1,12 @@
 'use strict';
-var blessed = require('blessed')
-  , Node = blessed.Node
-  , Box = blessed.Box
-  , pictureTube = require('picture-tuber')
-  , fs = require('fs')
-  , streams = require('memory-streams')
-  , MemoryStream = require('memorystream');
+import blessed      from 'blessed'
+import pictureTube  from 'picture-tuber'
+import fs           from 'fs'
+import streams      from 'memory-streams'
+import MemoryStream from 'memorystream'
+
+const Node = blessed.Node,
+      Box  = blessed.Box
 
 function Picture(options) {
   if (!(this instanceof Node)) {
@@ -27,17 +28,16 @@ Picture.prototype = Object.create(Box.prototype);
 
 Picture.prototype.setImage = function(options) {
 
-  var tube = pictureTube( { cols: options.cols } );
+  const tube = pictureTube({ cols: options.cols })
 
   if (options.file) fs.createReadStream(options.file).pipe(tube);
   else if (options.base64) {
-    var memStream = new MemoryStream();
+    const memStream = new MemoryStream()
     memStream.pipe(tube);
-    var buf = new Buffer(options.base64, 'base64');
+    const buf = new Buffer(options.base64, 'base64')
     memStream.write(buf);
     memStream.end();
   }
-
   this.writer = new streams.WritableStream();
   tube.pipe(this.writer);
 
@@ -56,8 +56,8 @@ Picture.prototype.render = function() {
 
 Picture.prototype.getOptionsPrototype = function() {
 
-  return { base64:'AAAA'
-    , cols: 1 };
+  return { base64:'AAAA',
+   cols: 1 };
 
 };
 
