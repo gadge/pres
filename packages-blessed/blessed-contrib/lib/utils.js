@@ -33,7 +33,9 @@ function abbreviateNumber(value) {
   return newValue
 }
 function getColorCode(color) { return Array.isArray(color) && color.length === 3 ? x256(color[0], color[1], color[2]) : color }
-exports.MergeRecursive = MergeRecursive
-exports.getTypeName = getTypeName
-exports.abbreviateNumber = abbreviateNumber
-exports.getColorCode = getColorCode
+export {
+  MergeRecursive,
+  getTypeName,
+  abbreviateNumber,
+  getColorCode,
+}

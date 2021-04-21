@@ -1,4 +1,4 @@
-import blessed from 'blessed'
+import blessed    from '../vendor/blessed'
 
 const Node = blessed.Node,
       List = blessed.List

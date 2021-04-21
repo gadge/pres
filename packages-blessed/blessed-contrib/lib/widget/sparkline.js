@@ -1,4 +1,4 @@
-import blessed   from 'blessed'
+import blessed    from '../vendor/blessed'
 import sparkline from 'sparkline'
 
 const Node = blessed.Node,

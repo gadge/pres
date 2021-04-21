@@ -1,6 +1,6 @@
-import blessed from 'blessed'
+import blessed from '../../vendor/blessed'
 import _       from 'lodash'
-import utils   from '../../utils.js'
+import * as utils   from '../../utils.js'
 import Canvas  from '../canvas'
 
 const Node = blessed.Node

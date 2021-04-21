@@ -1,4 +1,4 @@
-import blessed from 'blessed'
+import blessed from '../../vendor/blessed'
 import Canvas  from '../canvas'
 
 const Node = blessed.Node

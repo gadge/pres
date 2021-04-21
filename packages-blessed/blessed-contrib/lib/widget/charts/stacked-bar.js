@@ -1,6 +1,6 @@
-import blessed from 'blessed'
-import utils   from '../../utils.js'
-import Canvas  from '../canvas'
+import * as utils from '../../utils.js'
+import blessed    from '../../vendor/blessed'
+import Canvas     from '../canvas'
 
 const Node = blessed.Node
 function StackedBar(options) {

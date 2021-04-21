@@ -1,6 +1,6 @@
-import blessed from 'blessed'
 import url     from 'url'
 import contrib from '../index'
+import blessed from './vendor/blessed'
 
 function OutputBuffer(options) {
   this.isTTY = true
@@ -48,7 +48,9 @@ function createScreen(req, res) {
   const screen = blessed.screen({ program: program })
   return screen
 }
-exports.createScreen = createScreen
-exports.OutputBuffer = OutputBuffer
-exports.InputBuffer = InputBuffer
-exports.serverError = serverError
+export {
+  createScreen,
+  OutputBuffer,
+  InputBuffer,
+  serverError,
+}

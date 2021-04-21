@@ -1,6 +1,6 @@
 import { ATTACH }                from '@pres/enum-events'
-import blessed                   from 'blessed'
 import { Canvas as InnerCanvas } from 'drawille-canvas-blessed-contrib'
+import blessed                   from '../vendor/blessed'
 
 const Node = blessed.Node,
       Box  = blessed.Box

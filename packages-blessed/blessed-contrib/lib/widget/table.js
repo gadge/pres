@@ -1,4 +1,4 @@
-import blessed   from 'blessed'
+import blessed    from '../vendor/blessed'
 import stripAnsi from 'strip-ansi'
 
 const Node = blessed.Node,

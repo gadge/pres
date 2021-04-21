@@ -1,4 +1,4 @@
-import blessed  from 'blessed'
+import blessed    from '../vendor/blessed'
 import InnerMap from 'map-canvas'
 import Canvas   from './canvas'
 

@@ -1,4 +1,4 @@
-import blessed          from 'blessed'
+import blessed    from '../vendor/blessed'
 import chalk            from 'chalk'
 import marked           from 'marked'
 import TerminalRenderer from 'marked-terminal'

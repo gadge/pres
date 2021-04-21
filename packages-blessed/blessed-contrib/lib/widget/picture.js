@@ -1,4 +1,4 @@
-import blessed      from 'blessed'
+import blessed    from '../vendor/blessed'
 import fs           from 'fs'
 import streams      from 'memory-streams'
 import MemoryStream from 'memorystream'
