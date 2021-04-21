@@ -1,33 +1,33 @@
-'use strict';
+'use strict'
 import blessed from 'blessed'
 
-const Node    = blessed.Node,
-      List    = blessed.List
+const Node = blessed.Node,
+      List = blessed.List
 
 function Log(options) {
   if (!(this instanceof Node)) {
-    return new Log(options);
+    return new Log(options)
   }
 
-  options = options || {};
-  options.bufferLength = options.bufferLength || 30;
-  this.options = options;
-  List.call(this, options);
-  this.logLines = [];
-  this.interactive = false;
+  options = options || {}
+  options.bufferLength = options.bufferLength || 30
+  this.options = options
+  List.call(this, options)
+  this.logLines = []
+  this.interactive = false
 }
 
-Log.prototype = Object.create(List.prototype);
+Log.prototype = Object.create(List.prototype)
 
-Log.prototype.log = function(str) {
-  this.logLines.push(str);
-  if (this.logLines.length>this.options.bufferLength) {
-    this.logLines.shift();
+Log.prototype.log = function (str) {
+  this.logLines.push(str)
+  if (this.logLines.length > this.options.bufferLength) {
+    this.logLines.shift()
   }
-  this.setItems(this.logLines);
-  this.scrollTo(this.logLines.length);
-};
+  this.setItems(this.logLines)
+  this.scrollTo(this.logLines.length)
+}
 
-Log.prototype.type = 'log';
+Log.prototype.type = 'log'
 
-module.exports = Log;
+module.exports = Log
