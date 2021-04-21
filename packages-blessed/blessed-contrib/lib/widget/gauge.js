@@ -1,5 +1,5 @@
-import blessed from '../vendor/blessed'
-import { Canvas }   from './canvas'
+import blessed    from '../vendor/blessed'
+import { Canvas } from './canvas'
 
 const Node = blessed.Node
 export function Gauge(options) {

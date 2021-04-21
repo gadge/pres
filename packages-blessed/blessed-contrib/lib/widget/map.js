@@ -1,6 +1,6 @@
-import InnerMap from 'map-canvas'
-import blessed  from '../vendor/blessed'
-import { Canvas }    from './canvas'
+import InnerMap   from 'map-canvas'
+import blessed    from '../vendor/blessed'
+import { Canvas } from './canvas'
 
 const Node = blessed.Node
 export function Map(options) {

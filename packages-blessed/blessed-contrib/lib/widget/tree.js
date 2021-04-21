@@ -1,4 +1,5 @@
-import blessed from '../vendor/blessed'
+import * as Mixin from '@ject/mixin'
+import blessed    from '../vendor/blessed'
 
 const Node = blessed.Node,
       Box  = blessed.Box
@@ -11,7 +12,7 @@ export function Tree(options) {
   this.data = {}
   this.nodeLines = []
   this.lineNbr = 0
-  Box.call(this, options)
+  Mixin.assign(this, new Box(options)) // Box.call(this, options)
   options.extended = options.extended || false
   options.keys = options.keys || [ '+', 'space', 'enter' ]
   options.template = options.template || {}

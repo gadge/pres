@@ -1,3 +1,4 @@
+import * as Mixin       from '@ject/mixin'
 import chalk            from 'chalk'
 import marked           from 'marked'
 import TerminalRenderer from 'marked-terminal'
@@ -11,7 +12,7 @@ export function Markdown(options) {
   this.evalStyles(markdownOptions)
   this.setOptions(markdownOptions.style)
   this.options = options
-  Box.call(this, options)
+  Mixin.assign(this, new Box(options)) // Box.call(this, options)
   if (options.markdown) this.setMarkdown(options.markdown)
 }
 Markdown.prototype = Object.create(Box.prototype)

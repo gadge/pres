@@ -1,5 +1,6 @@
-import stripAnsi from 'strip-ansi'
-import blessed   from '../vendor/blessed'
+import * as Mixin from '@ject/mixin'
+import stripAnsi  from 'strip-ansi'
+import blessed    from '../vendor/blessed'
 
 const Node = blessed.Node,
       Box  = blessed.Box
@@ -23,7 +24,7 @@ export function Table(options) {
   options.bg = options.bg || ''
   options.interactive = (typeof options.interactive === 'undefined') ? true : options.interactive
   this.options = options
-  Box.call(this, options)
+  Mixin.assign(this, new Box(options)) // Box.call(this, options)
   this.rows = blessed.list({ //height: 0,
     top: 2,
     width: 0,

@@ -1,5 +1,6 @@
-import sparkline from 'sparkline'
-import blessed   from '../vendor/blessed'
+import * as Mixin from '@ject/mixin'
+import sparkline  from 'sparkline'
+import blessed    from '../vendor/blessed'
 
 const Node = blessed.Node,
       Box  = blessed.Box
@@ -11,7 +12,7 @@ export function Sparkline(options) {
   options.style = options.style || {}
   options.style.titleFg = options.style.titleFg || 'white'
   this.options = options
-  Box.call(this, options)
+  Mixin.assign(this, new Box(options)) // Box.call(this, options)
   this.on('attach', function () {
     if (self.options.data) { self.setData(self.options.data.titles, self.options.data.data) }
   })

@@ -1,3 +1,4 @@
+import * as Mixin                from '@ject/mixin'
 import { ATTACH }                from '@pres/enum-events'
 import { Canvas as InnerCanvas } from 'drawille-canvas-blessed-contrib'
 import blessed                   from '../vendor/blessed'
@@ -10,7 +11,7 @@ export function Canvas(options, canvasType) {
   if (!(this instanceof Node)) return new Canvas(options)
   options = options || {}
   this.options = options
-  Box.call(this, options)
+  Mixin.assign(this, new Box(options)) // Box.call(this, options)
   this.on(ATTACH, function () {
     self.calcSize()
     self._canvas = new InnerCanvas(this.canvasSize.width, this.canvasSize.height, canvasType)

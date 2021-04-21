@@ -1,3 +1,4 @@
+import * as Mixin   from '@ject/mixin'
 import fs           from 'fs'
 import streams      from 'memory-streams'
 import MemoryStream from 'memorystream'
@@ -12,7 +13,7 @@ export function Picture(options) {
   options.cols = options.cols || 50
   this.options = options
   if (options.file || options.base64) { this.setImage(options) }
-  Box.call(this, options)
+  Mixin.assign(this, new Box(options)) // Box.call(this, options)
 }
 Picture.prototype = Object.create(Box.prototype)
 Picture.prototype.setImage = function (options) {
