@@ -1,4 +1,3 @@
-
 import blessed   from 'blessed'
 import stripAnsi from 'strip-ansi'
 

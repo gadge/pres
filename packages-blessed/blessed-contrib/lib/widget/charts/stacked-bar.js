@@ -1,4 +1,3 @@
-
 import blessed from 'blessed'
 import utils   from '../../utils.js'
 import Canvas  from '../canvas'

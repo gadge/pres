@@ -1,4 +1,3 @@
-
 import blessed  from 'blessed'
 import InnerMap from 'map-canvas'
 import Canvas   from './canvas'

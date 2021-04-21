@@ -1,4 +1,3 @@
-
 import x256 from 'x256'
 /*
 * Recursively merge properties of two objects

@@ -1,4 +1,3 @@
-
 import utils from '../utils'
 
 const widgetSpacing = 0

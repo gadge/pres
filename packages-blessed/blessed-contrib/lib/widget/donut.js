@@ -1,4 +1,3 @@
-
 import blessed from 'blessed'
 import Canvas  from './canvas'
 

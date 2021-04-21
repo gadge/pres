@@ -1,4 +1,3 @@
-
 import blessed   from 'blessed'
 import sparkline from 'sparkline'
 

@@ -1,4 +1,3 @@
-
 import blessed                   from 'blessed'
 import { Canvas as InnerCanvas } from 'drawille-canvas-blessed-contrib'
 

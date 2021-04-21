@@ -1,4 +1,3 @@
-
 import blessed      from 'blessed'
 import fs           from 'fs'
 import streams      from 'memory-streams'

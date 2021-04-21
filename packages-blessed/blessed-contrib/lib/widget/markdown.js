@@ -1,4 +1,3 @@
-
 import blessed          from 'blessed'
 import chalk            from 'chalk'
 import marked           from 'marked'

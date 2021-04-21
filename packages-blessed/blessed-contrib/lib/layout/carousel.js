@@ -17,9 +17,7 @@ Carousel.prototype.next = function () {
       this.currPage--
       return
     }
-    else {
-      this.currPage = 0
-    }
+    else { this.currPage = 0 }
   }
   this.move()
 }
@@ -30,9 +28,7 @@ Carousel.prototype.prev = function () {
       this.currPage++
       return
     }
-    else {
-      this.currPage = this.pages.length - 1
-    }
+    else { this.currPage = this.pages.length - 1 }
   }
   this.move()
 }
@@ -47,9 +43,7 @@ Carousel.prototype.end = function () {
 Carousel.prototype.start = function () {
   const self = this
   this.move()
-  if (this.options.interval) {
-    setInterval(this.next.bind(this), this.options.interval)
-  }
+  if (this.options.interval) setInterval(this.next.bind(this), this.options.interval)
   if (this.options.controlKeys) {
     this.screen.key([ 'right', 'left', 'home', 'end' ], (ch, key) => {
       if (key.name === 'right') self.next()

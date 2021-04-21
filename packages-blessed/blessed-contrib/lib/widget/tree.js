@@ -1,4 +1,3 @@
-
 import blessed from 'blessed'
 
 const Node = blessed.Node,
