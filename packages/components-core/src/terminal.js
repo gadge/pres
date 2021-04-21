@@ -269,15 +269,9 @@ export class Terminal extends Box {
     this.term.ybase = 0
     return this.emit(SCROLL)
   }
-  getScrollHeight() {
-    return this.term.rows - 1
-  }
-  getScrollPerc() {
-    return (this.term.ydisp / this.term.ybase) * 100
-  }
-  setScrollPerc(i) {
-    return this.setScroll((i / 100) * this.term.ybase | 0)
-  }
+  getScrollHeight() { return this.term.rows - 1 }
+  getScrollPerc() { return (this.term.ydisp / this.term.ybase) * 100 }
+  setScrollPerc(i) { return this.setScroll((i / 100) * this.term.ybase | 0) }
   screenshot(xi, xl, yi, yl) {
     xi = 0 + (xi || 0)
     if (xl != null) { xl = 0 + (xl || 0) }
