@@ -11,12 +11,8 @@ export class Line extends Box {
    * Line
    */
   constructor(options = {}) {
-    if ((options.orientation || 'vertical') === 'vertical') {
-      options.width = 1
-    }
-    else {
-      options.height = 1
-    }
+    if ((options.orientation || 'vertical') === 'vertical') { options.width = 1 }
+    else { options.height = 1 }
     super(options)
     // if (!(this instanceof Node)) return new Line(options)
     const orientation = options.orientation || 'vertical'

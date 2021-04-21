@@ -14,23 +14,15 @@ export class Layout extends Element {
   constructor(options = {}) {
     super(options)
     // if (!(this instanceof Node)) return new Layout(options)
-    if ((options.width == null
-      && (options.left == null && options.right == null))
-      || (options.height == null
-        && (options.top == null && options.bottom == null))) {
-      throw new Error('`Layout` must have a width and height!')
-    }
+    if (
+      (options.width == null && (options.left == null && options.right == null)) ||
+      (options.height == null && (options.top == null && options.bottom == null))
+    ) throw new Error('`Layout` must have a width and height!')
     options.layout = options.layout || 'inline'
-    if (options.renderer) {
-      this.renderer = options.renderer
-    }
+    if (options.renderer) this.renderer = options.renderer
     this.type = 'layout'
   }
-  isRendered(el) {
-    if (!el.lpos) return false
-    return (el.lpos.xl - el.lpos.xi) > 0
-      && (el.lpos.yl - el.lpos.yi) > 0
-  }
+  isRendered(el) { return !el.lpos ? false : (el.lpos.xl - el.lpos.xi) > 0 && (el.lpos.yl - el.lpos.yi) > 0 }
   getLast(i) {
     while (this.children[--i]) {
       const el = this.children[i]
