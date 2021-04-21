@@ -292,12 +292,8 @@ export class ScrollableBox extends Box {
           i      = this.getScrollHeight()
     let p
     if (height < i) {
-      if (this.alwaysScroll) {
-        p = this.childBase / (i - height)
-      }
-      else {
-        p = (this.childBase + this.childOffset) / (i - 1)
-      }
+      if (this.alwaysScroll) { p = this.childBase / (i - height) }
+      else { p = (this.childBase + this.childOffset) / (i - 1) }
       return p * 100
     }
     return s ? -1 : 0

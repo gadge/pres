@@ -126,22 +126,16 @@ export class Terminal extends Box {
             y = data.y - self.atop
       let s
       if (self.term.urxvtMouse) {
-        if (self.screen.program.sgrMouse) {
-          b += 32
-        }
+        if (self.screen.program.sgrMouse) { b += 32 }
         s = '\x1b[' + b + ';' + (x + 32) + ';' + (y + 32) + 'M'
       }
       else if (self.term.sgrMouse) {
-        if (!self.screen.program.sgrMouse) {
-          b -= 32
-        }
+        if (!self.screen.program.sgrMouse) { b -= 32 }
         s = '\x1b[<' + b + ';' + x + ';' + y
           + (data.action === MOUSEDOWN ? 'M' : 'm')
       }
       else {
-        if (self.screen.program.sgrMouse) {
-          b += 32
-        }
+        if (self.screen.program.sgrMouse) { b += 32 }
         s = '\x1b[M'
           + String.fromCharCode(b)
           + String.fromCharCode(x + 32)
@@ -149,35 +143,23 @@ export class Terminal extends Box {
       }
       self.handler(s)
     })
-    this.on(FOCUS, function () {
-      self.term.focus()
-    })
-    this.on(BLUR, function () {
-      self.term.blur()
-    })
-    this.term.on(TITLE, function (title) {
+    this.on(FOCUS, () => { self.term.focus() })
+    this.on(BLUR, () => { self.term.blur() })
+    this.term.on(TITLE, title => {
       self.title = title
       self.emit(TITLE, title)
     })
-    this.term.on(PASSTHROUGH, function (data) {
+    this.term.on(PASSTHROUGH, data => {
       self.screen.program.flush()
       self.screen.program._owrite(data)
     })
-    this.on(RESIZE, function () {
-      nextTick(function () {
-        self.term.resize(self.width - self.iwidth, self.height - self.iheight)
-      })
-    })
-    this.once(RENDER, function () {
-      self.term.resize(self.width - self.iwidth, self.height - self.iheight)
-    })
-    this.on(DESTROY, function () {
+    this.on(RESIZE, () => nextTick(() => self.term.resize(self.width - self.iwidth, self.height - self.iheight)))
+    this.once(RENDER, () => self.term.resize(self.width - self.iwidth, self.height - self.iheight))
+    this.on(DESTROY, () => {
       self.kill()
       self.screen.program.input.removeListener(DATA, self._onData)
     })
-    if (this.handler) {
-      return
-    }
+    if (this.handler) { return }
     this.pty = require('pty.js').fork(this.shell, this.args, {
       name: this.termName,
       cols: this.width - this.iwidth,
@@ -189,9 +171,7 @@ export class Terminal extends Box {
       nextTick(function () {
         try {
           self.pty.resize(self.width - self.iwidth, self.height - self.iheight)
-        } catch (e) {
-
-        }
+        } catch (e) { }
       })
     })
     this.handler = function (data) {
@@ -205,14 +185,10 @@ export class Terminal extends Box {
     this.pty.on(EXIT, function (code) {
       self.emit(EXIT, code || null)
     })
-    this.onScreenEvent(KEYPRESS, function () {
-      self.screen.render()
-    })
+    this.onScreenEvent(KEYPRESS, () => self.screen.render())
     this.screen._listenKeys(this)
   }
-  write(data) {
-    return this.term.write(data)
-  }
+  write(data) { return this.term.write(data) }
   render() {
     const ret = this._render()
     if (!ret) return
@@ -233,12 +209,9 @@ export class Terminal extends Box {
         && !this.term.cursorHidden) {
         cursor = xi + this.term.x
       }
-      else {
-        cursor = -1
-      }
+      else { cursor = -1 }
       for (let x = Math.max(xi, 0); x < xl; x++) {
         if (!line[x] || !this.term.lines[scrollback + y - yi][x - xi]) break
-
         line[x][0] = this.term.lines[scrollback + y - yi][x - xi][0]
         if (x === cursor) {
           if (this.cursor === 'line') {
@@ -246,12 +219,8 @@ export class Terminal extends Box {
             line[x][1] = '\u2502'
             continue
           }
-          else if (this.cursor === 'underline') {
-            line[x][0] = this.dattr | (2 << 18)
-          }
-          else if (this.cursor === 'block' || !this.cursor) {
-            line[x][0] = this.dattr | (8 << 18)
-          }
+          else if (this.cursor === 'underline') { line[x][0] = this.dattr | (2 << 18) }
+          else if (this.cursor === 'block' || !this.cursor) { line[x][0] = this.dattr | (8 << 18) }
         }
         line[x][1] = this.term.lines[scrollback + y - yi][x - xi][1]
         // default foreground = 257
@@ -276,9 +245,7 @@ export class Terminal extends Box {
         s[0] -= 128
         s = '\x1b' + s.toString('utf-8')
       }
-      else {
-        s = s.toString('utf-8')
-      }
+      else { s = s.toString('utf-8') }
     }
     return (buf[0] === 0x1b && buf[1] === 0x5b && buf[2] === 0x4d)
       || /^\x1b\[M([\x00\u0020-\uffff]{3})/.test(s)
@@ -292,9 +259,7 @@ export class Terminal extends Box {
     this.term.ydisp = offset
     return this.emit(SCROLL)
   }
-  getScroll() {
-    return this.term.ydisp
-  }
+  getScroll() { return this.term.ydisp }
   scroll(offset) {
     this.term.scrollDisp(offset)
     return this.emit(SCROLL)
@@ -315,19 +280,11 @@ export class Terminal extends Box {
   }
   screenshot(xi, xl, yi, yl) {
     xi = 0 + (xi || 0)
-    if (xl != null) {
-      xl = 0 + (xl || 0)
-    }
-    else {
-      xl = this.term.lines[0].length
-    }
+    if (xl != null) { xl = 0 + (xl || 0) }
+    else { xl = this.term.lines[0].length }
     yi = 0 + (yi || 0)
-    if (yl != null) {
-      yl = 0 + (yl || 0)
-    }
-    else {
-      yl = this.term.lines.length
-    }
+    if (yl != null) { yl = 0 + (yl || 0) }
+    else { yl = this.term.lines.length }
     return this.screen.screenshot(xi, xl, yi, yl, this.term)
   }
   kill() {
@@ -337,9 +294,7 @@ export class Terminal extends Box {
     }
     this.term.refresh = function () {}
     this.term.write('\x1b[H\x1b[J')
-    if (this.term._blink) {
-      clearInterval(this.term._blink)
-    }
+    if (this.term._blink) { clearInterval(this.term._blink) }
     this.term.destroy()
   }
 }
