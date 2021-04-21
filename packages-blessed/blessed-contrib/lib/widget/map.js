@@ -1,4 +1,4 @@
-'use strict'
+
 import blessed  from 'blessed'
 import InnerMap from 'map-canvas'
 import Canvas   from './canvas'
@@ -64,4 +64,4 @@ Map.prototype.getOptionsPrototype = function () {
 Map.prototype.clearMarkers = function () {
   this.innerMap.draw()
 }
-module.exports = Map
+export default Map

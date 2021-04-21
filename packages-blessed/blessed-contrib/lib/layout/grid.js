@@ -1,4 +1,4 @@
-'use strict'
+
 import utils from '../utils'
 
 const widgetSpacing = 0
@@ -30,4 +30,4 @@ Grid.prototype.set = function (row, col, rowSpan, colSpan, obj, opts) {
   this.options.screen.append(instance)
   return instance
 }
-module.exports = Grid
+export default Grid

@@ -1,4 +1,4 @@
-'use strict'
+
 import blessed from 'blessed'
 import Canvas  from './canvas'
 
@@ -93,4 +93,4 @@ Gauge.prototype.setStack = function (stack) {
 Gauge.prototype.getOptionsPrototype = function () {
   return { percent: 10 }
 }
-module.exports = Gauge
+export default Gauge

@@ -1,4 +1,4 @@
-'use strict'
+
 import blessed          from 'blessed'
 import chalk            from 'chalk'
 import marked           from 'marked'
@@ -44,4 +44,4 @@ Markdown.prototype.getOptionsPrototype = function () {
   }
 }
 Markdown.prototype.type = 'markdown'
-module.exports = Markdown
+export default Markdown

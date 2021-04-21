@@ -1,4 +1,4 @@
-'use strict'
+
 import blessed from 'blessed'
 import Canvas  from './canvas'
 
@@ -397,4 +397,4 @@ var CharacterMasks = (function () {
     '*': g1 | g2 | h | i | j | k | l | m
   }
 }())
-module.exports = LCD
+export default LCD

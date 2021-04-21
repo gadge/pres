@@ -1,4 +1,4 @@
-'use strict'
+
 import blessed from 'blessed'
 import _       from 'lodash'
 import utils   from '../../utils.js'
@@ -186,4 +186,4 @@ Line.prototype.getOptionsPrototype = function () {
       } ]
   }
 }
-module.exports = Line
+export default Line

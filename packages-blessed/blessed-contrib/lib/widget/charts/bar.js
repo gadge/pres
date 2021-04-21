@@ -1,4 +1,4 @@
-'use strict'
+
 import blessed from 'blessed'
 import Canvas  from '../canvas'
 
@@ -73,4 +73,4 @@ Bar.prototype.getOptionsPrototype = function () {
   }
 }
 Bar.prototype.type = 'bar'
-module.exports = Bar
+export default Bar

@@ -1,4 +1,4 @@
-'use strict'
+
 import blessed from 'blessed'
 
 const Node = blessed.Node,
@@ -126,4 +126,4 @@ Tree.prototype.setData = function (nodes) {
   this.rows.setItems(this.walk(nodes, ''))
 }
 Tree.prototype.type = 'tree'
-module.exports = Tree
+export default Tree

@@ -1,4 +1,4 @@
-'use strict'
+
 import blessed from 'blessed'
 import utils   from '../../utils.js'
 import Canvas  from '../canvas'
@@ -172,4 +172,4 @@ StackedBar.prototype.addLegend = function (bars, x) {
   self.append(self.legend)
 }
 StackedBar.prototype.type = 'bar'
-module.exports = StackedBar
+export default StackedBar

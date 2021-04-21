@@ -1,4 +1,4 @@
-'use strict'
+
 import blessed from 'blessed'
 import Canvas  from './canvas'
 
@@ -71,4 +71,4 @@ GaugeList.prototype.setSingleGauge = function (gauge, offset) {
 GaugeList.prototype.getOptionsPrototype = function () {
   return { percent: 10 }
 }
-module.exports = GaugeList
+export default GaugeList

@@ -1,4 +1,4 @@
-'use strict'
+
 import blessed from 'blessed'
 import Canvas  from './canvas'
 
@@ -22,18 +22,14 @@ function Donut(options) {
 Donut.prototype = Object.create(Canvas.prototype)
 Donut.prototype.calcSize = function () {
   this.canvasSize = { width: Math.round(this.width * 2 - 5), height: this.height * 4 - 12 }
-  if (this.canvasSize.width % 2 == 1)
-    this.canvasSize.width--
-  if (this.canvasSize.height % 4 != 1)
-    this.canvasSize.height += (this.canvasSize.height % 4)
+  if (this.canvasSize.width % 2 === 1) this.canvasSize.width--
+  if (this.canvasSize.height % 4 !== 1) this.canvasSize.height += (this.canvasSize.height % 4)
 }
 Donut.prototype.type = 'donut'
 const cos = Math.cos
 const sin = Math.sin
 const pi = 3.141592635
-Donut.prototype.setData = function (data) {
-  this.update(data)
-}
+Donut.prototype.setData = function (data) { this.update(data) }
 Donut.prototype.update = function (data) {
   if (!this.ctx) {
     throw 'error: canvas context does not exist. setData() for line charts must be called after the chart has been added to the screen via screen.append()'
@@ -118,4 +114,4 @@ Donut.prototype.getOptionsPrototype = function () {
     ]
   }
 }
-module.exports = Donut
+export default Donut

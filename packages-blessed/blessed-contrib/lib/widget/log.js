@@ -1,4 +1,4 @@
-'use strict'
+
 import blessed from 'blessed'
 
 const Node = blessed.Node,
@@ -20,4 +20,4 @@ Log.prototype.log = function (str) {
   this.scrollTo(this.logLines.length)
 }
 Log.prototype.type = 'log'
-module.exports = Log
+export default Log

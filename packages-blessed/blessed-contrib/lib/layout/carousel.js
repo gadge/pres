@@ -1,4 +1,3 @@
-'use strict'
 function Carousel(pages, options) {
   this.currPage = 0
   this.pages = pages
@@ -53,11 +52,11 @@ Carousel.prototype.start = function () {
   }
   if (this.options.controlKeys) {
     this.screen.key([ 'right', 'left', 'home', 'end' ], (ch, key) => {
-      if (key.name == 'right') self.next()
-      if (key.name == 'left') self.prev()
-      if (key.name == 'home') self.home()
-      if (key.name == 'end') self.end()
+      if (key.name === 'right') self.next()
+      if (key.name === 'left') self.prev()
+      if (key.name === 'home') self.home()
+      if (key.name === 'end') self.end()
     })
   }
 }
-module.exports = Carousel
+export default Carousel

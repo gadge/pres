@@ -1,4 +1,4 @@
-'use strict'
+
 import blessed   from 'blessed'
 import stripAnsi from 'strip-ansi'
 
@@ -108,4 +108,4 @@ Table.prototype.getOptionsPrototype = function () {
   }
 }
 Table.prototype.type = 'table'
-module.exports = Table
+export default Table

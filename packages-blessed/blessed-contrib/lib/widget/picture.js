@@ -1,4 +1,4 @@
-'use strict'
+
 import blessed      from 'blessed'
 import fs           from 'fs'
 import streams      from 'memory-streams'
@@ -43,4 +43,4 @@ Picture.prototype.getOptionsPrototype = function () {
   }
 }
 Picture.prototype.type = 'picture'
-module.exports = Picture
+export default Picture

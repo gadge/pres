@@ -1,4 +1,4 @@
-'use strict'
+
 import blessed   from 'blessed'
 import sparkline from 'sparkline'
 
@@ -42,4 +42,4 @@ Sparkline.prototype.getOptionsPrototype = function () {
   }
 }
 Sparkline.prototype.type = 'sparkline'
-module.exports = Sparkline
+export default Sparkline

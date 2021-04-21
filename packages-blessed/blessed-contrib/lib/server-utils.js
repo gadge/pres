@@ -1,4 +1,4 @@
-'use strict'
+
 import blessed from 'blessed'
 import url     from 'url'
 import contrib from '../index'
