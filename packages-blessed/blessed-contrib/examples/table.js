@@ -28,7 +28,5 @@ table.setData(
         [ 5, 6 ],
         [ 7, 8 ] ]
   })
-screen.key([ 'escape', 'q', 'C-c' ], function (ch, key) {
-  return process.exit(0)
-})
+screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
 screen.render()

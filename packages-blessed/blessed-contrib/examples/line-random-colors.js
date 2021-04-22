@@ -25,7 +25,5 @@ const screen = blessed.screen(),
       } ]
 screen.append(line) //must append before setting data
 line.setData(data)
-screen.key([ 'escape', 'q', 'C-c' ], function (ch, key) {
-  return process.exit(0)
-})
+screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
 screen.render()

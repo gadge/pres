@@ -82,9 +82,7 @@ tree.on('select', function (node) {
 })
 //set default table
 table.setData({ headers: [ 'Info' ], data: [ [] ] })
-screen.key([ 'escape', 'q', 'C-c' ], function (ch, key) {
-  return process.exit(0)
-})
+screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
 screen.key([ 'tab' ], function (ch, key) {
   if (screen.focused == tree.rows)
     table.focus()

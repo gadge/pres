@@ -40,6 +40,4 @@ function updateDonuts() {
   screen.render()
   pct += 0.01
 }
-screen.key([ 'escape', 'q', 'C-c' ], function (ch, key) {
-  return process.exit(0)
-})
+screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))

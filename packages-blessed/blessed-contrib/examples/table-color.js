@@ -26,7 +26,5 @@ table.setData(
       [ [ colors.blue('1111'), '22222', '55555' ],
         [ '33333', '44444', '66666' ] ]
   })
-screen.key([ 'escape', 'q', 'C-c' ], function (ch, key) {
-  return process.exit(0)
-})
+screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
 screen.render()
