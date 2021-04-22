@@ -122,8 +122,7 @@ class SixteenSegment {
     this.count = count
   }
   setOptions(options) {
-    if (options.elements)
-      this.ElementArray.SetCount(options.elements)
+    if (options.elements) this.ElementArray.SetCount(options.elements)
     this.SegmentWidth = options.segmentWidth || this.SegmentWidth
     this.SegmentInterval = options.segmentInterval || this.SegmentInterval
     this.BevelWidth = 0.01
@@ -132,8 +131,8 @@ class SixteenSegment {
     this.StrokeWidth = options.strokeWidth || this.StrokeWidth
     this.Padding = options.elementPadding || this.Padding
     this.Spacing = options.elementSpacing || this.Spacing
-    this.ElementWidth = (width - (this.Spacing * this.count)) / this.count
-    this.ElementHeight = height - (this.Padding * 2)
+    this.ElementWidth = (this.Width - (this.Spacing * this.count)) / this.count
+    this.ElementHeight = this.Height - (this.Padding * 2)
   }
   DisplayText(value) {
     // Recalculate points in case any settings changed
@@ -235,7 +234,7 @@ class SixteenSegment {
           w4                      = w - sw / 2, h4 = h / 2,
           w5                      = w, h5              = h / 2 + sw / 2
     // Order of segments stored in Points[][]
-    const A1                                                        = 0, A2 = 1, B                                         = 2, C                                  = 3, D1 = 4, D2 = 5, E = 6, F = 7,
+    const A1                                                        = 0, A2 = 1, B = 2, C = 3, D1 = 4, D2 = 5, E = 6, F = 7,
           G1 = 8, G2 = 9, H = 10, I = 11, J = 12, K = 13, L = 14, M = 15
     // Create the points array for all segments
     const points = []
@@ -300,7 +299,7 @@ const CharacterMasks = (function () {
   const a1                                       = 1 << 0, a2                          = 1 << 1, b = 1 << 2, c = 1 << 3,
         d1                                       = 1 << 4, d2                          = 1 << 5, e = 1 << 6, f = 1 << 7,
         g1 = 1 << 8, g2 = 1 << 9, h = 1 << 10, i = 1 << 11,
-        j                                        = 1 << 12, k = 1 << 13, l              = 1 << 14, m = 1 << 15
+        j                                        = 1 << 12, k = 1 << 13, l = 1 << 14, m = 1 << 15
   // Character map associates characters with a bit pattern
   return {
     ' ': 0,

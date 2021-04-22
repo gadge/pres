@@ -1,8 +1,8 @@
 import { blessed }  from '@pres/terminal-interface'
 import * as contrib from '../index'
 
-var screen = blessed.screen(),
-    map    = contrib.map({ label: 'World Map' })
+const screen = blessed.screen(),
+      map    = contrib.map({ label: 'World Map' })
 
 screen.append(map)
 
