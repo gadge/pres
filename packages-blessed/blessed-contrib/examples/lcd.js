@@ -1,6 +1,6 @@
-var blessed = require('blessed')
-  , contrib = require('../')
-  , screen = blessed.screen();
+var blessed = require('blessed'),
+   contrib = require('../'),
+   screen = blessed.screen();
   
 /*
 //these options need to be modified epending on the resulting positioning/size

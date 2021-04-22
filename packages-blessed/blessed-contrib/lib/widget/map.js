@@ -1,3 +1,4 @@
+import { ATTACH } from '@pres/enum-events'
 import InnerMap   from 'map-canvas'
 import blessed    from '../vendor/blessed'
 import { Canvas } from './canvas'
@@ -7,7 +8,7 @@ export function Map(options) {
   const self = this
   if (!(this instanceof Node)) { return new Map(options) }
   Canvas.call(this, options)
-  this.on('attach', function () {
+  this.on(ATTACH, function () {
     options.style = options.style || {}
     const opts = {
       excludeAntartica: (options.excludeAntarctica === undefined) ? true : options.excludeAntarctica,

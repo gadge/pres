@@ -1,18 +1,18 @@
-var blessed = require('blessed')
-  , contrib = require('../')
-  , screen = blessed.screen()
+var blessed = require('blessed'),
+   contrib = require('../'),
+   screen = blessed.screen()
 
 function page1(screen) {  
    var grid = new contrib.grid({rows: 4, cols: 4, screen: screen})
 
    var line = grid.set(1, 0, 2, 2, contrib.line, 
      { style: 
-       { line: "yellow"
-       , text: "green"
-       , baseline: "black"}
-     , xLabelPadding: 3
-     , xPadding: 5
-     , label: 'Stocks'})
+       { line: "yellow",
+   text: "green",
+   baseline: "black"},
+   xLabelPadding: 3,
+   xPadding: 5,
+   label: 'Stocks'})
 
    var map = grid.set(1, 2, 2, 2, contrib.map, {label: 'Servers Location'})
 
@@ -30,12 +30,12 @@ function page1(screen) {
 
 function page2(screen) {  
   var line = contrib.line(
-   { width: 80
-   , height: 30
-   , left: 15
-   , top: 12  
-   , xPadding: 5
-   , label: 'Title'
+   { width: 80,
+   height: 30,
+   left: 15,
+   top: 12  ,
+   xPadding: 5,
+   label: 'Title'
    })
 
   var data = [ { title: 'us-east',
@@ -59,8 +59,8 @@ screen.key(['escape', 'q', 'C-c'], function(ch, key) {
   return process.exit(0);
 });
 
-var carousel = new contrib.carousel( [page1, page2]
-                                   , { screen: screen
-                                     , interval: 3000
-                                     , controlKeys: true })
+var carousel = new contrib.carousel( [page1, page2],
+   { screen: screen,
+   interval: 3000,
+   controlKeys: true })
 carousel.start()

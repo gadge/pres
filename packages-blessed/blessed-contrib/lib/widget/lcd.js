@@ -1,3 +1,4 @@
+import { ATTACH } from '@pres/enum-events'
 import blessed    from '../vendor/blessed'
 import { Canvas } from './canvas'
 
@@ -20,7 +21,7 @@ export function LCD(options) {
   self.options.color = options.color || 'white'
   Canvas.call(this, options)
   this.segment16 = null
-  this.on('attach', function () {
+  this.on(ATTACH, function () {
     const display = self.options.display || 1234
     if (!this.segment16)
       this.segment16 = new SixteenSegment(this.options.elements, this.ctx, this.canvasSize.width, this.canvasSize.height, 0, 0, this.options)

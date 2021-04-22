@@ -1,12 +1,12 @@
-var blessed = require('blessed')
-  , contrib = require('../')
-  , screen = blessed.screen()
-  , log = contrib.log(
-      { fg: "green"
-      , label: 'Server Log'      
-      , height: "20%"
-      , tags: true      
-      , border: {type: "line", fg: "cyan"} })
+var blessed = require('blessed'),
+   contrib = require('../'),
+   screen = blessed.screen(),
+   log = contrib.log(
+      { fg: "green",
+   label: 'Server Log'      ,
+   height: "20%",
+   tags: true      ,
+   border: {type: "line", fg: "cyan"} })
     
 screen.append(log)
 

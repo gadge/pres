@@ -1,3 +1,4 @@
+import { ATTACH } from '@pres/enum-events'
 import blessed    from '../../vendor/blessed'
 import { Canvas } from '../canvas'
 
@@ -11,7 +12,7 @@ export function Bar(options) {
   if ((this.options.barSpacing - this.options.barWidth) < 3) this.options.barSpacing = this.options.barWidth + 3
   this.options.xOffset = this.options.xOffset == null ? 5 : this.options.xOffset
   this.options.showText = this.options.showText === false ? false : true
-  this.on('attach', () => { if (self.options.data) { self.setData(self.options.data) } })
+  this.on(ATTACH, () => { if (self.options.data) { self.setData(self.options.data) } })
 }
 Bar.prototype = Object.create(Canvas.prototype)
 Bar.prototype.calcSize = function () { this.canvasSize = { width: this.width - 2, height: this.height } }

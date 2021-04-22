@@ -1,5 +1,5 @@
-var blessed = require('blessed')
-  , contrib = require('../index')
+var blessed = require('blessed'),
+   contrib = require('../index')
 
 var screen = blessed.screen()
 
@@ -35,23 +35,23 @@ var gauge = grid.set(8, 10, 2, 2, contrib.gauge, {label: 'Storage', percent: [80
 var gauge_two = grid.set(2, 9, 2, 3, contrib.gauge, {label: 'Deployment Progress', percent: 80})
 
 var sparkline = grid.set(10, 10, 2, 2, contrib.sparkline, 
-  { label: 'Throughput (bits/sec)'
-  , tags: true
-  , style: { fg: 'blue', titleFg: 'white' }})
+  { label: 'Throughput (bits/sec)',
+   tags: true,
+   style: { fg: 'blue', titleFg: 'white' }})
 
 var bar = grid.set(4, 6, 4, 3, contrib.bar, 
-  { label: 'Server Utilization (%)'
-  , barWidth: 4
-  , barSpacing: 6
-  , xOffset: 2
-  , maxHeight: 9})
+  { label: 'Server Utilization (%)',
+   barWidth: 4,
+   barSpacing: 6,
+   xOffset: 2,
+   maxHeight: 9})
 
 var table =  grid.set(4, 9, 4, 3, contrib.table, 
-  { keys: true
-  , fg: 'green'
-  , label: 'Active Processes'
-  , columnSpacing: 1
-  , columnWidth: [24, 10, 10]})
+  { keys: true,
+   fg: 'green',
+   label: 'Active Processes',
+   columnSpacing: 1,
+   columnWidth: [24, 10, 10]})
 
 /*
  *
@@ -83,26 +83,26 @@ var lcdLineOne = grid.set(0,9,2,3, contrib.lcd,
 
 var errorsLine = grid.set(0, 6, 4, 3, contrib.line, 
   { style: 
-    { line: "red"
-    , text: "white"
-    , baseline: "black"}
-  , label: 'Errors Rate'
-  , maxY: 60
-  , showLegend: true })
+    { line: "red",
+   text: "white",
+   baseline: "black"},
+   label: 'Errors Rate',
+   maxY: 60,
+   showLegend: true })
 
 var transactionsLine = grid.set(0, 0, 6, 6, contrib.line, 
-          { showNthLabel: 5
-          , maxY: 100
-          , label: 'Total Transactions'
-          , showLegend: true
-          , legend: {width: 10}})
+          { showNthLabel: 5,
+   maxY: 100,
+   label: 'Total Transactions',
+   showLegend: true,
+   legend: {width: 10}})
 
 var map = grid.set(6, 0, 6, 6, contrib.map, {label: 'Servers Location'})
 
 var log = grid.set(8, 6, 4, 2, contrib.log, 
-  { fg: "green"
-  , selectedFg: "green"
-  , label: 'Server Log'})
+  { fg: "green",
+   selectedFg: "green",
+   label: 'Server Log'})
 
 
 //dummy data

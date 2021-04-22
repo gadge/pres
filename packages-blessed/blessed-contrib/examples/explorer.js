@@ -1,7 +1,7 @@
-var blessed = require('blessed')
-  , contrib = require('../index')
-  , fs = require('fs')
-  , path = require('path')
+var blessed = require('blessed'),
+   contrib = require('../index'),
+   fs = require('fs'),
+   path = require('path')
 
 var screen = blessed.screen()
 
@@ -9,29 +9,29 @@ var screen = blessed.screen()
 var grid = new contrib.grid({rows: 1, cols: 2, screen: screen})
 
 var tree =  grid.set(0, 0, 1, 1, contrib.tree, 
-  { style: { text: "red" }
-  , template: { lines: true }
-  , label: 'Filesystem Tree'})
+  { style: { text: "red" },
+   template: { lines: true },
+   label: 'Filesystem Tree'})
 
 var table =  grid.set(0, 1, 1, 1, contrib.table, 
-  { keys: true
-  , fg: 'green'
-  , label: 'Informations'
-  , columnWidth: [24, 10, 10]})
+  { keys: true,
+   fg: 'green',
+   label: 'Informations',
+   columnWidth: [24, 10, 10]})
 
 //file explorer
-var explorer = { name: '/'
-  , extended: true
-  // Custom function used to recursively determine the node path
-  , getPath: function(self){
+var explorer = { name: '/',
+   extended: true
+  // Custom function used to recursively determine the node path,
+   getPath: function(self){
       // If we don't have any parent, we are at tree root, so return the base case
       if(! self.parent)
         return '';
       // Get the parent node path and add this node name
       return self.parent.getPath(self.parent)+'/'+self.name;
     }
-  // Child generation function
-  , children: function(self){
+  // Child generation function,
+   children: function(self){
       var result = {};
       var selfPath = self.getPath(self);
       try {

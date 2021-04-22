@@ -1,3 +1,4 @@
+import { ATTACH } from '@pres/enum-events'
 import * as utils from '../../utils.js'
 import blessed    from '../../vendor/blessed'
 import { Canvas } from '../canvas'
@@ -15,7 +16,7 @@ export function StackedBar(options) {
   this.options.showText = this.options.showText === false ? false : true
   this.options.legend = this.options.legend || {}
   this.options.showLegend = this.options.showLegend === false ? false : true
-  this.on('attach', () => { if (self.options.data) self.setData(self.options.data) })
+  this.on(ATTACH, () => { if (self.options.data) self.setData(self.options.data) })
 }
 StackedBar.prototype = Object.create(Canvas.prototype)
 StackedBar.prototype.calcSize = function () { this.canvasSize = { width: this.width - 2, height: this.height } }

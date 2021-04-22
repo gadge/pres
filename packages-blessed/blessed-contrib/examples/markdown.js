@@ -1,8 +1,8 @@
-var blessed = require('blessed')
-  , contrib = require('../')
-  , screen = blessed.screen()
-  , chalk = require('chalk')
-  , markdown = contrib.markdown()
+var blessed = require('blessed'),
+   contrib = require('../'),
+   screen = blessed.screen(),
+   chalk = require('chalk'),
+   markdown = contrib.markdown()
     
 screen.append(markdown)
 markdown.setOptions({ firstHeading: chalk.red.italic })

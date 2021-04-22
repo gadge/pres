@@ -1,6 +1,6 @@
-var blessed = require('blessed')
-  , contrib = require('../index')
-  , screen = blessed.screen();
+var blessed = require('blessed'),
+   contrib = require('../index'),
+   screen = blessed.screen();
 
 /**
  * Donut Options

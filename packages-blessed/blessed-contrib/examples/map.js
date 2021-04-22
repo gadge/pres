@@ -1,7 +1,7 @@
-var blessed = require('blessed')
-  , contrib = require('../')
-  , screen = blessed.screen()
-  , map = contrib.map({label: 'World Map'})
+var blessed = require('blessed'),
+   contrib = require('../'),
+   screen = blessed.screen(),
+   map = contrib.map({label: 'World Map'})
     
 screen.append(map)
 

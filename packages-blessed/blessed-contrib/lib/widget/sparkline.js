@@ -1,4 +1,5 @@
 import * as Mixin from '@ject/mixin'
+import { ATTACH } from '@pres/enum-events'
 import sparkline  from 'sparkline'
 import blessed    from '../vendor/blessed'
 
@@ -13,7 +14,7 @@ export function Sparkline(options) {
   options.style.titleFg = options.style.titleFg || 'white'
   this.options = options
   Mixin.assign(this, new Box(options)) // Box.call(this, options)
-  this.on('attach', function () {
+  this.on(ATTACH, function () {
     if (self.options.data) { self.setData(self.options.data.titles, self.options.data.data) }
   })
 }

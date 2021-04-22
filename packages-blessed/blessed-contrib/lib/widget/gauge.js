@@ -1,3 +1,4 @@
+import { ATTACH } from '@pres/enum-events'
 import blessed    from '../vendor/blessed'
 import { Canvas } from './canvas'
 
@@ -12,7 +13,7 @@ export function Gauge(options) {
   self.options.data = options.data || []
   self.options.showLabel = options.showLabel !== false
   Canvas.call(this, options, require('ansi-term'))
-  this.on('attach', function () {
+  this.on(ATTACH, function () {
     if (self.options.stack) {
       const stack = this.stack = self.options.stack
       this.setStack(stack)

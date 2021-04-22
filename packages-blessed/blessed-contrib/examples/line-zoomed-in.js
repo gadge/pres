@@ -2,15 +2,15 @@ var blessed = require('blessed')
 , contrib = require('../index')
 , screen = blessed.screen()
 , line = contrib.line(
-   { width: 80
-   , height: 30
-   , left: 15
-   , top: 12
-   , xPadding: 5
-   , minY: 1000
-   , maxY: 1050
-   , label: 'Title'
-   , style: { baseline: 'white' }
+   { width: 80,
+   height: 30,
+   left: 15,
+   top: 12,
+   xPadding: 5,
+   minY: 1000,
+   maxY: 1050,
+   label: 'Title',
+   style: { baseline: 'white' }
    })
 
 , data = [ { title: 'us-east',

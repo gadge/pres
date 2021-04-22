@@ -2,13 +2,13 @@ var blessed = require('blessed')
 , contrib = require('../index')
 , screen = blessed.screen()
 , line = contrib.line(
-   { width: 80
-   , height: 30
-   , left: 15
-   , top: 12
-   , xPadding: 5
-   , label: 'Title'
-   , numYLabels: 7
+   { width: 80,
+   height: 30,
+   left: 15,
+   top: 12,
+   xPadding: 5,
+   label: 'Title',
+   numYLabels: 7
    //, wholeNumbersOnly: true
    })
 

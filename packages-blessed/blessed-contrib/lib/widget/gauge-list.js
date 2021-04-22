@@ -1,3 +1,4 @@
+import { ATTACH } from '@pres/enum-events'
 import blessed    from '../vendor/blessed'
 import { Canvas } from './canvas'
 
@@ -14,7 +15,7 @@ export function GaugeList(options) {
   self.options.gaugeSpacing = options.gaugeSpacing || 0
   self.options.gaugeHeight = options.gaugeHeight || 1
   Canvas.call(this, options, require('ansi-term'))
-  this.on('attach', function () {
+  this.on(ATTACH, function () {
     const gauges = this.gauges = self.options.gauges
     this.setGauges(gauges)
   })

@@ -7,15 +7,15 @@ function randomColor() {
 
 var screen = blessed.screen()
 , line = contrib.line(
-   { width: 80
-   , height: 30
-   , left: 15
-   , top: 12
-   , xPadding: 5
-   , minY: 30
-   , maxY: 90
-   , label: 'Title'
-   , style: { line: randomColor(), text: randomColor(), baseline: randomColor() }
+   { width: 80,
+   height: 30,
+   left: 15,
+   top: 12,
+   xPadding: 5,
+   minY: 30,
+   maxY: 90,
+   label: 'Title',
+   style: { line: randomColor(), text: randomColor(), baseline: randomColor() }
    })
 
 , data = [ { title: 'us-east',

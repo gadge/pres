@@ -1,4 +1,5 @@
 import * as Mixin from '@ject/mixin'
+import { ATTACH } from '@pres/enum-events'
 import stripAnsi  from 'strip-ansi'
 import blessed    from '../vendor/blessed'
 
@@ -47,7 +48,7 @@ export function Table(options) {
     screen: this.screen
   })
   this.append(this.rows)
-  this.on('attach', function () {
+  this.on(ATTACH, function () {
     if (self.options.data) { self.setData(self.options.data) }
   })
 }
