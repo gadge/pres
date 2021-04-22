@@ -1,8 +1,6 @@
 import { ATTACH } from '@pres/enum-events'
-import blessed    from '../vendor/blessed'
 import { Canvas } from './canvas'
 
-const Node = blessed.Node
 export class GaugeList extends Canvas {
   constructor(options = {}) {
     // if (!(this instanceof Node)) { return new GaugeList(options) }
