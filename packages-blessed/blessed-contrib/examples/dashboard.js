@@ -9,6 +9,7 @@ const normDist = ziggurat(0, 5, 0)
 const screen = blessed.screen()
 //create layout and widgets
 const grid = contrib.grid({ rows: 12, cols: 12, screen: screen })
+
 /**
  * Donut Options
  self.options.radius = options.radius || 14; // how wide is it? over 5 is best
