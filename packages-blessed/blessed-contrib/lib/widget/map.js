@@ -1,6 +1,7 @@
 import { ATTACH } from '@pres/enum-events'
 import InnerMap   from 'map-canvas'
 import { Canvas } from './canvas'
+
 export class Map extends Canvas {
   constructor(options = {}) {
     // if (!(this instanceof Node)) { return new Map(options) }

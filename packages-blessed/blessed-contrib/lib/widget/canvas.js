@@ -1,6 +1,7 @@
 import { Box }                   from '@pres/components-core'
 import { ATTACH }                from '@pres/enum-events'
 import { Canvas as InnerCanvas } from 'drawille-canvas-blessed-contrib'
+
 export class Canvas extends Box {
   constructor(options = {}, canvasType) {
     // if (!(this instanceof Node)) return new Canvas(options)

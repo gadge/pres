@@ -1,6 +1,7 @@
 import url          from 'url'
 import * as contrib from '../index'
 import blessed      from './vendor/blessed'
+
 function OutputBuffer(options) {
   this.isTTY = true
   this.columns = options.cols

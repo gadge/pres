@@ -2,6 +2,7 @@ import { ATTACH } from '@pres/enum-events'
 import * as utils from '../../utils.js'
 import blessed    from '../../vendor/blessed'
 import { Canvas } from '../canvas'
+
 export class StackedBar extends Canvas {
   constructor(options = {}) {
     // if (!(this instanceof Node)) { return new StackedBar(options) }

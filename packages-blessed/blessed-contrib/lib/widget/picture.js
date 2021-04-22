@@ -3,6 +3,7 @@ import fs           from 'fs'
 import streams      from 'memory-streams'
 import MemoryStream from 'memorystream'
 import pictureTube  from 'picture-tuber'
+
 export class Picture extends Box {
   constructor(options) {
     // if (!(this instanceof Node)) { return new Picture(options) }

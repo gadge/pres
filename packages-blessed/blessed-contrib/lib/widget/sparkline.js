@@ -1,6 +1,7 @@
 import { Box }    from '@pres/components-core'
 import { ATTACH } from '@pres/enum-events'
 import sparkline  from 'sparkline'
+
 export class Sparkline extends Box {
   constructor(options = {}) {
     // // if (!(this instanceof Node)) { return new Sparkline(options) }

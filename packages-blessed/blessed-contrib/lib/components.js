@@ -15,6 +15,7 @@ import { Picture }    from './widget/picture'
 import { Sparkline }  from './widget/sparkline'
 import { Table }      from './widget/table'
 import { Tree }       from './widget/tree'
+
 export const carousel = (pages, options) => new Carousel(pages, options)
 export const grid = options => new Grid(options)
 export const canvas = (options, canvasType) => new Canvas(options, canvasType)

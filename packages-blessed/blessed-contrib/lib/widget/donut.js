@@ -1,5 +1,6 @@
 import { ATTACH } from '@pres/enum-events'
 import { Canvas } from './canvas'
+
 export class Donut extends Canvas {
   constructor(options = {}) {
     // if (!(this instanceof Node)) { return new Donut(options) }

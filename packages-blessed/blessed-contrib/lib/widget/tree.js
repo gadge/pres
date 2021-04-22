@@ -1,5 +1,6 @@
 import { Box }  from '@pres/components-core'
 import { List } from '@pres/components-data'
+
 export class Tree extends Box {
   constructor(options) {
     // if (!(this instanceof Node)) { return new Tree(options) }

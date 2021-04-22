@@ -2,6 +2,7 @@ import { Box }    from '@pres/components-core'
 import _          from 'lodash'
 import * as utils from '../../utils.js'
 import { Canvas } from '../canvas'
+
 export class Line extends Canvas {
   constructor(options = {}) {
     // if (!(this instanceof Node)) { return new Line(options) }

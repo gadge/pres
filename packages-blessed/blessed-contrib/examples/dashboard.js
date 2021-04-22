@@ -1,3 +1,4 @@
+import { ATTACH, RESIZE }               from '@pres/enum-events'
 import { TerminalInterface as blessed } from '@pres/terminal-interface'
 import * as contrib                     from '../index'
 
@@ -101,13 +102,13 @@ const servers = [ 'US1', 'US2', 'EU1', 'AU1', 'AS1', 'JP1' ]
 const commands = [ 'grep', 'node', 'java', 'timer', '~/ls -l', 'netns', 'watchdog', 'gulp', 'tar -xvf', 'awk', 'npm install' ]
 //set dummy data on gauge
 let gauge_percent = 0
-setInterval(function () {
+setInterval(() => {
   gauge.setData([ gauge_percent, 100 - gauge_percent ])
   gauge_percent++
   if (gauge_percent >= 100) gauge_percent = 0
 }, 200)
 let gauge_percent_two = 0
-setInterval(function () {
+setInterval(() => {
   gauge_two.setData(gauge_percent_two)
   gauge_percent_two++
   if (gauge_percent_two >= 100) gauge_percent_two = 0
@@ -115,9 +116,7 @@ setInterval(function () {
 //set dummy data on bar chart
 function fillBar() {
   const arr = []
-  for (let i = 0; i < servers.length; i++) {
-    arr.push(Math.round(Math.random() * 10))
-  }
+  for (let i = 0; i < servers.length; i++) arr.push(Math.round(Math.random() * 10))
   bar.setData({ titles: servers, data: arr })
 }
 fillBar()
@@ -140,9 +139,9 @@ setInterval(generateTable, 3000)
 //set log dummy data
 setInterval(function () {
   const rnd = Math.round(Math.random() * 2)
-  if (rnd == 0) log.log('starting process ' + commands[Math.round(Math.random() * (commands.length - 1))])
-  else if (rnd == 1) log.log('terminating server ' + servers[Math.round(Math.random() * (servers.length - 1))])
-  else if (rnd == 2) log.log('avg. wait time ' + Math.random().toFixed(2))
+  if (rnd === 0) log.log('starting process ' + commands[Math.round(Math.random() * (commands.length - 1))])
+  else if (rnd === 1) log.log('terminating server ' + servers[Math.round(Math.random() * (servers.length - 1))])
+  else if (rnd === 2) log.log('avg. wait time ' + Math.random().toFixed(2))
   screen.render()
 }, 500)
 //set spark dummy data
@@ -159,7 +158,7 @@ function refreshSpark() {
 }
 //set map dummy markers
 let marker = true
-setInterval(function () {
+setInterval(() => {
   if (marker) {
     map.addMarker({ "lon": "-79.0000", "lat": "37.5000", color: 'yellow', char: 'X' })
     map.addMarker({ "lon": "-122.6819", "lat": "45.5200" })
@@ -197,14 +196,12 @@ const latencyData = {
 setLineData([ transactionsData, transactionsData1 ], transactionsLine)
 setLineData([ errorsData ], errorsLine)
 // setLineData([latencyData], latencyLine)
-setInterval(function () {
+setInterval(() => {
   setLineData([ transactionsData, transactionsData1 ], transactionsLine)
   screen.render()
 }, 500)
-setInterval(function () {
-  setLineData([ errorsData ], errorsLine)
-}, 1500)
-setInterval(function () {
+setInterval(() => setLineData([ errorsData ], errorsLine), 1500)
+setInterval(() => {
   const colors = [ 'green', 'magenta', 'cyan', 'red', 'blue' ]
   const text = [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L' ]
   const value = Math.round(Math.random() * 100)
@@ -241,17 +238,17 @@ function setLineData(mockData, line) {
 }
 screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
 // fixes https://github.com/yaronn/blessed-contrib/issues/10
-screen.on('resize', function () {
-  donut.emit('attach')
-  gauge.emit('attach')
-  gauge_two.emit('attach')
-  sparkline.emit('attach')
-  bar.emit('attach')
-  table.emit('attach')
-  lcdLineOne.emit('attach')
-  errorsLine.emit('attach')
-  transactionsLine.emit('attach')
-  map.emit('attach')
-  log.emit('attach')
+screen.on(RESIZE, function () {
+  donut.emit(ATTACH)
+  gauge.emit(ATTACH)
+  gauge_two.emit(ATTACH)
+  sparkline.emit(ATTACH)
+  bar.emit(ATTACH)
+  table.emit(ATTACH)
+  lcdLineOne.emit(ATTACH)
+  errorsLine.emit(ATTACH)
+  transactionsLine.emit(ATTACH)
+  map.emit(ATTACH)
+  log.emit(ATTACH)
 })
 screen.render()

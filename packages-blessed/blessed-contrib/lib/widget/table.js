@@ -2,6 +2,7 @@ import { Box }    from '@pres/components-core'
 import { List }   from '@pres/components-data'
 import { ATTACH } from '@pres/enum-events'
 import stripAnsi  from 'strip-ansi'
+
 export class Table extends Box {
   constructor(options) {
     // if (!(this instanceof Node)) { return new Table(options) }
