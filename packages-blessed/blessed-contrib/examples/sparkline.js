@@ -4,7 +4,7 @@ import * as contrib                     from '../'
 
 const screen = blessed.screen()
 
-const spark = contrib.sparkline(
+const spark = new contrib.sparkline(
   {
     label: 'Sparkline',
     tags: true,

@@ -1,176 +1,127 @@
 import { ATTACH } from '@pres/enum-events'
-import blessed    from '../vendor/blessed'
 import { Canvas } from './canvas'
 
-const Node = blessed.Node
-export function LCD(options) {
-  if (!(this instanceof Node)) { return new LCD(options) }
-  const self = this
-  options = options || {}
-  self.options = options
-  //these options need to be modified epending on the resulting positioning/size
-  self.options.segmentWidth = options.segmentWidth || 0.06 // how wide are the segments in % so 50% = 0.5
-  self.options.segmentInterval = options.segmentInterval || 0.11 // spacing between the segments in % so 50% = 0.5
-  self.options.strokeWidth = options.strokeWidth || 0.11 // spacing between the segments in % so 50% = 0.5
-  //default display settings
-  self.options.elements = options.elements || 3 // how many elements in the display. or how many characters can be displayed.
-  self.options.display = options.display || 321 // what should be displayed before anything is set
-  self.options.elementSpacing = options.spacing || 4 // spacing between each element
-  self.options.elementPadding = options.padding || 2 // how far away from the edges to put the elements
-  //coloring
-  self.options.color = options.color || 'white'
-  Canvas.call(this, options)
-  this.segment16 = null
-  this.on(ATTACH, function () {
-    const display = self.options.display || 1234
-    if (!this.segment16)
-      this.segment16 = new SixteenSegment(this.options.elements, this.ctx, this.canvasSize.width, this.canvasSize.height, 0, 0, this.options)
-    this.setDisplay(display)
-  })
-}
-LCD.prototype = Object.create(Canvas.prototype)
-LCD.prototype.calcSize = function () {
-  this.canvasSize = { width: this.width * 2 - 8, height: (this.height * 4) - 12 }
-}
-LCD.prototype.type = 'lcd'
-LCD.prototype.increaseWidth = function () {
-  if (this.segment16) {
-    this.segment16.SegmentWidth += 0.01
+export class LCD extends Canvas {
+  constructor(options = {}) {
+    // if (!(this instanceof Node)) { return new LCD(options) }
+    //these options need to be modified epending on the resulting positioning/size
+    options.segmentWidth = options.segmentWidth || 0.06 // how wide are the segments in % so 50% = 0.5
+    options.segmentInterval = options.segmentInterval || 0.11 // spacing between the segments in % so 50% = 0.5
+    options.strokeWidth = options.strokeWidth || 0.11 // spacing between the segments in % so 50% = 0.5
+    //default display settings
+    options.elements = options.elements || 3 // how many elements in the display. or how many characters can be displayed.
+    options.display = options.display || 321 // what should be displayed before anything is set
+    options.elementSpacing = options.spacing || 4 // spacing between each element
+    options.elementPadding = options.padding || 2 // how far away from the edges to put the elements
+    //coloring
+    options.color = options.color || 'white'
+    super(options)
+    const self = this
+    this.segment16 = null
+    this.on(ATTACH, function () {
+      const display = self.options.display || 1234
+      if (!this.segment16) this.segment16 = new SixteenSegment(this.options.elements, this.ctx, this.canvasSize.width, this.canvasSize.height, 0, 0, this.options)
+      this.setDisplay(display)
+    })
+    this.type = 'lcd'
+  }
+  calcSize() { this.canvasSize = { width: this.width * 2 - 8, height: (this.height * 4) - 12 } }
+  increaseWidth() { if (this.segment16) { this.segment16.SegmentWidth += 0.01 } }
+  decreaseWidth() { if (this.segment16) { this.segment16.SegmentWidth -= 0.01 } }
+  increaseInterval() { if (this.segment16) { this.segment16.SegmentInterval += 0.01 } }
+  decreaseInterval() { if (this.segment16) { this.segment16.SegmentInterval -= 0.01 } }
+  increaseStroke() { if (this.segment16) { this.segment16.StrokeWidth += 0.05 } }
+  decreaseStroke() { if (this.segment16) { this.segment16.StrokeWidth -= 0.05 } }
+  setOptions(options) { if (this.segment16) { this.segment16.setOptions(options) } }
+  setData(data) { this.setDisplay(data.toString()) }
+  getOptionsPrototype() {
+    return {
+      label: 'LCD Test',
+      segmentWidth: 0.06,
+      segmentInterval: 0.11,
+      strokeWidth: 0.1,
+      elements: 5,
+      display: 3210,
+      elementSpacing: 4,
+      elementPadding: 2
+    }
+  }
+  setDisplay(display) {
+    if (!this.ctx)
+      throw 'error: canvas context does not exist. setData() for line charts must be called after the chart has been added to the screen via screen.append()'
+    this.ctx.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height)
+    this.segment16.DisplayText(display)
   }
 }
-LCD.prototype.decreaseWidth = function () {
-  if (this.segment16) {
-    this.segment16.SegmentWidth -= 0.01
+
+class ElementArray {
+  constructor(count) {
+    this.NullMask = 0x10
+    this.Elements = []
+    this.SetCount(count || 0)
   }
-}
-LCD.prototype.increaseInterval = function () {
-  if (this.segment16) {
-    this.segment16.SegmentInterval += 0.01
-  }
-}
-LCD.prototype.decreaseInterval = function () {
-  if (this.segment16) {
-    this.segment16.SegmentInterval -= 0.01
-  }
-}
-LCD.prototype.increaseStroke = function () {
-  if (this.segment16) {
-    this.segment16.StrokeWidth += 0.05
-  }
-}
-LCD.prototype.decreaseStroke = function () {
-  if (this.segment16) {
-    this.segment16.StrokeWidth -= 0.05
-  }
-}
-LCD.prototype.setOptions = function (options) {
-  if (this.segment16) {
-    this.segment16.setOptions(options)
-  }
-}
-LCD.prototype.setData = function (data) {
-  this.setDisplay(data.toString())
-}
-LCD.prototype.getOptionsPrototype = function () {
-  return {
-    label: 'LCD Test',
-    segmentWidth: 0.06,
-    segmentInterval: 0.11,
-    strokeWidth: 0.1,
-    elements: 5,
-    display: 3210,
-    elementSpacing: 4,
-    elementPadding: 2
-  }
-}
-LCD.prototype.setDisplay = function (display) {
-  if (!this.ctx) {
-    throw 'error: canvas context does not exist. setData() for line charts must be called after the chart has been added to the screen via screen.append()'
-  }
-  this.ctx.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height)
-  this.segment16.DisplayText(display)
-}
-function ElementArray(count) {
-  this.SetCount = SetCount
-  this.SetText = SetText
-  this.SetElementValue = SetElementValue
-  this.NullMask = 0x10
-  this.Elements = []
-  this.SetCount(count || 0)
-  function SetCount(count) {
+  SetCount(count) {
     const c = parseInt(count, 10)
-    if (isNaN(c)) {
-      throw 'Invalid element count: ' + count
-    }
+    if (isNaN(c)) throw 'Invalid element count: ' + count
     this.Elements = [ c ]
-    for (let i = 0; i < c; i++) {
+    for (let i = 0; i < c; i++)
       this.Elements[i] = 0
-    }
   }
-  function SetText(value, charMaps) {
+  SetText(value, charMaps) {
     // Get the string of the value passed in
-    if (value === null) {
-      value = ''
-    }
+    if (value === null) { value = '' }
     value = value.toString()
     // Clear the elements
-    for (let i = 0; i < this.Elements.length; i++) {
-      this.SetElementValue(i, 0)
-    }
-    if (value.length === 0) {
-      return
-    }
+    for (let i = 0; i < this.Elements.length; i++) this.SetElementValue(i, 0)
+    if (value.length === 0) return
     // Set the bitmask to dispay the proper character for each element
     for (let e = 0; e < this.Elements.length && e < value.length; e++) {
       const c = value[e]
       let mask = charMaps[c]
       // Use blank of there is no bitmask for this character
-      if (mask === null || mask === undefined) {
-        mask = this.NullMask
-      }
+      if (mask === null || mask === undefined) mask = this.NullMask
       this.SetElementValue(e, mask)
     }
   }
-  function SetElementValue(i, value) {
-    if (i >= 0 && i < this.Elements.length) {
-      this.Elements[i] = parseInt(value, 10)
-    }
-  }
+  SetElementValue(i, value) { if (i >= 0 && i < this.Elements.length) { this.Elements[i] = parseInt(value, 10) } }
 }
 //thx to https://github.com/Enderer/sixteensegment!!!
 //although it needed HEAVY rework since it was already somewhat busted ;-(
-function SixteenSegment(count, canvas, width, height, x, y, options) {
-  this.ElementArray = new ElementArray(count)
-  this.SegmentWidth = options.segmentWidth//(this.ElementWidth * 0.0015) * 5 //0.1;           // Width of segments (% of Element Width)
-  this.SegmentInterval = options.segmentInterval//(this.ElementWidth * 0.0015) * 10 // 0.20;        // Spacing between segments (% of Element Width)
-  this.BevelWidth = 0.01             // Size of corner bevel (% of Element Width)
-  this.SideBevelEnabled = true      // Should the sides be beveled
-  this.StrokeLight = options.color       // Color of an on segment outline
-  this.StrokeWidth = options.strokeWidth               // Width of segment outline
-  this.Padding = options.elementPadding                   // Padding around the display
-  this.Spacing = options.elementSpacing                   // Spacing between elements
-  this.ElementWidth = (width - (this.Spacing * count)) / count
-  this.ElementHeight = height - (this.Padding * 2)
-  // console.error("w %s h %s", this.ElementWidth, this.ElementHeight);
-  this.FillLight = 'red'           // Color of an on segment
-  this.FillDark = 'cyan'             // Color of an off segment
-  this.StrokeDark = 'black'          // Color of an off segment outline
-  this.X = 0
-  this.Y = 0
-  this.ElementCount = count
-  this.CalcElementDimensions = CalcElementDimensions
-  this.FlipVertical = FlipVertical
-  this.FlipHorizontal = FlipHorizontal
-  this.CalcPoints = CalcPoints
-  this.DisplayText = DisplayText
-  this.Draw = Draw
-  this.setOptions = setOptions
-  this.Width = width || canvas.width
-  this.Height = height || canvas.height
-  this.Canvas = canvas
-  this.CalcPoints()
-  this.ElementArray.SetCount(count)
-  function setOptions(options) {
+class SixteenSegment {
+  constructor(count, canvas, width, height, x, y, options) {
+    this.ElementArray = new ElementArray(count)
+    this.SegmentWidth = options.segmentWidth//(this.ElementWidth * 0.0015) * 5 //0.1;           // Width of segments (% of Element Width)
+    this.SegmentInterval = options.segmentInterval//(this.ElementWidth * 0.0015) * 10 // 0.20;        // Spacing between segments (% of Element Width)
+    this.BevelWidth = 0.01             // Size of corner bevel (% of Element Width)
+    this.SideBevelEnabled = true      // Should the sides be beveled
+    this.StrokeLight = options.color       // Color of an on segment outline
+    this.StrokeWidth = options.strokeWidth               // Width of segment outline
+    this.Padding = options.elementPadding                   // Padding around the display
+    this.Spacing = options.elementSpacing                   // Spacing between elements
+    this.ElementWidth = (width - (this.Spacing * count)) / count
+    this.ElementHeight = height - (this.Padding * 2)
+    // console.error("w %s h %s", this.ElementWidth, this.ElementHeight);
+    this.FillLight = 'red'           // Color of an on segment
+    this.FillDark = 'cyan'             // Color of an off segment
+    this.StrokeDark = 'black'          // Color of an off segment outline
+    this.X = 0
+    this.Y = 0
+    this.ElementCount = count
+    // this.CalcElementDimensions = CalcElementDimensions
+    // this.FlipVertical = FlipVertical
+    // this.FlipHorizontal = FlipHorizontal
+    // this.CalcPoints = CalcPoints
+    // this.DisplayText = DisplayText
+    // this.Draw = Draw
+    // this.setOptions = setOptions
+    this.Width = width || canvas.width
+    this.Height = height || canvas.height
+    this.Canvas = canvas
+    this.CalcPoints()
+    this.ElementArray.SetCount(count)
+    this.count = count
+  }
+  setOptions(options) {
     if (options.elements)
       this.ElementArray.SetCount(options.elements)
     this.SegmentWidth = options.segmentWidth || this.SegmentWidth
@@ -181,10 +132,10 @@ function SixteenSegment(count, canvas, width, height, x, y, options) {
     this.StrokeWidth = options.strokeWidth || this.StrokeWidth
     this.Padding = options.elementPadding || this.Padding
     this.Spacing = options.elementSpacing || this.Spacing
-    this.ElementWidth = (width - (this.Spacing * count)) / count
+    this.ElementWidth = (width - (this.Spacing * this.count)) / this.count
     this.ElementHeight = height - (this.Padding * 2)
   }
-  function DisplayText(value) {
+  DisplayText(value) {
     // Recalculate points in case any settings changed
     // console.error("si: %s, sw: %s", this.SegmentInterval, this.SegmentWidth);
     // console.error("st: %s", this.StrokeWidth);
@@ -193,7 +144,7 @@ function SixteenSegment(count, canvas, width, height, x, y, options) {
     this.CalcPoints()
     this.Draw(this.Canvas, this.ElementArray.Elements)
   }
-  function CalcElementDimensions() {
+  CalcElementDimensions() {
     const n = this.ElementCount
     let h = this.ElementHeight
     h -= this.Padding * 2
@@ -201,11 +152,10 @@ function SixteenSegment(count, canvas, width, height, x, y, options) {
     w -= this.Spacing * (n - 1)
     w -= this.Padding * 2
     w /= n
-    const output = { Width: w, Height: h }
     // console.error(output);
-    return output
+    return { Width: w, Height: h }
   }
-  function FlipVertical(points, height) {
+  FlipVertical(points, height) {
     const flipped = []
     for (let i = 0; i < points.length; i++) {
       flipped[i] = {}
@@ -214,7 +164,7 @@ function SixteenSegment(count, canvas, width, height, x, y, options) {
     }
     return flipped
   }
-  function FlipHorizontal(points, width) {
+  FlipHorizontal(points, width) {
     const flipped = []
     for (let i = 0; i < points.length; i++) {
       flipped[i] = {}
@@ -223,7 +173,7 @@ function SixteenSegment(count, canvas, width, height, x, y, options) {
     }
     return flipped
   }
-  function Draw(context, elements) {
+  Draw(context, elements) {
     // Get the context and clear the area
     context.clearRect(this.X, this.Y, this.Width, this.Height)
     context.save()
@@ -240,7 +190,7 @@ function SixteenSegment(count, canvas, width, height, x, y, options) {
         // Pick the on or off color based on the bitmask
         const color = (element & 1 << s) ? this.FillLight : this.FillDark
         const stroke = (element & 1 << s) ? this.StrokeLight : this.StrokeDark
-        if (stroke == this.StrokeDark) continue
+        if (stroke === this.StrokeDark) continue
         // console.error("c: %s, s: %s", color, stroke);
         context.lineWidth = this.StrokeWidth
         context.strokeStyle = stroke
@@ -266,7 +216,7 @@ function SixteenSegment(count, canvas, width, height, x, y, options) {
     }
     context.restore()
   }
-  function CalcPoints() {
+  CalcPoints() {
     const w     = this.ElementWidth,
           h     = this.ElementHeight,
           sw    = this.SegmentWidth * w,
@@ -278,14 +228,14 @@ function SixteenSegment(count, canvas, width, height, x, y, options) {
           sqrt2 = Math.SQRT2,
           sqrt3 = Math.sqrt(3)
     // Base position of points w/out bevel and interval
-    const w0 = w / 2 - sw / 2, h0 = 0,
+    const w0                      = w / 2 - sw / 2, h0 = 0,
           w1                      = w / 2, h1          = sw / 2,
-          w2                      = w / 2 + sw / 2, h2 = sw,
+          w2 = w / 2 + sw / 2, h2 = sw,
           w3                      = w - sw, h3 = h / 2 - sw / 2,
           w4                      = w - sw / 2, h4 = h / 2,
           w5                      = w, h5 = h / 2 + sw / 2
     // Order of segments stored in Points[][]
-    const A1                                                        = 0, A2 = 1, B = 2, C = 3, D1                          = 4, D2                  = 5, E = 6, F = 7,
+    const A1                                                        = 0, A2 = 1, B                                         = 2, C = 3, D1 = 4, D2                  = 5, E = 6, F    = 7,
           G1 = 8, G2 = 9, H = 10, I = 11, J = 12, K = 13, L = 14, M = 15
     // Create the points array for all segments
     const points = []
@@ -343,14 +293,14 @@ function SixteenSegment(count, canvas, width, height, x, y, options) {
     this.Points = points
   }
 }
-var CharacterMasks = (function () {
+const CharacterMasks = (function () {
   // Segment Bitmasks for individual segments.
   // Binary Or them together to create bitmasks
   // a1|a2|b|c|d1|d2|e|f|g1|g2|h|i|j|k|l|m
   const a1                                       = 1 << 0, a2 = 1 << 1, b = 1 << 2, c = 1 << 3,
-        d1                                       = 1 << 4, d2 = 1 << 5, e = 1 << 6, f = 1 << 7,
-        g1 = 1 << 8, g2 = 1 << 9, h = 1 << 10, i = 1 << 11,
-        j                                        = 1 << 12, k = 1 << 13, l              = 1 << 14, m = 1 << 15
+        d1                                       = 1 << 4, d2 = 1 << 5, e              = 1 << 6, f  = 1 << 7,
+        g1                                       = 1 << 8, g2                          = 1 << 9, h = 1 << 10, i = 1 << 11,
+        j = 1 << 12, k = 1 << 13, l = 1 << 14, m = 1 << 15
   // Character map associates characters with a bit pattern
   return {
     ' ': 0,
