@@ -1,7 +1,6 @@
 var fs = require('fs')
   , blessed = require('../../lib/blessed')
   , unicode = blessed.unicode;
-
 var screen = blessed.screen({
   dump: __dirname + '/logs/unicode.log',
   smartCSR: true,
@@ -10,14 +9,11 @@ var screen = blessed.screen({
   fullUnicode: ~process.argv.indexOf('-') ? false : true,
   warnings: true
 });
-
 /**
  * Unicode Characters
  */
-
 // var DU = '杜';
 var DU = unicode.fromCodePoint(0x675C);
-
 // var JUAN = '鹃';
 var JUAN = unicode.fromCodePoint(0x9E43);
 

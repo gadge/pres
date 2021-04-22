@@ -3,7 +3,6 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 /**
  * Modules
  */
@@ -19,14 +18,12 @@ const Node = require('./node')
 const Log = require('./log')
 const Element = require('./element')
 const Box = require('./box')
-
 /**
  * Screen
  */
 function Screen(options = {}) {
   const self = this
   if (!(this instanceof Node)) return new Screen(options)
-
   Screen.bind(this)
   if (options.rsety && options.listen) options = { program: options }
   this.program = options.program
@@ -56,7 +53,6 @@ function Screen(options = {}) {
     }
   }
   this.tput = this.program.tput
-
   Node.call(this, options)
   this.autoPadding = options.autoPadding !== false
   this.tabc = Array((options.tabSize || 4) + 1).join(' ')
@@ -98,7 +94,6 @@ function Screen(options = {}) {
   if (options.title) {
     this.title = options.title
   }
-
   options.cursor = options.cursor || {
     artificial: options.artificialCursor,
     shape: options.cursorShape,
@@ -153,13 +148,9 @@ function Screen(options = {}) {
   this.enter()
   this.postEnter()
 }
-
 Screen.global = null
-
 Screen.total = 0
-
 Screen.instances = []
-
 Screen.bind = function (screen) {
   if (!Screen.global) {
     Screen.global = screen
@@ -171,7 +162,6 @@ Screen.bind = function (screen) {
   }
   if (Screen._bound) return
   Screen._bound = true
-
   process.on('uncaughtException', Screen._exceptionHandler = function (err) {
     if (process.listeners('uncaughtException').length > 1) {
       return
@@ -185,7 +175,6 @@ Screen.bind = function (screen) {
       process.exit(1)
     })
   });
-
   [ 'SIGTERM', 'SIGINT', 'SIGQUIT' ].forEach(function (signal) {
     const name = '_' + signal.toLowerCase() + 'Handler'
     process.on(signal, Screen[name] = function () {
@@ -194,33 +183,25 @@ Screen.bind = function (screen) {
       nextTick(function () { process.exit(0) })
     })
   })
-
   process.on('exit', Screen._exitHandler = function () {
     Screen.instances.slice().forEach(function (screen) { screen.destroy() })
   })
 }
-
 Screen.prototype.__proto__ = Node.prototype
-
 Screen.prototype.type = 'screen'
-
 Screen.prototype.__defineGetter__('title', function () {
   return this.program.title
 })
-
 Screen.prototype.__defineSetter__('title', function (title) {
   return this.program.title = title
 })
-
 Screen.prototype.__defineGetter__('terminal', function () {
   return this.program.terminal
 })
-
 Screen.prototype.__defineSetter__('terminal', function (terminal) {
   this.setTerminal(terminal)
   return this.program.terminal
 })
-
 Screen.prototype.setTerminal = function (terminal) {
   const entered = !!this.program.isAlt
   if (entered) {
@@ -234,7 +215,6 @@ Screen.prototype.setTerminal = function (terminal) {
     this.enter()
   }
 }
-
 Screen.prototype.enter = function () {
   if (this.program.isAlt) return
   if (!this.cursor._set) {
@@ -262,7 +242,6 @@ Screen.prototype.enter = function () {
   }
   this.alloc()
 }
-
 Screen.prototype.leave = function () {
   if (!this.program.isAlt) return
   this.program.put.keypad_local()
@@ -287,7 +266,6 @@ Screen.prototype.leave = function () {
     }
   }
 }
-
 Screen.prototype.postEnter = function () {
   const self = this
   if (this.options.debug) {
@@ -359,20 +337,16 @@ Screen.prototype.postEnter = function () {
     })
   }
 }
-
 Screen.prototype._destroy = Screen.prototype.destroy
 Screen.prototype.destroy = function () {
   this.leave()
-
   const index = Screen.instances.indexOf(this)
   if (~index) {
     Screen.instances.splice(index, 1)
     Screen.total--
-
     Screen.global = Screen.instances[0]
     if (Screen.total === 0) {
       Screen.global = null
-
       process.removeListener('uncaughtException', Screen._exceptionHandler)
       process.removeListener('SIGTERM', Screen._sigtermHandler)
       process.removeListener('SIGINT', Screen._sigintHandler)
@@ -383,7 +357,6 @@ Screen.prototype.destroy = function () {
       delete Screen._sigintHandler
       delete Screen._sigquitHandler
       delete Screen._exitHandler
-
       delete Screen._bound
     }
     this.destroyed = true
@@ -392,18 +365,15 @@ Screen.prototype.destroy = function () {
   }
   this.program.destroy()
 }
-
 Screen.prototype.log = function () {
   return this.program.log.apply(this.program, arguments)
 }
-
 Screen.prototype.debug = function () {
   if (this.debugLog) {
     this.debugLog.log.apply(this.debugLog, arguments)
   }
   return this.program.debug.apply(this.program, arguments)
 }
-
 Screen.prototype._listenMouse = function (el) {
   const self = this
   if (el && !~this.clickable.indexOf(el)) {
@@ -425,21 +395,17 @@ Screen.prototype._listenMouse = function (el) {
       self.clickable = helpers.hsort(self.clickable)
       self._needsClickableSort = false
     }
-
     let i = 0,
       el,
       set,
       pos
-
     for (; i < self.clickable.length; i++) {
       el = self.clickable[i]
       if (el.detached || !el.visible) {
         continue
       }
-
       // if (self.grabMouse && self.focused !== el
       //     && !el.hasAncestor(self.focused)) continue;
-
       pos = el.lpos
       if (!pos) continue
       if (data.x >= pos.xi && data.x < pos.xl
@@ -467,7 +433,6 @@ Screen.prototype._listenMouse = function (el) {
         break
       }
     }
-
     // Just mouseover?
     if ((data.action === 'mousemove'
       || data.action === 'mousedown'
@@ -477,11 +442,9 @@ Screen.prototype._listenMouse = function (el) {
       self.hover.emit('mouseout', data)
       self.hover = null
     }
-
     self.emit('mouse', data)
     self.emit(data.action, data)
   })
-
   // Autofocus highest element.
   // this.on('element click', function(el, data) {
   //   var target;
@@ -492,7 +455,6 @@ Screen.prototype._listenMouse = function (el) {
   //   } while (el = el.parent);
   //   if (target) target.focus();
   // });
-
   // Autofocus elements with the appropriate option.
   this.on('element click', function (el) {
     if (el.clickable === true && el.options.autoFocus !== false) {
@@ -500,7 +462,6 @@ Screen.prototype._listenMouse = function (el) {
     }
   })
 }
-
 Screen.prototype.enableMouse = function (el) {
   this._listenMouse(el)
 }

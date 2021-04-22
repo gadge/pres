@@ -13,9 +13,7 @@ const screen = blessed.screen(),
           width: "50%",
           barBgColor: [ 'red', 'blue', 'green' ]
         })
-
 screen.append(bar)
-
 bar.setData(
   {
     barCategory: [ 'Q1', 'Q2', 'Q3', 'Q4' ],
@@ -26,5 +24,4 @@ bar.setData(
         [ 0, 0, 0 ],
         [ 2, 3, 2 ] ]
   })
-
 screen.render()

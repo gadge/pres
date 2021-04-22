@@ -6,16 +6,13 @@
 const
   Node = require('./node'),
   Box  = require('./box')
-
 /**
  * Image
  */
-
 function Image(options) {
   if (!(this instanceof Node)) { return new Image(options) }
   options = options || {}
   options.type = options.itype || options.type || 'ansi'
-
   Box.call(this, options)
   if (options.type === 'ansi' && this.type !== 'ansiimage') {
     const ANSIImage = require('./ansiimage')
@@ -37,16 +34,11 @@ function Image(options) {
     OverlayImage.call(this, options)
     return this
   }
-
   throw new Error('`type` must either be `ansi` or `overlay`.')
 }
-
 Image.prototype.__proto__ = Box.prototype
-
 Image.prototype.type = 'image'
-
 /**
  * Expose
  */
-
 module.exports = Image

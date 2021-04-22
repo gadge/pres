@@ -3,7 +3,6 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 /**
  * Modules
  */
@@ -12,7 +11,6 @@ const colors = require('../tools/colors')
 const Node = require('./node')
 const Box = require('./box')
 const tng = require('../../vendor/tng')
-
 /**
  * ANSIImage
  */
@@ -20,7 +18,6 @@ function ANSIImage(options) {
   const self = this
   if (!(this instanceof Node)) return new ANSIImage(options)
   options.shrink = true
-
   Box.call(this, options)
   this.scale = this.options.scale || 1.0
   this.options.animate = this.options.animate !== false
@@ -38,11 +35,8 @@ function ANSIImage(options) {
     self.stop()
   })
 }
-
 ANSIImage.prototype.__proto__ = Box.prototype
-
 ANSIImage.prototype.type = 'ansiimage'
-
 ANSIImage.curl = function (url) {
   try {
     return cp.execFileSync('curl',
@@ -58,13 +52,11 @@ ANSIImage.curl = function (url) {
   }
   throw new Error('curl or wget failed.')
 }
-
 ANSIImage.prototype.setImage = function (file) {
   this.file = typeof file === 'string' ? file : null
   if (/^https?:/.test(file)) {
     file = ANSIImage.curl(file)
   }
-
   let width = this.position.width
   let height = this.position.height
   if (width != null) {
@@ -73,7 +65,6 @@ ANSIImage.prototype.setImage = function (file) {
   if (height != null) {
     height = this.height
   }
-
   try {
     this.setContent('')
     this.img = tng(file, {
@@ -100,7 +91,6 @@ ANSIImage.prototype.setImage = function (file) {
     this.cellmap = null
   }
 }
-
 ANSIImage.prototype.play = function () {
   const self = this
   if (!this.img) return
@@ -109,36 +99,29 @@ ANSIImage.prototype.play = function () {
     self.screen.render()
   })
 }
-
 ANSIImage.prototype.pause = function () {
   if (!this.img) return
   return this.img.pause()
 }
-
 ANSIImage.prototype.stop = function () {
   if (!this.img) return
   return this.img.stop()
 }
-
 ANSIImage.prototype.clearImage = function () {
   this.stop()
   this.setContent('')
   this.img = null
   this.cellmap = null
 }
-
 ANSIImage.prototype.render = function () {
   const coords = this._render()
   if (!coords) return
   if (this.img && this.cellmap) {
     this.img.renderElement(this.cellmap, this)
   }
-
   return coords
 }
-
 /**
  * Expose
  */
-
 module.exports = ANSIImage

@@ -2,7 +2,6 @@ import { Box }          from '@pres/components-core'
 import chalk            from 'chalk'
 import marked           from 'marked'
 import TerminalRenderer from 'marked-terminal'
-
 export class Markdown extends Box {
   constructor(options) {
     // if (!(this instanceof Box)) { return new Markdown(options) }
@@ -32,4 +31,3 @@ export class Markdown extends Box {
     }
   }
 }
-

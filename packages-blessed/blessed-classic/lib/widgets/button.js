@@ -3,13 +3,11 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 /**
  * Modules
  */
 const Node = require('./node')
 const Input = require('./input')
-
 /**
  * Button
  */
@@ -19,7 +17,6 @@ function Button(options = {}) {
   if (options.autoFocus == null) {
     options.autoFocus = false
   }
-
   Input.call(this, options)
   this.on('keypress', function (ch, key) {
     if (key.name === 'enter' || key.name === 'space') {
@@ -32,11 +29,8 @@ function Button(options = {}) {
     })
   }
 }
-
 Button.prototype.__proto__ = Input.prototype
-
 Button.prototype.type = 'button'
-
 Button.prototype.press = function () {
   this.focus()
   this.value = true
@@ -44,9 +38,7 @@ Button.prototype.press = function () {
   delete this.value
   return result
 }
-
 /**
  * Expose
  */
-
 module.exports = Button

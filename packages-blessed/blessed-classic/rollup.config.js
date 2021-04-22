@@ -4,12 +4,9 @@ import babel          from '@rollup/plugin-babel'
 import fileInfo       from 'rollup-plugin-fileinfo'
 import json           from '@rollup/plugin-json'
 import { decoObject } from '@spare/logger'
-
 const { name, dependencies, main, module } = require(process.cwd() + '/package.json')
-
 console.log('EXECUTING', name, process.cwd())
 console.log('Dependencies', decoObject(dependencies, { bracket: true }))
-
 export default [
   {
     input: 'index.js',

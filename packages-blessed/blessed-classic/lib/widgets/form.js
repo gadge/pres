@@ -3,13 +3,11 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 /**
  * Modules
  */
 const Node = require('./node')
 const Box = require('./box')
-
 /**
  * Form
  */
@@ -52,11 +50,8 @@ function Form(options = {}) {
     })
   }
 }
-
 Form.prototype.__proto__ = Box.prototype
-
 Form.prototype.type = 'form'
-
 Form.prototype._refresh = function () {
   // XXX Possibly remove this if statement and refresh on every focus.
   // Also potentially only include *visible* focusable elements.
@@ -71,13 +66,11 @@ Form.prototype._refresh = function () {
     this._children = out
   }
 }
-
 Form.prototype._visible = function () {
   return !!this._children.filter(function (el) {
     return el.visible
   }).length
 }
-
 Form.prototype.next = function () {
   this._refresh()
   if (!this._visible()) return
@@ -86,7 +79,6 @@ Form.prototype.next = function () {
     if (!this._selected.visible) return this.next()
     if (this.screen.focused !== this._selected) return this._selected
   }
-
   const i = this._children.indexOf(this._selected)
   if (!~i || !this._children[i + 1]) {
     this._selected = this._children[0]
@@ -97,7 +89,6 @@ Form.prototype.next = function () {
   if (!this._selected.visible) return this.next()
   return this._selected
 }
-
 Form.prototype.previous = function () {
   this._refresh()
   if (!this._visible()) return
@@ -106,7 +97,6 @@ Form.prototype.previous = function () {
     if (!this._selected.visible) return this.previous()
     if (this.screen.focused !== this._selected) return this._selected
   }
-
   const i = this._children.indexOf(this._selected)
   if (!~i || !this._children[i - 1]) {
     this._selected = this._children[this._children.length - 1]
@@ -117,31 +107,25 @@ Form.prototype.previous = function () {
   if (!this._selected.visible) return this.previous()
   return this._selected
 }
-
 Form.prototype.focusNext = function () {
   const next = this.next()
   if (next) next.focus()
 }
-
 Form.prototype.focusPrevious = function () {
   const previous = this.previous()
   if (previous) previous.focus()
 }
-
 Form.prototype.resetSelected = function () {
   this._selected = null
 }
-
 Form.prototype.focusFirst = function () {
   this.resetSelected()
   this.focusNext()
 }
-
 Form.prototype.focusLast = function () {
   this.resetSelected()
   this.focusPrevious()
 }
-
 Form.prototype.submit = function () {
   const out = {}
   this.children.forEach(function fn(el) {
@@ -158,14 +142,11 @@ Form.prototype.submit = function () {
     el.children.forEach(fn)
   })
   this.emit('submit', out)
-
   return this.submission = out
 }
-
 Form.prototype.cancel = function () {
   this.emit('cancel')
 }
-
 Form.prototype.reset = function () {
   this.children.forEach(function fn(el) {
     switch (el.type) {
@@ -236,9 +217,7 @@ Form.prototype.reset = function () {
   })
   this.emit('reset')
 }
-
 /**
  * Expose
  */
-
 module.exports = Form

@@ -1,7 +1,6 @@
 /**
  * node-singlebyte
  */
-
 // The MIT License (MIT)
 //
 // Copyright (c) 2013, Sergey Sokoloff (aka Mithgol the Webmaster).
@@ -23,7 +22,6 @@
 // COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 // IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 // CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 var extend = function(target) {
   target = target || {};
   Array.prototype.slice.call(arguments, 1).forEach(function(obj) {
@@ -33,13 +31,11 @@ var extend = function(target) {
   });
   return target;
 };
-
 var singlebyte = function(){
    /* jshint indent: false */
    if(!( this instanceof singlebyte )){
       return new singlebyte();
    }
-
    this.encodings = [];
 
    // CP437

@@ -6,23 +6,17 @@
 const
   Node = require('./node'),
   Box  = require('./box')
-
 /**
  * Input
  */
-
 function Input(options) {
   if (!(this instanceof Node)) { return new Input(options) }
   options = options || {}
   Box.call(this, options)
 }
-
 Input.prototype.__proto__ = Box.prototype
-
 Input.prototype.type = 'input'
-
 /**
  * Expose
  */
-
 module.exports = Input

@@ -17,7 +17,6 @@ export {
   Carousel, carousel,
   Grid, grid,
 } from './lib/components'
-
 export {
   createScreen,
   InputBuffer,

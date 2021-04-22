@@ -3,7 +3,6 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 /**
  * Modules
  */
@@ -11,14 +10,12 @@ const Node = require('./node')
 const Box = require('./box')
 const Button = require('./button')
 const Textbox = require('./textbox')
-
 /**
  * Prompt
  */
 function Prompt(options = {}) {
   if (!(this instanceof Node)) return new Prompt(options)
   options.hidden = true
-
   Box.call(this, options)
   this._.input = new Textbox({
     parent: this,
@@ -56,11 +53,8 @@ function Prompt(options = {}) {
     mouse: true
   })
 }
-
 Prompt.prototype.__proto__ = Box.prototype
-
 Prompt.prototype.type = 'prompt'
-
 Prompt.prototype.input =
   Prompt.prototype.setInput =
     Prompt.prototype.readInput = function (text, value, callback) {
@@ -70,7 +64,6 @@ Prompt.prototype.input =
         callback = value
         value = ''
       }
-
       // Keep above:
       // var parent = this.parent;
       // this.detach();
@@ -94,9 +87,7 @@ Prompt.prototype.input =
       })
       this.screen.render()
     }
-
 /**
  * Expose
  */
-
 module.exports = Prompt

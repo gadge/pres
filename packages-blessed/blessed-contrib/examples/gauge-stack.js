@@ -7,5 +7,4 @@ const screen = blessed.screen(),
         showLabel: false,
         stack: [ { percent: 30, stroke: 'green' }, { percent: 30, stroke: 'magenta' }, { percent: 40, stroke: 'cyan' } ]
       })
-
 screen.render()

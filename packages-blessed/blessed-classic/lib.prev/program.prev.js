@@ -3,7 +3,6 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 /**
  * Modules
  */
@@ -13,7 +12,6 @@ const
   cp = require('child_process'),
   util = require('util'),
   fs = require('fs')
-
 const { deco } = require('@spare/deco')
 const { EventEmitter: GeiaEventEmitter } = require('@pres/events')
 const { Tput: GeiaTput } = require('@pres/terminfo-parser')
@@ -22,13 +20,10 @@ const
   colors = require('../lib/tools/colors'),
   slice = Array.prototype.slice
 const { assign } = require('@ject/mixin')
-
 const nextTick = global.setImmediate || process.nextTick.bind(process)
-
 /**
  * Program
  */
-
 function Program(options) { const self = this
   if (!(this instanceof Program)) { console.log(`>>> [called w/o new]`)
     console.log('self:', deco(self, { depth: 1, vert: 1 }))
@@ -53,33 +48,25 @@ function Program(options) { const self = this
     this._logger = fs.createWriteStream(options.log)
     if (options.dump) this.setupDump()
   }
-
   this.zero = options.zero !== false
   this.useBuffer = options.buffer
-
   this.x = 0
   this.y = 0
   this.savedX = 0
   this.savedY = 0
-
   this.cols = this.output.columns || 1
   this.rows = this.output.rows || 1
-
   this.scrollTop = 0
   this.scrollBottom = this.rows - 1
-
   this._terminal = options.terminal
     || options.term
     || process.env.TERM
     || (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
-
   this._terminal = this._terminal.toLowerCase()
-
   // OSX
   this.isOSXTerm = process.env.TERM_PROGRAM === 'Apple_Terminal'
   this.isiTerm2 = process.env.TERM_PROGRAM === 'iTerm.app'
     || !!process.env.ITERM_SESSION_ID
-
   // VTE
   // NOTE: lxterminal does not provide an env variable to check for.
   // NOTE: gnome-terminal and sakura use a later version of VTE
@@ -91,11 +78,9 @@ function Program(options) { const self = this
     || this.isXFCE
     || this.isTerminator
     || this.isLXDE
-
   // xterm and rxvt - not accurate
   this.isRxvt = /rxvt/i.test(process.env.COLORTERM)
   this.isXterm = false
-
   this.tmux = !!process.env.TMUX
   this.tmuxVersion = (function () {
     if (!self.tmux) return 2
@@ -106,44 +91,33 @@ function Program(options) { const self = this
       return 2
     }
   })()
-
   this._buf = ''
   this._flush = this.flush.bind(this)
-
   if (options.tput !== false) {
     this.setupTput()
   }
-
   // console.log('self:', deco(self, { depth: 1, vert: 1 }))
   this.listen()
 }
-
 Program.build = function (options) {
   const self = this
   return new Program(options)
 }
 Program.prototype.__proto__ = GeiaEventEmitter.prototype
-
 Program.global = null
-
 Program.total = 0
-
 Program.instances = []
-
 Program.configSingleton = function (program) {
   if (!Program.global) {
     Program.global = program
   }
-
   if (!~Program.instances.indexOf(program)) {
     Program.instances.push(program)
     program.index = Program.total
     Program.total++
   }
-
   if (Program._bound) return
   Program._bound = true
-
   unshiftEvent(process, 'exit', Program._exitHandler = function () {
     Program.instances.forEach(function (program) {
       // Potentially reset window title on exit:
@@ -159,28 +133,22 @@ Program.configSingleton = function (program) {
     })
   })
 }
-
 Program.prototype.type = 'program'
-
 Program.prototype.log = function () {
   return this._log('LOG', util.format.apply(util, arguments))
 }
-
 Program.prototype.debug = function () {
   if (!this.options.debug) return
   return this._log('DEBUG', util.format.apply(util, arguments))
 }
-
 Program.prototype._log = function (pre, msg) {
   if (!this._logger) return
   return this._logger.write(pre + ': ' + msg + '\n-\n')
 }
-
 Program.prototype.setupDump = function () {
   const self = this,
     write = this.output.write,
     decoder = new StringDecoder('utf8')
-
   function stringify(data) {
     return caret(data
       .replace(/\r/g, '\\r')
@@ -197,7 +165,6 @@ Program.prototype.setupDump = function () {
         return '\\x' + ch
       })
   }
-
   function caret(data) {
     return data.replace(/[\0\x80\x1b-\x1f\x7f\x01-\x1a]/g, function (ch) {
       if (ch === '\0' || ch === '\x80') {
@@ -226,25 +193,20 @@ Program.prototype.setupDump = function () {
       return '^' + ch
     })
   }
-
   this.input.on('data', function (data) {
     self._log('IN', stringify(decoder.write(data)))
   })
-
   this.output.write = function (data) {
     self._log('OUT', stringify(data))
     return write.apply(this, arguments)
   }
 }
-
 Program.prototype.setupTput = function () {
   if (this._tputSetup) return
   this._tputSetup = true
-
   const self = this,
     options = this.options,
     write = this._write.bind(this)
-
   const tput = this.tput = new GeiaTput({
     terminal: this.terminal,
     padding: options.padding,
@@ -253,38 +215,31 @@ Program.prototype.setupTput = function () {
     termcap: options.termcap,
     forceUnicode: options.forceUnicode
   })
-
   if (tput.error) {
     nextTick(function () {
       self.emit('warning', tput.error.message)
     })
   }
-
   if (tput.padding) {
     nextTick(function () {
       self.emit('warning', 'Terminfo padding has been enabled.')
     })
   }
-
   this.put = function () {
     const args = slice.call(arguments),
       cap = args.shift()
-
     if (tput[cap]) {
       return this._write(tput[cap].apply(tput, args))
     }
   }
-
   Object.keys(tput).forEach(function (key) {
     if (self[key] == null) {
       self[key] = tput[key]
     }
-
     if (typeof tput[key] !== 'function') {
       self.put[key] = tput[key]
       return
     }
-
     if (tput.padding) {
       self.put[key] = function () {
         return tput._print(tput[key].apply(tput, arguments), write)
@@ -296,35 +251,28 @@ Program.prototype.setupTput = function () {
     }
   })
 }
-
 Program.prototype.__defineGetter__('terminal', function () {
   return this._terminal
 })
-
 Program.prototype.__defineSetter__('terminal', function (terminal) {
   this.setTerminal(terminal)
   return this.terminal
 })
-
 Program.prototype.setTerminal = function (terminal) {
   this._terminal = terminal.toLowerCase()
   delete this._tputSetup
   this.setupTput()
 }
-
 Program.prototype.has = function (name) {
   return this.tput
     ? this.tput.has(name)
     : false
 }
-
 Program.prototype.term = function (is) {
   return this.terminal.indexOf(is) === 0
 }
-
 Program.prototype.listen = function () {
   const self = this
-
   // Potentially reset window title on exit:
   // if (!this.isRxvt) {
   //   if (!this.isVTE) this.setTitleModeFeature(3);
@@ -333,7 +281,6 @@ Program.prototype.listen = function () {
   //     self._originalTitle = data.text;
   //   });
   // }
-
   // Listen for keys/mouse on input
   if (!this.input._blessedInput) {
     this.input._blessedInput = 1
@@ -341,7 +288,6 @@ Program.prototype.listen = function () {
   } else {
     this.input._blessedInput++
   }
-
   this.on('newListener', this._newHandler = function fn(type) {
     if (type === 'keypress' || type === 'mouse') {
       self.removeListener('newListener', fn)

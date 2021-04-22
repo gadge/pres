@@ -4,23 +4,19 @@
  * https://github.com/chjj/blessed
  */
 const EventEmitter = require('../lib/tools/events').EventEmitter
-
 // NOTE: node <=v0.8.x has no EventEmitter.listenerCount
 function listenerCount(stream, event) {
   return EventEmitter.listenerCount
     ? EventEmitter.listenerCount(stream, event)
     : stream.listeners(event).length
 }
-
 /**
  * accepts a readable Stream instance and makes it emit "keypress" events
  */
-
 function emitKeypressEvents(stream) {
   if (stream._keypressDecoder) return
   const StringDecoder = require('string_decoder').StringDecoder  // lazy load
   stream._keypressDecoder = new StringDecoder('utf8')
-
   function onData(b) {
     if (listenerCount(stream, 'keypress') > 0) {
       const r = stream._keypressDecoder.write(b)
@@ -44,11 +40,9 @@ function emitKeypressEvents(stream) {
   }
 }
 exports.emitKeypressEvents = emitKeypressEvents
-
 /*
   Some patterns seen in terminal key escape codes, derived from combos seen
   at http://www.midnight-commander.org/browser/lib/tty/key.c
-
   ESC letter
   ESC [ letter
   ESC [ modifier letter
@@ -63,7 +57,6 @@ exports.emitKeypressEvents = emitKeypressEvents
   ESC [ [ 1 ; modifier letter
   ESC ESC [ num char
   ESC ESC O letter
-
   - char is usually ~ but $ and ^ also happen with rxvt
   - modifier is 1 +
                 (shift     * 1) +
@@ -72,7 +65,6 @@ exports.emitKeypressEvents = emitKeypressEvents
                 (right_alt * 8)
   - two leading ESCs apparently mean the same as one leading ESC
 */
-
 // Regexes used for ansi escape code splitting
 const metaKeyCodeReAnywhere = /(?:\x1b)([a-zA-Z0-9])/
 const metaKeyCodeRe = new RegExp('^' + metaKeyCodeReAnywhere.source + '$')
@@ -85,7 +77,6 @@ const functionKeyCodeRe = new RegExp('^' + functionKeyCodeReAnywhere.source)
 const escapeCodeReAnywhere = new RegExp([
   functionKeyCodeReAnywhere.source, metaKeyCodeReAnywhere.source, /\x1b./.source
 ].join('|'))
-
 function emitKeys(stream, s) {
   if (Buffer.isBuffer(s)) {
     if (s[0] > 127 && s[1] === undefined) {
@@ -95,9 +86,7 @@ function emitKeys(stream, s) {
       s = s.toString(stream.encoding || 'utf-8')
     }
   }
-
   if (isMouse(s)) return
-
   let buffer = []
   let match
   while (match = escapeCodeReAnywhere.exec(s)) {
@@ -106,7 +95,6 @@ function emitKeys(stream, s) {
     s = s.slice(match.index + match[0].length)
   }
   buffer = buffer.concat(s.split(''))
-
   buffer.forEach(function (s) {
     let ch,
       key = {
@@ -117,71 +105,57 @@ function emitKeys(stream, s) {
         shift: false
       },
       parts
-
     if (s === '\r') {
       // carriage return
       key.name = 'return'
-
     } else if (s === '\n') {
       // enter, should have been called linefeed
       key.name = 'enter'
       // linefeed
       // key.name = 'linefeed';
-
     } else if (s === '\t') {
       // tab
       key.name = 'tab'
-
     } else if (s === '\b' || s === '\x7f' ||
       s === '\x1b\x7f' || s === '\x1b\b') {
       // backspace or ctrl+h
       key.name = 'backspace'
       key.meta = (s.charAt(0) === '\x1b')
-
     } else if (s === '\x1b' || s === '\x1b\x1b') {
       // escape key
       key.name = 'escape'
       key.meta = (s.length === 2)
-
     } else if (s === ' ' || s === '\x1b ') {
       key.name = 'space'
       key.meta = (s.length === 2)
-
     } else if (s.length === 1 && s <= '\x1a') {
       // ctrl+letter
       key.name = String.fromCharCode(s.charCodeAt(0) + 'a'.charCodeAt(0) - 1)
       key.ctrl = true
-
     } else if (s.length === 1 && s >= 'a' && s <= 'z') {
       // lowercase letter
       key.name = s
-
     } else if (s.length === 1 && s >= 'A' && s <= 'Z') {
       // shift+letter
       key.name = s.toLowerCase()
       key.shift = true
-
     } else if (parts = metaKeyCodeRe.exec(s)) {
       // meta+character key
       key.name = parts[1].toLowerCase()
       key.meta = true
       key.shift = /^[A-Z]$/.test(parts[1])
-
     } else if (parts = functionKeyCodeRe.exec(s)) {
       // ansi escape sequence
-
       // reassemble the key code leaving out leading \x1b's,
       // the modifier key bitflag and any meaningless "1;" sequence
       const code = (parts[1] || '') + (parts[2] || '') +
         (parts[4] || '') + (parts[9] || ''),
         modifier = (parts[3] || parts[8] || 1) - 1
-
       // Parse the key modifier
       key.ctrl = !!(modifier & 4)
       key.meta = !!(modifier & 10)
       key.shift = !!(modifier & 1)
       key.code = code
-
       // Parse the key itself
       switch (code) {
         /* xterm/gnome ESC O letter */
@@ -197,7 +171,6 @@ function emitKeys(stream, s) {
         case 'OS':
           key.name = 'f4'
           break
-
         /* xterm/rxvt ESC [ number ~ */
         case '[11~':
           key.name = 'f1'
@@ -211,7 +184,6 @@ function emitKeys(stream, s) {
         case '[14~':
           key.name = 'f4'
           break
-
         /* from Cygwin and used in libuv */
         case '[[A':
           key.name = 'f1'
@@ -228,7 +200,6 @@ function emitKeys(stream, s) {
         case '[[E':
           key.name = 'f5'
           break
-
         /* common */
         case '[15~':
           key.name = 'f5'
@@ -254,7 +225,6 @@ function emitKeys(stream, s) {
         case '[24~':
           key.name = 'f12'
           break
-
         /* xterm ESC [ letter */
         case '[A':
           key.name = 'up'
@@ -277,7 +247,6 @@ function emitKeys(stream, s) {
         case '[H':
           key.name = 'home'
           break
-
         /* xterm/gnome ESC O letter */
         case 'OA':
           key.name = 'up'
@@ -300,7 +269,6 @@ function emitKeys(stream, s) {
         case 'OH':
           key.name = 'home'
           break
-
         /* xterm/rxvt ESC [ number ~ */
         case '[1~':
           key.name = 'home'
@@ -320,7 +288,6 @@ function emitKeys(stream, s) {
         case '[6~':
           key.name = 'pagedown'
           break
-
         /* putty */
         case '[[5~':
           key.name = 'pageup'
@@ -328,7 +295,6 @@ function emitKeys(stream, s) {
         case '[[6~':
           key.name = 'pagedown'
           break
-
         /* rxvt */
         case '[7~':
           key.name = 'home'
@@ -336,7 +302,6 @@ function emitKeys(stream, s) {
         case '[8~':
           key.name = 'end'
           break
-
         /* rxvt keys with modifiers */
         case '[a':
           key.name = 'up'
@@ -358,7 +323,6 @@ function emitKeys(stream, s) {
           key.name = 'clear'
           key.shift = true
           break
-
         case '[2$':
           key.name = 'insert'
           key.shift = true
@@ -383,7 +347,6 @@ function emitKeys(stream, s) {
           key.name = 'end'
           key.shift = true
           break
-
         case 'Oa':
           key.name = 'up'
           key.ctrl = true
@@ -404,7 +367,6 @@ function emitKeys(stream, s) {
           key.name = 'clear'
           key.ctrl = true
           break
-
         case '[2^':
           key.name = 'insert'
           key.ctrl = true

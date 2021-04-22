@@ -2,7 +2,6 @@ import { blessed }  from '@pres/terminal-interface'
 import * as contrib from '../index'
 
 const randomColor = () => [ Math.random() * 255, Math.random() * 255, Math.random() * 255 ]
-
 const screen = blessed.screen(),
       line   = contrib.line(
         {
@@ -16,7 +15,6 @@ const screen = blessed.screen(),
           label: 'Title',
           style: { line: randomColor(), text: randomColor(), baseline: randomColor() }
         }),
-
       data   = [ {
         title: 'us-east',
         x: [ 't1', 't2', 't3', 't4' ],
@@ -26,12 +24,9 @@ const screen = blessed.screen(),
         }
       }
       ]
-
 screen.append(line) //must append before setting data
 line.setData(data)
-
 screen.key([ 'escape', 'q', 'C-c' ], function (ch, key) {
   return process.exit(0)
 })
-
 screen.render()

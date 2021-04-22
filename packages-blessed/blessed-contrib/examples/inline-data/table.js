@@ -1,7 +1,6 @@
 var blessed = require('blessed'),
     contrib = require('../../'),
     screen  = blessed.screen()
-
 var table = contrib.table(
   {
     keys: true,
@@ -20,11 +19,8 @@ var table = contrib.table(
         [ 5, 6 ] ]
     }
   })
-
 screen.append(table)
-
 screen.key([ 'escape', 'q', 'C-c' ], function (ch, key) {
   return process.exit(0)
 })
-
 screen.render()

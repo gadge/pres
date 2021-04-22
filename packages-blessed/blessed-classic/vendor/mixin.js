@@ -11,7 +11,6 @@ export function mixin(...ClassCollection) {
   }
   return Inherited
 }
-
 const
   CONSTRUCTOR = 'constructor',
   PROTOTYPE = 'prototype',

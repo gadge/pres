@@ -3,20 +3,17 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 // Resources:
 //   $ man term
 //   $ man terminfo
 //   http://invisible-island.net/ncurses/man/term.5.html
 //   https://en.wikipedia.org/wiki/Terminfo
-
 // Todo:
 // - xterm's XT (set-title capability?) value should
 //   be true (at least tmux thinks it should).
 //   It's not parsed as true. Investigate.
 // - Possibly switch to other method of finding the
 //   extended data string table: i += h.symOffsetCount * 2;
-
 /**
  * Modules
  */
@@ -25,38 +22,30 @@ const
   path = require('path'),
   fs = require('fs'),
   cp = require('child_process')
-
 /**
  * Tput
  */
-
 function Tput(options) {
   if (!(this instanceof Tput)) return new Tput(options)
   options = options || {}
   if (typeof options === 'string') options = { terminal: options }
-
   this.options = options
   this.terminal = options.terminal
     || options.term
     || process.env.TERM
     || (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
-
   this.terminal = this.terminal.toLowerCase()
-
   this.debug = options.debug
   this.padding = options.padding
   this.extended = options.extended
   this.printf = options.printf
   this.termcap = options.termcap
   this.error = null
-
   this.terminfoPrefix = options.terminfoPrefix
   this.terminfoFile = options.terminfoFile
   this.termcapFile = options.termcapFile
-
   if (options.terminal || options.term) this.setup()
 }
-
 Tput.prototype.setup = function () {
   this.error = null
   try {
@@ -85,46 +74,36 @@ Tput.prototype.setup = function () {
     this._useXtermInfo()
   }
 }
-
 Tput.prototype.term = function (is) {
   return this.terminal.indexOf(is) === 0
 }
-
 Tput.prototype._debug = function () {
   if (!this.debug) return
   return console.log.apply(console, arguments)
 }
-
 /**
  * Fallback
  */
-
 Tput.prototype._useVt102Cap = function () {
   return this.injectTermcap('vt102')
 }
-
 Tput.prototype._useXtermCap = function () {
   return this.injectTermcap(__dirname + '/../usr/xterm.termcap')
 }
-
 Tput.prototype._useXtermInfo = function () {
   return this.injectTerminfo(__dirname + '/../usr/xterm')
 }
-
 Tput.prototype._useInternalInfo = function (name) {
   name = path.basename(name)
   return this.injectTerminfo(__dirname + '/../usr/' + name)
 }
-
 Tput.prototype._useInternalCap = function (name) {
   name = path.basename(name)
   return this.injectTermcap(__dirname + '/../usr/' + name + '.termcap')
 }
-
 /**
  * Terminfo
  */
-
 Tput.ipaths = [
   process.env.TERMINFO || '',
   (process.env.TERMINFO_DIRS || '').split(':'),
@@ -138,25 +117,19 @@ Tput.ipaths = [
   '/usr/local/ncurses/lib/terminfo',
   '/lib/terminfo'
 ]
-
 Tput.prototype.readTerminfo = function (term) {
   let data,
     file,
     info
-
   term = term || this.terminal
-
   file = path.normalize(this._prefix(term))
   data = fs.readFileSync(file)
   info = this.parseTerminfo(data, file)
-
   if (this.debug) {
     this._terminfo = info
   }
-
   return info
 }
-
 Tput._prefix =
   Tput.prototype._prefix = function (term) {
     // If we have a terminfoFile, or our
@@ -169,35 +142,27 @@ Tput._prefix =
         return this.terminfoFile
       }
     }
-
     const paths = Tput.ipaths.slice()
     let file
-
     if (this.terminfoPrefix) paths.unshift(this.terminfoPrefix)
-
     // Try exact matches.
     file = this._tprefix(paths, term)
     if (file) return file
-
     // Try similar matches.
     file = this._tprefix(paths, term, true)
     if (file) return file
-
     // Not found.
     throw new Error('Terminfo directory not found.')
   }
-
 Tput._tprefix =
   Tput.prototype._tprefix = function (prefix, term, soft) {
     if (!prefix) return
-
     let file,
       dir,
       i,
       sdiff,
       sfile,
       list
-
     if (Array.isArray(prefix)) {
       for (i = 0; i < prefix.length; i++) {
         file = this._tprefix(prefix[i], term, soft)
@@ -205,26 +170,21 @@ Tput._tprefix =
       }
       return
     }
-
     const find = function (word) {
       let file, ch
-
       file = path.resolve(prefix, word[0])
       try {
         fs.statSync(file)
         return file
       } catch (e) { }
-
       ch = word[0].charCodeAt(0).toString(16)
       if (ch.length < 2) ch = '0' + ch
-
       file = path.resolve(prefix, ch)
       try {
         fs.statSync(file)
         return file
       } catch (e) { }
     }
-
     if (!term) {
       // Make sure the directory's sub-directories
       // are all one-letter, or hex digits.
@@ -237,7 +197,6 @@ Tput._tprefix =
       } catch (e) {}
       return
     }
-
     term = path.basename(term)
     dir = find(term)
 

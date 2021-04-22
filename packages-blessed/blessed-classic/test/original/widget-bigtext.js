@@ -1,12 +1,10 @@
 var blessed = require('../../lib/blessed')
   , screen;
-
 screen = blessed.screen({
   dump: __dirname + '/logs/bigtext.log',
   smartCSR: true,
   warnings: true
 });
-
 var box = blessed.bigtext({
   parent: screen,
   content: 'Hello',
@@ -24,10 +22,7 @@ var box = blessed.bigtext({
     bold: false
   }
 });
-
 screen.key('q', function() {
   return screen.destroy();
 });
-
 screen.render();
-

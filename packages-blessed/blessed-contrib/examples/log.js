@@ -10,10 +10,7 @@ const screen = blessed.screen(),
           tags: true,
           border: { type: "line", fg: "cyan" }
         })
-
 screen.append(log)
-
 let i = 0
 setInterval(function () {log.log("new {red-fg}log{/red-fg} line " + i++)}, 500)
-
 screen.render()

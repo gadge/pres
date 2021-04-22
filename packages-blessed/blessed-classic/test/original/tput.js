@@ -3,17 +3,14 @@
  * Copyright (c) 2013, Christopher Jeffrey (MIT License)
  * https://github.com/chjj/blessed
  */
-
 // Compile xterm terminfo/termcap:
 // $ tic -a -I -1 usr/xterm.terminfo
 // $ tic -a -C -U usr/xterm.termcap
-
 // Compile xterm terminfo/termcap:
 // $ tic -a -1 usr/xterm.terminfo
 // $ tic -a -1 usr/xterm.terminfo && ls ~/.terminfo
 // $ tic -a -1 -o usr usr/xterm.terminfo && mv usr/x/xterm usr/ && rm -rf usr/v usr/x
 // $ tic -a -1 -o usr usr/xterm.terminfo && mv usr/x/xterm-256color usr/ && rm -rf usr/v usr/x
-
 // Check tput output:
 // $ node test/tput.js xterm | tee out
 // $ node test/tput.js xterm --ifile usr/xterm | tee out
@@ -23,19 +20,14 @@
 // $ node test/tput.js xterm --iprefix ~/.terminfo | tee out
 // $ node test/tput.js xterm-256color --ifile ~/.terminfo/x/xterm-256color | tee out
 // $ cdiff test/terminfo out
-
 var blessed = require('../../lib/blessed');
-
 // Simple argument parser
 // Copyright (c) 2012, Christopher Jeffrey (MIT License)
-
 function parseArg() {
   var argv = process.argv.slice(2)
     , options = [];
-
   function getarg() {
     var arg = argv.shift();
-
     if (arg.indexOf('--') === 0) {
       // e.g. --opt
       arg = arg.split('=');
@@ -57,10 +49,8 @@ function parseArg() {
     } else {
       // e.g. foo
     }
-
     return arg;
   }
-
   while (argv.length) {
     arg = getarg();
     if (arg.indexOf('-') === 0) {
@@ -74,12 +64,9 @@ function parseArg() {
       options.push(arg);
     }
   }
-
   return options;
 }
-
 var argv = parseArg();
-
 var tput = blessed.tput({
   terminal: argv[0] !== 'all' && argv[0] !== 'rand'
     ? argv[0] || __dirname + '/../usr/xterm'
@@ -91,13 +78,11 @@ var tput = blessed.tput({
   terminfoPrefix: argv.p || argv.iprefix,
   termcapFile: argv.c || argv.cfile
 });
-
 if (argv[0] === 'all') {
   var rl = require('readline').createInterface({
     input: process.stdin,
     output: process.stdout
   });
-
   var text = '\x1b[31mWARNING:\x1b[m '
     + 'This will compile every single terminfo file on your disk.\n'
     + 'It will probably use a lot of CPU.\n'

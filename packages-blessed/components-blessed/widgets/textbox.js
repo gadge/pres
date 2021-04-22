@@ -6,25 +6,19 @@
 const
   Node     = require('./node'),
   Textarea = require('./textarea')
-
 /**
  * Textbox
  */
-
 function Textbox(options) {
   if (!(this instanceof Node)) { return new Textbox(options) }
   options = options || {}
   options.scrollable = false
-
   Textarea.call(this, options)
   this.secret = options.secret
   this.censor = options.censor
 }
-
 Textbox.prototype.__proto__ = Textarea.prototype
-
 Textbox.prototype.type = 'textbox'
-
 Textbox.prototype.__olistener = Textbox.prototype._listener
 Textbox.prototype._listener = function (ch, key) {
   // console.log('>>> calling _listener in Textbox')
@@ -34,7 +28,6 @@ Textbox.prototype._listener = function (ch, key) {
   }
   return this.__olistener(ch, key)
 }
-
 Textbox.prototype.setValue = function (value) {
   let visible, val
   if (value == null) {
@@ -54,14 +47,11 @@ Textbox.prototype.setValue = function (value) {
     this._updateCursor()
   }
 }
-
 Textbox.prototype.submit = function () {
   if (!this.__listener) return
   return this.__listener('\r', { name: 'enter' })
 }
-
 /**
  * Expose
  */
-
 module.exports = Textbox

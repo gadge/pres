@@ -31,13 +31,9 @@ var blessed = require('blessed'),
             y: [ 22, 7, 12, 1 ],
             style: { line: 'blue' }
           } ]
-
       })
-
 screen.append(line)
-
 screen.key([ 'escape', 'q', 'C-c' ], function (ch, key) {
   return process.exit(0)
 })
-
 screen.render()

@@ -1,6 +1,5 @@
 import { ATTACH } from '@pres/enum-events'
 import { Canvas } from './canvas'
-
 export class LCD extends Canvas {
   constructor(options = {}) {
     // if (!(this instanceof Node)) { return new LCD(options) }
@@ -53,7 +52,6 @@ export class LCD extends Canvas {
     this.segment16.DisplayText(display)
   }
 }
-
 class ElementArray {
   constructor(count) {
     this.NullMask = 0x10
@@ -207,9 +205,7 @@ class SixteenSegment {
         context.closePath()
         context.fill()
         context.stroke()
-        if (this.StrokeWidth > 0) {
-          context.stroke()
-        }
+        if (this.StrokeWidth > 0) context.stroke()
       }
       context.translate(elementWidth + this.Spacing, 0)
     }
@@ -228,13 +224,13 @@ class SixteenSegment {
           sqrt3 = Math.sqrt(3)
     // Base position of points w/out bevel and interval
     const w0                      = w / 2 - sw / 2, h0 = 0,
-          w1                      = w / 2, h1 = sw / 2,
+          w1                      = w / 2, h1          = sw / 2,
           w2 = w / 2 + sw / 2, h2 = sw,
-          w3                      = w - sw, h3 = h / 2 - sw / 2,
+          w3                      = w - sw, h3         = h / 2 - sw / 2,
           w4                      = w - sw / 2, h4 = h / 2,
-          w5                      = w, h5              = h / 2 + sw / 2
+          w5                      = w, h5 = h / 2 + sw / 2
     // Order of segments stored in Points[][]
-    const A1                                                        = 0, A2 = 1, B = 2, C = 3, D1 = 4, D2 = 5, E = 6, F = 7,
+    const A1                                                        = 0, A2 = 1, B                                         = 2, C = 3, D1 = 4, D2                  = 5, E = 6, F = 7,
           G1 = 8, G2 = 9, H = 10, I = 11, J = 12, K = 13, L = 14, M = 15
     // Create the points array for all segments
     const points = []
@@ -297,9 +293,9 @@ const CharacterMasks = (function () {
   // Binary Or them together to create bitmasks
   // a1|a2|b|c|d1|d2|e|f|g1|g2|h|i|j|k|l|m
   const a1                                       = 1 << 0, a2                          = 1 << 1, b = 1 << 2, c = 1 << 3,
-        d1                                       = 1 << 4, d2                          = 1 << 5, e = 1 << 6, f = 1 << 7,
-        g1 = 1 << 8, g2 = 1 << 9, h = 1 << 10, i = 1 << 11,
-        j                                        = 1 << 12, k = 1 << 13, l = 1 << 14, m = 1 << 15
+        d1                                       = 1 << 4, d2 = 1 << 5, e = 1 << 6, f = 1 << 7,
+        g1                                       = 1 << 8, g2                          = 1 << 9, h              = 1 << 10, i = 1 << 11,
+        j = 1 << 12, k = 1 << 13, l = 1 << 14, m = 1 << 15
   // Character map associates characters with a bit pattern
   return {
     ' ': 0,
@@ -346,4 +342,3 @@ const CharacterMasks = (function () {
     '*': g1 | g2 | h | i | j | k | l | m
   }
 }())
-

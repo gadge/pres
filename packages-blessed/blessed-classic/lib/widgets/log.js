@@ -3,7 +3,6 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 /**
  * Modules
  */
@@ -11,7 +10,6 @@ const util = require('util')
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 const Node = require('./node')
 const ScrollableText = require('./scrollabletext')
-
 /**
  * Log
  */
@@ -33,11 +31,8 @@ function Log(options = {}) {
     }
   })
 }
-
 Log.prototype.__proto__ = ScrollableText.prototype
-
 Log.prototype.type = 'log'
-
 Log.prototype.log =
   Log.prototype.add = function () {
     const args = Array.prototype.slice.call(arguments)
@@ -52,7 +47,6 @@ Log.prototype.log =
     }
     return ret
   }
-
 Log.prototype._scroll = Log.prototype.scroll
 Log.prototype.scroll = function (offset, always) {
   if (offset === 0) return this._scroll(offset, always)
@@ -63,9 +57,7 @@ Log.prototype.scroll = function (offset, always) {
   }
   return ret
 }
-
 /**
  * Expose
  */
-
 module.exports = Log

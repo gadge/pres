@@ -1,13 +1,11 @@
 var blessed = require('../../lib/blessed')
   , screen;
-
 screen = blessed.screen({
   dump: __dirname + '/logs/layout.log',
   smartCSR: true,
   autoPadding: true,
   warnings: true
 });
-
 var layout = blessed.layout({
   parent: screen,
   top: 'center',
@@ -23,7 +21,6 @@ var layout = blessed.layout({
     }
   }
 });
-
 var box1 = blessed.box({
   parent: layout,
   top: 'center',
@@ -33,7 +30,6 @@ var box1 = blessed.box({
   border: 'line',
   content: '1'
 });
-
 var box2 = blessed.box({
   parent: layout,
   top: 0,
@@ -43,7 +39,6 @@ var box2 = blessed.box({
   border: 'line',
   content: '2'
 });
-
 var box3 = blessed.box({
   parent: layout,
   top: 0,
@@ -53,7 +48,6 @@ var box3 = blessed.box({
   border: 'line',
   content: '3'
 });
-
 var box4 = blessed.box({
   parent: layout,
   top: 0,
@@ -63,7 +57,6 @@ var box4 = blessed.box({
   border: 'line',
   content: '4'
 });
-
 var box5 = blessed.box({
   parent: layout,
   top: 0,
@@ -73,7 +66,6 @@ var box5 = blessed.box({
   border: 'line',
   content: '5'
 });
-
 var box6 = blessed.box({
   parent: layout,
   top: 0,
@@ -83,7 +75,6 @@ var box6 = blessed.box({
   border: 'line',
   content: '6'
 });
-
 var box7 = blessed.box({
   parent: layout,
   top: 0,
@@ -93,7 +84,6 @@ var box7 = blessed.box({
   border: 'line',
   content: '7'
 });
-
 var box8 = blessed.box({
   parent: layout,
   top: 'center',
@@ -103,7 +93,6 @@ var box8 = blessed.box({
   border: 'line',
   content: '8'
 });
-
 var box9 = blessed.box({
   parent: layout,
   top: 0,
@@ -113,7 +102,6 @@ var box9 = blessed.box({
   border: 'line',
   content: '9'
 });
-
 var box10 = blessed.box({
   parent: layout,
   top: 'center',
@@ -123,7 +111,6 @@ var box10 = blessed.box({
   border: 'line',
   content: '10'
 });
-
 var box11 = blessed.box({
   parent: layout,
   top: 0,
@@ -133,7 +120,6 @@ var box11 = blessed.box({
   border: 'line',
   content: '11'
 });
-
 var box12 = blessed.box({
   parent: layout,
   top: 'center',
@@ -143,7 +129,6 @@ var box12 = blessed.box({
   border: 'line',
   content: '12'
 });
-
 if (process.argv[2] !== 'grid') {
   for (var i = 0; i < 10; i++) {
     blessed.box({
@@ -157,9 +142,7 @@ if (process.argv[2] !== 'grid') {
     });
   }
 }
-
 screen.key('q', function() {
   return screen.destroy();
 });
-
 screen.render();

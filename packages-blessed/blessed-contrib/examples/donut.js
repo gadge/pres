@@ -2,7 +2,6 @@ import { blessed }  from '@pres/terminal-interface'
 import * as contrib from '../index'
 
 const screen = blessed.screen()
-
 /**
  * Donut Options
  self.options.stroke = options.stroke || "magenta"
@@ -20,13 +19,9 @@ const donut = contrib.donut({
     { percent: 80, label: 'web1', color: 'green' }
   ]
 })
-
 screen.append(donut)
-
 setInterval(updateDonuts, 5)
-
 let pct = 0.00
-
 function updateDonuts() {
   if (pct > 0.99) pct = 0.00
   donut.update([
@@ -38,7 +33,6 @@ function updateDonuts() {
   screen.render()
   pct += 0.01
 }
-
 screen.key([ 'escape', 'q', 'C-c' ], function (ch, key) {
   return process.exit(0)
 })

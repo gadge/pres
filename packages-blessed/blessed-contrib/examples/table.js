@@ -2,7 +2,6 @@ import { blessed }  from '@pres/terminal-interface'
 import * as contrib from '../index'
 
 const screen = blessed.screen()
-
 const table = contrib.table(
   {
     keys: true,
@@ -18,10 +17,8 @@ const table = contrib.table(
     columnSpacing: 10,
     columnWidth: [ 16, 12 ]
   })
-
 table.focus()
 screen.append(table)
-
 table.setData(
   {
     headers: [ 'col1', 'col2' ],
@@ -31,9 +28,7 @@ table.setData(
         [ 5, 6 ],
         [ 7, 8 ] ]
   })
-
 screen.key([ 'escape', 'q', 'C-c' ], function (ch, key) {
   return process.exit(0)
 })
-
 screen.render()

@@ -3,14 +3,12 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 /**
  * Modules
  */
 const helpers = require('../tools/helpers')
 const Node = require('./node')
 const Box = require('./box')
-
 /**
  * List
  */
@@ -46,7 +44,6 @@ function List(options) {
     this.style.item.inverse = options.itemInverse
     this.style.item.invisible = options.itemInvisible
   }
-
   // Legacy: for apps written before the addition of item attributes.
   [ 'bg', 'fg', 'bold', 'underline',
     'blink', 'inverse', 'invisible' ].forEach(function (name) {
@@ -189,21 +186,16 @@ function List(options) {
       el.fixed = true
     }
   })
-
   // Ensure children are removed from the
   // item list if they are items.
   this.on('remove', function (el) {
     self.removeItem(el)
   })
 }
-
 List.prototype.__proto__ = Box.prototype
-
 List.prototype.type = 'list'
-
 List.prototype.createItem = function (content) {
   const self = this
-
   // Note: Could potentially use Button here.
   const options = {
     screen: this.screen,
@@ -223,14 +215,12 @@ List.prototype.createItem = function (content) {
     options.left = this.ileft
     options.right = this.iright + (this.scrollbar ? 1 : 0)
   }
-
   // if (this.shrink) {
   // XXX NOTE: Maybe just do this on all shrinkage once autoPadding is default?
   if (this.shrink && this.options.normalShrink) {
     delete options.right
     options.width = 'shrink'
   }
-
   [ 'bg', 'fg', 'bold', 'underline',
     'blink', 'inverse', 'invisible' ].forEach(function (name) {
     options[name] = function () {
@@ -244,7 +234,6 @@ List.prototype.createItem = function (content) {
   if (this.style.transparent) {
     options.transparent = true
   }
-
   var item = new Box(options)
   if (this.mouse) {
     item.on('click', function () {
@@ -259,15 +248,12 @@ List.prototype.createItem = function (content) {
     })
   }
   this.emit('create item')
-
   return item
 }
-
 List.prototype.add =
   List.prototype.addItem =
     List.prototype.appendItem = function (content) {
       content = typeof content === 'string' ? content : content.getContent()
-
       const item = this.createItem(content)
       item.position.top = this.items.length
       if (!this.screen.autoPadding) {
@@ -280,10 +266,8 @@ List.prototype.add =
         this.select(0)
       }
       this.emit('add item')
-
       return item
     }
-
 List.prototype.removeItem = function (child) {
   const i = this.getItemIndex(child)
   if (~i && this.items[i]) {
@@ -300,7 +284,6 @@ List.prototype.removeItem = function (child) {
   this.emit('remove item')
   return child
 }
-
 List.prototype.insertItem = function (child, content) {
   content = typeof content === 'string' ? content : content.getContent()
   const i = this.getItemIndex(child)
@@ -319,11 +302,9 @@ List.prototype.insertItem = function (child, content) {
   }
   this.emit('insert item')
 }
-
 List.prototype.getItem = function (child) {
   return this.items[this.getItemIndex(child)]
 }
-
 List.prototype.setItem = function (child, content) {
   content = typeof content === 'string' ? content : content.getContent()
   const i = this.getItemIndex(child)
@@ -331,20 +312,16 @@ List.prototype.setItem = function (child, content) {
   this.items[i].setContent(content)
   this.ritems[i] = content
 }
-
 List.prototype.clearItems = function () {
   return this.setItems([])
 }
-
 List.prototype.setItems = function (items) {
   const original = this.items.slice(),
     selected = this.selected
   let sel = this.ritems[this.selected],
     i = 0
-
   items = items.slice()
   this.select(0)
-
   for (; i < items.length; i++) {
     if (this.items[i]) {
       this.items[i].setContent(items[i])
@@ -352,12 +329,10 @@ List.prototype.setItems = function (items) {
       this.add(items[i])
     }
   }
-
   for (; i < original.length; i++) {
     this.remove(original[i])
   }
   this.ritems = items
-
   // Try to find our old item if it still exists.
   sel = items.indexOf(sel)
   if (~sel) {
@@ -369,25 +344,20 @@ List.prototype.setItems = function (items) {
   }
   this.emit('set items')
 }
-
 List.prototype.pushItem = function (content) {
   this.appendItem(content)
   return this.items.length
 }
-
 List.prototype.popItem = function () {
   return this.removeItem(this.items.length - 1)
 }
-
 List.prototype.unshiftItem = function (content) {
   this.insertItem(0, content)
   return this.items.length
 }
-
 List.prototype.shiftItem = function () {
   return this.removeItem(0)
 }
-
 List.prototype.spliceItem = function (child, n) {
   const self = this
   let i = this.getItemIndex(child)
@@ -402,7 +372,6 @@ List.prototype.spliceItem = function (child, n) {
   })
   return removed
 }
-
 List.prototype.find =
   List.prototype.fuzzyFind = function (search, back) {
     const start = this.selected + (back ? -1 : 1)
@@ -414,7 +383,6 @@ List.prototype.find =
       } catch (e) {
       }
     }
-
     const test = typeof search === 'string'
       ? function (item) { return !!~item.indexOf(search) }
       : (search.test ? search.test.bind(search) : search)
@@ -439,10 +407,8 @@ List.prototype.find =
         if (test(helpers.cleanTags(this.ritems[i]))) return i
       }
     }
-
     return this.selected
   }
-
 List.prototype.getItemIndex = function (child) {
   if (typeof child === 'number') {
     return child
@@ -459,7 +425,6 @@ List.prototype.getItemIndex = function (child) {
     return this.items.indexOf(child)
   }
 }
-
 List.prototype.select = function (index) {
   if (!this.interactive) {
     return
@@ -484,23 +449,18 @@ List.prototype.select = function (index) {
   this.value = helpers.cleanTags(this.ritems[this.selected])
   if (!this.parent) return
   this.scrollTo(this.selected)
-
   // XXX Move `action` and `select` events here.
   this.emit('select item', this.items[this.selected], this.selected)
 }
-
 List.prototype.move = function (offset) {
   this.select(this.selected + offset)
 }
-
 List.prototype.up = function (offset) {
   this.move(-(offset || 1))
 }
-
 List.prototype.down = function (offset) {
   this.move(offset || 1)
 }
-
 List.prototype.pick = function (label, callback) {
   if (!callback) {
     callback = label

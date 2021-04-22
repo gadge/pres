@@ -13,7 +13,6 @@ const screen = blessed.screen(),
           label: 'Title',
           style: { baseline: 'white' }
         }),
-
       data   = [ {
         title: 'us-east',
         x: [ 't1', 't2', 't3', 't4' ],
@@ -23,13 +22,9 @@ const screen = blessed.screen(),
         }
       }
       ]
-
-
 screen.append(line) //must append before setting data
 line.setData(data)
-
 screen.key([ 'escape', 'q', 'C-c' ], function (ch, key) {
   return process.exit(0)
 })
-
 screen.render()

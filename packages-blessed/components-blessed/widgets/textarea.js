@@ -3,24 +3,20 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 const
   unicode  = require('../unicode'),
   nextTick = global.setImmediate || process.nextTick.bind(process),
   Node     = require('./node'),
   Input    = require('./input')
 
-
 /**
  * Textarea
  */
-
 function Textarea(options) {
   const self = this
   if (!(this instanceof Node)) { return new Textarea(options) }
   options = options || {}
   options.scrollable = options.scrollable !== false
-
   Input.call(this, options)
   this.screen._listenKeys(this)
   this.value = options.value || ''
@@ -43,11 +39,8 @@ function Textarea(options) {
     })
   }
 }
-
 Textarea.prototype.__proto__ = Input.prototype
-
 Textarea.prototype.type = 'textarea'
-
 Textarea.prototype._updateCursor = function (get) {
   if (this.screen.focused !== this) {
     return
@@ -59,7 +52,6 @@ Textarea.prototype._updateCursor = function (get) {
   let line
     , cx
     , cy
-
   // Stop a situation where the textarea begins scrolling
   // and the last cline appears to always be empty from the
   // _typeScroll `+ '\n'` thing.
@@ -67,19 +59,15 @@ Textarea.prototype._updateCursor = function (get) {
   if (last === '' && this.value[this.value.length - 1] !== '\n') {
     last = this._clines[this._clines.length - 2] || ''
   }
-
   line = Math.min(
     this._clines.length - 1 - (this.childBase || 0),
     (lpos.yl - lpos.yi) - this.iheight - 1)
-
   // When calling clearValue() on a full textarea with a border, the first
   // argument in the above Math.min call ends up being -2. Make sure we stay
   // positive.
   line = Math.max(0, line)
-
   cy = lpos.yi + this.itop + line
   cx = lpos.xi + this.ileft + this.strWidth(last)
-
   // XXX Not sure, but this may still sometimes
   // cause problems when leaving editor.
   if (cy === program.y && cx === program.x) {
@@ -105,7 +93,6 @@ Textarea.prototype._updateCursor = function (get) {
     program.cup(cy, cx)
   }
 }
-
 Textarea.prototype.input =
   Textarea.prototype.setInput =
     Textarea.prototype.readInput = function (callback) {
@@ -127,18 +114,13 @@ Textarea.prototype.input =
         if (!self._reading) return
         if (fn.done) return
         fn.done = true
-
         self._reading = false
-
         delete self._callback
         delete self._done
-
         self.removeListener('keypress', self.__listener)
         delete self.__listener
-
         self.removeListener('blur', self.__done)
         delete self.__done
-
         self.screen.program.hideCursor()
         self.screen.grabKeys = false
         if (!focused) {
@@ -147,7 +129,6 @@ Textarea.prototype.input =
         if (self.options.inputOnFocus) {
           self.screen.rewindFocus()
         }
-
         // Ugly
         if (err === 'stop') return
         if (err) {
@@ -161,12 +142,10 @@ Textarea.prototype.input =
         }
         self.emit('action', value)
         if (!callback) return
-
         return err
           ? callback(err)
           : callback(null, value)
       }
-
       // Put this in a nextTick so the current
       // key event doesn't trigger any keys input.
       nextTick(function () {
@@ -177,18 +156,15 @@ Textarea.prototype.input =
       this.__done = this._done.bind(this, null, null)
       this.on('blur', this.__done)
     }
-
 Textarea.prototype._listener = function (ch, key) {
   // console.log('>>> calling _listener in TextArea')
   const done = this._done
     , value  = this.value
   if (key.name === 'return') return
   if (key.name === 'enter') { ch = '\n' }
-
   // TODO: Handle directional keys.
   if (key.name === 'left' || key.name === 'right' || key.name === 'up' || key.name === 'down') { }
   if (this.options.keys && key.ctrl && key.name === 'e') { return this.readEditor() }
-
   // TODO: Optimize typing by writing directly
   // to the screen and screen buffer here.
   if (key.name === 'escape') {
@@ -219,7 +195,6 @@ Textarea.prototype._listener = function (ch, key) {
     this.screen.render()
   }
 }
-
 Textarea.prototype._typeScroll = function () {
   // XXX Workaround
   const height = this.height - this.iheight
@@ -227,11 +202,9 @@ Textarea.prototype._typeScroll = function () {
     this.scroll(this._clines.length)
   }
 }
-
 Textarea.prototype.getValue = function () {
   return this.value
 }
-
 Textarea.prototype.setValue = function (value) {
   if (value == null) {
     value = this.value
@@ -244,27 +217,22 @@ Textarea.prototype.setValue = function (value) {
     this._updateCursor()
   }
 }
-
 Textarea.prototype.clearInput =
   Textarea.prototype.clearValue = function () {
     return this.setValue('')
   }
-
 Textarea.prototype.submit = function () {
   if (!this.__listener) return
   return this.__listener('\x1b', { name: 'escape' })
 }
-
 Textarea.prototype.cancel = function () {
   if (!this.__listener) return
   return this.__listener('\x1b', { name: 'escape' })
 }
-
 Textarea.prototype.render = function () {
   this.setValue()
   return this._render()
 }
-
 Textarea.prototype.editor =
   Textarea.prototype.setEditor =
     Textarea.prototype.readEditor = function (callback) {
@@ -274,7 +242,6 @@ Textarea.prototype.editor =
         const _cb = this._callback
           , cb    = callback
         this._done('stop')
-
         callback = function (err, value) {
           if (_cb) _cb(err, value)
           if (cb) cb(err, value)
@@ -283,7 +250,6 @@ Textarea.prototype.editor =
       if (!callback) {
         callback = function () {}
       }
-
       return this.screen.readEditor({ value: this.value }, function (err, value) {
         if (err) {
           if (err.message === 'Unsuccessful.') {
@@ -299,9 +265,7 @@ Textarea.prototype.editor =
         return self.readInput(callback)
       })
     }
-
 /**
  * Expose
  */
-
 module.exports = Textarea

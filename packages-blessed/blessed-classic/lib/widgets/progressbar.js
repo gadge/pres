@@ -3,13 +3,11 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 /**
  * Modules
  */
 const Node = require('./node')
 const Input = require('./input')
-
 /**
  * ProgressBar
  */
@@ -23,7 +21,6 @@ function ProgressBar(options = {}) {
   }
   this.value = this.filled
   this.pch = options.pch || ' '
-
   // XXX Workaround that predates the usage of `el.ch`.
   if (options.ch) {
     this.pch = options.ch

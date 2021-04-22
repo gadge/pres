@@ -3,13 +3,11 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 /**
  * Modules
  */
 const Node = require('./node')
 const Box = require('./box')
-
 /**
  * Line
  */
@@ -22,7 +20,6 @@ function Line(options = {}) {
   } else {
     options.height = 1
   }
-
   Box.call(this, options)
   this.ch = !options.type || options.type === 'line'
     ? orientation === 'horizontal' ? '─' : '│'
@@ -33,13 +30,9 @@ function Line(options = {}) {
   }
   this.style.border = this.style
 }
-
 Line.prototype.__proto__ = Box.prototype
-
 Line.prototype.type = 'line'
-
 /**
  * Expose
  */
-
 module.exports = Line

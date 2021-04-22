@@ -3,13 +3,10 @@
  * https://github.com/chjj/blessed
  * Taken from terminfo(5) man page.
  */
-
 /* jshint maxlen: 300 */
 // jscs:disable maximumLineLength
 // jscs:disable
-
 const alias = exports
-
 // These are the boolean capabilities:
 alias.bools = {
   //         Variable                                      Cap-                               TCap                                  Description
@@ -52,7 +49,6 @@ alias.bools = {
   'transparent_underline': [ 'ul', 'ul' ], //                                underline character overstrikes
   'xon_xoff': [ 'xon', 'xo' ]  //                                terminal uses xon/xoff handshaking
 }
-
 // These are the numeric capabilities:
 alias.numbers = {
   //         Variable                                      Cap-                               TCap                                  Description
@@ -73,10 +69,8 @@ alias.numbers = {
   'padding_baud_rate': [ 'pb', 'pb' ], //                                lowest baud rate where padding needed
   'virtual_terminal': [ 'vt', 'vt' ], //                                virtual terminal number (CB/unix)
   'width_status_line': [ 'wsl', 'ws' ], //                                number of columns in status line
-
   // The  following  numeric  capabilities  are present in the SVr4.0 term structure, but are not yet documented in the man page.  They came in with
   // SVr4's printer support.
-
 
   //         Variable                                      Cap-                               TCap                                  Description
   //          Numeric                                      name                               Code
@@ -98,7 +92,6 @@ alias.numbers = {
   'print_rate': [ 'cps', 'Ym' ], //                                print rate in char‐ acters per second
   'wide_char_size': [ 'widcs', 'Yn' ]  //                                character step size when in double wide mode
 }
-
 // These are the string capabilities:
 alias.strings = {
   //         Variable                                    Cap-                             TCap                                   Description
@@ -177,7 +170,6 @@ alias.strings = {
   'exit_italics_mode': [ 'ritm', 'ZR' ], //                              End italic mode
   'exit_leftward_mode': [ 'rlm', 'ZS' ], //                              End left-motion mode
 
-
   'exit_micro_mode': [ 'rmicm', 'ZT' ], //                              End micro-motion mode
   'exit_shadow_mode': [ 'rshm', 'ZU' ], //                              End shadow-print mode
   'exit_standout_mode': [ 'rmso', 'se' ], //                              exit standout mode
@@ -222,7 +214,6 @@ alias.strings = {
   'key_dc': [ 'kdch1', 'kD' ], //                              delete-character key
   'key_dl': [ 'kdl1', 'kL' ], //                              delete-line key
   'key_down': [ 'kcud1', 'kd' ], //                              down-arrow key
-
   'key_eic': [ 'krmir', 'kM' ], //                              sent by rmir or smir in insert mode
   'key_end': [ 'kend', '@7' ], //                              end key
   'key_enter': [ 'kent', '@8' ], //                              enter/send key
@@ -285,7 +276,6 @@ alias.strings = {
   'key_f57': [ 'kf57', 'Fl' ], //                              F57 function key
   'key_f58': [ 'kf58', 'Fm' ], //                              F58 function key
   'key_f59': [ 'kf59', 'Fn' ], //                              F59 function key
-
   'key_f6': [ 'kf6', 'k6' ], //                              F6 function key
   'key_f60': [ 'kf60', 'Fo' ], //                              F60 function key
   'key_f61': [ 'kf61', 'Fp' ], //                              F61 function key
@@ -345,7 +335,6 @@ alias.strings = {
   'key_sr': [ 'kri', 'kR' ], //                              scroll-backward key
   'key_sredo': [ 'kRDO', '%g' ], //                              shifted redo key
   'key_sreplace': [ 'kRPL', '%h' ], //                              shifted replace key
-
   'key_sright': [ 'kRIT', '%i' ], //                              shifted right-arrow key
   'key_srsume': [ 'kRES', '%j' ], //                              shifted resume key
   'key_ssave': [ 'kSAV', '!1' ], //                              shifted save key
@@ -385,7 +374,6 @@ alias.strings = {
   'orig_pair': [ 'op', 'op' ], //                              Set default pair to its original value
   'pad_char': [ 'pad', 'pc' ], //                              padding char (instead of null)
 
-
   'parm_dch': [ 'dch', 'DC' ], //                              delete #1 characters (P*)
   'parm_delete_line': [ 'dl', 'DL' ], //                              delete #1 lines (P*)
   'parm_down_cursor': [ 'cud', 'DO' ], //                              down #1 lines (P*)
@@ -424,7 +412,6 @@ alias.strings = {
   'scroll_reverse': [ 'ri', 'sr' ], //                              scroll text down (P)
   'select_char_set': [ 'scs', 'Zj' ], //                              Select character set, #1
 
-
   'set_attributes': [ 'sgr', 'sa' ], //                              define video attributes #1-#9 (PG9)
   'set_background': [ 'setb', 'Sb' ], //                              Set background color #1
   'set_bottom_margin': [ 'smgb', 'Zk' ], //                              Set bottom margin at current line
@@ -458,7 +445,6 @@ alias.strings = {
   'user3': [ 'u3', 'u3' ], //                              User string #3
   'user4': [ 'u4', 'u4' ], //                              User string #4
   'user5': [ 'u5', 'u5' ], //                              User string #5
-
   'user6': [ 'u6', 'u6' ], //                              User string #6
   'user7': [ 'u7', 'u7' ], //                              User string #7
   'user8': [ 'u8', 'u8' ], //                              User string #8
@@ -467,9 +453,7 @@ alias.strings = {
   'xoff_character': [ 'xoffc', 'XF' ], //                              XOFF character
   'xon_character': [ 'xonc', 'XN' ], //                              XON character
   'zero_motion': [ 'zerom', 'Zx' ], //                              No motion for subsequent character
-
   // The following string capabilities are present in the SVr4.0 term structure, but were originally not documented in the man page.
-
 
   //         Variable                                      Cap-                                 TCap                                 Description
   //          String                                       name                                 Code
@@ -494,7 +478,6 @@ alias.strings = {
   'pc_term_options': [ 'pctrm', 'S6' ], //                                PC terminal options
   'pkey_plab': [ 'pfxl', 'xl' ], //                                Program function key #1 to type string #2 and show string #3
   'req_mouse_pos': [ 'reqmp', 'RQ' ], //                                Request mouse position
-
   'scancode_escape': [ 'scesc', 'S7' ], //                                Escape for scan‐ code emulation
   'set0_des_seq': [ 's0ds', 's0' ], //                                Shift to codeset 0 (EUC set 0, ASCII)
   'set1_des_seq': [ 's1ds', 's1' ], //                                Shift to codeset 1
@@ -506,11 +489,9 @@ alias.strings = {
   'set_lr_margin': [ 'smglr', 'ML' ], //                                Set both left and right margins to #1, #2.  (ML is not in BSD term‐ cap).
   'set_page_length': [ 'slines', 'YZ' ], //                                Set page length to #1 lines
   'set_tb_margin': [ 'smgtb', 'MT' ], //                                Sets both top and bottom margins to #1, #2
-
   // The XSI Curses standard added these.  They are some post-4.1 versions of System V curses, e.g., Solaris 2.5 and IRIX 6.x.  The ncurses termcap
   // names for them are invented; according to the XSI Curses standard, they have no termcap names.  If your compiled terminfo entries  use  these,
   // they may not be binary-compatible with System V terminfo entries after SVr4.1; beware!
-
 
   //         Variable                                      Cap-                               TCap                                 Description
   //          String                                       name                               Code

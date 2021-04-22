@@ -1,12 +1,10 @@
 var blessed = require('../../lib/blessed')
   , fs = require('fs');
-
 var screen = blessed.screen({
   dump: __dirname + '/logs/record.log',
   smartCSR: true,
   warnings: true
 });
-
 var btext = blessed.box({
   parent: screen,
   left: 'center',
@@ -19,7 +17,6 @@ var btext = blessed.box({
   border: 'line',
   content: 'CSR should still work.'
 });
-
 var text = blessed.scrollabletext({
   parent: screen,
   content: fs.readFileSync(__dirname + '/git.diff', 'utf8'),
@@ -33,19 +30,14 @@ var text = blessed.scrollabletext({
   keys: true,
   vi: true
 });
-
 text.focus();
-
 var frames = [];
-
 var timer = setInterval(function() {
   frames.push(screen.screenshot());
 }, 100);
-
 screen.key('C-q', function() {
   fs.writeFileSync(__dirname + '/frames.json', JSON.stringify(frames));
   clearInterval(timer);
   return screen.destroy();
 });
-
 screen.render();

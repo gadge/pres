@@ -8,7 +8,5 @@ var blessed = require('blessed'),
           { "lon": "79.0000", "lat": "37.5000", color: "blue", char: "O" }
         ]
     })
-
 screen.append(map)
-
 screen.render()

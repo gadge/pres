@@ -3,7 +3,6 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 exports.match = function (r1, g1, b1) {
   if (typeof r1 === 'string') {
     let hex = r1
@@ -43,7 +42,6 @@ exports.match = function (r1, g1, b1) {
   }
   return exports._cache[hash] = li
 }
-
 exports.RGBToHex = function (r, g, b) {
   if (Array.isArray(r)) { b = r[2], g = r[1], r = r[0] }
   function hex(n) {
@@ -53,7 +51,6 @@ exports.RGBToHex = function (r, g, b) {
   }
   return '#' + hex(r) + hex(g) + hex(b)
 }
-
 exports.hexToRGB = function (hex) {
   if (hex.length === 4) {
     hex = hex[0]
@@ -67,19 +64,16 @@ exports.hexToRGB = function (hex) {
     b = col & 0xff
   return [ r, g, b ]
 }
-
 // As it happens, comparing how similar two colors are is really hard. Here is
 // one of the simplest solutions, which doesn't require conversion to another
 // color space, posted on stackoverflow[1]. Maybe someone better at math can
 // propose a superior solution.
 // [1] http://stackoverflow.com/questions/1633828
-
 function colorDistance(r1, g1, b1, r2, g2, b2) {
   return Math.pow(30 * (r1 - r2), 2)
     + Math.pow(59 * (g1 - g2), 2)
     + Math.pow(11 * (b1 - b2), 2)
 }
-
 // This might work well enough for a terminal's colors: treat RGB as XYZ in a
 // 3-dimensional space and go midway between the two points.
 exports.mixColors = function (c1, c2, alpha) {
@@ -101,7 +95,6 @@ exports.mixColors = function (c1, c2, alpha) {
   b1 += (b2 - b1) * alpha | 0
   return exports.match([ r1, g1, b1 ])
 }
-
 exports.blend = function blend(attr, attr2, alpha) {
   let name, i, c, nc
   let bg = attr & 0x1ff
@@ -176,10 +169,8 @@ exports.blend = function blend(attr, attr2, alpha) {
   attr |= fg << 9
   return attr
 }
-
 exports.blend._cache = {}
 exports._cache = {}
-
 exports.reduce = function (color, total) {
   if (color >= 16 && total <= 16) {
     color = exports.ccolors[color]
@@ -190,7 +181,6 @@ exports.reduce = function (color, total) {
   }
   return color
 }
-
 // XTerm Colors
 // These were actually tough to track down. The xterm source only uses color
 // keywords. The X11 source needed to be examined to find the actual values.
@@ -213,7 +203,6 @@ exports.xterm = [
   '#00ffff', // cyan
   '#ffffff'  // white
 ]
-
 // Seed all 256 colors. Assume xterm defaults.
 // Ported from the xterm color generation script.
 exports.colors = (() => {
@@ -234,7 +223,6 @@ exports.colors = (() => {
     c = parseInt(c.substring(1), 16)
     push(i, (c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff)
   })
-
   // 16 - 231
   for (r = 0; r < 6; r++) {
     for (g = 0; g < 6; g++) {
@@ -247,36 +235,28 @@ exports.colors = (() => {
       }
     }
   }
-
   // 232 - 255 are grey.
   for (g = 0; g < 24; g++) {
     l = (g * 10) + 8
     i = 232 + g
     push(i, l, l, l)
   }
-
   return cols
 })()
-
 // Map higher colors to the first 8 colors.
 // This allows translation of high colors to low colors on 8-color terminals.
 exports.ccolors = (function () {
   const _cols = exports.vcolors.slice(),
     cols = exports.colors.slice()
   let out
-
   exports.vcolors = exports.vcolors.slice(0, 8)
   exports.colors = exports.colors.slice(0, 8)
-
   out = cols.map(exports.match)
-
   exports.colors = cols
   exports.vcolors = _cols
   exports.ccolors = out
-
   return out
 })()
-
 const colorNames = exports.colorNames = {
   // special
   default: -1,
@@ -318,10 +298,8 @@ const colorNames = exports.colorNames = {
   brightgrey: 7,
   brightgray: 7
 }
-
 exports.convert = function (color) {
   if (typeof color === 'number') {
-
   } else if (typeof color === 'string') {
     color = color.replace(/[\- ]/g, '')
     if (colorNames[color] != null) {
@@ -336,7 +314,6 @@ exports.convert = function (color) {
   }
   return color !== -1 ? color : 0x1ff
 }
-
 // Map higher colors to the first 8 colors.
 // This allows translation of high colors to low colors on 8-color terminals.
 // Why the hell did I do this by hand?
@@ -370,7 +347,6 @@ exports.ccolors = {
     183,
     189
   ],
-
   green: [
     2,
     10,
@@ -390,7 +366,6 @@ exports.ccolors = {
     [ 154, 158 ],
     [ 190, 194 ]
   ],
-
   cyan: [
     6,
     14,
@@ -410,7 +385,6 @@ exports.ccolors = {
     159,
     195
   ],
-
   red: [
     1,
     9,
@@ -430,7 +404,6 @@ exports.ccolors = {
     [ 214, 218 ],
     [ 220, 224 ]
   ],
-
   magenta: [
     5,
     13,
@@ -450,7 +423,6 @@ exports.ccolors = {
     219,
     225
   ],
-
   yellow: [
     3,
     11,
@@ -460,7 +432,6 @@ exports.ccolors = {
     [ 184, 187 ],
     [ 226, 230 ]
   ],
-
   black: [
     0,
     8,
@@ -469,7 +440,6 @@ exports.ccolors = {
     102,
     [ 232, 243 ]
   ],
-
   white: [
     7,
     15,
@@ -479,9 +449,7 @@ exports.ccolors = {
     [ 244, 255 ]
   ]
 }
-
 exports.ncolors = []
-
 Object.keys(exports.ccolors).forEach(function (name) {
   exports.ccolors[name].forEach(function (offset) {
     if (typeof offset === 'number') {

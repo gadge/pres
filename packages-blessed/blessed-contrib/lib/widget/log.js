@@ -1,6 +1,5 @@
 import { List } from '@pres/components-data'
 
-
 export class Log extends List {
   constructor(options) {
     // if (!(this instanceof Node)) { return new Log(options) }
@@ -17,5 +16,4 @@ export class Log extends List {
     this.scrollTo(this.logLines.length)
   }
 }
-
 

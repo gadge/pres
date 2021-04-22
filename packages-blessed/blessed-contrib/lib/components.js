@@ -15,7 +15,6 @@ import { Picture }    from './widget/picture'
 import { Sparkline }  from './widget/sparkline'
 import { Table }      from './widget/table'
 import { Tree }       from './widget/tree'
-
 export const carousel = (pages, options) => new Carousel(pages, options)
 export const grid = options => new Grid(options)
 export const canvas = (options, canvasType) => new Canvas(options, canvasType)
@@ -33,7 +32,6 @@ export const picture = options => new Picture(options)
 export const sparkline = options => new Sparkline(options)
 export const table = options => new Table(options)
 export const tree = options => new Tree(options)
-
 export {
   Canvas,
   Donut,

@@ -1,14 +1,11 @@
 var blessed = require('../../lib/blessed')
   , screen;
-
 screen = blessed.screen({
   dump: __dirname + '/logs/csr.log',
   smartCSR: true,
   warnings: true
 });
-
 var lorem = require('fs').readFileSync(__dirname + '/git.diff', 'utf8');
-
 var cleanSides = screen.cleanSides;
 function expectClean(value) {
   screen.cleanSides = function(el) {
@@ -21,7 +18,6 @@ function expectClean(value) {
     return ret;
   };
 }
-
 /*
 blessed.box({
   parent: screen,
@@ -36,7 +32,6 @@ blessed.box({
 });
 expectClean(false);
 */
-
 var btext = blessed.box({
   parent: screen,
   left: 'center',
@@ -54,7 +49,6 @@ btext.scroll = function(offset, always) {
   expectClean(true);
   return btext._oscroll(offset, always);
 };
-
 var text = blessed.scrollabletext({
   parent: screen,
   content: lorem,
@@ -68,7 +62,6 @@ var text = blessed.scrollabletext({
   keys: true,
   vi: true
 });
-
 text._oscroll = text.scroll;
 text.scroll = function(offset, always) {
   var el = this;
@@ -80,11 +73,8 @@ text.scroll = function(offset, always) {
   expectClean(value);
   return text._oscroll(offset, always);
 };
-
 text.focus();
-
 screen.key('q', function() {
   return screen.destroy();
 });
-
 screen.render();

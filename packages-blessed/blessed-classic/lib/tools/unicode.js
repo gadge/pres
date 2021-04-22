@@ -7,19 +7,15 @@
  */
 const stringFromCharCode = String.fromCharCode
 const floor = Math.floor
-
 /**
  * Wide, Surrogates, and Combining
  */
-
 exports.charWidth = function (str, i) {
   const point = typeof str !== 'number'
     ? exports.codePointAt(str, i || 0)
     : str
-
   // nul
   if (point === 0) return 0
-
   // tab
   if (point === 0x09) {
     if (!exports.blessed) {
@@ -29,18 +25,15 @@ exports.charWidth = function (str, i) {
       ? exports.blessed.screen.global.tabc.length
       : 8
   }
-
   // 8-bit control characters (2-width according to unicode??)
   if (point < 32 || (point >= 0x7f && point < 0xa0)) {
     return 0
   }
-
   // search table of non-spacing characters
   // is ucs combining or C0/C1 control character
   if (exports.combining[point]) {
     return 0
   }
-
   // check for double-wide
   // if (point >= 0x1100
   //     && (point <= 0x115f // Hangul Jamo init. consonants
@@ -57,14 +50,12 @@ exports.charWidth = function (str, i) {
   //     || (point >= 0x30000 && point <= 0x3fffd))) {
   //   return 2;
   // }
-
   // check for double-wide
   if ((0x3000 === point)
     || (0xFF01 <= point && point <= 0xFF60)
     || (0xFFE0 <= point && point <= 0xFFE6)) {
     return 2
   }
-
   if ((0x1100 <= point && point <= 0x115F)
     || (0x11A3 <= point && point <= 0x11A7)
     || (0x11FA <= point && point <= 0x11FF)
@@ -105,7 +96,6 @@ exports.charWidth = function (str, i) {
     || (0x30000 <= point && point <= 0x3FFFD)) {
     return 2
   }
-
   // CJK Ambiguous
   // http://www.unicode.org/reports/tr11/
   // http://www.unicode.org/reports/tr11/#Ambiguous
@@ -286,10 +276,8 @@ exports.charWidth = function (str, i) {
       return +process.env.NCURSES_CJK_WIDTH || 1
     }
   }
-
   return 1
 }
-
 exports.strWidth = function (str) {
   let width = 0
   for (let i = 0; i < str.length; i++) {
@@ -298,14 +286,12 @@ exports.strWidth = function (str) {
   }
   return width
 }
-
 exports.isSurrogate = function (str, i) {
   const point = typeof str !== 'number'
     ? exports.codePointAt(str, i || 0)
     : str
   return point > 0x00ffff
 }
-
 exports.combiningTable = [
   [ 0x0300, 0x036F ], [ 0x0483, 0x0486 ], [ 0x0488, 0x0489 ],
   [ 0x0591, 0x05BD ], [ 0x05BF, 0x05BF ], [ 0x05C1, 0x05C2 ],
@@ -356,25 +342,21 @@ exports.combiningTable = [
   [ 0x1D242, 0x1D244 ], [ 0xE0001, 0xE0001 ], [ 0xE0020, 0xE007F ],
   [ 0xE0100, 0xE01EF ]
 ]
-
 exports.combining = exports.combiningTable.reduce(function (out, row) {
   for (let i = row[0]; i <= row[1]; i++) {
     out[i] = true
   }
   return out
 }, {})
-
 exports.isCombining = function (str, i) {
   const point = typeof str !== 'number'
     ? exports.codePointAt(str, i || 0)
     : str
   return exports.combining[point] === true
 }
-
 /**
  * Code Point Helpers
  */
-
 exports.codePointAt = function (str, position) {
   if (str == null) {
     throw TypeError()
@@ -408,7 +390,6 @@ exports.codePointAt = function (str, position) {
   }
   return first
 }
-
 // exports.codePointAt = function(str, position) {
 //   position = +position || 0;
 //   var x = str.charCodeAt(position);
@@ -422,7 +403,6 @@ exports.codePointAt = function (str, position) {
 //   }
 //   return point;
 // };
-
 exports.fromCodePoint = function () {
   if (String.fromCodePoint) {
     return String.fromCodePoint.apply(String, arguments)
@@ -463,7 +443,6 @@ exports.fromCodePoint = function () {
   }
   return result
 }
-
 /**
  * Regexes
  */

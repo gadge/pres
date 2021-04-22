@@ -8,7 +8,5 @@ var blessed = require('blessed'),
           { color: 'yellow', percent: '80', label: 'c' }
         ]
       })
-
 screen.append(donut)
-
 screen.render()

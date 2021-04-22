@@ -1,13 +1,11 @@
 var blessed = require('../../lib/blessed')
   , screen;
-
 screen = blessed.screen({
   dump: __dirname + '/logs/valign.log',
   smartCSR: true,
   autoPadding: false,
   warnings: true
 });
-
 var box = blessed.box({
   parent: screen,
   top: 'center',
@@ -20,9 +18,7 @@ var box = blessed.box({
   content: 'Foobar.',
   border: 'line'
 });
-
 screen.key('q', function() {
   return screen.destroy();
 });
-
 screen.render();

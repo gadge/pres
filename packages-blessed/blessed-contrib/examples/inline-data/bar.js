@@ -14,7 +14,5 @@ var blessed = require('blessed'),
           data: [ 5, 10 ]
         }
       })
-
 screen.append(bar)
-
 screen.render()

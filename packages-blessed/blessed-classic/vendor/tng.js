@@ -3,7 +3,6 @@
  * Copyright (c) 2015, Christopher Jeffrey (MIT License).
  * https://github.com/chjj/tng
  */
-
 var fs = require('fs')
   , util = require('util')
   , path = require('path')
@@ -11,21 +10,16 @@ var fs = require('fs')
   , assert = require('assert')
   , cp = require('child_process')
   , exec = cp.execFileSync;
-
 /**
  * PNG
  */
-
 function PNG(file, options) {
   var buf
     , chunks
     , idat
     , pixels;
-
   if (!(this instanceof PNG)) return new PNG(file, options)
-
   if (!file) throw new Error('no file');
-
   this.options = options || {};
   this.colors = options.colors || require('blessed/lib/colors');
   this.optimization = this.options.optimization || 'mem';

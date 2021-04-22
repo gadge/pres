@@ -1,13 +1,11 @@
 var blessed = require('../../lib/blessed')
   , screen;
-
 screen = blessed.screen({
   dump: __dirname + '/logs/shadow.log',
   smartCSR: true,
   dockBorders: true,
   warnings: true
 });
-
 var bg = blessed.box({
   parent: screen,
   shadow: true,
@@ -20,7 +18,6 @@ var bg = blessed.box({
   },
   content: 'Foo'
 });
-
 var under = blessed.box({
   parent: screen,
   shadow: true,
@@ -34,7 +31,6 @@ var under = blessed.box({
   border: 'line',
   tags: true
 });
-
 var over = blessed.box({
   parent: screen,
   shadow: true,
@@ -51,33 +47,26 @@ var over = blessed.box({
   tags: true,
   content: '{green-bg}{red-fg}{bold} --Drag Me-- {/}'
 });
-
 over.key('left', function() {
   over.left -= 2;
   screen.render();
 });
-
 over.key('up', function() {
   over.top -= 1;
   screen.render();
 });
-
 over.key('right', function() {
   over.left += 2;
   screen.render();
 });
-
 over.key('down', function() {
   over.top += 1;
   screen.render();
 });
-
 over.focus();
-
 screen.key('q', function() {
   return screen.destroy();
 });
-
 var lorem = 'Non eram nescius Brute cum quae summis ingeniis exquisitaque'
 + ' doctrina philosophi Graeco sermone tractavissent ea Latinis litteris mandaremus'
 + ' fore ut hic noster labor in varias reprehensiones incurreret nam quibusdam et'
@@ -122,7 +111,5 @@ var lorem = 'Non eram nescius Brute cum quae summis ingeniis exquisitaque'
 + ' est et ab antiquis ad arbitrium suum scribere quodsi Graeci leguntur a Graecis'
 + ' isdem de rebus alia ratione compositis quid est cur nostri a nostris non'
 + ' legantur';
-
 bg.setContent(lorem);
-
 screen.render();

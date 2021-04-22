@@ -3,12 +3,10 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 const cp       = require('child_process'),
       Node     = require('./node'),
       Box      = require('./box'),
       Terminal = require('./terminal')
-
 /**
  * Video
  */
@@ -18,7 +16,6 @@ function Video(options) {
     , args
   if (!(this instanceof Node)) return new Video(options)
   options = options || {}
-
   Box.call(this, options)
   if (this.exists('mplayer')) {
     shell = 'mplayer'
@@ -54,7 +51,6 @@ function Video(options) {
   this.tty = new Terminal(opts)
   process.env.DISPLAY = DISPLAY
   this.on('click', function () { self.tty.pty.write('p') })
-
   // mplayer/mpv cannot resize itself in the terminal, so we have
   // to restart it at the correct start time.
   this.on('resize', function () {
@@ -84,11 +80,8 @@ function Video(options) {
     self.screen.render()
   })
 }
-
 Video.prototype.__proto__ = Box.prototype
-
 Video.prototype.type = 'video'
-
 Video.prototype.exists = function (program) {
   try {
     return !!+cp.execSync('type '
@@ -98,9 +91,7 @@ Video.prototype.exists = function (program) {
     return false
   }
 }
-
 /**
  * Expose
  */
-
 module.exports = Video

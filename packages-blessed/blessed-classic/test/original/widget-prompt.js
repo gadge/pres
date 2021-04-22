@@ -1,5 +1,4 @@
 var blessed = require('../../lib/blessed');
-
 var screen = blessed.screen({
   tput: true,
   smartCSR: true,
@@ -7,7 +6,6 @@ var screen = blessed.screen({
   autoPadding: true,
   warnings: true
 });
-
 var prompt = blessed.prompt({
   parent: screen,
   border: 'line',
@@ -20,7 +18,6 @@ var prompt = blessed.prompt({
   keys: true,
   vi: true
 });
-
 var question = blessed.question({
   parent: screen,
   border: 'line',
@@ -33,7 +30,6 @@ var question = blessed.question({
   keys: true,
   vi: true
 });
-
 var msg = blessed.message({
   parent: screen,
   border: 'line',
@@ -47,7 +43,6 @@ var msg = blessed.message({
   hidden: true,
   vi: true
 });
-
 var loader = blessed.loading({
   parent: screen,
   border: 'line',
@@ -61,7 +56,6 @@ var loader = blessed.loading({
   hidden: true,
   vi: true
 });
-
 prompt.input('Question?', '', function(err, value) {
   question.ask('Question?', function(err, value) {
     msg.display('Hello world!', 3, function(err) {
@@ -75,9 +69,7 @@ prompt.input('Question?', '', function(err, value) {
     });
   });
 });
-
 screen.key('q', function() {
   screen.destroy();
 });
-
 screen.render();

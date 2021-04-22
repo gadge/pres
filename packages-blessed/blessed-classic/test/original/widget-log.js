@@ -1,13 +1,11 @@
 var blessed = require('../../lib/blessed')
   , screen;
-
 screen = blessed.screen({
   dump: __dirname + '/logs/logger.log',
   smartCSR: true,
   autoPadding: false,
   warnings: true
 });
-
 var logger = blessed.log({
   parent: screen,
   top: 'center',
@@ -30,7 +28,6 @@ var logger = blessed.log({
     }
   }
 });
-
 logger.focus();
 
 setInterval(function() {

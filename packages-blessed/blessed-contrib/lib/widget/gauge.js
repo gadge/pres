@@ -1,7 +1,6 @@
 import { ATTACH } from '@pres/enum-events'
 import blessed    from '../vendor/blessed'
 import { Canvas } from './canvas'
-
 const Node = blessed.Node
 export class Gauge extends Canvas {
   constructor(options = {}) {
@@ -92,5 +91,4 @@ export class Gauge extends Canvas {
     return { percent: 10 }
   }
 }
-
 

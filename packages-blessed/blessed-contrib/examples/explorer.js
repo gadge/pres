@@ -3,17 +3,14 @@ import fs           from 'fs'
 import * as contrib from '../index'
 
 const screen = blessed.screen()
-
 //create layout and widgets
 const grid = contrib.grid({ rows: 1, cols: 2, screen: screen })
-
 const tree = grid.set(0, 0, 1, 1, contrib.tree,
   {
     style: { text: "red" },
     template: { lines: true },
     label: 'Filesystem Tree'
   })
-
 const table = grid.set(0, 1, 1, 1, contrib.table,
   {
     keys: true,
@@ -21,7 +18,6 @@ const table = grid.set(0, 1, 1, 1, contrib.table,
     label: 'Informations',
     columnWidth: [ 24, 10, 10 ]
   })
-
 //file explorer
 const explorer = {
   name: '/',
@@ -41,7 +37,6 @@ const explorer = {
     try {
       // List files in this directory
       const children = fs.readdirSync(selfPath + '/')
-
       // childrenContent is a property filled with self.children() result
       // on tree generation (tree.setData() call)
       if (!self.childrenContent) {
@@ -65,20 +60,16 @@ const explorer = {
     return result
   }
 }
-
 //set tree
 tree.setData(explorer)
-
 // Handling select event. Every custom property that was added to node is 
 // available like the "node.getPath" defined above
 tree.on('select', function (node) {
   let path = node.getPath(node)
   let data = []
-
   // The filesystem root return an empty string as a base case
   if (path == '')
     path = '/'
-
   // Add data to right array
   data.push([ path ])
   data.push([ '' ])
@@ -89,23 +80,18 @@ tree.on('select', function (node) {
   } catch (e) {
     table.setData({ headers: [ 'Info' ], data: [ [ e.toString() ] ] })
   }
-
   screen.render()
 })
-
 //set default table
 table.setData({ headers: [ 'Info' ], data: [ [] ] })
-
 screen.key([ 'escape', 'q', 'C-c' ], function (ch, key) {
   return process.exit(0)
 })
-
 screen.key([ 'tab' ], function (ch, key) {
   if (screen.focused == tree.rows)
     table.focus()
   else
     tree.focus()
 })
-
 tree.focus()
 screen.render()

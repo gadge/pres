@@ -16,7 +16,6 @@ function MergeRecursive(obj1, obj2) {
   return obj1
 }
 function getTypeName(thing) { return thing === null ? '[object Null]' : Object.prototype.toString.call(thing) }
-
 function abbreviateNumber(value) {
   let newValue = value
   if (value >= 1000) {

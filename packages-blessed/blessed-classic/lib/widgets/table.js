@@ -3,13 +3,11 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 /**
  * Modules
  */
 const Node = require('./node')
 const Box = require('./box')
-
 /**
  * Table
  */
@@ -22,11 +20,9 @@ function Table(options = {}) {
   options.style.header = options.style.header || {}
   options.style.cell = options.style.cell || {}
   options.align = options.align || 'center'
-
   // Regular tables do not get custom height (this would
   // require extra padding). Maybe add in the future.
   delete options.height
-
   Box.call(this, options)
   this.pad = options.pad != null
     ? options.pad
@@ -42,11 +38,8 @@ function Table(options = {}) {
     self.screen.render()
   })
 }
-
 Table.prototype.__proto__ = Box.prototype
-
 Table.prototype.type = 'table'
-
 Table.prototype._calculateMaxes = function () {
   const self = this
   let maxes = []
@@ -60,12 +53,10 @@ Table.prototype._calculateMaxes = function () {
       }
     })
   })
-
   let total = maxes.reduce(function (total, max) {
     return total + max
   }, 0)
   total += maxes.length + 1
-
   // XXX There might be an issue with resizing where on the first resize event
   // width appears to be less than total if it's a percentage or left/right
   // combination.
@@ -87,10 +78,8 @@ Table.prototype._calculateMaxes = function () {
       return max + self.pad
     })
   }
-
   return this._maxes = maxes
 }
-
 Table.prototype.setRows =
   Table.prototype.setData = function (rows) {
     const self = this
@@ -107,7 +96,6 @@ Table.prototype.setRows =
         if (i !== 0) {
           text += ' '
         }
-
         while (clen < width) {
           if (align === 'center') {
             cell = ' ' + cell + ' '
@@ -132,42 +120,34 @@ Table.prototype.setRows =
             clen--
           }
         }
-
         text += cell
       })
       if (!isFooter) {
         text += '\n\n'
       }
     })
-
     delete this.align
     this.setContent(text)
     this.align = align
   }
-
 Table.prototype.render = function () {
   const self = this
-
   const coords = this._render()
   if (!coords) return
   this._calculateMaxes()
   if (!this._maxes) return coords
-
   const lines = this.screen.lines,
     xi = coords.xi,
     yi = coords.yi
   let rx,
     ry,
     i
-
   const dattr = this.sattr(this.style),
     hattr = this.sattr(this.style.header),
     cattr = this.sattr(this.style.cell),
     battr = this.sattr(this.style.border)
-
   const width = coords.xl - coords.xi - this.iright,
     height = coords.yl - coords.yi - this.ibottom
-
   // Apply attributes to header cells and cells.
   for (let y = this.itop; y < height; y++) {
     if (!lines[yi + y]) break
@@ -184,7 +164,6 @@ Table.prototype.render = function () {
     }
   }
   if (!this.border || this.options.noCellBorders) return coords
-
   // Draw border with correct angles.
   ry = 0
   for (i = 0; i < self.rows.length + 1; i++) {
@@ -276,7 +255,6 @@ Table.prototype.render = function () {
     })
     ry += 2
   }
-
   // Draw internal borders.
   for (ry = 1; ry < self.rows.length * 2; ry++) {
     if (!lines[yi + ry]) break
@@ -319,12 +297,9 @@ Table.prototype.render = function () {
       rx++
     })
   }
-
   return coords
 }
-
 /**
  * Expose
  */
-
 module.exports = Table

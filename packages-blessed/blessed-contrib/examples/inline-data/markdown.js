@@ -6,7 +6,5 @@ var blessed  = require('blessed'),
       markdown: '# Hello \n blessed-contrib renders markdown using `marked-terminal` ',
       style: { firstHeading: 'chalk.green.italic' }
     })
-
 screen.append(markdown)
-
 screen.render()

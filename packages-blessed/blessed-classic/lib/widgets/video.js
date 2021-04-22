@@ -3,7 +3,6 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 /**
  * Modules
  */
@@ -11,7 +10,6 @@ const cp = require('child_process')
 const Node = require('./node')
 const Box = require('./box')
 const Terminal = require('./terminal')
-
 /**
  * Video
  */
@@ -20,7 +18,6 @@ function Video(options = {}) {
   let shell,
     args
   if (!(this instanceof Node)) return new Video(options)
-
   Box.call(this, options)
   if (this.exists('mplayer')) {
     shell = 'mplayer'
@@ -34,7 +31,6 @@ function Video(options = {}) {
       + ' mplayer or mpv not installed.{/red-fg}')
     return this
   }
-
   const opts = {
     parent: this,
     left: 0,
@@ -53,7 +49,6 @@ function Video(options = {}) {
       opts.args.unshift('--start', this.start + '')
     }
   }
-
   const DISPLAY = process.env.DISPLAY
   delete process.env.DISPLAY
   this.tty = new Terminal(opts)
@@ -61,12 +56,10 @@ function Video(options = {}) {
   this.on('click', function () {
     self.tty.pty.write('p')
   })
-
   // mplayer/mpv cannot resize itself in the terminal, so we have
   // to restart it at the correct start time.
   this.on('resize', function () {
     self.tty.destroy()
-
     const opts = {
       parent: self,
       left: 0,
@@ -76,7 +69,6 @@ function Video(options = {}) {
       shell: shell,
       args: args.slice()
     }
-
     const watched = (Date.now() / 1000 | 0) - self.now
     self.now = Date.now() / 1000 | 0
     self.start += watched
@@ -85,7 +77,6 @@ function Video(options = {}) {
     } else if (shell === 'mpv') {
       opts.args.unshift('--start', self.start + '')
     }
-
     const DISPLAY = process.env.DISPLAY
     delete process.env.DISPLAY
     self.tty = new Terminal(opts)
@@ -93,11 +84,8 @@ function Video(options = {}) {
     self.screen.render()
   })
 }
-
 Video.prototype.__proto__ = Box.prototype
-
 Video.prototype.type = 'video'
-
 Video.prototype.exists = function (program) {
   try {
     return !!+cp.execSync('type '
@@ -107,9 +95,7 @@ Video.prototype.exists = function (program) {
     return false
   }
 }
-
 /**
  * Expose
  */
-
 module.exports = Video

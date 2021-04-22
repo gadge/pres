@@ -1,7 +1,6 @@
 var blessed = require('blessed'),
     contrib = require('../../'),
     screen  = blessed.screen()
-
 var spark = contrib.sparkline(
   {
     label: 'Sparkline',
@@ -16,8 +15,5 @@ var spark = contrib.sparkline(
         [ 40, 10, 40, 50, 20, 30, 20, 20, 19, 40 ] ]
     }
   })
-
 screen.append(spark)
-
 screen.render()
-

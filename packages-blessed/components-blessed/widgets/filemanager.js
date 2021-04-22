@@ -12,11 +12,9 @@ const path    = require('path'),
       Node    = require('./node'),
       List    = require('./list')
 
-
 /**
  * FileManager
  */
-
 function FileManager(options) {
   const self = this
   if (!(this instanceof Node)) {
@@ -25,7 +23,6 @@ function FileManager(options) {
   options = options || {}
   options.parseTags = true
   // options.label = ' {blue-fg}%path{/blue-fg} ';
-
   List.call(this, options)
   this.cwd = options.cwd || process.cwd()
   this.file = this.cwd
@@ -36,7 +33,6 @@ function FileManager(options) {
   this.on('select', function (item) {
     const value = item.content.replace(/\{[^{}]+\}/g, '').replace(/@$/, '')
       , file    = path.resolve(self.cwd, value)
-
     return fs.stat(file, function (err, stat) {
       if (err) {
         return self.emit('error', err, file)
@@ -57,11 +53,8 @@ function FileManager(options) {
     })
   })
 }
-
 FileManager.prototype.__proto__ = List.prototype
-
 FileManager.prototype.type = 'file-manager'
-
 FileManager.prototype.refresh = function (cwd, callback) {
   if (!callback) {
     callback = cwd
@@ -70,7 +63,6 @@ FileManager.prototype.refresh = function (cwd, callback) {
   const self = this
   if (cwd) this.cwd = cwd
   else cwd = this.cwd
-
   return fs.readdir(cwd, function (err, list) {
     if (err && err.code === 'ENOENT') {
       self.cwd = cwd !== process.env.HOME
@@ -84,13 +76,10 @@ FileManager.prototype.refresh = function (cwd, callback) {
     }
     let dirs  = []
       , files = []
-
     list.unshift('..')
-
     list.forEach(function (name) {
       const f = path.resolve(cwd, name)
       let stat
-
       try {
         stat = fs.lstatSync(f)
       } catch (e) { }
@@ -116,23 +105,18 @@ FileManager.prototype.refresh = function (cwd, callback) {
         })
       }
     })
-
     dirs = helpers.asort(dirs)
     files = helpers.asort(files)
-
     list = dirs.concat(files).map(function (data) {
       return data.text
     })
-
     self.setItems(list)
     self.select(0)
     self.screen.render()
-
     self.emit('refresh')
     if (callback) callback()
   })
 }
-
 FileManager.prototype.pick = function (cwd, callback) {
   if (!callback) {
     callback = cwd
@@ -143,7 +127,6 @@ FileManager.prototype.pick = function (cwd, callback) {
     , hidden  = this.hidden
   let onfile
     , oncancel
-
   function resume() {
     self.removeListener('file', onfile)
     self.removeListener('cancel', oncancel)

@@ -3,12 +3,9 @@
  * Copyright (c) 2013, Christopher Jeffrey (MIT License).
  * https://github.com/chjj/blessed
  */
-
 var blessed = require('../dist/index.esm')
   , program = blessed.program();
-
 process.title = 'blessed';
-
 program.on('keypress', function(ch, key) {
   if (key.name === 'q') {
     program.clear();
@@ -18,7 +15,6 @@ program.on('keypress', function(ch, key) {
     process.exit(0);
   }
 });
-
 program.on('mouse', function(data) {
   if (data.action === 'mouseup') return;
   program.move(1, program.rows);
@@ -39,22 +35,18 @@ program.on('mouse', function(data) {
   program.write(' ');
   program.bg('!red');
 });
-
 program.on('focus', function() {
   program.move(1, program.rows);
   program.write('Gained focus.');
 });
-
 program.on('blur', function() {
   program.move(1, program.rows);
   program.write('Lost focus.');
 });
-
 program.alternateBuffer();
 program.enableMouse();
 program.hideCursor();
 program.clear();
-
 program.move(1, 1);
 program.bg('black');
 program.write('Hello world', 'blue fg');
@@ -63,13 +55,11 @@ program.down(5);
 program.write('Hi again!');
 program.bg('!black');
 program.feed();
-
 program.getCursor(function(err, data) {
   if (!err) {
     program.write('Cursor is at: ' + data.x + ', ' + data.y + '.');
     program.feed();
   }
-
   program.charset('SCLD');
   program.write('abcdefghijklmnopqrstuvwxyz0123456789');
   program.charset('US');

@@ -14,7 +14,5 @@ var blessed = require('blessed'),
         elementSpacing: 4,
         elementPadding: 2
       })
-
-
 screen.render()
   

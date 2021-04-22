@@ -1,6 +1,5 @@
 import { ATTACH } from '@pres/enum-events'
 import { Canvas } from '../canvas'
-
 export class Bar extends Canvas {
   constructor(options = {}) {
     // if (!(this instanceof Node)) return new Bar(options)
@@ -54,5 +53,4 @@ export class Bar extends Canvas {
     }
   }
 }
-
 

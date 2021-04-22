@@ -3,7 +3,6 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 /**
  * Modules
  */
@@ -11,7 +10,6 @@ const Node = require('./node')
 const Box = require('./box')
 const List = require('./list')
 const Table = require('./table')
-
 /**
  * ListTable
  */
@@ -26,10 +24,8 @@ function ListTable(options = {}) {
   options.style.cell = options.style.cell || {}
   this.__align = options.align || 'center'
   delete options.align
-
   options.style.selected = options.style.cell.selected
   options.style.item = options.style.cell
-
   const border = options.border
   if (border
     && border.top === false
@@ -38,9 +34,7 @@ function ListTable(options = {}) {
     && border.right === false) {
     delete options.border
   }
-
   List.call(this, options)
-
   options.border = border
   this._header = new Box({
     parent: this,
@@ -72,13 +66,9 @@ function ListTable(options = {}) {
     self.screen.render()
   })
 }
-
 ListTable.prototype.__proto__ = List.prototype
-
 ListTable.prototype.type = 'list-table'
-
 ListTable.prototype._calculateMaxes = Table.prototype._calculateMaxes
-
 ListTable.prototype.setRows =
   ListTable.prototype.setData = function (rows) {
     const self = this,
@@ -103,7 +93,6 @@ ListTable.prototype.setRows =
         if (i !== 0) {
           text += ' '
         }
-
         while (clen < width) {
           if (align === 'center') {
             cell = ' ' + cell + ' '
@@ -128,7 +117,6 @@ ListTable.prototype.setRows =
             clen--
           }
         }
-
         text += cell
       })
       if (isHeader) {
@@ -138,7 +126,6 @@ ListTable.prototype.setRows =
       }
     })
     this._header.setFront()
-
     // Try to find our old item if it still exists.
     sel = this.ritems.indexOf(sel)
     if (~sel) {
@@ -149,7 +136,6 @@ ListTable.prototype.setRows =
       this.select(Math.min(selected, this.items.length - 1))
     }
   }
-
 ListTable.prototype._select = ListTable.prototype.select
 ListTable.prototype.select = function (i) {
   if (i === 0) {
@@ -160,32 +146,25 @@ ListTable.prototype.select = function (i) {
   }
   return this._select(i)
 }
-
 ListTable.prototype.render = function () {
   const self = this
-
   const coords = this._render()
   if (!coords) return
   this._calculateMaxes()
   if (!this._maxes) return coords
-
   const lines = this.screen.lines,
     xi = coords.xi,
     yi = coords.yi
   let rx,
     ry,
     i
-
   const battr = this.sattr(this.style.border)
-
   const height = coords.yl - coords.yi - this.ibottom
-
   let border = this.border
   if (!this.border && this.options.border) {
     border = this.options.border
   }
   if (!border || this.options.noCellBorders) return coords
-
   // Draw border with correct angles.
   ry = 0
   for (i = 0; i < height + 1; i++) {
@@ -222,7 +201,6 @@ ListTable.prototype.render = function () {
     })
     ry += 1
   }
-
   // Draw internal borders.
   for (ry = 1; ry < height; ry++) {
     if (!lines[yi + ry]) break
@@ -242,12 +220,9 @@ ListTable.prototype.render = function () {
       lines[yi + ry].dirty = true
     })
   }
-
   return coords
 }
-
 /**
  * Expose
  */
-
 module.exports = ListTable

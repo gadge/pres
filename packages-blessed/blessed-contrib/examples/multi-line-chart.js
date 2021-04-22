@@ -33,12 +33,9 @@ const screen = blessed.screen(),
           y: [ 22, 7, 12, 1 ],
           style: { line: 'blue' }
         } ]
-
 screen.append(line) //must append before setting data
 line.setData(data)
-
 screen.key([ 'escape', 'q', 'C-c' ], function (ch, key) {
   return process.exit(0)
 })
-
 screen.render()
