@@ -4,7 +4,7 @@ import * as contrib from '../index'
 const screen = blessed.screen()
 
 function page1(screen) {
-  const grid = new contrib.grid({ rows: 4, cols: 4, screen: screen })
+  const grid = contrib.grid({ rows: 4, cols: 4, screen: screen })
 
   const line = grid.set(1, 0, 2, 2, contrib.line,
     {
@@ -71,7 +71,7 @@ screen.key([ 'escape', 'q', 'C-c' ], function (ch, key) {
   return process.exit(0)
 })
 
-const carousel = new contrib.carousel([ page1, page2 ],
+const carousel = contrib.carousel([ page1, page2 ],
   {
     screen: screen,
     interval: 3000,

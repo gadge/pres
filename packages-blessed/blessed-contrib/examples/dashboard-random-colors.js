@@ -6,11 +6,9 @@ const screen = blessed.screen()
 //create layout and widgets
 
 // Create a random color
-function randomColor() {
-  return [ Math.random() * 255, Math.random() * 255, Math.random() * 255 ]
-}
+const randomColor = () => [ Math.random() * 255, Math.random() * 255, Math.random() * 255 ]
 
-const grid = new contrib.grid({ rows: 12, cols: 12, screen: screen })
+const grid = contrib.grid({ rows: 12, cols: 12, screen: screen })
 
 /**
  * Donut Options

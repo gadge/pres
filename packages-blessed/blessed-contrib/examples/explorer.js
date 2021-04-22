@@ -5,7 +5,7 @@ import * as contrib from '../index'
 const screen = blessed.screen()
 
 //create layout and widgets
-const grid = new contrib.grid({ rows: 1, cols: 2, screen: screen })
+const grid = contrib.grid({ rows: 1, cols: 2, screen: screen })
 
 const tree = grid.set(0, 0, 1, 1, contrib.tree,
   {
