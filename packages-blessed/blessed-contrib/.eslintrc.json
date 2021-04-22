@@ -9,15 +9,27 @@
   },
   "rules": {
     "brace-style": "error",
-    "no-irregular-whitespace":"error",
+    "no-irregular-whitespace": "error",
     "no-octal-escape": "error",
     "no-octal": "error",
-    "no-proto":"error",
-    "strict":["error", "global"],
-    "no-undef":"error",
+    "no-proto": "error",
+    "strict": [
+      "error",
+      "global"
+    ],
+    "no-undef": "error",
     "no-use-before-define": "off",
-    "indent": ["error", 2],
-    "semi": [2, "always"],
-    "quotes": [2, "single"]
+    "indent": [
+      "error",
+      2
+    ],
+    "semi": [
+      2,
+      "always"
+    ],
+    "quotes": [
+      2,
+      "single"
+    ]
   }
 }

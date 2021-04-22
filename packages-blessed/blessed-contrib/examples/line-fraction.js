@@ -1,8 +1,8 @@
-import blessed from 'blessed'
-import contrib from '../index'
+import { blessed }  from '@pres/terminal-interface'
+import * as contrib from '../index'
 
-const screen  = blessed.screen(),
-      line    = contrib.line(
+const screen = blessed.screen(),
+      line   = contrib.line(
         {
           width: 80,
           height: 30,
@@ -14,7 +14,7 @@ const screen  = blessed.screen(),
           //, wholeNumbersOnly: true
         }),
 
-      data    = [ {
+      data   = [ {
         title: 'us-east',
         x: [ 't1', 't2', 't3', 't4' ],
         y: [ 0, 0.0695652173913043, 0.11304347826087, 2 ],

@@ -1,13 +1,14 @@
 import * as Blessed from 'blessed'
+
 export = BlessedContrib
 declare namespace BlessedContrib {
 
     export type Optionals<T, K extends keyof T> = {
         [P in keyof K]?: T[K]
-        }
+    }
     export type Picker<T, K extends keyof T> = {
         [P in K]: T[P];
-        };
+    };
 
 
     export module Widgets {
@@ -69,27 +70,37 @@ declare namespace BlessedContrib {
 
 
         export class GridElement extends BoxElement implements IHasOptions<GridOptions> {
+            options: GridOptions;
+
             constructor(opts: GridOptions);
 
             set<T extends (options?: TreeOptions) => S, S extends TreeElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: T, opt: TreeOptions): TreeElement
+
             set<T extends (options?: TableOptions) => S, S extends TableElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: T, opt: TableOptions): TableElement
+
             set<T extends (options?: PictureOptions) => S, S extends PictureElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: T, opt: PictureOptions): PictureElement
+
             set<T extends (options?: MarkdownOptions) => S, S extends MarkdownElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: T, opt: MarkdownOptions): MarkdownElement
+
             set<T extends (options?: MapOptions) => S, S extends MapElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: T, opt: MapOptions): MapElement
+
             set<T extends (options?: LogOptions) => S, S extends LogElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: T, opt: LogOptions): LogElement
+
             set<T extends (options?: LcdOptions) => S, S extends LcdElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: T, opt: LcdOptions): LcdElement
+
             set<T extends (options?: GaugeOptions) => S, S extends GaugeElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: T, opt: GaugeOptions): GaugeElement
+
             set<T extends (options?: GaugeListOptions) => S, S extends GaugeListElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: T, opt: GaugeListOptions): GaugeListElement
+
             set<T extends (options?: DonutOptions) => S, S extends DonutElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: T, opt: DonutOptions): DonutElement
 
             set<T extends (options?: BarOptions) => S, S extends BarElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: T, opt: BarOptions): BarElement
+
             set<T extends (options?: LineOptions) => S, S extends LineElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: T, opt: LineOptions): LineElement
+
             set<T extends (options?: StackedBarOptions) => S, S extends StackedBarElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: T, opt: StackedBarOptions): StackedBarElement
+
             set<T extends (options?: CanvasOptions) => S, S extends CanvasElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: T, opt: CanvasOptions): CanvasElement
-
-
-            // set<T extends (options?: WidgetOptions) => S, S extends WidgetElements>(row: number, col: number, rowSpan: number, colSpan: number, obj: T, opt: WidgetOptions): WidgetElements
-            set<T, S>(...args:any[]): any
 
             // set<K extends keyof Factories>(row: number, col: number, rowSpan: number, colSpan: number,
             //     obj: T, opts?: P<T> ): P<T>
@@ -108,7 +119,8 @@ declare namespace BlessedContrib {
             // set<A =GaugeList, T=GaugeListElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: A, opts?: O): T //typeof gaugeList
             // set<A =Donut, T=DonutElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: A, opts?: O): T //typeof donut
 
-            options: GridOptions;
+            // set<T extends (options?: WidgetOptions) => S, S extends WidgetElements>(row: number, col: number, rowSpan: number, colSpan: number, obj: T, opt: WidgetOptions): WidgetElements
+            set<T, S>(...args: any[]): any
         }
 
 
@@ -129,11 +141,11 @@ declare namespace BlessedContrib {
 
 
         export class BarElement extends CanvasElement<BarData> implements IHasOptions<BarOptions> {
+            options: BarOptions;
+
             constructor(opts: BarOptions);
 
             setData(data: BarData): void;
-
-            options: BarOptions;
         }
 
 
@@ -166,9 +178,9 @@ declare namespace BlessedContrib {
         }
 
         export class LineElement extends CanvasElement<LineData[]> implements IHasOptions<LineOptions> {
-            constructor(opts: LineOptions);
-
             options: LineOptions;
+
+            constructor(opts: LineOptions);
         }
 
         export interface StackedBarData {
@@ -190,15 +202,15 @@ declare namespace BlessedContrib {
         }
 
         export class StackedBarElement extends CanvasElement<StackedBarData[]> implements IHasOptions<StackedBarOptions> {
-            constructor(opts: StackedBarOptions)
-
             options: StackedBarOptions;
+
+            constructor(opts: StackedBarOptions)
 
             addLegend(bars: any, x: number): void;
         }
 
 
-        export interface CanvasOptions<D extends any=any>  extends BoxOptions {
+        export interface CanvasOptions<D extends any = any> extends BoxOptions {
             canvasSize?: {
                 width?: number,
                 height?: number
@@ -206,16 +218,15 @@ declare namespace BlessedContrib {
             data?: D
         }
 
-        export class CanvasElement<D extends any=any> extends BoxElement implements IHasOptions<CanvasOptions> {
-            constructor(opts: CanvasOptions<D>)
-
+        export class CanvasElement<D extends any = any> extends BoxElement implements IHasOptions<CanvasOptions> {
             options: CanvasOptions<D>;
+            canvasSize: { width: number, height: number }
+
+            constructor(opts: CanvasOptions<D>)
 
             calcSize(): void;
 
             setData(data: D): void;
-
-            canvasSize: { width: number, height: number }
         }
 
         export interface DonutData {
@@ -238,9 +249,9 @@ declare namespace BlessedContrib {
         }
 
         export class DonutElement extends CanvasElement<DonutData[]> implements IHasOptions<DonutOptions> {
-            constructor(opts: DonutOptions)
-
             options: DonutOptions;
+
+            constructor(opts: DonutOptions)
 
         }
 
@@ -249,9 +260,9 @@ declare namespace BlessedContrib {
         }
 
         export class GaugeListElement extends CanvasElement implements IHasOptions<GaugeListOptions> {
-            constructor(opts: GaugeListOptions)
-
             options: GaugeListOptions;
+
+            constructor(opts: GaugeListOptions)
         }
 
 
@@ -265,9 +276,9 @@ declare namespace BlessedContrib {
         }
 
         export class GaugeElement extends CanvasElement implements IHasOptions<GaugeOptions> {
-            constructor(opts: GaugeOptions)
-
             options: GaugeOptions;
+
+            constructor(opts: GaugeOptions)
 
             setPercent(number: number): void;
 
@@ -291,9 +302,9 @@ declare namespace BlessedContrib {
         }
 
         export class LcdElement extends CanvasElement implements IHasOptions<LcdOptions> {
-            constructor(opts: LcdOptions)
-
             options: LcdOptions;
+
+            constructor(opts: LcdOptions)
 
             increaseWidth(): void;
 
@@ -320,13 +331,13 @@ declare namespace BlessedContrib {
         }
 
         export class LogElement extends ListElement implements IHasOptions<LogOptions> {
-            constructor(opts: LogOptions);
-
             options: LogOptions;
+
+            constructor(opts: LogOptions);
 
             log(str: string): boolean;
 
-            emit(str:any): boolean;
+            emit(str: any): boolean;
         }
 
 
@@ -334,9 +345,9 @@ declare namespace BlessedContrib {
         }
 
         export class MapElement extends CanvasElement implements IHasOptions<MapOptions> {
-            constructor(opts: MapOptions)
-
             options: MapOptions;
+
+            constructor(opts: MapOptions)
         }
 
 
@@ -344,26 +355,26 @@ declare namespace BlessedContrib {
         }
 
         export class SparklineElement extends CanvasElement<string[]> implements IHasOptions<SparklineOptions> {
-            constructor(opts: CanvasOptions);
-
             options: SparklineOptions;
+
+            constructor(opts: CanvasOptions);
 
             setData(...str: any[]): void;
         }
 
         export interface MarkdownOptions extends CanvasOptions {
-          /** 
-           * Markdown text to render.
-           */
-          markdown?: string;
+            /**
+             * Markdown text to render.
+             */
+            markdown?: string;
 
-          markdownStyle?: any;
+            markdownStyle?: any;
         }
 
         export class MarkdownElement extends CanvasElement implements IHasOptions<MarkdownOptions> {
-            constructor(opts: MarkdownOptions)
-
             options: MarkdownOptions;
+
+            constructor(opts: MarkdownOptions)
 
             setOptions(options: any): void;
 
@@ -375,9 +386,9 @@ declare namespace BlessedContrib {
         }
 
         export class PictureElement extends CanvasElement implements IHasOptions<PictureOptions> {
-            constructor(opts: PictureOptions)
-
             options: PictureOptions;
+
+            constructor(opts: PictureOptions)
         }
 
         export interface TableData {
@@ -403,9 +414,9 @@ declare namespace BlessedContrib {
         }
 
         export class TableElement extends CanvasElement<TableData> implements IHasOptions<TableOptions> {
-            constructor(opts: TableOptions);
-
             options: TableOptions;
+
+            constructor(opts: TableOptions);
         }
 
 
@@ -421,14 +432,13 @@ declare namespace BlessedContrib {
         }
 
         export class TreeElement extends BoxElement implements IHasOptions<TreeOptions> {
-            constructor(opts: TreeOptions)
-
             rows: Blessed.Widgets.ListElement
             nodeLines?: string[]
             lineNbr?: number
             data: any
-
             options: TreeOptions;
+
+            constructor(opts: TreeOptions)
         }
 
 
@@ -436,42 +446,59 @@ declare namespace BlessedContrib {
 
     export module widget {
 
-        export class Grid extends Widgets.GridElement {}
+        export class Grid extends Widgets.GridElement {
+        }
 
-        export class Bar extends Widgets.BarElement {}
+        export class Bar extends Widgets.BarElement {
+        }
 
-        export class Line extends Widgets.LineElement {}
+        export class Line extends Widgets.LineElement {
+        }
 
-        export class StackedBar extends Widgets.StackedBarElement {}
+        export class StackedBar extends Widgets.StackedBarElement {
+        }
 
-        export class Canvas extends Widgets.CanvasElement {}
+        export class Canvas extends Widgets.CanvasElement {
+        }
 
-        export class Tree extends Widgets.TreeElement {}
+        export class Tree extends Widgets.TreeElement {
+        }
 
-        export class Table extends Widgets.TableElement {}
+        export class Table extends Widgets.TableElement {
+        }
 
-        export class Picture extends Widgets.PictureElement {}
+        export class Picture extends Widgets.PictureElement {
+        }
 
-        export class Markdown extends Widgets.MarkdownElement {}
+        export class Markdown extends Widgets.MarkdownElement {
+        }
 
-        export class Map extends Widgets.MapElement {}
+        export class Map extends Widgets.MapElement {
+        }
 
-        export class Log extends Widgets.LogElement {}
+        export class Log extends Widgets.LogElement {
+        }
 
-        export class Lcd extends Widgets.LcdElement {}
+        export class Lcd extends Widgets.LcdElement {
+        }
 
-        export class Gauge extends Widgets.GaugeElement {}
+        export class Gauge extends Widgets.GaugeElement {
+        }
 
-        export class GaugeList extends Widgets.GaugeListElement {}
+        export class GaugeList extends Widgets.GaugeListElement {
+        }
 
-        export class Donut extends Widgets.DonutElement {}
+        export class Donut extends Widgets.DonutElement {
+        }
 
-        export class Sparkline extends Widgets.SparklineElement {}
+        export class Sparkline extends Widgets.SparklineElement {
+        }
 
     }
 
 
-    export class grid extends Widgets.GridElement {}
+    export class grid extends Widgets.GridElement {
+    }
 
     export function line(options?: Widgets.LineOptions): Widgets.LineElement
 

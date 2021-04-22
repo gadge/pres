@@ -1,8 +1,8 @@
-import blessed from 'blessed'
-import contrib from '../'
+import { blessed }  from '@pres/terminal-interface'
+import * as contrib from '../index'
 
-const screen  = blessed.screen(),
-      bar     = contrib.stackedBar(
+const screen = blessed.screen(),
+      bar    = contrib.stackedBar(
         {
           label: 'Server Utilization (%)',
           barWidth: 4,

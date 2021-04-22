@@ -1,7 +1,7 @@
-import blessed from 'blessed'
-import contrib from '../'
+import { blessed }  from '@pres/terminal-interface'
+import * as contrib from '../index'
 
-const screen  = blessed.screen()
+const screen = blessed.screen()
 
 function page1(screen) {
   const grid = new contrib.grid({ rows: 4, cols: 4, screen: screen })

@@ -2,10 +2,11 @@
 
 Build dashboards (or any other application) using ascii/ansi art and javascript.
 
-Friendly to terminals, ssh and developers. Extends [blessed](https://github.com/chjj/blessed) with custom  [drawille](https://github.com/madbence/node-drawille) and other widgets.
+Friendly to terminals, ssh and developers. Extends [blessed](https://github.com/chjj/blessed) with
+custom  [drawille](https://github.com/madbence/node-drawille) and other widgets.
 
-You should also [check WOPR](https://github.com/yaronn/wopr): a markup for creating terminal reports, presentations and infographics.
-
+You should also [check WOPR](https://github.com/yaronn/wopr): a markup for creating terminal reports, presentations and
+infographics.
 
 **Contributors:**
 
@@ -28,7 +29,8 @@ Miguel Valadas ([@mvaladas](https://github.com/mvaladas))
     npm install
     node ./examples/dashboard.js
 
-Works on Linux, OS X and Windows. For Windows follow the [pre requisites](http://webservices20.blogspot.co.il/2015/04/running-terminal-dashboards-on-windows.html).
+Works on Linux, OS X and Windows. For Windows follow
+the [pre requisites](http://webservices20.blogspot.co.il/2015/04/running-terminal-dashboards-on-windows.html).
 
 ## Installation (to build custom projects)
 
@@ -36,7 +38,9 @@ Works on Linux, OS X and Windows. For Windows follow the [pre requisites](http:/
 
 ## Usage
 
-You can use any of the default widgets of [blessed](https://github.com/chjj/blessed) (texts, lists and etc) or the widgets added in blessed-contrib (described below). A [layout](#layouts) is optional but useful for dashboards. The widgets in blessed-contrib follow the same usage pattern:
+You can use any of the default widgets of [blessed](https://github.com/chjj/blessed) (texts, lists and etc) or the
+widgets added in blessed-contrib (described below). A [layout](#layouts) is optional but useful for dashboards. The
+widgets in blessed-contrib follow the same usage pattern:
 
 `````javascript
    var blessed = require('blessed')
@@ -65,7 +69,6 @@ You can use any of the default widgets of [blessed](https://github.com/chjj/bles
 `````
 
 See below for a complete list of widgets.
-
 
 ## Widgets
 
@@ -125,7 +128,9 @@ See below for a complete list of widgets.
    screen.append(line) //must append before setting data
    line.setData([series1, series2])
 `````
-**Examples:** [simple line chart](./examples/line-fraction.js), [multiple lines](./examples/multi-line-chart.js), [256 colors](./examples/line-random-colors.js)
+
+**Examples:** [simple line chart](./examples/line-fraction.js), [multiple lines](./examples/multi-line-chart.js)
+, [256 colors](./examples/line-random-colors.js)
 
 ### Bar Chart
 
@@ -179,7 +184,6 @@ See below for a complete list of widgets.
    map.addMarker({"lon" : "-79.0000", "lat" : "37.5000", color: "red", char: "X" })
 `````
 
-
 ### Gauge
 
 <img src="./docs/images/gauge.gif" alt="gauge" width="170">
@@ -211,7 +215,6 @@ Or, you can just supply an array of numbers and random colors will be chosen.
 
 <img src="./docs/images/donut.gif" alt="donut">
 
-
 `````javascript
    var donut = contrib.donut({
 	label: 'Test',
@@ -234,8 +237,9 @@ Data passed in uses `percent` and `label` to draw the donut graph. Color is opti
    ]);
 `````
 
-Updating the donut is as easy as passing in an array to `setData` using the same array format as in the constructor. Pass in as many objects to the array of data as you want, they will automatically resize and try to fit. However, please note that you will still be restricted to actual screen space.
-
+Updating the donut is as easy as passing in an array to `setData` using the same array format as in the constructor.
+Pass in as many objects to the array of data as you want, they will automatically resize and try to fit. However, please
+note that you will still be restricted to actual screen space.
 
 ### LCD Display
 
@@ -261,8 +265,8 @@ Updating the donut is as easy as passing in an array to `setData` using the same
 
 `````
 
-Please see the **examples/lcd.js** for an example. The example provides keybindings to adjust the `segmentWidth` and `segmentInterval` and `strokeWidth` in real-time so that you can see how they manipulate the look and feel.
-
+Please see the **examples/lcd.js** for an example. The example provides keybindings to adjust the `segmentWidth`
+and `segmentInterval` and `strokeWidth` in real-time so that you can see how they manipulate the look and feel.
 
 ### Rolling Log
 
@@ -276,10 +280,10 @@ Please see the **examples/lcd.js** for an example. The example provides keybindi
    log.log("new log line")
 `````
 
-
 ### Picture
 
-(Also check the new blessed [image implementation](https://github.com/chjj/blessed#image-from-box) which has several benefits over this one.)
+(Also check the new blessed [image implementation](https://github.com/chjj/blessed#image-from-box) which has several
+benefits over this one.)
 
 <img src="./docs/images/picture.png" alt="log" width="180">
 
@@ -292,7 +296,6 @@ Please see the **examples/lcd.js** for an example. The example provides keybindi
 `````
 
 note: only png images are supported
-
 
 ### Sparkline
 
@@ -381,43 +384,46 @@ note: only png images are supported
 
 #### Options
 
- * keys : Key to expand nodes. Default : ['enter','default']
- * extended : Should nodes be extended/generated by default? Be careful with this setting when using a callback function. Default : false
- * template :
-   * extend : Suffix "icon" for closed node. Default : '[+]'
-   * retract : Suffix "icon" for opened node. Default : '[-]'
-   * lines : Show lines in tree. Default : true
+* keys : Key to expand nodes. Default : ['enter','default']
+* extended : Should nodes be extended/generated by default? Be careful with this setting when using a callback function.
+  Default : false
+* template :
+    * extend : Suffix "icon" for closed node. Default : '[+]'
+    * retract : Suffix "icon" for opened node. Default : '[-]'
+    * lines : Show lines in tree. Default : true
 
 #### Nodes
 
-Every node is a hash and it can have custom properties that can be used in "select" event callback. However, there are several special keys :
+Every node is a hash and it can have custom properties that can be used in "select" event callback. However, there are
+several special keys :
 
 * name
-  * *Type* : `string`
-  * *Desc* : Node name
-  * If the node isn't the root and you don't specify the name, will be set to hash key
-  * *Example* : <code>{ name: 'Fruit'}</code>
+    * *Type* : `string`
+    * *Desc* : Node name
+    * If the node isn't the root and you don't specify the name, will be set to hash key
+    * *Example* : <code>{ name: 'Fruit'}</code>
 * children
-  * *Type* : `hash` or `function(node){ return children }`
-  * *Desc* : Node children.
-  * The function must return a hash that could have been used as children property
-  * If you use a function, the result will be stored in `node.childrenContent` and `children`
-  * *Example* :
-    * Hash : <code>{'Fruit':{ name: 'Fruit', children:{ 'Banana': {}, 'Cherry': {}}}}</code>
-    * Function : see `examples/explorer.js`
+    * *Type* : `hash` or `function(node){ return children }`
+    * *Desc* : Node children.
+    * The function must return a hash that could have been used as children property
+    * If you use a function, the result will be stored in `node.childrenContent` and `children`
+    * *Example* :
+        * Hash : <code>{'Fruit':{ name: 'Fruit', children:{ 'Banana': {}, 'Cherry': {}}}}</code>
+        * Function : see `examples/explorer.js`
 * childrenContent
-  * *Type* : `hash`
-  * *Desc* : Children content for internal usage *DO NOT MODIFY*
-  * If `node.children` is a hash, `node.children===node.childrenContent`
-  * If `node.children` is a function, it's used to store the `node.children()` result
-  * You can read this property, but you should never write it.
-  * Usually this will be used to check `if(node.childrenContent)` in your `node.children` function to generate children only once
+    * *Type* : `hash`
+    * *Desc* : Children content for internal usage *DO NOT MODIFY*
+    * If `node.children` is a hash, `node.children===node.childrenContent`
+    * If `node.children` is a function, it's used to store the `node.children()` result
+    * You can read this property, but you should never write it.
+    * Usually this will be used to check `if(node.childrenContent)` in your `node.children` function to generate
+      children only once
 * extended
-  * *Type* : `boolean`
-  * *Desc* : Determine if this node is extended
-  * No effect when the node have no child
-  * Default value for each node will be `treeInstance.options.extended` if the node `extended` option is not set
-  * *Example* : <code>{'Fruit':{ name: 'Fruit', extended: true, children:{ 'Banana': {}, 'Cherry': {}}}}</code>
+    * *Type* : `boolean`
+    * *Desc* : Determine if this node is extended
+    * No effect when the node have no child
+    * Default value for each node will be `treeInstance.options.extended` if the node `extended` option is not set
+    * *Example* : <code>{'Fruit':{ name: 'Fruit', extended: true, children:{ 'Banana': {}, 'Cherry': {}}}}</code>
 
 ### Markdown
 
@@ -429,6 +435,7 @@ Every node is a hash and it can have custom properties that can be used in "sele
 `````
 
 ### Colors
+
 You can use 256 colors ([source](./examples/line-random-colors.js)):
 
 `````javascript
@@ -442,7 +449,7 @@ You can use 256 colors ([source](./examples/line-random-colors.js)):
     , style: { line: randomColor(), text: randomColor(), baseline: randomColor() }
   })
 `````
-   
+
 ### Layouts
 
 [Grid](#grid)
@@ -451,9 +458,8 @@ You can use 256 colors ([source](./examples/line-random-colors.js)):
 
 ### Grid
 
-A grid layout can auto position your elements in a grid layout.
-When using a grid, you should not create the widgets, rather specify to the grid which widget to create and with which params.
-Each widget can span multiple rows and columns.
+A grid layout can auto position your elements in a grid layout. When using a grid, you should not create the widgets,
+rather specify to the grid which widget to create and with which params. Each widget can span multiple rows and columns.
 
 `````javascript
    var screen = blessed.screen()
@@ -468,8 +474,9 @@ Each widget can span multiple rows and columns.
 `````
 
 ### Carousel
-A carousel layout switches between different views based on time or keyboard activity.
-One use case is an office dashboard with rotating views:
+
+A carousel layout switches between different views based on time or keyboard activity. One use case is an office
+dashboard with rotating views:
 
 `````javascript
     var blessed = require('blessed')
@@ -519,7 +526,6 @@ One use case is an office dashboard with rotating views:
 
 ## Samples
 
-
 ### Terminal Dashboard
 
 <img src="./docs/images/term3.gif" alt="term" width="800">
@@ -535,7 +541,6 @@ One use case is an office dashboard with rotating views:
 
     npm install blessed
     npm install blessed-contrib
-
 
 **A simple dashboard**
 
@@ -575,13 +580,18 @@ One use case is an office dashboard with rotating views:
 See [source code](./examples/dashboard.js)
 
 ## Troubleshooting
-If you see questions marks or some (or all) missign characters try running with these env vars to fix encoding / terminal: 
+
+If you see questions marks or some (or all) missign characters try running with these env vars to fix encoding /
+terminal:
+
 `````
     $> LANG=en_US.utf8 TERM=xterm-256color node your-code.js 
 `````
 
 ## License
+
 This library is under the [MIT License](http://opensource.org/licenses/MIT)
 
 ## More Information
+
 Created by Yaron Naveh ([twitter](http://twitter.com/YaronNaveh), [blog](http://webservices20.blogspot.com/))

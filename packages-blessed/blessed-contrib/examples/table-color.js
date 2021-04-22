@@ -1,6 +1,6 @@
-import blessed from 'blessed'
-import colors  from 'colors/safe'
-import contrib from '../'
+import { blessed }  from '@pres/terminal-interface'
+import colors       from 'colors/safe'
+import * as contrib from '../index'
 
 const screen = blessed.screen()
 

@@ -1,5 +1,5 @@
-import blessed from 'blessed'
-import contrib from '../'
+import { blessed }  from '@pres/terminal-interface'
+import * as contrib from '../index'
 
 const screen = blessed.screen()
 const markdown = contrib.markdown()
