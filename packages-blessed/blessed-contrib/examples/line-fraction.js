@@ -1,6 +1,7 @@
-const blessed = require('blessed'),
-      contrib = require('../index'),
-      screen  = blessed.screen(),
+import blessed from 'blessed'
+import contrib from '../index'
+
+const screen  = blessed.screen(),
       line    = contrib.line(
         {
           width: 80,

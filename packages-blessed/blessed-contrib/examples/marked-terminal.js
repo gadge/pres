@@ -1,5 +1,5 @@
-const blessed = require("blessed")
-const contrib = require("../")
+import blessed from 'blessed'
+import contrib from '../'
 
 const screen = blessed.screen()
 const markdown = contrib.markdown()

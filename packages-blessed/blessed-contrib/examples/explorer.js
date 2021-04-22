@@ -1,7 +1,7 @@
-const blessed = require('blessed'),
-      contrib = require('../index'),
-      fs      = require('fs')
-let path = require('path')
+import blessed from 'blessed'
+import contrib from '../index'
+import fs      from 'fs'
+import path    from 'path'
 
 const screen = blessed.screen()
 

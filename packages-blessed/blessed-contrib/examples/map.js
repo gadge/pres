@@ -1,6 +1,7 @@
-var blessed = require('blessed'),
-    contrib = require('../'),
-    screen  = blessed.screen(),
+import blessed from 'blessed'
+import contrib from '../'
+
+var screen  = blessed.screen(),
     map     = contrib.map({ label: 'World Map' })
 
 screen.append(map)

@@ -1,5 +1,5 @@
-const blessed = require('blessed'),
-      contrib = require('../index')
+import blessed from 'blessed'
+import contrib from '../index'
 
 const randomColor = () => [ Math.random() * 255, Math.random() * 255, Math.random() * 255 ]
 

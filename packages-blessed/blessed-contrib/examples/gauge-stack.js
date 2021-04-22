@@ -1,6 +1,7 @@
-const blessed = require('blessed'),
-      contrib = require('../'),
-      screen  = blessed.screen(),
+import blessed from 'blessed'
+import contrib from '../'
+
+const screen  = blessed.screen(),
       grid    = new contrib.grid({ rows: 2, cols: 2, hideBorder: true, screen: screen }),
       gauge1  = grid.set(0, 0, 1, 1, contrib.gauge, {
         showLabel: false,

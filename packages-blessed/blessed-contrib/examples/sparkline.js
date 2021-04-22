@@ -1,4 +1,3 @@
-// import blessed from '../lib/vendor/blessed'
 import { TerminalInterface as blessed } from '@pres/terminal-interface'
 import * as contrib                     from '../'
 

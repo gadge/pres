@@ -1,7 +1,8 @@
-const blessed  = require('blessed'),
-      contrib  = require('../'),
-      screen   = blessed.screen(),
-      chalk    = require('chalk'),
+import blessed from 'blessed'
+import contrib from '../'
+import chalk   from 'chalk'
+
+const screen   = blessed.screen(),
       markdown = contrib.markdown()
 
 screen.append(markdown)

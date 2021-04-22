@@ -1,5 +1,5 @@
-const blessed = require('blessed'),
-      contrib = require('../index')
+import blessed from 'blessed'
+import contrib from '../index'
 
 const screen = blessed.screen()
 

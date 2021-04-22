@@ -1,6 +1,7 @@
-const blessed = require('blessed'),
-      contrib = require('../'),
-      screen  = blessed.screen()
+import blessed from 'blessed'
+import contrib from '../'
+
+const screen  = blessed.screen()
 
 const pic = contrib.picture(
   {

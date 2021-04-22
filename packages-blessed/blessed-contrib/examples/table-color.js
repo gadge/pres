@@ -1,7 +1,8 @@
-const blessed = require('blessed'),
-      contrib = require('../'),
-      screen  = blessed.screen(),
-      colors  = require('colors/safe')
+import blessed from 'blessed'
+import colors  from 'colors/safe'
+import contrib from '../'
+
+const screen = blessed.screen()
 
 const table = contrib.table(
   {

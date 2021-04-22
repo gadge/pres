@@ -1,6 +1,7 @@
-const blessed = require('blessed'),
-      contrib = require('../'),
-      screen  = blessed.screen()
+import blessed from 'blessed'
+import contrib from '../'
+
+const screen  = blessed.screen()
 
 function page1(screen) {
   const grid = new contrib.grid({ rows: 4, cols: 4, screen: screen })
