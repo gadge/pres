@@ -14,3 +14,5 @@ export class TerminalInterface {
   static Tput = Tput
 }
 Object.assign(TerminalInterface, components)
+
+export { TerminalInterface as blessed }
