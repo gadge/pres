@@ -13,11 +13,11 @@ export class StackedBar extends Canvas {
     if ((this.options.barSpacing - this.options.barWidth) < 3)
       this.options.barSpacing = this.options.barWidth + 3
     this.options.xOffset = this.options.xOffset == null ? 5 : this.options.xOffset
-    this.options.showText = this.options.showText === false ? false : true
+    this.options.showText = this.options.showText !== false
     this.options.legend = this.options.legend || {}
-    this.options.showLegend = this.options.showLegend === false ? false : true
+    this.options.showLegend = this.options.showLegend !== false
     this.on(ATTACH, () => { if (self.options.data) self.setData(self.options.data) })
-    this.type = 'bar';
+    this.type = 'bar'
   }
   calcSize() { this.canvasSize = { width: this.width - 2, height: this.height } }
   getSummedBars(bars) {
