@@ -13,15 +13,12 @@ const screen = blessed.screen(),
           maxY: 1050,
           label: 'Title',
           style: { baseline: 'white' }
-        })
-  ,
+        }),
       data   = [ {
         title: 'us-east',
         x: [ 't1', 't2', 't3', 't4' ],
         y: [ 1010, 1040, 1020, 1030 ],
-        style: {
-          line: 'red'
-        }
+        style: { line: [ 255, 255, 0 ] }
       } ]
 screen.append(line) //must append before setting data
 line.setData(data)

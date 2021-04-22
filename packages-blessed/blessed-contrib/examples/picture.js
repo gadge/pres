@@ -4,7 +4,7 @@ import * as contrib from '../index'
 const screen = blessed.screen()
 const pic = contrib.picture(
   {
-    file: './media/flower.png',
+    file: __dirname + '/media/flower.png',
     cols: 95,
     onReady: ready
   })

@@ -2,18 +2,16 @@ import x256 from 'x256'
 /*
 * Recursively merge properties of two objects
 */
-function MergeRecursive(obj1, obj2) {
-  if (obj1 == null) return obj2
-  if (obj2 == null) return obj1
-  for (let p in obj2)
+function MergeRecursive(target, source) {
+  if (target == null) return source
+  if (source == null) return target
+  for (let p in source)
     try {
-      // property in destination object set; update its value
-      obj1[p] = obj2[p].constructor === Object ? MergeRecursive(obj1[p], obj2[p]) : obj2[p]
+      target[p] = source[p].constructor === Object ? MergeRecursive(target[p], source[p]) : source[p] // property in destination object set; update its value
     } catch (e) {
-      // property in destination object not set; create it and set its value
-      obj1[p] = obj2[p]
+      target[p] = source[p] // property in destination object not set; create it and set its value
     }
-  return obj1
+  return target
 }
 function getTypeName(thing) { return thing === null ? '[object Null]' : Object.prototype.toString.call(thing) }
 function abbreviateNumber(value) {

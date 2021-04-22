@@ -1,6 +1,7 @@
 import * as utils from '../utils'
 
-const widgetSpacing = 0
+const SPACING = 0
+
 export class Grid {
   constructor(options) {
     if (!options.screen) throw 'Error: A screen property must be specified in the grid options.\r\n' +
@@ -22,10 +23,9 @@ export class Grid {
     options = utils.MergeRecursive(options, opts)
     options.top = top + '%'
     options.left = left + '%'
-    options.width = (this.cellWidth * colSpan - widgetSpacing) + '%'
-    options.height = (this.cellHeight * rowSpan - widgetSpacing) + '%'
-    if (!this.options.hideBorder)
-      options.border = { type: 'line', fg: this.options.color || 'cyan' }
+    options.width = (this.cellWidth * colSpan - SPACING) + '%'
+    options.height = (this.cellHeight * rowSpan - SPACING) + '%'
+    if (!this.options.hideBorder) options.border = { type: 'line', fg: this.options.color || 'cyan' }
     const instance = obj(options)
     this.options.screen.append(instance)
     return instance
