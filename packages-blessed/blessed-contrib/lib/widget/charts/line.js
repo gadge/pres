@@ -48,19 +48,17 @@ export class Line extends Canvas {
           type: 'line',
           fg: 'black'
         },
-        style: {
-          fg: 'blue',
-        },
+        style: { fg: 'blue' },
         screen: self.screen
       })
-      let legandText = ''
+      let legendText = ''
       const maxChars = legendWidth - 2
       for (let i = 0; i < data.length; i++) {
         const style = data[i].style || {}
         const color = utils.getColorCode(style.line || self.options.style.line)
-        legandText += '{' + color + '-fg}' + data[i].title.substring(0, maxChars) + '{/' + color + '-fg}\r\n'
+        legendText += '{' + color + '-fg}' + data[i].title.substring(0, maxChars) + '{/' + color + '-fg}\r\n'
       }
-      self.legend.setContent(legandText)
+      self.legend.setContent(legendText)
       self.append(self.legend)
     }
     //iteratee for lodash _.max
@@ -125,7 +123,7 @@ export class Line extends Canvas {
     if (yLabelIncrement == 0) yLabelIncrement = 1
     // Draw the Y value texts
     const maxY = getMaxY()
-    for (var i = this.options.minY; i < maxY; i += yLabelIncrement) {
+    for (let i = this.options.minY; i < maxY; i += yLabelIncrement) {
       c.fillText(formatYLabel(i, maxY, this.options.minY, this.options.numYLabels, this.options.wholeNumbersOnly, this.options.abbreviate), xPadding - xLabelPadding, getYPixel(i, this.options.minY))
     }
     for (let h = 0; h < data.length; h++) {

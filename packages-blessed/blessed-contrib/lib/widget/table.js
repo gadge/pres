@@ -45,9 +45,7 @@ export class Table extends Box {
       screen: this.screen
     })
     this.append(this.rows)
-    this.on(ATTACH, function () {
-      if (self.options.data) { self.setData(self.options.data) }
-    })
+    this.on(ATTACH, () => { if (self.options.data) { self.setData(self.options.data) } })
     this.type = 'table'
   }
   focus() { this.rows.focus() }
@@ -59,17 +57,15 @@ export class Table extends Box {
   }
   setData(table) {
     const self = this
-    const dataToString = function (d) {
+    const dataToString = d => {
       let str = ''
-      d.forEach(function (r, i) {
-        const colsize = self.options.columnWidth[i],
+      d.forEach((r, i) => {
+        const colSize = self.options.columnWidth[i],
               strip   = stripAnsi(r.toString()),
               ansiLen = r.toString().length - strip.length
-        let spaceLength = colsize - strip.length + self.options.columnSpacing
-        r = r.toString().substring(0, colsize + ansiLen) //compensate for ansi len
-        if (spaceLength < 0) {
-          spaceLength = 0
-        }
+        let spaceLength = colSize - strip.length + self.options.columnSpacing
+        r = r.toString().substring(0, colSize + ansiLen) //compensate for ansi len
+        if (spaceLength < 0) spaceLength = 0
         const spaces = new Array(spaceLength).join(' ')
         str += r + spaces
       })
