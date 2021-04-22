@@ -18,19 +18,17 @@ var blessed = require('blessed'),
           style: {
             line: 'red'
           }
-        },
-          {
-            title: 'us-west',
-            x: [ 't1', 't2', 't3', 't4' ],
-            y: [ 2, 4, 9, 8 ],
-            style: { line: 'yellow' }
-          },
-          {
-            title: 'eu-north-with-some-long-string',
-            x: [ 't1', 't2', 't3', 't4' ],
-            y: [ 22, 7, 12, 1 ],
-            style: { line: 'blue' }
-          } ]
+        }, {
+          title: 'us-west',
+          x: [ 't1', 't2', 't3', 't4' ],
+          y: [ 2, 4, 9, 8 ],
+          style: { line: 'yellow' }
+        }, {
+          title: 'eu-north-with-some-long-string',
+          x: [ 't1', 't2', 't3', 't4' ],
+          y: [ 22, 7, 12, 1 ],
+          style: { line: 'blue' }
+        } ]
       })
 screen.append(line)
 screen.key([ 'escape', 'q', 'C-c' ], function (ch, key) {

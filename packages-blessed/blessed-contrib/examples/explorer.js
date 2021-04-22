@@ -5,19 +5,17 @@ import * as contrib from '../index'
 const screen = blessed.screen()
 //create layout and widgets
 const grid = contrib.grid({ rows: 1, cols: 2, screen: screen })
-const tree = grid.set(0, 0, 1, 1, contrib.tree,
-  {
-    style: { text: "red" },
-    template: { lines: true },
-    label: 'Filesystem Tree'
-  })
-const table = grid.set(0, 1, 1, 1, contrib.table,
-  {
-    keys: true,
-    fg: 'green',
-    label: 'Informations',
-    columnWidth: [ 24, 10, 10 ]
-  })
+const tree = grid.set(0, 0, 1, 1, contrib.tree, {
+  style: { text: "red" },
+  template: { lines: true },
+  label: 'Filesystem Tree'
+})
+const table = grid.set(0, 1, 1, 1, contrib.table, {
+  keys: true,
+  fg: 'green',
+  label: 'Informations',
+  columnWidth: [ 24, 10, 10 ]
+})
 //file explorer
 const explorer = {
   name: '/',

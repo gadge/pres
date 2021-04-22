@@ -43,8 +43,7 @@ function page2(screen) {
     style: {
       line: 'red'
     }
-  }
-  ]
+  } ]
   screen.append(line)
   line.setData(data)
   const box = blessed.box({
@@ -55,10 +54,9 @@ function page2(screen) {
   screen.append(box)
 }
 screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
-const carousel = contrib.carousel([ page1, page2 ],
-  {
-    screen: screen,
-    interval: 3000,
-    controlKeys: true
-  })
+const carousel = contrib.carousel([ page1, page2 ], {
+  screen: screen,
+  interval: 3000,
+  controlKeys: true
+})
 carousel.start()

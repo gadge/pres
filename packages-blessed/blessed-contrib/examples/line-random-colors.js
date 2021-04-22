@@ -22,8 +22,7 @@ const screen = blessed.screen(),
         style: {
           line: 'red'
         }
-      }
-      ]
+      } ]
 screen.append(line) //must append before setting data
 line.setData(data)
 screen.key([ 'escape', 'q', 'C-c' ], function (ch, key) {

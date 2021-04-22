@@ -3,8 +3,7 @@ import * as contrib from '../index'
 
 const screen    = blessed.screen(),
       grid      = contrib.grid({ rows: 2, cols: 2, hideBorder: true, screen: screen }),
-      gaugeList = grid.set(0, 0, 1, 2, contrib.gaugeList,
-        {
+      gaugeList = grid.set(0, 0, 1, 2, contrib.gaugeList, {
           gaugeSpacing: 0,
           gaugeHeight: 1,
           gauges:
@@ -14,21 +13,19 @@ const screen    = blessed.screen(),
                 percent: 40,
                 stroke: 'cyan'
               } ]
-            },
-              {
-                showLabel: false,
-                stack: [ { percent: 40, stroke: 'yellow' }, { percent: 20, stroke: 'magenta' }, {
-                  percent: 40,
-                  stroke: 'green'
-                } ]
-              },
-              {
-                showLabel: false,
-                stack: [ { percent: 50, stroke: 'red' }, { percent: 10, stroke: 'magenta' }, {
-                  percent: 40,
-                  stroke: 'cyan'
-                } ]
+            }, {
+              showLabel: false,
+              stack: [ { percent: 40, stroke: 'yellow' }, { percent: 20, stroke: 'magenta' }, {
+                percent: 40,
+                stroke: 'green'
               } ]
+            }, {
+              showLabel: false,
+              stack: [ { percent: 50, stroke: 'red' }, { percent: 10, stroke: 'magenta' }, {
+                percent: 40,
+                stroke: 'cyan'
+              } ]
+            } ]
         }
       )
 screen.render()

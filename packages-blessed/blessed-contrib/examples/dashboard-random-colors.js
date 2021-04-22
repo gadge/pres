@@ -12,14 +12,13 @@ const grid = contrib.grid({ rows: 12, cols: 12, screen: screen })
  self.options.arcWidth = options.arcWidth || 4; //width of the donut
  self.options.yPadding = options.yPadding || 2; //padding from the top
  */
-const donut = grid.set(8, 8, 4, 2, contrib.donut,
-  {
-    label: 'Percent Donut',
-    radius: 16,
-    arcWidth: 4,
-    yPadding: 2,
-    data: [ { label: 'Storage', percent: 87 } ]
-  })
+const donut = grid.set(8, 8, 4, 2, contrib.donut, {
+  label: 'Percent Donut',
+  radius: 16,
+  arcWidth: 4,
+  yPadding: 2,
+  data: [ { label: 'Storage', percent: 87 } ]
+})
 // var latencyLine = grid.set(8, 8, 4, 2, contrib.line, 
 //   { style: 
 //     { line: "yellow"
@@ -30,28 +29,25 @@ const donut = grid.set(8, 8, 4, 2, contrib.donut,
 //   , label: 'Network Latency (sec)'})
 const gauge = grid.set(8, 10, 2, 2, contrib.gauge, { label: 'Storage', percent: [ 80, 20 ] })
 const gauge_two = grid.set(2, 9, 2, 3, contrib.gauge, { label: 'Deployment Progress', percent: 80 })
-const sparkline = grid.set(10, 10, 2, 2, contrib.sparkline,
-  {
-    label: 'Throughput (bits/sec)',
-    tags: true,
-    style: { fg: 'blue', titleFg: 'white' }
-  })
-const bar = grid.set(4, 6, 4, 3, contrib.bar,
-  {
-    label: 'Server Utilization (%)',
-    barWidth: 4,
-    barSpacing: 6,
-    xOffset: 2,
-    maxHeight: 9
-  })
-const table = grid.set(4, 9, 4, 3, contrib.table,
-  {
-    keys: true,
-    fg: 'green',
-    label: 'Active Processes',
-    columnSpacing: 1,
-    columnWidth: [ 24, 10, 10 ]
-  })
+const sparkline = grid.set(10, 10, 2, 2, contrib.sparkline, {
+  label: 'Throughput (bits/sec)',
+  tags: true,
+  style: { fg: 'blue', titleFg: 'white' }
+})
+const bar = grid.set(4, 6, 4, 3, contrib.bar, {
+  label: 'Server Utilization (%)',
+  barWidth: 4,
+  barSpacing: 6,
+  xOffset: 2,
+  maxHeight: 9
+})
+const table = grid.set(4, 9, 4, 3, contrib.table, {
+  keys: true,
+  fg: 'green',
+  label: 'Active Processes',
+  columnSpacing: 1,
+  columnWidth: [ 24, 10, 10 ]
+})
 /*
  *
  * LCD Options
@@ -67,8 +63,7 @@ const table = grid.set(4, 9, 4, 3, contrib.table,
 //coloring
   options.color = options.color || "white";
 */
-const lcdLineOne = grid.set(0, 9, 2, 3, contrib.lcd,
-  {
+const lcdLineOne = grid.set(0, 9, 2, 3, contrib.lcd, {
     label: "LCD Test",
     segmentWidth: 0.06,
     segmentInterval: 0.11,
@@ -79,33 +74,30 @@ const lcdLineOne = grid.set(0, 9, 2, 3, contrib.lcd,
     elementPadding: 2
   }
 )
-const errorsLine = grid.set(0, 6, 4, 3, contrib.line,
-  {
-    style:
-      {
-        line: randomColor(),
-        text: randomColor(),
-        baseline: randomColor()
-      },
-    label: 'Errors Rate',
-    maxY: 60,
-    showLegend: true
-  })
-const transactionsLine = grid.set(0, 0, 6, 6, contrib.line,
-  {
-    showNthLabel: 5,
-    maxY: 100,
-    label: 'Total Transactions',
-    showLegend: true,
-    legend: { width: 10 }
-  })
+const errorsLine = grid.set(0, 6, 4, 3, contrib.line, {
+  style:
+    {
+      line: randomColor(),
+      text: randomColor(),
+      baseline: randomColor()
+    },
+  label: 'Errors Rate',
+  maxY: 60,
+  showLegend: true
+})
+const transactionsLine = grid.set(0, 0, 6, 6, contrib.line, {
+  showNthLabel: 5,
+  maxY: 100,
+  label: 'Total Transactions',
+  showLegend: true,
+  legend: { width: 10 }
+})
 const map = grid.set(6, 0, 6, 6, contrib.map, { label: 'Servers Location' })
-const log = grid.set(8, 6, 4, 2, contrib.log,
-  {
-    fg: randomColor(),
-    selectedFg: randomColor(),
-    label: 'Server Log'
-  })
+const log = grid.set(8, 6, 4, 2, contrib.log, {
+  fg: randomColor(),
+  selectedFg: randomColor(),
+  label: 'Server Log'
+})
 //dummy data
 const servers = [ 'US1', 'US2', 'EU1', 'AU1', 'AS1', 'JP1' ]
 const commands = [ 'grep', 'node', 'java', 'timer', '~/ls -l', 'netns', 'watchdog', 'gulp', 'tar -xvf', 'awk', 'npm install' ]
@@ -231,8 +223,7 @@ function updateDonut() {
   if (pct >= 0.5) color = "yellow"
   if (pct >= 0.75) color = "red"
   donut.setData([
-    { percent: parseFloat((pct + 0.00) % 1).toFixed(2), label: 'storage', 'color': color }
-  ])
+    { percent: parseFloat((pct + 0.00) % 1).toFixed(2), label: 'storage', 'color': color } ])
   pct += 0.01
 }
 setInterval(function () {
