@@ -18,7 +18,6 @@ export class Line extends Canvas {
     if (nullish(padding.x)) padding.x = options.xPadding ?? padding.x ?? 10
     if (nullish(padding.y)) padding.y = 11
     const ticks = options.ticks ?? (options.ticks = {})
-    if (nullish(options.tickCount)) options.tickCount = 5
     if (nullish(ticks.count)) ticks.count = options.tickCount ?? padding.labelX ?? 5
     if (nullish(ticks.max)) ticks.max = options.maxY
     if (nullish(ticks.min)) ticks.min = options.minY ?? 0
@@ -86,9 +85,7 @@ export class Line extends Canvas {
   }
   coordX(val) { return ((this._w - this.padding.x) / this.labels.length) * val + (this.padding.x * 1.0) + 2 }
   coordY(val) {
-    let res = (this._h - this.padding.y) - (
-      ((this._h - this.padding.y) / (this.ticks.max - this.ticks.min)) * (val - this.ticks.min)
-    )
+    let res = (this._h - this.padding.y) - (((this._h - this.padding.y) / (this.ticks.max - this.ticks.min)) * (val - this.ticks.min))
     res -= 2 //to separate the baseline and the data line to separate chars so canvas will show separate colors
     return res
   }

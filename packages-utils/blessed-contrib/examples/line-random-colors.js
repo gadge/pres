@@ -1,5 +1,5 @@
 import { blessed }  from '@pres/terminal-interface'
-import * as contrib from '../index'
+import * as contrib from '../archive'
 
 const randomColor = () => [ Math.random() * 255, Math.random() * 255, Math.random() * 255 ]
 const screen = blessed.screen(),

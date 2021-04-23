@@ -1,6 +1,6 @@
 import { blessed }  from '@pres/terminal-interface'
 import chalk        from 'chalk'
-import * as contrib from '../index'
+import * as contrib from '../archive'
 
 const screen   = blessed.screen(),
       markdown = contrib.markdown()

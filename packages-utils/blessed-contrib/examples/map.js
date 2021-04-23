@@ -1,5 +1,5 @@
 import { blessed }  from '@pres/terminal-interface'
-import * as contrib from '../index'
+import * as contrib from '../archive'
 
 const screen = blessed.screen(),
       map    = contrib.map({ label: 'World Map' })

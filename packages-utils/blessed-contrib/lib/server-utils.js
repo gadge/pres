@@ -45,8 +45,7 @@ function createScreen(req, res) {
   if (query.terminal) program.terminal = query.terminal
   if (query.isOSX) program.isOSXTerm = query.isOSX
   if (query.isiTerm2) program.isiTerm2 = query.isiTerm2
-  const screen = blessed.screen({ program: program })
-  return screen
+  return blessed.screen({ program: program })
 }
 export {
   createScreen,

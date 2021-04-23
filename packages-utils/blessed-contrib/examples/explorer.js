@@ -1,6 +1,6 @@
 import { blessed }  from '@pres/terminal-interface'
 import fs           from 'fs'
-import * as contrib from '../index'
+import * as contrib from '../archive'
 
 const screen = blessed.screen()
 //create layout and widgets
