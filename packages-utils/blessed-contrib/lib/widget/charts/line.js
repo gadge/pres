@@ -41,9 +41,7 @@ export class Line extends Canvas {
   calcSize() { this._w = this.width * 2 - 12, this._h = this.height * 4 - 8 }
   labelWidth(labels) { return maxBy(labels, x => x?.length) ?? 0 }
   calcTicks(seriesCollection) {
-    if (this.options.maxY) {
-      this.ticks.max = this.options.maxY
-    }
+    if (this.options.maxY) { this.ticks.max = this.options.maxY }
     else {
       let curr, max = -Infinity
       for (const series of seriesCollection)
@@ -51,7 +49,6 @@ export class Line extends Canvas {
           max = curr
       return this.ticks.max = max + (max - this.ticks.min) * 0.2
     }
-
     let incre = (this.ticks.max - this.ticks.min) / this.ticks.count
     // let tickIncre = (self.tickMax(seriesCollection) - this.ticks.min) / this.ticks.count
     if (this.ticks.intOnly) incre = ~~incre
@@ -110,8 +107,8 @@ export class Line extends Canvas {
     context.moveTo(0, 0)
     context.beginPath()
     context.lineTo(this.coordX(0), this.coordY(values[0]))
-    for (let k = 1; k < values.length; k++)
-      context.lineTo(this.coordX(k), this.coordY(values[k]))
+    for (let i = 1; i < values.length; i++)
+      context.lineTo(this.coordX(i), this.coordY(values[i]))
     context.stroke()
   }
   setData(seriesCollection) {
@@ -134,11 +131,7 @@ export class Line extends Canvas {
 
     // Draw the Y value texts
     for (let i = this.ticks.min; i < this.ticks.max; i += this.ticks.incre)
-      c.fillText(
-        this.formatTick(i),
-        padding.x - padding.labelX,
-        this.coordY(i)
-      )
+      c.fillText(this.formatTick(i), padding.x - padding.labelX, this.coordY(i))
     for (let h = 0; h < seriesCollection.length; h++)
       this.drawLine(seriesCollection[h].y, seriesCollection[h].style)
     c.strokeStyle = this.options.style.baseline

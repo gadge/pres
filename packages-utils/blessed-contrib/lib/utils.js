@@ -15,19 +15,19 @@ export function MergeRecursive(target, source) {
 }
 export function getTypeName(thing) { return thing === null ? '[object Null]' : Object.prototype.toString.call(thing) }
 export function abbrNumber(value) {
-  let newValue = value
+  let v = value
   if (value >= 1000) {
-    const suffixes = [ '', 'k', 'm', 'b', 't' ]
-    const suffixNum = Math.floor(('' + value).length / 3)
-    let shortValue = ''
+    const SCALES = [ '', 'k', 'm', 'b', 't' ]
+    const index = ~~(('' + value).length / 3)
+    let abbr = ''
     for (let precision = 2; precision >= 1; precision--) {
-      shortValue = parseFloat((suffixNum !== 0 ? (value / Math.pow(1000, suffixNum)) : value).toPrecision(precision))
-      const dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g, '')
+      abbr = parseFloat((index !== 0 ? (value / (1000 ** index)) : value).toPrecision(precision))
+      const dotLessShortValue = (abbr + '').replace(/[^a-zA-Z 0-9]+/g, '')
       if (dotLessShortValue.length <= 2) break
     }
-    newValue = shortValue + suffixes[suffixNum]
+    v = abbr + SCALES[index]
   }
-  return newValue
+  return v
 }
 export const getColorCode = color =>
   Array.isArray(color) && color.length === 3

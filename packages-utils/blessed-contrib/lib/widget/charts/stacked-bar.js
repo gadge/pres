@@ -1,6 +1,6 @@
+import { Box }    from '@pres/components-core'
 import { ATTACH } from '@pres/enum-events'
 import * as utils from '../../utils.js'
-import blessed    from '../../vendor/blessed'
 import { Canvas } from '../canvas'
 
 export class StackedBar extends Canvas {
@@ -18,7 +18,7 @@ export class StackedBar extends Canvas {
     this.on(ATTACH, () => { if (self.options.data) self.setData(self.options.data) })
     this.type = 'bar'
   }
-  calcSize() { this._w = this.width - 2, this._h = this.height  }
+  calcSize() { this._w = this.width - 2, this._h = this.height }
   getSummedBars(bars) {
     const res = []
     bars.forEach(function (stackedValues) {
@@ -138,7 +138,7 @@ export class StackedBar extends Canvas {
     if (!self.options.showLegend) return
     if (self.legend) self.remove(self.legend)
     const legendWidth = self.options.legend.width || 15
-    self.legend = blessed.box({
+    self.legend = new Box({
       height: bars.stackedCategory.length + 2,
       top: 1,
       width: legendWidth,
@@ -155,13 +155,13 @@ export class StackedBar extends Canvas {
       },
       screen: self.screen
     })
-    let legandText = ''
+    let legendText = ''
     const maxChars = legendWidth - 2
     for (let i = 0; i < bars.stackedCategory.length; i++) {
       const color = utils.getColorCode(self.options.barBgColor[i])
-      legandText += '{' + color + '-fg}' + bars.stackedCategory[i].substring(0, maxChars) + '{/' + color + '-fg}\r\n'
+      legendText += '{' + color + '-fg}' + bars.stackedCategory[i].substring(0, maxChars) + '{/' + color + '-fg}\r\n'
     }
-    self.legend.setContent(legandText)
+    self.legend.setContent(legendText)
     self.append(self.legend)
   }
 }
