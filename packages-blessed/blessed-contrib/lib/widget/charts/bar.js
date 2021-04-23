@@ -16,9 +16,9 @@ export class Bar extends Canvas {
   }
   calcSize() { this.canvasSize = { width: this.width - 2, height: this.height } }
   setData(bar) {
-    if (!this.ctx) throw 'error: canvas context does not exist. setData() for bar charts must be called after the chart has been added to the screen via screen.append()'
+    if (!this.context) throw 'error: canvas context does not exist. setData() for bar charts must be called after the chart has been added to the screen via screen.append()'
     this.clear()
-    const c = this.ctx
+    const c = this.context
     let max = Math.max.apply(Math, bar.data)
     max = Math.max(max, this.options.maxHeight)
     let x = this.options.xOffset

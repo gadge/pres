@@ -20,7 +20,7 @@ export class LCD extends Canvas {
     this.segment16 = null
     this.on(ATTACH, function () {
       const display = self.options.display || 1234
-      if (!this.segment16) this.segment16 = new SixteenSegment(this.options.elements, this.ctx, this.canvasSize.width, this.canvasSize.height, 0, 0, this.options)
+      if (!this.segment16) this.segment16 = new SixteenSegment(this.options.elements, this.context, this.canvasSize.width, this.canvasSize.height, 0, 0, this.options)
       this.setDisplay(display)
     })
     this.type = 'lcd'
@@ -47,9 +47,9 @@ export class LCD extends Canvas {
     }
   }
   setDisplay(display) {
-    if (!this.ctx)
+    if (!this.context)
       throw 'error: canvas context does not exist. setData() for line charts must be called after the chart has been added to the screen via screen.append()'
-    this.ctx.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height)
+    this.context.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height)
     this.segment16.DisplayText(display)
   }
 }

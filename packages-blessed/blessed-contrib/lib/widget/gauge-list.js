@@ -24,17 +24,17 @@ export class GaugeList extends Canvas {
   setData() {
   }
   setGauges(gauges) {
-    if (!this.ctx) {
+    if (!this.context) {
       throw 'error: canvas context does not exist. setData() for gauges must be called after the gauge has been added to the screen via screen.append()'
     }
-    const c = this.ctx
+    const c = this.context
     c.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height)
     for (let i = 0; i < gauges.length; i++) { this.setSingleGauge(gauges[i], i) }
   }
   setSingleGauge(gauge, offset) {
     const colors = [ 'green', 'magenta', 'cyan', 'red', 'blue' ]
     const stack = gauge.stack
-    const c = this.ctx
+    const c = this.context
     let leftStart = 3
     let textLeft = 5
     c.strokeStyle = 'normal'

@@ -15,8 +15,8 @@ export class Map extends Canvas {
         disableMapBackground: (options.disableMapBackground === undefined) ? true : options.disableMapBackground,
         disableGraticule: (options.disableGraticule === undefined) ? true : options.disableGraticule,
         disableFill: (options.disableFill === undefined) ? true : options.disableFill,
-        width: self.ctx._canvas.width,
-        height: self.ctx._canvas.height,
+        width: self.context._canvas.width,
+        height: self.context._canvas.height,
         shapeColor: options.style.shapeColor || 'green'
       }
       opts.startLon = options.startLon || undefined
@@ -25,15 +25,13 @@ export class Map extends Canvas {
       opts.endLat = options.endLat || undefined
       opts.region = options.region || undefined
       opts.labelSpace = options.labelSpace || 5
-      this.ctx.strokeStyle = options.style.stroke || 'green'
-      this.ctx.fillStyle = options.style.fill || 'green'
+      this.context.strokeStyle = options.style.stroke || 'green'
+      this.context.fillStyle = options.style.fill || 'green'
       self.innerMap = new InnerMap(opts, this._canvas)
       self.innerMap.draw()
-      if (self.options.markers) {
-        for (let m in self.options.markers) {
+      if (self.options.markers)
+        for (let m in self.options.markers)
           self.addMarker(self.options.markers[m])
-        }
-      }
     })
     this.type = 'map'
   }

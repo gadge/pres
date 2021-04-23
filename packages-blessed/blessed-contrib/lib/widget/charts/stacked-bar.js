@@ -28,7 +28,7 @@ export class StackedBar extends Canvas {
     return res
   }
   setData(bars) {
-    if (!this.ctx) throw 'error: canvas context does not exist. setData() for bar charts must be called after the chart has been added to the screen via screen.append()'
+    if (!this.context) throw 'error: canvas context does not exist. setData() for bar charts must be called after the chart has been added to the screen via screen.append()'
     this.clear()
     const summedBars = this.getSummedBars(bars.data)
     let maxBarValue = Math.max.apply(Math, summedBars)
@@ -42,7 +42,7 @@ export class StackedBar extends Canvas {
   }
   renderBar(x, bar, curBarSummedValue, maxBarValue, category) {
     /*
-      var c = this.ctx
+      var c = this.context
       c.strokeStyle = 'red';
       c.fillRect(0,7,4,0)
       c.strokeStyle = 'blue';
@@ -54,7 +54,7 @@ export class StackedBar extends Canvas {
     //first line is for label
     const BUFFER_FROM_TOP = 2
     const BUFFER_FROM_BOTTOM = (this.options.border ? 2 : 0) + (this.options.showText ? 1 : 0)
-    const c = this.ctx
+    const c = this.context
     c.strokeStyle = 'normal'
     c.fillStyle = 'white'
     if (this.options.labelColor)
@@ -89,7 +89,7 @@ export class StackedBar extends Canvas {
     currentBarHeight,
     availableBarHeight,
     bg) {
-    const c = this.ctx
+    const c = this.context
     const currStackHeight = currentBarHeight <= 0 ?
       0 :
       Math.min(

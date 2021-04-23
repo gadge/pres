@@ -11,16 +11,16 @@ export class Canvas extends Box {
     this.on(ATTACH, () => {
       self.calcSize()
       self._canvas = new InnerCanvas(self.canvasSize.width, self.canvasSize.height, canvasType)
-      self.ctx = self._canvas.getContext()
-      if (self.options.data) { self.setData(self.options.data) }
+      self.context = self._canvas.getContext()
+      if (self.options.data) self.setData(self.options.data)
     })
     this.type = 'canvas'
   }
   calcSize() { this.canvasSize = { width: this.width * 2 - 12, height: this.height * 4 } }
-  clear() { this.ctx.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height) }
+  clear() { this.context.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height) }
   render() {
     this.clearPos(true)
-    const inner = this.ctx._canvas.frame()
+    const inner = this.context._canvas.frame()
     this.setContent(inner)
     return this._render()
   }

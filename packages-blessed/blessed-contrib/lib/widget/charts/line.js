@@ -23,7 +23,7 @@ export class Line extends Canvas {
   }
   calcSize() { this.canvasSize = { width: this.width * 2 - 12, height: this.height * 4 - 8 } }
   setData(data) {
-    if (!this.ctx) { throw 'error: canvas context does not exist. setData() for line charts must be called after the chart has been added to the screen via screen.append()' }
+    if (!this.context) { throw 'error: canvas context does not exist. setData() for line charts must be called after the chart has been added to the screen via screen.append()' }
     //compatability with older api
     if (!Array.isArray(data)) data = [ data ]
     const self = this
@@ -31,7 +31,7 @@ export class Line extends Canvas {
     const yLabelPadding = 3
     let xPadding = this.options.xPadding
     const yPadding = 11
-    const c = this.ctx
+    const c = this.context
     const labels = data[0].x
     function addLegend() {
       if (!self.options.showLegend) return

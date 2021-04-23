@@ -33,8 +33,8 @@ export class Donut extends Canvas {
   }
   setData(data) { this.update(data) }
   update(data) {
-    if (!this.ctx) throw 'error: canvas context does not exist. setData() for line charts must be called after the chart has been added to the screen via screen.append()'
-    const c = this.ctx
+    if (!this.context) throw 'error: canvas context does not exist. setData() for line charts must be called after the chart has been added to the screen via screen.append()'
+    const c = this.context
     c.save()
     c.translate(0, -this.options.yPadding)
     c.strokeStyle = this.options.stroke

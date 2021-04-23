@@ -28,8 +28,8 @@ export class Gauge extends Canvas {
     else if (typeof (data) === typeof (1)) this.setPercent(data)
   }
   setPercent(percent) {
-    if (!this.ctx) throw 'error: canvas context does not exist. setData() for gauges must be called after the gauge has been added to the screen via screen.append()'
-    const c = this.ctx
+    if (!this.context) throw 'error: canvas context does not exist. setData() for gauges must be called after the gauge has been added to the screen via screen.append()'
+    const c = this.context
     c.strokeStyle = this.options.stroke//'magenta'
     c.fillStyle = this.options.fill//'white'
     c.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height)
@@ -42,8 +42,8 @@ export class Gauge extends Canvas {
   }
   setStack(stack) {
     const colors = [ 'green', 'magenta', 'cyan', 'red', 'blue' ]
-    if (!this.ctx) throw 'error: canvas context does not exist. setData() for gauges must be called after the gauge has been added to the screen via screen.append()'
-    const c = this.ctx
+    if (!this.context) throw 'error: canvas context does not exist. setData() for gauges must be called after the gauge has been added to the screen via screen.append()'
+    const c = this.context
     let leftStart = 1
     let textLeft = 5
     c.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height)
