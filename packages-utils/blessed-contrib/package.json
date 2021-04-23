@@ -13,6 +13,8 @@
     "lint:fix": "eslint lib --fix"
   },
   "dependencies": {
+    "@pres/components-core": "^0.0.18",
+    "@pres/terminal-interface": "^0.0.18",
     "@ject/mixin": "^0.0.11",
     "@typen/numeral": "^0.1.16",
     "@pres/enum-events": "^0.0.15",

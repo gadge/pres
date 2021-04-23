@@ -47,14 +47,14 @@ export class Node extends EventEmitter {
       }
       else { throw new Error('No active screen.') }
     }
-    this.parent = options.parent || null
+    this.parent = options.parent ?? null
     this.children = []
     this.$ = this._ = this.data = {}
     this.uid = Node.uid++
     this.index = this.index != null ? this.index : -1
-    if (this.type !== 'screen') { this.detached = true }
-    if (this.parent) { this.parent.append(this) }
-    (options.children ?? []).forEach(this.append.bind(this))
+    if (this.type !== 'screen') this.detached = true
+    if (this.parent) this.parent.append(this)
+    options.children?.forEach(this.append.bind(this))
   }
   insert(element, i) {
     const self = this
@@ -73,7 +73,7 @@ export class Node extends EventEmitter {
       if (n) el.emit(ATTACH)
       el.children.forEach(emit)
     })(element)
-    if (!this.screen.focused) { this.screen.focused = element }
+    if (!this.screen.focused) this.screen.focused = element
   }
   prepend(element) { this.insert(element, 0) }
   append(element) { this.insert(element, this.children.length) }
@@ -89,7 +89,6 @@ export class Node extends EventEmitter {
     if (element.parent !== this) return
     let i = this.children.indexOf(element)
     if (!~i) return
-
     element.clearPos()
     element.parent = null
     this.children.splice(i, 1)
@@ -99,14 +98,13 @@ export class Node extends EventEmitter {
     if (~i) this.screen.keyable.splice(i, 1)
     element.emit(REPARENT, null)
     this.emit(REMOVE, element);
-
     (function emit(el) {
       const n = el.detached !== true
       el.detached = true
       if (n) el.emit(DETACH)
       el.children.forEach(emit)
     })(element)
-    if (this.screen.focused === element) { this.screen.rewindFocus() }
+    if (this.screen.focused === element) this.screen.rewindFocus()
   }
   detach() { if (this.parent) this.parent.remove(this) }
   free() { }

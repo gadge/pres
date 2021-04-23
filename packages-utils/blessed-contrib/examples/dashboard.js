@@ -1,8 +1,8 @@
-import { flop, rand, ziggurat }         from '@aryth/rand'
-import { ATTACH, RESIZE }               from '@pres/enum-events'
-import { TerminalInterface as blessed } from '@pres/terminal-interface'
-import { last }     from '@vect/vector-index'
-import * as contrib from '../archive'
+import { flop, rand, ziggurat } from '@aryth/rand'
+import { ATTACH, RESIZE }       from '@pres/enum-events'
+import { last }                 from '@vect/vector-index'
+import * as contrib             from '../index'
+import blessed                  from '../lib/vendor/blessed'
 
 const normDist = ziggurat(0, 5, 0)
 

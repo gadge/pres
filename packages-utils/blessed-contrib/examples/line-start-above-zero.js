@@ -1,5 +1,5 @@
 import { blessed }  from '@pres/terminal-interface'
-import * as contrib from '../archive'
+import * as contrib from '../index'
 
 const screen = blessed.screen(),
       line   = contrib.line(
@@ -10,7 +10,7 @@ const screen = blessed.screen(),
           top: 12,
           xPadding: 5,
           minY: 30,
-          label: 'Title',
+          label: 'Line-start-above-zero',
           style: { baseline: 'white' }
         }),
       data   = [ {

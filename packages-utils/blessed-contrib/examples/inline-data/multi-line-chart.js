@@ -1,5 +1,5 @@
 var blessed = require('blessed'),
-    contrib = require('../../archive'),
+    contrib = require('../../index'),
     screen  = blessed.screen(),
     line    = contrib.line(
       {

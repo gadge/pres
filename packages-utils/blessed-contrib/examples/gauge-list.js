@@ -1,5 +1,5 @@
 import { blessed }  from '@pres/terminal-interface'
-import * as contrib from '../archive'
+import * as contrib from '../index'
 
 const screen    = blessed.screen(),
       grid      = contrib.grid({ rows: 2, cols: 2, hideBorder: true, screen: screen }),
