@@ -8,9 +8,9 @@ export class Canvas extends Box {
     // this.options = options
     super(options) // Mixin.assign(this, new Box(options)) // Box.call(this, options)
     const self = this
-    this.on(ATTACH, function () {
+    this.on(ATTACH, () => {
       self.calcSize()
-      self._canvas = new InnerCanvas(this.canvasSize.width, this.canvasSize.height, canvasType)
+      self._canvas = new InnerCanvas(self.canvasSize.width, self.canvasSize.height, canvasType)
       self.ctx = self._canvas.getContext()
       if (self.options.data) { self.setData(self.options.data) }
     })

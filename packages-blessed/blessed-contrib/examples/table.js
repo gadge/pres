@@ -19,8 +19,7 @@ const table = contrib.table(
   })
 table.focus()
 screen.append(table)
-table.setData(
-  {
+table.setData({
     headers: [ 'col1', 'col2' ],
     data:
       [ [ 1, 2 ],

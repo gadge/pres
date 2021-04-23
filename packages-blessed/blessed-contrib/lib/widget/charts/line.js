@@ -1,22 +1,23 @@
-import { Box }    from '@pres/components-core'
-import _          from 'lodash'
-import * as utils from '../../utils.js'
-import { Canvas } from '../canvas'
+import { Box }     from '@pres/components-core'
+import { nullish } from '@typen/nullish'
+import _           from 'lodash'
+import * as utils  from '../../utils.js'
+import { Canvas }  from '../canvas'
 
 export class Line extends Canvas {
   constructor(options = {}) {
     // if (!(this instanceof Node)) { return new Line(options) }
-    options.showNthLabel = options.showNthLabel || 1
-    options.style = options.style || {}
-    options.style.line = options.style.line || 'yellow'
-    options.style.text = options.style.text || 'green'
-    options.style.baseline = options.style.baseline || 'black'
-    options.xLabelPadding = options.xLabelPadding || 5
-    options.xPadding = options.xPadding || 10
-    options.numYLabels = options.numYLabels || 5
-    options.legend = options.legend || {}
-    options.wholeNumbersOnly = options.wholeNumbersOnly || false
-    options.minY = options.minY || 0
+    if (nullish(options.showNthLabel)) options.showNthLabel = 1
+    const style = options.style ?? (options.style = {})
+    if (nullish(style.line)) style.line = 'yellow'
+    if (nullish(style.text)) style.text = 'green'
+    if (nullish(style.baseline)) style.baseline = 'black'
+    if (nullish(options.xLabelPadding)) options.xLabelPadding = 5
+    if (nullish(options.xPadding)) options.xPadding = 10
+    if (nullish(options.numYLabels)) options.numYLabels = 5
+    if (nullish(options.legend)) options.legend = {}
+    if (nullish(options.wholeNumbersOnly)) options.wholeNumbersOnly = false
+    if (nullish(options.minY)) options.minY = 0
     super(options)
     this.type = 'line'
   }
@@ -74,7 +75,7 @@ export class Line extends Canvas {
       return max + (max - self.options.minY) * 0.2
     }
     function formatYLabel(value, max, min, numLabels, wholeNumbersOnly, abbreviate) {
-      const fixed = (((max - min) / numLabels) < 1 && value != 0 && !wholeNumbersOnly) ? 2 : 0
+      const fixed = (((max - min) / numLabels) < 1 && value && !wholeNumbersOnly) ? 2 : 0
       const res = value.toFixed(fixed)
       return abbreviate ? utils.abbreviateNumber(res) : res
     }
@@ -116,19 +117,18 @@ export class Line extends Canvas {
     c.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height)
     let yLabelIncrement = (getMaxY() - this.options.minY) / this.options.numYLabels
     if (this.options.wholeNumbersOnly) yLabelIncrement = Math.floor(yLabelIncrement)
-    //if (getMaxY()>=10) {
-    //  yLabelIncrement = yLabelIncrement + (10 - yLabelIncrement % 10)
-    //}
+    //if (getMaxY()>=10) { yLabelIncrement = yLabelIncrement + (10 - yLabelIncrement % 10) }
     //yLabelIncrement = Math.max(yLabelIncrement, 1) // should not be zero
-    if (yLabelIncrement == 0) yLabelIncrement = 1
+    if (!yLabelIncrement) yLabelIncrement = 1
     // Draw the Y value texts
     const maxY = getMaxY()
-    for (let i = this.options.minY; i < maxY; i += yLabelIncrement) {
-      c.fillText(formatYLabel(i, maxY, this.options.minY, this.options.numYLabels, this.options.wholeNumbersOnly, this.options.abbreviate), xPadding - xLabelPadding, getYPixel(i, this.options.minY))
-    }
-    for (let h = 0; h < data.length; h++) {
-      drawLine(data[h].y, data[h].style, this.options.minY)
-    }
+    for (let i = this.options.minY; i < maxY; i += yLabelIncrement)
+      c.fillText(
+        formatYLabel(i, maxY, this.options.minY, this.options.numYLabels, this.options.wholeNumbersOnly, this.options.abbreviate),
+        xPadding - xLabelPadding,
+        getYPixel(i, this.options.minY)
+      )
+    for (let h = 0; h < data.length; h++) drawLine(data[h].y, data[h].style, this.options.minY)
     c.strokeStyle = this.options.style.baseline
     // Draw the axises
     c.beginPath()

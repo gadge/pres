@@ -9,8 +9,8 @@ export class Bar extends Canvas {
     this.options.barWidth = this.options.barWidth || 6
     this.options.barSpacing = this.options.barSpacing || 9
     if ((this.options.barSpacing - this.options.barWidth) < 3) this.options.barSpacing = this.options.barWidth + 3
-    this.options.xOffset = this.options.xOffset == null ? 5 : this.options.xOffset
-    this.options.showText = this.options.showText === false ? false : true
+    this.options.xOffset = this.options.xOffset ?? 5
+    this.options.showText = this.options.showText !== false
     this.on(ATTACH, () => { if (self.options.data) { self.setData(self.options.data) } })
     this.type = 'bar'
   }

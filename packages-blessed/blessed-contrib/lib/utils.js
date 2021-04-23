@@ -2,7 +2,7 @@ import x256 from 'x256'
 /*
 * Recursively merge properties of two objects
 */
-function MergeRecursive(target, source) {
+export function MergeRecursive(target, source) {
   if (target == null) return source
   if (source == null) return target
   for (let p in source)
@@ -13,8 +13,8 @@ function MergeRecursive(target, source) {
     }
   return target
 }
-function getTypeName(thing) { return thing === null ? '[object Null]' : Object.prototype.toString.call(thing) }
-function abbreviateNumber(value) {
+export function getTypeName(thing) { return thing === null ? '[object Null]' : Object.prototype.toString.call(thing) }
+export function abbreviateNumber(value) {
   let newValue = value
   if (value >= 1000) {
     const suffixes = [ '', 'k', 'm', 'b', 't' ]
@@ -29,10 +29,7 @@ function abbreviateNumber(value) {
   }
   return newValue
 }
-function getColorCode(color) { return Array.isArray(color) && color.length === 3 ? x256(color[0], color[1], color[2]) : color }
-export {
-  MergeRecursive,
-  getTypeName,
-  abbreviateNumber,
-  getColorCode,
-}
+export const getColorCode = color =>
+  Array.isArray(color) && color.length === 3
+    ? x256.apply(null, color)
+    : color

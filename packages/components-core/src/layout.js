@@ -55,7 +55,7 @@ export class Layout extends Element {
     let lastRowIndex = 0
     // Figure out the highest width child
     if (this.options.layout === 'grid') {
-      var highWidth = this.children.reduce(function (out, el) {
+      const highWidth = this.children.reduce((out, el) => {
         out = Math.max(out, el.width)
         return out
       }, 0)
@@ -118,9 +118,7 @@ export class Layout extends Element {
             abovea = abs
           }
         }
-        if (above) {
-          el.position.top = above.lpos.yl - yi
-        }
+        if (above) el.position.top = above.lpos.yl - yi
       }
       // If our child overflows the Layout, do not render it!
       // Disable this feature for now.
