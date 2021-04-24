@@ -24,16 +24,13 @@ export class FileManager extends List {
     this.cwd = options.cwd || process.cwd()
     this.file = this.cwd
     this.value = this.cwd
-    if (options.label && ~options.label.indexOf('%path')) {
+    if (options.label && ~options.label.indexOf('%path'))
       this._label.setContent(options.label.replace('%path', this.cwd))
-    }
     this.on(SELECT, function (item) {
       const value = item.content.replace(/\{[^{}]+\}/g, '').replace(/@$/, ''),
             file  = path.resolve(self.cwd, value)
       return fs.stat(file, function (err, stat) {
-        if (err) {
-          return self.emit(ERROR, err, file)
-        }
+        if (err) return self.emit(ERROR, err, file)
         self.file = file
         self.value = file
         if (stat.isDirectory()) {

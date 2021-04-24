@@ -1,12 +1,12 @@
-import fs                               from 'fs'
-import { TerminalInterface as blessed } from '../index'
+import fs                    from 'fs'
+import { TerminalInterface } from '../src/terminal-interface'
 // Screen
-const screen = blessed.screen({
+const screen = TerminalInterface.screen({
   smartCSR: true,
-  title: 'Blessed form'
+  title: 'TerminalInterface form'
 })
 // Form
-const form = blessed.form({
+const form = TerminalInterface.form({
   parent: screen,
   width: '90%',
   left: 'center',
@@ -14,13 +14,13 @@ const form = blessed.form({
   vi: true
 })
 // Text boxes
-const label1 = blessed.text({
+const label1 = TerminalInterface.text({
   parent: screen,
   top: 3,
   left: 5,
   content: 'FIRST NAME:'
 })
-const firstName = blessed.textbox({
+const firstName = TerminalInterface.textbox({
   parent: form,
   name: 'firstname',
   top: 4,
@@ -35,13 +35,13 @@ const firstName = blessed.textbox({
     fg: 'blue'
   }
 })
-const label2 = blessed.text({
+const label2 = TerminalInterface.text({
   parent: screen,
   content: 'LAST NAME:',
   top: 8,
   left: 5
 })
-const lastName = blessed.textbox({
+const lastName = TerminalInterface.textbox({
   parent: form,
   name: 'lastname',
   top: 9,
@@ -57,34 +57,34 @@ const lastName = blessed.textbox({
   }
 })
 // Check boxes
-const label3 = blessed.text({
+const label3 = TerminalInterface.text({
   parent: screen,
   content: 'What are your favorite editors?',
   top: 14,
   left: 5
 })
-const vim = blessed.checkbox({
+const vim = TerminalInterface.checkbox({
   parent: form,
   name: 'editors',
   content: 'Vim',
   top: 16,
   left: 5
 })
-const emacs = blessed.checkbox({
+const emacs = TerminalInterface.checkbox({
   parent: form,
   name: 'editors',
   content: 'Emacs',
   top: 16,
   left: 20
 })
-const atom = blessed.checkbox({
+const atom = TerminalInterface.checkbox({
   parent: form,
   name: 'editors',
   content: 'Atom',
   top: 16,
   left: 35
 })
-const brackets = blessed.checkbox({
+const brackets = TerminalInterface.checkbox({
   parent: form,
   name: 'editors',
   content: 'Brackets',
@@ -92,38 +92,38 @@ const brackets = blessed.checkbox({
   left: 50
 })
 // Radio buttons
-const label4 = blessed.text({
+const label4 = TerminalInterface.text({
   parent: screen,
-  content: 'Do you like Blessed?',
+  content: 'Do you like TerminalInterface?',
   top: 19,
   left: 5
 })
-const radioset = blessed.radioset({
+const radioset = TerminalInterface.radioSet({
   parent: form,
   width: '100%',
   height: 5,
   top: 21
 })
-const yes = blessed.radiobutton({
+const yes = TerminalInterface.radioButton({
   parent: radioset,
   name: 'like',
   content: 'Yes',
   left: 5
 })
-const no = blessed.radiobutton({
+const no = TerminalInterface.radioButton({
   parent: radioset,
   name: 'like',
   content: 'No',
   left: 15
 })
 // Text area
-const label5 = blessed.text({
+const label5 = TerminalInterface.text({
   parent: screen,
   content: 'Your comments...',
   top: 24,
   left: 5
 })
-const textarea = blessed.textarea({
+const textarea = TerminalInterface.textarea({
   parent: form,
   name: 'comments',
   top: 26,
@@ -135,7 +135,7 @@ const textarea = blessed.textarea({
   }
 })
 // Submit/Cancel buttons
-const submit = blessed.button({
+const submit = TerminalInterface.button({
   parent: form,
   name: 'submit',
   content: 'Submit',
@@ -157,7 +157,7 @@ const submit = blessed.button({
     }
   }
 })
-const reset = blessed.button({
+const reset = TerminalInterface.button({
   parent: form,
   name: 'reset',
   content: 'Reset',
@@ -180,7 +180,7 @@ const reset = blessed.button({
   }
 })
 // Info
-const msg = blessed.message({
+const msg = TerminalInterface.message({
   parent: screen,
   top: 40,
   left: 5,
@@ -189,7 +189,7 @@ const msg = blessed.message({
     fg: 'green'
   }
 })
-const table = blessed.table({
+const table = TerminalInterface.table({
   parent: screen,
   content: '',
   top: 40,
@@ -205,12 +205,8 @@ const table = blessed.table({
   hidden: true
 })
 // Event management
-submit.on('press', function () {
-  form.submit()
-})
-reset.on('press', function () {
-  form.reset()
-})
+submit.on('press', () => form.submit())
+reset.on('press', () => form.reset())
 form.on('submit', function (data) {
   const editors = [ 'Vim', 'Emacs', 'Atom', 'Brackets' ].filter(function (item, index) {
     return data.editors[index]
@@ -220,7 +216,7 @@ form.on('submit', function (data) {
     summary += data.firstname + ' ' + data.lastname + '\n'
     summary += '------------------------------\n'
     summary += 'Favorite editors: ' + editors + '\n'
-    summary += 'Likes Blessed: ' + data.like[0] + '\n'
+    summary += 'Likes TerminalInterface: ' + data.like[0] + '\n'
     summary += 'Comments: ' + data.comments
     fs.writeFile('form-data.txt', summary, function (err) {
       if (err) throw err

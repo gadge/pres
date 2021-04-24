@@ -6,7 +6,7 @@ const screen = TerminalInterface.screen({
 })
 
 
-var form = TerminalInterface.form({
+const form = TerminalInterface.form({
   parent: screen,
   mouse: true,
   keys: true,
@@ -50,7 +50,7 @@ form.key('u', function () {
   screen.render()
 })
 
-var set = TerminalInterface.radioSet({
+const set = TerminalInterface.radioSet({
   parent: form,
   left: 1,
   top: 1,
@@ -62,7 +62,7 @@ var set = TerminalInterface.radioSet({
   }
 })
 
-var radio1 = TerminalInterface.radioButton({
+const radio1 = TerminalInterface.radioButton({
   parent: set,
   mouse: true,
   keys: true,
@@ -77,7 +77,7 @@ var radio1 = TerminalInterface.radioButton({
   content: 'radio1'
 })
 
-var radio2 = TerminalInterface.radioButton({
+const radio2 = TerminalInterface.radioButton({
   parent: set,
   mouse: true,
   keys: true,
@@ -92,7 +92,7 @@ var radio2 = TerminalInterface.radioButton({
   content: 'radio2'
 })
 
-var text = TerminalInterface.textbox({
+const text = TerminalInterface.textbox({
   parent: form,
   mouse: true,
   keys: true,
@@ -110,7 +110,7 @@ text.on('focus', function () {
   text.readInput()
 })
 
-var check = TerminalInterface.checkbox({
+const check = TerminalInterface.checkbox({
   parent: form,
   mouse: true,
   keys: true,
@@ -125,7 +125,7 @@ var check = TerminalInterface.checkbox({
   content: 'check'
 })
 
-var check2 = TerminalInterface.checkbox({
+const check2 = TerminalInterface.checkbox({
   parent: form,
   mouse: true,
   keys: true,
@@ -140,7 +140,7 @@ var check2 = TerminalInterface.checkbox({
   content: 'foooooooo2'
 })
 
-var submit = TerminalInterface.button({
+const submit = TerminalInterface.button({
   parent: form,
   mouse: true,
   keys: true,
@@ -163,7 +163,7 @@ var submit = TerminalInterface.button({
 
 submit.on('press', () => form.submit())
 
-var box1 = TerminalInterface.box({
+const box1 = TerminalInterface.box({
   parent: form,
   left: 1,
   top: 10,
@@ -175,7 +175,7 @@ var box1 = TerminalInterface.box({
   }
 })
 
-var box2 = TerminalInterface.box({
+const box2 = TerminalInterface.box({
   parent: box1,
   left: 1,
   top: 2,
@@ -187,7 +187,7 @@ var box2 = TerminalInterface.box({
   }
 })
 
-var box3 = TerminalInterface.box({
+const box3 = TerminalInterface.box({
   parent: box2,
   left: 1,
   top: 2,
@@ -199,7 +199,7 @@ var box3 = TerminalInterface.box({
   }
 })
 
-var box4 = TerminalInterface.box({
+const box4 = TerminalInterface.box({
   parent: box3,
   left: 1,
   top: 2,
@@ -225,7 +225,7 @@ var output = TerminalInterface.scrollableText({
   content: 'foobar'
 })
 
-var bottom = TerminalInterface.line({
+const bottom = TerminalInterface.line({
   parent: form,
   type: 'line',
   orientation: 'horizontal',
