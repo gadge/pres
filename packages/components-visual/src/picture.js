@@ -15,6 +15,7 @@ export class Picture extends Box {
     if (options.file || options.base64) { this.setImage(options) }
     this.type = 'picture' // Mixin.assign(this, new Box(options)) // Box.call(this, options)
   }
+  static build(options) { return new Picture(options) }
   setImage(options) {
     const tube = pictureTube({ cols: options.cols })
     if (options.file) fs.createReadStream(options.file).pipe(tube)

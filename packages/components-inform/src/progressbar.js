@@ -5,11 +5,11 @@
  */
 
 import { Input }                             from '@pres/components-form'
+import { CLICK, COMPLETE, KEYPRESS, RESET, } from '@pres/enum-events'
 
 /**
  * ProgressBar
  */
-import { CLICK, COMPLETE, KEYPRESS, RESET, } from '@pres/enum-events'
 
 export class ProgressBar extends Input {
   constructor(options = {}) {

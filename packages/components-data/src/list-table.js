@@ -4,11 +4,7 @@
  * https://github.com/chjj/blessed
  */
 
-/**
- * Modules
- */
-import { Box, Node } from '@pres/components-core'
-
+import { Box, Node }               from '@pres/components-core'
 import { ATTACH, RESIZE, SCROLL, } from '@pres/enum-events'
 import { LEFT, RIGHT }             from '@pres/enum-key-names'
 import { List }                    from './list'

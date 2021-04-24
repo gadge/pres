@@ -4,9 +4,6 @@
  * https://github.com/chjj/blessed
  */
 
-/**
- * Modules
- */
 import { Box } from '@pres/components-core'
 
 import { KEYPRESS, MOUSE, MOUSEMOVE, } from '@pres/enum-events'

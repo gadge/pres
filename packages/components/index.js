@@ -1,9 +1,11 @@
 export {
   BarChart, barChart,
-  LineChart, lineChart,
-  StackedBarChart, stackedBarChart,
   DonutChart, donutChart,
+  Gauge, gauge,
+  GaugeList, gaugeList,
+  LineChart, lineChart,
   Sparkline, sparkline,
+  StackedBarChart, stackedBarChart,
 } from '@pres/components-chart'
 export {
   Box, box,
@@ -18,10 +20,12 @@ export {
   Terminal, terminal,
 } from '@pres/components-core'
 export {
+  DataTable, dataTable,
   List, list,
-  Listbar, listBar,
+  ListBar, listBar,
   ListTable, listTable,
   Table, table,
+  Tree, tree,
 } from '@pres/components-data'
 export {
   Button, button,
@@ -40,6 +44,7 @@ export {
   Map, map,
 } from '@pres/components-geo'
 export {
+  LCD, lcd,
   Loading, loading,
   Message, message,
   ProgressBar, progressBar,
@@ -50,6 +55,8 @@ export {
   Grid, grid,
 } from '@pres/components-layout'
 export {
+  LogList, logList,
+  Markdown, markdown,
   Text, text,
 } from '@pres/components-text'
 export {
@@ -57,7 +64,7 @@ export {
   BigText, bigText,
   Image, image,
   OverlayImage, overlayImage,
-
+  Picture, picture,
   PNG, png,
   Video, video,
 } from '@pres/components-visual'
