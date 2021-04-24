@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-layout",
-  "version": "0.0.18",
+  "version": "0.0.19",
   "description": "layout components for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,8 +15,8 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/components-core": "^0.0.18",
-    "@pres/enum-events": "^0.0.15",
+    "@pres/components-core": "^0.0.19",
+    "@pres/enum-events": "^0.0.19",
     "drawille-canvas-blessed-contrib": "^0.1.3"
   },
   "repository": {
