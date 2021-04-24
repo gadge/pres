@@ -1,70 +1,62 @@
-export { BarChart, LineChart, StackedBarChart, DonutChart, Sparkline } from '@pres/components-chart'
 export {
-  Box, Element, Layout, Line, Log, Node, Screen, ScrollableBox, ScrollableText, Terminal,
-}                                                                      from '@pres/components-core'
+  BarChart, barChart,
+  LineChart, lineChart,
+  StackedBarChart, stackedBarChart,
+  DonutChart, donutChart,
+  Sparkline, sparkline,
+} from '@pres/components-chart'
 export {
-  List, Listbar, ListTable, Table,
-}                                                                      from '@pres/components-data'
+  Box, box,
+  Element, element,
+  Node, node,
+  Screen, screen,
+  Layout, layout,
+  Line, line,
+  Log, log,
+  ScrollableBox, scrollableBox,
+  ScrollableText, scrollableText,
+  Terminal, terminal,
+} from '@pres/components-core'
 export {
-  Button, Checkbox, FileManager, Form, Input, Prompt, Question, RadioButton, RadioSet, Textarea, Textbox,
-}                                                                      from '@pres/components-form'
-export { Map }                                                         from '@pres/components-geo'
+  List, list,
+  Listbar, listBar,
+  ListTable, listTable,
+  Table, table,
+} from '@pres/components-data'
 export {
-  Loading, Message, ProgressBar,
-}                                                                      from '@pres/components-inform'
+  Button, button,
+  Checkbox, checkbox,
+  FileManager, fileManager,
+  Form, form,
+  Input, input,
+  Prompt, prompt,
+  Question, question,
+  RadioButton, radioButton,
+  RadioSet, radioSet,
+  Textbox, textbox,
+  Textarea, textarea,
+} from '@pres/components-form'
 export {
-  Canvas, Carousel, Grid
-}                                                                      from '@pres/components-layout'
-export { Text, }                                                       from '@pres/components-text'
+  Map, map,
+} from '@pres/components-geo'
 export {
-  ANSIImage, BigText, Image, OverlayImage, PNG, Video,
-}                                                                      from '@pres/components-visual'
-
+  Loading, loading,
+  Message, message,
+  ProgressBar, progressBar,
+} from '@pres/components-inform'
 export {
-  barChart,
-  lineChart,
-  stackedBarChart,
-  donutChart,
-  sparkline,
-  box,
-  element,
-  node,
-  screen,
-  log,
-  scrollablebox,
-  scrollabletext,
-  layout,
-  line,
-  terminal,
-  list,
-  listbar,
-  listtable,
-  table,
-  button,
-  checkbox,
-  filemanager,
-  form,
-  input,
-  prompt,
-  question,
-  radiobutton,
-  radioset,
-  textbox,
-  textarea,
-  map,
-  loading,
-  message,
-  progressbar,
-  canvas,
-  grid,
-  carousel,
-  text,
-  ansiimage,
-  bigtext,
-  image,
-  overlayimage,
-  png,
-  video,
-} from './src/components'
-
-
+  Canvas, canvas,
+  Carousel, carousel,
+  Grid, grid,
+} from '@pres/components-layout'
+export {
+  Text, text,
+} from '@pres/components-text'
+export {
+  ANSIImage, ansiImage,
+  BigText, bigText,
+  Image, image,
+  OverlayImage, overlayImage,
+  PNG, png,
+  Video, video,
+} from '@pres/components-visual'

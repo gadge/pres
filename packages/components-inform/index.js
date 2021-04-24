@@ -1,3 +1,13 @@
-export { Loading }     from './src/loading'
-export { Message }     from './src/message'
-export { ProgressBar } from './src/progressbar'
+import { Loading }     from './src/loading'
+import { Message }     from './src/message'
+import { ProgressBar } from './src/progressbar'
+
+const loading = (options) => new Loading(options)
+const message = (options) => new Message(options)
+const progressBar = (options) => new ProgressBar(options)
+
+export {
+  Loading, loading,
+  Message, message,
+  ProgressBar, progressBar,
+}

@@ -41,6 +41,7 @@ export const list = (options) => new List(options)
 export const listbar = (options) => new Listbar(options)
 export const listtable = (options) => new ListTable(options)
 export const table = (options) => new Table(options)
+
 export const button = (options) => new Button(options)
 export const checkbox = (options) => new Checkbox(options)
 export const filemanager = (options) => new FileManager(options)
