@@ -1,8 +1,10 @@
-import { Box }     from '@pres/components-core'
-import { nullish } from '@typen/nullish'
-import { maxBy }   from '@vect/vector-indicator'
-import * as utils  from '../../utils.js'
-import { Canvas }  from '../canvas'
+import { Box }          from '@pres/components-core'
+import { nullish }      from '@typen/nullish'
+import { maxBy }        from '@vect/vector-indicator'
+import * as utils       from '../../utils.js'
+import { Canvas }       from '../canvas'
+import { Padds, Ticks } from './spareparts'
+
 
 export class Line extends Canvas {
   constructor(options = {}) {
@@ -12,17 +14,8 @@ export class Line extends Canvas {
     if (nullish(style.line)) style.line = 'yellow'
     if (nullish(style.text)) style.text = 'green'
     if (nullish(style.baseline)) style.baseline = 'black'
-    const padds = options.padds ?? (options.padds = {})
-    if (nullish(padds.labelX)) padds.labelX = options.xLabelPadding ?? padds.labelX ?? 5
-    if (nullish(padds.labelY)) padds.labelY = 3
-    if (nullish(padds.x)) padds.x = options.xPadding ?? padds.x ?? 10
-    if (nullish(padds.y)) padds.y = 11
-    const ticks = options.ticks ?? (options.ticks = {})
-    if (nullish(ticks.count)) ticks.count = options.tickCount ?? padds.labelX ?? 5
-    if (nullish(ticks.max)) ticks.max = options.maxY
-    if (nullish(ticks.min)) ticks.min = options.minY ?? 0
-    if (nullish(ticks.intOnly)) ticks.intOnly = options.intOnly ?? false
-    if (nullish(ticks.abbr)) ticks.abbr = options.abbr
+    const padds = options.padds = Padds.build(options.padds ?? options)
+    const ticks = options.ticks = Ticks.build(options.ticks ?? options)
     if (nullish(options.legend)) options.legend = {}
     super(options)
     if (!this.options) {
@@ -39,27 +32,6 @@ export class Line extends Canvas {
   }
   calcSize() { this._w = this.width * 2 - 12, this._h = this.height * 4 - 8 }
   labelWidth(labels) { return maxBy(labels, x => x?.length) ?? 0 }
-  calcTicks(seriesCollection) {
-    // set ticks.max
-    if (this.options.maxY) {
-      this.ticks.max = this.options.maxY
-    }
-    else {
-      let curr, max = -Infinity
-      for (const series of seriesCollection)
-        if (series.y.length && (curr = maxBy(series.y, parseFloat)) > max)
-          max = curr
-      this.ticks.max = max + (max - this.ticks.min) * 0.2
-    }
-    // set ticks.incre
-    let incre = (this.ticks.max - this.ticks.min) / this.ticks.count
-    // let tickIncre = (self.tickMax(seriesCollection) - this.ticks.min) / this.ticks.count
-    if (this.ticks.intOnly) incre = ~~incre
-    //if (tickMax()>=10) { tickIncre = tickIncre + (10 - tickIncre % 10) }
-    //tickIncre = Math.max(tickIncre, 1) // should not be zero
-    if (!incre) incre = 1
-    this.ticks.incre = incre
-  }
   drawLegend(seriesCollection) {
     if (!this.options.showLegend) return
     if (this.legend) this.remove(this.legend)
@@ -88,21 +60,14 @@ export class Line extends Canvas {
     // console.log(`>>> maxChars:${maxChars} legendText:\n${legendText}`)
     // console.log('>>> this.legend appended to this')
   }
-  coordX(val) { return ((this._w - this.padds.x) / this.labels.length) * val + (this.padds.x * 1.0) + 2 }
+  coordX(val) { return (this.originX / this.labels.length) * val + (this.padds.x * 1.0) + 2 }
   coordY(val) {
-    let res = (this._h - this.padds.y) - (((this._h - this.padds.y) / (this.ticks.max - this.ticks.min)) * (val - this.ticks.min))
+    let res = this.originY - (this.originY / this.ticks.dif) * (val - this.ticks.min)
     res -= 2 //to separate the baseline and the data line to separate chars so canvas will show separate colors
     return res
   }
-  tickPaddingMax() { return this.formatTick(this.ticks.max).length * 2 }
-  formatTick(value) {
-    const { max, min, count, intOnly, abbr } = this.ticks
-    const fixed = (((max - min) / count) < 1 && value && !intOnly) ? 2 : 0
-    const v = value.toFixed(fixed)
-    return abbr ? utils.abbrNumber(v) : v
-  }
-  // Draw the line graph
   drawLine(values, style = {}) {
+    // Draw the line graph
     const { context } = this
     const color = this.options.style.line
     context.strokeStyle = style.line || color
@@ -113,25 +78,24 @@ export class Line extends Canvas {
       context.lineTo(this.coordX(i), this.coordY(values[i]))
     context.stroke()
   }
+  get originY() { return this._h - this.padds.y }
+  get originX() { return this._w - this.padds.x }
   setData(seriesCollection) {
     if (!this.context) throw 'error: canvas context does not exist. setData() for line charts must be called after the chart has been added to the screen via screen.append()'
     if (!Array.isArray(seriesCollection)) seriesCollection = [ seriesCollection ] //compatible with prev api
-    const { padds, context } = this
+    const { padds, ticks, context } = this
     this.labels = seriesCollection[0].x
-    //iteratee for lodash _.max
-    // console.log('>>> this.ticks.max = ' + this.ticks.max)
-    this.calcTicks(seriesCollection)
-    const paddingMax = this.tickPaddingMax()
-    if (padds.labelX < paddingMax) padds.labelX = paddingMax
-    if ((padds.x - padds.labelX) < 0) padds.x = padds.labelX
+
+    this.ticks.adaptTicks(seriesCollection)
+    this.padds.adjustPadding(this.ticks.tickWidth)
 
     this.drawLegend(seriesCollection)
     context.fillStyle = this.options.style.text
     context.clearRect(0, 0, this._w, this._h)
     // console.log(`>>> this.canvasSize: ${this._w},${this._h}`)
     // Draw tick labels (y-axis values)
-    for (let i = this.ticks.min; i < this.ticks.max; i += this.ticks.incre)
-      context.fillText(this.formatTick(i), padds.x - padds.labelX, this.coordY(i))
+    for (let i = ticks.min; i < ticks.max; i += ticks.incre)
+      context.fillText(ticks.formatTick(i), padds.relativeX, this.coordY(i))
     // Draw line bodies
     for (let h = 0; h < seriesCollection.length; h++)
       this.drawLine(seriesCollection[h].y, seriesCollection[h].style)
@@ -139,18 +103,18 @@ export class Line extends Canvas {
     // Draw x and y axes
     context.beginPath()
     context.lineTo(padds.x, 0)
-    context.lineTo(padds.x, this._h - padds.y)
-    context.lineTo(this._w, this._h - padds.y)
+    context.lineTo(padds.x, this.originY)
+    context.lineTo(this._w, this.originY)
     context.stroke()
     // Draw x-value labels
-    const charsAvailable = (this._w - padds.x) / 2
-    const maxLabelsPossible = charsAvailable / (this.labelWidth(this.labels) + 2)
-    const pointsPerMaxLabel = Math.ceil(seriesCollection[0].y.length / maxLabelsPossible)
+    const charsLimit = this.originX / 2
+    const labelCount = charsLimit / (this.labelWidth(this.labels) + 2)
+    const pointsPerLabel = Math.ceil(seriesCollection[0].y.length / labelCount)
     let showNthLabel = this.options.showNthLabel
-    if (showNthLabel < pointsPerMaxLabel) showNthLabel = pointsPerMaxLabel
+    if (showNthLabel < pointsPerLabel) showNthLabel = pointsPerLabel
     for (let i = 0; i < this.labels.length; i += showNthLabel) {
       if ((this.coordX(i) + (this.labels[i].length * 2)) <= this._w) {
-        context.fillText(this.labels[i], this.coordX(i), this._h - padds.y + padds.labelY)
+        context.fillText(this.labels[i], this.coordX(i), this.originY + padds.labelY)
       }
     }
   }

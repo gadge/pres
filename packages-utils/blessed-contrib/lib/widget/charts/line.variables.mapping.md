@@ -17,7 +17,10 @@
 | setData(data) | setData(seriesCollection) |
 | yLabelIncrement | tickIncre |
 | maxPadding | paddingMax |
-| getMaxYPadding | tickPaddingMax |
+| getMaxYPadding | tickWidth |
 | formatYLabel | formatTick |
 | this.canvas.width  | this._w |
 | this.canvas.height | this._h |
+| charsAvailable | charsLimit |
+| maxLabelsPossible | labelCount |
+| pointsPerMaxLabel | labelSize  |
