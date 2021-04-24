@@ -15,8 +15,13 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
+    "@aryth/math": "^0.3.9",
+    "@pres/enum-events": "^0.0.19",
+    "@vect/vector-indicator": "^0.3.9",
     "@pres/components-core": "^0.0.19",
-    "@pres/enum-events": "^0.0.19"
+    "@typen/nullish": "^0.1.16",
+    "@pres/util-helpers": "^0.0.19",
+    "@pres/components-layout": "^0.0.19"
   },
   "repository": {
     "type": "git",

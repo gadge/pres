@@ -16,4 +16,4 @@ export {
   getTypeName,
   abbrNumber,
   getColorCode
-} from 'blessed-contrib/lib/utils'
+} from './src/contrib'

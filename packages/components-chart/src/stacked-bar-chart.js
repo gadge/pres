@@ -1,7 +1,8 @@
 import { Box }    from '@pres/components-core'
+import { Canvas } from '@pres/components-layout'
 import { ATTACH } from '@pres/enum-events'
-import * as utils from '../../utils.js'
-import { Canvas } from '../canvas'
+import * as utils from '@pres/util-helpers'
+
 
 export class StackedBarChart extends Canvas {
   constructor(options = {}) {

@@ -1,6 +1,6 @@
+import * as utils  from '@pres/util-helpers'
 import { nullish } from '@typen/nullish'
 import { maxBy }   from '@vect/vector-indicator'
-import * as utils  from '../../../utils'
 
 export class Ticks {
   constructor(options) {

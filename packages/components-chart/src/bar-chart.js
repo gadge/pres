@@ -1,21 +1,10 @@
 import { round }  from '@aryth/math'
+import { Canvas } from '@pres/components-layout'
 import { ATTACH } from '@pres/enum-events'
 import { maxBy }  from '@vect/vector-indicator'
-import { Canvas } from '../canvas'
+import { Bars }   from '../utils'
 
-export class Bars {
-  constructor(options) {
-    this.width = options.barWidth ?? options.width ?? 6
-    this.spacing = options.barSpacing ?? options.spacing ?? 9
-    if ((this.spacing - this.width) < 3) this.spacing = this.width + 3
-    this.preset = {
-      fore: options.barFgColor ?? 'white',
-      back: options.barBgColor ?? 'blue',
-      label: options.labelColor ?? 'white'
-    }
-  }
-  static build(options) { return new Bars(options) }
-}
+
 export class BarChart extends Canvas {
   constructor(options = {}) {
     // if (!(this instanceof Node)) return new BarChart(options)

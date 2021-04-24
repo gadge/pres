@@ -1,8 +1,8 @@
 import { Box }                  from '@pres/components-core'
+import { Canvas }               from '@pres/components-layout'
+import * as utils               from '@pres/util-helpers'
 import { nullish }              from '@typen/nullish'
 import { maxBy }                from '@vect/vector-indicator'
-import * as utils               from '../../utils.js'
-import { Canvas }               from '../canvas'
 import { Labels, Padds, Ticks } from '../utils'
 
 
