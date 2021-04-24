@@ -7,9 +7,9 @@
 import {
   BLUR, DATA, DESTROY, EXIT, FOCUS, KEYPRESS, MOUSE, MOUSEDOWN, PASSTHROUGH, RENDER, RESIZE, SCROLL, TITLE,
 }              from '@pres/enum-events'
+import { Box } from '../core/box'
 // import pty     from 'pty.js'
 // import term    from 'term.js'
-import { Box } from '../core/box'
 
 /**
  * Modules

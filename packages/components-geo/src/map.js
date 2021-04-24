@@ -1,6 +1,6 @@
+import { Canvas } from '@pres/components-layout'
 import { ATTACH } from '@pres/enum-events'
 import InnerMap   from 'map-canvas'
-import { Canvas } from '@pres/components-layout'
 
 export class Map extends Canvas {
   constructor(options = {}) {
@@ -35,6 +35,7 @@ export class Map extends Canvas {
     })
     this.type = 'map'
   }
+  static build(options) { return new Map(options) }
   calcSize() { this._w = this.width * 2 - 12, this._h = this.height * 4 }
   addMarker(options) {
     if (!this.innerMap) throw 'error: canvas context does not exist. addMarker() for maps must be called after the map has been added to the screen via screen.append()'

@@ -77,6 +77,7 @@ export class ProgressBar extends Input {
     }
     this.type = 'progress-bar'
   }
+  static build(options) { return new ProgressBar(options) }
   render() {
     const ret = this._render()
     if (!ret) return

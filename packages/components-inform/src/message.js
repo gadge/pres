@@ -22,6 +22,7 @@ export class Message extends Box {
     // if (!(this instanceof Node)) return new Message(options)
     this.type = 'message'
   }
+  static build(options) { return new Message(options) }
   display(text, time, callback) {
     const self = this
     if (typeof time === 'function') {

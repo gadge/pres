@@ -28,6 +28,7 @@ export class Loading extends Box {
     })
     this.type = 'loading'
   }
+  static build(options) { return new Loading(options) }
   load(text) {
     const self = this
     // XXX Keep above:
