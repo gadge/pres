@@ -1,6 +1,6 @@
 {
   "name": "@pres/enum-terminfo-alias",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Alias for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",

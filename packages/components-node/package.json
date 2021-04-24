@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-node",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Node component for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,8 +15,8 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/enum-events": "^0.1.0",
-    "@pres/events": "^0.1.0"
+    "@pres/enum-events": "^0.1.1",
+    "@pres/events": "^0.1.1"
   },
   "repository": {
     "type": "git",
