@@ -11,6 +11,7 @@ export class Grid {
     this.cellWidth = ((100 - this.options.dashboardMargin * 2) / this.options.cols)
     this.cellHeight = ((100 - this.options.dashboardMargin * 2) / this.options.rows)
   }
+  static build(options) { return new Grid(options) }
   set(row, col, rowSpan, colSpan, obj, opts) {
     if (obj instanceof Grid) {
       throw 'Error: A Grid is not allowed to be nested inside another grid.\r\n' +

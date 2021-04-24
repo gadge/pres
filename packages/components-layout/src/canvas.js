@@ -18,6 +18,7 @@ export class Canvas extends Box {
     })
     this.type = 'canvas'
   }
+  static build(options) { return new Canvas(options) }
   get size() { return [ this._w, this._w ] }
   calcSize() {
     this._w = this.width * 2 - 12
