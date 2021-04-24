@@ -11,7 +11,7 @@ import {
 import { ENTER, ESCAPE, LEFT, RIGHT, TAB } from '@pres/enum-key-names'
 import * as helpers                        from '@pres/util-helpers'
 
-export class Listbar extends Box {
+export class ListBar extends Box {
   add = this.appendItem
   addItem = this.appendItem
   /**
@@ -83,7 +83,7 @@ export class Listbar extends Box {
     })
     this.type = 'listbar'
   }
-  static build(options) { return new Listbar(options) }
+  static build(options) { return new ListBar(options) }
   get selected() { return this.leftBase + this.leftOffset }
   setItems(commands) {
     const self = this
