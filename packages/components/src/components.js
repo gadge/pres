@@ -8,6 +8,7 @@ import {
 import {
   Button, Checkbox, FileManager, Form, Input, Prompt, Question, RadioButton, RadioSet, Textarea, Textbox,
 }                                                                      from '@pres/components-form'
+import { Map }                                                         from '@pres/components-geo'
 import {
   Loading, Message, ProgressBar,
 }                                                                      from '@pres/components-inform'
@@ -51,6 +52,9 @@ export const radiobutton = (options) => new RadioButton(options)
 export const radioset = (options) => new RadioSet(options)
 export const textbox = (options) => new Textbox(options)
 export const textarea = (options) => new Textarea(options)
+
+export const map = options => new Map(options)
+
 export const loading = (options) => new Loading(options)
 export const message = (options) => new Message(options)
 export const progressbar = (options) => new ProgressBar(options)

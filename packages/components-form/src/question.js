@@ -50,6 +50,7 @@ export class Question extends Box {
     })
     this.type = 'question'
   }
+  static build(options) { return new Question(options) }
   ask(text, callback) {
     const self = this
     let press, okay, cancel

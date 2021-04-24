@@ -4,7 +4,6 @@ import { ATTACH } from '@pres/enum-events'
 import { maxBy }  from '@vect/vector-indicator'
 import { Bars }   from '../utils'
 
-
 export class BarChart extends Canvas {
   constructor(options = {}) {
     // if (!(this instanceof Node)) return new BarChart(options)
@@ -18,6 +17,7 @@ export class BarChart extends Canvas {
     // console.log('>>> BarChart this.options')
     // console.log(this.options)
   }
+  static build(options) { return new BarChart(options) }
   calcSize() { this._w = this.width - 2, this._h = this.height }
   get labelY() { return this._h - 3 }
   get valueY() { return this._h - 4 }

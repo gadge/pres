@@ -21,6 +21,7 @@ export class Button extends Input {
     if (this.options.mouse) { this.on(CLICK, () => self.press()) }
     this.type = 'button'
   }
+  static build(options) { return new Button(options) }
   press() {
     this.focus()
     this.value = true

@@ -19,6 +19,7 @@ export class Textbox extends Textarea {
     this.type = 'textbox'
     // console.log(`>>> constructed ${this.type}`)
   }
+  static build(options) { return new Textbox(options) }
   _listener(ch, key) {
     // console.log('>>> calling _listener in Textbox')
     return key.name === ENTER

@@ -19,6 +19,7 @@ export class StackedBarChart extends Canvas {
     this.on(ATTACH, () => { if (self.options.data) self.setData(self.options.data) })
     this.type = 'bar-chart'
   }
+  static build(options) { return new StackedBarChart(options) }
   calcSize() { this._w = this.width - 2, this._h = this.height }
   getSummedBars(bars) {
     const res = []

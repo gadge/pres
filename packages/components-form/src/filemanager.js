@@ -51,6 +51,7 @@ export class FileManager extends List {
     })
     this.type = 'file-manager'
   }
+  static build(options) { return new FileManager(options) }
   refresh(cwd, callback) {
     if (!callback) {
       callback = cwd

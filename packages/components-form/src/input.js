@@ -12,6 +12,7 @@ export class Input extends Box {
     super(options)
     this.type = 'input'
   }
+  static build(options) { return new Input(options) }
 }
 
 

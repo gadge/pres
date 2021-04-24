@@ -8,6 +8,7 @@ export {
 export {
   Button, Checkbox, FileManager, Form, Input, Prompt, Question, RadioButton, RadioSet, Textarea, Textbox,
 }                                                                      from '@pres/components-form'
+export { Map }                                                         from '@pres/components-geo'
 export {
   Loading, Message, ProgressBar,
 }                                                                      from '@pres/components-inform'
@@ -50,6 +51,7 @@ export {
   radioset,
   textbox,
   textarea,
+  map,
   loading,
   message,
   progressbar,

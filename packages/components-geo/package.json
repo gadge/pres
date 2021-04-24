@@ -1,5 +1,5 @@
 {
-  "name": "@pres/components",
+  "name": "@pres/components-geo",
   "version": "0.0.22",
   "description": "Core components for pres",
   "main": "dist/index.cjs.js",
@@ -15,26 +15,19 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/components-chart": "^0.0.22",
-    "@pres/components-core": "^0.0.22",
-    "@pres/components-data": "^0.0.22",
-    "@pres/components-form": "^0.0.22",
-    "@pres/components-inform": "^0.0.22",
     "@pres/components-layout": "^0.0.22",
-    "@pres/components-text": "^0.0.22",
-    "@pres/components-visual": "^0.0.22",
-    "@pres/components-geo": "^0.0.22",
-    "@pres/enum-events": "^0.0.22"
+    "@pres/enum-events": "^0.0.22",
+    "map-canvas": "^0.1.5"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hoyeungw/pres/components.git"
+    "url": "git+https://github.com/hoyeungw/pres/components-geo.git"
   },
   "keywords": [
     "pres",
     "process",
     "signal-handler",
-    "components"
+    "components-geo"
   ],
   "author": {
     "name": "Hoyeung Wong",

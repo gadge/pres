@@ -31,6 +31,7 @@ export class Checkbox extends Input {
     this.type = 'checkbox'
     // console.log(`>>> ${this.type} created, uid = ${this.uid}`)
   }
+  static build(options) { return new Checkbox(options) }
   render() {
     // console.log('>>> checkbox rendered')
     this.clearPos(true)

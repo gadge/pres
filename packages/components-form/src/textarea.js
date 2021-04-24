@@ -47,6 +47,7 @@ export class Textarea extends Input {
     this.type = 'textarea'
     // console.log(`>>> constructed ${this.type}`)
   }
+  static build(options) { return new Textarea(options) }
   _updateCursor(get) {
     if (this.screen.focused !== this) return
     const lpos = get ? this.lpos : this._getCoords()

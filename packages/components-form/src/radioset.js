@@ -18,6 +18,7 @@ export class RadioSet extends Box {
     // options.style = this.parent.style;
     this.type = 'radio-set'
   }
+  static build(options) { return new RadioSet(options) }
 }
 
 

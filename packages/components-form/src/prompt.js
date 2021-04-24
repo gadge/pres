@@ -57,6 +57,7 @@ export class Prompt extends Box {
     })
     this.type = 'prompt'
   }
+  static build(options) { return new Prompt(options) }
   readInput(text, value, callback) {
     const self = this
     let okay, cancel

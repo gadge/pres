@@ -33,6 +33,7 @@ export class RadioButton extends Checkbox {
     })
     this.type = 'radio-button'
   }
+  static build(options) { return new RadioButton(options) }
   render() {
     this.clearPos(true)
     this.setContent('(' + (this.checked ? '*' : ' ') + ') ' + this.text, true)

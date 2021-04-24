@@ -48,6 +48,7 @@ export class Form extends Box {
     }
     this.type = 'form'
   }
+  static build(options) { return new Form(options) }
   _refresh() {
     // XXX Possibly remove this if statement and refresh on every focus.
     // Also potentially only include *visible* focusable elements.

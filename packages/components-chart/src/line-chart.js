@@ -26,6 +26,7 @@ export class LineChart extends Canvas {
     this.labels = labels
     this.type = 'line-chart'
   }
+  static build(options) { return new LineChart(options) }
   get originY() { return this._h - this.padds.y }
   get originX() { return this._w - this.padds.x }
   coordX(val) { return (this.originX / this.labels.length) * val + (this.padds.x * 1.0) + 2 }
