@@ -75,6 +75,7 @@ export class ListTable extends List {
     })
     this.type = 'list-table'
   }
+  static build(options) { return new ListTable(options) }
   _calculateMaxes() { return Table.prototype._calculateMaxes.call(this) }
   setData(rows) {
     const self     = this,

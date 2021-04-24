@@ -204,6 +204,7 @@ export class List extends Box {
     })
     this.type = 'list'
   }
+  static build(options) { return new List(options) }
   createItem(content) {
     const self = this
     // Note: Could potentially use Button here.

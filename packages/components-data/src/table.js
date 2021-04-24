@@ -42,6 +42,7 @@ export class Table extends Box {
     })
     this.type = 'table'
   }
+  static build(options) { return new Table(options) }
   _calculateMaxes() {
     const self = this
     let maxes = []

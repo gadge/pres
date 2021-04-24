@@ -83,6 +83,7 @@ export class Listbar extends Box {
     })
     this.type = 'listbar'
   }
+  static build(options) { return new Listbar(options) }
   get selected() { return this.leftBase + this.leftOffset }
   setItems(commands) {
     const self = this
