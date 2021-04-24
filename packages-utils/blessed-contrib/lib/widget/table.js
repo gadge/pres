@@ -1,7 +1,8 @@
-import { Box }    from '@pres/components-core'
-import { List }   from '@pres/components-data'
-import { ATTACH } from '@pres/enum-events'
-import stripAnsi  from 'strip-ansi'
+import { Box }       from '@pres/components-core'
+import { List }      from '@pres/components-data'
+import { ATTACH }    from '@pres/enum-events'
+import { clearAnsi } from '@texting/charset-ansi'
+// import stripAnsi   from 'strip-ansi'
 
 export class Table extends Box {
   constructor(options) {
@@ -61,7 +62,7 @@ export class Table extends Box {
       let str = ''
       d.forEach((r, i) => {
         const colSize = self.options.columnWidth[i],
-              strip   = stripAnsi(r.toString()),
+              strip   = clearAnsi(r.toString()),
               ansiLen = r.toString().length - strip.length
         let spaceLength = colSize - strip.length + self.options.columnSpacing
         r = r.toString().substring(0, colSize + ansiLen) //compensate for ansi len

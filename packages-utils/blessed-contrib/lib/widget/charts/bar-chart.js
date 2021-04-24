@@ -1,7 +1,8 @@
 import { round }  from '@aryth/math'
 import { ATTACH } from '@pres/enum-events'
+import { maxBy }  from '@vect/vector-indicator'
 import { Canvas } from '../canvas'
-import {max} from '@vect/vector-indicator'
+
 export class Bars {
   constructor(options) {
     this.width = options.barWidth ?? options.width ?? 6
@@ -38,8 +39,7 @@ export class BarChart extends Canvas {
     const labels = series.labels ?? series.x ?? series.titles
     const values = series.values ?? series.y ?? series.data
     const { bars, context } = this
-    let max = max( values)
-    max = Math.max(max, this.options.maxHeight)
+    const max = Math.max(maxBy(values), this.options.maxHeight)
     const { barY, labelY, valueY } = this
     for (
       let i = 0, x = this.options.xOffset;
