@@ -223,12 +223,8 @@ form.on('submit', function (data) {
     })
   })
 })
-form.on('reset', function () {
-  msg.display('Form cleared!', function () {})
-})
+form.on('reset', () => msg.display('Form cleared!', function () {}))
 // Key bindings
-screen.key('q', function () {
-  this.destroy()
-})
+screen.key('q', function () { this.destroy() })
 // Render everything!
 screen.render()

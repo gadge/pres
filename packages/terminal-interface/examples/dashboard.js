@@ -2,13 +2,13 @@ import { flop, rand, ziggurat } from '@aryth/rand'
 import { ATTACH, RESIZE }       from '@pres/enum-events'
 import { last }                 from '@vect/vector-index'
 import * as contrib             from '../index'
-import blessed                  from '../lib/vendor/blessed'
+import { TerminalInterface }                  from '../src/terminal-interface'
 
 const normDist = ziggurat(0, 5, 0)
 
-const screen = blessed.screen()
+const screen = TerminalInterface.screen()
 //create layout and widgets
-const grid = contrib.grid({ rows: 12, cols: 12, screen: screen })
+const grid = TerminalInterface.grid({ rows: 12, cols: 12, screen: screen })
 
 /**
  * DonutChart Options
@@ -16,14 +16,14 @@ const grid = contrib.grid({ rows: 12, cols: 12, screen: screen })
  self.options.arcWidth = options.arcWidth || 4; //width of the donutChart
  self.options.yPadding = options.yPadding || 2; //padding from the top
  */
-const donut = grid.set(8, 8, 4, 2, contrib.donutChart, {
+const donut = grid.set(8, 8, 4, 2, TerminalInterface.donutChart, {
   label: 'Percent DonutChart',
   radius: 16,
   arcWidth: 4,
   yPadding: 2,
   data: [ { label: 'Storage', percent: 87 } ]
 })
-// var latencyLine = grid.set(8, 8, 4, 2, contrib.lineChart,
+// var latencyLine = grid.set(8, 8, 4, 2, TerminalInterface.lineChart,
 //   { style: 
 //     { line: 'yellow'
 //     , text: 'green'
@@ -31,21 +31,21 @@ const donut = grid.set(8, 8, 4, 2, contrib.donutChart, {
 //   , xLabelPadding: 3
 //   , xPadding: 5
 //   , label: 'Network Latency (sec)'})
-const gauge = grid.set(8, 10, 2, 2, contrib.gauge, { label: 'Storage', percent: [ 80, 20 ] })
-const gauge_two = grid.set(2, 9, 2, 3, contrib.gauge, { label: 'Deployment Progress', percent: 80 })
-const sparkline = grid.set(10, 10, 2, 2, contrib.sparkline, {
+const gauge = grid.set(8, 10, 2, 2, TerminalInterface.gauge, { label: 'Storage', percent: [ 80, 20 ] })
+const gauge_two = grid.set(2, 9, 2, 3, TerminalInterface.gauge, { label: 'Deployment Progress', percent: 80 })
+const sparkline = grid.set(10, 10, 2, 2, TerminalInterface.sparkline, {
   label: 'Throughput (bits/sec)',
   tags: true,
   style: { fg: 'blue', titleFg: 'white' }
 })
-const bar = grid.set(4, 6, 4, 3, contrib.barChart, {
+const bar = grid.set(4, 6, 4, 3, TerminalInterface.barChart, {
   label: 'Server Utilization (%)',
   barWidth: 4,
   barSpacing: 6,
   xOffset: 2,
   maxHeight: 9
 })
-const table = grid.set(4, 9, 4, 3, contrib.table, {
+const dataTable = grid.set(4, 9, 4, 3, TerminalInterface.dataTable, {
   keys: true,
   fg: 'green',
   label: 'Active Processes',
@@ -68,7 +68,7 @@ const table = grid.set(4, 9, 4, 3, contrib.table, {
 //coloring
   options.color = options.color || 'white';
 */
-const lcdLineOne = grid.set(0, 9, 2, 3, contrib.lcd, {
+const lcdLineOne = grid.set(0, 9, 2, 3, TerminalInterface.lcd, {
   label: 'LCD Test',
   segmentWidth: 0.06,
   segmentInterval: 0.11,
@@ -78,7 +78,7 @@ const lcdLineOne = grid.set(0, 9, 2, 3, contrib.lcd, {
   elementSpacing: 4,
   elementPadding: 2
 })
-const errorsLine = grid.set(0, 6, 4, 3, contrib.lineChart, {
+const errorsLine = grid.set(0, 6, 4, 3, TerminalInterface.lineChart, {
   style: {
     line: 'red',
     text: 'white',
@@ -88,15 +88,15 @@ const errorsLine = grid.set(0, 6, 4, 3, contrib.lineChart, {
   maxY: 60,
   showLegend: true
 })
-const transactionsLine = grid.set(0, 0, 6, 6, contrib.lineChart, {
+const transactionsLine = grid.set(0, 0, 6, 6, TerminalInterface.lineChart, {
   showNthLabel: 5,
   maxY: 100,
   label: 'Total Transactions',
   showLegend: true,
   legend: { width: 10 }
 })
-const map = grid.set(6, 0, 6, 6, contrib.map, { label: 'Servers Location' })
-const log = grid.set(8, 6, 4, 2, contrib.log, {
+const map = grid.set(6, 0, 6, 6, TerminalInterface.map, { label: 'Servers Location' })
+const logList = grid.set(8, 6, 4, 2, TerminalInterface.logList, {
   fg: 'green',
   selectedFg: 'green',
   label: 'Server Log'
@@ -125,7 +125,7 @@ function fillBar() {
 }
 fillBar()
 setInterval(fillBar, 2000)
-//set dummy data for table
+//set dummy data for dataTable
 function generateTable() {
   const data = []
   for (let i = 0; i < 30; i++) {
@@ -135,17 +135,17 @@ function generateTable() {
     row.push(rand(100))
     data.push(row)
   }
-  table.setData({ headers: [ 'Process', 'Cpu (%)', 'Memory' ], data: data })
+  dataTable.setData({ headers: [ 'Process', 'Cpu (%)', 'Memory' ], data: data })
 }
 generateTable()
-table.focus()
+dataTable.focus()
 setInterval(generateTable, 3000)
-//set log dummy data
+//set logList dummy data
 setInterval(function () {
   const rnd = rand(2)
-  if (rnd === 0) log.log('starting process ' + flop(commands))
-  else if (rnd === 1) log.log('terminating server ' + flop(servers))
-  else if (rnd === 2) log.log('avg. wait time ' + Math.random().toFixed(2))
+  if (rnd === 0) logList.log('starting process ' + flop(commands))
+  else if (rnd === 1) logList.log('terminating server ' + flop(servers))
+  else if (rnd === 2) logList.log('avg. wait time ' + Math.random().toFixed(2))
   screen.render()
 }, 500)
 //set spark dummy data
@@ -243,7 +243,7 @@ function setLineData(seriesCollection, line) {
 }
 
 screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
-// fixes https://github.com/yaronn/blessed-contrib/issues/10
+// fixes https://github.com/yaronn/TerminalInterface-contrib/issues/10
 
 screen.on(RESIZE, () => {
   donut.emit(ATTACH)
@@ -251,11 +251,11 @@ screen.on(RESIZE, () => {
   gauge_two.emit(ATTACH)
   sparkline.emit(ATTACH)
   bar.emit(ATTACH)
-  table.emit(ATTACH)
+  dataTable.emit(ATTACH)
   lcdLineOne.emit(ATTACH)
   errorsLine.emit(ATTACH)
   transactionsLine.emit(ATTACH)
   map.emit(ATTACH)
-  log.emit(ATTACH)
+  logList.emit(ATTACH)
 })
 screen.render()
