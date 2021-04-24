@@ -1,4 +1,5 @@
 export { BarChart }        from './src/bar-chart'
 export { LineChart }       from './src/line-chart'
 export { StackedBarChart } from './src/stacked-bar-chart'
-
+export { DonutChart }      from './src/donut-chart'
+export { Sparkline }       from './src/sparkline'

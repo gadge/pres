@@ -1,27 +1,29 @@
-import { BarChart, LineChart, StackedBarChart } from '@pres/components-chart'
+import { BarChart, DonutChart, LineChart, Sparkline, StackedBarChart } from '@pres/components-chart'
 import {
   Box, Element, Layout, Line, Log, Node, Screen, ScrollableBox, ScrollableText, Terminal,
-}                                               from '@pres/components-core'
+}                                                                      from '@pres/components-core'
 import {
   List, Listbar, ListTable, Table,
-}                                               from '@pres/components-data'
+}                                                                      from '@pres/components-data'
 import {
   Button, Checkbox, FileManager, Form, Input, Prompt, Question, RadioButton, RadioSet, Textarea, Textbox,
-}                                               from '@pres/components-form'
+}                                                                      from '@pres/components-form'
 import {
   Loading, Message, ProgressBar,
-}                                               from '@pres/components-inform'
+}                                                                      from '@pres/components-inform'
 import {
   Canvas, Carousel, Grid
-}                                               from '@pres/components-layout'
-import { Text, }                                from '@pres/components-text'
+}                                                                      from '@pres/components-layout'
+import { Text, }                                                       from '@pres/components-text'
 import {
   ANSIImage, BigText, Image, OverlayImage, PNG, Video,
-}                                               from '@pres/components-visual'
+}                                                                      from '@pres/components-visual'
 
 export const barChart = options => new BarChart(options)
 export const lineChart = options => new LineChart(options)
 export const stackedBarChart = options => new StackedBarChart(options)
+export const donutChart = options => new DonutChart(options)
+export const sparkline = options => new Sparkline(options)
 
 export const box = (options) => new Box(options)
 export const element = (options) => new Element(options)
