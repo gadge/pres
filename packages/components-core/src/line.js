@@ -27,5 +27,6 @@ export class Line extends Box {
     this.style.border = this.style
     this.type = 'line'
   }
+  static build(options) { return new Line(options) }
 }
 

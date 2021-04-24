@@ -141,6 +141,7 @@ export class ScrollableBox extends Box {
     this.on(PARSED_CONTENT, () => self._recalculateIndex())
     self._recalculateIndex()
   }
+  static build(options) { return new ScrollableBox(options) }
   // XXX Potentially use this in place of scrollable checks elsewhere.
   get reallyScrollable() {
     if (this.shrink) return this.scrollable

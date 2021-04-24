@@ -3,7 +3,6 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 import { PRERENDER, RENDER, } from '@pres/enum-events'
 import { Element }            from '../core/element'
 
@@ -22,6 +21,7 @@ export class Layout extends Element {
     if (options.renderer) this.renderer = options.renderer
     this.type = 'layout'
   }
+  static build(options) { return new Layout(options) }
   isRendered(el) { return !el.lpos ? false : (el.lpos.xl - el.lpos.xi) > 0 && (el.lpos.yl - el.lpos.yi) > 0 }
   getLast(i) {
     while (this.children[--i]) {

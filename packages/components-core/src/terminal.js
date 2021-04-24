@@ -43,6 +43,7 @@ export class Terminal extends Box {
     this.bootstrap()
     this.type = 'terminal'
   }
+  static build(options) { return new Terminal(options) }
   bootstrap() {
     const self = this
     const element = {

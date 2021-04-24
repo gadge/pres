@@ -142,6 +142,7 @@ export class Element extends Node {
     if (options.focused) this.focus()
     this.constructScrollable?.call(this, options)
   }
+  static build(options) { return new Element(options) }
   get focused() { return this.screen.focused === this}
   get visible() {
     let el = this

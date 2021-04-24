@@ -35,6 +35,7 @@ export class Log extends ScrollableText {
       }
     })
   }
+  static build(options) { return new Log(options) }
   add() {
     const args = Array.prototype.slice.call(arguments)
     if (typeof args[0] === OBJ) {

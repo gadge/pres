@@ -19,4 +19,5 @@ export class ScrollableText extends ScrollableBox {
     super(options)
     // if (!(this instanceof Node)) return new ScrollableText(options)
   }
+  static build(options) { return new ScrollableBox(options) }
 }

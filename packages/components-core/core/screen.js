@@ -146,6 +146,7 @@ export class Screen extends Node {
     this.enter()
     this.postEnter()
   }
+  static build(options) { return new Screen(options) }
   get title() { return this.program.title }
   set title(title) { return this.program.title = title }
   get terminal() { return this.program.terminal }
