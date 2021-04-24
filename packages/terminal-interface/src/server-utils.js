@@ -1,13 +1,12 @@
-import url          from 'url'
-import * as contrib from '../index'
-import { blessed }      from '@pres/terminal-interface'
+import url                   from 'url'
+import { TerminalInterface } from './terminal-interface'
 
 function OutputBuffer(options) {
   this.isTTY = true
   this.columns = options.cols
   this.rows = options.rows
   this.write = function (s) {
-    s = s.replace('\x1b8', '') //not clear from where in blessed this code comes from. It forces the terminal to clear and loose existing content.
+    s = s.replace('\x1b8', '') //not clear from where in TerminalInterface this code comes from. It forces the terminal to clear and loose existing content.
     options.res.write(s)
   }
   this.on = function () {}
@@ -39,13 +38,13 @@ function createScreen(req, res) {
     return null
   }
   res.writeHead(200, { 'Content-Type': 'text/plain' })
-  const output = new contrib.OutputBuffer({ res: res, cols: cols, rows: rows })
-  const input = new contrib.InputBuffer() //required to run under forever since it replaces stdin to non-tty
-  const program = blessed.program({ output: output, input: input })
+  const output = new OutputBuffer({ res: res, cols: cols, rows: rows })
+  const input = new InputBuffer() //required to run under forever since it replaces stdin to non-tty
+  const program = TerminalInterface.program({ output: output, input: input })
   if (query.terminal) program.terminal = query.terminal
   if (query.isOSX) program.isOSXTerm = query.isOSX
   if (query.isiTerm2) program.isiTerm2 = query.isiTerm2
-  return blessed.screen({ program: program })
+  return TerminalInterface.screen({ program: program })
 }
 export {
   createScreen,

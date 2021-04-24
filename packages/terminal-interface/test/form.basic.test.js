@@ -1,11 +1,12 @@
-import { TerminalInterface as blessed } from '../index'
+import { TerminalInterface } from '../src/terminal-interface'
 
-const screen = blessed.screen({
+const screen = TerminalInterface.screen({
   dump: __dirname + '/logs/form.log',
   warnings: true
 })
 
-var form = blessed.form({
+
+var form = TerminalInterface.form({
   parent: screen,
   mouse: true,
   keys: true,
@@ -49,7 +50,7 @@ form.key('u', function () {
   screen.render()
 })
 
-var set = blessed.radioset({
+var set = TerminalInterface.radioSet({
   parent: form,
   left: 1,
   top: 1,
@@ -61,7 +62,7 @@ var set = blessed.radioset({
   }
 })
 
-var radio1 = blessed.radiobutton({
+var radio1 = TerminalInterface.radioButton({
   parent: set,
   mouse: true,
   keys: true,
@@ -76,7 +77,7 @@ var radio1 = blessed.radiobutton({
   content: 'radio1'
 })
 
-var radio2 = blessed.radiobutton({
+var radio2 = TerminalInterface.radioButton({
   parent: set,
   mouse: true,
   keys: true,
@@ -91,7 +92,7 @@ var radio2 = blessed.radiobutton({
   content: 'radio2'
 })
 
-var text = blessed.textbox({
+var text = TerminalInterface.textbox({
   parent: form,
   mouse: true,
   keys: true,
@@ -109,7 +110,7 @@ text.on('focus', function () {
   text.readInput()
 })
 
-var check = blessed.checkbox({
+var check = TerminalInterface.checkbox({
   parent: form,
   mouse: true,
   keys: true,
@@ -124,7 +125,7 @@ var check = blessed.checkbox({
   content: 'check'
 })
 
-var check2 = blessed.checkbox({
+var check2 = TerminalInterface.checkbox({
   parent: form,
   mouse: true,
   keys: true,
@@ -139,7 +140,7 @@ var check2 = blessed.checkbox({
   content: 'foooooooo2'
 })
 
-var submit = blessed.button({
+var submit = TerminalInterface.button({
   parent: form,
   mouse: true,
   keys: true,
@@ -160,11 +161,9 @@ var submit = blessed.button({
   }
 })
 
-submit.on('press', function () {
-  form.submit()
-})
+submit.on('press', () => form.submit())
 
-var box1 = blessed.box({
+var box1 = TerminalInterface.box({
   parent: form,
   left: 1,
   top: 10,
@@ -176,7 +175,7 @@ var box1 = blessed.box({
   }
 })
 
-var box2 = blessed.box({
+var box2 = TerminalInterface.box({
   parent: box1,
   left: 1,
   top: 2,
@@ -188,7 +187,7 @@ var box2 = blessed.box({
   }
 })
 
-var box3 = blessed.box({
+var box3 = TerminalInterface.box({
   parent: box2,
   left: 1,
   top: 2,
@@ -200,7 +199,7 @@ var box3 = blessed.box({
   }
 })
 
-var box4 = blessed.box({
+var box4 = TerminalInterface.box({
   parent: box3,
   left: 1,
   top: 2,
@@ -212,7 +211,7 @@ var box4 = blessed.box({
   }
 })
 
-var output = blessed.scrollabletext({
+var output = TerminalInterface.scrollableText({
   parent: form,
   mouse: true,
   keys: true,
@@ -226,7 +225,7 @@ var output = blessed.scrollabletext({
   content: 'foobar'
 })
 
-var bottom = blessed.line({
+var bottom = TerminalInterface.line({
   parent: form,
   type: 'line',
   orientation: 'horizontal',
@@ -238,9 +237,7 @@ var bottom = blessed.line({
   }
 })
 
-screen.key('q', function () {
-  return screen.destroy()
-})
+screen.key('q', () => screen.destroy())
 
 form.focus()
 
