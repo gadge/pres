@@ -4,7 +4,7 @@ import * as contrib from '../index'
 const screen = blessed.screen()
 function page1(screen) {
   const grid = contrib.grid({ rows: 4, cols: 4, screen: screen })
-  const line = grid.set(1, 0, 2, 2, contrib.line, {
+  const line = grid.set(1, 0, 2, 2, contrib.lineChart, {
     style:
       {
         line: "yellow",
@@ -27,7 +27,7 @@ function page1(screen) {
   line.setData([ lineData ])
 }
 function page2(screen) {
-  const line = contrib.line(
+  const line = contrib.lineChart(
     {
       width: 80,
       height: 30,

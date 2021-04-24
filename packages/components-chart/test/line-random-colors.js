@@ -1,9 +1,7 @@
-import { blessed }  from '@pres/terminal-interface'
-import * as contrib from '../../../packages-blessed/blessed-contrib/index'
-
+import * as components from '@pres/components'
 const randomColor = () => [ Math.random() * 255, Math.random() * 255, Math.random() * 255 ]
-const screen = blessed.screen(),
-      line   = contrib.line(
+const screen = components.screen(),
+      line   = components.lineChart(
         {
           width: 80,
           height: 30,

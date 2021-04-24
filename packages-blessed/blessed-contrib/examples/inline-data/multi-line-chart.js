@@ -1,7 +1,7 @@
 var blessed = require('blessed'),
     contrib = require('../../index'),
     screen  = blessed.screen(),
-    line    = contrib.line(
+    line    = contrib.lineChart(
       {
         width: 80,
         height: 30,

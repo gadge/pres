@@ -129,7 +129,7 @@ See below for a complete list of widgets.
    line.setData([series1, series2])
 `````
 
-**Examples:** [simple line chart](../../packages/components-chart/test/line-fraction.js), [multiple lines](./examples/multi-line-chart.js)
+**Examples:** [simple line chart](../../packages/components-chart/test/line-fraction.js), [multiple lines](../../packages/components-chart/test/multi-line-chart.js)
 , [256 colors](../../packages/components-chart/test/line-random-colors.js)
 
 ### Bar Chart

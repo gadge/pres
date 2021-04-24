@@ -1,8 +1,7 @@
-import { blessed }  from '@pres/terminal-interface'
-import * as contrib from '../../../packages-blessed/blessed-contrib/index'
+import * as components from '@pres/components'
 
-const screen = blessed.screen(),
-      bar    = contrib.stackedBarChart(
+const screen = components.screen(),
+      bar    = components.stackedBarChart(
         {
           label: 'Server Utilization (%)',
           barWidth: 4,

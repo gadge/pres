@@ -1,8 +1,6 @@
-import { blessed }  from '@pres/terminal-interface'
-import * as contrib from '../../../packages-blessed/blessed-contrib/index'
-
-const screen = blessed.screen(),
-      line   = contrib.line(
+import * as components from '@pres/components'
+const screen = components.screen(),
+      line   = components.lineChart(
         {
           width: 80,
           height: 30,

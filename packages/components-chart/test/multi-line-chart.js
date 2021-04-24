@@ -1,9 +1,7 @@
-import { blessed }  from '@pres/terminal-interface'
-import * as contrib from '../index'
+import * as components from '@pres/components'
 
-
-const screen = blessed.screen(),
-      line   = contrib.line(
+const screen    = components.screen(),
+      lineChart = components.lineChart(
         {
           width: 80,
           height: 30,
@@ -15,7 +13,7 @@ const screen = blessed.screen(),
           legend: { width: 12 },
           showNthLabel: true
         }),
-      data   = [ {
+      data      = [ {
         title: 'us-east',
         x: [ 't1', 't2', 't3', 't4' ],
         y: [ 5, 1, 7, 5 ],
@@ -33,7 +31,7 @@ const screen = blessed.screen(),
         y: [ 22, 7, 12, 1 ],
         style: { line: 'blue' }
       } ]
-screen.append(line) //must append before setting data
-line.setData(data)
+screen.append(lineChart) //must append before setting data
+lineChart.setData(data)
 screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
 screen.render()

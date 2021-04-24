@@ -19,7 +19,7 @@ const donut = grid.set(8, 8, 4, 2, contrib.donut, {
   yPadding: 2,
   data: [ { label: 'Storage', percent: 87 } ]
 })
-// var latencyLine = grid.set(8, 8, 4, 2, contrib.line, 
+// var latencyLine = grid.set(8, 8, 4, 2, contrib.lineChart,
 //   { style: 
 //     { line: "yellow"
 //     , text: "green"
@@ -74,7 +74,7 @@ const lcdLineOne = grid.set(0, 9, 2, 3, contrib.lcd, {
     elementPadding: 2
   }
 )
-const errorsLine = grid.set(0, 6, 4, 3, contrib.line, {
+const errorsLine = grid.set(0, 6, 4, 3, contrib.lineChart, {
   style:
     {
       line: randomColor(),
@@ -85,7 +85,7 @@ const errorsLine = grid.set(0, 6, 4, 3, contrib.line, {
   maxY: 60,
   showLegend: true
 })
-const transactionsLine = grid.set(0, 0, 6, 6, contrib.line, {
+const transactionsLine = grid.set(0, 0, 6, 6, contrib.lineChart, {
   showNthLabel: 5,
   maxY: 100,
   label: 'Total Transactions',
