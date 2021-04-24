@@ -38,6 +38,7 @@ export class Image extends Box {
     throw new Error('`type` must either be `ansi` or `overlay`.')
     this.type = 'image'
   }
+  static build(options) { return new Image(options) }
 }
 
 /**

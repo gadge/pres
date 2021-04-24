@@ -23,6 +23,7 @@ export class BigText extends Box {
     if (this.style.bold) this.font = this.fontBold
     this.type = 'bigtext'
   }
+  static build(options) { return new BigText(options) }
   loadFont(filename) {
     const self = this
     let data,

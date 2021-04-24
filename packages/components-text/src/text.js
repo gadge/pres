@@ -19,5 +19,6 @@ export class Text extends Element {
     // if (!(this instanceof Node)) return new Text(options)
     this.type = 'text'
   }
+  static build(options) { return new Text(options) }
 }
 

@@ -89,6 +89,7 @@ export class Video extends Box {
     })
     this.type = 'video'
   }
+  static build(options) { return new Video(options) }
   exists(program) {
     try {
       return !!+cp.execSync('type '

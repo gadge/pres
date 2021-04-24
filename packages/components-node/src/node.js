@@ -19,6 +19,7 @@ export class Node extends EventEmitter {
     // if (!(this instanceof Node)) return new Node(options)
     if (!options.lazy) this.setup(options)
   }
+  static build(options) { return new Node(options) }
   setup(options) {
     // console.log(`>>> called setup on Node by ${this.type}`)
     const self = this

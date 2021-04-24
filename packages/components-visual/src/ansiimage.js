@@ -36,6 +36,7 @@ export class ANSIImage extends Box {
     })
     this.type = 'ansiimage'
   }
+  static build(options) { return new ANSIImage(options) }
   static curl(url) {
     try {
       return cp.execFileSync('curl',

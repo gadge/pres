@@ -95,6 +95,7 @@ export class OverlayImage extends Box {
     }
     this.type = 'overlayimage'
   }
+  static build(options) { return new OverlayImage(options) }
   spawn(file, args, opt, callback) {
     const spawn = cp.spawn
     let ps
