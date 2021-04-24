@@ -2,7 +2,7 @@ import { blessed }  from '@pres/terminal-interface'
 import * as contrib from '../index'
 
 const screen = blessed.screen(),
-      bar    = contrib.stackedBar(
+      bar    = contrib.stackedBarChart(
         {
           label: 'Server Utilization (%)',
           barWidth: 4,

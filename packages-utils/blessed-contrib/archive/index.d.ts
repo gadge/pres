@@ -104,9 +104,9 @@ declare namespace BlessedContrib {
 
             // set<K extends keyof Factories>(row: number, col: number, rowSpan: number, colSpan: number,
             //     obj: T, opts?: P<T> ): P<T>
-            // set<A =BarOptions, T=BarElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: A, opts?: O): T //typeof bar
+            // set<A =BarOptions, T=BarElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: A, opts?: O): T //typeof barchart
             // set<A =Line, T=LineElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: A, opts?: O): T //typeof line
-            // set<A =StackedBar, T=StackedBarElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: A, opts?: O): T //typeof stackedBar
+            // set<A =StackedBar, T=StackedBarElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: A, opts?: O): T //typeof stackedBarChart
             // set<A =Canvas, T=CanvasElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: A, opts?: O): T //typeof canvas
             // set<A =Tree, T=TreeElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: A, opts?: O): T //typeof tree
             // set<A =Table, T=TableElement>(row: number, col: number, rowSpan: number, colSpan: number, obj: A, opts?: O): T //typeof table

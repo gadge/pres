@@ -3,7 +3,7 @@ import { ATTACH } from '@pres/enum-events'
 import * as utils from '../../utils.js'
 import { Canvas } from '../canvas'
 
-export class StackedBar extends Canvas {
+export class StackedBarChart extends Canvas {
   constructor(options = {}) {
     // if (!(this instanceof Node)) { return new StackedBar(options) }
     super(options, require('ansi-term'))
@@ -16,7 +16,7 @@ export class StackedBar extends Canvas {
     this.options.legend = this.options.legend || {}
     this.options.showLegend = this.options.showLegend !== false
     this.on(ATTACH, () => { if (self.options.data) self.setData(self.options.data) })
-    this.type = 'bar'
+    this.type = 'bar-chart'
   }
   calcSize() { this._w = this.width - 2, this._h = this.height }
   getSummedBars(bars) {

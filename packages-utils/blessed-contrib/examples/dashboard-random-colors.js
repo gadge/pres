@@ -34,7 +34,7 @@ const sparkline = grid.set(10, 10, 2, 2, contrib.sparkline, {
   tags: true,
   style: { fg: 'blue', titleFg: 'white' }
 })
-const bar = grid.set(4, 6, 4, 3, contrib.bar, {
+const bar = grid.set(4, 6, 4, 3, contrib.barChart, {
   label: 'Server Utilization (%)',
   barWidth: 4,
   barSpacing: 6,
@@ -114,7 +114,7 @@ setInterval(function () {
   gauge_percent_two++
   if (gauge_percent_two >= 100) gauge_percent_two = 0
 }, 200)
-//set dummy data on bar chart
+//set dummy data on barchart chart
 function fillBar() {
   const arr = []
   for (let i = 0; i < servers.length; i++) {

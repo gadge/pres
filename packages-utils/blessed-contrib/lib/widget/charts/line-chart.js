@@ -6,7 +6,7 @@ import { Canvas }               from '../canvas'
 import { Labels, Padds, Ticks } from './spareparts'
 
 
-export class Line extends Canvas {
+export class LineChart extends Canvas {
   constructor(options = {}) {
     if (nullish(options.labelStep)) options.labelStep = options.showNthLabel ?? 1
     const style = options.style ?? (options.style = {})
@@ -24,7 +24,7 @@ export class Line extends Canvas {
     this.padds = padds
     this.ticks = ticks
     this.labels = labels
-    this.type = 'line'
+    this.type = 'line-chart'
   }
   get originY() { return this._h - this.padds.y }
   get originX() { return this._w - this.padds.x }

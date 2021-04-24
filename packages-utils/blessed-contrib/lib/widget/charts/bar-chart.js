@@ -1,9 +1,9 @@
 import { ATTACH } from '@pres/enum-events'
 import { Canvas } from '../canvas'
 
-export class Bar extends Canvas {
+export class BarChart extends Canvas {
   constructor(options = {}) {
-    // if (!(this instanceof Node)) return new Bar(options)
+    // if (!(this instanceof Node)) return new BarChart(options)
     super(options, require('ansi-term'))
     const self = this
     this.options.barWidth = this.options.barWidth || 6
@@ -12,7 +12,7 @@ export class Bar extends Canvas {
     this.options.xOffset = this.options.xOffset ?? 5
     this.options.showText = this.options.showText !== false
     this.on(ATTACH, () => { if (self.options.data) { self.setData(self.options.data) } })
-    this.type = 'bar'
+    this.type = 'bar-chart'
   }
   calcSize() { this._w = this.width - 2, this._h = this.height}
   setData(bar) {
