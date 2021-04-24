@@ -61,11 +61,11 @@ export class Question extends Box {
     this.setContent(' ' + text)
     this.onScreenEvent(KEYPRESS, press = function (ch, key) {
       if (key.name === MOUSE) return
-      if (key.name !== ENTER
-        && key.name !== ESCAPE
-        && key.name !== 'q'
-        && key.name !== 'y'
-        && key.name !== 'n') {
+      if (key.name !== ENTER &&
+        key.name !== ESCAPE &&
+        key.name !== 'q' &&
+        key.name !== 'y' &&
+        key.name !== 'n') {
         return
       }
       done(null, key.name === ENTER || key.name === 'y')

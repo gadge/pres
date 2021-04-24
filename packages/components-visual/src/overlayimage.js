@@ -27,9 +27,9 @@ export class OverlayImage extends Box {
         OverlayImage.hasW3MDisplay = true
       }
       else if (options.search !== false) {
-        const file = helpers.findFile('/usr', 'w3mimgdisplay')
-          || helpers.findFile('/lib', 'w3mimgdisplay')
-          || helpers.findFile('/bin', 'w3mimgdisplay')
+        const file = helpers.findFile('/usr', 'w3mimgdisplay') ||
+          helpers.findFile('/lib', 'w3mimgdisplay') ||
+          helpers.findFile('/bin', 'w3mimgdisplay')
         if (file) {
           OverlayImage.hasW3MDisplay = true
           OverlayImage.w3mdisplay = file
@@ -161,13 +161,13 @@ export class OverlayImage extends Box {
               if (!callback) return
               return callback(err)
             }
-            if (self._lastSize
-              && ratio.tw === self._lastSize.tw
-              && ratio.th === self._lastSize.th
-              && size.width === self._lastSize.width
-              && size.height === self._lastSize.height
-              && self.aleft === self._lastSize.aleft
-              && self.atop === self._lastSize.atop) {
+            if (self._lastSize &&
+              ratio.tw === self._lastSize.tw &&
+              ratio.th === self._lastSize.th &&
+              size.width === self._lastSize.width &&
+              size.height === self._lastSize.height &&
+              self.aleft === self._lastSize.aleft &&
+              self.atop === self._lastSize.atop) {
               reset()
               if (!callback) return
               return callback(null, success)

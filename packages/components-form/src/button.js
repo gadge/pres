@@ -17,14 +17,8 @@ export class Button extends Input {
     super(options)
     const self = this
     // if (!(this instanceof Node)) return new Button(options)
-    this.on(KEYPRESS, function (ch, key) {
-      if (key.name === ENTER || key.name === SPACE) return self.press()
-    })
-    if (this.options.mouse) {
-      this.on(CLICK, function () {
-        return self.press()
-      })
-    }
+    this.on(KEYPRESS, (ch, key) => { if (key.name === ENTER || key.name === SPACE) return self.press() })
+    if (this.options.mouse) { this.on(CLICK, () => self.press()) }
     this.type = 'button'
   }
   press() {

@@ -32,11 +32,11 @@ export class ListTable extends List {
     options.style.selected = options.style.cell.selected
     options.style.item = options.style.cell
     const __border = options.border
-    if (__border
-      && __border.top === false
-      && __border.bottom === false
-      && __border.left === false
-      && __border.right === false) {
+    if (__border &&
+      __border.top === false &&
+      __border.bottom === false &&
+      __border.left === false &&
+      __border.right === false) {
       delete options.border
     }
     super(options)

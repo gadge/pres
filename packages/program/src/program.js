@@ -27,79 +27,6 @@ const slice = Array.prototype.slice
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
 export class Program extends EventEmitter {
-  constructor(options = {}) {
-    super()
-    console.log(">>> [Program constructed]")
-    const self = this
-    // if (!(this instanceof Program)) return new Program(options)
-    Program.configSingleton(this)
-    // EventEmitter.call(this)
-    if (!options || options.__proto__ !== Object.prototype) {
-      const [ input, output ] = arguments
-      options = { input, output }
-    }
-    this.options = options
-    this.input = options.input || process.stdin
-    this.output = options.output || process.stdout
-    options.log = options.log || options.dump
-    if (options.log) {
-      this._logger = fs.createWriteStream(options.log)
-      if (options.dump) this.setupDump()
-    }
-    this.zero = options.zero !== false
-    this.useBuffer = options.buffer
-    this.x = 0
-    this.y = 0
-    this.savedX = 0
-    this.savedY = 0
-    this.cols = this.output.columns || 1
-    this.rows = this.output.rows || 1
-    this.scrollTop = 0
-    this.scrollBottom = this.rows - 1
-    this._terminal = options.terminal ||
-      options.term ||
-      process.env.TERM ||
-      (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
-    this._terminal = this._terminal.toLowerCase()
-    // OSX
-    this.isOSXTerm = process.env.TERM_PROGRAM === 'Apple_Terminal'
-    this.isiTerm2 =
-      process.env.TERM_PROGRAM === 'iTerm.app' ||
-      !!process.env.ITERM_SESSION_ID
-    // VTE
-    // NOTE: lxterminal does not provide an env variable to check for.
-    // NOTE: gnome-terminal and sakura use a later version of VTE
-    // which provides VTE_VERSION as well as supports SGR events.
-    this.isXFCE = /xfce/i.test(process.env.COLORTERM)
-    this.isTerminator = !!process.env.TERMINATOR_UUID
-    this.isLXDE = false
-    this.isVTE =
-      !!process.env.VTE_VERSION ||
-      this.isXFCE ||
-      this.isTerminator ||
-      this.isLXDE
-    // xterm and rxvt - not accurate
-    this.isRxvt = /rxvt/i.test(process.env.COLORTERM)
-    this.isXterm = false
-    this.tmux = !!process.env.TMUX
-    this.tmuxVersion = (function () {
-      if (!self.tmux) return 2
-      try {
-        const version = cp.execFileSync('tmux', [ '-V' ], { encoding: 'utf8' })
-        return +/^tmux ([\d.]+)/i.exec(version.trim().split('\n')[0])[1]
-      } catch (e) {
-        return 2
-      }
-    })()
-    this._buf = ''
-    this._flush = this.flush.bind(this)
-    if (options.tput !== false) this.setupTput()
-    this.listen()
-  }
-  static build(options) {
-    console.log('>>> [about to create pres program]')
-    return new Program(options)
-  }
   static global = null
   static total = 0
   static instances = []
@@ -138,6 +65,9 @@ export class Program extends EventEmitter {
   cuu = this.cursorUp
   // left click: ^[[M 3<^[[M#3<
   up = this.cursorUp
+  // Cursor Down Ps Times (default = 1) (CUD).
+  cud = this.cursorDown
+  down = this.cursorDown
   // XTerm mouse events
   // http://invisible-island.net/xterm/ctlseqs/ctlseqs.html#Mouse%20Tracking
   // To better understand these
@@ -155,9 +85,6 @@ export class Program extends EventEmitter {
   // motion example of a left click:
   // ^[[M 3<^[[M@4<^[[M@5<^[[M@6<^[[M@7<^[[M#7<
   // mouseup, mousedown, mousewheel
-  // Cursor Down Ps Times (default = 1) (CUD).
-  cud = this.cursorDown
-  down = this.cursorDown
   // Cursor Forward Ps Times (default = 1) (CUF).
   cuf = this.cursorForward
   right = this.cursorForward
@@ -173,10 +100,10 @@ export class Program extends EventEmitter {
   ed = this.eraseInDisplay
   //     Ps = 2  -> Selective Erase All.
   el = this.eraseInLine
-  // Example: `DCS tmux; ESC Pt ST`
   //     Ps.
   sgr = this.charAttributes
   attr = this.charAttributes
+  // Example: `DCS tmux; ESC Pt ST`
   fg = this.setForeground
   bg = this.setBackground
   //   CSI ? 5 0  n  No Locator, if not.
@@ -205,14 +132,14 @@ export class Program extends EventEmitter {
   hpa = this.charPosAbsolute
   // reuse CSI Ps C ?
   hpr = this.HPositionRelative
-  // Specific to iTerm2, but I think it's really cool.
-  // Example:
-  //  if (!screen.copyToClipboard(text)) {
-  //    execClipboardProgram(text);
   //   vim responds with ^[[?0c or ^[[?1c after the terminal's response (?)
   da = this.sendDeviceAttributes
   // NOTE: Can't find in terminfo, no idea why it has multiple params.
   vpa = this.linePosAbsolute
+  // Specific to iTerm2, but I think it's really cool.
+  // Example:
+  //  if (!screen.copyToClipboard(text)) {
+  //    execClipboardProgram(text);
   // reuse CSI Ps B ?
   vpr = this.VPositionRelative
   //   [1,1]) (HVP).
@@ -285,6 +212,10 @@ export class Program extends EventEmitter {
   decrara = this.reverseAttrInRectangle
   //     Ps = 5 , 6 , 7 , or 8  -> high.
   decswbv = this.setWarningBellVolume
+  //     Ps = 0 , 5 , 6 , 7 , or 8  -> high.
+  decsmbv = this.setMarginBellVolume
+  // NOTE: xterm doesn't enable this code by default.
+  deccra = this.copyRectangle
   // ESC N
   // Single Shift Select of G2 Character Set
   // ( SS2 is 0x8e). This affects next character only.
@@ -300,33 +231,29 @@ export class Program extends EventEmitter {
   // ESC }
   // Invoke the G2 Character Set as GR (LS2R).
   // ESC ~
-  //     Ps = 0 , 5 , 6 , 7 , or 8  -> high.
-  decsmbv = this.setMarginBellVolume
-  // NOTE: xterm doesn't enable this code by default.
-  deccra = this.copyRectangle
-  // OSC Ps ; Pt ST
-  // OSC Ps ; Pt BEL
   //   cels any prevous rectangle definition.
   decefr = this.enableFilterRectangle
-  // OSC Ps ; Pt ST
-  // OSC Ps ; Pt BEL
   //     Pn = 0  <- STP flags.
   decreqtparm = this.requestParameters
   // OSC Ps ; Pt ST
   // OSC Ps ; Pt BEL
   //     Ps = 2  -> rectangle (exact).
   decsace = this.selectChangeExtent
+  // OSC Ps ; Pt ST
+  // OSC Ps ; Pt BEL
   // NOTE: xterm doesn't enable this code by default.
   decfra = this.fillRectangle
+  // OSC Ps ; Pt ST
+  // OSC Ps ; Pt BEL
   //     Pu = 2  <- character cells.
   decelr = this.enableLocatorReporting
   // NOTE: xterm doesn't enable this code by default.
   decera = this.eraseRectangle
-  // CSI Ps B
   //     Ps = 4  -> do not report button up transitions.
   decsle = this.setLocatorEvents
   //     Pt; Pl; Pb; Pr denotes the rectangle.
   decsera = this.selectiveEraseRectangle
+  // CSI Ps B
   //   ted.
   decrqlp = this.requestLocatorPosition
   // CSI Ps C
@@ -336,14 +263,87 @@ export class Program extends EventEmitter {
   decic = this.insertColumns
   // NOTE: xterm doesn't enable this code by default.
   decdc = this.deleteColumns
-  // CSI Ps D
 // Cursor Preceding Line Ps Times (default = 1) (CNL).
   write = this._owrite
+  constructor(options = {}) {
+    super()
+    console.log(">>> [Program constructed]")
+    const self = this
+    // if (!(this instanceof Program)) return new Program(options)
+    Program.configSingleton(this)
+    // EventEmitter.call(this)
+    if (!options || options.__proto__ !== Object.prototype) {
+      const [ input, output ] = arguments
+      options = { input, output }
+    }
+    this.options = options
+    this.input = options.input || process.stdin
+    this.output = options.output || process.stdout
+    options.log = options.log || options.dump
+    if (options.log) {
+      this._logger = fs.createWriteStream(options.log)
+      if (options.dump) this.setupDump()
+    }
+    this.zero = options.zero !== false
+    this.useBuffer = options.buffer
+    this.x = 0
+    this.y = 0
+    this.savedX = 0
+    this.savedY = 0
+    this.cols = this.output.columns || 1
+    this.rows = this.output.rows || 1
+    this.scrollTop = 0
+    this.scrollBottom = this.rows - 1
+    this._terminal = options.terminal ||
+      options.term ||
+      process.env.TERM ||
+      (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
+    this._terminal = this._terminal.toLowerCase()
+    // OSX
+    this.isOSXTerm = process.env.TERM_PROGRAM === 'Apple_Terminal'
+    this.isiTerm2 =
+      process.env.TERM_PROGRAM === 'iTerm.app' ||
+      !!process.env.ITERM_SESSION_ID
+    // VTE
+    // NOTE: lxterminal does not provide an env variable to check for.
+    // NOTE: gnome-terminal and sakura use a later version of VTE
+    // which provides VTE_VERSION as well as supports SGR events.
+    this.isXFCE = /xfce/i.test(process.env.COLORTERM)
+    this.isTerminator = !!process.env.TERMINATOR_UUID
+    this.isLXDE = false
+    this.isVTE =
+      !!process.env.VTE_VERSION ||
+      this.isXFCE ||
+      this.isTerminator ||
+      this.isLXDE
+    // xterm and rxvt - not accurate
+    this.isRxvt = /rxvt/i.test(process.env.COLORTERM)
+    this.isXterm = false
+    this.tmux = !!process.env.TMUX
+    this.tmuxVersion = (function () {
+      if (!self.tmux) return 2
+      try {
+        const version = cp.execFileSync('tmux', [ '-V' ], { encoding: 'utf8' })
+        return +/^tmux ([\d.]+)/i.exec(version.trim().split('\n')[0])[1]
+      } catch (e) {
+        return 2
+      }
+    })()
+    this._buf = ''
+    this._flush = this.flush.bind(this)
+    if (options.tput !== false) this.setupTput()
+    this.listen()
+  }
+  // CSI Ps D
   get terminal() { return this._terminal }
   set terminal(terminal) { return this.setTerminal(terminal), this.terminal }
 // CSI Ps ; Ps H
   get title() { return this._title }
   set title(title) { return this.setTitle(title), this._title }
+  static build(options) {
+    console.log('>>> [about to create pres program]')
+    return new Program(options)
+  }
 // CSI Ps J  Erase in Display (ED).
 //     Ps = 0  -> Erase Below (default).
 //     Ps = 1  -> Erase Above.
@@ -806,14 +806,14 @@ export class Program extends EventEmitter {
     const bx = s.charCodeAt(4)
     const by = s.charCodeAt(5)
     if (
-      buf[0] === 0x1b && buf[1] === 0x5b && buf[2] === 0x4d
-      && (
-        this.isVTE
-        || bx >= 65533 || by >= 65533
-        || (bx > 0x00 && bx < 0x20)
-        || (by > 0x00 && by < 0x20)
-        || (buf[4] > 223 && buf[4] < 248 && buf.length === 6)
-        || (buf[5] > 223 && buf[5] < 248 && buf.length === 6)
+      buf[0] === 0x1b && buf[1] === 0x5b && buf[2] === 0x4d &&
+      (
+        this.isVTE ||
+        bx >= 65533 || by >= 65533 ||
+        (bx > 0x00 && bx < 0x20) ||
+        (by > 0x00 && by < 0x20) ||
+        (buf[4] > 223 && buf[4] < 248 && buf.length === 6) ||
+        (buf[5] > 223 && buf[5] < 248 && buf.length === 6)
       )
     ) {
       b = buf[3]
@@ -881,8 +881,8 @@ export class Program extends EventEmitter {
       // urxvt: 35, _, _, _
       // if (key.action === MOUSEDOWN && key.button === UNKNOWN) {
       if (
-        b === 35 || b === 39 || b === 51 || b === 43
-        || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))
+        b === 35 || b === 39 || b === 51 || b === 43 ||
+        (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))
       ) {
         delete key.button
         key.action = MOUSEMOVE
@@ -945,8 +945,8 @@ export class Program extends EventEmitter {
       // urxvt: 35, _, _, _
       // gnome: 32, 36, 48, 40
       // if (key.action === MOUSEDOWN && key.button === UNKNOWN) {
-      if (b === 35 || b === 39 || b === 51 || b === 43
-        || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
+      if (b === 35 || b === 39 || b === 51 || b === 43 ||
+        (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
         delete key.button
         key.action = MOUSEMOVE
       }
@@ -996,8 +996,8 @@ export class Program extends EventEmitter {
       // xterm: 35, _, 51, _
       // gnome: 32, 36, 48, 40
       // if (key.action === MOUSEDOWN && key.button === UNKNOWN) {
-      if (b === 35 || b === 39 || b === 51 || b === 43
-        || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
+      if (b === 35 || b === 39 || b === 51 || b === 43 ||
+        (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
         delete key.button
         key.action = MOUSEMOVE
       }
@@ -1195,10 +1195,10 @@ export class Program extends EventEmitter {
         else if (parts[0] === 6) {
           out.term = 'vt102'
         }
-        else if (parts[0] === 60
-          && parts[1] === 1 && parts[2] === 2
-          && parts[3] === 6 && parts[4] === 8
-          && parts[5] === 9 && parts[6] === 15) {
+        else if (parts[0] === 60 &&
+          parts[1] === 1 && parts[2] === 2 &&
+          parts[3] === 6 && parts[4] === 8 &&
+          parts[5] === 9 && parts[6] === 15) {
           out.term = 'vt220'
         }
         else {
@@ -1332,11 +1332,11 @@ export class Program extends EventEmitter {
         this.emit('response ' + out.event, out)
         return
       }
-      if (parts[1]
-        && parts[2] === '27'
-        && parts[3] === '1'
-        && parts[4] === '0'
-        && parts[5] === '0') {
+      if (parts[1] &&
+        parts[2] === '27' &&
+        parts[3] === '1' &&
+        parts[4] === '0' &&
+        parts[5] === '0') {
         out.type = 'keyboard-status'
         out.status = 'OK'
         // LEGACY
@@ -3133,9 +3133,9 @@ export class Program extends EventEmitter {
         gpmMouse: true
       }, true)
     }
-    if (this.term('xterm')
-      || this.term('screen')
-      || (this.tput && this.tput.strings.key_mouse)) {
+    if (this.term('xterm') ||
+      this.term('screen') ||
+      (this.tput && this.tput.strings.key_mouse)) {
       return this.setMouse({
         vt200Mouse: true,
         utfMouse: true,

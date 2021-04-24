@@ -60,16 +60,16 @@ function Program(options) {
   this.rows = this.output.rows || 1
   this.scrollTop = 0
   this.scrollBottom = this.rows - 1
-  this._terminal = options.terminal
-    || options.term
-    || process.env.TERM
-    || (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
+  this._terminal = options.terminal ||
+    options.term ||
+    process.env.TERM ||
+    (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
   this._terminal = this._terminal.toLowerCase()
 
   // OSX
   this.isOSXTerm = process.env.TERM_PROGRAM === 'Apple_Terminal'
-  this.isiTerm2 = process.env.TERM_PROGRAM === 'iTerm.app'
-    || !!process.env.ITERM_SESSION_ID
+  this.isiTerm2 = process.env.TERM_PROGRAM === 'iTerm.app' ||
+    !!process.env.ITERM_SESSION_ID
 
   // VTE
   // NOTE: lxterminal does not provide an env variable to check for.
@@ -78,10 +78,10 @@ function Program(options) {
   this.isXFCE = /xfce/i.test(process.env.COLORTERM)
   this.isTerminator = !!process.env.TERMINATOR_UUID
   this.isLXDE = false
-  this.isVTE = !!process.env.VTE_VERSION
-    || this.isXFCE
-    || this.isTerminator
-    || this.isLXDE
+  this.isVTE = !!process.env.VTE_VERSION ||
+    this.isXFCE ||
+    this.isTerminator ||
+    this.isLXDE
 
   // xterm and rxvt - not accurate
   this.isRxvt = /rxvt/i.test(process.env.COLORTERM)
@@ -365,8 +365,8 @@ Program.prototype._listenInput = function () {
   this.input.on(KEYPRESS, this.input._keypressHandler = function (ch, key) {
     key = key || { ch: ch }
 
-    if (key.name === 'undefined'
-      && (key.code === '[M' || key.code === '[I' || key.code === '[O')) {
+    if (key.name === 'undefined' &&
+      (key.code === '[M' || key.code === '[I' || key.code === '[O')) {
       // A mouse sequence. The `keys` module doesn't understand these.
       return
     }
@@ -594,13 +594,13 @@ Program.prototype._bindMouse = function (s, buf) {
   // technically.
   const bx = s.charCodeAt(4)
   const by = s.charCodeAt(5)
-  if (buf[0] === 0x1b && buf[1] === 0x5b && buf[2] === 0x4d
-    && (this.isVTE
-      || bx >= 65533 || by >= 65533
-      || (bx > 0x00 && bx < 0x20)
-      || (by > 0x00 && by < 0x20)
-      || (buf[4] > 223 && buf[4] < 248 && buf.length === 6)
-      || (buf[5] > 223 && buf[5] < 248 && buf.length === 6))) {
+  if (buf[0] === 0x1b && buf[1] === 0x5b && buf[2] === 0x4d &&
+    (this.isVTE ||
+      bx >= 65533 || by >= 65533 ||
+      (bx > 0x00 && bx < 0x20) ||
+      (by > 0x00 && by < 0x20) ||
+      (buf[4] > 223 && buf[4] < 248 && buf.length === 6) ||
+      (buf[5] > 223 && buf[5] < 248 && buf.length === 6))) {
     b = buf[3]
     x = buf[4]
     y = buf[5]
@@ -675,8 +675,8 @@ Program.prototype._bindMouse = function (s, buf) {
     // xterm: 35, _, 51, _
     // urxvt: 35, _, _, _
     // if (key.action === MOUSEDOWN && key.button === 'unknown') {
-    if (b === 35 || b === 39 || b === 51 || b === 43
-      || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
+    if (b === 35 || b === 39 || b === 51 || b === 43 ||
+      (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
       delete key.button
       key.action = MOUSEMOVE
     }
@@ -750,8 +750,8 @@ Program.prototype._bindMouse = function (s, buf) {
     // urxvt: 35, _, _, _
     // gnome: 32, 36, 48, 40
     // if (key.action === MOUSEDOWN && key.button === 'unknown') {
-    if (b === 35 || b === 39 || b === 51 || b === 43
-      || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
+    if (b === 35 || b === 39 || b === 51 || b === 43 ||
+      (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
       delete key.button
       key.action = MOUSEMOVE
     }
@@ -809,8 +809,8 @@ Program.prototype._bindMouse = function (s, buf) {
     // xterm: 35, _, 51, _
     // gnome: 32, 36, 48, 40
     // if (key.action === MOUSEDOWN && key.button === 'unknown') {
-    if (b === 35 || b === 39 || b === 51 || b === 43
-      || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
+    if (b === 35 || b === 39 || b === 51 || b === 43 ||
+      (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
       delete key.button
       key.action = MOUSEMOVE
     }
@@ -1053,10 +1053,10 @@ Program.prototype._bindResponse = function (s) {
       else if (parts[0] === 6) {
         out.term = 'vt102'
       }
-      else if (parts[0] === 60
-        && parts[1] === 1 && parts[2] === 2
-        && parts[3] === 6 && parts[4] === 8
-        && parts[5] === 9 && parts[6] === 15) {
+      else if (parts[0] === 60 &&
+        parts[1] === 1 && parts[2] === 2 &&
+        parts[3] === 6 && parts[4] === 8 &&
+        parts[5] === 9 && parts[6] === 15) {
         out.term = 'vt220'
       }
       else {
@@ -1203,11 +1203,11 @@ Program.prototype._bindResponse = function (s) {
       return
     }
 
-    if (parts[1]
-      && parts[2] === '27'
-      && parts[3] === '1'
-      && parts[4] === '0'
-      && parts[5] === '0') {
+    if (parts[1] &&
+      parts[2] === '27' &&
+      parts[3] === '1' &&
+      parts[4] === '0' &&
+      parts[5] === '0') {
       out.type = 'keyboard-status'
       out.status = 'OK'
 
@@ -3380,9 +3380,9 @@ Program.prototype.enableMouse = function () {
     }, true)
   }
 
-  if (this.term('xterm')
-    || this.term('screen')
-    || (this.tput && this.tput.strings.key_mouse)) {
+  if (this.term('xterm') ||
+    this.term('screen') ||
+    (this.tput && this.tput.strings.key_mouse)) {
     return this.setMouse({
       vt200Mouse: true,
       utfMouse: true,

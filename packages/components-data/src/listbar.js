@@ -33,26 +33,26 @@ export class Listbar extends Box {
     if (options.commands || options.items) this.setItems(options.commands || options.items)
     if (options.keys) {
       this.on(KEYPRESS, function (ch, key) {
-        if (key.name === LEFT
-          || (options.vi && key.name === 'h')
-          || (key.shift && key.name === TAB)) {
+        if (key.name === LEFT ||
+          (options.vi && key.name === 'h') ||
+          (key.shift && key.name === TAB)) {
           self.moveLeft()
           self.screen.render()
           // Stop propagation if we're in a form.
           if (key.name === TAB) return false
           return void 0
         }
-        if (key.name === RIGHT
-          || (options.vi && key.name === 'l')
-          || key.name === TAB) {
+        if (key.name === RIGHT ||
+          (options.vi && key.name === 'l') ||
+          key.name === TAB) {
           self.moveRight()
           self.screen.render()
           // Stop propagation if we're in a form.
           if (key.name === TAB) return false
           return void 0
         }
-        if (key.name === ENTER
-          || (options.vi && key.name === 'k' && !key.shift)) {
+        if (key.name === ENTER ||
+          (options.vi && key.name === 'k' && !key.shift)) {
           self.emit(ACTION, self.items[self.selected], self.selected)
           self.emit(SELECT, self.items[self.selected], self.selected)
           const item = self.items[self.selected]

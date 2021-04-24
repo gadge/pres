@@ -455,11 +455,11 @@ function emitKeys(stream, s) {
   })
 }
 function isMouse(s) {
-  return /\x1b\[M/.test(s)
-    || /\x1b\[M([\x00\u0020-\uffff]{3})/.test(s)
-    || /\x1b\[(\d+;\d+;\d+)M/.test(s)
-    || /\x1b\[<(\d+;\d+;\d+)([mM])/.test(s)
-    || /\x1b\[<(\d+;\d+;\d+;\d+)&w/.test(s)
-    || /\x1b\[24([0135])~\[(\d+),(\d+)\]\r/.test(s)
-    || /\x1b\[(O|I)/.test(s)
+  return /\x1b\[M/.test(s) ||
+    /\x1b\[M([\x00\u0020-\uffff]{3})/.test(s) ||
+    /\x1b\[(\d+;\d+;\d+)M/.test(s) ||
+    /\x1b\[<(\d+;\d+;\d+)([mM])/.test(s) ||
+    /\x1b\[<(\d+;\d+;\d+;\d+)&w/.test(s) ||
+    /\x1b\[24([0135])~\[(\d+),(\d+)\]\r/.test(s) ||
+    /\x1b\[(O|I)/.test(s)
 }

@@ -14,7 +14,7 @@ export class BarChart extends Canvas {
     this.on(ATTACH, () => { if (self.options.data) { self.setData(self.options.data) } })
     this.type = 'bar-chart'
   }
-  calcSize() { this._w = this.width - 2, this._h = this.height}
+  calcSize() { this._w = this.width - 2, this._h = this.height }
   setData(bar) {
     if (!this.context) throw 'error: canvas context does not exist. setData() for bar charts must be called after the chart has been added to the screen via screen.append()'
     this.clear()

@@ -60,14 +60,14 @@ export class Message extends Box {
         self.onScreenEvent(KEYPRESS, function fn(ch, key) {
           if (key.name === MOUSE) return
           if (self.scrollable) {
-            if ((key.name === 'up' || (self.options.vi && key.name === 'k'))
-              || (key.name === 'down' || (self.options.vi && key.name === 'j'))
-              || (self.options.vi && key.name === 'u' && key.ctrl)
-              || (self.options.vi && key.name === 'd' && key.ctrl)
-              || (self.options.vi && key.name === 'b' && key.ctrl)
-              || (self.options.vi && key.name === 'f' && key.ctrl)
-              || (self.options.vi && key.name === 'g' && !key.shift)
-              || (self.options.vi && key.name === 'g' && key.shift)) {
+            if ((key.name === 'up' || (self.options.vi && key.name === 'k')) ||
+              (key.name === 'down' || (self.options.vi && key.name === 'j')) ||
+              (self.options.vi && key.name === 'u' && key.ctrl) ||
+              (self.options.vi && key.name === 'd' && key.ctrl) ||
+              (self.options.vi && key.name === 'b' && key.ctrl) ||
+              (self.options.vi && key.name === 'f' && key.ctrl) ||
+              (self.options.vi && key.name === 'g' && !key.shift) ||
+              (self.options.vi && key.name === 'g' && key.shift)) {
               return
             }
           }

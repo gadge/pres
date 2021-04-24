@@ -35,10 +35,10 @@ function Tput(options) {
   options = options || {}
   if (typeof options === 'string') options = { terminal: options }
   this.options = options
-  this.terminal = options.terminal
-    || options.term
-    || process.env.TERM
-    || (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
+  this.terminal = options.terminal ||
+    options.term ||
+    process.env.TERM ||
+    (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
   this.terminal = this.terminal.toLowerCase()
   this.debug = options.debug
   this.padding = options.padding
@@ -1051,9 +1051,9 @@ Tput.prototype._compile = function (info, key, str) {
       els = val.indexOf('%e')
       end = val.indexOf('%;')
       if (end === -1) end = Infinity
-      if (then !== -1 && then < end
-        && (fi === -1 || then < fi)
-        && (els === -1 || then < els)) {
+      if (then !== -1 && then < end &&
+        (fi === -1 || then < fi) &&
+        (els === -1 || then < els)) {
         stmt('} else if (')
       }
       else {
@@ -1759,10 +1759,10 @@ Tput.prototype._captoinfo = function (cap, s, parameterized) {
             out += '%+%;'
             break
           case 'a':
-            if ((s[i] === '=' || s[i] === '+' || s[i] === '-'
-              || s[i] === '*' || s[i] === '/')
-              && (s[i + 1] === 'p' || s[i + 1] === 'c')
-              && s[i + 2] !== '\0' && s[i + 2]) {
+            if ((s[i] === '=' || s[i] === '+' || s[i] === '-' ||
+              s[i] === '*' || s[i] === '/') &&
+              (s[i + 1] === 'p' || s[i + 1] === 'c') &&
+              s[i + 2] !== '\0' && s[i + 2]) {
               let l
               l = 2
               if (s[i] !== '=') {
@@ -2091,15 +2091,15 @@ Tput.prototype.detectBrokenACS = function (info) {
   }
 
   // screen termcap is bugged?
-  if (this.termcap
-    && info.name.indexOf('screen') === 0
-    && process.env.TERMCAP
-    && ~process.env.TERMCAP.indexOf('screen')
-    && ~process.env.TERMCAP.indexOf('hhII00')) {
-    if (~info.strings.enter_alt_charset_mode.indexOf('\x0e')
-      || ~info.strings.enter_alt_charset_mode.indexOf('\x0f')
-      || ~info.strings.set_attributes.indexOf('\x0e')
-      || ~info.strings.set_attributes.indexOf('\x0f')) {
+  if (this.termcap &&
+    info.name.indexOf('screen') === 0 &&
+    process.env.TERMCAP &&
+    ~process.env.TERMCAP.indexOf('screen') &&
+    ~process.env.TERMCAP.indexOf('hhII00')) {
+    if (~info.strings.enter_alt_charset_mode.indexOf('\x0e') ||
+      ~info.strings.enter_alt_charset_mode.indexOf('\x0f') ||
+      ~info.strings.set_attributes.indexOf('\x0e') ||
+      ~info.strings.set_attributes.indexOf('\x0f')) {
       return true
     }
   }
@@ -2112,9 +2112,9 @@ Tput.prototype.detectBrokenACS = function (info) {
 // See: ~/ncurses/ncurses/tinfo/lib_acs.c
 Tput.prototype.detectPCRomSet = function (info) {
   const s = info.strings
-  if (s.enter_pc_charset_mode && s.enter_alt_charset_mode
-    && s.enter_pc_charset_mode === s.enter_alt_charset_mode
-    && s.exit_pc_charset_mode === s.exit_alt_charset_mode) {
+  if (s.enter_pc_charset_mode && s.enter_alt_charset_mode &&
+    s.enter_pc_charset_mode === s.enter_alt_charset_mode &&
+    s.exit_pc_charset_mode === s.exit_alt_charset_mode) {
     return true
   }
   return false

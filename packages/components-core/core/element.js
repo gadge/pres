@@ -430,9 +430,9 @@ export class Element extends Node {
   parseContent(noTags) {
     if (this.detached) return false
     const width = this.width - this.iwidth
-    if (this._clines == null
-      || this._clines.width !== width
-      || this._clines.content !== this.content) {
+    if (this._clines == null ||
+      this._clines.width !== width ||
+      this._clines.content !== this.content) {
       let content = this.content
 
       content = content
@@ -741,17 +741,17 @@ export class Element extends Node {
                   // Break _past_ combining chars.
                   while (j > i - 10 && j > 0) {
                     j--
-                    if (line[j] === ' '
-                      || line[j] === '\x03'
-                      || (unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03')
-                      || unicode.isCombining(line, j)) {
+                    if (line[j] === ' ' ||
+                      line[j] === '\x03' ||
+                      (unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03') ||
+                      unicode.isCombining(line, j)) {
                       break
                     }
                   }
-                  if (line[j] === ' '
-                    || line[j] === '\x03'
-                    || (unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03')
-                    || unicode.isCombining(line, j)) {
+                  if (line[j] === ' ' ||
+                    line[j] === '\x03' ||
+                    (unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03') ||
+                    unicode.isCombining(line, j)) {
                     i = j + 1
                   }
                 }
@@ -1049,8 +1049,8 @@ export class Element extends Node {
       }
       width = parent.width - (this.position.right || 0) - left
       if (this.screen.autoPadding) {
-        if ((this.position.left != null || this.position.right == null)
-          && this.position.left !== 'center') {
+        if ((this.position.left != null || this.position.right == null) &&
+          this.position.left !== 'center') {
           width -= this.parent.ileft
         }
         width -= this.parent.iright
@@ -1090,9 +1090,9 @@ export class Element extends Node {
       }
       height = parent.height - (this.position.bottom || 0) - top
       if (this.screen.autoPadding) {
-        if ((this.position.top != null
-          || this.position.bottom == null)
-          && this.position.top !== 'center') {
+        if ((this.position.top != null ||
+          this.position.bottom == null) &&
+          this.position.top !== 'center') {
           height -= this.parent.itop
         }
         height -= this.parent.ibottom
@@ -1119,9 +1119,9 @@ export class Element extends Node {
       return this.screen.cols - this._getWidth(get) - this._getRight(get)
     }
     if (this.screen.autoPadding) {
-      if ((this.position.left != null
-        || this.position.right == null)
-        && this.position.left !== 'center') {
+      if ((this.position.left != null ||
+        this.position.right == null) &&
+        this.position.left !== 'center') {
         left += this.parent.ileft
       }
     }
@@ -1162,9 +1162,9 @@ export class Element extends Node {
       return this.screen.rows - this._getHeight(get) - this._getBottom(get)
     }
     if (this.screen.autoPadding) {
-      if ((this.position.top != null
-        || this.position.bottom == null)
-        && this.position.top !== 'center') {
+      if ((this.position.top != null ||
+        this.position.bottom == null) &&
+        this.position.top !== 'center') {
         top += this.parent.itop
       }
     }
@@ -1245,9 +1245,9 @@ export class Element extends Node {
       this.lpos = _lpos
       //this.shrink = true;
     }
-    if (this.position.width == null
-      && (this.position.left == null
-        || this.position.right == null)) {
+    if (this.position.width == null &&
+      (this.position.left == null ||
+        this.position.right == null)) {
       if (this.position.left == null && this.position.right != null) {
         xi = xl - (mxl - mxi)
         if (!this.screen.autoPadding) {
@@ -1277,10 +1277,10 @@ export class Element extends Node {
         }
       }
     }
-    if (this.position.height == null
-      && (this.position.top == null
-        || this.position.bottom == null)
-      && (!this.scrollable || this._isList)) {
+    if (this.position.height == null &&
+      (this.position.top == null ||
+        this.position.bottom == null) &&
+      (!this.scrollable || this._isList)) {
       // NOTE: Lists get special treatment if they are shrunken - assume they
       // want all list items showing. This is one case we can calculate the
       // height based on items/boxes.
@@ -1312,9 +1312,9 @@ export class Element extends Node {
   _getShrinkContent(xi, xl, yi, yl) {
     const h = this._clines.length,
           w = this._clines.mwidth || 1
-    if (this.position.width == null
-      && (this.position.left == null
-        || this.position.right == null)) {
+    if (this.position.width == null &&
+      (this.position.left == null ||
+        this.position.right == null)) {
       if (this.position.left == null && this.position.right != null) {
         xi = xl - w - this.iwidth
       }
@@ -1322,10 +1322,10 @@ export class Element extends Node {
         xl = xi + w + this.iwidth
       }
     }
-    if (this.position.height == null
-      && (this.position.top == null
-        || this.position.bottom == null)
-      && (!this.scrollable || this._isList)) {
+    if (this.position.height == null &&
+      (this.position.top == null ||
+        this.position.bottom == null) &&
+      (!this.scrollable || this._isList)) {
       if (this.position.top == null && this.position.bottom != null) {
         yi = yl - h - this.iheight
       }
@@ -1662,9 +1662,9 @@ export class Element extends Node {
             ci += c[0].length - 1
             attr = this.screen.attrCode(c[0], attr, dattr)
             // Ignore foreground changes for selected items.
-            if (this.parent._isList && this.parent.interactive
-              && this.parent.items[this.parent.selected] === this
-              && this.parent.options.invertSelected !== false) {
+            if (this.parent._isList && this.parent.interactive &&
+              this.parent.items[this.parent.selected] === this &&
+              this.parent.options.invertSelected !== false) {
               attr = (attr & ~(0x1ff << 9)) | (dattr & (0x1ff << 9))
             }
             ch = content[ci] || bch

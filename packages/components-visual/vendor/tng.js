@@ -73,8 +73,8 @@ PNG.prototype.parseRaw = function (buf) {
     , copysafe
     , pos
   this._debug(this.file)
-  if (buf.readUInt32BE(0) !== 0x89504e47
-    || buf.readUInt32BE(4) !== 0x0d0a1a0a) {
+  if (buf.readUInt32BE(0) !== 0x89504e47 ||
+    buf.readUInt32BE(4) !== 0x0d0a1a0a) {
     throw new Error('bad header')
   }
   i += 8

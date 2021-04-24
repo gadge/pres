@@ -100,8 +100,8 @@ export class List extends Box {
           self.screen.render()
           return
         }
-        if (key.name === ENTER
-          || (options.vi && key.name === 'l' && !key.shift)) {
+        if (key.name === ENTER ||
+          (options.vi && key.name === 'l' && !key.shift)) {
           self.enterSelected()
           return
         }
@@ -167,8 +167,8 @@ export class List extends Box {
             return
           }
           return self.options.search(function (err, value) {
-            if (typeof err === 'string' || typeof err === 'function'
-              || typeof err === 'number' || (err && err.test)) {
+            if (typeof err === 'string' || typeof err === 'function' ||
+              typeof err === 'number' || (err && err.test)) {
               value = err
               err = null
             }

@@ -36,10 +36,10 @@ export class Terminal extends Box {
     this.style = this.style || {}
     this.style.bg = this.style.bg || 'default'
     this.style.fg = this.style.fg || 'default'
-    this.termName = options.terminal
-      || options.term
-      || process.env.TERM
-      || 'xterm'
+    this.termName = options.terminal ||
+      options.term ||
+      process.env.TERM ||
+      'xterm'
     this.bootstrap()
     this.type = 'terminal'
   }
@@ -109,13 +109,13 @@ export class Terminal extends Box {
       if (data.y < self.atop + self.itop) return
       if (data.x > self.aleft - self.ileft + self.width) return
       if (data.y > self.atop - self.itop + self.height) return
-      if (self.term.x10Mouse
-        || self.term.vt200Mouse
-        || self.term.normalMouse
-        || self.term.mouseEvents
-        || self.term.utfMouse
-        || self.term.sgrMouse
-        || self.term.urxvtMouse) {
+      if (self.term.x10Mouse ||
+        self.term.vt200Mouse ||
+        self.term.normalMouse ||
+        self.term.mouseEvents ||
+        self.term.utfMouse ||
+        self.term.sgrMouse ||
+        self.term.urxvtMouse) {
 
       }
       else {
@@ -202,11 +202,11 @@ export class Terminal extends Box {
     for (let y = Math.max(yi, 0); y < yl; y++) {
       const line = this.screen.lines[y]
       if (!line || !this.term.lines[scrollback + y - yi]) break
-      if (y === yi + this.term.y
-        && this.term.cursorState
-        && this.screen.focused === this
-        && (this.term.ydisp === this.term.ybase || this.term.selectMode)
-        && !this.term.cursorHidden) {
+      if (y === yi + this.term.y &&
+        this.term.cursorState &&
+        this.screen.focused === this &&
+        (this.term.ydisp === this.term.ybase || this.term.selectMode) &&
+        !this.term.cursorHidden) {
         cursor = xi + this.term.x
       }
       else { cursor = -1 }
@@ -247,13 +247,13 @@ export class Terminal extends Box {
       }
       else { s = s.toString('utf-8') }
     }
-    return (buf[0] === 0x1b && buf[1] === 0x5b && buf[2] === 0x4d)
-      || /^\x1b\[M([\x00\u0020-\uffff]{3})/.test(s)
-      || /^\x1b\[(\d+;\d+;\d+)M/.test(s)
-      || /^\x1b\[<(\d+;\d+;\d+)([mM])/.test(s)
-      || /^\x1b\[<(\d+;\d+;\d+;\d+)&w/.test(s)
-      || /^\x1b\[24([0135])~\[(\d+),(\d+)\]\r/.test(s)
-      || /^\x1b\[(O|I)/.test(s)
+    return (buf[0] === 0x1b && buf[1] === 0x5b && buf[2] === 0x4d) ||
+      /^\x1b\[M([\x00\u0020-\uffff]{3})/.test(s) ||
+      /^\x1b\[(\d+;\d+;\d+)M/.test(s) ||
+      /^\x1b\[<(\d+;\d+;\d+)([mM])/.test(s) ||
+      /^\x1b\[<(\d+;\d+;\d+;\d+)&w/.test(s) ||
+      /^\x1b\[24([0135])~\[(\d+),(\d+)\]\r/.test(s) ||
+      /^\x1b\[(O|I)/.test(s)
   }
   scrollTo(offset) {
     this.term.ydisp = offset

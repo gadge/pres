@@ -326,8 +326,8 @@ export class Screen extends Node {
         //     && !el.hasAncestor(self.focused)) continue;
         pos = el.lpos
         if (!pos) continue
-        if (data.x >= pos.xi && data.x < pos.xl
-          && data.y >= pos.yi && data.y < pos.yl) {
+        if (data.x >= pos.xi && data.x < pos.xl &&
+          data.y >= pos.yi && data.y < pos.yl) {
           el.emit(MOUSE, data)
           if (data.action === MOUSEDOWN) { self.mouseDown = el }
           else if (data.action === MOUSEUP) {
@@ -349,9 +349,9 @@ export class Screen extends Node {
       }
       // Just mouseover?
       if (
-        (data.action === MOUSEMOVE || data.action === MOUSEDOWN || data.action === MOUSEUP)
-        && self.hover
-        && !set
+        (data.action === MOUSEMOVE || data.action === MOUSEDOWN || data.action === MOUSEUP) &&
+        self.hover &&
+        !set
       ) {
         self.hover.emit(MOUSEOUT, data)
         self.hover = null
@@ -761,11 +761,11 @@ export class Screen extends Node {
         data = line[x][0]
         ch = line[x][1]
         // Render the artificial cursor.
-        if (this.cursor.artificial
-          && !this.cursor._hidden
-          && this.cursor._state
-          && x === this.program.x
-          && y === this.program.y) {
+        if (this.cursor.artificial &&
+          !this.cursor._hidden &&
+          this.cursor._state &&
+          x === this.program.x &&
+          y === this.program.y) {
           const cattr = this._cursorAttr(this.cursor, data)
           if (cattr.ch) ch = cattr.ch
           data = cattr.attr
@@ -773,11 +773,11 @@ export class Screen extends Node {
         // Take advantage of xterm's back_color_erase feature by using a
         // lookahead. Stop spitting out so many damn spaces. NOTE: Is checking
         // the bg for non BCE terminals worth the overhead?
-        if (this.options.useBCE
-          && ch === ' '
-          && (this.tput.bools.back_color_erase
-            || (data & 0x1ff) === (this.dattr & 0x1ff))
-          && ((data >> 18) & 8) === ((this.dattr >> 18) & 8)) {
+        if (this.options.useBCE &&
+          ch === ' ' &&
+          (this.tput.bools.back_color_erase ||
+            (data & 0x1ff) === (this.dattr & 0x1ff)) &&
+          ((data >> 18) & 8) === ((this.dattr >> 18) & 8)) {
           clr = true
           neq = false
 
@@ -976,8 +976,8 @@ export class Screen extends Node {
         // supports UTF8, but I imagine it's unlikely.
         // Maybe remove !this.tput.unicode check, however,
         // this seems to be the way ncurses does it.
-        if (this.tput.strings.enter_alt_charset_mode
-          && !this.tput.brokenACS && (this.tput.acscr[ch] || acs)) {
+        if (this.tput.strings.enter_alt_charset_mode &&
+          !this.tput.brokenACS && (this.tput.acscr[ch] || acs)) {
           // Fun fact: even if this.tput.brokenACS wasn't checked here,
           // the linux console would still work fine because the acs
           // table would fail the check of: this.tput.acscr[ch]
@@ -1630,9 +1630,9 @@ export class Screen extends Node {
     }
     else if (typeof cursor.shape === OBJ && cursor.shape) {
       cattr = Element.prototype.sattr.call(cursor, cursor.shape)
-      if (cursor.shape.bold || cursor.shape.underline
-        || cursor.shape.blink || cursor.shape.inverse
-        || cursor.shape.invisible) {
+      if (cursor.shape.bold || cursor.shape.underline ||
+        cursor.shape.blink || cursor.shape.inverse ||
+        cursor.shape.invisible) {
         attr &= ~(0x1ff << 18)
         attr |= ((cattr >> 18) & 0x1ff) << 18
       }

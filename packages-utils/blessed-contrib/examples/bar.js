@@ -15,4 +15,5 @@ bar.setData({
   titles: [ 'bar1', 'bar2' ],
   data: [ 5, 10 ]
 })
+screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
 screen.render()

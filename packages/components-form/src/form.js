@@ -17,22 +17,25 @@ export class Form extends Box {
     if (options.keys) {
       this.screen._listenKeys(this)
       this.on(ELEMENT_KEYPRESS, function (el, ch, key) {
-        if ((key.name === TAB && !key.shift)
-          || (el.type === 'textbox' && options.autoNext && key.name === ENTER)
-          || key.name === DOWN
-          || (options.vi && key.name === 'j')) {
+        if (
+          (key.name === TAB && !key.shift) ||
+          (el.type === 'textbox' && options.autoNext && key.name === ENTER) ||
+          (key.name === DOWN) ||
+          (options.vi && key.name === 'j')
+        ) {
           if (el.type === 'textbox' || el.type === 'textarea') {
             if (key.name === 'j') return
-            // Workaround, since we can't stop the tab from  being added.
-            if (key.name === TAB) el.emit(KEYPRESS, null, { name: BACKSPACE })
+            if (key.name === TAB) el.emit(KEYPRESS, null, { name: BACKSPACE }) // Workaround, since we can't stop the tab from being added.
             el.emit(KEYPRESS, '\x1b', { name: ESCAPE })
           }
           self.focusNext()
           return
         }
-        if ((key.name === TAB && key.shift)
-          || key.name === UP
-          || (options.vi && key.name === 'k')) {
+        if (
+          (key.name === TAB && key.shift) ||
+          (key.name === UP) ||
+          (options.vi && key.name === 'k')
+        ) {
           if (el.type === 'textbox' || el.type === 'textarea') {
             if (key.name === 'k') return
             el.emit(KEYPRESS, '\x1b', { name: ESCAPE })
