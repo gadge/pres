@@ -7,6 +7,7 @@
 | getYPixel | coordY |
 | getXMax | labelWidth |
 | getYMax | tickMax |
+| options.showNthLabel | options.labelStep |
 | options.abbreviation | options.abbr |
 | options.wholeNumbersOnly | options.intOnly |
 | options.xLabelPadding | options.padding.labelX |
