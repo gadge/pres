@@ -4,6 +4,8 @@ import streams      from 'memory-streams'
 import MemoryStream from 'memorystream'
 import pictureTube  from 'picture-tuber'
 
+// added from blessed-contrib
+
 export class Picture extends Box {
   constructor(options) {
     // if (!(this instanceof Node)) { return new Picture(options) }

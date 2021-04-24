@@ -57,6 +57,7 @@ export {
   BigText, bigText,
   Image, image,
   OverlayImage, overlayImage,
+
   PNG, png,
   Video, video,
 } from '@pres/components-visual'

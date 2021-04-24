@@ -5,6 +5,10 @@ import * as colors     from '@pres/util-colors'
 import * as helpers    from '@pres/util-helpers'
 import * as unicode    from '@pres/util-unicode'
 
+/**
+ * @class TerminalInterface
+ * @static {function(object):Screen} TerminalInterface.screen
+ */
 export class TerminalInterface {
   static program = Program.build
   static build = Program.build
@@ -15,4 +19,5 @@ export class TerminalInterface {
 }
 Object.assign(TerminalInterface, components)
 
+// export const blessed = TerminalInterface
 export { TerminalInterface as blessed }
