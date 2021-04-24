@@ -13,6 +13,7 @@
     "lint:fix": "eslint lib --fix"
   },
   "dependencies": {
+    "@aryth/math": "^0.3.18",
     "@pres/components-core": "^0.0.18",
     "@pres/terminal-interface": "^0.0.18",
     "@ject/mixin": "^0.0.11",

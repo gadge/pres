@@ -18,8 +18,8 @@ export class LineChart extends Canvas {
     const ticks = options.ticks = Ticks.build(options.ticks ?? options)
     const labels = options.labels = Labels.build(options.labels ?? options)
     super(options)
-    console.log('>>> this.options\n')
-    console.log(this.options)
+    // console.log('>>> LineChart this.options')
+    // console.log(this.options)
     this.style = style
     this.padds = padds
     this.ticks = ticks
