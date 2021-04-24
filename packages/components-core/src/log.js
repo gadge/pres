@@ -4,10 +4,10 @@
  * https://github.com/chjj/blessed
  */
 
-import { _LOG, SET_CONTENT, } from '@pres/enum-events'
-import { OBJ }                from '@typen/enum-data-types'
-import util                   from 'util'
-import { ScrollableText }     from './scrollabletext'
+import { LOG as _LOG, SET_CONTENT, } from '@pres/enum-events'
+import { OBJ }                       from '@typen/enum-data-types'
+import util                          from 'util'
+import { ScrollableText }            from './scrollabletext'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 export class Log extends ScrollableText {
@@ -43,18 +43,14 @@ export class Log extends ScrollableText {
     const text = util.format.apply(util, args)
     this.emit(_LOG, text)
     const ret = this.pushLine(text)
-    if (this._clines.fake.length > this.scrollback) {
-      this.shiftLine(0, (this.scrollback / 3) | 0)
-    }
+    if (this._clines.fake.length > this.scrollback) this.shiftLine(0, (this.scrollback / 3) | 0)
     return ret
   }
   _scroll(offset, always) {
     if (offset === 0) return this._scroll(offset, always)
     this._userScrolled = true
     const ret = this._scroll(offset, always)
-    if (this.getScrollPerc() === 100) {
-      this._userScrolled = false
-    }
+    if (this.getScrollPerc() === 100) this._userScrolled = false
     return ret
   }
 }

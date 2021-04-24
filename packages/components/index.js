@@ -1,50 +1,28 @@
+export { BarChart, LineChart, StackedBarChart } from '@pres/components-chart'
 export {
-  Box,
-  Element,
-  Layout,
-  Line,
-  Log,
-  Node,
-  Screen,
-  ScrollableBox,
-  ScrollableText,
-  Terminal,
-}                from '@pres/components-core'
+  Box, Element, Layout, Line, Log, Node, Screen, ScrollableBox, ScrollableText, Terminal,
+}                                               from '@pres/components-core'
 export {
-  List,
-  Listbar,
-  ListTable,
-  Table,
-}                from '@pres/components-data'
+  List, Listbar, ListTable, Table,
+}                                               from '@pres/components-data'
 export {
-  Button,
-  Checkbox,
-  FileManager,
-  Form,
-  Input,
-  Prompt,
-  Question,
-  RadioButton,
-  RadioSet,
-  Textbox,
-  Textarea,
-}                from '@pres/components-form'
+  Button, Checkbox, FileManager, Form, Input, Prompt, Question, RadioButton, RadioSet, Textarea, Textbox,
+}                                               from '@pres/components-form'
 export {
-  Loading,
-  Message,
-  ProgressBar,
-}                from '@pres/components-inform'
-export { Text, } from '@pres/components-text'
+  Loading, Message, ProgressBar,
+}                                               from '@pres/components-inform'
 export {
-  ANSIImage,
-  BigText,
-  Image,
-  OverlayImage,
-  PNG,
-  Video,
-}                from '@pres/components-visual'
+  Canvas, Carousel, Grid
+}                                               from '@pres/components-layout'
+export { Text, }                                from '@pres/components-text'
+export {
+  ANSIImage, BigText, Image, OverlayImage, PNG, Video,
+}                                               from '@pres/components-visual'
 
 export {
+  barChart,
+  lineChart,
+  stackedBarChart,
   box,
   element,
   node,
@@ -73,6 +51,9 @@ export {
   loading,
   message,
   progressbar,
+  canvas,
+  grid,
+  carousel,
   text,
   ansiimage,
   bigtext,

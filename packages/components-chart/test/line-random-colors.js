@@ -1,6 +1,7 @@
 import { blessed }  from '@pres/terminal-interface'
-import * as contrib from '../index'
+import * as contrib from '../../../packages-blessed/blessed-contrib/index'
 
+const randomColor = () => [ Math.random() * 255, Math.random() * 255, Math.random() * 255 ]
 const screen = blessed.screen(),
       line   = contrib.line(
         {
@@ -10,8 +11,9 @@ const screen = blessed.screen(),
           top: 12,
           xPadding: 5,
           minY: 30,
-          label: 'Line-start-above-zero',
-          style: { baseline: 'white' }
+          maxY: 90,
+          label: 'Title',
+          style: { line: randomColor(), text: randomColor(), baseline: randomColor() }
         }),
       data   = [ {
         title: 'us-east',

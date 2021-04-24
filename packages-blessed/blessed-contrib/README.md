@@ -129,8 +129,8 @@ See below for a complete list of widgets.
    line.setData([series1, series2])
 `````
 
-**Examples:** [simple line chart](./examples/line-fraction.js), [multiple lines](./examples/multi-line-chart.js)
-, [256 colors](./examples/line-random-colors.js)
+**Examples:** [simple line chart](../../packages/components-chart/test/line-fraction.js), [multiple lines](./examples/multi-line-chart.js)
+, [256 colors](../../packages/components-chart/test/line-random-colors.js)
 
 ### Bar Chart
 
@@ -436,7 +436,7 @@ several special keys :
 
 ### Colors
 
-You can use 256 colors ([source](./examples/line-random-colors.js)):
+You can use 256 colors ([source](../../packages/components-chart/test/line-random-colors.js)):
 
 `````javascript
   function randomColor() {

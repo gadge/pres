@@ -1,4 +1,4 @@
-import { assignDeep } from '@pres/util-helpers/index'
+import { assignDeep } from '@pres/util-helpers'
 
 const SPACING = 0
 

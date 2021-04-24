@@ -1,5 +1,5 @@
 import { blessed }  from '@pres/terminal-interface'
-import * as contrib from '../index'
+import * as contrib from '../../../packages-blessed/blessed-contrib/index'
 
 const screen = blessed.screen(),
       bar    = contrib.stackedBarChart(

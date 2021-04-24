@@ -1,19 +1,27 @@
+import { BarChart, LineChart, StackedBarChart } from '@pres/components-chart'
 import {
   Box, Element, Layout, Line, Log, Node, Screen, ScrollableBox, ScrollableText, Terminal,
-}                from '@pres/components-core'
+}                                               from '@pres/components-core'
 import {
   List, Listbar, ListTable, Table,
-}                from '@pres/components-data'
+}                                               from '@pres/components-data'
 import {
   Button, Checkbox, FileManager, Form, Input, Prompt, Question, RadioButton, RadioSet, Textarea, Textbox,
-}                from '@pres/components-form'
+}                                               from '@pres/components-form'
 import {
   Loading, Message, ProgressBar,
-}                from '@pres/components-inform'
-import { Text, } from '@pres/components-text'
+}                                               from '@pres/components-inform'
+import {
+  Canvas, Carousel, Grid
+}                                               from '@pres/components-layout'
+import { Text, }                                from '@pres/components-text'
 import {
   ANSIImage, BigText, Image, OverlayImage, PNG, Video,
-}                from '@pres/components-visual'
+}                                               from '@pres/components-visual'
+
+export const barChart = options => new BarChart(options)
+export const lineChart = options => new LineChart(options)
+export const stackedBarChart = options => new StackedBarChart(options)
 
 export const box = (options) => new Box(options)
 export const element = (options) => new Element(options)
@@ -25,6 +33,7 @@ export const scrollabletext = (options) => new ScrollableText(options)
 export const layout = (options) => new Layout(options)
 export const line = (options) => new Line(options)
 export const terminal = (options) => new Terminal(options)
+
 export const list = (options) => new List(options)
 export const listbar = (options) => new Listbar(options)
 export const listtable = (options) => new ListTable(options)
@@ -43,6 +52,11 @@ export const textarea = (options) => new Textarea(options)
 export const loading = (options) => new Loading(options)
 export const message = (options) => new Message(options)
 export const progressbar = (options) => new ProgressBar(options)
+
+export const carousel = (pages, options) => new Carousel(pages, options)
+export const grid = options => new Grid(options)
+export const canvas = (options, canvasType) => new Canvas(options, canvasType)
+
 export const text = (options) => new Text(options)
 export const ansiimage = (options) => new ANSIImage(options)
 export const bigtext = (options) => new BigText(options)

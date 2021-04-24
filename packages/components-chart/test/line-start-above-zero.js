@@ -1,5 +1,5 @@
 import { blessed }  from '@pres/terminal-interface'
-import * as contrib from '../index'
+import * as contrib from '../../../packages-blessed/blessed-contrib/index'
 
 const screen = blessed.screen(),
       line   = contrib.line(
@@ -9,14 +9,14 @@ const screen = blessed.screen(),
           left: 15,
           top: 12,
           xPadding: 5,
-          label: 'Title',
-          tickCount: 7,
-          // intOnly: true
+          minY: 30,
+          label: 'Line-start-above-zero',
+          style: { baseline: 'white' }
         }),
       data   = [ {
         title: 'us-east',
         x: [ 't1', 't2', 't3', 't4' ],
-        y: [ 0, 0.0695652173913043, 0.11304347826087, 2 ],
+        y: [ 50, 88, 72, 91 ],
         style: {
           line: 'red'
         }
