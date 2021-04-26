@@ -1281,9 +1281,8 @@ function GIF(file, options) {
   if (this.gct) {
     this.colors = []
     total = 1 << this.gctsize
-    for (i = 0; i < total; i++, p += 3) {
+    for (i = 0; i < total; i++, p += 3)
       this.colors.push([ buf[p], buf[p + 1], buf[p + 2], 255 ])
-    }
   }
   this.images = []
   this.extensions = []

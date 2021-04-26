@@ -2613,9 +2613,7 @@ export class Program extends EventEmitter {
 
       default:
         // 256-color fg and bg
-        if (param[0] === '#') {
-          param = param.replace(/#(?:[0-9a-f]{3}){1,2}/i, colors.match)
-        }
+        if (param[0] === '#') param = param.replace(/#(?:[0-9a-f]{3}){1,2}/i, colors.match)
         m = /^(-?\d+) (fg|bg)$/.exec(param)
         if (m) {
           color = +m[1]

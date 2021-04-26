@@ -27,17 +27,17 @@ Net.prototype.updateData = function (data) {
   this.netData[1].shift()
   this.netData[1].push(tx_sec)
 
-  rx_label =
-    'Receiving:      ' +
-    utils.humanFileSize(rx_sec) +
-    '/s \nTotal received: ' +
-    utils.humanFileSize(data['rx_bytes'])
+  let rx_label =
+        'Receiving:      ' +
+        utils.humanFileSize(rx_sec) +
+        '/s \nTotal received: ' +
+        utils.humanFileSize(data['rx_bytes'])
 
-  tx_label =
-    'Transferring:      ' +
-    utils.humanFileSize(tx_sec) +
-    '/s \nTotal transferred: ' +
-    utils.humanFileSize(data['tx_bytes'])
+  let tx_label =
+        'Transferring:      ' +
+        utils.humanFileSize(tx_sec) +
+        '/s \nTotal transferred: ' +
+        utils.humanFileSize(data['tx_bytes'])
 
   this.sparkline.setData([ rx_label, tx_label ], this.netData)
   this.sparkline.screen.render()

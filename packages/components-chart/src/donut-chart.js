@@ -86,9 +86,7 @@ export class DonutChart extends Canvas {
     function makeDonut(stat, which) {
       const left = radius + (spacing * which) + (radius * 2 * (which - 1))
       let percent = stat.percent
-      if (percent > 1.001) {
-        percent = parseFloat(percent / 100).toFixed(2)
-      }
+      if (percent > 1.001) percent = parseFloat(percent / 100).toFixed(2)
       const label = stat.label
       const color = stat.color || 'green'
       const cxx = left
@@ -113,7 +111,8 @@ export class DonutChart extends Canvas {
       yPadding: 1,
       radius: 1,
       arcWidth: 1,
-      data: [ { color: 'red', percent: '50', label: 'a' },
+      data: [
+        { color: 'red', percent: '50', label: 'a' },
         { color: 'blue', percent: '20', label: 'b' },
         { color: 'yellow', percent: '80', label: 'c' }
       ]

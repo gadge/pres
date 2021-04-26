@@ -1,6 +1,5 @@
 {
   "packages": [
-    "applications/*",
     "packages/*",
     "utils/*"
   ],

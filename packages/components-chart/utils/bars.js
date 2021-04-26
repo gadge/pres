@@ -4,9 +4,9 @@ export class Bars {
     this.spacing = options.barSpacing ?? options.spacing ?? 9
     if ((this.spacing - this.width) < 3) this.spacing = this.width + 3
     this.preset = {
-      fore: options.barFgColor ?? 'white',
-      back: options.barBgColor ?? 'blue',
-      label: options.labelColor ?? 'white'
+      fore: options.barFgColor ?? options.preset.fore ?? 'white',
+      back: options.barBgColor ?? options.preset.back ?? 'blue',
+      label: options.labelColor ?? options.preset.label ?? 'white'
     }
   }
   static build(options) { return new Bars(options) }
