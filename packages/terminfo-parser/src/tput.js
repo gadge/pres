@@ -34,10 +34,7 @@ export class Tput {
     if (!(this instanceof Tput)) return new Tput(options)
     if (typeof options === 'string') options = { terminal: options }
     this.options = options
-    this.terminal = options.terminal ||
-      options.term ||
-      process.env.TERM ||
-      (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
+    this.terminal = options.terminal || options.term || process.env.TERM || (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
     this.terminal = this.terminal.toLowerCase()
     this.debug = options.debug
     this.padding = options.padding
@@ -2616,12 +2613,8 @@ export class Tput {
     // If we have a terminfoFile, or our
     // term looks like a filename, use it.
     if (term) {
-      if (~term.indexOf(path.sep)) {
-        return term
-      }
-      if (this.terminfoFile) {
-        return this.terminfoFile
-      }
+      if (~term.indexOf(path.sep)) { return term }
+      if (this.terminfoFile) { return this.terminfoFile }
     }
     const paths = Tput.ipaths.slice()
     let file
@@ -2646,8 +2639,9 @@ export class Tput {
   // See:
   // ~/ncurses/ncurses/tinfo/lib_tparm.c
 }
-[ 'bools', 'numbers', 'strings' ].forEach(function (type) {
-  Object.keys(Tput._alias[type]).forEach(function (key) {
+
+[ 'bools', 'numbers', 'strings' ].forEach(type => {
+  Object.keys(Tput._alias[type]).forEach(key => {
     const aliases = Tput._alias[type][key]
     Tput.alias[key] = [ aliases[0] ]
     Tput.alias[key].terminfo = aliases[0]
@@ -2752,20 +2746,10 @@ export function sprintf(src) {
     // Example: %2.2X - turns 0 into 00
     if (width && !opt.left) {
       param = param + ''
-      while (param.length < width) {
-        param = '0' + param
-      }
+      while (param.length < width) { param = '0' + param }
     }
-    if (opt.signs) {
-      if (+initial >= 0) {
-        pre += '+'
-      }
-    }
-    if (opt.space) {
-      if (!opt.signs && +initial >= 0) {
-        pre += ' '
-      }
-    }
+    if (opt.signs) { if (+initial >= 0) { pre += '+' } }
+    if (opt.space) { if (!opt.signs && +initial >= 0) { pre += ' ' } }
     if (opt.hexpoint) {
       switch (type) {
         case 'o': // unsigned octal
