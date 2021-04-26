@@ -1398,15 +1398,14 @@ export class Screen extends Node {
       cwd: process.env.HOME
     }
     const ps = this.spawn(args[0], args.slice(1), opt)
-    ps.on(ERROR, function (err) {
-      if (!callback) return
-      return callback(err)
-    })
-    ps.on(EXIT, function (code) {
-      if (!callback) return
-      if (code !== 0) return callback(new Error('Exit Code: ' + code))
-      return callback(null, code === 0)
-    })
+    ps.on(ERROR, err => callback ? callback(err) : void 0)
+    ps.on(EXIT,
+      code => callback
+        ? code !== 0
+          ? callback(new Error('Exit Code: ' + code))
+          : callback(null, code === 0)
+        : void 0
+    )
     ps.stdin.write(input + '\n')
     ps.stdin.end()
   }
@@ -1444,9 +1443,7 @@ export class Screen extends Node {
         if (val !== null && typeof val === OBJ) {
           tmp[key] = tmp[key] || {}
           // element.style[key] = element.style[key] || {};
-          Object.keys(val).forEach(k => {
-            if (tmp[key].hasOwnProperty(k)) element.style[key][k] = tmp[key][k]
-          })
+          Object.keys(val).forEach(k => { if (tmp[key].hasOwnProperty(k)) element.style[key][k] = tmp[key][k] })
           return
         }
         if (tmp.hasOwnProperty(key)) element.style[key] = tmp[key]
@@ -1456,16 +1453,14 @@ export class Screen extends Node {
   }
   sigtstp(callback) {
     const self = this
-    this.program.sigtstp(function () {
+    this.program.sigtstp(() => {
       self.alloc()
       self.render()
       self.program.lrestoreCursor('pause', true)
       if (callback) callback()
     })
   }
-  copyToClipboard(text) {
-    return this.program.copyToClipboard(text)
-  }
+  copyToClipboard(text) { return this.program.copyToClipboard(text) }
   cursorShape(shape, blink) {
     const self = this
     this.cursor.shape = shape || 'block'
