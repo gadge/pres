@@ -1,9 +1,10 @@
 /**
- * HEX_COLORS.js - color-related functions for blessed.
+ * colors.js - color-related functions for blessed.
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
 import { NUM, STR }                                                       from '@typen/enum-data-types'
+import { nullish }                                                        from '@typen/nullish'
 import { COLOR_MAPPING, COLOR_NAMES, XTERM_COLORS }                       from './assets'
 import { colors, HEX_COLORS, ncolors, RGB_COLORS, SPARSE_NAMES, vcolors } from './src/manet'
 
@@ -18,34 +19,17 @@ export function match(r, g, b) {
     if (hex[0] !== '#') { return -1 }
     [ r, g, b ] = hexToRGB(hex)
   }
-  else if (Array.isArray(r)) [ r, g, b ] = r
+  else if (Array.isArray(r)) { [ r, g, b ] = r }
   const hash = (r << 16) | (g << 8) | b
-  if (_cache[hash] != null) return _cache[hash]
-  let
-    ldiff = Infinity,
-    li    = -1,
-    i     = 0,
-    c,
-    _r,
-    _g,
-    _b,
-    diff
-  for (; i < RGB_COLORS.length; i++) {
-    c = RGB_COLORS[i]
-    _r = c[0]
-    _g = c[1]
-    _b = c[2]
-    diff = colorDistance(r, g, b, _r, _g, _b)
-    if (diff === 0) {
-      li = i
-      break
-    }
-    if (diff < ldiff) {
-      ldiff = diff
-      li = i
-    }
+  if (_cache[hash]) return _cache[hash]
+  let _i = -1
+  for (let i = 0, _diff = Infinity; i < RGB_COLORS.length; i++) {
+    const [ _r, _g, _b ] = RGB_COLORS[i]
+    const diff = colorDistance(r, g, b, _r, _g, _b)
+    if (diff === 0) return _cache[hash] = i
+    if (diff < _diff) { (_diff = diff), (_i = i) }
   }
-  return _cache[hash] = li
+  return _cache[hash] = _i
 }
 
 export function RGBToHex(r, g, b) {
@@ -59,15 +43,15 @@ export function RGBToHex(r, g, b) {
 }
 
 export function hexToRGB(hex) {
-  if (hex.length === 4) hex = hex[0] + hex[1] + hex[1] + hex[2] + hex[2] + hex[3] + hex[3]
-  const col = parseInt(hex.substring(1), 16),
-        r   = (col >> 16) & 0xff,
-        g   = (col >> 8) & 0xff,
-        b   = col & 0xff
-  return [ r, g, b ]
+  if (hex.length === 4) {
+    const [ sharp, r, g, b ] = hex
+    hex = sharp + r + r + g + g + b + b
+  }
+  const num = parseInt(hex.slice(1), 16)
+  return [ (num >> 16) & 0xff, (num >> 8) & 0xff, num & 0xff ]
 }
 
-// As it happens, comparing how similar two HEX_COLORS are is really hard. Here is
+// As it happens, comparing how similar two colors are is really hard. Here is
 // one of the simplest solutions, which doesn't require conversion to another
 // color space, posted on stackoverflow[1]. Maybe someone better at math can
 // propose a superior solution.
@@ -76,26 +60,17 @@ function colorDistance(r1, g1, b1, r2, g2, b2) {
   return ((30 * (r1 - r2)) ** 2) + ((59 * (g1 - g2)) ** 2) + ((11 * (b1 - b2)) ** 2)
 }
 
-// This might work well enough for a terminal's HEX_COLORS: treat RGB as XYZ in a
+// This might work well enough for a terminal's colors: treat RGB as XYZ in a
 // 3-dimensional space and go midway between the two points.
-export function mixColors(c1, c2, alpha) {
-  // if (c1 === 0x1ff) return c1;
-  // if (c2 === 0x1ff) return c1;
-  if (c1 === 0x1ff) c1 = 0
-  if (c2 === 0x1ff) c2 = 0
-  if (alpha == null) alpha = 0.5
-  c1 = RGB_COLORS[c1]
-  let r1 = c1[0]
-  let g1 = c1[1]
-  let b1 = c1[2]
-  c2 = RGB_COLORS[c2]
-  const r2 = c2[0]
-  const g2 = c2[1]
-  const b2 = c2[2]
-  r1 += (r2 - r1) * alpha | 0
-  g1 += (g2 - g1) * alpha | 0
-  b1 += (b2 - b1) * alpha | 0
-  return match([ r1, g1, b1 ])
+export function mixColors(colorA, colorB, alpha) {
+  if (colorA === 0x1ff) colorA = 0 // if (colorA === 0x1ff) return colorA;
+  if (colorB === 0x1ff) colorB = 0 // if (colorB === 0x1ff) return colorB;
+  if (nullish(alpha)) alpha = 0.5
+  let [ r_, g_, b_ ] = RGB_COLORS[colorA], [ _r, _g, _b ] = RGB_COLORS[colorB]
+  r_ += (_r - r_) * alpha | 0
+  g_ += (_g - g_) * alpha | 0
+  b_ += (_b - b_) * alpha | 0
+  return match(r_, g_, b_)
 }
 
 export function blend(attr, attr2, alpha) {
@@ -108,18 +83,11 @@ export function blend(attr, attr2, alpha) {
     bg = mixColors(bg, bg2, alpha)
   }
   else {
-    if (blend._cache[bg] != null) {
-      bg = blend._cache[bg]
-      // } else if (bg < 8) {
-      //   bg += 8;
-    }
-    else if (bg >= 8 && bg <= 15) {
-      bg -= 8
-    }
+    if (blend._cache[bg]) { bg = blend._cache[bg] }
+    else if (bg >= 8 && bg <= 15) { bg -= 8 }
     else {
-      name = SPARSE_NAMES[bg]
-      if (name) {
-        for (i = 0; i < SPARSE_NAMES.length; i++) {
+      if ((name = SPARSE_NAMES[bg])) {
+        for (i = 0; i < SPARSE_NAMES.length; i++)
           if (name === SPARSE_NAMES[i] && i !== bg) {
             c = RGB_COLORS[bg]
             nc = RGB_COLORS[i]
@@ -129,7 +97,6 @@ export function blend(attr, attr2, alpha) {
               break
             }
           }
-        }
       }
     }
   }

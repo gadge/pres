@@ -313,7 +313,6 @@ export class Element extends Node {
   /**
    * Relative coordinates as default properties
    */
-
   get left() { return this.rleft }
   set left(val) { return this.rleft = val }
   get right() { return this.rright }
@@ -323,19 +322,8 @@ export class Element extends Node {
   get bottom() { return this.rbottom }
   set bottom(val) { return this.rbottom = val }
   sattr(style, fg, bg) {
-    let
-      bold      = style.bold,
-      underline = style.underline,
-      blink     = style.blink,
-      inverse   = style.inverse,
-      invisible = style.invisible
-    // if (arguments.length === 1) {
-    if (fg == null && bg == null) {
-      fg = style.fg
-      bg = style.bg
-    }
-    // This used to be a loop, but I decided
-    // to unroll it for performance's sake.
+    let { bold, underline, blink, inverse, invisible } = style // if (arguments.length === 1) {
+    if (fg == null && bg == null) { (fg = style.fg), (bg = style.bg) }
     if (typeof bold === FUN) bold = bold(this)
     if (typeof underline === FUN) underline = underline(this)
     if (typeof blink === FUN) blink = blink(this)
@@ -343,15 +331,15 @@ export class Element extends Node {
     if (typeof invisible === FUN) invisible = invisible(this)
     if (typeof fg === FUN) fg = fg(this)
     if (typeof bg === FUN) bg = bg(this)
-    // return (this.uid << 24)
-    //   | ((this.dockBorders ? 32 : 0) << 18)
-    return ((invisible ? 16 : 0) << 18)
-      | ((inverse ? 8 : 0) << 18)
-      | ((blink ? 4 : 0) << 18)
-      | ((underline ? 2 : 0) << 18)
-      | ((bold ? 1 : 0) << 18)
-      | (colors.convert(fg) << 9)
-      | colors.convert(bg)
+    return (
+      ((invisible ? 16 : 0) << 18) |
+      ((inverse ? 8 : 0) << 18) |
+      ((blink ? 4 : 0) << 18) |
+      ((underline ? 2 : 0) << 18) |
+      ((bold ? 1 : 0) << 18) |
+      (colors.convert(fg) << 9) |
+      (colors.convert(bg))
+    ) // return (this.uid << 24) | ((this.dockBorders ? 32 : 0) << 18)
   }
   onScreenEvent(type, handler) {
     const listeners = this._slisteners = this._slisteners || []
@@ -395,21 +383,15 @@ export class Element extends Node {
     this.clearPos()
     this.hidden = true
     this.emit(HIDE)
-    if (this.screen.focused === this) {
-      this.screen.rewindFocus()
-    }
+    if (this.screen.focused === this) this.screen.rewindFocus()
   }
   show() {
     if (!this.hidden) return
     this.hidden = false
     this.emit(SHOW)
   }
-  toggle() {
-    return this.hidden ? this.show() : this.hide()
-  }
-  focus() {
-    return this.screen.focused = this
-  }
+  toggle() { return this.hidden ? this.show() : this.hide() }
+  focus() { return this.screen.focused = this }
   setContent(content, noClear, noTags) {
     if (!noClear) this.clearPos()
     this.content = content || ''
@@ -425,17 +407,16 @@ export class Element extends Node {
     content = content.replace(/\x1b\[[\d;]*m/g, '')
     return this.setContent(content, noClear, true)
   }
-  getText() {
-    return this.getContent().replace(/\x1b\[[\d;]*m/g, '')
-  }
+  getText() { return this.getContent().replace(/\x1b\[[\d;]*m/g, '') }
   parseContent(noTags) {
     if (this.detached) return false
     const width = this.width - this.iwidth
-    if (this._clines == null ||
+    if (
+      this._clines == null ||
       this._clines.width !== width ||
-      this._clines.content !== this.content) {
+      this._clines.content !== this.content
+    ) {
       let content = this.content
-
       content = content
         .replace(/[\x00-\x08\x0b-\x0c\x0e-\x1a\x1c-\x1f\x7f]/g, '')
         .replace(/\x1b(?!\[[\d;]*m)/g, '')
@@ -446,9 +427,7 @@ export class Element extends Node {
         // blank character after it so it doesn't eat the real next char.
         content = content.replace(unicode.chars.all, '$1\x03')
         // iTerm2 cannot render combining characters properly.
-        if (this.screen.program.isiTerm2) {
-          content = content.replace(unicode.chars.combining, '')
-        }
+        if (this.screen.program.isiTerm2) content = content.replace(unicode.chars.combining, '')
       }
       else {
         // no double-width: replace them with question-marks.

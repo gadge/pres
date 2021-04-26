@@ -1042,121 +1042,115 @@ export class Screen extends Node {
     }
     // this.emit('draw');
   }
-  _reduceColor(color) {
-    return colors.reduce(color, this.tput.colors)
-  }
+  _reduceColor(color) { return colors.reduce(color, this.tput.colors) }
 // Convert an SGR string to our own attribute format.
   attrCode(code, cur, def) {
-    let flags = (cur >> 18) & 0x1ff,
-        fg    = (cur >> 9) & 0x1ff,
-        bg    = cur & 0x1ff,
-        c,
-        i
-
+    let effect = (cur >> 18) & 0x1ff,
+        fore   = (cur >> 9) & 0x1ff,
+        back   = (cur) & 0x1ff
     code = code.slice(2, -1).split(';')
     if (!code[0]) code[0] = '0'
-
-    for (i = 0; i < code.length; i++) {
+    for (let i = 0, c; i < code.length; i++) {
       c = +code[i] || 0
       switch (c) {
         case 0: // normal
-          bg = def & 0x1ff
-          fg = (def >> 9) & 0x1ff
-          flags = (def >> 18) & 0x1ff
+          back = def & 0x1ff
+          fore = (def >> 9) & 0x1ff
+          effect = (def >> 18) & 0x1ff
           break
         case 1: // bold
-          flags |= 1
+          effect |= 1
           break
         case 22:
-          flags = (def >> 18) & 0x1ff
+          effect = (def >> 18) & 0x1ff
           break
         case 4: // underline
-          flags |= 2
+          effect |= 2
           break
         case 24:
-          flags = (def >> 18) & 0x1ff
+          effect = (def >> 18) & 0x1ff
           break
         case 5: // blink
-          flags |= 4
+          effect |= 4
           break
         case 25:
-          flags = (def >> 18) & 0x1ff
+          effect = (def >> 18) & 0x1ff
           break
         case 7: // inverse
-          flags |= 8
+          effect |= 8
           break
         case 27:
-          flags = (def >> 18) & 0x1ff
+          effect = (def >> 18) & 0x1ff
           break
         case 8: // invisible
-          flags |= 16
+          effect |= 16
           break
         case 28:
-          flags = (def >> 18) & 0x1ff
+          effect = (def >> 18) & 0x1ff
           break
         case 39: // default fg
-          fg = (def >> 9) & 0x1ff
+          fore = (def >> 9) & 0x1ff
           break
         case 49: // default bg
-          bg = def & 0x1ff
+          back = def & 0x1ff
           break
         case 100: // default fg/bg
-          fg = (def >> 9) & 0x1ff
-          bg = def & 0x1ff
+          fore = (def >> 9) & 0x1ff
+          back = def & 0x1ff
           break
         default: // color
           if (c === 48 && +code[i + 1] === 5) {
             i += 2
-            bg = +code[i]
+            back = +code[i]
             break
           }
           else if (c === 48 && +code[i + 1] === 2) {
             i += 2
-            bg = colors.match(+code[i], +code[i + 1], +code[i + 2])
-            if (bg === -1) bg = def & 0x1ff
+            back = colors.match(+code[i], +code[i + 1], +code[i + 2])
+            if (back === -1) back = def & 0x1ff
             i += 2
             break
           }
           else if (c === 38 && +code[i + 1] === 5) {
             i += 2
-            fg = +code[i]
+            fore = +code[i]
             break
           }
           else if (c === 38 && +code[i + 1] === 2) {
             i += 2
-            fg = colors.match(+code[i], +code[i + 1], +code[i + 2])
-            if (fg === -1) fg = (def >> 9) & 0x1ff
+            fore = colors.match(+code[i], +code[i + 1], +code[i + 2])
+            if (fore === -1) fore = (def >> 9) & 0x1ff
             i += 2
             break
           }
           if (c >= 40 && c <= 47) {
-            bg = c - 40
+            back = c - 40
           }
           else if (c >= 100 && c <= 107) {
-            bg = c - 100
-            bg += 8
+            back = c - 100
+            back += 8
           }
           else if (c === 49) {
-            bg = def & 0x1ff
+            back = def & 0x1ff
           }
           else if (c >= 30 && c <= 37) {
-            fg = c - 30
+            fore = c - 30
           }
           else if (c >= 90 && c <= 97) {
-            fg = c - 90
-            fg += 8
+            fore = c - 90
+            fore += 8
           }
           else if (c === 39) {
-            fg = (def >> 9) & 0x1ff
+            fore = (def >> 9) & 0x1ff
           }
           else if (c === 100) {
-            fg = (def >> 9) & 0x1ff
-            bg = def & 0x1ff
+            fore = (def >> 9) & 0x1ff
+            back = def & 0x1ff
           }
           break
       }
     }
-    return (flags << 18) | (fg << 9) | bg
+    return (effect << 18) | (fore << 9) | back
   }
 // Convert our own attribute format to an SGR string.
   codeAttr(code) {
@@ -1165,64 +1159,44 @@ export class Screen extends Node {
         bg  = code & 0x1ff,
         out = ''
     // bold
-    if (flags & 1) {
-      out += '1;'
-    }
+    if (flags & 1) { out += '1;' }
     // underline
-    if (flags & 2) {
-      out += '4;'
-    }
+    if (flags & 2) { out += '4;' }
     // blink
-    if (flags & 4) {
-      out += '5;'
-    }
+    if (flags & 4) { out += '5;' }
     // inverse
-    if (flags & 8) {
-      out += '7;'
-    }
+    if (flags & 8) { out += '7;' }
     // invisible
-    if (flags & 16) {
-      out += '8;'
-    }
+    if (flags & 16) { out += '8;' }
     if (bg !== 0x1ff) {
       bg = this._reduceColor(bg)
       if (bg < 16) {
-        if (bg < 8) {
-          bg += 40
-        }
+        if (bg < 8) { bg += 40 }
         else if (bg < 16) {
           bg -= 8
           bg += 100
         }
         out += bg + ';'
       }
-      else {
-        out += '48;5;' + bg + ';'
-      }
+      else { out += '48;5;' + bg + ';' }
     }
     if (fg !== 0x1ff) {
       fg = this._reduceColor(fg)
       if (fg < 16) {
-        if (fg < 8) {
-          fg += 30
-        }
+        if (fg < 8) { fg += 30 }
         else if (fg < 16) {
           fg -= 8
           fg += 90
         }
         out += fg + ';'
       }
-      else {
-        out += '38;5;' + fg + ';'
-      }
+      else { out += '38;5;' + fg + ';' }
     }
     if (out[out.length - 1] === ';') out = out.slice(0, -1)
     return '\x1b[' + out + 'm'
   }
   focusOffset(offset) {
-    const shown = this.keyable.filter(function (el) {
-      return !el.detached && el.visible
-    }).length
+    const shown = this.keyable.filter(el => !el.detached && el.visible).length
     if (!shown || !offset) { return }
     let i = this.keyable.indexOf(this.focused)
     if (!~i) return
@@ -1241,31 +1215,21 @@ export class Screen extends Node {
     }
     return this.keyable[i].focus()
   }
-  focusPrevious() {
-    return this.focusOffset(-1)
-  }
-  focusNext() {
-    return this.focusOffset(1)
-  }
+  focusPrevious() { return this.focusOffset(-1) }
+  focusNext() { return this.focusOffset(1) }
   focusPush(el) {
     if (!el) return
     const old = this.history[this.history.length - 1]
-    if (this.history.length === 10) {
-      this.history.shift()
-    }
+    if (this.history.length === 10) this.history.shift()
     this.history.push(el)
     this._focus(el, old)
   }
   focusPop() {
     const old = this.history.pop()
-    if (this.history.length) {
-      this._focus(this.history[this.history.length - 1], old)
-    }
+    if (this.history.length) this._focus(this.history[this.history.length - 1], old)
     return old
   }
-  saveFocus() {
-    return this._savedFocus = this.focused
-  }
+  saveFocus() { return this._savedFocus = this.focused }
   restoreFocus() {
     if (!this._savedFocus) return
     this._savedFocus.focus()
@@ -1332,8 +1296,7 @@ export class Screen extends Node {
     }
   }
   key() { return this.program.key.apply(this, arguments) }
-  onceKey() { return this.program.onceKey.apply(this, arguments)
-   }
+  onceKey() { return this.program.onceKey.apply(this, arguments) }
   removeKey() { return this.program.unkey.apply(this, arguments) }
   spawn = function (file, args, options) {
     if (!Array.isArray(args)) {
@@ -1542,9 +1505,7 @@ export class Screen extends Node {
     return this.program.cursorShape(this.cursor.shape, this.cursor.blink)
   }
   cursorColor(color) {
-    this.cursor.color = color != null
-      ? colors.convert(color)
-      : null
+    this.cursor.color = color != null ? colors.convert(color) : null
     this.cursor._set = true
     if (this.cursor.artificial) { return true }
     return this.program.cursorColor(colors.ncolors[this.cursor.color])
