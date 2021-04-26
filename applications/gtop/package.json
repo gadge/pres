@@ -3,13 +3,18 @@
   "version": "1.1.0",
   "description": "graphic top",
   "main": "./index.js",
-  "bin": {
-    "gtop": "./bin/gtop"
-  },
+  "bin": "./bin/gtop",
   "scripts": {
     "test": "echo \"Test will be implemented.\" && exit 0",
     "start": "./bin/gtop",
     "lint": "prettier --single-quote --trailing-comma es5 --write 'lib/**/*.js'"
+  },
+  "dependencies": {
+    "blessed": "^0.1.81",
+    "blessed-contrib": "^4.8.20",
+    "systeminformation": "^4.31.1",
+    "@pres/terminal-interface": "^0.1.1",
+    "@pres/enum-events": "^0.1.1"
   },
   "repository": {
     "type": "git",
@@ -30,11 +35,6 @@
     "url": "https://github.com/aksakalli/gtop/issues"
   },
   "homepage": "https://github.com/aksakalli/gtop#readme",
-  "dependencies": {
-    "blessed": "^0.1.81",
-    "blessed-contrib": "^4.8.20",
-    "systeminformation": "^4.31.1"
-  },
   "engines": {
     "node": ">=4.0.0"
   },

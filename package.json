@@ -2,8 +2,9 @@
   "name": "root",
   "private": true,
   "workspaces": [
+    "applications/*",
     "packages/*",
-    "packages-utils/*"
+    "utils/*"
   ],
   "scripts": {
     "bootstrap": "lerna bootstrap",
