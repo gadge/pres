@@ -12,33 +12,30 @@ export { COLOR_MAPPING, COLOR_NAMES, XTERM_COLORS }
 
 export const _cache = {}
 
-export function match(r1, g1, b1) {
-  if (typeof r1 === STR) {
-    let hex = r1
+export function match(r, g, b) {
+  if (typeof r === STR) {
+    const hex = r
     if (hex[0] !== '#') { return -1 }
-    hex = hexToRGB(hex)
-    r1 = hex[0], g1 = hex[1], b1 = hex[2]
+    [ r, g, b ] = hexToRGB(hex)
   }
-  else if (Array.isArray(r1)) {
-    b1 = r1[2], g1 = r1[1], r1 = r1[0]
-  }
-  const hash = (r1 << 16) | (g1 << 8) | b1
+  else if (Array.isArray(r)) [ r, g, b ] = r
+  const hash = (r << 16) | (g << 8) | b
   if (_cache[hash] != null) return _cache[hash]
   let
     ldiff = Infinity,
     li    = -1,
     i     = 0,
     c,
-    r2,
-    g2,
-    b2,
+    _r,
+    _g,
+    _b,
     diff
   for (; i < RGB_COLORS.length; i++) {
     c = RGB_COLORS[i]
-    r2 = c[0]
-    g2 = c[1]
-    b2 = c[2]
-    diff = colorDistance(r1, g1, b1, r2, g2, b2)
+    _r = c[0]
+    _g = c[1]
+    _b = c[2]
+    diff = colorDistance(r, g, b, _r, _g, _b)
     if (diff === 0) {
       li = i
       break
@@ -52,13 +49,13 @@ export function match(r1, g1, b1) {
 }
 
 export function RGBToHex(r, g, b) {
-  if (Array.isArray(r)) { b = r[2], g = r[1], r = r[0] }
-  function hex(n) {
+  if (Array.isArray(r)) [ r, g, b ] = r
+  function _tx(n) {
     n = n.toString(16)
     if (n.length < 2) n = '0' + n
     return n
   }
-  return '#' + hex(r) + hex(g) + hex(b)
+  return '#' + _tx(r) + _tx(g) + _tx(b)
 }
 
 export function hexToRGB(hex) {
