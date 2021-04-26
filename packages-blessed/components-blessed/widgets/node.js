@@ -26,10 +26,10 @@ function Node(options) {
     else if (Screen.total === 1) {
       this.screen = Screen.global
     }
-    else if (options.parent) {
-      this.screen = options.parent
+    else if (options.sup) {
+      this.screen = options.sup
       while (this.screen && this.screen.type !== 'screen') {
-        this.screen = this.screen.parent
+        this.screen = this.screen.sup
       }
     }
     else if (Screen.total) {
@@ -37,10 +37,10 @@ function Node(options) {
       // synchronously after the screen's creation. Throw error if not.
       this.screen = Screen.instances[Screen.instances.length - 1]
       process.nextTick(function () {
-        if (!self.parent) {
+        if (!self.sup) {
           throw new Error('Element (' + self.type + ')'
             + ' was not appended synchronously after the'
-            + ' screen\'s creation. Please set a `parent`'
+            + ' screen\'s creation. Please set a `sup`'
             + ' or `screen` option in the element\'s constructor'
             + ' if you are going to use multiple screens and'
             + ' append the element later.')
@@ -51,15 +51,15 @@ function Node(options) {
       throw new Error('No active screen.')
     }
   }
-  this.parent = options.parent || null
-  this.children = []
+  this.sup = options.sup || null
+  this.sub = []
   this.$ = this._ = this.data = {}
   this.uid = Node.uid++
   this.index = this.index != null ? this.index : -1
   if (this.type !== 'screen') this.detached = true
-  if (this.parent) this.parent.append(this);
+  if (this.sup) this.sup.append(this);
 
-  (options.children || []).forEach(this.append.bind(this))
+  (options.sub || []).forEach(this.append.bind(this))
 }
 
 Node.uid = 0
@@ -75,16 +75,16 @@ Node.prototype.insert = function (element, i) {
   }
 
   element.detach()
-  element.parent = this
+  element.sup = this
   element.screen = this.screen
   if (i === 0) {
-    this.children.unshift(element)
+    this.sub.unshift(element)
   }
-  else if (i === this.children.length) {
-    this.children.push(element)
+  else if (i === this.sub.length) {
+    this.sub.push(element)
   }
   else {
-    this.children.splice(i, 0, element)
+    this.sub.splice(i, 0, element)
   }
 
   element.emit('reparent', this)
@@ -94,7 +94,7 @@ Node.prototype.insert = function (element, i) {
     const n = el.detached !== self.detached
     el.detached = self.detached
     if (n) el.emit('attach')
-    el.children.forEach(emit)
+    el.sub.forEach(emit)
   })(element)
   if (!this.screen.focused) {
     this.screen.focused = element
@@ -106,28 +106,28 @@ Node.prototype.prepend = function (element) {
 }
 
 Node.prototype.append = function (element) {
-  this.insert(element, this.children.length)
+  this.insert(element, this.sub.length)
 }
 
 Node.prototype.insertBefore = function (element, other) {
-  const i = this.children.indexOf(other)
+  const i = this.sub.indexOf(other)
   if (~i) this.insert(element, i)
 }
 
 Node.prototype.insertAfter = function (element, other) {
-  const i = this.children.indexOf(other)
+  const i = this.sub.indexOf(other)
   if (~i) this.insert(element, i + 1)
 }
 
 Node.prototype.remove = function (element) {
-  if (element.parent !== this) return
-  let i = this.children.indexOf(element)
+  if (element.sup !== this) return
+  let i = this.sub.indexOf(element)
   if (!~i) return
 
   element.clearPos()
 
-  element.parent = null
-  this.children.splice(i, 1)
+  element.sup = null
+  this.sub.splice(i, 1)
 
   i = this.screen.clickable.indexOf(element)
   if (~i) this.screen.clickable.splice(i, 1)
@@ -141,7 +141,7 @@ Node.prototype.remove = function (element) {
     const n = el.detached !== true
     el.detached = true
     if (n) el.emit('detach')
-    el.children.forEach(emit)
+    el.sub.forEach(emit)
   })(element)
   if (this.screen.focused === element) {
     this.screen.rewindFocus()
@@ -149,7 +149,7 @@ Node.prototype.remove = function (element) {
 }
 
 Node.prototype.detach = function () {
-  if (this.parent) this.parent.remove(this)
+  if (this.sup) this.sup.remove(this)
 }
 
 Node.prototype.free = function () {
@@ -167,16 +167,16 @@ Node.prototype.destroy = function () {
 
 Node.prototype.forDescendants = function (iter, s) {
   if (s) iter(this)
-  this.children.forEach(function emit(el) {
+  this.sub.forEach(function emit(el) {
     iter(el)
-    el.children.forEach(emit)
+    el.sub.forEach(emit)
   })
 }
 
 Node.prototype.forAncestors = function (iter, s) {
   let el = this
   if (s) iter(this)
-  while (el = el.parent) {
+  while (el = el.sup) {
     iter(el)
   }
 }
@@ -225,11 +225,11 @@ Node.prototype.emitAncestors = function () {
 
 Node.prototype.hasDescendant = function (target) {
   return (function find(el) {
-    for (let i = 0; i < el.children.length; i++) {
-      if (el.children[i] === target) {
+    for (let i = 0; i < el.sub.length; i++) {
+      if (el.sub[i] === target) {
         return true
       }
-      if (find(el.children[i]) === true) {
+      if (find(el.sub[i]) === true) {
         return true
       }
     }
@@ -239,7 +239,7 @@ Node.prototype.hasDescendant = function (target) {
 
 Node.prototype.hasAncestor = function (target) {
   let el = this
-  while (el = el.parent) {
+  while (el = el.sup) {
     if (el === target) return true
   }
   return false

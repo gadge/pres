@@ -34,7 +34,7 @@ export class Video extends Box {
       return this
     }
     const opts = {
-      parent: this,
+      sup: this,
       left: 0,
       top: 0,
       width: this.width - this.iwidth,
@@ -64,7 +64,7 @@ export class Video extends Box {
     this.on(RESIZE, function () {
       self.tty.destroy()
       const opts = {
-        parent: self,
+        sup: self,
         left: 0,
         top: 0,
         width: self.width - self.iwidth,

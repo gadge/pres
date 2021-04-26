@@ -164,7 +164,7 @@ ScrollableBox.prototype.__defineGetter__('reallyScrollable', function () {
 ScrollableBox.prototype._scrollBottom = function () {
   if (!this.scrollable) return 0
 
-  // We could just calculate the children, but we can
+  // We could just calculate the sub, but we can
   // optimize for lists by just returning the items.length.
   if (this._isList) {
     return this.items ? this.items.length : 0
@@ -172,7 +172,7 @@ ScrollableBox.prototype._scrollBottom = function () {
   if (this.lpos && this.lpos._scrollBottom) {
     return this.lpos._scrollBottom
   }
-  const bottom = this.children.reduce(function (current, el) {
+  const bottom = this.sub.reduce(function (current, el) {
     // el.height alone does not calculate the shrunken height, we need to use
     // getCoords. A shrunken box inside a scrollable element will not grow any
     // larger than the scrollable element's context regardless of how much

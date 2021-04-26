@@ -9,7 +9,7 @@ screen = blessed.screen({
 });
 
 var topleft = blessed.box({
-  parent: screen,
+  sup: screen,
   left: 0,
   top: 0,
   width: '50%',
@@ -26,7 +26,7 @@ var topleft = blessed.box({
 });
 
 var topright = blessed.box({
-  parent: screen,
+  sup: screen,
   left: '50%-1',
   top: 0,
   width: '50%+1',
@@ -43,7 +43,7 @@ var topright = blessed.box({
 });
 
 var bottomleft = blessed.box({
-  parent: screen,
+  sup: screen,
   left: 0,
   top: '50%-1',
   width: '50%',
@@ -60,7 +60,7 @@ var bottomleft = blessed.box({
 });
 
 var bottomright = blessed.listtable({
-  parent: screen,
+  sup: screen,
   left: '50%-1',
   top: '50%-1',
   width: '50%+1',
@@ -102,7 +102,7 @@ var bottomright = blessed.listtable({
 bottomright.focus();
 
 var over = blessed.box({
-  parent: screen,
+  sup: screen,
   left: 'center',
   top: 'center',
   width: '50%',

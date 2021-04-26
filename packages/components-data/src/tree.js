@@ -37,7 +37,7 @@ export class Tree extends Box {
     this.append(this.rows)
     this.rows.key(options.keys, function () {
       const selectedNode = self.nodeLines[this.getItemIndex(this.selected)]
-      if (selectedNode.children) {
+      if (selectedNode.sub) {
         selectedNode.extended = !selectedNode.extended
         self.setData(self.data)
         self.screen.render()
@@ -49,11 +49,11 @@ export class Tree extends Box {
   static build(options) { return new Tree(options) }
   walk(node, treeDepth) {
     let lines = []
-    if (!node.parent) {
+    if (!node.sup) {
       // root level
       this.lineNbr = 0
       this.nodeLines.length = 0
-      node.parent = null
+      node.sup = null
     }
     if (treeDepth === '' && node.name) {
       this.lineNbr = 0
@@ -62,35 +62,28 @@ export class Tree extends Box {
       treeDepth = ' '
     }
     node.depth = treeDepth.length - 1
-    if (node.children && node.extended) {
+    if (node.sub && node.extended) {
       let i = 0
-      if (typeof node.children === 'function')
-        node.childrenContent = node.children(node)
-      if (!node.childrenContent)
-        node.childrenContent = node.children
-      for (let child in node.childrenContent) {
-        if (!node.childrenContent[child].name)
-          node.childrenContent[child].name = child
-        child = node.childrenContent[child]
-        child.parent = node
-        child.position = i++
-        if (typeof child.extended === 'undefined')
-          child.extended = this.options.extended
-        if (typeof child.children === 'function')
-          child.childrenContent = child.children(child)
+      if (typeof node.sub === 'function') node.subContent = node.sub(node)
+      if (!node.subContent) node.subContent = node.sub
+      for (let unit in node.subContent) {
+        if (!node.subContent[unit].name)
+          node.subContent[unit].name = unit
+        unit = node.subContent[unit]
+        unit.sup = node
+        unit.position = i++
+        if (typeof unit.extended === 'undefined') unit.extended = this.options.extended
+        if (typeof unit.sub === 'function') unit.subContent = unit.sub(unit)
         else
-          child.childrenContent = child.children
-        const isLastChild = child.position === Object.keys(child.parent.childrenContent).length - 1
+          unit.subContent = unit.sub
+        const isLastChild = unit.position === Object.keys(unit.sup.subContent).length - 1
         let treePrefix
         let suffix = ''
-        if (isLastChild)
-          treePrefix = '└'
-        else
-          treePrefix = '├'
-        if (!child.childrenContent || Object.keys(child.childrenContent).length === 0) {
+        treePrefix = isLastChild ? '└' : '├'
+        if (!unit.subContent || Object.keys(unit.subContent).length === 0) {
           treePrefix += '─'
         }
-        else if (child.extended) {
+        else if (unit.extended) {
           treePrefix += '┬'
           suffix = this.options.template.retract
         }
@@ -100,14 +93,13 @@ export class Tree extends Box {
         }
         if (!this.options.template.lines) treePrefix = '|-'
         if (this.options.template.spaces) treePrefix = ' '
-        lines.push(treeDepth + treePrefix + child.name + suffix)
-        this.nodeLines[this.lineNbr++] = child
+        lines.push(treeDepth + treePrefix + unit.name + suffix)
+        this.nodeLines[this.lineNbr++] = unit
         let parentTree
-        if (isLastChild || !this.options.template.lines)
-          parentTree = treeDepth + ' '
-        else
-          parentTree = treeDepth + '│'
-        lines = lines.concat(this.walk(child, parentTree))
+        parentTree = isLastChild || !this.options.template.lines
+          ? treeDepth + ' '
+          : treeDepth + '│'
+        lines = lines.concat(this.walk(unit, parentTree))
       }
     }
     return lines

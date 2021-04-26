@@ -1,4 +1,4 @@
-import { TerminalInterface } from './dist/index.esm'
+import { TI } from './src/terminal-interface'
 
 export {
   ANSIImage, BarChart, BigText, Box, Button, Canvas, Carousel, Checkbox, DataTable, DonutChart, FileManager, Form,
@@ -8,8 +8,10 @@ export {
 } from '@pres/components'
 
 export {
-  TerminalInterface,
-  TerminalInterface as blessed
+  TI,
+  TI as blessed,
+  TI as TerminalInterface,
+  TI as Pres,
 }
 
 export {

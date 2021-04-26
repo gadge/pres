@@ -7,7 +7,7 @@ screen = blessed.screen({
   warnings: true
 });
 var box = blessed.box({
-  parent: screen,
+  sup: screen,
   top: 0,
   right: 0,
   width: 'shrink',
@@ -15,7 +15,7 @@ var box = blessed.box({
   content: '...'
 });
 var bar = blessed.listbar({
-  //parent: screen,
+  //sup: screen,
   bottom: 0,
   left: 3,
   right: 3,

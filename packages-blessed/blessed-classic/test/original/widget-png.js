@@ -26,7 +26,7 @@ var screen = blessed.screen({
 });
 
 var box1 = blessed.box({
-  parent: screen,
+  sup: screen,
   left: 4,
   top: 3,
   width: 10,
@@ -39,7 +39,7 @@ var box1 = blessed.box({
 });
 
 var box2 = blessed.box({
-  parent: screen,
+  sup: screen,
   left: 20,
   top: 8,
   width: 40,
@@ -76,7 +76,7 @@ if (!argv.width && !argv.height && !argv.scale) {
 }
 
 var png = blessed.image({
-  parent: screen,
+  sup: screen,
   // border: 'line',
   width: argv.width,
   height: argv.height,

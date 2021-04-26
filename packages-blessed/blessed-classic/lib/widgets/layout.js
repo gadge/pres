@@ -33,8 +33,8 @@ Layout.prototype.isRendered = function (el) {
     && (el.lpos.yl - el.lpos.yi) > 0
 }
 Layout.prototype.getLast = function (i) {
-  while (this.children[--i]) {
-    const el = this.children[i]
+  while (this.sub[--i]) {
+    const el = this.sub[i]
     if (this.isRendered(el)) return el
   }
 }
@@ -44,10 +44,10 @@ Layout.prototype.getLastCoords = function (i) {
 }
 Layout.prototype._renderCoords = function () {
   const coords = this._getCoords(true)
-  const children = this.children
-  this.children = []
+  const sub = this.sub
+  this.sub = []
   this._render()
-  this.children = children
+  this.sub = sub
   return coords
 }
 Layout.prototype.renderer = function (coords) {
@@ -64,13 +64,13 @@ Layout.prototype.renderer = function (coords) {
   let lastRowIndex = 0
   // Figure out the highest width child
   if (this.options.layout === 'grid') {
-    var highWidth = this.children.reduce(function (out, el) {
+    var highWidth = this.sub.reduce(function (out, el) {
       out = Math.max(out, el.width)
       return out
     }, 0)
   }
   return function iterator(el, i) {
-    // Make our children shrinkable. If they don't have a height, for
+    // Make our sub shrinkable. If they don't have a height, for
     // example, calculate it for them.
     el.shrink = true
     // Find the previous rendered child's coordinates
@@ -100,7 +100,7 @@ Layout.prototype.renderer = function (coords) {
         // Otherwise we need to start a new row and calculate a new
         // `rowOffset` and `rowIndex` (the index of the child on the current
         // row).
-        rowOffset += self.children.slice(rowIndex, i).reduce(function (out, el) {
+        rowOffset += self.sub.slice(rowIndex, i).reduce(function (out, el) {
           if (!self.isRendered(el)) return out
           out = Math.max(out, el.lpos.yl - el.lpos.yi)
           return out
@@ -116,7 +116,7 @@ Layout.prototype.renderer = function (coords) {
       let above = null
       let abovea = Infinity
       for (let j = lastRowIndex; j < rowIndex; j++) {
-        const l = self.children[j]
+        const l = self.sub[j]
         if (!self.isRendered(l)) continue
         const abs = Math.abs(el.position.left - (l.lpos.xi - xi))
         // if (abs < abovea && (l.lpos.xl - l.lpos.xi) <= el.width) {
@@ -164,7 +164,7 @@ Layout.prototype.render = function () {
     coords.xi -= this.padding.left, coords.xl += this.padding.right
     coords.yi -= this.padding.top, coords.yl += this.padding.bottom
   }
-  this.children.forEach(function (el, i) {
+  this.sub.forEach(function (el, i) {
     if (el.screen._ci !== -1) {
       el.index = el.screen._ci++
     }

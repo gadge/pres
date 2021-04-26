@@ -1,4 +1,4 @@
-import { TerminalInterface as blessed } from '../index'
+import { TI as blessed } from '../index'
 
 
 const screen = blessed.screen({

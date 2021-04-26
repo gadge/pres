@@ -30,7 +30,7 @@ var lastTime;
 var positions = {};
 
 var container = blessed.box({
-  parent: screen,
+  sup: screen,
   top: 'center',
   left: 'center',
   width: 'shrink',
@@ -51,7 +51,7 @@ container.on('prerender', function() {
 });
 
 var date = blessed.box({
-  parent: screen,
+  sup: screen,
   top: 1,
   left: 1,
   //top: '80%',
@@ -90,7 +90,7 @@ for (var i = 0; i < 10; i++) {
    */
 
   symbols[0] = blessed.box({
-    parent: container,
+    sup: container,
     top: 0,
     left: 0,
     width: 10,
@@ -98,7 +98,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[0],
+    sup: symbols[0],
     top: 0,
     left: 0,
     right: 0,
@@ -111,7 +111,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[0],
+    sup: symbols[0],
     top: 0,
     left: 0,
     bottom: 0,
@@ -124,7 +124,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[0],
+    sup: symbols[0],
     top: 0,
     right: 0,
     bottom: 0,
@@ -137,7 +137,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[0],
+    sup: symbols[0],
     top: 8,
     left: 0,
     right: 0,
@@ -156,14 +156,14 @@ for (var i = 0; i < 10; i++) {
    */
 
   symbols[1] = blessed.box({
-    parent: container,
+    sup: container,
     top: 0,
     width: 10,
     height: 9
   });
 
   blessed.box({
-    parent: symbols[1],
+    sup: symbols[1],
     top: 0,
     left: 'center',
     width: 2,
@@ -181,7 +181,7 @@ for (var i = 0; i < 10; i++) {
    */
 
   symbols[2] = blessed.box({
-    parent: container,
+    sup: container,
     top: 0,
     left: 0,
     width: 10,
@@ -189,7 +189,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[2],
+    sup: symbols[2],
     top: 0,
     left: 0,
     right: 0,
@@ -202,7 +202,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[2],
+    sup: symbols[2],
     top: 0,
     right: 0,
     height: 4,
@@ -215,7 +215,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[2],
+    sup: symbols[2],
     top: 4,
     left: 0,
     right: 0,
@@ -228,7 +228,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[2],
+    sup: symbols[2],
     top: 4,
     left: 0,
     height: 4,
@@ -241,7 +241,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[2],
+    sup: symbols[2],
     top: 8,
     left: 0,
     right: 0,
@@ -260,7 +260,7 @@ for (var i = 0; i < 10; i++) {
    */
 
   symbols[3] = blessed.box({
-    parent: container,
+    sup: container,
     top: 0,
     left: 0,
     width: 10,
@@ -268,7 +268,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[3],
+    sup: symbols[3],
     top: 0,
     bottom: 0,
     right: 0,
@@ -282,7 +282,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[3],
+    sup: symbols[3],
     top: 0,
     right: 0,
     left: 0,
@@ -295,7 +295,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[3],
+    sup: symbols[3],
     top: 4,
     right: 0,
     left: 0,
@@ -308,7 +308,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[3],
+    sup: symbols[3],
     top: 8,
     right: 0,
     left: 0,
@@ -327,7 +327,7 @@ for (var i = 0; i < 10; i++) {
    */
 
   symbols[4] = blessed.box({
-    parent: container,
+    sup: container,
     top: 0,
     left: 0,
     width: 10,
@@ -335,7 +335,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[4],
+    sup: symbols[4],
     top: 0,
     bottom: 0,
     right: 0,
@@ -349,7 +349,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[4],
+    sup: symbols[4],
     top: 4,
     right: 0,
     left: 0,
@@ -362,7 +362,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[4],
+    sup: symbols[4],
     top: 0,
     left: 0,
     width: wid,
@@ -381,7 +381,7 @@ for (var i = 0; i < 10; i++) {
    */
 
   symbols[5] = blessed.box({
-    parent: container,
+    sup: container,
     top: 0,
     left: 0,
     width: 10,
@@ -389,7 +389,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[5],
+    sup: symbols[5],
     top: 0,
     left: 0,
     right: 0,
@@ -402,7 +402,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[5],
+    sup: symbols[5],
     top: 0,
     left: 0,
     height: 4,
@@ -415,7 +415,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[5],
+    sup: symbols[5],
     top: 4,
     left: 0,
     right: 0,
@@ -428,7 +428,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[5],
+    sup: symbols[5],
     top: 4,
     right: 0,
     height: 4,
@@ -441,7 +441,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[5],
+    sup: symbols[5],
     top: 8,
     left: 0,
     right: 0,
@@ -460,7 +460,7 @@ for (var i = 0; i < 10; i++) {
    */
 
   symbols[6] = blessed.box({
-    parent: container,
+    sup: container,
     top: 0,
     left: 0,
     width: 10,
@@ -468,7 +468,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[6],
+    sup: symbols[6],
     top: 0,
     left: 0,
     right: 0,
@@ -481,7 +481,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[6],
+    sup: symbols[6],
     top: 0,
     left: 0,
     bottom: 0,
@@ -494,7 +494,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[6],
+    sup: symbols[6],
     top: 4,
     left: 0,
     right: 0,
@@ -507,7 +507,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[6],
+    sup: symbols[6],
     top: 4,
     right: 0,
     height: 4,
@@ -520,7 +520,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[6],
+    sup: symbols[6],
     top: 8,
     left: 0,
     right: 0,
@@ -539,7 +539,7 @@ for (var i = 0; i < 10; i++) {
    */
 
   symbols[7] = blessed.box({
-    parent: container,
+    sup: container,
     top: 0,
     left: 0,
     width: 10,
@@ -547,7 +547,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[7],
+    sup: symbols[7],
     top: 0,
     bottom: 0,
     right: 0,
@@ -561,7 +561,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[7],
+    sup: symbols[7],
     top: 0,
     right: 0,
     left: 0,
@@ -580,7 +580,7 @@ for (var i = 0; i < 10; i++) {
    */
 
   symbols[8] = blessed.box({
-    parent: container,
+    sup: container,
     top: 0,
     left: 0,
     width: 10,
@@ -588,7 +588,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[8],
+    sup: symbols[8],
     top: 0,
     left: 0,
     right: 0,
@@ -601,7 +601,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[8],
+    sup: symbols[8],
     top: 0,
     left: 0,
     bottom: 0,
@@ -614,7 +614,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[8],
+    sup: symbols[8],
     top: 4,
     left: 0,
     right: 0,
@@ -627,7 +627,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[8],
+    sup: symbols[8],
     top: 0,
     right: 0,
     bottom: 0,
@@ -640,7 +640,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[8],
+    sup: symbols[8],
     top: 8,
     left: 0,
     right: 0,
@@ -659,7 +659,7 @@ for (var i = 0; i < 10; i++) {
    */
 
   symbols[9] = blessed.box({
-    parent: container,
+    sup: container,
     top: 0,
     left: 0,
     width: 10,
@@ -667,7 +667,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[9],
+    sup: symbols[9],
     top: 0,
     left: 0,
     right: 0,
@@ -680,7 +680,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[9],
+    sup: symbols[9],
     top: 0,
     left: 0,
     height: 4,
@@ -693,7 +693,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[9],
+    sup: symbols[9],
     top: 4,
     left: 0,
     right: 0,
@@ -706,7 +706,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[9],
+    sup: symbols[9],
     top: 0,
     right: 0,
     bottom: 0,
@@ -719,7 +719,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[9],
+    sup: symbols[9],
     top: 8,
     left: 0,
     right: 0,
@@ -738,7 +738,7 @@ for (var i = 0; i < 10; i++) {
    */
 
   symbols[':'] = blessed.box({
-    parent: container,
+    sup: container,
     top: 0,
     left: 0,
     width: 5,
@@ -746,7 +746,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[':'],
+    sup: symbols[':'],
     top: 3,
     left: 'center',
     width: 2,
@@ -759,7 +759,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols[':'],
+    sup: symbols[':'],
     top: 6,
     left: 'center',
     width: 2,
@@ -778,7 +778,7 @@ for (var i = 0; i < 10; i++) {
    */
 
   symbols['a'] = blessed.box({
-    parent: container,
+    sup: container,
     top: 2,
     left: 0,
     width: 10,
@@ -786,7 +786,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols['a'],
+    sup: symbols['a'],
     top: 0,
     left: 0,
     right: 0,
@@ -799,7 +799,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols['a'],
+    sup: symbols['a'],
     top: 0,
     left: 0,
     bottom: 0,
@@ -812,7 +812,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols['a'],
+    sup: symbols['a'],
     top: 3,
     left: 0,
     right: 0,
@@ -825,7 +825,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols['a'],
+    sup: symbols['a'],
     top: 0,
     right: 0,
     bottom: 0,
@@ -844,7 +844,7 @@ for (var i = 0; i < 10; i++) {
    */
 
   symbols['p'] = blessed.box({
-    parent: container,
+    sup: container,
     top: 2,
     left: 0,
     width: 10,
@@ -852,7 +852,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols['p'],
+    sup: symbols['p'],
     top: 0,
     left: 0,
     right: 0,
@@ -865,7 +865,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols['p'],
+    sup: symbols['p'],
     top: 0,
     right: 0,
     height: 4,
@@ -878,7 +878,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols['p'],
+    sup: symbols['p'],
     top: 0,
     left: 0,
     bottom: 0,
@@ -891,7 +891,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols['p'],
+    sup: symbols['p'],
     top: 3,
     left: 0,
     right: 0,
@@ -910,7 +910,7 @@ for (var i = 0; i < 10; i++) {
    */
 
   symbols['m'] = blessed.box({
-    parent: container,
+    sup: container,
     top: 2,
     left: 0,
     width: 10,
@@ -918,7 +918,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols['m'],
+    sup: symbols['m'],
     top: 0,
     left: 0,
     right: 0,
@@ -931,7 +931,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols['m'],
+    sup: symbols['m'],
     top: 0,
     left: 0,
     bottom: 0,
@@ -944,7 +944,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols['m'],
+    sup: symbols['m'],
     top: 0,
     right: 0,
     bottom: 0,
@@ -957,7 +957,7 @@ for (var i = 0; i < 10; i++) {
   });
 
   blessed.box({
-    parent: symbols['m'],
+    sup: symbols['m'],
     top: 0,
     bottom: 0,
     left: 'center',

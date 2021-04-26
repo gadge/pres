@@ -7,7 +7,7 @@ screen = blessed.screen({
   warnings: true
 });
 var box = blessed.box({
-  parent: screen,
+  sup: screen,
   top: 'center',
   left: 'center',
   width: '50%',

@@ -197,7 +197,7 @@ export class List extends Box {
         el.fixed = true
       }
     })
-    // Ensure children are removed from the
+    // Ensure sub are removed from the
     // item list if they are items.
     this.on(REMOVE, function (el) {
       self.removeItem(el)
@@ -464,7 +464,7 @@ export class List extends Box {
     this._listInitialized = true
     this.selected = index
     this.value = helpers.cleanTags(this.ritems[this.selected])
-    if (!this.parent) return
+    if (!this.sup) return
     this.scrollTo(this.selected)
     // XXX Move `action` and `select` events here.
     this.emit(SELECT_ITEM, this.items[this.selected], this.selected)
@@ -491,9 +491,9 @@ export class List extends Box {
     if (focused && focused._done) focused._done('stop')
     this.screen.saveFocus()
     // XXX Keep above:
-    // var parent = this.parent;
+    // var sup = this.sup;
     // this.detach();
-    // parent.append(this);
+    // sup.append(this);
     this.focus()
     this.show()
     this.select(0)

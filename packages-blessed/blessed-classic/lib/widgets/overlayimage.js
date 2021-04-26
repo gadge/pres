@@ -72,12 +72,12 @@ function OverlayImage(options = {}) {
   //     }
   //   }
   //   function done(el) {
-  //     el.children.forEach(recurse);
+  //     el.sub.forEach(recurse);
   //   }
   //   function recurse(el) {
   //     display(el, function() {
-  //       var pending = el.children.length;
-  //       el.children.forEach(function(el) {
+  //       var pending = el.sub.length;
+  //       el.sub.forEach(function(el) {
   //         display(el, function() {
   //           if (!--pending) done(el);
   //         });

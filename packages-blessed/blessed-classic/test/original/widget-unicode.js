@@ -77,7 +77,7 @@ for (var point = 0x1f600; point <= 0x1f64f; point++) {
  */
 
 var main = blessed.box({
-  parent: screen,
+  sup: screen,
   left: 'center',
   top: 'center',
   width: '50%',

@@ -8,7 +8,7 @@ screen = blessed.screen({
 });
 
 var box = blessed.box({
-  parent: screen,
+  sup: screen,
   //padding: 2,
   scrollable: true,
   left: 'center',
@@ -30,7 +30,7 @@ var box = blessed.box({
 });
 
 var text = blessed.box({
-  parent: box,
+  sup: box,
   content: 'hello1\nhello2\nhello3\nhello4',
   padding: 2,
   style: {
@@ -43,7 +43,7 @@ var text = blessed.box({
 });
 
 var text2 = blessed.box({
-  parent: box,
+  sup: box,
   content: 'world',
   padding: 1,
   style: {
@@ -56,7 +56,7 @@ var text2 = blessed.box({
 });
 
 var box2 = blessed.box({
-  parent: box,
+  sup: box,
   scrollable: true,
   content: 'foo-one\nfoo-two\nfoo-three',
   padding: 2,
@@ -86,7 +86,7 @@ var box2 = blessed.box({
 });
 
 var box3 = blessed.box({
-  parent: box2,
+  sup: box2,
   scrollable: true,
   //content: 'foo1\nfoo2\nfoo3\nfoo4\nfoo5\nfoo6\nfoo7\nf008',
   //left: 'center',

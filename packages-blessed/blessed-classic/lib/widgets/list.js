@@ -186,7 +186,7 @@ function List(options) {
       el.fixed = true
     }
   })
-  // Ensure children are removed from the
+  // Ensure sub are removed from the
   // item list if they are items.
   this.on('remove', function (el) {
     self.removeItem(el)
@@ -447,7 +447,7 @@ List.prototype.select = function (index) {
   this._listInitialized = true
   this.selected = index
   this.value = helpers.cleanTags(this.ritems[this.selected])
-  if (!this.parent) return
+  if (!this.sup) return
   this.scrollTo(this.selected)
   // XXX Move `action` and `select` events here.
   this.emit('select item', this.items[this.selected], this.selected)
@@ -476,9 +476,9 @@ List.prototype.pick = function (label, callback) {
   this.screen.saveFocus()
 
   // XXX Keep above:
-  // var parent = this.parent;
+  // var sup = this.sup;
   // this.detach();
-  // parent.append(this);
+  // sup.append(this);
   this.focus()
   this.show()
   this.select(0)

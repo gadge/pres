@@ -1,4 +1,4 @@
-import { TerminalInterface as blessed } from '../index'
+import { TI as blessed } from '../src/t-i'
 
 const auto = true
 
@@ -17,8 +17,8 @@ const box = blessed.box({
   content: '...'
 })
 
-const bar = blessed.listbar({
-  //parent: screen,
+const bar = blessed.listBar({
+  //sup: screen,
   bottom: 0,
   left: 3,
   right: 3,

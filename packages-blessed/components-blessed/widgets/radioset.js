@@ -17,8 +17,8 @@ function RadioSet(options) {
     return new RadioSet(options)
   }
   options = options || {}
-  // Possibly inherit parent's style.
-  // options.style = this.parent.style;
+  // Possibly inherit sup's style.
+  // options.style = this.sup.style;
   Box.call(this, options)
 }
 

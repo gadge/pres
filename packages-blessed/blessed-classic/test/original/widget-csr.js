@@ -20,7 +20,7 @@ function expectClean(value) {
 }
 /*
 blessed.box({
-  parent: screen,
+  sup: screen,
   left: 0,
   top: 'center',
   width: '50%',
@@ -33,7 +33,7 @@ blessed.box({
 expectClean(false);
 */
 var btext = blessed.box({
-  parent: screen,
+  sup: screen,
   left: 'center',
   top: 'center',
   width: '80%',
@@ -50,7 +50,7 @@ btext.scroll = function(offset, always) {
   return btext._oscroll(offset, always);
 };
 var text = blessed.scrollabletext({
-  parent: screen,
+  sup: screen,
   content: lorem,
   border: 'line',
   left: 'center',

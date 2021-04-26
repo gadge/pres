@@ -5,7 +5,7 @@ var screen = blessed.screen({
 });
 
 var tab = blessed.box({
-  parent: screen,
+  sup: screen,
   top: 2,
   left: 0,
   right: 0,
@@ -25,7 +25,7 @@ var tab = blessed.box({
 });
 
 var form = blessed.box({
-  parent: tab,
+  sup: tab,
   top: 0,
   left: 1,
   right: 1,
@@ -40,7 +40,7 @@ var form = blessed.box({
 });
 
 form._.ftext = blessed.text({
-  parent: form,
+  sup: form,
   top: 0,
   left: 0,
   height: 1,
@@ -49,7 +49,7 @@ form._.ftext = blessed.text({
 });
 
 form._.foo = blessed.textbox({
-  parent: form,
+  sup: form,
   name: 'foo',
   inputOnFocus: true,
   top: 0,
@@ -68,7 +68,7 @@ form._.foo = blessed.textbox({
 });
 
 form._.btext = blessed.text({
-  parent: form,
+  sup: form,
   top: 2,
   left: 0,
   height: 1,
@@ -77,7 +77,7 @@ form._.btext = blessed.text({
 });
 
 form._.bar = blessed.textbox({
-  parent: form,
+  sup: form,
   name: 'bar',
   inputOnFocus: true,
   top: 2,
@@ -96,7 +96,7 @@ form._.bar = blessed.textbox({
 });
 
 form._.ztext = blessed.text({
-  parent: form,
+  sup: form,
   top: 4,
   left: 0,
   height: 1,
@@ -105,7 +105,7 @@ form._.ztext = blessed.text({
 });
 
 form._.baz = blessed.textbox({
-  parent: form,
+  sup: form,
   name: 'baz',
   inputOnFocus: true,
   top: 4,
@@ -124,7 +124,7 @@ form._.baz = blessed.textbox({
 });
 
 form._.submit = blessed.button({
-  parent: form,
+  sup: form,
   name: 'submit',
   top: 6,
   right: 1,

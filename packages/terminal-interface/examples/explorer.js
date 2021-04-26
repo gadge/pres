@@ -22,37 +22,37 @@ const explorer = {
   extended: true,
   // Custom function used to recursively determine the node path,
   getPath: function (self) {
-    // If we don't have any parent, we are at tree root, so return the base case
-    if (!self.parent)
+    // If we don't have any sup, we are at tree root, so return the base case
+    if (!self.sup)
       return ''
-    // Get the parent node path and add this node name
-    return self.parent.getPath(self.parent) + '/' + self.name
+    // Get the sup node path and add this node name
+    return self.sup.getPath(self.sup) + '/' + self.name
   },
   // Child generation function,
-  children: function (self) {
+  sub: function (self) {
     let result = {}
     const selfPath = self.getPath(self)
     try {
       // List files in this directory
-      const children = fs.readdirSync(selfPath + '/')
-      // childrenContent is a property filled with self.children() result
+      const sub = fs.readdirSync(selfPath + '/')
+      // subContent is a property filled with self.sub() result
       // on tree generation (tree.setData() call)
-      if (!self.childrenContent) {
-        for (let child in children) {
-          child = children[child]
+      if (!self.subContent) {
+        for (let child in sub) {
+          child = sub[child]
           const completePath = selfPath + '/' + child
           if (fs.lstatSync(completePath).isDirectory()) {
-            // If it's a directory we generate the child with the children generation function
-            result[child] = { name: child, getPath: self.getPath, extended: false, children: self.children }
+            // If it's a directory we generate the child with the sub generation function
+            result[child] = { name: child, getPath: self.getPath, extended: false, sub: self.sub }
           }
           else {
-            // Otherwise children is not set (you can also set it to "{}" or "null" if you want)
+            // Otherwise sub is not set (you can also set it to "{}" or "null" if you want)
             result[child] = { name: child, getPath: self.getPath, extended: false }
           }
         }
       }
       else {
-        result = self.childrenContent
+        result = self.subContent
       }
     } catch (e) {}
     return result

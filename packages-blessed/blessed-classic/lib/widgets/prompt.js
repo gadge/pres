@@ -18,7 +18,7 @@ function Prompt(options = {}) {
   options.hidden = true
   Box.call(this, options)
   this._.input = new Textbox({
-    parent: this,
+    sup: this,
     top: 3,
     height: 1,
     left: 2,
@@ -26,7 +26,7 @@ function Prompt(options = {}) {
     bg: 'black'
   })
   this._.okay = new Button({
-    parent: this,
+    sup: this,
     top: 5,
     height: 1,
     left: 2,
@@ -39,7 +39,7 @@ function Prompt(options = {}) {
     mouse: true
   })
   this._.cancel = new Button({
-    parent: this,
+    sup: this,
     top: 5,
     height: 1,
     shrink: true,
@@ -65,9 +65,9 @@ Prompt.prototype.input =
         value = ''
       }
       // Keep above:
-      // var parent = this.parent;
+      // var sup = this.sup;
       // this.detach();
-      // parent.append(this);
+      // sup.append(this);
       this.show()
       this.setContent(' ' + text)
       this._.input.value = value

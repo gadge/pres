@@ -9,7 +9,7 @@ var screen = blessed.screen({
 });
 
 var box = blessed.prompt({
-  parent: screen,
+  sup: screen,
   left: 'center',
   top: 'center',
   width: '70%',

@@ -7,7 +7,7 @@ screen = blessed.screen({
 });
 
 blessed.box({
-  parent: screen,
+  sup: screen,
   border: 'line',
   style: {
     bg: 'red',

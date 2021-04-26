@@ -9,7 +9,7 @@ screen = blessed.screen({
 });
 
 var list = blessed.list({
-  parent: screen,
+  sup: screen,
   align: 'center',
   mouse: true,
   keys: true,

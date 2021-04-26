@@ -6,7 +6,7 @@ var screen = blessed.screen({
   warnings: true
 });
 var btext = blessed.box({
-  parent: screen,
+  sup: screen,
   left: 'center',
   top: 'center',
   width: '80%',
@@ -18,7 +18,7 @@ var btext = blessed.box({
   content: 'CSR should still work.'
 });
 var text = blessed.scrollabletext({
-  parent: screen,
+  sup: screen,
   content: fs.readFileSync(__dirname + '/git.diff', 'utf8'),
   border: 'line',
   left: 'center',

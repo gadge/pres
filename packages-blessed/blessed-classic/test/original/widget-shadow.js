@@ -7,7 +7,7 @@ screen = blessed.screen({
   warnings: true
 });
 var bg = blessed.box({
-  parent: screen,
+  sup: screen,
   shadow: true,
   left: 0,
   top: 0,
@@ -19,7 +19,7 @@ var bg = blessed.box({
   content: 'Foo'
 });
 var under = blessed.box({
-  parent: screen,
+  sup: screen,
   shadow: true,
   left: 10,
   top: 4,
@@ -32,7 +32,7 @@ var under = blessed.box({
   tags: true
 });
 var over = blessed.box({
-  parent: screen,
+  sup: screen,
   shadow: true,
   left: 'center',
   top: 'center',

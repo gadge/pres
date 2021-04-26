@@ -57,17 +57,17 @@ Form.prototype._refresh = function () {
   // Also potentially only include *visible* focusable elements.
   // This would remove the need to check for _selected.visible in previous()
   // and next().
-  if (!this._children) {
+  if (!this._sub) {
     const out = []
-    this.children.forEach(function fn(el) {
+    this.sub.forEach(function fn(el) {
       if (el.keyable) out.push(el)
-      el.children.forEach(fn)
+      el.sub.forEach(fn)
     })
-    this._children = out
+    this._sub = out
   }
 }
 Form.prototype._visible = function () {
-  return !!this._children.filter(function (el) {
+  return !!this._sub.filter(function (el) {
     return el.visible
   }).length
 }
@@ -75,17 +75,17 @@ Form.prototype.next = function () {
   this._refresh()
   if (!this._visible()) return
   if (!this._selected) {
-    this._selected = this._children[0]
+    this._selected = this._sub[0]
     if (!this._selected.visible) return this.next()
     if (this.screen.focused !== this._selected) return this._selected
   }
-  const i = this._children.indexOf(this._selected)
-  if (!~i || !this._children[i + 1]) {
-    this._selected = this._children[0]
+  const i = this._sub.indexOf(this._selected)
+  if (!~i || !this._sub[i + 1]) {
+    this._selected = this._sub[0]
     if (!this._selected.visible) return this.next()
     return this._selected
   }
-  this._selected = this._children[i + 1]
+  this._selected = this._sub[i + 1]
   if (!this._selected.visible) return this.next()
   return this._selected
 }
@@ -93,17 +93,17 @@ Form.prototype.previous = function () {
   this._refresh()
   if (!this._visible()) return
   if (!this._selected) {
-    this._selected = this._children[this._children.length - 1]
+    this._selected = this._sub[this._sub.length - 1]
     if (!this._selected.visible) return this.previous()
     if (this.screen.focused !== this._selected) return this._selected
   }
-  const i = this._children.indexOf(this._selected)
-  if (!~i || !this._children[i - 1]) {
-    this._selected = this._children[this._children.length - 1]
+  const i = this._sub.indexOf(this._selected)
+  if (!~i || !this._sub[i - 1]) {
+    this._selected = this._sub[this._sub.length - 1]
     if (!this._selected.visible) return this.previous()
     return this._selected
   }
-  this._selected = this._children[i - 1]
+  this._selected = this._sub[i - 1]
   if (!this._selected.visible) return this.previous()
   return this._selected
 }
@@ -128,7 +128,7 @@ Form.prototype.focusLast = function () {
 }
 Form.prototype.submit = function () {
   const out = {}
-  this.children.forEach(function fn(el) {
+  this.sub.forEach(function fn(el) {
     if (el.value != null) {
       const name = el.name || el.type
       if (Array.isArray(out[name])) {
@@ -139,7 +139,7 @@ Form.prototype.submit = function () {
         out[name] = el.value
       }
     }
-    el.children.forEach(fn)
+    el.sub.forEach(fn)
   })
   this.emit('submit', out)
   return this.submission = out
@@ -148,7 +148,7 @@ Form.prototype.cancel = function () {
   this.emit('cancel')
 }
 Form.prototype.reset = function () {
-  this.children.forEach(function fn(el) {
+  this.sub.forEach(function fn(el) {
     switch (el.type) {
       case 'screen':
         break
@@ -213,7 +213,7 @@ Form.prototype.reset = function () {
         //el.clearImage();
         return
     }
-    el.children.forEach(fn)
+    el.sub.forEach(fn)
   })
   this.emit('reset')
 }

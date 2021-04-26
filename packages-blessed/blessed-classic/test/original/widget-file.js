@@ -8,7 +8,7 @@ var screen = blessed.screen({
 });
 
 var fm = blessed.filemanager({
-  parent: screen,
+  sup: screen,
   border: 'line',
   style: {
     selected: {
@@ -30,7 +30,7 @@ var fm = blessed.filemanager({
 });
 
 var box = blessed.box({
-  parent: screen,
+  sup: screen,
   style: {
     bg: 'green'
   },

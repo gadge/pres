@@ -20,7 +20,7 @@ const box = blessed.box({
 })
 
 const bar = blessed.listbar({
-  //parent: screen,
+  //sup: screen,
   bottom: 0,
   left: 3,
   right: 3,

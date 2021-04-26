@@ -106,7 +106,7 @@ EventEmitter.prototype.emit = function (type) {
     if (el._emit(type, args) === false) {
       return false
     }
-  } while ((el = el.parent))
+  } while ((el = el.sup))
   return true
 }
 // For hooking into the main EventEmitter if we want to.
@@ -135,7 +135,7 @@ EventEmitter.prototype.emit = function (type) {
 //     if (!el._events || !el._events[type]) continue;
 //     el._emit.apply(el, args);
 //     if (this._bubbleStopped) return false;
-//   } while (el = el.parent);
+//   } while (el = el.sup);
 //
 //   return true;
 // };

@@ -67,7 +67,7 @@ assert.equal(inner.rright, 56);
 assert.equal(inner.rtop, 2);
 assert.equal(inner.rbottom, 5);
 
-// Change left to half of the parent width.
+// Change left to half of the sup width.
 inner.rleft = '50%';
 assert.equal(inner.aleft, 59);
 

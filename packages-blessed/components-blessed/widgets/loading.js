@@ -18,7 +18,7 @@ function Loading(options) {
 
   Box.call(this, options)
   this._.icon = new Text({
-    parent: this,
+    sup: this,
     align: 'center',
     top: 2,
     left: 1,
@@ -36,9 +36,9 @@ Loading.prototype.load = function (text) {
   const self = this
 
   // XXX Keep above:
-  // var parent = this.parent;
+  // var sup = this.sup;
   // this.detach();
-  // parent.append(this);
+  // sup.append(this);
   this.show()
   this.setContent(text)
   if (this._.timer) { this.stop() }

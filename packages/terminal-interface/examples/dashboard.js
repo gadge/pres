@@ -1,14 +1,14 @@
 import { flop, rand, ziggurat } from '@aryth/rand'
 import { ATTACH, RESIZE }       from '@pres/enum-events'
 import { last }                 from '@vect/vector-index'
-import * as contrib             from '../index'
-import { TerminalInterface }                  from '../src/terminal-interface'
+import * as contrib from '../index'
+import { TI }       from '../src/t-i'
 
 const normDist = ziggurat(0, 5, 0)
 
-const screen = TerminalInterface.screen()
+const screen = TI.screen()
 //create layout and widgets
-const grid = TerminalInterface.grid({ rows: 12, cols: 12, screen: screen })
+const grid = TI.grid({ rows: 12, cols: 12, screen: screen })
 
 /**
  * DonutChart Options
@@ -16,14 +16,14 @@ const grid = TerminalInterface.grid({ rows: 12, cols: 12, screen: screen })
  self.options.arcWidth = options.arcWidth || 4; //width of the donutChart
  self.options.yPadding = options.yPadding || 2; //padding from the top
  */
-const donut = grid.set(8, 8, 4, 2, TerminalInterface.donutChart, {
+const donut = grid.set(8, 8, 4, 2, TI.donutChart, {
   label: 'Percent DonutChart',
   radius: 16,
   arcWidth: 4,
   yPadding: 2,
   data: [ { label: 'Storage', percent: 87 } ]
 })
-// var latencyLine = grid.set(8, 8, 4, 2, TerminalInterface.lineChart,
+// var latencyLine = grid.set(8, 8, 4, 2, TI.lineChart,
 //   { style: 
 //     { line: 'yellow'
 //     , text: 'green'
@@ -31,21 +31,21 @@ const donut = grid.set(8, 8, 4, 2, TerminalInterface.donutChart, {
 //   , xLabelPadding: 3
 //   , xPadding: 5
 //   , label: 'Network Latency (sec)'})
-const gauge = grid.set(8, 10, 2, 2, TerminalInterface.gauge, { label: 'Storage', percent: [ 80, 20 ] })
-const gauge_two = grid.set(2, 9, 2, 3, TerminalInterface.gauge, { label: 'Deployment Progress', percent: 80 })
-const sparkline = grid.set(10, 10, 2, 2, TerminalInterface.sparkline, {
+const gauge = grid.set(8, 10, 2, 2, TI.gauge, { label: 'Storage', percent: [ 80, 20 ] })
+const gauge_two = grid.set(2, 9, 2, 3, TI.gauge, { label: 'Deployment Progress', percent: 80 })
+const sparkline = grid.set(10, 10, 2, 2, TI.sparkline, {
   label: 'Throughput (bits/sec)',
   tags: true,
   style: { fg: 'blue', titleFg: 'white' }
 })
-const bar = grid.set(4, 6, 4, 3, TerminalInterface.barChart, {
+const bar = grid.set(4, 6, 4, 3, TI.barChart, {
   label: 'Server Utilization (%)',
   barWidth: 4,
   barSpacing: 6,
   xOffset: 2,
   maxHeight: 9
 })
-const dataTable = grid.set(4, 9, 4, 3, TerminalInterface.dataTable, {
+const dataTable = grid.set(4, 9, 4, 3, TI.dataTable, {
   keys: true,
   fg: 'green',
   label: 'Active Processes',
@@ -68,7 +68,7 @@ const dataTable = grid.set(4, 9, 4, 3, TerminalInterface.dataTable, {
 //coloring
   options.color = options.color || 'white';
 */
-const lcdLineOne = grid.set(0, 9, 2, 3, TerminalInterface.lcd, {
+const lcdLineOne = grid.set(0, 9, 2, 3, TI.lcd, {
   label: 'LCD Test',
   segmentWidth: 0.06,
   segmentInterval: 0.11,
@@ -78,7 +78,7 @@ const lcdLineOne = grid.set(0, 9, 2, 3, TerminalInterface.lcd, {
   elementSpacing: 4,
   elementPadding: 2
 })
-const errorsLine = grid.set(0, 6, 4, 3, TerminalInterface.lineChart, {
+const errorsLine = grid.set(0, 6, 4, 3, TI.lineChart, {
   style: {
     line: 'red',
     text: 'white',
@@ -88,15 +88,15 @@ const errorsLine = grid.set(0, 6, 4, 3, TerminalInterface.lineChart, {
   maxY: 60,
   showLegend: true
 })
-const transactionsLine = grid.set(0, 0, 6, 6, TerminalInterface.lineChart, {
+const transactionsLine = grid.set(0, 0, 6, 6, TI.lineChart, {
   showNthLabel: 5,
   maxY: 100,
   label: 'Total Transactions',
   showLegend: true,
   legend: { width: 10 }
 })
-const map = grid.set(6, 0, 6, 6, TerminalInterface.map, { label: 'Servers Location' })
-const logList = grid.set(8, 6, 4, 2, TerminalInterface.logList, {
+const map = grid.set(6, 0, 6, 6, TI.map, { label: 'Servers Location' })
+const logList = grid.set(8, 6, 4, 2, TI.logList, {
   fg: 'green',
   selectedFg: 'green',
   label: 'Server Log'

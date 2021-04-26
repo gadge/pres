@@ -1,12 +1,12 @@
-import { TerminalInterface } from '../src/terminal-interface'
+import { TI } from '../src/t-i'
 
-const screen = TerminalInterface.screen({
+const screen = TI.screen({
   dump: __dirname + '/logs/form.log',
   warnings: true
 })
 
 
-const form = TerminalInterface.form({
+const form = TI.form({
   parent: screen,
   mouse: true,
   keys: true,
@@ -50,7 +50,7 @@ form.key('u', function () {
   screen.render()
 })
 
-const set = TerminalInterface.radioSet({
+const set = TI.radioSet({
   parent: form,
   left: 1,
   top: 1,
@@ -62,7 +62,7 @@ const set = TerminalInterface.radioSet({
   }
 })
 
-const radio1 = TerminalInterface.radioButton({
+const radio1 = TI.radioButton({
   parent: set,
   mouse: true,
   keys: true,
@@ -77,7 +77,7 @@ const radio1 = TerminalInterface.radioButton({
   content: 'radio1'
 })
 
-const radio2 = TerminalInterface.radioButton({
+const radio2 = TI.radioButton({
   parent: set,
   mouse: true,
   keys: true,
@@ -92,7 +92,7 @@ const radio2 = TerminalInterface.radioButton({
   content: 'radio2'
 })
 
-const text = TerminalInterface.textbox({
+const text = TI.textbox({
   parent: form,
   mouse: true,
   keys: true,
@@ -110,7 +110,7 @@ text.on('focus', function () {
   text.readInput()
 })
 
-const check = TerminalInterface.checkbox({
+const check = TI.checkbox({
   parent: form,
   mouse: true,
   keys: true,
@@ -125,7 +125,7 @@ const check = TerminalInterface.checkbox({
   content: 'check'
 })
 
-const check2 = TerminalInterface.checkbox({
+const check2 = TI.checkbox({
   parent: form,
   mouse: true,
   keys: true,
@@ -140,7 +140,7 @@ const check2 = TerminalInterface.checkbox({
   content: 'foooooooo2'
 })
 
-const submit = TerminalInterface.button({
+const submit = TI.button({
   parent: form,
   mouse: true,
   keys: true,
@@ -163,7 +163,7 @@ const submit = TerminalInterface.button({
 
 submit.on('press', () => form.submit())
 
-const box1 = TerminalInterface.box({
+const box1 = TI.box({
   parent: form,
   left: 1,
   top: 10,
@@ -175,7 +175,7 @@ const box1 = TerminalInterface.box({
   }
 })
 
-const box2 = TerminalInterface.box({
+const box2 = TI.box({
   parent: box1,
   left: 1,
   top: 2,
@@ -187,7 +187,7 @@ const box2 = TerminalInterface.box({
   }
 })
 
-const box3 = TerminalInterface.box({
+const box3 = TI.box({
   parent: box2,
   left: 1,
   top: 2,
@@ -199,7 +199,7 @@ const box3 = TerminalInterface.box({
   }
 })
 
-const box4 = TerminalInterface.box({
+const box4 = TI.box({
   parent: box3,
   left: 1,
   top: 2,
@@ -211,7 +211,7 @@ const box4 = TerminalInterface.box({
   }
 })
 
-var output = TerminalInterface.scrollableText({
+var output = TI.scrollableText({
   parent: form,
   mouse: true,
   keys: true,
@@ -225,7 +225,7 @@ var output = TerminalInterface.scrollableText({
   content: 'foobar'
 })
 
-const bottom = TerminalInterface.line({
+const bottom = TI.line({
   parent: form,
   type: 'line',
   orientation: 'horizontal',

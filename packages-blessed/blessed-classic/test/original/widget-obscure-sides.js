@@ -9,7 +9,7 @@ var screen = blessed.screen({
 });
 
 var box = blessed.box({
-  parent: screen,
+  sup: screen,
   scrollable: true,
   alwaysScroll: true,
   border: {
@@ -38,7 +38,7 @@ var box = blessed.box({
 });
 
 var child = blessed.box({
-  parent: box,
+  sup: box,
   content: 'hello',
   style: {
     bg: 'green'
@@ -51,7 +51,7 @@ var child = blessed.box({
 });
 
 var child2 = blessed.box({
-  parent: box,
+  sup: box,
   content: 'hello',
   style: {
     bg: 'green',

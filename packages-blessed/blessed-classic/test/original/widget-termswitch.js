@@ -10,7 +10,7 @@ screen = blessed.screen({
 var lorem = require('fs').readFileSync(__dirname + '/git.diff', 'utf8');
 
 var btext = blessed.box({
-  parent: screen,
+  sup: screen,
   left: 'center',
   top: 'center',
   width: '80%',
@@ -23,7 +23,7 @@ var btext = blessed.box({
 });
 
 var text = blessed.scrollabletext({
-  parent: screen,
+  sup: screen,
   content: lorem,
   border: 'line',
   left: 'center',

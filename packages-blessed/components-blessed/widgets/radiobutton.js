@@ -21,11 +21,11 @@ function RadioButton(options) {
   Checkbox.call(this, options)
   this.on('check', function () {
     let el = self
-    while (el = el.parent) {
+    while (el = el.sup) {
       if (el.type === 'radio-set'
         || el.type === 'form') break
     }
-    el = el || self.parent
+    el = el || self.sup
     el.forDescendants(function (el) {
       if (el.type !== 'radio-button' || el === self) {
         return

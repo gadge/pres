@@ -13,7 +13,7 @@ var JUAN = '鹃';
 
 /*
 var box = blessed.box({
-  parent: screen,
+  sup: screen,
   top: 'center',
   left: 'center',
   data: null,
@@ -30,7 +30,7 @@ var box = blessed.box({
 */
 
 var table = blessed.listtable({
-  //parent: screen,
+  //sup: screen,
   top: 'center',
   left: 'center',
   data: null,

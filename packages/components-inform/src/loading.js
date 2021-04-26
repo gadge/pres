@@ -15,7 +15,7 @@ export class Loading extends Box {
     super(options)
     // if (!(this instanceof Node)) return new Loading(options)
     this._.icon = new Text({
-      parent: this,
+      sup: this,
       align: 'center',
       top: 2,
       left: 1,
@@ -29,9 +29,9 @@ export class Loading extends Box {
   load(text) {
     const self = this
     // XXX Keep above:
-    // var parent = this.parent;
+    // var sup = this.sup;
     // this.detach();
-    // parent.append(this);
+    // sup.append(this);
     this.show()
     this.setContent(text)
     if (this._.timer) this.stop()

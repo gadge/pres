@@ -7,7 +7,7 @@ screen = blessed.screen({
   warnings: true
 });
 var logger = blessed.log({
-  parent: screen,
+  sup: screen,
   top: 'center',
   left: 'center',
   width: '50%',

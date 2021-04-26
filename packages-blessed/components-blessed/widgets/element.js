@@ -631,7 +631,7 @@ Element.prototype._wrapContent = function (content, width) {
                 // Compensate for surrogate length
                 // counts on wrapping (experimental):
                 // NOTE: Could optimize this by putting
-                // it in the parent for loop.
+                // it in the sup for loop.
                 if (unicode.isSurrogate(line, i)) i--
                 for (var s = 0, n = 0; n < i; n++) {
                   if (unicode.isSurrogate(line, n)) s++, n++
@@ -709,7 +709,7 @@ Element.prototype.__defineGetter__('visible', function () {
     if (el.hidden) return false
     // if (!el.lpos) return false;
     // if (el.position.width === 0 || el.position.height === 0) return false;
-  } while (el = el.parent)
+  } while (el = el.sup)
   return true
 })
 
@@ -717,8 +717,8 @@ Element.prototype.__defineGetter__('_detached', function () {
   let el = this
   do {
     if (el.type === 'screen') return false
-    if (!el.parent) return true
-  } while (el = el.parent)
+    if (!el.sup) return true
+  } while (el = el.sup)
   return false
 })
 
@@ -770,22 +770,22 @@ Element.prototype.enableDrag = function (verify) {
 
     // This can happen in edge cases where the user is
     // already dragging and element when it is detached.
-    if (!self.parent) return
+    if (!self.sup) return
     const ox = self._drag.x
       , oy   = self._drag.y
-      , px   = self.parent.aleft
-      , py   = self.parent.atop
+      , px   = self.sup.aleft
+      , py   = self.sup.atop
       , x    = data.x - px - ox
       , y    = data.y - py - oy
     if (self.position.right != null) {
       if (self.position.left != null) {
-        self.width = '100%-' + (self.parent.width - self.width)
+        self.width = '100%-' + (self.sup.width - self.width)
       }
       self.position.right = null
     }
     if (self.position.bottom != null) {
       if (self.position.top != null) {
-        self.height = '100%-' + (self.parent.height - self.height)
+        self.height = '100%-' + (self.sup.height - self.height)
       }
       self.position.bottom = null
     }
@@ -822,17 +822,17 @@ Element.prototype.unkey =
   }
 
 Element.prototype.setIndex = function (index) {
-  if (!this.parent) return
+  if (!this.sup) return
   if (index < 0) {
-    index = this.parent.children.length + index
+    index = this.sup.sub.length + index
   }
 
   index = Math.max(index, 0)
-  index = Math.min(index, this.parent.children.length - 1)
-  const i = this.parent.children.indexOf(this)
+  index = Math.min(index, this.sup.sub.length - 1)
+  const i = this.sup.sub.indexOf(this)
   if (!~i) return
-  const item = this.parent.children.splice(i, 1)[0]
-  this.parent.children.splice(index, 0, item)
+  const item = this.sup.sub.splice(i, 1)[0]
+  this.sup.sub.splice(index, 0, item)
 }
 
 Element.prototype.setFront = function () {
@@ -879,7 +879,7 @@ Element.prototype.setLabel = function (options) {
   }
   this._label = new Box({
     screen: this.screen,
-    parent: this,
+    sup: this,
     content: options.text,
     top: -this.itop,
     tags: this.parseTags,
@@ -958,7 +958,7 @@ Element.prototype.removeHover = function () {
 // lpos is good and up to date, it can be more
 // accurate than the calculated positions below.
 // In this case, if the element is being rendered,
-// it's guaranteed that the parent will have been
+// it's guaranteed that the sup will have been
 // rendered first, in which case we can use the
 // parant's lpos instead of recalculating it's
 // position (since that might be wrong because
@@ -985,7 +985,7 @@ Element.prototype._getPos = function () {
  */
 
 Element.prototype._getWidth = function (get) {
-  const parent = get ? this.parent._getPos() : this.parent
+  const sup = get ? this.sup._getPos() : this.sup
   let width = this.position.width
     , left
     , expr
@@ -994,7 +994,7 @@ Element.prototype._getWidth = function (get) {
     expr = width.split(/(?=\+|-)/)
     width = expr[0]
     width = +width.slice(0, -1) / 100
-    width = parent.width * width | 0
+    width = sup.width * width | 0
     width += +(expr[1] || 0)
     return width
   }
@@ -1012,16 +1012,16 @@ Element.prototype._getWidth = function (get) {
       expr = left.split(/(?=\+|-)/)
       left = expr[0]
       left = +left.slice(0, -1) / 100
-      left = parent.width * left | 0
+      left = sup.width * left | 0
       left += +(expr[1] || 0)
     }
-    width = parent.width - (this.position.right || 0) - left
+    width = sup.width - (this.position.right || 0) - left
     if (this.screen.autoPadding) {
       if ((this.position.left != null || this.position.right == null)
         && this.position.left !== 'center') {
-        width -= this.parent.ileft
+        width -= this.sup.ileft
       }
-      width -= this.parent.iright
+      width -= this.sup.iright
     }
   }
 
@@ -1033,7 +1033,7 @@ Element.prototype.__defineGetter__('width', function () {
 })
 
 Element.prototype._getHeight = function (get) {
-  const parent = get ? this.parent._getPos() : this.parent
+  const sup = get ? this.sup._getPos() : this.sup
   let height = this.position.height
     , top
     , expr
@@ -1042,7 +1042,7 @@ Element.prototype._getHeight = function (get) {
     expr = height.split(/(?=\+|-)/)
     height = expr[0]
     height = +height.slice(0, -1) / 100
-    height = parent.height * height | 0
+    height = sup.height * height | 0
     height += +(expr[1] || 0)
     return height
   }
@@ -1060,17 +1060,17 @@ Element.prototype._getHeight = function (get) {
       expr = top.split(/(?=\+|-)/)
       top = expr[0]
       top = +top.slice(0, -1) / 100
-      top = parent.height * top | 0
+      top = sup.height * top | 0
       top += +(expr[1] || 0)
     }
-    height = parent.height - (this.position.bottom || 0) - top
+    height = sup.height - (this.position.bottom || 0) - top
     if (this.screen.autoPadding) {
       if ((this.position.top != null
         || this.position.bottom == null)
         && this.position.top !== 'center') {
-        height -= this.parent.itop
+        height -= this.sup.itop
       }
-      height -= this.parent.ibottom
+      height -= this.sup.ibottom
     }
   }
 
@@ -1082,7 +1082,7 @@ Element.prototype.__defineGetter__('height', function () {
 })
 
 Element.prototype._getLeft = function (get) {
-  const parent = get ? this.parent._getPos() : this.parent
+  const sup = get ? this.sup._getPos() : this.sup
   let left = this.position.left || 0
     , expr
   if (typeof left === 'string') {
@@ -1090,7 +1090,7 @@ Element.prototype._getLeft = function (get) {
     expr = left.split(/(?=\+|-)/)
     left = expr[0]
     left = +left.slice(0, -1) / 100
-    left = parent.width * left | 0
+    left = sup.width * left | 0
     left += +(expr[1] || 0)
     if (this.position.left === 'center') {
       left -= this._getWidth(get) / 2 | 0
@@ -1103,11 +1103,11 @@ Element.prototype._getLeft = function (get) {
     if ((this.position.left != null
       || this.position.right == null)
       && this.position.left !== 'center') {
-      left += this.parent.ileft
+      left += this.sup.ileft
     }
   }
 
-  return (parent.aleft || 0) + left
+  return (sup.aleft || 0) + left
 }
 
 Element.prototype.__defineGetter__('aleft', function () {
@@ -1115,19 +1115,19 @@ Element.prototype.__defineGetter__('aleft', function () {
 })
 
 Element.prototype._getRight = function (get) {
-  const parent = get ? this.parent._getPos() : this.parent
+  const sup = get ? this.sup._getPos() : this.sup
   let right
   if (this.position.right == null && this.position.left != null) {
     right = this.screen.cols - (this._getLeft(get) + this._getWidth(get))
     if (this.screen.autoPadding) {
-      right += this.parent.iright
+      right += this.sup.iright
     }
     return right
   }
 
-  right = (parent.aright || 0) + (this.position.right || 0)
+  right = (sup.aright || 0) + (this.position.right || 0)
   if (this.screen.autoPadding) {
-    right += this.parent.iright
+    right += this.sup.iright
   }
 
   return right
@@ -1138,7 +1138,7 @@ Element.prototype.__defineGetter__('aright', function () {
 })
 
 Element.prototype._getTop = function (get) {
-  const parent = get ? this.parent._getPos() : this.parent
+  const sup = get ? this.sup._getPos() : this.sup
   let top = this.position.top || 0
     , expr
   if (typeof top === 'string') {
@@ -1146,7 +1146,7 @@ Element.prototype._getTop = function (get) {
     expr = top.split(/(?=\+|-)/)
     top = expr[0]
     top = +top.slice(0, -1) / 100
-    top = parent.height * top | 0
+    top = sup.height * top | 0
     top += +(expr[1] || 0)
     if (this.position.top === 'center') {
       top -= this._getHeight(get) / 2 | 0
@@ -1159,11 +1159,11 @@ Element.prototype._getTop = function (get) {
     if ((this.position.top != null
       || this.position.bottom == null)
       && this.position.top !== 'center') {
-      top += this.parent.itop
+      top += this.sup.itop
     }
   }
 
-  return (parent.atop || 0) + top
+  return (sup.atop || 0) + top
 }
 
 Element.prototype.__defineGetter__('atop', function () {
@@ -1171,19 +1171,19 @@ Element.prototype.__defineGetter__('atop', function () {
 })
 
 Element.prototype._getBottom = function (get) {
-  const parent = get ? this.parent._getPos() : this.parent
+  const sup = get ? this.sup._getPos() : this.sup
   let bottom
   if (this.position.bottom == null && this.position.top != null) {
     bottom = this.screen.rows - (this._getTop(get) + this._getHeight(get))
     if (this.screen.autoPadding) {
-      bottom += this.parent.ibottom
+      bottom += this.sup.ibottom
     }
     return bottom
   }
 
-  bottom = (parent.abottom || 0) + (this.position.bottom || 0)
+  bottom = (sup.abottom || 0) + (this.position.bottom || 0)
   if (this.screen.autoPadding) {
-    bottom += this.parent.ibottom
+    bottom += this.sup.ibottom
   }
 
   return bottom
@@ -1194,19 +1194,19 @@ Element.prototype.__defineGetter__('abottom', function () {
 })
 
 Element.prototype.__defineGetter__('rleft', function () {
-  return this.aleft - this.parent.aleft
+  return this.aleft - this.sup.aleft
 })
 
 Element.prototype.__defineGetter__('rright', function () {
-  return this.aright - this.parent.aright
+  return this.aright - this.sup.aright
 })
 
 Element.prototype.__defineGetter__('rtop', function () {
-  return this.atop - this.parent.atop
+  return this.atop - this.sup.atop
 })
 
 Element.prototype.__defineGetter__('rbottom', function () {
-  return this.abottom - this.parent.abottom
+  return this.abottom - this.sup.abottom
 })
 
 /**
@@ -1217,7 +1217,7 @@ Element.prototype.__defineGetter__('rbottom', function () {
 // For aright, abottom, right, and bottom:
 // If position.bottom is null, we could simply set top instead.
 // But it wouldn't replicate bottom behavior appropriately if
-// the parent was resized, etc.
+// the sup was resized, etc.
 Element.prototype.__defineSetter__('width', function (val) {
   if (this.position.width === val) return
   if (/^\d+$/.test(val)) val = +val
@@ -1249,7 +1249,7 @@ Element.prototype.__defineSetter__('aleft', function (val) {
       val += +(expr[1] || 0)
     }
   }
-  val -= this.parent.aleft
+  val -= this.sup.aleft
   if (this.position.left === val) return
   this.emit('move')
   this.clearPos()
@@ -1257,7 +1257,7 @@ Element.prototype.__defineSetter__('aleft', function (val) {
 })
 
 Element.prototype.__defineSetter__('aright', function (val) {
-  val -= this.parent.aright
+  val -= this.sup.aright
   if (this.position.right === val) return
   this.emit('move')
   this.clearPos()
@@ -1279,7 +1279,7 @@ Element.prototype.__defineSetter__('atop', function (val) {
       val += +(expr[1] || 0)
     }
   }
-  val -= this.parent.atop
+  val -= this.sup.atop
   if (this.position.top === val) return
   this.emit('move')
   this.clearPos()
@@ -1287,7 +1287,7 @@ Element.prototype.__defineSetter__('atop', function (val) {
 })
 
 Element.prototype.__defineSetter__('abottom', function (val) {
-  val -= this.parent.abottom
+  val -= this.sup.abottom
   if (this.position.bottom === val) return
   this.emit('move')
   this.clearPos()
@@ -1404,15 +1404,15 @@ Element.prototype.__defineSetter__('bottom', function (val) {
  */
 
 Element.prototype._getShrinkBox = function (xi, xl, yi, yl, get) {
-  if (!this.children.length) {
+  if (!this.sub.length) {
     return { xi: xi, xl: xi + 1, yi: yi, yl: yi + 1 }
   }
   let i, el, ret, mxi = xi, mxl = xi + 1, myi = yi, myl = yi + 1
 
-  // This is a chicken and egg problem. We need to determine how the children
+  // This is a chicken and egg problem. We need to determine how the sub
   // will render in order to determine how this element renders, but it in
-  // order to figure out how the children will render, they need to know
-  // exactly how their parent renders, so, we can give them what we have so
+  // order to figure out how the sub will render, they need to know
+  // exactly how their sup renders, so, we can give them what we have so
   // far.
   let _lpos
   if (get) {
@@ -1421,8 +1421,8 @@ Element.prototype._getShrinkBox = function (xi, xl, yi, yl, get) {
     //this.shrink = false;
   }
 
-  for (i = 0; i < this.children.length; i++) {
-    el = this.children[i]
+  for (i = 0; i < this.sub.length; i++) {
+    el = this.sub[i]
 
     ret = el._getCoords(get)
 
@@ -1430,9 +1430,9 @@ Element.prototype._getShrinkBox = function (xi, xl, yi, yl, get) {
     // ret = el.lpos || this.lpos;
     if (!ret) continue
 
-    // Since the parent element is shrunk, and the child elements think it's
+    // Since the sup element is shrunk, and the child elements think it's
     // going to take up as much space as possible, an element anchored to the
-    // right or bottom will inadvertantly make the parent's shrunken size as
+    // right or bottom will inadvertantly make the sup's shrunken size as
     // large as possible. So, we can just use the height and/or width the of
     // element.
     // if (get) {
@@ -1599,7 +1599,7 @@ Element.prototype._getShrink = function (xi, xl, yi, yl, get) {
 Element.prototype._getCoords = function (get, noscroll) {
   if (this.hidden) return
 
-  // if (this.parent._rendering) {
+  // if (this.sup._rendering) {
   //   get = true;
   // }
   let xi    = this._getLeft(get)
@@ -1627,7 +1627,7 @@ Element.prototype._getCoords = function (get, noscroll) {
   }
 
   // Find a scrollable ancestor if we have one.
-  while (el = el.parent) {
+  while (el = el.sup) {
     if (el.scrollable) {
       if (fixed) {
         fixed = false
@@ -1645,7 +1645,7 @@ Element.prototype._getCoords = function (get, noscroll) {
   // Old way of doing things, this would not render right if a shrunken element
   // with lots of boxes in it was within a scrollable element.
   // See: $ node test/widget-shrink-fail.js
-  // var thisparent = this.parent;
+  // var thisparent = this.sup;
   const thisparent = el
   if (el && !noscroll) {
     ppos = thisparent.lpos
@@ -1658,7 +1658,7 @@ Element.prototype._getCoords = function (get, noscroll) {
     if (!ppos) return
 
     // TODO: Figure out how to fix base (and cbase to only
-    // take into account the *parent's* padding.
+    // take into account the *sup's* padding.
 
     yi -= ppos.base
     yl -= ppos.base
@@ -1725,24 +1725,24 @@ Element.prototype._getCoords = function (get, noscroll) {
     //if (xi > xl) return;
     if (xi >= xl) return
   }
-  if (this.noOverflow && this.parent.lpos) {
-    if (xi < this.parent.lpos.xi + this.parent.ileft) {
-      xi = this.parent.lpos.xi + this.parent.ileft
+  if (this.noOverflow && this.sup.lpos) {
+    if (xi < this.sup.lpos.xi + this.sup.ileft) {
+      xi = this.sup.lpos.xi + this.sup.ileft
     }
-    if (xl > this.parent.lpos.xl - this.parent.iright) {
-      xl = this.parent.lpos.xl - this.parent.iright
+    if (xl > this.sup.lpos.xl - this.sup.iright) {
+      xl = this.sup.lpos.xl - this.sup.iright
     }
-    if (yi < this.parent.lpos.yi + this.parent.itop) {
-      yi = this.parent.lpos.yi + this.parent.itop
+    if (yi < this.sup.lpos.yi + this.sup.itop) {
+      yi = this.sup.lpos.yi + this.sup.itop
     }
-    if (yl > this.parent.lpos.yl - this.parent.ibottom) {
-      yl = this.parent.lpos.yl - this.parent.ibottom
+    if (yl > this.sup.lpos.yl - this.sup.ibottom) {
+      yl = this.sup.lpos.yl - this.sup.ibottom
     }
   }
 
-  // if (this.parent.lpos) {
-  //   this.parent.lpos._scrollBottom = Math.max(
-  //     this.parent.lpos._scrollBottom, yl);
+  // if (this.sup.lpos) {
+  //   this.sup.lpos._scrollBottom = Math.max(
+  //     this.sup.lpos._scrollBottom, yl);
   // }
 
   return {
@@ -1921,9 +1921,9 @@ Element.prototype.render = function () {
           ci += c[0].length - 1
           attr = this.screen.attrCode(c[0], attr, dattr)
           // Ignore foreground changes for selected items.
-          if (this.parent._isList && this.parent.interactive
-            && this.parent.items[this.parent.selected] === this
-            && this.parent.options.invertSelected !== false) {
+          if (this.sup._isList && this.sup.interactive
+            && this.sup.items[this.sup.selected] === this
+            && this.sup.options.invertSelected !== false) {
             attr = (attr & ~(0x1ff << 9)) | (dattr & (0x1ff << 9))
           }
           ch = content[ci] || bch
@@ -2260,7 +2260,7 @@ Element.prototype.render = function () {
       }
     }
   }
-  this.children.forEach(function (el) {
+  this.sub.forEach(function (el) {
     if (el.screen._ci !== -1) {
       el.index = el.screen._ci++
     }

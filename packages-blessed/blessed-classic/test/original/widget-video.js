@@ -9,7 +9,7 @@ var screen = blessed.screen({
 });
 
 var video = blessed.video({
-  parent: screen,
+  sup: screen,
   left: 1,
   top: 1,
   width: '90%',

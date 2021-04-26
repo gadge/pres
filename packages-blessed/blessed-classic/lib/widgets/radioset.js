@@ -15,8 +15,8 @@ const Box = require('./box')
  */
 function RadioSet(options = {}) {
   if (!(this instanceof Node)) return new RadioSet(options)
-// Possibly inherit parent's style.
-  // options.style = this.parent.style;
+// Possibly inherit sup's style.
+  // options.style = this.sup.style;
   Box.call(this, options)
 }
 

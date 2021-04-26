@@ -5,7 +5,7 @@ var screen = blessed.screen({
 });
 
 var tab = blessed.box({
-  parent: screen,
+  sup: screen,
   top: 2,
   left: 0,
   right: 0,
@@ -25,7 +25,7 @@ var tab = blessed.box({
 });
 
 tab._.data = blessed.text({
-  parent: tab,
+  sup: tab,
   top: 0,
   left: 3,
   height: 'shrink',

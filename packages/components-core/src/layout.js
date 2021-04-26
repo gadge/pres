@@ -24,8 +24,8 @@ export class Layout extends Element {
   static build(options) { return new Layout(options) }
   isRendered(el) { return !el.lpos ? false : (el.lpos.xl - el.lpos.xi) > 0 && (el.lpos.yl - el.lpos.yi) > 0 }
   getLast(i) {
-    while (this.children[--i]) {
-      const el = this.children[i]
+    while (this.sub[--i]) {
+      const el = this.sub[i]
       if (this.isRendered(el)) return el
     }
   }
@@ -35,10 +35,10 @@ export class Layout extends Element {
   }
   _renderCoords() {
     const coords = this._getCoords(true)
-    const children = this.children
-    this.children = []
+    const sub = this.sub
+    this.sub = []
     this._render()
-    this.children = children
+    this.sub = sub
     return coords
   }
   renderer(coords) {
@@ -55,13 +55,13 @@ export class Layout extends Element {
     let lastRowIndex = 0
     // Figure out the highest width child
     if (this.options.layout === 'grid') {
-      const highWidth = this.children.reduce((out, el) => {
+      const highWidth = this.sub.reduce((out, el) => {
         out = Math.max(out, el.width)
         return out
       }, 0)
     }
     return function iterator(el, i) {
-      // Make our children shrinkable. If they don't have a height, for
+      // Make our sub shrinkable. If they don't have a height, for
       // example, calculate it for them.
       el.shrink = true
       // Find the previous rendered child's coordinates
@@ -93,7 +93,7 @@ export class Layout extends Element {
           // Otherwise we need to start a new row and calculate a new
           // `rowOffset` and `rowIndex` (the index of the child on the current
           // row).
-          rowOffset += self.children.slice(rowIndex, i).reduce(function (out, el) {
+          rowOffset += self.sub.slice(rowIndex, i).reduce(function (out, el) {
             if (!self.isRendered(el)) return out
             out = Math.max(out, el.lpos.yl - el.lpos.yi)
             return out
@@ -109,7 +109,7 @@ export class Layout extends Element {
         let above = null
         let abovea = Infinity
         for (let j = lastRowIndex; j < rowIndex; j++) {
-          const l = self.children[j]
+          const l = self.sub[j]
           if (!self.isRendered(l)) continue
           const abs = Math.abs(el.position.left - (l.lpos.xi - xi))
           // if (abs < abovea && (l.lpos.xl - l.lpos.xi) <= el.width) {
@@ -155,7 +155,7 @@ export class Layout extends Element {
       coords.xi -= this.padding.left, coords.xl += this.padding.right
       coords.yi -= this.padding.top, coords.yl += this.padding.bottom
     }
-    this.children.forEach(function (el, i) {
+    this.sub.forEach(function (el, i) {
       if (el.screen._ci !== -1) {
         el.index = el.screen._ci++
       }

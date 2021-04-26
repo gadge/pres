@@ -19,11 +19,11 @@ export class RadioButton extends Checkbox {
     // if (!(this instanceof Node)) return new RadioButton(options)
     this.on(CHECK, function () {
       let el = self
-      while ((el = el.parent)) {
+      while ((el = el.sup)) {
         if (el.type === 'radio-set' ||
           el.type === 'form') break
       }
-      el = el || self.parent
+      el = el || self.sup
       el.forDescendants(function (el) {
         if (el.type !== 'radio-button' || el === self) {
           return

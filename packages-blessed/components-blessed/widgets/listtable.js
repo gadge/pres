@@ -40,7 +40,7 @@ function ListTable(options) {
   List.call(this, options)
   options.border = border
   this._header = new Box({
-    parent: this,
+    sup: this,
     left: this.screen.autoPadding ? 0 : this.ileft,
     top: 0,
     width: 'shrink',

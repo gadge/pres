@@ -258,7 +258,7 @@ var input = blessed.textbox({
 });
 
 input.on('submit', function(value) {
-  if (value) screen.children[0].setContent(value);
+  if (value) screen.sub[0].setContent(value);
   input.clearInput();
   screen.render();
 });

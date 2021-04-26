@@ -2,7 +2,7 @@ var blessed = require('../index')
   , screen = blessed.screen()
 
 var form = blessed.form({
-  parent: screen,
+  sup: screen,
   keys: true,
   left: 0,
   top: 0,
@@ -13,7 +13,7 @@ var form = blessed.form({
 })
 
 var submit = blessed.button({
-  parent: form,
+  sup: form,
   mouse: true,
   keys: true,
   shrink: true,
@@ -38,7 +38,7 @@ var submit = blessed.button({
 })
 
 var cancel = blessed.button({
-  parent: form,
+  sup: form,
   mouse: true,
   keys: true,
   shrink: true,

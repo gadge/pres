@@ -21,7 +21,7 @@ export class Question extends Box {
     // if (!(this instanceof Node)) return new Question(options)
     this._.okay = new Button({
       screen: this.screen,
-      parent: this,
+      sup: this,
       top: 2,
       height: 1,
       left: 2,
@@ -35,7 +35,7 @@ export class Question extends Box {
     })
     this._.cancel = new Button({
       screen: this.screen,
-      parent: this,
+      sup: this,
       top: 2,
       height: 1,
       shrink: true,
@@ -55,9 +55,9 @@ export class Question extends Box {
     const self = this
     let press, okay, cancel
     // Keep above:
-    // var parent = this.parent;
+    // var sup = this.sup;
     // this.detach();
-    // parent.append(this);
+    // sup.append(this);
     this.show()
     this.setContent(' ' + text)
     this.onScreenEvent(KEYPRESS, press = function (ch, key) {

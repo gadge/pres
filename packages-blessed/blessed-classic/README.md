@@ -83,7 +83,7 @@ screen.append(box);
 
 // Add a png icon to the box
 var icon = blessed.image({
-  parent: box,
+  sup: box,
   top: 0,
   left: 0,
   type: 'overlay',
@@ -216,8 +216,8 @@ The base node which everything inherits from.
 ##### Options:
 
 - __screen__ - The screen to be associated with.
-- __parent__ - The desired parent.
-- __children__ - An arrray of children.
+- __parent__ - The desired sup.
+- __children__ - An arrray of sub.
 
 ##### Properties:
 
@@ -226,16 +226,16 @@ The base node which everything inherits from.
 - __options__ - Original options object.
 - __parent__ - Parent node.
 - __screen__ - Parent screen.
-- __children__ - Array of node's children.
+- __children__ - Array of node's sub.
 - __data, _, $__ - An object for any miscellanous user data.
 - __index__ - Render index (document order index) of the last render call.
 
 ##### Events:
 
 - Inherits all from EventEmitter.
-- __adopt__ - Received when node is added to a parent.
-- __remove__ - Received when node is removed from it's current parent.
-- __reparent__ - Received when node gains a new parent.
+- __adopt__ - Received when node is added to a sup.
+- __remove__ - Received when node is removed from it's current sup.
+- __reparent__ - Received when node gains a new sup.
 - __attach__ - Received when node is attached to the screen directly or
   somewhere in its ancestry.
 - __detach__ - Received when node is detached from the screen directly or
@@ -244,15 +244,15 @@ The base node which everything inherits from.
 ##### Methods:
 
 - Inherits all from EventEmitter.
-- __prepend(node)__ - Prepend a node to this node's children.
-- __append(node)__ - Append a node to this node's children.
+- __prepend(node)__ - Prepend a node to this node's sub.
+- __append(node)__ - Append a node to this node's sub.
 - __remove(node)__ - Remove child node from node.
-- __insert(node, i)__ - Insert a node to this node's children at index `i`.
-- __insertBefore(node, refNode)__ - Insert a node to this node's children
+- __insert(node, i)__ - Insert a node to this node's sub at index `i`.
+- __insertBefore(node, refNode)__ - Insert a node to this node's sub
   before the reference node.
 - __insertAfter(node, refNode)__ - Insert a node from node after the reference
   node.
-- __detach()__ - Remove node from its parent.
+- __detach()__ - Remove node from its sup.
 - __emitDescendants(type, args..., [iterator])__ - Emit event for element, and
   recursively emit same event for all descendants.
 - __get(name, [default])__ - Get user property with a potential default value.
@@ -560,7 +560,7 @@ The base element.
 - Inherits all from Node.
 - Note: If the `scrollable` option is enabled, Element inherits all methods
   from ScrollableBox.
-- __render()__ - Write content and children to the screen buffer.
+- __render()__ - Write content and sub to the screen buffer.
 - __hide()__ - Hide element.
 - __show()__ - Show element.
 - __toggle()__ - Toggle hidden/shown.
@@ -682,7 +682,7 @@ An element similar to Box, but geared towards rendering simple text elements.
 ##### Options:
 
 - Inherits all from Element.
-- __fill__ - Fill the entire line with chosen bg until parent bg ends, even if
+- __fill__ - Fill the entire line with chosen bg until sup bg ends, even if
   there is not enough text to fill the entire width. __(deprecated)__
 - __align__ - Text alignment: `left`, `center`, or `right`.
 
@@ -1579,23 +1579,23 @@ libcaca support.
 
 #### Layout (from Element)
 
-A layout which can position children automatically based on a `renderer` method
+A layout which can position sub automatically based on a `renderer` method
 (__experimental__ - the mechanics of this element may be changed in the
 future!).
 
-By default, the Layout element automatically positions children as if they were
+By default, the Layout element automatically positions sub as if they were
 `display: inline-block;` in CSS.
 
 ##### Options:
 
 - Inherits all from Element.
-- __renderer__ - A callback which is called right before the children are
+- __renderer__ - A callback which is called right before the sub are
   iterated over to be rendered. Should return an iterator callback which is
   called on each child element: __iterator(el, i)__.
 - __layout__ - Using the default renderer, it provides two layouts: inline, and
   grid. `inline` is the default and will render akin to `inline-block`. `grid`
   will create an automatic grid based on element dimensions. The grid cells'
-  width and height are always determined by the largest children in the layout.
+  width and height are always determined by the largest sub in the layout.
 
 ##### Properties:
 
@@ -1608,7 +1608,7 @@ By default, the Layout element automatically positions children as if they were
 ##### Methods:
 
 - Inherits all from Element.
-- __renderer(coords)__ - A callback which is called right before the children
+- __renderer(coords)__ - A callback which is called right before the sub
   are iterated over to be rendered. Should return an iterator callback which is
   called on each child element: __iterator(el, i)__.
 - __isRendered(el)__ - Check to see if a previous child element has been
@@ -1629,12 +1629,12 @@ By default, the Layout element automatically positions children as if they were
 
 You must __always__ give `Layout` a width and height. This is a chicken-and-egg
 problem: blessed cannot calculate the width and height dynamically _before_ the
-children are positioned.
+sub are positioned.
 
 `border` and `padding` are already calculated into the `coords` object the
 `renderer` receives, so there is no need to account for it in your renderer.
 
-Try to set position for children using `el.position`. `el.position` is the most
+Try to set position for sub using `el.position`. `el.position` is the most
 primitive "to-be-rendered" way to set coordinates. Setting `el.left` directly
 has more dynamic behavior which may interfere with rendering.
 
@@ -1651,7 +1651,7 @@ Some definitions for `coords` (otherwise known as `el.lpos`):
 
 Note again: the `coords` the renderer receives for the Layout already has
 border and padding subtracted, so you do not have to account for these. The
-children do not.
+sub do not.
 
 ###### Example
 
@@ -1662,7 +1662,7 @@ dynamically sized horizontal grid from left to right.
 
 ``` js
 var layout = blessed.layout({
-  parent: screen,
+  sup: screen,
   top: 'center',
   left: 'center',
   width: '50%',
@@ -1693,7 +1693,7 @@ var layout = blessed.layout({
     var rowIndex = 0;
 
     return function iterator(el, i) {
-      // Make our children shrinkable. If they don't have a height, for
+      // Make our sub shrinkable. If they don't have a height, for
       // example, calculate it for them.
       el.shrink = true;
 
@@ -1719,7 +1719,7 @@ var layout = blessed.layout({
           // Otherwise we need to start a new row and calculate a new
           // `rowOffset` and `rowIndex` (the index of the child on the current
           // row).
-          rowOffset += self.children.slice(rowIndex, i).reduce(function(out, el) {
+          rowOffset += self.sub.slice(rowIndex, i).reduce(function(out, el) {
             if (!self.isRendered(el)) return out;
             out = Math.max(out, el.lpos.yl - el.lpos.yi);
             return out;
@@ -1742,7 +1742,7 @@ var layout = blessed.layout({
 
 for (var i = 0; i < 10; i++) {
   blessed.box({
-    parent: layout,
+    sup: layout,
     width: i % 2 === 0 ? 10 : 20,
     height: i % 2 === 0 ? 5 : 10,
     border: 'line'
@@ -2005,7 +2005,7 @@ box.on('click', function(mouse) {
 });
 ```
 
-Receiving all click events for `box`, as well as all of its children:
+Receiving all click events for `box`, as well as all of its sub:
 
 ``` js
 box.on('element click', function(el, mouse) {
@@ -2045,7 +2045,7 @@ var box = blessed.box({
 ```
 
 This tells blessed to create a box, perfectly centered __relative to its
-parent__, 50% as wide and 50% as tall as its parent.
+parent__, 50% as wide and 50% as tall as its sup.
 
 Percentages can also have offsets applied to them:
 
@@ -2056,7 +2056,7 @@ Percentages can also have offsets applied to them:
   ...
 ```
 
-To access the calculated offsets, relative to the parent:
+To access the calculated offsets, relative to the sup:
 
 ``` js
 console.log(box.left);
@@ -2085,7 +2085,7 @@ box.setContent('Hello {#0fe1ab-fg}world{/}.');
 screen.render();
 ```
 
-Elements are rendered with the lower elements in the children array being
+Elements are rendered with the lower elements in the sub array being
 painted first. In terms of the painter's algorithm, the lowest indicies in the
 array are the furthest away, just like in the DOM.
 
@@ -2179,7 +2179,7 @@ telnet({ tty: true }, function(client) {
   });
 
   screen.data.main = blessed.box({
-    parent: screen,
+    sup: screen,
     left: 'center',
     top: 'center',
     width: '80%',

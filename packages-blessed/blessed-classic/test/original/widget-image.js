@@ -16,7 +16,7 @@ if (process.argv[2] === 'find') {
 var file = process.argv[2] || __dirname + '/test-image.png';
 
 var image = blessed.image({
-  parent: screen,
+  sup: screen,
   type: 'overlay',
   left: 'center',
   top: 'center',

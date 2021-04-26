@@ -21,7 +21,7 @@ screen = blessed.screen({
 });
 
 var topleft = blessed.terminal({
-  parent: screen,
+  sup: screen,
   cursor: 'line',
   cursorBlink: true,
   screenKeys: false,
@@ -47,7 +47,7 @@ topleft.pty.on('data', function(data) {
 });
 
 var topright = blessed.terminal({
-  parent: screen,
+  sup: screen,
   cursor: 'block',
   cursorBlink: true,
   screenKeys: false,
@@ -69,7 +69,7 @@ var topright = blessed.terminal({
 });
 
 var bottomleft = blessed.terminal({
-  parent: screen,
+  sup: screen,
   cursor: 'block',
   cursorBlink: true,
   screenKeys: false,
@@ -91,7 +91,7 @@ var bottomleft = blessed.terminal({
 });
 
 var bottomright = blessed.terminal({
-  parent: screen,
+  sup: screen,
   cursor: 'block',
   cursorBlink: true,
   screenKeys: false,

@@ -7,7 +7,7 @@ screen = blessed.screen({
   warnings: true
 });
 var layout = blessed.layout({
-  parent: screen,
+  sup: screen,
   top: 'center',
   left: 'center',
   width: '50%',
@@ -22,7 +22,7 @@ var layout = blessed.layout({
   }
 });
 var box1 = blessed.box({
-  parent: layout,
+  sup: layout,
   top: 'center',
   left: 'center',
   width: 20,
@@ -31,7 +31,7 @@ var box1 = blessed.box({
   content: '1'
 });
 var box2 = blessed.box({
-  parent: layout,
+  sup: layout,
   top: 0,
   left: 0,
   width: 10,
@@ -40,7 +40,7 @@ var box2 = blessed.box({
   content: '2'
 });
 var box3 = blessed.box({
-  parent: layout,
+  sup: layout,
   top: 0,
   left: 0,
   width: 10,
@@ -49,7 +49,7 @@ var box3 = blessed.box({
   content: '3'
 });
 var box4 = blessed.box({
-  parent: layout,
+  sup: layout,
   top: 0,
   left: 0,
   width: 10,
@@ -58,7 +58,7 @@ var box4 = blessed.box({
   content: '4'
 });
 var box5 = blessed.box({
-  parent: layout,
+  sup: layout,
   top: 0,
   left: 0,
   width: 10,
@@ -67,7 +67,7 @@ var box5 = blessed.box({
   content: '5'
 });
 var box6 = blessed.box({
-  parent: layout,
+  sup: layout,
   top: 0,
   left: 0,
   width: 10,
@@ -76,7 +76,7 @@ var box6 = blessed.box({
   content: '6'
 });
 var box7 = blessed.box({
-  parent: layout,
+  sup: layout,
   top: 0,
   left: 0,
   width: 10,
@@ -85,7 +85,7 @@ var box7 = blessed.box({
   content: '7'
 });
 var box8 = blessed.box({
-  parent: layout,
+  sup: layout,
   top: 'center',
   left: 'center',
   width: 20,
@@ -94,7 +94,7 @@ var box8 = blessed.box({
   content: '8'
 });
 var box9 = blessed.box({
-  parent: layout,
+  sup: layout,
   top: 0,
   left: 0,
   width: 10,
@@ -103,7 +103,7 @@ var box9 = blessed.box({
   content: '9'
 });
 var box10 = blessed.box({
-  parent: layout,
+  sup: layout,
   top: 'center',
   left: 'center',
   width: 20,
@@ -112,7 +112,7 @@ var box10 = blessed.box({
   content: '10'
 });
 var box11 = blessed.box({
-  parent: layout,
+  sup: layout,
   top: 0,
   left: 0,
   width: 10,
@@ -121,7 +121,7 @@ var box11 = blessed.box({
   content: '11'
 });
 var box12 = blessed.box({
-  parent: layout,
+  sup: layout,
   top: 'center',
   left: 'center',
   width: 20,
@@ -132,7 +132,7 @@ var box12 = blessed.box({
 if (process.argv[2] !== 'grid') {
   for (var i = 0; i < 10; i++) {
     blessed.box({
-      parent: layout,
+      sup: layout,
       // width: i % 2 === 0 ? 10 : 20,
       // height: i % 2 === 0 ? 5 : 10,
       width: Math.random() > 0.5 ? 10 : 20,

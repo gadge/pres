@@ -7,7 +7,7 @@ screen = blessed.screen({
 });
 
 var form = blessed.form({
-  parent: screen,
+  sup: screen,
   mouse: true,
   keys: true,
   vi: true,
@@ -52,7 +52,7 @@ form.key('u', function() {
 });
 
 var set = blessed.radioset({
-  parent: form,
+  sup: form,
   left: 1,
   top: 1,
   shrink: true,
@@ -64,7 +64,7 @@ var set = blessed.radioset({
 });
 
 var radio1 = blessed.radiobutton({
-  parent: set,
+  sup: set,
   mouse: true,
   keys: true,
   shrink: true,
@@ -79,7 +79,7 @@ var radio1 = blessed.radiobutton({
 });
 
 var radio2 = blessed.radiobutton({
-  parent: set,
+  sup: set,
   mouse: true,
   keys: true,
   shrink: true,
@@ -94,7 +94,7 @@ var radio2 = blessed.radiobutton({
 });
 
 var text = blessed.textbox({
-  parent: form,
+  sup: form,
   mouse: true,
   keys: true,
   style: {
@@ -112,7 +112,7 @@ text.on('focus', function() {
 });
 
 var check = blessed.checkbox({
-  parent: form,
+  sup: form,
   mouse: true,
   keys: true,
   shrink: true,
@@ -127,7 +127,7 @@ var check = blessed.checkbox({
 });
 
 var check2 = blessed.checkbox({
-  parent: form,
+  sup: form,
   mouse: true,
   keys: true,
   shrink: true,
@@ -142,7 +142,7 @@ var check2 = blessed.checkbox({
 });
 
 var submit = blessed.button({
-  parent: form,
+  sup: form,
   mouse: true,
   keys: true,
   shrink: true,
@@ -168,7 +168,7 @@ submit.on('press', function() {
 });
 
 var box1 = blessed.box({
-  parent: form,
+  sup: form,
   left: 1,
   top: 10,
   height: 10,
@@ -180,7 +180,7 @@ var box1 = blessed.box({
 });
 
 var box2 = blessed.box({
-  parent: box1,
+  sup: box1,
   left: 1,
   top: 2,
   height: 8,
@@ -192,7 +192,7 @@ var box2 = blessed.box({
 });
 
 var box3 = blessed.box({
-  parent: box2,
+  sup: box2,
   left: 1,
   top: 2,
   height: 6,
@@ -204,7 +204,7 @@ var box3 = blessed.box({
 });
 
 var box4 = blessed.box({
-  parent: box3,
+  sup: box3,
   left: 1,
   top: 2,
   height: 4,
@@ -216,7 +216,7 @@ var box4 = blessed.box({
 });
 
 var output = blessed.scrollabletext({
-  parent: form,
+  sup: form,
   mouse: true,
   keys: true,
   left: 0,
@@ -231,7 +231,7 @@ var output = blessed.scrollabletext({
 });
 
 var bottom = blessed.line({
-  parent: form,
+  sup: form,
   type: 'line',
   orientation: 'horizontal',
   left: 0,

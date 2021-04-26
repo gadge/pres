@@ -6,7 +6,7 @@ screen = blessed.screen({
   warnings: true
 });
 var box = blessed.bigtext({
-  parent: screen,
+  sup: screen,
   content: 'Hello',
   shrink: true,
   width: '80%',

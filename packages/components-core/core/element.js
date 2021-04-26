@@ -151,15 +151,15 @@ export class Element extends Node {
       if (el.hidden) return false
       // if (!el.lpos) return false;
       // if (el.position.width === 0 || el.position.height === 0) return false;
-    } while ((el = el.parent))
+    } while ((el = el.sup))
     return true
   }
   get _detached() {
     let el = this
     do {
       if (el.type === 'screen') return false
-      if (!el.parent) return true
-    } while ((el = el.parent))
+      if (!el.sup) return true
+    } while ((el = el.sup))
     return false
   }
   get draggable() { return this._draggable === true}
@@ -175,7 +175,7 @@ export class Element extends Node {
 // For aright, abottom, right, and bottom:
 // If position.bottom is null, we could simply set top instead.
 // But it wouldn't replicate bottom behavior appropriately if
-// the parent was resized, etc.
+// the sup was resized, etc.
   set width(val) {
     if (this.position.width === val) return
     if (/^\d+$/.test(val)) val = +val
@@ -207,7 +207,7 @@ export class Element extends Node {
         val += +(expr[1] || 0)
       }
     }
-    val -= this.parent.aleft
+    val -= this.sup.aleft
     if (this.position.left === val) return
     this.emit(MOVE)
     this.clearPos()
@@ -215,7 +215,7 @@ export class Element extends Node {
   }
   get aright() { return this._getRight(false) }
   set aright(val) {
-    val -= this.parent.aright
+    val -= this.sup.aright
     if (this.position.right === val) return
     this.emit(MOVE)
     this.clearPos()
@@ -237,7 +237,7 @@ export class Element extends Node {
         val += +(expr[1] || 0)
       }
     }
-    val -= this.parent.atop
+    val -= this.sup.atop
     if (this.position.top === val) return
     this.emit(MOVE)
     this.clearPos()
@@ -245,13 +245,13 @@ export class Element extends Node {
   }
   get abottom() { return this._getBottom(false) }
   set abottom(val) {
-    val -= this.parent.abottom
+    val -= this.sup.abottom
     if (this.position.bottom === val) return
     this.emit(MOVE)
     this.clearPos()
     return this.position.bottom = val
   }
-  get rleft() { return this.aleft - this.parent.aleft }
+  get rleft() { return this.aleft - this.sup.aleft }
   set rleft(val) {
     if (this.position.left === val) return
     if (/^\d+$/.test(val)) val = +val
@@ -259,14 +259,14 @@ export class Element extends Node {
     this.clearPos()
     return this.position.left = val
   }
-  get rright() { return this.aright - this.parent.aright }
+  get rright() { return this.aright - this.sup.aright }
   set rright(val) {
     if (this.position.right === val) return
     this.emit(MOVE)
     this.clearPos()
     return this.position.right = val
   }
-  get rtop() { return this.atop - this.parent.atop }
+  get rtop() { return this.atop - this.sup.atop }
   set rtop(val) {
     if (this.position.top === val) return
     if (/^\d+$/.test(val)) val = +val
@@ -274,7 +274,7 @@ export class Element extends Node {
     this.clearPos()
     return this.position.top = val
   }
-  get rbottom() { return this.abottom - this.parent.abottom }
+  get rbottom() { return this.abottom - this.sup.abottom }
   set rbottom(val) {
     if (this.position.bottom === val) return
     this.emit(MOVE)
@@ -728,7 +728,7 @@ export class Element extends Node {
                   // Compensate for surrogate length
                   // counts on wrapping (experimental):
                   // NOTE: Could optimize this by putting
-                  // it in the parent for loop.
+                  // it in the sup for loop.
                   if (unicode.isSurrogate(line, i)) i--
                   for (var s = 0, n = 0; n < i; n++) {
                     if (unicode.isSurrogate(line, n)) s++, n++
@@ -804,9 +804,7 @@ export class Element extends Node {
   enableDrag(verify) {
     const self = this
     if (this._draggable) return true
-    if (typeof verify !== FUN) {
-      verify = function () { return true }
-    }
+    if (typeof verify !== FUN) verify = () => true
     this.enableMouse()
     this.on(MOUSEDOWN, this._dragMD = function (data) {
       if (self.screen._dragging) return
@@ -827,23 +825,19 @@ export class Element extends Node {
       }
       // This can happen in edge cases where the user is
       // already dragging and element when it is detached.
-      if (!self.parent) return
+      if (!self.sup) return
       const ox = self._drag.x,
             oy = self._drag.y,
-            px = self.parent.aleft,
-            py = self.parent.atop,
+            px = self.sup.aleft,
+            py = self.sup.atop,
             x  = data.x - px - ox,
             y  = data.y - py - oy
       if (self.position.right != null) {
-        if (self.position.left != null) {
-          self.width = '100%-' + (self.parent.width - self.width)
-        }
+        if (self.position.left != null) self.width = '100%-' + (self.sup.width - self.width)
         self.position.right = null
       }
       if (self.position.bottom != null) {
-        if (self.position.top != null) {
-          self.height = '100%-' + (self.parent.height - self.height)
-        }
+        if (self.position.top != null) self.height = '100%-' + (self.sup.height - self.height)
         self.position.bottom = null
       }
       self.rleft = x
@@ -873,16 +867,16 @@ export class Element extends Node {
     return this.screen.program.unkey.apply(this, arguments)
   }
   setIndex(index) {
-    if (!this.parent) return
+    if (!this.sup) return
     if (index < 0) {
-      index = this.parent.children.length + index
+      index = this.sup.sub.length + index
     }
     index = Math.max(index, 0)
-    index = Math.min(index, this.parent.children.length - 1)
-    const i = this.parent.children.indexOf(this)
+    index = Math.min(index, this.sup.sub.length - 1)
+    const i = this.sup.sub.indexOf(this)
     if (!~i) return
-    const item = this.parent.children.splice(i, 1)[0]
-    this.parent.children.splice(index, 0, item)
+    const item = this.sup.sub.splice(i, 1)[0]
+    this.sup.sub.splice(index, 0, item)
   }
   setFront() {
     return this.setIndex(-1)
@@ -925,44 +919,28 @@ export class Element extends Node {
     }
     this._label = new Box({
       screen: this.screen,
-      parent: this,
+      sup: this,
       content: options.text,
       top: -this.itop,
       tags: this.parseTags,
       shrink: true,
       style: this.style.label
     })
-    if (options.side !== 'right') {
-      this._label.rleft = 2 - this.ileft
-    }
-    else {
-      this._label.rright = 2 - this.iright
-    }
+    if (options.side !== 'right') { this._label.rleft = 2 - this.ileft }
+    else { this._label.rright = 2 - this.iright }
     this._label._isLabel = true
     if (!this.screen.autoPadding) {
-      if (options.side !== 'right') {
-        this._label.rleft = 2
-      }
-      else {
-        this._label.rright = 2
-      }
+      if (options.side !== 'right') { this._label.rleft = 2 }
+      else { this._label.rright = 2 }
       this._label.rtop = 0
     }
-    const reposition = function () {
+    const reposition = () => {
       self._label.rtop = (self.childBase || 0) - self.itop
-      if (!self.screen.autoPadding) {
-        self._label.rtop = (self.childBase || 0)
-      }
+      if (!self.screen.autoPadding) { self._label.rtop = (self.childBase || 0) }
       self.screen.render()
     }
-    this.on(SCROLL, this._labelScroll = function () {
-      reposition()
-    })
-    this.on(RESIZE, this._labelResize = function () {
-      nextTick(function () {
-        reposition()
-      })
-    })
+    this.on(SCROLL, this._labelScroll = () => reposition())
+    this.on(RESIZE, this._labelResize = () => nextTick(() => reposition()))
   }
   removeLabel() {
     if (!this._label) return
@@ -990,7 +968,7 @@ export class Element extends Node {
 // lpos is good and up to date, it can be more
 // accurate than the calculated positions below.
 // In this case, if the element is being rendered,
-// it's guaranteed that the parent will have been
+// it's guaranteed that the sup will have been
 // rendered first, in which case we can use the
 // parant's lpos instead of recalculating it's
 // position (since that might be wrong because
@@ -1019,7 +997,7 @@ export class Element extends Node {
    * Position Getters
    */
   _getWidth(get) {
-    const parent = get ? this.parent._getPos() : this.parent
+    const sup = get ? this.sup._getPos() : this.sup
     let width = this.position.width,
         left,
         expr
@@ -1028,7 +1006,7 @@ export class Element extends Node {
       expr = width.split(/(?=\+|-)/)
       width = expr[0]
       width = +width.slice(0, -1) / 100
-      width = parent.width * width | 0
+      width = sup.width * width | 0
       width += +(expr[1] || 0)
       return width
     }
@@ -1045,22 +1023,22 @@ export class Element extends Node {
         expr = left.split(/(?=\+|-)/)
         left = expr[0]
         left = +left.slice(0, -1) / 100
-        left = parent.width * left | 0
+        left = sup.width * left | 0
         left += +(expr[1] || 0)
       }
-      width = parent.width - (this.position.right || 0) - left
+      width = sup.width - (this.position.right || 0) - left
       if (this.screen.autoPadding) {
         if ((this.position.left != null || this.position.right == null) &&
           this.position.left !== 'center') {
-          width -= this.parent.ileft
+          width -= this.sup.ileft
         }
-        width -= this.parent.iright
+        width -= this.sup.iright
       }
     }
     return width
   }
   _getHeight(get) {
-    const parent = get ? this.parent._getPos() : this.parent
+    const sup = get ? this.sup._getPos() : this.sup
     let height = this.position.height,
         top,
         expr
@@ -1069,7 +1047,7 @@ export class Element extends Node {
       expr = height.split(/(?=\+|-)/)
       height = expr[0]
       height = +height.slice(0, -1) / 100
-      height = parent.height * height | 0
+      height = sup.height * height | 0
       height += +(expr[1] || 0)
       return height
     }
@@ -1086,23 +1064,23 @@ export class Element extends Node {
         expr = top.split(/(?=\+|-)/)
         top = expr[0]
         top = +top.slice(0, -1) / 100
-        top = parent.height * top | 0
+        top = sup.height * top | 0
         top += +(expr[1] || 0)
       }
-      height = parent.height - (this.position.bottom || 0) - top
+      height = sup.height - (this.position.bottom || 0) - top
       if (this.screen.autoPadding) {
         if ((this.position.top != null ||
           this.position.bottom == null) &&
           this.position.top !== 'center') {
-          height -= this.parent.itop
+          height -= this.sup.itop
         }
-        height -= this.parent.ibottom
+        height -= this.sup.ibottom
       }
     }
     return height
   }
   _getLeft(get) {
-    const parent = get ? this.parent._getPos() : this.parent
+    const sup = get ? this.sup._getPos() : this.sup
     let left = this.position.left || 0,
         expr
     if (typeof left === STR) {
@@ -1110,7 +1088,7 @@ export class Element extends Node {
       expr = left.split(/(?=\+|-)/)
       left = expr[0]
       left = +left.slice(0, -1) / 100
-      left = parent.width * left | 0
+      left = sup.width * left | 0
       left += +(expr[1] || 0)
       if (this.position.left === 'center') {
         left -= this._getWidth(get) / 2 | 0
@@ -1123,25 +1101,25 @@ export class Element extends Node {
       if ((this.position.left != null ||
         this.position.right == null) &&
         this.position.left !== 'center') {
-        left += this.parent.ileft
+        left += this.sup.ileft
       }
     }
-    return (parent.aleft || 0) + left
+    return (sup.aleft || 0) + left
   }
   _getRight(get) {
-    const parent = get ? this.parent._getPos() : this.parent
+    const sup = get ? this.sup._getPos() : this.sup
     let right
     if (this.position.right == null && this.position.left != null) {
       right = this.screen.cols - (this._getLeft(get) + this._getWidth(get))
-      if (this.screen.autoPadding) right += this.parent.iright
+      if (this.screen.autoPadding) right += this.sup.iright
       return right
     }
-    right = (parent.aright || 0) + (this.position.right || 0)
-    if (this.screen.autoPadding) right += this.parent.iright
+    right = (sup.aright || 0) + (this.position.right || 0)
+    if (this.screen.autoPadding) right += this.sup.iright
     return right
   }
   _getTop(get) {
-    const parent = get ? this.parent._getPos() : this.parent
+    const sup = get ? this.sup._getPos() : this.sup
     let top = this.position.top || 0,
         expr
     if (typeof top === STR) {
@@ -1149,7 +1127,7 @@ export class Element extends Node {
       expr = top.split(/(?=\+|-)/)
       top = expr[0]
       top = +top.slice(0, -1) / 100
-      top = parent.height * top | 0
+      top = sup.height * top | 0
       top += +(expr[1] || 0)
       if (this.position.top === 'center') top -= this._getHeight(get) / 2 | 0
     }
@@ -1160,35 +1138,33 @@ export class Element extends Node {
       if ((this.position.top != null ||
         this.position.bottom == null) &&
         this.position.top !== 'center') {
-        top += this.parent.itop
+        top += this.sup.itop
       }
     }
-    return (parent.atop || 0) + top
+    return (sup.atop || 0) + top
   }
   _getBottom(get) {
-    const parent = get ? this.parent._getPos() : this.parent
+    const sup = get ? this.sup._getPos() : this.sup
     let bottom
     if (this.position.bottom == null && this.position.top != null) {
       bottom = this.screen.rows - (this._getTop(get) + this._getHeight(get))
-      if (this.screen.autoPadding) bottom += this.parent.ibottom
+      if (this.screen.autoPadding) bottom += this.sup.ibottom
       return bottom
     }
-    bottom = (parent.abottom || 0) + (this.position.bottom || 0)
-    if (this.screen.autoPadding) bottom += this.parent.ibottom
+    bottom = (sup.abottom || 0) + (this.position.bottom || 0)
+    if (this.screen.autoPadding) bottom += this.sup.ibottom
     return bottom
   }
   /**
    * Rendering - here be dragons
    */
   _getShrinkBox(xi, xl, yi, yl, get) {
-    if (!this.children.length) {
-      return { xi: xi, xl: xi + 1, yi: yi, yl: yi + 1 }
-    }
+    if (!this.sub.length) return { xi: xi, xl: xi + 1, yi: yi, yl: yi + 1 }
     let i, el, ret, mxi = xi, mxl = xi + 1, myi = yi, myl = yi + 1
-    // This is a chicken and egg problem. We need to determine how the children
+    // This is a chicken and egg problem. We need to determine how the sub
     // will render in order to determine how this element renders, but it in
-    // order to figure out how the children will render, they need to know
-    // exactly how their parent renders, so, we can give them what we have so
+    // order to figure out how the sub will render, they need to know
+    // exactly how their sup renders, so, we can give them what we have so
     // far.
     let _lpos
     if (get) {
@@ -1196,16 +1172,16 @@ export class Element extends Node {
       this.lpos = { xi: xi, xl: xl, yi: yi, yl: yl }
       //this.shrink = false;
     }
-    for (i = 0; i < this.children.length; i++) {
-      el = this.children[i]
+    for (i = 0; i < this.sub.length; i++) {
+      el = this.sub[i]
 
       ret = el._getCoords(get)
       // Or just (seemed to work, but probably not good):
       // ret = el.lpos || this.lpos;
       if (!ret) continue
-      // Since the parent element is shrunk, and the child elements think it's
+      // Since the sup element is shrunk, and the child elements think it's
       // going to take up as much space as possible, an element anchored to the
-      // right or bottom will inadvertantly make the parent's shrunken size as
+      // right or bottom will inadvertantly make the sup's shrunken size as
       // large as possible. So, we can just use the height and/or width the of
       // element.
       // if (get) {
@@ -1344,7 +1320,7 @@ export class Element extends Node {
   }
   _getCoords(get, noscroll) {
     if (this.hidden) return
-    // if (this.parent._rendering) {
+    // if (this.sup._rendering) {
     //   get = true;
     // }
     let xi    = this._getLeft(get),
@@ -1370,7 +1346,7 @@ export class Element extends Node {
       yi = coords.yi, yl = coords.yl
     }
     // Find a scrollable ancestor if we have one.
-    while ((el = el.parent)) {
+    while ((el = el.sup)) {
       if (el.scrollable) {
         if (fixed) {
           fixed = false
@@ -1386,7 +1362,7 @@ export class Element extends Node {
     // Old way of doing things, this would not render right if a shrunken element
     // with lots of boxes in it was within a scrollable element.
     // See: $ node test/widget-shrink-fail.js
-    // var thisparent = this.parent;
+    // var thisparent = this.sup;
     const thisparent = el
     if (el && !noscroll) {
       ppos = thisparent.lpos
@@ -1397,7 +1373,7 @@ export class Element extends Node {
       // }
       if (!ppos) return
       // TODO: Figure out how to fix base (and cbase to only
-      // take into account the *parent's* padding.
+      // take into account the *sup's* padding.
 
       yi -= ppos.base
       yl -= ppos.base
@@ -1461,15 +1437,15 @@ export class Element extends Node {
       //if (xi > xl) return;
       if (xi >= xl) return
     }
-    if (this.noOverflow && this.parent.lpos) {
-      if (xi < this.parent.lpos.xi + this.parent.ileft) { xi = this.parent.lpos.xi + this.parent.ileft }
-      if (xl > this.parent.lpos.xl - this.parent.iright) { xl = this.parent.lpos.xl - this.parent.iright }
-      if (yi < this.parent.lpos.yi + this.parent.itop) { yi = this.parent.lpos.yi + this.parent.itop }
-      if (yl > this.parent.lpos.yl - this.parent.ibottom) { yl = this.parent.lpos.yl - this.parent.ibottom }
+    if (this.noOverflow && this.sup.lpos) {
+      if (xi < this.sup.lpos.xi + this.sup.ileft) { xi = this.sup.lpos.xi + this.sup.ileft }
+      if (xl > this.sup.lpos.xl - this.sup.iright) { xl = this.sup.lpos.xl - this.sup.iright }
+      if (yi < this.sup.lpos.yi + this.sup.itop) { yi = this.sup.lpos.yi + this.sup.itop }
+      if (yl > this.sup.lpos.yl - this.sup.ibottom) { yl = this.sup.lpos.yl - this.sup.ibottom }
     }
-    // if (this.parent.lpos) {
-    //   this.parent.lpos._scrollBottom = Math.max(
-    //     this.parent.lpos._scrollBottom, yl);
+    // if (this.sup.lpos) {
+    //   this.sup.lpos._scrollBottom = Math.max(
+    //     this.sup.lpos._scrollBottom, yl);
     // }
     return {
       xi: xi,
@@ -1626,9 +1602,9 @@ export class Element extends Node {
             ci += c[0].length - 1
             attr = this.screen.attrCode(c[0], attr, dattr)
             // Ignore foreground changes for selected items.
-            if (this.parent._isList && this.parent.interactive &&
-              this.parent.items[this.parent.selected] === this &&
-              this.parent.options.invertSelected !== false) {
+            if (this.sup._isList && this.sup.interactive &&
+              this.sup.items[this.sup.selected] === this &&
+              this.sup.options.invertSelected !== false) {
               attr = (attr & ~(0x1ff << 9)) | (dattr & (0x1ff << 9))
             }
             ch = content[ci] || bch
@@ -1720,12 +1696,9 @@ export class Element extends Node {
     if (this.scrollbar && (yl - yi) < i) {
       x = xl - 1
       if (this.scrollbar.ignoreBorder && this.border) x++
-      if (this.alwaysScroll) {
-        y = this.childBase / (i - (yl - yi))
-      }
-      else {
-        y = (this.childBase + this.childOffset) / (i - 1)
-      }
+      y = this.alwaysScroll
+        ? this.childBase / (i - (yl - yi))
+        : (this.childBase + this.childOffset) / (i - 1)
       y = yi + ((yl - yi) * y | 0)
       if (y >= yl) y = yl - 1
       cell = lines[y] && lines[y][x]
@@ -1768,42 +1741,26 @@ export class Element extends Node {
           if (x === xi) {
             ch = '\u250c' // '┌'
             if (!this.border.left) {
-              if (this.border.top) {
-                ch = '\u2500' // '─'
-              }
-              else {
-                continue
-              }
+              if (this.border.top) { ch = '\u2500' } // '─'
+              else { continue }
             }
             else {
-              if (!this.border.top) {
-                ch = '\u2502' // '│'
-              }
+              if (!this.border.top) { ch = '\u2502' } // '│'
             }
           }
           else if (x === xl - 1) {
             ch = '\u2510' // '┐'
             if (!this.border.right) {
-              if (this.border.top) {
-                ch = '\u2500' // '─'
-              }
-              else {
-                continue
-              }
+              if (this.border.top) { ch = '\u2500' } // '─'
+              else { continue }
             }
             else {
-              if (!this.border.top) {
-                ch = '\u2502' // '│'
-              }
+              if (!this.border.top) { ch = '\u2502' } // '│'
             }
           }
-          else {
-            ch = '\u2500' // '─'
-          }
+          else { ch = '\u2500' } // '─'
         }
-        else if (this.border.type === 'bg') {
-          ch = this.border.ch
-        }
+        else if (this.border.type === 'bg') { ch = this.border.ch }
         if (!this.border.top && x !== xi && x !== xl - 1) {
           ch = ' '
           if (dattr !== cell[0] || ch !== cell[1]) {
@@ -1825,12 +1782,8 @@ export class Element extends Node {
         cell = lines[y][xi]
         if (cell) {
           if (this.border.left) {
-            if (this.border.type === 'line') {
-              ch = '\u2502' // '│'
-            }
-            else if (this.border.type === 'bg') {
-              ch = this.border.ch
-            }
+            if (this.border.type === 'line') { ch = '\u2502' } // '│'
+            else if (this.border.type === 'bg') { ch = this.border.ch }
             if (!coords.noleft)
               if (battr !== cell[0] || ch !== cell[1]) {
                 lines[y][xi][0] = battr
@@ -1962,10 +1915,8 @@ export class Element extends Node {
         }
       }
     }
-    this.children.forEach(function (el) {
-      if (el.screen._ci !== -1) {
-        el.index = el.screen._ci++
-      }
+    this.sub.forEach(el => {
+      if (el.screen._ci !== -1) el.index = el.screen._ci++
       // if (el.screen._rendering) {
       //   el._rendering = true;
       // }
@@ -1982,9 +1933,7 @@ export class Element extends Node {
    */
   insertLine(i, line) {
     if (typeof line === STR) line = line.split('\n')
-    if (i !== i || i == null) {
-      i = this._clines.ftor.length
-    }
+    if (i !== i || i == null) i = this._clines.ftor.length
     i = Math.max(i, 0)
     while (this._clines.fake.length < i) {
       this._clines.fake.push('')
@@ -2003,9 +1952,8 @@ export class Element extends Node {
     else {
       real = this._clines.ftor[i][0]
     }
-    for (let j = 0; j < line.length; j++) {
+    for (let j = 0; j < line.length; j++)
       this._clines.fake.splice(i + j, 0, line[j])
-    }
     this.setContent(this._clines.fake.join('\n'), true)
     diff = this._clines.length - start
     if (diff > 0) {
@@ -2024,9 +1972,7 @@ export class Element extends Node {
   }
   deleteLine(i, n) {
     n = n || 1
-    if (i !== i || i == null) {
-      i = this._clines.ftor.length - 1
-    }
+    if (i !== i || i == null) i = this._clines.ftor.length - 1
     i = Math.max(i, 0)
     i = Math.min(i, this._clines.ftor.length - 1)
     // NOTE: Could possibly compare the first and last ftor line numbers to see
@@ -2034,9 +1980,7 @@ export class Element extends Node {
     const start = this._clines.length
     let diff
     const real = this._clines.ftor[i][0]
-    while (n--) {
-      this._clines.fake.splice(i, 1)
-    }
+    while (n--) this._clines.fake.splice(i, 1)
     this.setContent(this._clines.fake.join('\n'), true)
     diff = start - this._clines.length
     // XXX clearPos() without diff statement?
@@ -2055,9 +1999,7 @@ export class Element extends Node {
           pos.yl - this.ibottom - 1)
       }
     }
-    if (this._clines.length < height) {
-      this.clearPos()
-    }
+    if (this._clines.length < height) this.clearPos()
   }
   insertTop(line) {
     const fake = this._clines.rtof[this.childBase || 0]

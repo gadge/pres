@@ -7,7 +7,7 @@ var screen = blessed.screen({
 });
 
 var terminal = blessed.terminal({
-  parent: screen,
+  sup: screen,
   // cursor: 'line',
   cursorBlink: true,
   screenKeys: false,
@@ -41,7 +41,7 @@ var screen2 = blessed.screen({
 });
 
 var box1 = blessed.box({
-  parent: screen2,
+  sup: screen2,
   top: 'center',
   left: 'center',
   width: 20,

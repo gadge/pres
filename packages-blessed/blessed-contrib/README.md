@@ -402,28 +402,28 @@ several special keys :
     * *Desc* : Node name
     * If the node isn't the root and you don't specify the name, will be set to hash key
     * *Example* : <code>{ name: 'Fruit'}</code>
-* children
-    * *Type* : `hash` or `function(node){ return children }`
-    * *Desc* : Node children.
-    * The function must return a hash that could have been used as children property
-    * If you use a function, the result will be stored in `node.childrenContent` and `children`
+* sub
+    * *Type* : `hash` or `function(node){ return sub }`
+    * *Desc* : Node sub.
+    * The function must return a hash that could have been used as sub property
+    * If you use a function, the result will be stored in `node.subContent` and `sub`
     * *Example* :
-        * Hash : <code>{'Fruit':{ name: 'Fruit', children:{ 'Banana': {}, 'Cherry': {}}}}</code>
+        * Hash : <code>{'Fruit':{ name: 'Fruit', sub:{ 'Banana': {}, 'Cherry': {}}}}</code>
         * Function : see `examples/explorer.js`
-* childrenContent
+* subContent
     * *Type* : `hash`
     * *Desc* : Children content for internal usage *DO NOT MODIFY*
-    * If `node.children` is a hash, `node.children===node.childrenContent`
-    * If `node.children` is a function, it's used to store the `node.children()` result
+    * If `node.sub` is a hash, `node.sub===node.subContent`
+    * If `node.sub` is a function, it's used to store the `node.sub()` result
     * You can read this property, but you should never write it.
-    * Usually this will be used to check `if(node.childrenContent)` in your `node.children` function to generate
-      children only once
+    * Usually this will be used to check `if(node.subContent)` in your `node.sub` function to generate
+      sub only once
 * extended
     * *Type* : `boolean`
     * *Desc* : Determine if this node is extended
     * No effect when the node have no child
     * Default value for each node will be `treeInstance.options.extended` if the node `extended` option is not set
-    * *Example* : <code>{'Fruit':{ name: 'Fruit', extended: true, children:{ 'Banana': {}, 'Cherry': {}}}}</code>
+    * *Example* : <code>{'Fruit':{ name: 'Fruit', extended: true, sub:{ 'Banana': {}, 'Cherry': {}}}}</code>
 
 ### Markdown
 

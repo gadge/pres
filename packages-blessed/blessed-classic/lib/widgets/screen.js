@@ -114,7 +114,7 @@ function Screen(options = {}) {
     self.render();
     (function emit(el) {
       el.emit('resize')
-      el.children.forEach(emit)
+      el.sub.forEach(emit)
     })(self)
   })
   this.program.on('focus', function () {
@@ -271,7 +271,7 @@ Screen.prototype.postEnter = function () {
   if (this.options.debug) {
     this.debugLog = new Log({
       screen: this,
-      parent: this,
+      sup: this,
       hidden: true,
       draggable: true,
       left: 'center',
@@ -313,7 +313,7 @@ Screen.prototype.postEnter = function () {
     this.on('warning', function (text) {
       const warning = new Box({
         screen: self,
-        parent: self,
+        sup: self,
         left: 'center',
         top: 'center',
         width: 'shrink',
@@ -452,7 +452,7 @@ Screen.prototype._listenMouse = function (el) {
   //     if (el.clickable === true && el.options.autoFocus !== false) {
   //       target = el;
   //     }
-  //   } while (el = el.parent);
+  //   } while (el = el.sup);
   //   if (target) target.focus();
   // });
   // Autofocus elements with the appropriate option.
@@ -621,7 +621,7 @@ Screen.prototype.render = function () {
   // be some overhead though.
   // this.screen.clearRegion(0, this.cols, 0, this.rows);
   this._ci = 0
-  this.children.forEach(function (el) {
+  this.sub.forEach(function (el) {
     el.index = self._ci++
     //el._rendering = true;
     el.render()
@@ -1511,7 +1511,7 @@ Screen.prototype.rewindFocus = function () {
 Screen.prototype._focus = function (self, old) {
   // Find a scrollable ancestor if we have one.
   let el = self
-  while (el = el.parent) {
+  while (el = el.sup) {
     if (el.scrollable) break
   }
 

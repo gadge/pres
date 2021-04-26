@@ -32,7 +32,7 @@ function Video(options) {
     return this
   }
   const opts = {
-    parent: this,
+    sup: this,
     left: 0,
     top: 0,
     width: this.width - this.iwidth,
@@ -56,7 +56,7 @@ function Video(options) {
   this.on('resize', function () {
     self.tty.destroy()
     const opts = {
-      parent: self,
+      sup: self,
       left: 0,
       top: 0,
       width: self.width - self.iwidth,

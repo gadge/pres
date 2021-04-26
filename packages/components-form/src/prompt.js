@@ -21,7 +21,7 @@ export class Prompt extends Box {
     super(options)
     // if (!(this instanceof Node)) return new Prompt(options)
     this._.input = new Textbox({
-      parent: this,
+      sup: this,
       top: 3,
       height: 1,
       left: 2,
@@ -29,7 +29,7 @@ export class Prompt extends Box {
       bg: 'black'
     })
     this._.okay = new Button({
-      parent: this,
+      sup: this,
       top: 5,
       height: 1,
       left: 2,
@@ -42,7 +42,7 @@ export class Prompt extends Box {
       mouse: true
     })
     this._.cancel = new Button({
-      parent: this,
+      sup: this,
       top: 5,
       height: 1,
       shrink: true,
@@ -66,9 +66,9 @@ export class Prompt extends Box {
       value = ''
     }
     // Keep above:
-    // var parent = this.parent;
+    // var sup = this.sup;
     // this.detach();
-    // parent.append(this);
+    // sup.append(this);
     this.show()
     this.setContent(' ' + text)
     this._.input.value = value

@@ -8,7 +8,7 @@ screen = blessed.screen({
 });
 
 var box = blessed.textarea({
-  parent: screen,
+  sup: screen,
   // Possibly support:
   // align: 'center',
   style: {

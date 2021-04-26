@@ -21,7 +21,7 @@ function Question(options = {}) {
   Box.call(this, options)
   this._.okay = new Button({
     screen: this.screen,
-    parent: this,
+    sup: this,
     top: 2,
     height: 1,
     left: 2,
@@ -35,7 +35,7 @@ function Question(options = {}) {
   })
   this._.cancel = new Button({
     screen: this.screen,
-    parent: this,
+    sup: this,
     top: 2,
     height: 1,
     shrink: true,
@@ -59,9 +59,9 @@ Question.prototype.ask = function (text, callback) {
   let press, okay, cancel
 
   // Keep above:
-  // var parent = this.parent;
+  // var sup = this.sup;
   // this.detach();
-  // parent.append(this);
+  // sup.append(this);
   this.show()
   this.setContent(' ' + text)
   this.onScreenEvent('keypress', press = function (ch, key) {

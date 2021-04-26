@@ -7,7 +7,7 @@ var screen = blessed.screen({
   warnings: true
 });
 var prompt = blessed.prompt({
-  parent: screen,
+  sup: screen,
   border: 'line',
   height: 'shrink',
   width: 'half',
@@ -19,7 +19,7 @@ var prompt = blessed.prompt({
   vi: true
 });
 var question = blessed.question({
-  parent: screen,
+  sup: screen,
   border: 'line',
   height: 'shrink',
   width: 'half',
@@ -31,7 +31,7 @@ var question = blessed.question({
   vi: true
 });
 var msg = blessed.message({
-  parent: screen,
+  sup: screen,
   border: 'line',
   height: 'shrink',
   width: 'half',
@@ -44,7 +44,7 @@ var msg = blessed.message({
   vi: true
 });
 var loader = blessed.loading({
-  parent: screen,
+  sup: screen,
   border: 'line',
   height: 'shrink',
   width: 'half',

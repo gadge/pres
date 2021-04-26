@@ -7,8 +7,8 @@ export class Carousel {
   }
   static build(options) { return new Carousel(options) }
   move() {
-    let i = this.screen.children.length
-    while (i--) this.screen.children[i].detach()
+    let i = this.screen.sub.length
+    while (i--) this.screen.sub[i].detach()
     this.pages[this.currPage](this.screen, this.currPage)
     this.screen.render()
   }

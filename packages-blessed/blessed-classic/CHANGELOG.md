@@ -20,7 +20,7 @@ __border docking__.
   widget-dock.js)
 
 - __`autoPadding` default__ - Auto padding is now enabled by default, meaning
-  blessed will automatically position elements inside their parent's border.
+  blessed will automatically position elements inside their sup's border.
 
 - __`rleft` property__ - Relative offsets are now default element properties
   (`left` instead of `rleft`).

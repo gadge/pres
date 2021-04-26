@@ -48,7 +48,7 @@ var server = telnet({ tty: true }, function(client) {
 });
 function simpleTest(screen) {
   screen.data.main = blessed.box({
-    parent: screen,
+    sup: screen,
     width: '80%',
     height: '90%',
     border: 'line',

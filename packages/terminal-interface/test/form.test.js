@@ -1,12 +1,12 @@
-import fs                    from 'fs'
-import { TerminalInterface } from '../src/terminal-interface'
+import fs     from 'fs'
+import { TI } from '../src/t-i'
 // Screen
-const screen = TerminalInterface.screen({
+const screen = TI.screen({
   smartCSR: true,
-  title: 'TerminalInterface form'
+  title: 'TI form'
 })
 // Form
-const form = TerminalInterface.form({
+const form = TI.form({
   parent: screen,
   width: '90%',
   left: 'center',
@@ -14,13 +14,13 @@ const form = TerminalInterface.form({
   vi: true
 })
 // Text boxes
-const label1 = TerminalInterface.text({
+const label1 = TI.text({
   parent: screen,
   top: 3,
   left: 5,
   content: 'FIRST NAME:'
 })
-const firstName = TerminalInterface.textbox({
+const firstName = TI.textbox({
   parent: form,
   name: 'firstname',
   top: 4,
@@ -35,13 +35,13 @@ const firstName = TerminalInterface.textbox({
     fg: 'blue'
   }
 })
-const label2 = TerminalInterface.text({
+const label2 = TI.text({
   parent: screen,
   content: 'LAST NAME:',
   top: 8,
   left: 5
 })
-const lastName = TerminalInterface.textbox({
+const lastName = TI.textbox({
   parent: form,
   name: 'lastname',
   top: 9,
@@ -57,34 +57,34 @@ const lastName = TerminalInterface.textbox({
   }
 })
 // Check boxes
-const label3 = TerminalInterface.text({
+const label3 = TI.text({
   parent: screen,
   content: 'What are your favorite editors?',
   top: 14,
   left: 5
 })
-const vim = TerminalInterface.checkbox({
+const vim = TI.checkbox({
   parent: form,
   name: 'editors',
   content: 'Vim',
   top: 16,
   left: 5
 })
-const emacs = TerminalInterface.checkbox({
+const emacs = TI.checkbox({
   parent: form,
   name: 'editors',
   content: 'Emacs',
   top: 16,
   left: 20
 })
-const atom = TerminalInterface.checkbox({
+const atom = TI.checkbox({
   parent: form,
   name: 'editors',
   content: 'Atom',
   top: 16,
   left: 35
 })
-const brackets = TerminalInterface.checkbox({
+const brackets = TI.checkbox({
   parent: form,
   name: 'editors',
   content: 'Brackets',
@@ -92,38 +92,38 @@ const brackets = TerminalInterface.checkbox({
   left: 50
 })
 // Radio buttons
-const label4 = TerminalInterface.text({
+const label4 = TI.text({
   parent: screen,
-  content: 'Do you like TerminalInterface?',
+  content: 'Do you like TI?',
   top: 19,
   left: 5
 })
-const radioset = TerminalInterface.radioSet({
+const radioset = TI.radioSet({
   parent: form,
   width: '100%',
   height: 5,
   top: 21
 })
-const yes = TerminalInterface.radioButton({
+const yes = TI.radioButton({
   parent: radioset,
   name: 'like',
   content: 'Yes',
   left: 5
 })
-const no = TerminalInterface.radioButton({
+const no = TI.radioButton({
   parent: radioset,
   name: 'like',
   content: 'No',
   left: 15
 })
 // Text area
-const label5 = TerminalInterface.text({
+const label5 = TI.text({
   parent: screen,
   content: 'Your comments...',
   top: 24,
   left: 5
 })
-const textarea = TerminalInterface.textarea({
+const textarea = TI.textarea({
   parent: form,
   name: 'comments',
   top: 26,
@@ -135,7 +135,7 @@ const textarea = TerminalInterface.textarea({
   }
 })
 // Submit/Cancel buttons
-const submit = TerminalInterface.button({
+const submit = TI.button({
   parent: form,
   name: 'submit',
   content: 'Submit',
@@ -157,7 +157,7 @@ const submit = TerminalInterface.button({
     }
   }
 })
-const reset = TerminalInterface.button({
+const reset = TI.button({
   parent: form,
   name: 'reset',
   content: 'Reset',
@@ -180,7 +180,7 @@ const reset = TerminalInterface.button({
   }
 })
 // Info
-const msg = TerminalInterface.message({
+const msg = TI.message({
   parent: screen,
   top: 40,
   left: 5,
@@ -189,7 +189,7 @@ const msg = TerminalInterface.message({
     fg: 'green'
   }
 })
-const table = TerminalInterface.table({
+const table = TI.table({
   parent: screen,
   content: '',
   top: 40,
@@ -216,7 +216,7 @@ form.on('submit', function (data) {
     summary += data.firstname + ' ' + data.lastname + '\n'
     summary += '------------------------------\n'
     summary += 'Favorite editors: ' + editors + '\n'
-    summary += 'Likes TerminalInterface: ' + data.like[0] + '\n'
+    summary += 'Likes TI: ' + data.like[0] + '\n'
     summary += 'Comments: ' + data.comments
     fs.writeFile('form-data.txt', summary, function (err) {
       if (err) throw err

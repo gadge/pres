@@ -137,7 +137,7 @@ Listbar.prototype.add =
         , cmd
         , title
         , len
-      if (!this.parent) {
+      if (!this.sup) {
         drawn = 0
       }
       else {
@@ -272,7 +272,7 @@ Listbar.prototype.select = function (offset) {
   else if (offset >= this.items.length) {
     offset = this.items.length - 1
   }
-  if (!this.parent) {
+  if (!this.sup) {
     this.emit('select item', this.items[offset], offset)
     return
   }

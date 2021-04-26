@@ -7,7 +7,7 @@ screen = blessed.screen({
 });
 
 var outer = blessed.box({
-  parent: screen,
+  sup: screen,
   //left: 0,
   //top: 0,
   //left: '50%',
@@ -22,7 +22,7 @@ var outer = blessed.box({
 });
 
 var inner = blessed.box({
-  parent: outer,
+  sup: outer,
   left: 0,
   top: 0,
   //width: 5,

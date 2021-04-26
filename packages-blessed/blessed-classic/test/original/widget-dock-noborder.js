@@ -9,7 +9,7 @@ screen = blessed.screen({
 });
 
 blessed.box({
-  parent: screen,
+  sup: screen,
   left: -1,
   top: -1,
   width: '50%+1',
@@ -19,7 +19,7 @@ blessed.box({
 });
 
 blessed.box({
-  parent: screen,
+  sup: screen,
   left: '50%-1',
   top: -1,
   width: '50%+3',
@@ -29,7 +29,7 @@ blessed.box({
 });
 
 blessed.box({
-  parent: screen,
+  sup: screen,
   left: -1,
   top: '50%-1',
   width: '50%+1',
@@ -39,7 +39,7 @@ blessed.box({
 });
 
 blessed.listtable({
-  parent: screen,
+  sup: screen,
   left: '50%-1',
   top: '50%-1',
   width: '50%+3',
@@ -72,7 +72,7 @@ blessed.listtable({
 }).focus();
 
 // blessed.box({
-//   parent: screen,
+//   sup: screen,
 //   left: '50%-1',
 //   top: '50%-1',
 //   width: '50%+1',

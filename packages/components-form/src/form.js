@@ -54,31 +54,31 @@ export class Form extends Box {
     // Also potentially only include *visible* focusable elements.
     // This would remove the need to check for _selected.visible in previous()
     // and next().
-    if (!this._children) {
+    if (!this._sub) {
       const out = []
-      this.children.forEach(function fn(el) {
+      this.sub.forEach(function fn(el) {
         if (el.keyable) out.push(el)
-        el.children.forEach(fn)
+        el.sub.forEach(fn)
       })
-      this._children = out
+      this._sub = out
     }
   }
-  _visible() { return !!this._children.filter(el => el.visible).length }
+  _visible() { return !!this._sub.filter(el => el.visible).length }
   next() {
     this._refresh()
     if (!this._visible()) return
     if (!this._selected) {
-      this._selected = this._children[0]
+      this._selected = this._sub[0]
       if (!this._selected.visible) return this.next()
       if (this.screen.focused !== this._selected) return this._selected
     }
-    const i = this._children.indexOf(this._selected)
-    if (!~i || !this._children[i + 1]) {
-      this._selected = this._children[0]
+    const i = this._sub.indexOf(this._selected)
+    if (!~i || !this._sub[i + 1]) {
+      this._selected = this._sub[0]
       if (!this._selected.visible) return this.next()
       return this._selected
     }
-    this._selected = this._children[i + 1]
+    this._selected = this._sub[i + 1]
     if (!this._selected.visible) return this.next()
     return this._selected
   }
@@ -86,17 +86,17 @@ export class Form extends Box {
     this._refresh()
     if (!this._visible()) return
     if (!this._selected) {
-      this._selected = this._children[this._children.length - 1]
+      this._selected = this._sub[this._sub.length - 1]
       if (!this._selected.visible) return this.previous()
       if (this.screen.focused !== this._selected) return this._selected
     }
-    const i = this._children.indexOf(this._selected)
-    if (!~i || !this._children[i - 1]) {
-      this._selected = this._children[this._children.length - 1]
+    const i = this._sub.indexOf(this._selected)
+    if (!~i || !this._sub[i - 1]) {
+      this._selected = this._sub[this._sub.length - 1]
       if (!this._selected.visible) return this.previous()
       return this._selected
     }
-    this._selected = this._children[i - 1]
+    this._selected = this._sub[i - 1]
     if (!this._selected.visible) return this.previous()
     return this._selected
   }
@@ -119,21 +119,21 @@ export class Form extends Box {
   }
   submit() {
     const out = {}
-    this.children.forEach(function fn(el) {
+    this.sub.forEach(function fn(el) {
       if (el.value != null) {
         const name = el.name || el.type
         if (Array.isArray(out[name])) { out[name].push(el.value) }
         else if (out[name]) { out[name] = [ out[name], el.value ] }
         else { out[name] = el.value }
       }
-      el.children.forEach(fn)
+      el.sub.forEach(fn)
     })
     this.emit(SUBMIT, out)
     return this.submission = out
   }
   cancel() { this.emit(CANCEL) }
   reset() {
-    this.children.forEach(function fn(el) {
+    this.sub.forEach(function fn(el) {
       switch (el.type) {
         case 'screen':
           break
@@ -198,7 +198,7 @@ export class Form extends Box {
           //el.clearImage();
           return
       }
-      el.children.forEach(fn)
+      el.sub.forEach(fn)
     })
     this.emit(RESET)
   }

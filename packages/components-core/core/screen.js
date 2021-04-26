@@ -118,7 +118,7 @@ export class Screen extends Node {
       self.render();
       (function emit(el) {
         el.emit(RESIZE)
-        el.children.forEach(emit)
+        el.sub.forEach(emit)
       })(self)
     })
     this.program.on(FOCUS, function () {self.emit(FOCUS)})
@@ -209,7 +209,7 @@ export class Screen extends Node {
     if (this.options.debug) {
       this.debugLog = new Log({
         screen: this,
-        parent: this,
+        sup: this,
         hidden: true,
         draggable: true,
         left: 'center',
@@ -248,7 +248,7 @@ export class Screen extends Node {
       this.on(WARNING, text => {
         const warning = new Box({
           screen: self,
-          parent: self,
+          sup: self,
           left: 'center',
           top: 'center',
           width: 'shrink',
@@ -367,7 +367,7 @@ export class Screen extends Node {
     //     if (el.clickable === true && el.options.autoFocus !== false) {
     //       target = el;
     //     }
-    //   } while ((el = el.parent));
+    //   } while ((el = el.sup));
     //   if (target) target.focus();
     // });
     // Autofocus elements with the appropriate option.
@@ -490,7 +490,7 @@ export class Screen extends Node {
     // be some overhead though.
     // this.screen.clearRegion(0, this.cols, 0, this.rows);
     this._ci = 0
-    this.children.forEach(el => { (el.index = self._ci++), el.render() })
+    this.sub.forEach(el => { (el.index = self._ci++), el.render() })
     this._ci = -1
     if (this.screen.dockBorders) { this._dockBorders() }
     this.draw(0, this.lines.length - 1)
@@ -1288,7 +1288,7 @@ export class Screen extends Node {
   _focus(self, old) {
     // Find a scrollable ancestor if we have one.
     let el = self
-    while ((el = el.parent)) if (el.scrollable) break
+    while ((el = el.sup)) if (el.scrollable) break
     // If we're in a scrollable element,
     // automatically scroll to the focused element.
     if (el && !el.detached) {

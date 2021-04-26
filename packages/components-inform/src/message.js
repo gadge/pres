@@ -28,9 +28,9 @@ export class Message extends Box {
     }
     if (time == null) time = 3
     // Keep above:
-    // var parent = this.parent;
+    // var sup = this.sup;
     // this.detach();
-    // parent.append(this);
+    // sup.append(this);
     if (this.scrollable) {
       this.screen.saveFocus()
       this.focus()

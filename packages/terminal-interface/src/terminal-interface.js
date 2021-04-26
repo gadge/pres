@@ -74,7 +74,7 @@ import * as unicode    from '@pres/util-unicode'
  * @property {function(Object):PNG} png
  * @property {function(Object):Video} video
  */
-export class TerminalInterface {
+export class TI {
   static program = Program.build
   static build = Program.build
   static helpers = helpers
@@ -83,7 +83,7 @@ export class TerminalInterface {
   static Tput = Tput
 }
 
-Object.assign(TerminalInterface, components)
+Object.assign(TI, components)
 
 // // chart
 // static barChart = barChart

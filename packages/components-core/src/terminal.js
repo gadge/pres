@@ -80,7 +80,7 @@ export class Terminal extends Box {
       context: element,
       document: element,
       body: element,
-      parent: element,
+      sup: element,
       cursorBlink: this.cursorBlink,
       screenKeys: this.screenKeys
     })

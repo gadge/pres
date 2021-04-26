@@ -12,7 +12,7 @@ var DU = '杜';
 var JUAN = '鹃';
 
 var table = blessed.table({
-  //parent: screen,
+  //sup: screen,
   top: 'center',
   left: 'center',
   data: null,

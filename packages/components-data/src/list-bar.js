@@ -123,7 +123,7 @@ export class ListBar extends Box {
         cmd,
         title,
         len
-    if (!this.parent) {
+    if (!this.sup) {
       drawn = 0
     }
     else {
@@ -251,7 +251,7 @@ export class ListBar extends Box {
     else if (offset >= this.items.length) {
       offset = this.items.length - 1
     }
-    if (!this.parent) {
+    if (!this.sup) {
       this.emit(SELECT_ITEM, this.items[offset], offset)
       return
     }

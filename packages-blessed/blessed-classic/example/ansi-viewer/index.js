@@ -23,7 +23,7 @@ var screen = blessed.screen({
   dockBorders: true
 });
 var art = blessed.terminal({
-  parent: screen,
+  sup: screen,
   left: 0,
   top: 0,
   height: 60,
@@ -36,7 +36,7 @@ var art = blessed.terminal({
   draggable: true
 });
 var list = blessed.list({
-  parent: screen,
+  sup: screen,
   label: ' {bold}{cyan-fg}Art List{/cyan-fg}{/bold} (Drag Me) ',
   tags: true,
   draggable: true,
@@ -76,7 +76,7 @@ var list = blessed.list({
   }
 });
 var status = blessed.box({
-  parent: screen,
+  sup: screen,
   bottom: 0,
   right: 0,
   height: 1,
@@ -87,7 +87,7 @@ var status = blessed.box({
   content: 'Select your piece of ANSI art (`/` to search).'
 });
 var loader = blessed.loading({
-  parent: screen,
+  sup: screen,
   top: 'center',
   left: 'center',
   height: 5,
@@ -98,7 +98,7 @@ var loader = blessed.loading({
   border: 'line'
 });
 var msg = blessed.message({
-  parent: screen,
+  sup: screen,
   top: 'center',
   left: 'center',
   height: 'shrink',
@@ -109,7 +109,7 @@ var msg = blessed.message({
   border: 'line'
 });
 var prompt = blessed.prompt({
-  parent: screen,
+  sup: screen,
   top: 'center',
   left: 'center',
   height: 'shrink',
