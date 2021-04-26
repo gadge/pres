@@ -10,6 +10,7 @@ export {
 export {
   TI,
   TI as blessed,
+  TI as contrib,
   TI as TerminalInterface,
   TI as Pres,
 }

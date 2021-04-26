@@ -1,5 +1,7 @@
-import { ATTACH } from '@pres/enum-events'
 import { Canvas } from '@pres/components-layout'
+import { ATTACH } from '@pres/enum-events'
+
+const { cos, sin, PI } = Math // 3.141592635
 
 export class DonutChart extends Canvas {
   constructor(options = {}) {
@@ -54,7 +56,7 @@ export class DonutChart extends Canvas {
           s++
           continue
         }
-        const slice = 2 * pi / points
+        const slice = 2 * PI / points
         c.beginPath()
         const p = parseFloat(percent * 360)
         for (let i = 0; i <= points; i++) {
@@ -69,8 +71,8 @@ export class DonutChart extends Canvas {
       }
     }
     const donuts = data.length
-    var radius = this.options.radius
-    var width = this.options.arcWidth
+    const radius = this.options.radius
+    const width = this.options.arcWidth
     const remainColor = this.options.remainColor
     const middle = cheight / 2
     const spacing = (cwidth - (donuts * radius * 2)) / (donuts + 1)
@@ -103,7 +105,7 @@ export class DonutChart extends Canvas {
     this.currentData = data
     c.strokeStyle = 'magenta'
     c.restore()
-    return
+    return void 0
   }
   getOptionsPrototype() {
     return {
@@ -118,6 +120,4 @@ export class DonutChart extends Canvas {
     }
   }
 }
-const cos = Math.cos
-const sin = Math.sin
-const pi = 3.141592635
+

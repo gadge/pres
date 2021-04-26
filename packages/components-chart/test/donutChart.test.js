@@ -1,5 +1,7 @@
-import { blessed }  from '@pres/terminal-interface'
-import * as contrib from '../index'
+import { Cards }            from '@palett/cards'
+import { toner }            from '@palett/toner-hex'
+import { blessed, contrib } from '@pres/terminal-interface'
+import { hexToRGB }         from '@pres/util-colors'
 
 const screen = blessed.screen()
 /**
@@ -12,31 +14,42 @@ const screen = blessed.screen()
  */
 const donut = contrib.donutChart({
   label: 'Test',
-  radius: 8,
+  radius: 9,
   arcWidth: 3,
   yPadding: 2,
-  data: [
-    { percent: 80, label: 'web1', color: 'green' } ]
+  data: [ {
+    percent: 80,
+    label: 'web1',
+    color: 'green'
+  } ]
 })
 screen.append(donut)
-setInterval(updateDonuts, 5)
+setInterval(updateDonuts, 25)
 let pct = 0.00
+let count = 0
 function updateDonuts() {
   if (pct > 0.99) pct = 0.00
+  count++
+  if (count >= 1000) count = 0
   donut.update([
     {
       percent: parseFloat((pct + 0.00) % 1).toFixed(2),
       label: 'rcp',
-      'color': [ 100, 200, 170 ]
+      color: toner(Cards.green.accent_1, 0, 0, count / 10) |> hexToRGB
     }, {
       percent: parseFloat((pct + 0.25) % 1).toFixed(2),
       label: 'rcp',
-      'color': [ 128, 128, 128 ]
+      color: toner(Cards.grey.accent_1, 0, 0, count / 10) |> hexToRGB
     }, {
       percent: parseFloat((pct + 0.50) % 1).toFixed(2),
       label: 'rcp',
-      'color': [ 255, 0, 0 ]
-    }, { percent: parseFloat((pct + 0.75) % 1).toFixed(2), label: 'web1', 'color': [ 255, 128, 0 ] } ])
+      color: toner(Cards.red.accent_1, 0, 0, count / 10) |> hexToRGB
+    }, {
+      percent: parseFloat((pct + 0.75) % 1).toFixed(2),
+      label: 'web1',
+      color: toner(Cards.deepPurple.accent_1, 0, 0, count / 10) |> hexToRGB
+    }
+  ])
   screen.render()
   pct += 0.01
 }
