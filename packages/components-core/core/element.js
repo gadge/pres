@@ -1133,15 +1133,11 @@ export class Element extends Node {
     let right
     if (this.position.right == null && this.position.left != null) {
       right = this.screen.cols - (this._getLeft(get) + this._getWidth(get))
-      if (this.screen.autoPadding) {
-        right += this.parent.iright
-      }
+      if (this.screen.autoPadding) right += this.parent.iright
       return right
     }
     right = (parent.aright || 0) + (this.position.right || 0)
-    if (this.screen.autoPadding) {
-      right += this.parent.iright
-    }
+    if (this.screen.autoPadding) right += this.parent.iright
     return right
   }
   _getTop(get) {
@@ -1155,9 +1151,7 @@ export class Element extends Node {
       top = +top.slice(0, -1) / 100
       top = parent.height * top | 0
       top += +(expr[1] || 0)
-      if (this.position.top === 'center') {
-        top -= this._getHeight(get) / 2 | 0
-      }
+      if (this.position.top === 'center') top -= this._getHeight(get) / 2 | 0
     }
     if (this.position.top == null && this.position.bottom != null) {
       return this.screen.rows - this._getHeight(get) - this._getBottom(get)
@@ -1176,15 +1170,11 @@ export class Element extends Node {
     let bottom
     if (this.position.bottom == null && this.position.top != null) {
       bottom = this.screen.rows - (this._getTop(get) + this._getHeight(get))
-      if (this.screen.autoPadding) {
-        bottom += this.parent.ibottom
-      }
+      if (this.screen.autoPadding) bottom += this.parent.ibottom
       return bottom
     }
     bottom = (parent.abottom || 0) + (this.position.bottom || 0)
-    if (this.screen.autoPadding) {
-      bottom += this.parent.ibottom
-    }
+    if (this.screen.autoPadding) bottom += this.parent.ibottom
     return bottom
   }
   /**
@@ -1246,17 +1236,13 @@ export class Element extends Node {
       this.lpos = _lpos
       //this.shrink = true;
     }
-    if (this.position.width == null &&
-      (this.position.left == null ||
-        this.position.right == null)) {
+    if (
+      (this.position.width == null) &&
+      (this.position.left == null || this.position.right == null)
+    ) {
       if (this.position.left == null && this.position.right != null) {
         xi = xl - (mxl - mxi)
-        if (!this.screen.autoPadding) {
-          xi -= this.padding.left + this.padding.right
-        }
-        else {
-          xi -= this.ileft
-        }
+        xi -= !this.screen.autoPadding ? this.padding.left + this.padding.right : this.ileft
       }
       else {
         xl = mxl
@@ -1278,10 +1264,11 @@ export class Element extends Node {
         }
       }
     }
-    if (this.position.height == null &&
-      (this.position.top == null ||
-        this.position.bottom == null) &&
-      (!this.scrollable || this._isList)) {
+    if (
+      (this.position.height == null) &&
+      (this.position.top == null || this.position.bottom == null) &&
+      (!this.scrollable || this._isList)
+    ) {
       // NOTE: Lists get special treatment if they are shrunken - assume they
       // want all list items showing. This is one case we can calculate the
       // height based on items/boxes.
@@ -1291,21 +1278,11 @@ export class Element extends Node {
       }
       if (this.position.top == null && this.position.bottom != null) {
         yi = yl - (myl - myi)
-        if (!this.screen.autoPadding) {
-          yi -= this.padding.top + this.padding.bottom
-        }
-        else {
-          yi -= this.itop
-        }
+        yi -= !this.screen.autoPadding ? this.padding.top + this.padding.bottom : this.itop
       }
       else {
         yl = myl
-        if (!this.screen.autoPadding) {
-          yl += this.padding.top + this.padding.bottom
-        }
-        else {
-          yl += this.ibottom
-        }
+        yl += !this.screen.autoPadding ? this.padding.top + this.padding.bottom : this.ibottom
       }
     }
     return { xi: xi, xl: xl, yi: yi, yl: yl }
@@ -1313,26 +1290,20 @@ export class Element extends Node {
   _getShrinkContent(xi, xl, yi, yl) {
     const h = this._clines.length,
           w = this._clines.mwidth || 1
-    if (this.position.width == null &&
-      (this.position.left == null ||
-        this.position.right == null)) {
-      if (this.position.left == null && this.position.right != null) {
-        xi = xl - w - this.iwidth
-      }
-      else {
-        xl = xi + w + this.iwidth
-      }
+    if (
+      (this.position.width == null) &&
+      (this.position.left == null || this.position.right == null)
+    ) {
+      if (this.position.left == null && this.position.right != null) { xi = xl - w - this.iwidth }
+      else { xl = xi + w + this.iwidth }
     }
-    if (this.position.height == null &&
-      (this.position.top == null ||
-        this.position.bottom == null) &&
-      (!this.scrollable || this._isList)) {
-      if (this.position.top == null && this.position.bottom != null) {
-        yi = yl - h - this.iheight
-      }
-      else {
-        yl = yi + h + this.iheight
-      }
+    if (
+      (this.position.height == null) &&
+      (this.position.top == null || this.position.bottom == null) &&
+      (!this.scrollable || this._isList)
+    ) {
+      if (this.position.top == null && this.position.bottom != null) { yi = yl - h - this.iheight }
+      else { yl = yi + h + this.iheight }
     }
     return { xi: xi, xl: xl, yi: yi, yl: yl }
   }
@@ -1491,18 +1462,10 @@ export class Element extends Node {
       if (xi >= xl) return
     }
     if (this.noOverflow && this.parent.lpos) {
-      if (xi < this.parent.lpos.xi + this.parent.ileft) {
-        xi = this.parent.lpos.xi + this.parent.ileft
-      }
-      if (xl > this.parent.lpos.xl - this.parent.iright) {
-        xl = this.parent.lpos.xl - this.parent.iright
-      }
-      if (yi < this.parent.lpos.yi + this.parent.itop) {
-        yi = this.parent.lpos.yi + this.parent.itop
-      }
-      if (yl > this.parent.lpos.yl - this.parent.ibottom) {
-        yl = this.parent.lpos.yl - this.parent.ibottom
-      }
+      if (xi < this.parent.lpos.xi + this.parent.ileft) { xi = this.parent.lpos.xi + this.parent.ileft }
+      if (xl > this.parent.lpos.xl - this.parent.iright) { xl = this.parent.lpos.xl - this.parent.iright }
+      if (yi < this.parent.lpos.yi + this.parent.itop) { yi = this.parent.lpos.yi + this.parent.itop }
+      if (yl > this.parent.lpos.yl - this.parent.ibottom) { yl = this.parent.lpos.yl - this.parent.ibottom }
     }
     // if (this.parent.lpos) {
     //   this.parent.lpos._scrollBottom = Math.max(

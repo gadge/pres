@@ -6,6 +6,7 @@
 
 import { ADOPT, ATTACH, DESTROY, DETACH, REMOVE, REPARENT, } from '@pres/enum-events'
 import { EventEmitter }                                      from '@pres/events'
+import { FUN }                                               from '@typen/enum-data-types'
 import { _Screen }                                           from './_screen'
 
 export class Node extends EventEmitter {
@@ -142,8 +143,8 @@ export class Node extends EventEmitter {
   emitDescendants() {
     const args = Array.prototype.slice(arguments)
     let iter
-    if (typeof args[args.length - 1] === 'function') { iter = args.pop() }
-    return this.forDescendants(function (el) {
+    if (typeof args[args.length - 1] === FUN) iter = args.pop()
+    return this.forDescendants(el => {
       if (iter) iter(el)
       el.emit.apply(el, args)
     }, true)
@@ -151,22 +152,20 @@ export class Node extends EventEmitter {
   emitAncestors() {
     const args = Array.prototype.slice(arguments)
     let iter
-    if (typeof args[args.length - 1] === 'function') {
-      iter = args.pop()
-    }
-    return this.forAncestors(function (el) {
+    if (typeof args[args.length - 1] === FUN) iter = args.pop()
+    return this.forAncestors(el => {
       if (iter) iter(el)
       el.emit.apply(el, args)
     }, true)
   }
   hasDescendant(target) {
-    return (function find(el) {
-      for (let i = 0; i < el.children.length; i++) {
-        if (el.children[i] === target) { return true }
-        if (find(el.children[i]) === true) { return true }
-      }
+    function find(el) {
+      const children = el.children
+      for (const child of children)
+        if (child === target || find(child)) return true
       return false
-    })(this)
+    }
+    return find(this)
   }
   hasAncestor(target) {
     let el = this

@@ -152,12 +152,8 @@ export class Tput {
     // If we have a terminfoFile, or our
     // term looks like a filename, use it.
     if (term) {
-      if (~term.indexOf(path.sep)) {
-        return term
-      }
-      if (this.terminfoFile) {
-        return this.terminfoFile
-      }
+      if (~term.indexOf(path.sep)) return term
+      if (this.terminfoFile) return this.terminfoFile
     }
     const paths = Tput.ipaths.slice()
     let file
