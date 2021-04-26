@@ -1,4 +1,4 @@
-import { TI as blessed } from '../src/t-i'
+import { TI as blessed } from '../src/terminal-interface'
 
 const auto = true
 
@@ -9,7 +9,7 @@ const screen = blessed.screen({
 })
 
 const box = blessed.box({
-  parent: screen,
+  sup: screen,
   top: 0,
   right: 0,
   width: 'shrink',

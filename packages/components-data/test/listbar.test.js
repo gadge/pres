@@ -11,7 +11,7 @@ screen = blessed.screen({
 })
 
 const box = blessed.box({
-  parent: screen,
+  sup: screen,
   top: 0,
   right: 0,
   width: 'shrink',

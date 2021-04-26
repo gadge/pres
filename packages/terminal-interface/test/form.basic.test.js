@@ -1,4 +1,4 @@
-import { TI } from '../src/t-i'
+import { TI } from '../src/terminal-interface'
 
 const screen = TI.screen({
   dump: __dirname + '/logs/form.log',
@@ -7,7 +7,7 @@ const screen = TI.screen({
 
 
 const form = TI.form({
-  parent: screen,
+  sup: screen,
   mouse: true,
   keys: true,
   vi: true,
@@ -51,7 +51,7 @@ form.key('u', function () {
 })
 
 const set = TI.radioSet({
-  parent: form,
+  sup: form,
   left: 1,
   top: 1,
   shrink: true,
@@ -63,7 +63,7 @@ const set = TI.radioSet({
 })
 
 const radio1 = TI.radioButton({
-  parent: set,
+  sup: set,
   mouse: true,
   keys: true,
   shrink: true,
@@ -78,7 +78,7 @@ const radio1 = TI.radioButton({
 })
 
 const radio2 = TI.radioButton({
-  parent: set,
+  sup: set,
   mouse: true,
   keys: true,
   shrink: true,
@@ -93,7 +93,7 @@ const radio2 = TI.radioButton({
 })
 
 const text = TI.textbox({
-  parent: form,
+  sup: form,
   mouse: true,
   keys: true,
   style: {
@@ -111,7 +111,7 @@ text.on('focus', function () {
 })
 
 const check = TI.checkbox({
-  parent: form,
+  sup: form,
   mouse: true,
   keys: true,
   shrink: true,
@@ -126,7 +126,7 @@ const check = TI.checkbox({
 })
 
 const check2 = TI.checkbox({
-  parent: form,
+  sup: form,
   mouse: true,
   keys: true,
   shrink: true,
@@ -141,7 +141,7 @@ const check2 = TI.checkbox({
 })
 
 const submit = TI.button({
-  parent: form,
+  sup: form,
   mouse: true,
   keys: true,
   shrink: true,
@@ -164,7 +164,7 @@ const submit = TI.button({
 submit.on('press', () => form.submit())
 
 const box1 = TI.box({
-  parent: form,
+  sup: form,
   left: 1,
   top: 10,
   height: 10,
@@ -176,7 +176,7 @@ const box1 = TI.box({
 })
 
 const box2 = TI.box({
-  parent: box1,
+  sup: box1,
   left: 1,
   top: 2,
   height: 8,
@@ -188,7 +188,7 @@ const box2 = TI.box({
 })
 
 const box3 = TI.box({
-  parent: box2,
+  sup: box2,
   left: 1,
   top: 2,
   height: 6,
@@ -200,7 +200,7 @@ const box3 = TI.box({
 })
 
 const box4 = TI.box({
-  parent: box3,
+  sup: box3,
   left: 1,
   top: 2,
   height: 4,
@@ -212,7 +212,7 @@ const box4 = TI.box({
 })
 
 var output = TI.scrollableText({
-  parent: form,
+  sup: form,
   mouse: true,
   keys: true,
   left: 0,
@@ -226,7 +226,7 @@ var output = TI.scrollableText({
 })
 
 const bottom = TI.line({
-  parent: form,
+  sup: form,
   type: 'line',
   orientation: 'horizontal',
   left: 0,

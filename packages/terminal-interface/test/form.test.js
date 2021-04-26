@@ -1,5 +1,5 @@
 import fs     from 'fs'
-import { TI } from '../src/t-i'
+import { TI } from '../src/terminal-interface'
 // Screen
 const screen = TI.screen({
   smartCSR: true,
@@ -7,7 +7,7 @@ const screen = TI.screen({
 })
 // Form
 const form = TI.form({
-  parent: screen,
+  sup: screen,
   width: '90%',
   left: 'center',
   keys: true,
@@ -15,13 +15,13 @@ const form = TI.form({
 })
 // Text boxes
 const label1 = TI.text({
-  parent: screen,
+  sup: screen,
   top: 3,
   left: 5,
   content: 'FIRST NAME:'
 })
 const firstName = TI.textbox({
-  parent: form,
+  sup: form,
   name: 'firstname',
   top: 4,
   left: 5,
@@ -36,13 +36,13 @@ const firstName = TI.textbox({
   }
 })
 const label2 = TI.text({
-  parent: screen,
+  sup: screen,
   content: 'LAST NAME:',
   top: 8,
   left: 5
 })
 const lastName = TI.textbox({
-  parent: form,
+  sup: form,
   name: 'lastname',
   top: 9,
   left: 5,
@@ -58,34 +58,34 @@ const lastName = TI.textbox({
 })
 // Check boxes
 const label3 = TI.text({
-  parent: screen,
+  sup: screen,
   content: 'What are your favorite editors?',
   top: 14,
   left: 5
 })
 const vim = TI.checkbox({
-  parent: form,
+  sup: form,
   name: 'editors',
   content: 'Vim',
   top: 16,
   left: 5
 })
 const emacs = TI.checkbox({
-  parent: form,
+  sup: form,
   name: 'editors',
   content: 'Emacs',
   top: 16,
   left: 20
 })
 const atom = TI.checkbox({
-  parent: form,
+  sup: form,
   name: 'editors',
   content: 'Atom',
   top: 16,
   left: 35
 })
 const brackets = TI.checkbox({
-  parent: form,
+  sup: form,
   name: 'editors',
   content: 'Brackets',
   top: 16,
@@ -93,38 +93,38 @@ const brackets = TI.checkbox({
 })
 // Radio buttons
 const label4 = TI.text({
-  parent: screen,
+  sup: screen,
   content: 'Do you like TI?',
   top: 19,
   left: 5
 })
 const radioset = TI.radioSet({
-  parent: form,
+  sup: form,
   width: '100%',
   height: 5,
   top: 21
 })
 const yes = TI.radioButton({
-  parent: radioset,
+  sup: radioset,
   name: 'like',
   content: 'Yes',
   left: 5
 })
 const no = TI.radioButton({
-  parent: radioset,
+  sup: radioset,
   name: 'like',
   content: 'No',
   left: 15
 })
 // Text area
 const label5 = TI.text({
-  parent: screen,
+  sup: screen,
   content: 'Your comments...',
   top: 24,
   left: 5
 })
 const textarea = TI.textarea({
-  parent: form,
+  sup: form,
   name: 'comments',
   top: 26,
   left: 5,
@@ -136,7 +136,7 @@ const textarea = TI.textarea({
 })
 // Submit/Cancel buttons
 const submit = TI.button({
-  parent: form,
+  sup: form,
   name: 'submit',
   content: 'Submit',
   top: 35,
@@ -158,7 +158,7 @@ const submit = TI.button({
   }
 })
 const reset = TI.button({
-  parent: form,
+  sup: form,
   name: 'reset',
   content: 'Reset',
   top: 35,
@@ -181,7 +181,7 @@ const reset = TI.button({
 })
 // Info
 const msg = TI.message({
-  parent: screen,
+  sup: screen,
   top: 40,
   left: 5,
   style: {
@@ -190,7 +190,7 @@ const msg = TI.message({
   }
 })
 const table = TI.table({
-  parent: screen,
+  sup: screen,
   content: '',
   top: 40,
   left: 'center',

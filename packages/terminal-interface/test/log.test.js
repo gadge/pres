@@ -9,7 +9,7 @@ const screen = blessed.screen({
 })
 
 const logger = blessed.log({
-  parent: screen,
+  sup: screen,
   top: 'center',
   left: 'center',
   width: '50%',
