@@ -1283,9 +1283,7 @@ export class Screen extends Node {
         return el
       }
     }
-    if (old) {
-      old.emit(BLUR)
-    }
+    if (old) { old.emit(BLUR) }
   }
   _focus(self, old) {
     // Find a scrollable ancestor if we have one.
@@ -1309,14 +1307,10 @@ export class Screen extends Node {
         self.screen.render()
       }
     }
-    if (old) {
-      old.emit(BLUR, self)
-    }
+    if (old) { old.emit(BLUR, self) }
     self.emit(FOCUS, old)
   }
-  clearRegion(xi, xl, yi, yl, override) {
-    return this.fillRegion(this.dattr, ' ', xi, xl, yi, yl, override)
-  }
+  clearRegion(xi, xl, yi, yl, override) { return this.fillRegion(this.dattr, ' ', xi, xl, yi, yl, override) }
   fillRegion(attr, ch, xi, xl, yi, yl, override) {
     const lines = this.lines
     let cell,
@@ -1337,15 +1331,10 @@ export class Screen extends Node {
       }
     }
   }
-  key() {
-    return this.program.key.apply(this, arguments)
-  }
-  onceKey() {
-    return this.program.onceKey.apply(this, arguments)
-  }
-  removeKey() {
-    return this.program.unkey.apply(this, arguments)
-  }
+  key() { return this.program.key.apply(this, arguments) }
+  onceKey() { return this.program.onceKey.apply(this, arguments)
+   }
+  removeKey() { return this.program.unkey.apply(this, arguments) }
   spawn = function (file, args, options) {
     if (!Array.isArray(args)) {
       options = args
@@ -1367,15 +1356,11 @@ export class Screen extends Node {
     const write = program.output.write
     program.output.write = function () {}
     program.input.pause()
-    if (program.input.setRawMode) {
-      program.input.setRawMode(false)
-    }
+    if (program.input.setRawMode) { program.input.setRawMode(false) }
     const resume = function () {
       if (resume.done) return
       resume.done = true
-      if (program.input.setRawMode) {
-        program.input.setRawMode(true)
-      }
+      if (program.input.setRawMode) { program.input.setRawMode(true) }
       program.input.resume()
       program.output.write = write
 
@@ -1383,9 +1368,7 @@ export class Screen extends Node {
       // program.csr(0, program.rows - 1);
       if (mouse) {
         program.enableMouse()
-        if (screen.options.sendFocus) {
-          screen.program.setMouse({ sendFocus: true }, true)
-        }
+        if (screen.options.sendFocus) { screen.program.setMouse({ sendFocus: true }, true) }
       }
       screen.alloc()
       screen.render()
@@ -1398,27 +1381,14 @@ export class Screen extends Node {
   }
   exec(file, args, options, callback) {
     const ps = this.spawn(file, args, options)
-    ps.on(ERROR, function (err) {
-      if (!callback) return
-      return callback(err, false)
-    })
-    ps.on(EXIT, function (code) {
-      if (!callback) return
-      return callback(null, code === 0)
-    })
+    ps.on(ERROR, err => callback ? callback(err, false) : void 0)
+    ps.on(EXIT, code => callback ? callback(null, code === 0) : void 0)
     return ps
   }
   readEditor(options, callback) {
-    if (typeof options === STR) {
-      options = { editor: options }
-    }
-    if (!callback) {
-      callback = options
-      options = null
-    }
-    if (!callback) {
-      callback = function () {}
-    }
+    if (typeof options === STR) { options = { editor: options } }
+    if (!callback) { (callback = options), (options = null) }
+    if (!callback) { callback = function () {} }
     options = options || {}
     const self   = this,
           editor = options.editor || process.env.EDITOR || 'vi',
@@ -1441,13 +1411,12 @@ export class Screen extends Node {
       if (err) return callback(err)
       return self.exec(editor, args, opt, function (err, success) {
         if (err) return callback(err)
-        return fs.readFile(file, 'utf8', function (err, data) {
-          return fs.unlink(file, function () {
+        return fs.readFile(file, 'utf8',
+          (err, data) => fs.unlink(file, () => {
             if (!success) return callback(new Error('Unsuccessful.'))
             if (err) return callback(err)
             return callback(null, data)
-          })
-        })
+          }))
       })
     })
   }
@@ -1457,12 +1426,9 @@ export class Screen extends Node {
       return callback(new Error('No image.'))
     }
     file = path.resolve(process.cwd(), file)
-    if (!~file.indexOf('://')) {
-      file = 'file://' + file
-    }
+    if (!~file.indexOf('://')) file = 'file://' + file
     const args = [ 'w3m', '-T', 'text/html' ]
-    const input = '<title>press q to exit</title>'
-      + '<img align="center" src="' + file + '">'
+    const input = '<title>press q to exit</title>' + '<img align="center" src="' + file + '">'
     const opt = {
       stdio: [ 'pipe', 1, 2 ],
       env: process.env,
@@ -1496,7 +1462,7 @@ export class Screen extends Node {
         if (val !== null && typeof val === OBJ) {
           tmp[key] = tmp[key] || {}
           // element.style[key] = element.style[key] || {};
-          Object.keys(val).forEach(function (k) {
+          Object.keys(val).forEach(k => {
             const v = val[k]
             tmp[key][k] = element.style[key][k]
             element.style[key][k] = v
@@ -1515,16 +1481,12 @@ export class Screen extends Node {
         if (val !== null && typeof val === OBJ) {
           tmp[key] = tmp[key] || {}
           // element.style[key] = element.style[key] || {};
-          Object.keys(val).forEach(function (k) {
-            if (tmp[key].hasOwnProperty(k)) {
-              element.style[key][k] = tmp[key][k]
-            }
+          Object.keys(val).forEach(k => {
+            if (tmp[key].hasOwnProperty(k)) element.style[key][k] = tmp[key][k]
           })
           return
         }
-        if (tmp.hasOwnProperty(key)) {
-          element.style[key] = tmp[key]
-        }
+        if (tmp.hasOwnProperty(key)) element.style[key] = tmp[key]
       })
       element.screen.render()
     })
