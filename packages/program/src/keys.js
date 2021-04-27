@@ -88,6 +88,7 @@ const functionKeyCodeRe = new RegExp('^' + functionKeyCodeReAnywhere.source)
 const escapeCodeReAnywhere = new RegExp([
   functionKeyCodeReAnywhere.source, metaKeyCodeReAnywhere.source, /\x1b./.source
 ].join('|'))
+
 function emitKeys(stream, s) {
   if (Buffer.isBuffer(s)) {
     if (s[0] > 127 && s[1] === undefined) {
@@ -107,7 +108,7 @@ function emitKeys(stream, s) {
     s = s.slice(match.index + match[0].length)
   }
   buffer = buffer.concat(s.split(''))
-  buffer.forEach(function (s) {
+  buffer.forEach(s => {
     let ch,
         key = {
           sequence: s,
@@ -129,8 +130,7 @@ function emitKeys(stream, s) {
       // tab
       key.name = TAB
     }
-    else if (s === '\b' || s === '\x7f' ||
-      s === '\x1b\x7f' || s === '\x1b\b') {
+    else if (s === '\b' || s === '\x7f' || s === '\x1b\x7f' || s === '\x1b\b') {
       // backspace or ctrl+h
       key.name = BACKSPACE
       key.meta = (s.charAt(0) === '\x1b')

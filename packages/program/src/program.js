@@ -1633,14 +1633,14 @@ export class Program extends EventEmitter {
     name = name
       ? 'response ' + name
       : RESPONSE
-    let onresponse
-    this.once(name, onresponse = function (event) {
+    let responseHandler
+    this.once(name, responseHandler = event => {
       if (timeout) clearTimeout(timeout)
       if (event.type === 'error') { return callback(new Error(event.event + ': ' + event.text)) }
       return callback(null, event)
     })
-    const timeout = setTimeout(function () {
-      self.removeListener(name, onresponse)
+    const timeout = setTimeout(() => {
+      self.removeListener(name, responseHandler)
       return callback(new Error('Timeout.'))
     }, 2000)
     return noBypass
@@ -1653,15 +1653,8 @@ export class Program extends EventEmitter {
       : this.output.write(text)
   }
   _buffer(text) {
-    if (this._exiting) {
-      this.flush()
-      this._owrite(text)
-      return
-    }
-    if (this._buf) {
-      this._buf += text
-      return
-    }
+    if (this._exiting) return void (this.flush(), this._owrite(text))
+    if (this._buf) return void (this._buf += text)
     this._buf = text
     nextTick(this._flush)
     return true
@@ -1672,12 +1665,7 @@ export class Program extends EventEmitter {
     this._owrite(this._buf)
     this._buf = ''
   }
-  _write(text) {
-    if (this.ret) return text
-    return this.useBuffer
-      ? this._buffer(text)
-      : this._owrite(text)
-  }
+  _write(text) { return this.ret ? text : this.useBuffer ? this._buffer(text) : this._owrite(text) }
   // CSI Ps L
   // Real: `DCS tmux; ESC Pt ESC \`
   _twrite(data) {

@@ -56,8 +56,8 @@ export function hexToRGB(hex) {
 // color space, posted on stackoverflow[1]. Maybe someone better at math can
 // propose a superior solution.
 // [1] http://stackoverflow.com/questions/1633828
-function colorDistance(r1, g1, b1, r2, g2, b2) {
-  return ((30 * (r1 - r2)) ** 2) + ((59 * (g1 - g2)) ** 2) + ((11 * (b1 - b2)) ** 2)
+function colorDistance(r_, g_, b_, _r, _g, _b) {
+  return ((30 * (r_ - _r)) ** 2) + ((59 * (g_ - _g)) ** 2) + ((11 * (b_ - _b)) ** 2)
 }
 
 // This might work well enough for a terminal's colors: treat RGB as XYZ in a
@@ -74,54 +74,50 @@ export function mixColors(colorA, colorB, alpha) {
 }
 
 export function blend(attr, attr2, alpha) {
-  let name, i, c, nc
+  let name, c, nc
   let bg = attr & 0x1ff
+  // const [ first, second, third ] = nc
+  // const [ first1, second1, third1 ] = c
   if (attr2 != null) {
-    let bg2 = attr2 & 0x1ff
+    let _bg = attr2 & 0x1ff
     if (bg === 0x1ff) bg = 0
-    if (bg2 === 0x1ff) bg2 = 0
-    bg = mixColors(bg, bg2, alpha)
+    if (_bg === 0x1ff) _bg = 0
+    bg = mixColors(bg, _bg, alpha)
   }
   else {
     if (blend._cache[bg]) { bg = blend._cache[bg] }
     else if (bg >= 8 && bg <= 15) { bg -= 8 }
-    else {
-      if ((name = SPARSE_NAMES[bg])) {
-        for (i = 0; i < SPARSE_NAMES.length; i++)
-          if (name === SPARSE_NAMES[i] && i !== bg) {
-            c = RGB_COLORS[bg]
-            nc = RGB_COLORS[i]
-            if (nc[0] + nc[1] + nc[2] < c[0] + c[1] + c[2]) {
-              blend._cache[bg] = i
-              bg = i
-              break
-            }
+    else if ((name = SPARSE_NAMES[bg])) {
+      for (let i = 0; i < SPARSE_NAMES.length; i++)
+        if (name === SPARSE_NAMES[i] && i !== bg) {
+          const [ r_, g_, b_ ] = RGB_COLORS[i], [ _r, _g, _b ] = RGB_COLORS[bg]
+          if (r_ + g_ + b_ < _r + _g + _b) {
+            bg = blend._cache[bg] = i
+            break
           }
-      }
+        }
     }
   }
   attr &= ~0x1ff
   attr |= bg
   let fg = (attr >> 9) & 0x1ff
   if (attr2 != null) {
-    let fg2 = (attr2 >> 9) & 0x1ff // 0, 7, 188, 231, 251
+    let _fg = (attr2 >> 9) & 0x1ff // 0, 7, 188, 231, 251
     if (fg === 0x1ff) { fg = 248 }
     else {
       if (fg === 0x1ff) fg = 7
-      if (fg2 === 0x1ff) fg2 = 7
-      fg = mixColors(fg, fg2, alpha)
+      if (_fg === 0x1ff) _fg = 7
+      fg = mixColors(fg, _fg, alpha)
     }
   }
   else if (blend._cache[fg] != null) { fg = blend._cache[fg] }
   else if (fg >= 8 && fg <= 15) { fg -= 8 }
   else if ((name = SPARSE_NAMES[fg])) {
-    for (i = 0; i < SPARSE_NAMES.length; i++)
+    for (let i = 0; i < SPARSE_NAMES.length; i++)
       if (name === SPARSE_NAMES[i] && i !== fg) {
-        c = RGB_COLORS[fg]
-        nc = RGB_COLORS[i]
-        if (nc[0] + nc[1] + nc[2] < c[0] + c[1] + c[2]) {
-          blend._cache[fg] = i
-          fg = i
+        const [ r_, g_, b_ ] = RGB_COLORS[i], [ _r, _g, _b ] = RGB_COLORS[fg]
+        if (r_ + g_ + b_ < _r + _g + _b) {
+          fg = blend._cache[fg] = i
           break
         }
       }

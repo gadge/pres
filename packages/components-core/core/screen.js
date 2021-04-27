@@ -13,6 +13,7 @@ import {
 import { Program }       from '@pres/program'
 import * as colors       from '@pres/util-colors'
 import * as helpers      from '@pres/util-helpers'
+import * as unicode      from '@pres/util-unicode'
 import { FUN, OBJ, STR } from '@typen/enum-data-types'
 import cp, { spawn }     from 'child_process'
 import { Log }           from '../src/log'
@@ -776,20 +777,17 @@ export class Screen extends Node {
         // the bg for non BCE terminals worth the overhead?
         if (this.options.useBCE &&
           ch === ' ' &&
-          (this.tput.bools.back_color_erase ||
-            (data & 0x1ff) === (this.dattr & 0x1ff)) &&
-          ((data >> 18) & 8) === ((this.dattr >> 18) & 8)) {
+          (this.tput.bools.back_color_erase || (data & 0x1ff) === (this.dattr & 0x1ff)) &&
+          ((data >> 18) & 8) === ((this.dattr >> 18) & 8)
+        ) {
           clr = true
           neq = false
-
           for (xx = x; xx < line.length; xx++) {
             if (line[xx][0] !== data || line[xx][1] !== ' ') {
               clr = false
               break
             }
-            if (line[xx][0] !== o[xx][0] || line[xx][1] !== o[xx][1]) {
-              neq = true
-            }
+            if (line[xx][0] !== o[xx][0] || line[xx][1] !== o[xx][1]) { neq = true }
           }
           if (clr && neq) {
             lx = -1, ly = -1
@@ -864,74 +862,51 @@ export class Screen extends Node {
               ? this.tput.cuf(x - lx)
               : this.tput.cup(y, x)
           }
-          else {
-            out += this.tput.cup(y, x)
-          }
+          else { out += this.tput.cup(y, x) }
           lx = -1, ly = -1
         }
         o[x][0] = data
         o[x][1] = ch
         if (data !== attr) {
-          if (attr !== this.dattr) {
-            out += '\x1b[m'
-          }
+          if (attr !== this.dattr) { out += '\x1b[m' }
           if (data !== this.dattr) {
             out += '\x1b['
-
             bg = data & 0x1ff
             fg = (data >> 9) & 0x1ff
             flags = data >> 18
             // bold
-            if (flags & 1) {
-              out += '1;'
-            }
+            if (flags & 1) { out += '1;' }
             // underline
-            if (flags & 2) {
-              out += '4;'
-            }
+            if (flags & 2) { out += '4;' }
             // blink
-            if (flags & 4) {
-              out += '5;'
-            }
+            if (flags & 4) { out += '5;' }
             // inverse
-            if (flags & 8) {
-              out += '7;'
-            }
+            if (flags & 8) { out += '7;' }
             // invisible
-            if (flags & 16) {
-              out += '8;'
-            }
+            if (flags & 16) { out += '8;' }
             if (bg !== 0x1ff) {
               bg = this._reduceColor(bg)
               if (bg < 16) {
-                if (bg < 8) {
-                  bg += 40
-                }
+                if (bg < 8) { bg += 40 }
                 else if (bg < 16) {
                   bg -= 8
                   bg += 100
                 }
                 out += bg + ';'
               }
-              else {
-                out += '48;5;' + bg + ';'
-              }
+              else { out += '48;5;' + bg + ';' }
             }
             if (fg !== 0x1ff) {
               fg = this._reduceColor(fg)
               if (fg < 16) {
-                if (fg < 8) {
-                  fg += 30
-                }
+                if (fg < 8) { fg += 30 }
                 else if (fg < 16) {
                   fg -= 8
                   fg += 90
                 }
                 out += fg + ';'
               }
-              else {
-                out += '38;5;' + fg + ';'
-              }
+              else { out += '38;5;' + fg + ';' }
             }
             if (out[out.length - 1] === ';') out = out.slice(0, -1)
             out += 'm'
@@ -983,12 +958,9 @@ export class Screen extends Node {
           // the linux console would still work fine because the acs
           // table would fail the check of: this.tput.acscr[ch]
           if (this.tput.acscr[ch]) {
-            if (acs) {
-              ch = this.tput.acscr[ch]
-            }
+            if (acs) { ch = this.tput.acscr[ch] }
             else {
-              ch = this.tput.smacs()
-                + this.tput.acscr[ch]
+              ch = this.tput.smacs() + this.tput.acscr[ch]
               acs = true
             }
           }
@@ -1008,19 +980,13 @@ export class Screen extends Node {
           // NOTE: It could be the case that the $LANG
           // is all that matters in some cases:
           // if (!this.tput.unicode && ch > '~') {
-          if (!this.tput.unicode && this.tput.numbers.U8 !== 1 && ch > '~') {
-            ch = this.tput.utoa[ch] || '?'
-          }
+          if (!this.tput.unicode && this.tput.numbers.U8 !== 1 && ch > '~') ch = this.tput.utoa[ch] || '?'
         }
         out += ch
         attr = data
       }
-      if (attr !== this.dattr) {
-        out += '\x1b[m'
-      }
-      if (out) {
-        main += this.tput.cup(y, 0) + out
-      }
+      if (attr !== this.dattr) { out += '\x1b[m' }
+      if (out) { main += this.tput.cup(y, 0) + out }
     }
     if (acs) {
       main += this.tput.rmacs()
@@ -1043,7 +1009,7 @@ export class Screen extends Node {
     // this.emit('draw');
   }
   _reduceColor(color) { return colors.reduce(color, this.tput.colors) }
-// Convert an SGR string to our own attribute format.
+  // Convert an SGR string to our own attribute format.
   attrCode(code, cur, def) {
     let effect = (cur >> 18) & 0x1ff,
         fore   = (cur >> 9) & 0x1ff,
@@ -1436,9 +1402,9 @@ export class Screen extends Node {
       })
       element.screen.render()
     })
-    fel.on(out, function () {
+    fel.on(out, () => {
       const element = el()
-      Object.keys(effects).forEach(function (key) {
+      Object.keys(effects).forEach(key => {
         const val = effects[key]
         if (val !== null && typeof val === OBJ) {
           tmp[key] = tmp[key] || {}
@@ -1486,14 +1452,12 @@ export class Screen extends Node {
         }
       }
       if (!this._cursorBlink) {
-        this._cursorBlink = setInterval(function () {
+        this._cursorBlink = setInterval(() => {
           if (!self.cursor.blink) return
           self.cursor._state ^= 1
           if (self.renders) self.render()
         }, 500)
-        if (this._cursorBlink.unref) {
-          this._cursorBlink.unref()
-        }
+        if (this._cursorBlink.unref) { this._cursorBlink.unref() }
       }
       return true
     }
@@ -1529,52 +1493,46 @@ export class Screen extends Node {
     return this.program.cursorReset()
   }
   _cursorAttr(cursor, dattr) {
+    const { shape } = cursor
     let attr = dattr || this.dattr,
         cattr,
         ch
-    if (cursor.shape === 'line') {
+    if (shape === 'line') {
       attr &= ~(0x1ff << 9)
       attr |= 7 << 9
       ch = '\u2502'
     }
-    else if (cursor.shape === 'underline') {
+    else if (shape === 'underline') {
       attr &= ~(0x1ff << 9)
       attr |= 7 << 9
       attr |= 2 << 18
     }
-    else if (cursor.shape === 'block') {
+    else if (shape === 'block') {
       attr &= ~(0x1ff << 9)
       attr |= 7 << 9
       attr |= 8 << 18
     }
-    else if (typeof cursor.shape === OBJ && cursor.shape) {
-      cattr = Element.prototype.sattr.call(cursor, cursor.shape)
-      if (cursor.shape.bold || cursor.shape.underline ||
-        cursor.shape.blink || cursor.shape.inverse ||
-        cursor.shape.invisible) {
+    else if (typeof shape === OBJ && shape) {
+      cattr = Element.prototype.sattr.call(cursor, shape)
+      if (shape.bold || shape.underline || shape.blink || shape.inverse || shape.invisible) {
         attr &= ~(0x1ff << 18)
         attr |= ((cattr >> 18) & 0x1ff) << 18
       }
-      if (cursor.shape.fg) {
+      if (shape.fg) {
         attr &= ~(0x1ff << 9)
         attr |= ((cattr >> 9) & 0x1ff) << 9
       }
-      if (cursor.shape.bg) {
+      if (shape.bg) {
         attr &= ~(0x1ff << 0)
         attr |= cattr & 0x1ff
       }
-      if (cursor.shape.ch) {
-        ch = cursor.shape.ch
-      }
+      if (shape.ch) { ch = shape.ch }
     }
     if (cursor.color != null) {
       attr &= ~(0x1ff << 9)
       attr |= cursor.color << 9
     }
-    return {
-      ch: ch,
-      attr: attr
-    }
+    return { ch, attr }
   }
   screenshot(xi, xl, yi, yl, term) {
     if (xi == null) xi = 0
@@ -1591,9 +1549,7 @@ export class Screen extends Node {
         data,
         attr
     const sdattr = this.dattr
-    if (term) {
-      this.dattr = term.defAttr
-    }
+    if (term) { this.dattr = term.defAttr }
     let main = ''
 
     for (y = yi; y < yl; y++) {
@@ -1625,12 +1581,8 @@ export class Screen extends Node {
         }
         if (this.fullUnicode) {
           if (unicode.charWidth(line[x][1]) === 2) {
-            if (x === xl - 1) {
-              ch = ' '
-            }
-            else {
-              x++
-            }
+            if (x === xl - 1) { ch = ' ' }
+            else { x++ }
           }
         }
         out += ch

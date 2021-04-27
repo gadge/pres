@@ -5,6 +5,7 @@
  */
 
 import { EVENT, NEW_LISTENER, REMOVE_LISTENER, } from '@pres/enum-events'
+import { FUN }                                   from '@typen/enum-data-types'
 
 const slice = Array.prototype.slice
 
@@ -21,21 +22,15 @@ export class EventEmitter {
   build() { return new EventEmitter() }
   setMaxListeners(n) { this._maxListeners = n }
   addListener(type, listener) {
-    if (!this._events[type]) {
-      this._events[type] = listener
-    }
-    else if (typeof this._events[type] === 'function') {
-      this._events[type] = [ this._events[type], listener ]
-    }
-    else {
-      this._events[type].push(listener)
-    }
+    if (!this._events[type]) { this._events[type] = listener }
+    else if (typeof this._events[type] === FUN) { this._events[type] = [ this._events[type], listener ] }
+    else { this._events[type].push(listener) }
     this._emit(NEW_LISTENER, [ type, listener ])
   }
   removeListener(type, listener) {
     const handler = this._events[type]
     if (!handler) return
-    if (typeof handler === 'function' || handler.length === 1) {
+    if (typeof handler === FUN || handler.length === 1) {
       delete this._events[type]
       this._emit(REMOVE_LISTENER, [ type, listener ])
       return
@@ -48,14 +43,7 @@ export class EventEmitter {
       }
     }
   }
-  removeAllListeners(type) {
-    if (type) {
-      delete this._events[type]
-    }
-    else {
-      this._events = {}
-    }
-  }
+  removeAllListeners(type) { type ? (delete this._events[type]) : (this._events = {}) }
   once(type, listener) {
     const self = this
     function on() {
@@ -66,7 +54,7 @@ export class EventEmitter {
     return this.on(type, on)
   }
   listeners(type) {
-    return typeof this._events[type] === 'function'
+    return typeof this._events[type] === FUN
       ? [ this._events[type] ]
       : this._events[type] || []
   }
@@ -80,7 +68,7 @@ export class EventEmitter {
       if (type === 'error') throw new args[0]
       return
     }
-    if (typeof handler === 'function') return handler.apply(this, args)
+    if (typeof handler === FUN) return handler.apply(this, args)
     for (let i = 0; i < handler.length; i++) {
       if (handler[i].apply(this, args) === false) {
         ret = false
@@ -151,7 +139,3 @@ export class EventEmitter {
 //   on.listener = listener;
 //   return this._addListener(type, on);
 // };
-
-/**
- * Expose
- */

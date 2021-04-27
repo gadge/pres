@@ -322,7 +322,7 @@ export class Element extends Node {
   get bottom() { return this.rbottom }
   set bottom(val) { return this.rbottom = val }
   sattr(style, fg, bg) {
-    let { bold, underline, blink, inverse, invisible } = style // if (arguments.length === 1) {
+    let { bold, underline, blink, inverse, invisible } = style
     if (fg == null && bg == null) { (fg = style.fg), (bg = style.bg) }
     if (typeof bold === FUN) bold = bold(this)
     if (typeof underline === FUN) underline = underline(this)
@@ -1444,18 +1444,9 @@ export class Element extends Node {
     this._emit(PRERENDER)
     this.parseContent()
     const coords = this._getCoords(true)
-    if (!coords) {
-      delete this.lpos
-      return
-    }
-    if (coords.xl - coords.xi <= 0) {
-      coords.xl = Math.max(coords.xl, coords.xi)
-      return
-    }
-    if (coords.yl - coords.yi <= 0) {
-      coords.yl = Math.max(coords.yl, coords.yi)
-      return
-    }
+    if (!coords) return void (delete this.lpos)
+    if (coords.xl - coords.xi <= 0) return void (coords.xl = Math.max(coords.xl, coords.xi))
+    if (coords.yl - coords.yi <= 0) return void (coords.yl = Math.max(coords.yl, coords.yi))
     const lines = this.screen.lines
     let xi = coords.xi,
         xl = coords.xl,
@@ -1500,7 +1491,7 @@ export class Element extends Node {
     // }
     if (coords.base >= this._clines.ci.length) ci = this._pcontent.length
     this.lpos = coords
-    if (this.border && this.border.type === 'line') {
+    if (this.border?.type === 'line') {
       this.screen._borderStops[coords.yi] = true
       this.screen._borderStops[coords.yl - 1] = true
       // if (!this.screen._borderStops[coords.yi]) {
@@ -1537,9 +1528,7 @@ export class Element extends Node {
           }
         }
       }
-      else {
-        this.screen.fillRegion(dattr, bch, xi, xl, yi, yl)
-      }
+      else { this.screen.fillRegion(dattr, bch, xi, xl, yi, yl) }
     }
     if (this.tpadding) {
       xi += this.padding.left, xl -= this.padding.right
@@ -1577,7 +1566,7 @@ export class Element extends Node {
         // }
         // Handle escape codes.
         while (ch === '\x1b') {
-          if ((c = /^\x1b\[[\d;]*m/.exec(content.substring(ci - 1)))) {
+          if ((c = /^\x1b\[[\d;]*m/.exec(content.slice(ci - 1)))) {
             ci += c[0].length - 1
             attr = this.screen.attrCode(c[0], attr, dattr)
             // Ignore foreground changes for selected items.
@@ -1633,12 +1622,8 @@ export class Element extends Node {
               ch = content[ci - 1] + content[ci]
               ci++
             }
-            if (x - 1 >= xi) {
-              lines[y][x - 1][1] += ch
-            }
-            else if (y - 1 >= yi) {
-              lines[y - 1][xl - 1][1] += ch
-            }
+            if (x - 1 >= xi) { lines[y][x - 1][1] += ch }
+            else if (y - 1 >= yi) { lines[y - 1][xl - 1][1] += ch }
             x--
             continue
           }
@@ -1782,12 +1767,8 @@ export class Element extends Node {
         cell = lines[y][xl - 1]
         if (cell) {
           if (this.border.right) {
-            if (this.border.type === 'line') {
-              ch = '\u2502' // '│'
-            }
-            else if (this.border.type === 'bg') {
-              ch = this.border.ch
-            }
+            if (this.border.type === 'line') { ch = '\u2502' } // '│'
+            else if (this.border.type === 'bg') { ch = this.border.ch }
             if (!coords.noright)
               if (battr !== cell[0] || ch !== cell[1]) {
                 lines[y][xl - 1][0] = battr
@@ -1817,42 +1798,26 @@ export class Element extends Node {
           if (x === xi) {
             ch = '\u2514' // '└'
             if (!this.border.left) {
-              if (this.border.bottom) {
-                ch = '\u2500' // '─'
-              }
-              else {
-                continue
-              }
+              if (this.border.bottom) { ch = '\u2500' } // '─'
+              else { continue }
             }
             else {
-              if (!this.border.bottom) {
-                ch = '\u2502' // '│'
-              }
+              if (!this.border.bottom) { ch = '\u2502' } // '│'
             }
           }
           else if (x === xl - 1) {
             ch = '\u2518' // '┘'
             if (!this.border.right) {
-              if (this.border.bottom) {
-                ch = '\u2500' // '─'
-              }
-              else {
-                continue
-              }
+              if (this.border.bottom) { ch = '\u2500' } // '─'
+              else { continue }
             }
             else {
-              if (!this.border.bottom) {
-                ch = '\u2502' // '│'
-              }
+              if (!this.border.bottom) { ch = '\u2502' } // '│'
             }
           }
-          else {
-            ch = '\u2500' // '─'
-          }
+          else { ch = '\u2500' } // '─'
         }
-        else if (this.border.type === 'bg') {
-          ch = this.border.ch
-        }
+        else if (this.border.type === 'bg') { ch = this.border.ch }
         if (!this.border.bottom && x !== xi && x !== xl - 1) {
           ch = ' '
           if (dattr !== cell[0] || ch !== cell[1]) {
