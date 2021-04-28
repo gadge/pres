@@ -13,7 +13,7 @@ import { ENTER, LEFT, MIDDLE, RETURN, RIGHT, UNDEFINED, UNKNOWN } from '@pres/en
 import { EventEmitter }                                           from '@pres/events'
 import { Tput }                                                   from '@pres/terminfo-parser'
 import * as colors                                                from '@pres/util-colors'
-import { SC }                                                     from '@texting/enum-chars'
+import { SC, VO }                                                 from '@texting/enum-chars'
 import { FUN, NUM, STR }                                          from '@typen/enum-data-types'
 import cp                                                         from 'child_process'
 import fs                                                         from 'fs'
@@ -21,10 +21,10 @@ import { StringDecoder }                                          from 'string_d
 import util                                                       from 'util'
 import { BEL, ESC }                                               from '../assets/control.chars'
 import {
-  _CBT, _CHT, _CNL, _CPL, _CUP, _CUU, _DA, _DCH, _DECCRA, _DECERA, _DECLL, _DECRQM, _DECSCA, _DECSCL, _DECSCUSR,
+  _CBT, _CHA, _CHT, _CNL, _CPL, _CUB, _CUD, _CUF, _CUP, _CUU, _DA, _DCH, _DECCRA, _DECERA, _DECLL, _DECRQM, _DECSCL,
   _DECSMBV,
-  _DECSWBV, _DL,
-  _DSR, _ECH, _ED, _HPR, _HVP, _ICH, _IL, _MC, _RCP, _RM, _SCP, _SD, _SGR, _SM, _SU, _TBC, _VPA, CSI
+  _DECSWBV,
+  _DL, _DSR, _ECH, _ED, _HPR, _HVP, _ICH, _IL, _MC, _RCP, _REP, _RM, _SCP, _SD, _SGR, _SM, _SU, _TBC, _VPA, CSI
 } from '../assets/csi.codes'
 import { OSC }                                                    from '../assets/osc.codes'
 import { gpmClient }                                              from './gpmclient'
@@ -104,7 +104,7 @@ export class Program extends EventEmitter {
         return 2
       }
     })()
-    this._buf = ''
+    this._buf = VO
     this._flush = this.flush.bind(this)
     if (options.tput !== false) this.setupTput()
     this.listen()
@@ -312,7 +312,7 @@ export class Program extends EventEmitter {
       if (key.name === UNDEFINED) return
       if (key.name === ENTER && key.sequence === '\n') key.name = 'linefeed'
       if (key.name === RETURN && key.sequence === '\r') self.input.emit(KEYPRESS, ch, merge({}, key, { name: ENTER }))
-      const name = `${key.ctrl ? 'C-' : ''}${key.meta ? 'M-' : ''}${key.shift && key.name ? 'S-' : ''}${key.name || ch}`
+      const name = `${key.ctrl ? 'C-' : VO}${key.meta ? 'M-' : VO}${key.shift && key.name ? 'S-' : VO}${key.name || ch}`
       key.full = name
       Program.instances.forEach(function (program) {
         if (program.input !== self.input) return
@@ -1054,7 +1054,7 @@ export class Program extends EventEmitter {
     //     Result is CSI  9  ;  height ;  width t
     if ((parts = /^\x1b\[(\d+)(?:;(\d+);(\d+))?t/.exec(s))) {
       out.event = 'window-manipulation'
-      out.code = ''
+      out.code = VO
       if ((parts[1] === '1' || parts[1] === '2') && !parts[2]) {
         out.type = 'window-state'
         out.state = parts[1] === '1'
@@ -1155,7 +1155,7 @@ export class Program extends EventEmitter {
     //     label ST
     if ((parts = /^\x1b\](l|L)([^\x07\x1b]*)(?:\x07|\x1b\\)/.exec(s))) {
       out.event = 'window-manipulation'
-      out.code = ''
+      out.code = VO
       if (parts[1] === 'L') {
         out.type = 'window-icon-label'
         out.text = parts[2]
@@ -1315,7 +1315,7 @@ export class Program extends EventEmitter {
   flush() {
     if (!this._buf) return
     this.#out(this._buf)
-    this._buf = ''
+    this._buf = VO
   }
   #write(text) { return this.ret ? text : this.useBuffer ? this.#buffer(text) : this.#out(text) }
   #writeTm(data) {
@@ -1442,13 +1442,13 @@ export class Program extends EventEmitter {
       this.#writeTm(CSI + '0 q')
       this.#writeTm(OSC + '112' + BEL)
       // urxvt doesnt support OSC 112
-      this.#writeTm(OSC + '' + '12;white' + BEL)
+      this.#writeTm(OSC + '12;white' + BEL)
       return true
     }
     return false
   }
   getTextParams(param, callback) {
-    return this.response('text-params', OSC + `${param};?` + BEL,
+    return this.response('text-params', OSC + param + SC + '?' + BEL,
       (err, data) => err ? callback(err) : callback(null, data.pt))
   }
   getCursorColor(callback) { return this.getTextParams(12, callback) }
@@ -1909,7 +1909,7 @@ export class Program extends EventEmitter {
     this.y -= n || 1
     this.recoords()
     return !this.tput
-      ? this.#write(CSI + (n || '') + _CUU)
+      ? this.#write(CSI + (n || VO) + _CUU)
       : !this.tput.strings.parm_up_cursor
         ? this.#write(this.repeat(this.tput.cuu1(), n))
         : this.put.cuu(n)
@@ -1922,7 +1922,7 @@ export class Program extends EventEmitter {
     this.y += n || 1
     this.recoords()
     return !this.tput
-      ? this.#write(CSI + (n || '') + 'B')
+      ? this.#write(CSI + (n || VO) + _CUD)
       : !this.tput.strings.parm_down_cursor
         ? this.#write(this.repeat(this.tput.cud1(), n))
         : this.put.cud(n)
@@ -1936,7 +1936,7 @@ export class Program extends EventEmitter {
     this.x += n || 1
     this.recoords()
     return !this.tput
-      ? this.#write(CSI + (n || '') + 'C')
+      ? this.#write(CSI + (n || VO) + _CUF)
       : !this.tput.strings.parm_right_cursor
         ? this.#write(this.repeat(this.tput.cuf1(), n))
         : this.put.cuf(n)
@@ -1950,7 +1950,7 @@ export class Program extends EventEmitter {
     this.x -= n || 1
     this.recoords()
     return !this.tput
-      ? this.#write(CSI + (n || '') + 'D')
+      ? this.#write(CSI + (n || VO) + _CUB)
       : !this.tput.strings.parm_left_cursor
         ? this.#write(this.repeat(this.tput.cub1(), n))
         : this.put.cub(n)
@@ -2078,7 +2078,7 @@ export class Program extends EventEmitter {
             out  = []
       parts.forEach(function (part) {
         part = self._attr(part, val).slice(2, -1)
-        if (part === '') return
+        if (part === VO) return
         if (used[part]) return
         used[part] = true
         out.push(part)
@@ -2097,7 +2097,7 @@ export class Program extends EventEmitter {
       // attributes
       case 'normal':
       case 'default':
-        return val === false ? '' : CSI + _SGR
+        return val === false ? VO : CSI + _SGR
       case 'bold':
         return val === false ? CSI + '22' + _SGR : CSI + '1' + _SGR
       case 'ul':
@@ -2132,7 +2132,7 @@ export class Program extends EventEmitter {
       case 'bright gray fg':
         return val === false ? CSI + '39' + _SGR : CSI + '37' + _SGR
       case 'default fg':
-        return val === false ? '' : CSI + '39' + _SGR
+        return val === false ? VO : CSI + '39' + _SGR
       // 8-color background
       case 'black bg':
         return val === false ? CSI + '49' + _SGR : CSI + '40' + _SGR
@@ -2155,7 +2155,7 @@ export class Program extends EventEmitter {
       case 'bright gray bg':
         return val === false ? CSI + '49' + _SGR : CSI + '47' + _SGR
       case 'default bg':
-        return val === false ? '' : CSI + '49' + _SGR
+        return val === false ? VO : CSI + '49' + _SGR
       // 16-color foreground
       case 'light black fg':
       case 'bright black fg':
@@ -2212,7 +2212,7 @@ export class Program extends EventEmitter {
         return val === false ? CSI + '49' + _SGR : CSI + '107' + _SGR
       // non-16-color rxvt default fg and bg
       case 'default fg bg':
-        return val === false ? '' : this.term('rxvt') ? CSI + '100' + _SGR : CSI + '39;49' + _SGR
+        return val === false ? VO : this.term('rxvt') ? CSI + '100' + _SGR : CSI + '39;49' + _SGR
       default:
         // 256-color fg and bg
         if (param[0] === '#') param = param.replace(/#(?:[0-9a-f]{3}){1,2}/i, colors.match)
@@ -2261,8 +2261,8 @@ export class Program extends EventEmitter {
   dsr = this.deviceStatus
   deviceStatus(param, callback, dec, noBypass) {
     return dec
-      ? this.response('device-status', CSI + `?${param || '0'}` + _DSR, callback, noBypass)
-      : this.response('device-status', CSI + `${param || '0'}` + _DSR, callback, noBypass)
+      ? this.response('device-status', CSI + '?' + (param || '0') + _DSR, callback, noBypass)
+      : this.response('device-status', CSI + (param || '0') + _DSR, callback, noBypass)
   }
   getCursor(callback) { return this.deviceStatus(6, callback, false, true) }
   saveReportedCursor(callback) {
@@ -2295,21 +2295,21 @@ export class Program extends EventEmitter {
     this.x += param || 1
     this.recoords()
     if (this.tput) return this.put.ich(param)
-    return this.#write(CSI + `${param || 1}` + _ICH)
+    return this.#write(CSI + (param || 1) + _ICH)
   }
 
   cnl = this.cursorNextLine
   cursorNextLine(param) {
     this.y += param || 1
     this.recoords()
-    return this.#write(CSI + `${param || ''}` + _CNL)
+    return this.#write(CSI + (param || VO) + _CNL)
   }
 
   cpl = this.cursorPrecedingLine
   cursorPrecedingLine(param) {
     this.y -= param || 1
     this.recoords()
-    return this.#write(CSI + `${param || ''}` + _CPL)
+    return this.#write(CSI + (param || VO) + _CPL)
   }
 
   cha = this.cursorCharAbsolute
@@ -2319,20 +2319,20 @@ export class Program extends EventEmitter {
     this.y = 0
     this.recoords()
     if (this.tput) return this.put.hpa(param)
-    return this.#write(CSI + `${param + 1}` + _CHA)
+    return this.#write(CSI + (param + 1) + _CHA)
   }
 
   il = this.insertLines
-  insertLines(param) { return this.tput ? this.put.il(param) : this.#write(CSI + `${param || ''}` + _IL) }
+  insertLines(param) { return this.tput ? this.put.il(param) : this.#write(CSI + (param || VO) + _IL) }
 
   dl = this.deleteLines
-  deleteLines(param) { return this.tput ? this.put.dl(param) : this.#write(CSI + `${param || ''}` + _DL) }
+  deleteLines(param) { return this.tput ? this.put.dl(param) : this.#write(CSI + (param || VO) + _DL) }
 
   dch = this.deleteChars
-  deleteChars(param) { return this.tput ? this.put.dch(param) : this.#write(CSI + `${param || ''}` + _DCH) }
+  deleteChars(param) { return this.tput ? this.put.dch(param) : this.#write(CSI + (param || VO) + _DCH) }
 
   ech = this.eraseChars
-  eraseChars(param) { return this.tput ? this.put.ech(param) : this.#write(CSI + `${param || ''}` + _ECH) }
+  eraseChars(param) { return this.tput ? this.put.ech(param) : this.#write(CSI + (param || VO) + _ECH) }
 
   hpa = this.charPosAbsolute
   charPosAbsolute(param) {
@@ -2340,7 +2340,7 @@ export class Program extends EventEmitter {
     this.recoords()
     if (this.tput) { return this.put.hpa.apply(this.put, arguments) }
     param = slice.call(arguments).join(SC)
-    return this.#write(CSI + `${param || ''}\``)
+    return this.#write(CSI + (param || VO) + '`')
   }
 
   hpr = this.HPositionRelative
@@ -2350,11 +2350,11 @@ export class Program extends EventEmitter {
     this.recoords()
     // Does not exist:
     // if (this.tput) return this.put.hpr(param);
-    return this.#write(CSI + `${param || ''}` + _HPR)
+    return this.#write(CSI + (param || VO) + _HPR)
   }
 
   da = this.sendDeviceAttributes
-  sendDeviceAttributes(param, callback) { return this.response('device-attributes', CSI + `${param || ''}` + _DA, callback) }
+  sendDeviceAttributes(param, callback) { return this.response('device-attributes', CSI + (param || VO) + _DA, callback) }
 
   vpa = this.linePosAbsolute
   linePosAbsolute(param) {
@@ -2362,7 +2362,7 @@ export class Program extends EventEmitter {
     this.recoords()
     if (this.tput) return this.put.vpa.apply(this.put, arguments)
     param = slice.call(arguments).join(SC)
-    return this.#write(CSI + `${param || ''}` + _VPA)
+    return this.#write(CSI + (param || VO) + _VPA)
   }
 
   vpr = this.VPositionRelative
@@ -2372,7 +2372,7 @@ export class Program extends EventEmitter {
     this.recoords()
     // Does not exist:
     // if (this.tput) return this.put.vpr(param);
-    return this.#write(CSI + `${param || ''}e`)
+    return this.#write(CSI + (param || VO) + 'e')
   }
 
   hvp = this.HVPosition
@@ -2397,7 +2397,7 @@ export class Program extends EventEmitter {
   sm = this.setMode
   setMode() {
     const param = slice.call(arguments).join(SC)
-    return this.#write(CSI + `${param || ''}` + _SM)
+    return this.#write(CSI + (param || VO) + _SM)
   }
 
   decset() {
@@ -2433,7 +2433,7 @@ export class Program extends EventEmitter {
   rm = this.resetMode
   resetMode() {
     const param = slice.call(arguments).join(SC)
-    return this.#write(CSI + `${param || ''}` + _RM)
+    return this.#write(CSI + (param || VO) + _RM)
   }
 
   decrst() {
@@ -2667,7 +2667,7 @@ export class Program extends EventEmitter {
     this.x += 8
     this.recoords()
     if (this.tput) return this.put.tab(param)
-    return this.#write(CSI + `${param || 1}` + _CHT)
+    return this.#write(CSI + (param || 1) + _CHT)
   }
 
   cht = this.cursorForwardTab
@@ -2675,7 +2675,7 @@ export class Program extends EventEmitter {
     this.y -= param || 1
     this.recoords()
     if (this.tput) return this.put.parm_index(param)
-    return this.#write(CSI + `${param || 1}` + _SU)
+    return this.#write(CSI + (param || 1) + _SU)
   }
 
   sd = this.scrollDown
@@ -2683,7 +2683,7 @@ export class Program extends EventEmitter {
     this.y += param || 1
     this.recoords()
     if (this.tput) return this.put.parm_rindex(param)
-    return this.#write(CSI + `${param || 1}` + _SD)
+    return this.#write(CSI + (param || 1) + _SD)
   }
 
   initMouseTracking() { return this.#write(CSI + `${slice.call(arguments).join(SC)}T`) }
@@ -2695,7 +2695,7 @@ export class Program extends EventEmitter {
     this.x -= 8
     this.recoords()
     if (this.tput) return this.put.cbt(param)
-    return this.#write(CSI + `${param || 1}` + _CBT)
+    return this.#write(CSI + (param || 1) + _CBT)
   }
 
   rep = this.repeatPrecedingCharacter
@@ -2703,14 +2703,14 @@ export class Program extends EventEmitter {
     this.x += param || 1
     this.recoords()
     if (this.tput) return this.put.rep(param)
-    return this.#write(CSI + `${param || 1}` + _REP)
+    return this.#write(CSI + (param || 1) + _REP)
   }
 
   tbc = this.tabClear
-  tabClear(param) { return this.tput ? this.put.tbc(param) : this.#write(CSI + `${param || 0}` + _TBC) }
+  tabClear(param) { return this.tput ? this.put.tbc(param) : this.#write(CSI + (param || 0) + _TBC) }
 
   mc = this.mediaCopy
-  mediaCopy() { return this.#write(CSI + `${slice.call(arguments).join(SC)}` + _MC) }
+  mediaCopy() { return this.#write(CSI + slice.call(arguments).join(SC) + _MC) }
 
   print_screen = this.mc0
   ps = this.mc0
@@ -2730,9 +2730,9 @@ export class Program extends EventEmitter {
 
   setResources() { return this.#write(CSI + `>${slice.call(arguments).join(SC)}` + _SGR) }
 
-  disableModifiers(param) { return this.#write(CSI + `>${param || ''}n`) }
+  disableModifiers(param) { return this.#write(CSI + `>` + (param || VO) + `n`) }
 
-  setPointerMode(param) { return this.#write(CSI + `>${param || ''}p`) }
+  setPointerMode(param) { return this.#write(CSI + `>` + (param || VO) + `p`) }
 
   decstr = this.softReset
   rs2 = this.softReset
@@ -2746,16 +2746,16 @@ export class Program extends EventEmitter {
   }
 
   decrqm = this.requestAnsiMode
-  requestAnsiMode(param) { return this.#write(CSI + `${param || ''}` + _DECRQM) }
+  requestAnsiMode(param) { return this.#write(CSI + (param || VO) + _DECRQM) }
 
   decrqmp = this.requestPrivateMode
-  requestPrivateMode(param) { return this.#write(CSI + `?${param || ''}` + _DECRQM) }
+  requestPrivateMode(param) { return this.#write(CSI + '?' + (param || VO) + _DECRQM) }
 
   decscl = this.setConformanceLevel
-  setConformanceLevel() { return this.#write(CSI + `${slice.call(arguments).join(SC)}` + _DECSCL) }
+  setConformanceLevel() { return this.#write(CSI + slice.call(arguments).join(SC) + _DECSCL) }
 
   decll = this.loadLEDs
-  loadLEDs(param) { return this.#write(CSI + `${param || ''}` + _DECLL) }
+  loadLEDs(param) { return this.#write(CSI + (param || VO) + _DECLL) }
 
   decscusr = this.setCursorStyle
   setCursorStyle(param) {
@@ -2788,12 +2788,12 @@ export class Program extends EventEmitter {
     if (this.has('Ss')) {
       return this.put.Ss(param)
     }
-    return this.#write(CSI + `${param || 1}` + _DECSCUSR)
+    return this.#write(CSI + (param || 1) + _DECSCUSR)
   }
 
   decsca = this.setCharProtectionAttr
   setCharProtectionAttr(param) {
-    return this.#write(CSI + `${param || 0}` + _DECSCA)
+    return this.#write(CSI + `` + (param || 0) + _DECSCA)
   }
 
 
@@ -2820,37 +2820,37 @@ export class Program extends EventEmitter {
   setTitleModeFeature() { return this.#writeTm(CSI + `>${slice.call(arguments).join(SC)}t`) }
 
   decswbv = this.setWarningBellVolume
-  setWarningBellVolume(param) { return this.#write(CSI + `${param || ''}` + _DECSWBV) }
+  setWarningBellVolume(param) { return this.#write(CSI + (param || VO) + _DECSWBV) }
 
   decsmbv = this.setMarginBellVolume
-  setMarginBellVolume(param) { return this.#write(CSI + `${param || ''}` + _DECSMBV) }
+  setMarginBellVolume(param) { return this.#write(CSI + (param || VO) + _DECSMBV) }
 
   deccra = this.copyRectangle
-  copyRectangle() { return this.#write(CSI + `${slice.call(arguments).join(SC)}`+_DECCRA) }
+  copyRectangle() { return this.#write(CSI + slice.call(arguments).join(SC) + _DECCRA) }
 
   decefr = this.enableFilterRectangle
   enableFilterRectangle() { return this.#write(CSI + `${slice.call(arguments).join(SC)}'w`) }
 
   decreqtparm = this.requestParameters
-  requestParameters(param) { return this.#write(CSI + `${param || 0}x`) }
+  requestParameters(param) { return this.#write(CSI + (param || 0) + `x`) }
 
   decsace = this.selectChangeExtent
-  selectChangeExtent(param) { return this.#write(CSI + `${param || 0}x`) }
+  selectChangeExtent(param) { return this.#write(CSI + (param || 0) + `x`) }
 
   decfra = this.fillRectangle
-  fillRectangle() { return this.#write(CSI + `${slice.call(arguments).join(SC)}$x`) }
+  fillRectangle() { return this.#write(CSI + slice.call(arguments).join(SC) + `$x`) }
 
   decelr = this.enableLocatorReporting
-  enableLocatorReporting() { return this.#write(CSI + `${slice.call(arguments).join(SC)}'z`) }
+  enableLocatorReporting() { return this.#write(CSI + slice.call(arguments).join(SC) + `'z`) }
 
   decera = this.eraseRectangle
-  eraseRectangle() { return this.#write(CSI + `${slice.call(arguments).join(SC)}`+_DECERA) }
+  eraseRectangle() { return this.#write(CSI + slice.call(arguments).join(SC) + _DECERA) }
 
   decsle = this.setLocatorEvents
-  setLocatorEvents() { return this.#write(CSI + `${slice.call(arguments).join(SC)}'{`) }
+  setLocatorEvents() { return this.#write(CSI + slice.call(arguments).join(SC) + `'{`) }
 
   decsera = this.selectiveEraseRectangle
-  selectiveEraseRectangle() { return this.#write(CSI + `${slice.call(arguments).join(SC)}$\{`) }
+  selectiveEraseRectangle() { return this.#write(CSI + slice.call(arguments).join(SC) + `$\{`) }
 
   decrqlp = this.requestLocatorPosition
   req_mouse_pos = this.requestLocatorPosition
@@ -2864,14 +2864,14 @@ export class Program extends EventEmitter {
       const code = this.tput.req_mouse_pos(param)
       return this.response('locator-position', code, callback)
     }
-    return this.response('locator-position', CSI + `${param || ''}'|`, callback)
+    return this.response('locator-position', CSI + (param || VO) + '\'|', callback)
   }
 
   decic = this.insertColumns
-  insertColumns() { return this.#write(CSI + `${slice.call(arguments).join(SC)} }`) }
+  insertColumns() { return this.#write(CSI + slice.call(arguments).join(SC) + ` }`) }
 
   decdc = this.deleteColumns
-  deleteColumns() { return this.#write(CSI + `${slice.call(arguments).join(SC)} ~`) }
+  deleteColumns() { return this.#write(CSI + slice.call(arguments).join(SC) + ` ~`) }
   out(name) {
     const args = Array.prototype.slice.call(arguments, 1)
     this.ret = true
