@@ -303,12 +303,8 @@ export class Tput {
     o = 0
     for (; i < l; i += 2) {
       v = Tput.numbers[o++]
-      if (data[i + 1] === 0xff && data[i] === 0xff) {
-        info.numbers[v] = -1
-      }
-      else {
-        info.numbers[v] = (data[i + 1] << 8) | data[i]
-      }
+      if (data[i + 1] === 0xff && data[i] === 0xff) { info.numbers[v] = -1 }
+      else { info.numbers[v] = (data[i + 1] << 8) | data[i] }
     }
     // Strings Section
     info.strings = {}

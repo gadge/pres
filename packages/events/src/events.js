@@ -4,29 +4,28 @@
  * https://github.com/chjj/blessed
  */
 
-import { EVENT, NEW_LISTENER, REMOVE_LISTENER, } from '@pres/enum-events'
-import { FUN }                                   from '@typen/enum-data-types'
+import { ERROR, EVENT, NEW_LISTENER, REMOVE_LISTENER, } from '@pres/enum-events'
+import { FUN }                                          from '@typen/enum-data-types'
 
 const slice = Array.prototype.slice
 
 export class EventEmitter {
-  on = this.addListener
-  off = this.removeListener
   /**
    * EventEmitter
    */
   constructor() {
-    if (!this._events) this._events = {}
-    // console.log('>>> [EventEmitter is constructed]')
+    if (!this._events) this._events = {} // console.log('>>> [EventEmitter is constructed]')
   }
   build() { return new EventEmitter() }
   setMaxListeners(n) { this._maxListeners = n }
+  on = this.addListener
   addListener(type, listener) {
     if (!this._events[type]) { this._events[type] = listener }
     else if (typeof this._events[type] === FUN) { this._events[type] = [ this._events[type], listener ] }
     else { this._events[type].push(listener) }
     this._emit(NEW_LISTENER, [ type, listener ])
   }
+  off = this.removeListener
   removeListener(type, listener) {
     const handler = this._events[type]
     if (!handler) return
@@ -35,7 +34,7 @@ export class EventEmitter {
       this._emit(REMOVE_LISTENER, [ type, listener ])
       return
     }
-    for (let i = 0; i < handler.length; i++) {
+    for (let i = 0, hi = handler.length; i < hi; i++) {
       if (handler[i] === listener || handler[i].listener === listener) {
         handler.splice(i, 1)
         this._emit(REMOVE_LISTENER, [ type, listener ])
@@ -60,21 +59,16 @@ export class EventEmitter {
   }
   _emit(type, args) {
     const handler = this._events[type]
-    let ret
-    // if (type !== 'event') {
-    //   this._emit(EVENT, [type.replace(/^element /, '')].concat(args));
-    // }
+    let result
     if (!handler) {
-      if (type === 'error') throw new args[0]
-      return
+      if (type === ERROR) throw new args[0]
+      else return void 0
     }
     if (typeof handler === FUN) return handler.apply(this, args)
-    for (let i = 0; i < handler.length; i++) {
-      if (handler[i].apply(this, args) === false) {
-        ret = false
-      }
-    }
-    return ret !== false
+    for (let i = 0; i < handler.length; i++)
+      if (handler[i].apply(this, args) === false)
+        result = false
+    return result !== false
   }
   emit(type) {
     const args   = slice.call(arguments, 1),

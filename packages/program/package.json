@@ -23,6 +23,7 @@
     "@pres/terminfo-parser": "^0.1.2",
     "@pres/util-colors": "^0.1.2",
     "@spare/logger": "^0.11.14",
+    "@texting/enum-chars": "^0.0.9",
     "@typen/enum-data-types": "^0.1.16"
   },
   "repository": {
