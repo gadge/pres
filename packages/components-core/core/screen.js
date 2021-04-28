@@ -1003,7 +1003,7 @@ export class Screen extends Node {
         post += this.tput.cnorm()
       }
       // this.program.flush();
-      // this.program._owrite(pre + main + post);
+      // this.program.write(pre + main + post);
       this.program._write(pre + main + post)
     }
     // this.emit('draw');

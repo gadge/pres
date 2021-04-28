@@ -1,6 +1,8 @@
 import { SC }  from '@texting/enum-chars'
 import { ESC } from './control.chars'
 
+// initiated by: ESC + [
+// terminated by: m
 export const CSI = ESC + '['
 
 export class CsiFuncs {

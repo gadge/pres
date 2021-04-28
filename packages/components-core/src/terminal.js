@@ -152,7 +152,7 @@ export class Terminal extends Box {
     })
     this.term.on(PASSTHROUGH, data => {
       self.screen.program.flush()
-      self.screen.program._owrite(data)
+      self.screen.program.write(data)
     })
     this.on(RESIZE, () => nextTick(() => self.term.resize(self.width - self.iwidth, self.height - self.iheight)))
     this.once(RENDER, () => self.term.resize(self.width - self.iwidth, self.height - self.iheight))
