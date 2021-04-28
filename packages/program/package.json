@@ -1,6 +1,6 @@
 {
   "name": "@pres/program",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Curses like basic functionality for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -17,11 +17,11 @@
   "dependencies": {
     "@geia/enum-signals": "^0.0.19",
     "@ject/noop": "^0.0.11",
-    "@pres/enum-events": "^0.1.2",
-    "@pres/enum-key-names": "^0.1.2",
-    "@pres/events": "^0.1.2",
-    "@pres/terminfo-parser": "^0.1.2",
-    "@pres/util-colors": "^0.1.2",
+    "@pres/enum-events": "^0.1.3",
+    "@pres/enum-key-names": "^0.1.3",
+    "@pres/events": "^0.1.3",
+    "@pres/terminfo-parser": "^0.1.3",
+    "@pres/util-colors": "^0.1.3",
     "@spare/logger": "^0.11.14",
     "@texting/enum-chars": "^0.0.9",
     "@typen/enum-data-types": "^0.1.16"
