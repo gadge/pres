@@ -15,6 +15,7 @@ import { Tput }                                                   from '@pres/te
 import * as colors                                                from '@pres/util-colors'
 import { SC, SP, VO }                                             from '@texting/enum-chars'
 import { FUN, NUM, STR }                                          from '@typen/enum-data-types'
+import { nullish }                                                from '@typen/nullish'
 import cp                                                         from 'child_process'
 import fs                                                         from 'fs'
 import { StringDecoder }                                          from 'string_decoder'
@@ -788,13 +789,8 @@ export class Program extends EventEmitter {
     const out = {}
     let parts
     if (Buffer.isBuffer(s)) {
-      if (s[0] > 127 && s[1] === undefined) {
-        s[0] -= 128
-        s = ESC + s.toString('utf-8')
-      }
-      else {
-        s = s.toString('utf-8')
-      }
+      if (s[0] > 127 && nullish(s[1])) { (s[0] -= 128), (s = ESC + s.toString('utf-8')) }
+      else { s = s.toString('utf-8') }
     }
     // CSI P s c
     // Send Device Attributes (Primary DA).
@@ -807,94 +803,40 @@ export class Program extends EventEmitter {
       if (parts[1] === '?') {
         out.type = 'primary-attribute'
         // VT100-style params:
-        if (parts[0] === 1 && parts[2] === 2) {
-          out.term = 'vt100'
-          out.advancedVideo = true
-        }
-        else if (parts[0] === 1 && parts[2] === 0) {
-          out.term = 'vt101'
-        }
-        else if (parts[0] === 6) {
-          out.term = 'vt102'
-        }
-        else if (parts[0] === 60 &&
-          parts[1] === 1 && parts[2] === 2 &&
-          parts[3] === 6 && parts[4] === 8 &&
-          parts[5] === 9 && parts[6] === 15) {
-          out.term = 'vt220'
-        }
+        if (parts[0] === 1 && parts[2] === 2) { out.term = 'vt100', out.advancedVideo = true }
+        else if (parts[0] === 1 && parts[2] === 0) { out.term = 'vt101' }
+        else if (parts[0] === 6) { out.term = 'vt102' }
+        else if (parts[0] === 60 && parts[1] === 1 && parts[2] === 2 && parts[3] === 6 && parts[4] === 8 && parts[5] === 9 && parts[6] === 15) { out.term = 'vt220' }
         else {
           // VT200-style params:
-          parts.forEach(function (attr) {
-            switch (attr) {
-              case 1:
-                out.cols132 = true
-                break
-              case 2:
-                out.printer = true
-                break
-              case 6:
-                out.selectiveErase = true
-                break
-              case 8:
-                out.userDefinedKeys = true
-                break
-              case 9:
-                out.nationalReplacementCharsets = true
-                break
-              case 15:
-                out.technicalCharacters = true
-                break
-              case 18:
-                out.userWindows = true
-                break
-              case 21:
-                out.horizontalScrolling = true
-                break
-              case 22:
-                out.ansiColor = true
-                break
-              case 29:
-                out.ansiTextLocator = true
-                break
-            }
-          })
+          parts.forEach(
+            attr => attr === 1 ? (out.cols132 = true)
+              : attr === 2 ? (out.printer = true)
+                : attr === 6 ? (out.selectiveErase = true)
+                  : attr === 8 ? (out.userDefinedKeys = true)
+                    : attr === 9 ? (out.nationalReplacementCharsets = true)
+                      : attr === 15 ? (out.technicalCharacters = true)
+                        : attr === 18 ? (out.userWindows = true)
+                          : attr === 21 ? (out.horizontalScrolling = true)
+                            : attr === 22 ? (out.ansiColor = true)
+                              : attr === 29 ? (out.ansiTextLocator = true)
+                                : void 0
+          )
         }
       }
       else {
         out.type = 'secondary-attribute'
-        switch (parts[0]) {
-          case 0:
-            out.term = 'vt100'
-            break
-          case 1:
-            out.term = 'vt220'
-            break
-          case 2:
-            out.term = 'vt240'
-            break
-          case 18:
-            out.term = 'vt330'
-            break
-          case 19:
-            out.term = 'vt340'
-            break
-          case 24:
-            out.term = 'vt320'
-            break
-          case 41:
-            out.term = 'vt420'
-            break
-          case 61:
-            out.term = 'vt510'
-            break
-          case 64:
-            out.term = 'vt520'
-            break
-          case 65:
-            out.term = 'vt525'
-            break
-        }
+        out.term = parts[0] === 0 ? 'vt100'
+          : parts[0] === 1 ? 'vt220'
+            : parts[0] === 2 ? 'vt240'
+              : parts[0] === 18 ? 'vt330'
+                : parts[0] === 19 ? 'vt340'
+                  : parts[0] === 24 ? 'vt320'
+                    : parts[0] === 41 ? 'vt420'
+                      : parts[0] === 61 ? 'vt510'
+                        : parts[0] === 64 ? 'vt520'
+                          : parts[0] === 65 ? 'vt525'
+                            : out.term
         out.firmwareVersion = parts[1]
         out.romCartridgeRegistrationNumber = parts[2]
       }
@@ -934,9 +876,7 @@ export class Program extends EventEmitter {
       }
       if (parts[1] && (parts[2] === '10' || parts[2] === '11') && !parts[3]) {
         out.type = 'printer-status'
-        out.status = parts[2] === '10'
-          ? 'ready'
-          : 'not ready'
+        out.status = parts[2] === '10' ? 'ready' : 'not ready'
         // LEGACY
         out.printerStatus = out.status
         this.emit(RESPONSE, out)
@@ -945,20 +885,14 @@ export class Program extends EventEmitter {
       }
       if (parts[1] && (parts[2] === '20' || parts[2] === '21') && !parts[3]) {
         out.type = 'udk-status'
-        out.status = parts[2] === '20'
-          ? 'unlocked'
-          : 'locked'
+        out.status = parts[2] === '20' ? 'unlocked' : 'locked'
         // LEGACY
         out.UDKStatus = out.status
         this.emit(RESPONSE, out)
         this.emit(RESPONSE + SP + out.event, out)
         return
       }
-      if (parts[1] &&
-        parts[2] === '27' &&
-        parts[3] === '1' &&
-        parts[4] === '0' &&
-        parts[5] === '0') {
+      if (parts[1] && parts[2] === '27' && parts[3] === '1' && parts[4] === '0' && parts[5] === '0') {
         out.type = 'keyboard-status'
         out.status = 'OK'
         // LEGACY
@@ -1058,10 +992,7 @@ export class Program extends EventEmitter {
       }
       if (parts[1] === '4' && parts[2]) {
         out.type = 'window-size-pixels'
-        out.size = {
-          height: +parts[2],
-          width: +parts[3]
-        }
+        out.size = { height: +parts[2], width: +parts[3] }
         out.height = out.size.height
         out.width = out.size.width
         // LEGACY
@@ -1086,10 +1017,7 @@ export class Program extends EventEmitter {
       }
       if (parts[1] === '9' && parts[2]) {
         out.type = 'screen-size'
-        out.size = {
-          height: +parts[2],
-          width: +parts[3]
-        }
+        out.size = { height: +parts[2], width: +parts[3] }
         out.height = out.size.height
         out.width = out.size.width
         // LEGACY
@@ -1158,78 +1086,22 @@ export class Program extends EventEmitter {
       this.emit(RESPONSE + SP + out.event, out)
       return
     }
-    // CSI Ps ' |
-    //   Request Locator Position (DECRQLP).
-    //     -> CSI Pe ; Pb ; Pr ; Pc ; Pp &  w
-    //   Parameters are [event;button;row;column;page].
-    //   Valid values for the event:
-    //     Pe = 0  -> locator unavailable - no other parameters sent.
-    //     Pe = 1  -> request - xterm received a DECRQLP.
-    //     Pe = 2  -> left button down.
-    //     Pe = 3  -> left button up.
-    //     Pe = 4  -> middle button down.
-    //     Pe = 5  -> middle button up.
-    //     Pe = 6  -> right button down.
-    //     Pe = 7  -> right button up.
-    //     Pe = 8  -> M4 button down.
-    //     Pe = 9  -> M4 button up.
-    //     Pe = 1 0  -> locator outside filter rectangle.
-    //   ``button'' parameter is a bitmask indicating which buttons are
-    //     pressed:
-    //     Pb = 0  <- no buttons down.
-    //     Pb & 1  <- right button down.
-    //     Pb & 2  <- middle button down.
-    //     Pb & 4  <- left button down.
-    //     Pb & 8  <- M4 button down.
-    //   ``row'' and ``column'' parameters are the coordinates of the
-    //     locator position in the xterm window, encoded as ASCII deci-
-    //     mal.
-    //   The ``page'' parameter is not used by xterm, and will be omit-
-    //   ted.
-    // NOTE:
-    // This is already implemented in the #bindMouse
-    // method, but it might make more sense here.
-    // The xterm mouse documentation says there is a
-    // `<` prefix, the DECRQLP says there is no prefix.
     if ((parts = /^\x1b\[(\d+(?:;\d+){4})&w/.exec(s))) {
       parts = parts[1].split(SC).map(ch => +ch)
       out.event = 'locator-position'
       out.code = 'DECRQLP'
-      switch (parts[0]) {
-        case 0:
-          out.status = 'locator-unavailable'
-          break
-        case 1:
-          out.status = 'request'
-          break
-        case 2:
-          out.status = 'left-button-down'
-          break
-        case 3:
-          out.status = 'left-button-up'
-          break
-        case 4:
-          out.status = 'middle-button-down'
-          break
-        case 5:
-          out.status = 'middle-button-up'
-          break
-        case 6:
-          out.status = 'right-button-down'
-          break
-        case 7:
-          out.status = 'right-button-up'
-          break
-        case 8:
-          out.status = 'm4-button-down'
-          break
-        case 9:
-          out.status = 'm4-button-up'
-          break
-        case 10:
-          out.status = 'locator-outside'
-          break
-      }
+      out.status = parts[0] === 0 ? 'locator-unavailable'
+        : parts[0] === 1 ? 'request'
+          : parts[0] === 2 ? 'left-button-down'
+            : parts[0] === 3 ? 'left-button-up'
+              : parts[0] === 4 ? 'middle-button-down'
+                : parts[0] === 5 ? 'middle-button-up'
+                  : parts[0] === 6 ? 'right-button-down'
+                    : parts[0] === 7 ? 'right-button-up'
+                      : parts[0] === 8 ? 'm4-button-down'
+                        : parts[0] === 9 ? 'm4-button-up'
+                          : parts[0] === 10 ? 'locator-outside'
+                            : out.status
       out.mask = parts[1]
       out.row = parts[2]
       out.col = parts[3]
@@ -1261,9 +1133,7 @@ export class Program extends EventEmitter {
     }
     if (!callback) callback = () => {}
     this.bindResponse()
-    name = name
-      ? RESPONSE + SP + name
-      : RESPONSE
+    name = name ? RESPONSE + SP + name : RESPONSE
     let responseHandler
     this.once(name, responseHandler = event => {
       if (timeout) clearTimeout(timeout)
@@ -1375,28 +1245,13 @@ export class Program extends EventEmitter {
     else if (this.term('xterm') || this.term('screen')) {
       switch (shape) {
         case 'block':
-          if (!blink) {
-            this.#writeTm(CSI + '0 q')
-          }
-          else {
-            this.#writeTm(CSI + '1 q')
-          }
+          !blink ? this.#writeTm(CSI + '0 q') : this.#writeTm(CSI + '1 q')
           break
         case 'underline':
-          if (!blink) {
-            this.#writeTm(CSI + '2 q')
-          }
-          else {
-            this.#writeTm(CSI + '3 q')
-          }
+          !blink ? this.#writeTm(CSI + '2 q') : this.#writeTm(CSI + '3 q')
           break
         case 'line':
-          if (!blink) {
-            this.#writeTm(CSI + '4 q')
-          }
-          else {
-            this.#writeTm(CSI + '5 q')
-          }
+          !blink ? this.#writeTm(CSI + '4 q') : this.#writeTm(CSI + '5 q')
           break
       }
       return true
@@ -1404,11 +1259,9 @@ export class Program extends EventEmitter {
     return false
   }
   cursorColor(color) {
-    if (this.term('xterm') || this.term('rxvt') || this.term('screen')) {
-      this.#writeTm(OSC + `12;${color}` + BEL)
-      return true
-    }
-    return false
+    return this.term('xterm') || this.term('rxvt') || this.term('screen')
+      ? (this.#writeTm(OSC + `12;${color}` + BEL), true)
+      : false
   }
   cursorReset = this.resetCursor
   resetCursor() {
@@ -1432,10 +1285,7 @@ export class Program extends EventEmitter {
   /**
    * Normal
    */
-  nul() {
-    //if (this.has('pad')) return this.put.pad();
-    return this.#write('\x80')
-  }
+  nul() { return this.#write('\x80') }
   bel = this.bell
   bell() { return this.has('bel') ? this.put.bel() : this.#write(BEL) }
   // CSI Pm h  Set Mode (SM).
@@ -1584,86 +1434,7 @@ export class Program extends EventEmitter {
     if (this.tput) return this.put.ri()
     return this.#write('\x1bM')
   }
-  // CSI Pm l  Reset Mode (RM).
-  //     Ps = 2  -> Keyboard Action Mode (AM).
-  //     Ps = 4  -> Replace Mode (IRM).
-  //     Ps = 1 2  -> Send/receive (SRM).
-  //     Ps = 2 0  -> Normal Linefeed (LNM).
-  // CSI ? Pm l
-  //   DEC Private Mode Reset (DECRST).
-  //     Ps = 1  -> Normal Cursor Keys (DECCKM).
-  //     Ps = 2  -> Designate VT52 mode (DECANM).
-  //     Ps = 3  -> 80 Column Mode (DECCOLM).
-  //     Ps = 4  -> Jump (Fast) Scroll (DECSCLM).
-  //     Ps = 5  -> Normal Video (DECSCNM).
-  //     Ps = 6  -> Normal Cursor Mode (DECOM).
-  //     Ps = 7  -> No Wraparound Mode (DECAWM).
-  //     Ps = 8  -> No Auto-repeat Keys (DECARM).
-  //     Ps = 9  -> Don't send Mouse X & Y on button press.
-  //     Ps = 1 0  -> Hide toolbar (rxvt).
-  //     Ps = 1 2  -> Stop Blinking Cursor (att610).
-  //     Ps = 1 8  -> Don't print form feed (DECPFF).
-  //     Ps = 1 9  -> Limit print to scrolling region (DECPEX).
-  //     Ps = 2 5  -> Hide Cursor (DECTCEM).
-  //     Ps = 3 0  -> Don't show scrollbar (rxvt).
-  //     Ps = 3 5  -> Disable font-shifting functions (rxvt).
-  //     Ps = 4 0  -> Disallow 80 -> 132 Mode.
-  //     Ps = 4 1  -> No more(1) fix (see curses resource).
-  //     Ps = 4 2  -> Disable Nation Replacement Character sets (DEC-
-  //     NRCM).
-  //     Ps = 4 4  -> Turn Off Margin Bell.
-  //     Ps = 4 5  -> No Reverse-wraparound Mode.
-  //     Ps = 4 6  -> Stop Logging.  (This is normally disabled by a
-  //     compile-time option).
-  //     Ps = 4 7  -> Use Normal Screen Buffer.
-  //     Ps = 6 6  -> Numeric keypad (DECNKM).
-  //     Ps = 6 7  -> Backarrow key sends delete (DECBKM).
-  //     Ps = 1 0 0 0  -> Don't send Mouse X & Y on button press and
-  //     release.  See the section Mouse Tracking.
-  //     Ps = 1 0 0 1  -> Don't use Hilite Mouse Tracking.
-  //     Ps = 1 0 0 2  -> Don't use Cell Motion Mouse Tracking.
-  //     Ps = 1 0 0 3  -> Don't use All Motion Mouse Tracking.
-  //     Ps = 1 0 0 4  -> Don't send FocusIn/FocusOut events.
-  //     Ps = 1 0 0 5  -> Disable Extended Mouse Mode.
-  //     Ps = 1 0 1 0  -> Don't scroll to bottom on tty output
-  //     (rxvt).
-  //     Ps = 1 0 1 1  -> Don't scroll to bottom on key press (rxvt).
-  //     Ps = 1 0 3 4  -> Don't interpret "meta" key.  (This disables
-  //     the eightBitInput resource).
-  //     Ps = 1 0 3 5  -> Disable special modifiers for Alt and Num-
-  //     Lock keys.  (This disables the numLock resource).
-  //     Ps = 1 0 3 6  -> Don't send ESC  when Meta modifies a key.
-  //     (This disables the metaSendsEscape resource).
-  //     Ps = 1 0 3 7  -> Send VT220 Remove from the editing-keypad
-  //     Delete key.
-  //     Ps = 1 0 3 9  -> Don't send ESC  when Alt modifies a key.
-  //     (This disables the altSendsEscape resource).
-  //     Ps = 1 0 4 0  -> Do not keep selection when not highlighted.
-  //     (This disables the keepSelection resource).
-  //     Ps = 1 0 4 1  -> Use the PRIMARY selection.  (This disables
-  //     the selectToClipboard resource).
-  //     Ps = 1 0 4 2  -> Disable Urgency window manager hint when
-  //     Control-G is received.  (This disables the bellIsUrgent
-  //     resource).
-  //     Ps = 1 0 4 3  -> Disable raising of the window when Control-
-  //     G is received.  (This disables the popOnBell resource).
-  //     Ps = 1 0 4 7  -> Use Normal Screen Buffer, clearing screen
-  //     first if in the Alternate Screen.  (This may be disabled by
-  //     the titeInhibit resource).
-  //     Ps = 1 0 4 8  -> Restore cursor as in DECRC.  (This may be
-  //     disabled by the titeInhibit resource).
-  //     Ps = 1 0 4 9  -> Use Normal Screen Buffer and restore cursor
-  //     as in DECRC.  (This may be disabled by the titeInhibit
-  //     resource).  This combines the effects of the 1 0 4 7  and 1 0
-  //     4 8  modes.  Use this with terminfo-based applications rather
-  //     than the 4 7  mode.
-  //     Ps = 1 0 5 0  -> Reset terminfo/termcap function-key mode.
-  //     Ps = 1 0 5 1  -> Reset Sun function-key mode.
-  //     Ps = 1 0 5 2  -> Reset HP function-key mode.
-  //     Ps = 1 0 5 3  -> Reset SCO function-key mode.
-  //     Ps = 1 0 6 0  -> Reset legacy keyboard emulation (X11R6).
-  //     Ps = 1 0 6 1  -> Reset keyboard emulation to Sun/PC style.
-  // ESC E Next Line (NEL is 0x85).
+
   nextLine() {
     this.y++
     this.x = 0
@@ -1730,25 +1501,8 @@ export class Program extends EventEmitter {
     // exit_alt_charset_mode / rmacs / ae
     // enter_pc_charset_mode / smpch / S2
     // exit_pc_charset_mode / rmpch / S3
-
-    switch (level) {
-      case 0:
-        level = '('
-        break
-      case 1:
-        level = ')'
-        break
-      case 2:
-        level = '*'
-        break
-      case 3:
-        level = '+'
-        break
-    }
-    const name = typeof val === STR
-      ? val.toLowerCase()
-      : val
-
+    level = level === 0 ? '(' : level === 1 ? ')' : level === 2 ? '*' : level === 3 ? '+' : level
+    const name = typeof val === STR ? val.toLowerCase() : val
     switch (name) {
       case 'acs':
       case 'scld': // DEC Special Character and Line Drawing Set.
@@ -1867,11 +1621,7 @@ export class Program extends EventEmitter {
     return this.has('Cs') ? this.put.Cs(param) : this.#writeTm(OSC + `12;${param}` + BEL)
   }
   // Sel data
-  selData(a, b) {
-    return this.has('Ms')
-      ? this.put.Ms(a, b)
-      : this.#writeTm(OSC + `52;${a};${b}` + BEL)
-  }
+  selData(a, b) { return this.has('Ms') ? this.put.Ms(a, b) : this.#writeTm(OSC + `52;${a};${b}` + BEL) }
 
   /**
    * CSI
@@ -1964,37 +1714,10 @@ export class Program extends EventEmitter {
   }
 
   ed = this.eraseInDisplay
-  eraseInDisplay(param) {
-    if (this.tput) {
-      switch (param) {
-        case 'above':
-          param = 1
-          break
-        case 'all':
-          param = 2
-          break
-        case 'saved':
-          param = 3
-          break
-        case 'below':
-        default:
-          param = 0
-          break
-      }
-      // extended tput.E3 = ^[[3;J
-      return this.put.ed(param)
-    }
-    switch (param) {
-      case 'above':
-        return this.#write(CSI + '1' + _ED)
-      case 'all':
-        return this.#write(CSI + '2' + _ED)
-      case 'saved':
-        return this.#write(CSI + '3' + _ED)
-      case 'below':
-      default:
-        return this.#write(CSI + _ED)
-    }
+  eraseInDisplay(p) {
+    return this.tput
+      ? this.put.ed(p === 'above' ? 1 : p === 'all' ? 2 : p === 'saved' ? 3 : p === 'below' ? 0 : 0)
+      : this.#write(CSI + (p === 'above' ? 1 : p === 'all' ? 2 : p === 'saved' ? 3 : p === 'below' ? VO : VO) + _ED)
   }
   clear() {
     this.x = 0
@@ -2243,7 +1966,6 @@ export class Program extends EventEmitter {
   /**
    * Additions
    */
-
   ich = this.insertChars
   insertChars(param) {
     this.x += param || 1
@@ -2350,7 +2072,6 @@ export class Program extends EventEmitter {
 
   sm = this.setMode
   setMode() { return this.#write(CSI + (slice.call(arguments).join(SC) || VO) + _SM) }
-
   decset() { return this.setMode('?' + slice.call(arguments).join(SC)) }
 
   dectcem = this.showCursor
@@ -2410,47 +2131,21 @@ export class Program extends EventEmitter {
       for (let n = 0; n < modes.length; ++n) {
         const pair = modes[n].split('=')
         const v = pair[1] !== '0'
-        switch (pair[0].toUpperCase()) {
-          case 'SGRMOUSE':
-            options.sgrMouse = v
-            break
-          case 'UTFMOUSE':
-            options.utfMouse = v
-            break
-          case 'VT200MOUSE':
-            options.vt200Mouse = v
-            break
-          case 'URXVTMOUSE':
-            options.urxvtMouse = v
-            break
-          case 'X10MOUSE':
-            options.x10Mouse = v
-            break
-          case 'DECMOUSE':
-            options.decMouse = v
-            break
-          case 'PTERMMOUSE':
-            options.ptermMouse = v
-            break
-          case 'JSBTERMMOUSE':
-            options.jsbtermMouse = v
-            break
-          case 'VT200HILITE':
-            options.vt200Hilite = v
-            break
-          case 'GPMMOUSE':
-            options.gpmMouse = v
-            break
-          case 'CELLMOTION':
-            options.cellMotion = v
-            break
-          case 'ALLMOTION':
-            options.allMotion = v
-            break
-          case 'SENDFOCUS':
-            options.sendFocus = v
-            break
-        }
+        const k = pair[0].toUpperCase()
+        k === 'SGRMOUSE' ? (options.sgrMouse = v)
+          : k === 'UTFMOUSE' ? (options.utfMouse = v)
+          : k === 'VT200MOUSE' ? (options.vt200Mouse = v)
+            : k === 'URXVTMOUSE' ? (options.urxvtMouse = v)
+              : k === 'X10MOUSE' ? (options.x10Mouse = v)
+                : k === 'DECMOUSE' ? (options.decMouse = v)
+                  : k === 'PTERMMOUSE' ? (options.ptermMouse = v)
+                    : k === 'JSBTERMMOUSE' ? (options.jsbtermMouse = v)
+                      : k === 'VT200HILITE' ? (options.vt200Hilite = v)
+                        : k === 'GPMMOUSE' ? (options.gpmMouse = v)
+                          : k === 'CELLMOTION' ? (options.cellMotion = v)
+                            : k === 'ALLMOTION' ? (options.allMotion = v)
+                              : k === 'SENDFOCUS' ? (options.sendFocus = v)
+                                : void 0
       }
       return this.setMouse(options, true)
     }
@@ -2458,11 +2153,7 @@ export class Program extends EventEmitter {
     // Cell Motion isn't normally need for anything below here, but we'll
     // activate it for tmux (whether using it or not) in case our all-motion
     // passthrough does not work. It can't hurt.
-    if (this.term('rxvt-unicode')) return this.setMouse({
-      urxvtMouse: true,
-      cellMotion: true,
-      allMotion: true
-    }, true)
+    if (this.term('rxvt-unicode')) return this.setMouse({ urxvtMouse: true, cellMotion: true, allMotion: true }, true)
     // rxvt does not support the X10 UTF extensions
     if (this.term('rxvt')) return this.setMouse({
       vt200Mouse: true,
@@ -2473,26 +2164,13 @@ export class Program extends EventEmitter {
     // libvte is broken. Older versions do not support the
     // X10 UTF extension. However, later versions do support
     // SGR/URXVT.
-    if (this.isVTE) return this.setMouse({
-      // NOTE: Could also use urxvtMouse here.
-      sgrMouse: true,
-      cellMotion: true,
-      allMotion: true
-    }, true)
-    if (this.term('linux')) return this.setMouse({
-      vt200Mouse: true,
-      gpmMouse: true
-    }, true)
+    if (this.isVTE) return this.setMouse({ sgrMouse: true, cellMotion: true, allMotion: true }, true)
+    if (this.term('linux')) return this.setMouse({ vt200Mouse: true, gpmMouse: true }, true)
     if (
       this.term('xterm') ||
       this.term('screen') ||
       (this.tput && this.tput.strings.key_mouse)
-    ) return this.setMouse({
-      vt200Mouse: true,
-      utfMouse: true,
-      cellMotion: true,
-      allMotion: true
-    }, true)
+    ) return this.setMouse({ vt200Mouse: true, utfMouse: true, cellMotion: true, allMotion: true }, true)
   }
   // CSI ? Ps$ p
   //   Request DEC private mode (DECRQM).  For VT300 and up, reply is
@@ -2703,51 +2381,25 @@ export class Program extends EventEmitter {
   loadLEDs(param) { return this.#write(CSI + (param || VO) + _DECLL) }
 
   decscusr = this.setCursorStyle
-  setCursorStyle(param) {
-    switch (param) {
-      case 'blinking block':
-        param = 1
-        break
-      case 'block':
-      case 'steady block':
-        param = 2
-        break
-      case 'blinking underline':
-        param = 3
-        break
-      case 'underline':
-      case 'steady underline':
-        param = 4
-        break
-      case 'blinking bar':
-        param = 5
-        break
-      case 'bar':
-      case 'steady bar':
-        param = 6
-        break
-    }
-    if (param === 2 && this.has('Se')) {
-      return this.put.Se()
-    }
-    if (this.has('Ss')) {
-      return this.put.Ss(param)
-    }
-    return this.#write(CSI + (param || 1) + _DECSCUSR)
+  setCursorStyle(p) {
+    p = p === 'blinking block' ? 1
+      : p === 'block' || p === 'steady block' ? 2
+        : p === 'blinking underline' ? 3
+          : p === 'underline' || p === 'steady underline' ? 4
+            : p === 'blinking bar' ? 5
+              : p === 'bar' || p === 'steady bar' ? 6
+                : p
+    if (p === 2 && this.has('Se')) return this.put.Se()
+    if (this.has('Ss')) return this.put.Ss(p)
+    return this.#write(CSI + (p || 1) + _DECSCUSR)
   }
 
   decsca = this.setCharProtectionAttr
-  setCharProtectionAttr(param) {
-    return this.#write(CSI + (param || 0) + _DECSCA)
-  }
-
-
+  setCharProtectionAttr(param) { return this.#write(CSI + (param || 0) + _DECSCA) }
   restorePrivateValues() { return this.#write(CSI + '?' + slice.call(arguments).join(SC) + 'r') }
-
 
   deccara = this.setAttrInRectangle
   setAttrInRectangle() { return this.#write(CSI + slice.call(arguments).join(SC) + '$r') }
-
   savePrivateValues() { return this.#write(CSI + '?' + slice.call(arguments).join(SC) + 's') }
 
   manipulateWindow() {
@@ -2761,7 +2413,6 @@ export class Program extends EventEmitter {
 
   decrara = this.reverseAttrInRectangle
   reverseAttrInRectangle() { return this.#write(CSI + slice.call(arguments).join(SC) + '$t') }
-
   setTitleModeFeature() { return this.#writeTm(CSI + '>' + slice.call(arguments).join(SC) + 't') }
 
   decswbv = this.setWarningBellVolume
