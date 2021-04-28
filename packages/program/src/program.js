@@ -60,195 +60,7 @@ export class Program extends EventEmitter {
   as = this.smacs
   exit_alt_charset_mode = this.rmacs
   ae = this.rmacs
-  // XTerm mouse events
-  // http://invisible-island.net/xterm/ctlseqs/ctlseqs.html#Mouse%20Tracking
-  // To better understand these
-  // the xterm code is very helpful:
-  // Relevant files:
-  //   button.c, charproc.c, misc.c
-  // Relevant functions in xterm/button.c:
-  //   BtnCode, EmitButtonCode, EditorButton, SendMousePosition
-  // send a mouse event:
-  // regular/utf8: ^[[M Cb Cx Cy
-  // urxvt: ^[[ Cb ; Cx ; Cy M
-  // sgr: ^[[ Cb ; Cx ; Cy M/m
-  // vt300: ^[[ 24(1/3/5)~ [ Cx , Cy ] \r
-  // locator: CSI P e ; P b ; P r ; P c ; P p & w
-  // motion example of a left click:
-  // ^[[M 3<^[[M@4<^[[M@5<^[[M@6<^[[M@7<^[[M#7<
-  // mouseup, mousedown, mousewheel
 
-  // Cursor Position [row;column] (default = [1,1]) (CUP).
-  cup = this.cursorPos
-  pos = this.cursorPos
-  // Ps = 2  -> Selective Erase All.
-  ed = this.eraseInDisplay
-  //     Ps = 2  -> Selective Erase All.
-  el = this.eraseInLine
-  //     Ps.
-  sgr = this.charAttributes
-  attr = this.charAttributes
-  // Example: `DCS tmux; ESC Pt ST`
-  fg = this.setForeground
-  bg = this.setBackground
-  //   CSI ? 5 0  n  No Locator, if not.
-  dsr = this.deviceStatus
-  /**
-   * Additions
-   */
-  // CSI Ps @
-  // Insert Ps (Blank) Character(s) (default = 1) (ICH).
-  ich = this.insertChars
-  // same as CSI Ps B ?
-  cnl = this.cursorNextLine
-  // reuse CSI Ps A ?
-  cpl = this.cursorPrecedingLine
-  // Cursor Character Absolute  [column] (default = [row,1]) (CHA).
-  cha = this.cursorCharAbsolute
-  // Insert Ps Line(s) (default = 1) (IL).
-  il = this.insertLines
-  // Delete Ps Line(s) (default = 1) (DL).
-  dl = this.deleteLines
-  // Delete Ps Character(s) (default = 1) (DCH).
-  dch = this.deleteChars
-  // Erase Ps Character(s) (default = 1) (ECH).
-  ech = this.deleteChars
-  //   [column] (default = [row,1]) (HPA).
-  hpa = this.charPosAbsolute
-  // reuse CSI Ps C ?
-  hpr = this.HPositionRelative
-  //   vim responds with ^[[?0c or ^[[?1c after the terminal's response (?)
-  da = this.sendDeviceAttributes
-  // NOTE: Can't find in terminfo, no idea why it has multiple params.
-  vpa = this.linePosAbsolute
-  // Specific to iTerm2, but I think it's really cool.
-  // Example:
-  //  if (!screen.copyToClipboard(text)) {
-  //    execClipboardProgram(text);
-  // reuse CSI Ps B ?
-  vpr = this.VPositionRelative
-  //   [1,1]) (HVP).
-  hvp = this.HVPosition
-  //   http://vt100.net/docs/vt220-rm/chapter4.html
-  sm = this.setMode
-  dectcem = this.showCursor
-  cnorm = this.showCursor
-  cvvis = this.showCursor
-  alternate = this.alternateBuffer
-  smcup = this.alternateBuffer
-  //     Ps = 2 0 0 4  -> Reset bracketed paste mode.
-  rm = this.resetMode
-  dectcemh = this.hideCursor
-  cursor_invisible = this.hideCursor
-  vi = this.hideCursor
-  civis = this.hideCursor
-  rmcup = this.normalBuffer
-  // CSI ? Pm r
-  decstbm = this.setScrollRegion
-  csr = this.setScrollRegion
-  //   Save cursor (ANSI.SYS).
-  scA = this.saveCursorA
-  //   Restore cursor (ANSI.SYS).
-  rcA = this.restoreCursorA
-  /**
-   * Lesser Used
-   */
-  // CSI Ps I
-  //   Cursor Forward Tabulation Ps tab stops (default = 1) (CHT).
-  cht = this.cursorForwardTab
-  // CSI Ps S  Scroll up Ps lines (default = 1) (SU).
-  su = this.scrollUp
-  // CSI Ps T  Scroll down Ps lines (default = 1) (SD).
-  sd = this.scrollDown
-  // CSI Ps Z  Cursor Backward Tabulation Ps tab stops (default = 1) (CBT).
-  cbt = this.cursorBackwardTab
-  // CSI Ps b  Repeat the preceding graphic character Ps times (REP).
-  rep = this.repeatPrecedingCharacter
-  //   http://vt100.net/annarbor/aaa-ug/section6.html
-  tbc = this.tabClear
-  //     Ps = 1  1  -> Print all pages.
-  mc = this.mediaCopy
-  print_screen = this.mc0
-  ps = this.mc0
-  prtr_on = this.mc5
-  po = this.mc5
-  prtr_off = this.mc4
-  pf = this.mc4
-  prtr_non = this.mc5p
-  pO = this.mc5p
-  // http://vt100.net/docs/vt220-rm/table4-10.html
-  decstr = this.softReset
-  rs2 = this.softReset
-  //     4 - permanently reset
-  decrqm = this.requestAnsiMode
-  //   as in the ANSI DECRQM.
-  decrqmp = this.requestPrivateMode
-  //     Ps = 2  -> 8-bit controls.
-  decscl = this.setConformanceLevel
-  //     Ps = 2  3  -> Extinguish Scroll Lock.
-  decll = this.loadLEDs
-  //     Ps = 4  -> steady underline.
-  decscusr = this.setCursorStyle
-  //     Ps = 2  -> DECSED and DECSEL can erase.
-  decsca = this.setCharProtectionAttr
-  // NOTE: xterm doesn't enable this code by default.
-  deccara = this.setAttrInRectangle
-  // NOTE: xterm doesn't enable this code by default.
-  decrara = this.reverseAttrInRectangle
-  //     Ps = 5 , 6 , 7 , or 8  -> high.
-  decswbv = this.setWarningBellVolume
-  //     Ps = 0 , 5 , 6 , 7 , or 8  -> high.
-  decsmbv = this.setMarginBellVolume
-  // NOTE: xterm doesn't enable this code by default.
-  deccra = this.copyRectangle
-  // ESC N
-  // Single Shift Select of G2 Character Set
-  // ( SS2 is 0x8e). This affects next character only.
-  // ESC O
-  // Single Shift Select of G3 Character Set
-  // ( SS3 is 0x8f). This affects next character only.
-  // ESC n
-  // Invoke the G2 Character Set as GL (LS2).
-  // ESC o
-  // Invoke the G3 Character Set as GL (LS3).
-  // ESC |
-  // Invoke the G3 Character Set as GR (LS3R).
-  // ESC }
-  // Invoke the G2 Character Set as GR (LS2R).
-  // ESC ~
-  //   cels any prevous rectangle definition.
-  decefr = this.enableFilterRectangle
-  //     Pn = 0  <- STP flags.
-  decreqtparm = this.requestParameters
-  // OSC Ps ; Pt ST
-  // OSC Ps ; Pt BEL
-  //     Ps = 2  -> rectangle (exact).
-  decsace = this.selectChangeExtent
-  // OSC Ps ; Pt ST
-  // OSC Ps ; Pt BEL
-  // NOTE: xterm doesn't enable this code by default.
-  decfra = this.fillRectangle
-  // OSC Ps ; Pt ST
-  // OSC Ps ; Pt BEL
-  //     Pu = 2  <- character cells.
-  decelr = this.enableLocatorReporting
-  // NOTE: xterm doesn't enable this code by default.
-  decera = this.eraseRectangle
-  //     Ps = 4  -> do not report button up transitions.
-  decsle = this.setLocatorEvents
-  //     Pt; Pl; Pb; Pr denotes the rectangle.
-  decsera = this.selectiveEraseRectangle
-  // CSI Ps B
-  //   ted.
-  decrqlp = this.requestLocatorPosition
-  // CSI Ps C
-  req_mouse_pos = this.requestLocatorPosition
-  reqmp = this.requestLocatorPosition
-  // NOTE: xterm doesn't enable this code by default.
-  decic = this.insertColumns
-  // NOTE: xterm doesn't enable this code by default.
-  decdc = this.deleteColumns
-  // Cursor Preceding Line Ps Times (default = 1) (CNL).
   write = this._owrite
   constructor(options = {}) {
     super()
@@ -382,66 +194,7 @@ export class Program extends EventEmitter {
 -
 `)
   }
-  // CSI Pm m  Character Attributes (SGR).
-  //     Ps = 0  -> Normal (default).
-  //     Ps = 1  -> Bold.
-  //     Ps = 4  -> Underlined.
-  //     Ps = 5  -> Blink (appears as Bold).
-  //     Ps = 7  -> Inverse.
-  //     Ps = 8  -> Invisible, i.e., hidden (VT300).
-  //     Ps = 2 2  -> Normal (neither bold nor faint).
-  //     Ps = 2 4  -> Not underlined.
-  //     Ps = 2 5  -> Steady (not blinking).
-  //     Ps = 2 7  -> Positive (not inverse).
-  //     Ps = 2 8  -> Visible, i.e., not hidden (VT300).
-  //     Ps = 3 0  -> Set foreground color to Black.
-  //     Ps = 3 1  -> Set foreground color to Red.
-  //     Ps = 3 2  -> Set foreground color to Green.
-  //     Ps = 3 3  -> Set foreground color to Yellow.
-  //     Ps = 3 4  -> Set foreground color to Blue.
-  //     Ps = 3 5  -> Set foreground color to Magenta.
-  //     Ps = 3 6  -> Set foreground color to Cyan.
-  //     Ps = 3 7  -> Set foreground color to White.
-  //     Ps = 3 9  -> Set foreground color to default (original).
-  //     Ps = 4 0  -> Set background color to Black.
-  //     Ps = 4 1  -> Set background color to Red.
-  //     Ps = 4 2  -> Set background color to Green.
-  //     Ps = 4 3  -> Set background color to Yellow.
-  //     Ps = 4 4  -> Set background color to Blue.
-  //     Ps = 4 5  -> Set background color to Magenta.
-  //     Ps = 4 6  -> Set background color to Cyan.
-  //     Ps = 4 7  -> Set background color to White.
-  //     Ps = 4 9  -> Set background color to default (original).
 
-  //   If 16-color support is compiled, the following apply.  Assume
-  //   that xterm's resources are set so that the ISO color codes are
-  //   the first 8 of a set of 16.  Then the aixterm colors are the
-  //   bright versions of the ISO colors:
-  //     Ps = 9 0  -> Set foreground color to Black.
-  //     Ps = 9 1  -> Set foreground color to Red.
-  //     Ps = 9 2  -> Set foreground color to Green.
-  //     Ps = 9 3  -> Set foreground color to Yellow.
-  //     Ps = 9 4  -> Set foreground color to Blue.
-  //     Ps = 9 5  -> Set foreground color to Magenta.
-  //     Ps = 9 6  -> Set foreground color to Cyan.
-  //     Ps = 9 7  -> Set foreground color to White.
-  //     Ps = 1 0 0  -> Set background color to Black.
-  //     Ps = 1 0 1  -> Set background color to Red.
-  //     Ps = 1 0 2  -> Set background color to Green.
-  //     Ps = 1 0 3  -> Set background color to Yellow.
-  //     Ps = 1 0 4  -> Set background color to Blue.
-  //     Ps = 1 0 5  -> Set background color to Magenta.
-  //     Ps = 1 0 6  -> Set background color to Cyan.
-  //     Ps = 1 0 7  -> Set background color to White.
-
-  //   If xterm is compiled with the 16-color support disabled, it
-  //   supports the following, from rxvt:
-  //     Ps = 1 0 0  -> Set foreground and background color to
-  //     default.
-
-  //   If 88- or 256-color support is compiled, the following apply.
-  //     Ps = 3 8  ; 5  ; Ps -> Set foreground color to the second
-  //     Ps.
   setupDump() {
     const
       self    = this,
@@ -521,16 +274,8 @@ export class Program extends EventEmitter {
       termcap: options.termcap,
       forceUnicode: options.forceUnicode
     })
-    if (tput.error) {
-      nextTick(function () {
-        self.emit(WARNING, tput.error.message)
-      })
-    }
-    if (tput.padding) {
-      nextTick(function () {
-        self.emit(WARNING, 'Terminfo padding has been enabled.')
-      })
-    }
+    if (tput.error) nextTick(() => self.emit(WARNING, tput.error.message))
+    if (tput.padding) nextTick(() => self.emit(WARNING, 'Terminfo padding has been enabled.'))
     this.put = function () {
       const
         args = slice.call(arguments),
@@ -763,7 +508,7 @@ export class Program extends EventEmitter {
       }
     }
     // if (this.8bit) {
-    //   s = s.replace(/\233/g, '\x1b[');
+    //   s = s.replace(/\233/g, CSI);
     //   buf = new Buffer(s, 'utf8');
     // }
     // XTerm / X10 for buggy VTE
@@ -1641,19 +1386,18 @@ export class Program extends EventEmitter {
     nextTick(this._flush)
     return true
   }
-  // CSI Ps G
+
   flush() {
     if (!this._buf) return
     this._owrite(this._buf)
     this._buf = ''
   }
   _write(text) { return this.ret ? text : this.useBuffer ? this._buffer(text) : this._owrite(text) }
-  // CSI Ps L
-  // Real: `DCS tmux; ESC Pt ESC \`
+
   _twrite(data) {
     const self = this
     let
-      iterations = 0,
+      iter = 0,
       timer
     if (this.tmux) {
       // Replace all STs with BELs so they can be nested within the DCS code.
@@ -1663,8 +1407,8 @@ export class Program extends EventEmitter {
       // If we've never even flushed yet, it means we're still in
       // the normal buffer. Wait for alt screen buffer.
       if (this.output.bytesWritten === 0) {
-        timer = setInterval(function () {
-          if (self.output.bytesWritten > 0 || ++iterations === 50) {
+        timer = setInterval(() => {
+          if (self.output.bytesWritten > 0 || ++iter === 50) {
             clearInterval(timer)
             self.flush()
             self._owrite(data)
@@ -1680,20 +1424,13 @@ export class Program extends EventEmitter {
     }
     return this._write(data)
   }
-  print(text, attr) {
-    return attr
-      ? this._write(this.text(text, attr))
-      : this._write(text)
-  }
-  // CSI Ps M
-  _ncoords() {
-    if (this.x < 0) this.x = 0
-    else if (this.x >= this.cols) this.x = this.cols - 1
-    if (this.y < 0) this.y = 0
-    else if (this.y >= this.rows) this.y = this.rows - 1
+  print(text, attr) { return attr ? this._write(this.text(text, attr)) : this._write(text) }
+
+  recoords() {
+    this.x < 0 ? (this.x = 0) : this.x >= this.cols ? (this.x = this.cols - 1) : void 0
+    this.y < 0 ? (this.y = 0) : this.y >= this.rows ? (this.y = this.rows - 1) : void 0
   }
   setx(x) { return this.cursorCharAbsolute(x) } // return this.charPosAbsolute(x)
-  // CSI Ps P
   sety(y) { return this.linePosAbsolute(y) }
   move(x, y) { return this.cursorPos(y, x) }
   // CSI Ps X
@@ -1785,12 +1522,8 @@ export class Program extends EventEmitter {
     if (this.isiTerm2) {
       switch (shape) {
         case 'block':
-          if (!blink) {
-            this._twrite('\x1b]50;CursorShape=0;BlinkingCursorEnabled=0\x07')
-          }
-          else {
-            this._twrite('\x1b]50;CursorShape=0;BlinkingCursorEnabled=1\x07')
-          }
+          if (!blink) { this._twrite('\x1b]50;CursorShape=0;BlinkingCursorEnabled=0\x07') }
+          else { this._twrite('\x1b]50;CursorShape=0;BlinkingCursorEnabled=1\x07') }
           break
         case 'underline':
           if (!blink) {
@@ -1968,7 +1701,7 @@ export class Program extends EventEmitter {
   // Modes:
   vtab() {
     this.y++
-    this._ncoords()
+    this.recoords()
     return this._write('\x0b')
   }
   form() {
@@ -1977,13 +1710,13 @@ export class Program extends EventEmitter {
   }
   backspace() {
     this.x--
-    this._ncoords()
+    this.recoords()
     if (this.has('kbs')) return this.put.kbs()
     return this._write('\x08')
   }
   tab() {
     this.x += 8
-    this._ncoords()
+    this.recoords()
     if (this.has('ht')) return this.put.ht()
     return this._write('\t')
   }
@@ -2004,19 +1737,19 @@ export class Program extends EventEmitter {
     if (this.tput && this.tput.bools.eat_newline_glitch && this.x >= this.cols) return
     this.x = 0
     this.y++
-    this._ncoords()
+    this.recoords()
     if (this.has('nel')) return this.put.nel()
     return this._write('\n')
   }
   index() {
     this.y++
-    this._ncoords()
+    this.recoords()
     if (this.tput) return this.put.ind()
     return this._write('\x1bD')
   }
   reverseIndex() {
     this.y--
-    this._ncoords()
+    this.recoords()
     if (this.tput) return this.put.ri()
     return this._write('\x1bM')
   }
@@ -2103,7 +1836,7 @@ export class Program extends EventEmitter {
   nextLine() {
     this.y++
     this.x = 0
-    this._ncoords()
+    this.recoords()
     if (this.has('nel')) return this.put.nel()
     return this._write('\x1bE')
   }
@@ -2311,7 +2044,7 @@ export class Program extends EventEmitter {
   up = this.cursorUp
   cursorUp(n) {
     this.y -= n || 1
-    this._ncoords()
+    this.recoords()
     return !this.tput
       ? this._write(CSI + (n || '') + 'A')
       : !this.tput.strings.parm_up_cursor
@@ -2324,7 +2057,7 @@ export class Program extends EventEmitter {
   down = this.cursorDown
   cursorDown(n) {
     this.y += n || 1
-    this._ncoords()
+    this.recoords()
     return !this.tput
       ? this._write(CSI + (n || '') + 'B')
       : !this.tput.strings.parm_down_cursor
@@ -2338,7 +2071,7 @@ export class Program extends EventEmitter {
   forward = this.cursorForward
   cursorForward(n) {
     this.x += n || 1
-    this._ncoords()
+    this.recoords()
     return !this.tput
       ? this._write(CSI + (n || '') + 'C')
       : !this.tput.strings.parm_right_cursor
@@ -2352,29 +2085,46 @@ export class Program extends EventEmitter {
   back = this.cursorBackward
   cursorBackward(n) {
     this.x -= n || 1
-    this._ncoords()
+    this.recoords()
     return !this.tput
       ? this._write(CSI + (n || '') + 'D')
       : !this.tput.strings.parm_left_cursor
         ? this._write(this.repeat(this.tput.cub1(), n))
         : this.put.cub(n)
   }
-  cursorPos(row, col) {
-    if (!this.zero) {
-      row = (row || 1) - 1
-      col = (col || 1) - 1
-    }
-    else {
-      row = row || 0
-      col = col || 0
-    }
-    this.x = col
-    this.y = row
-    this._ncoords()
+
+  // XTerm mouse events
+  // http://invisible-island.net/xterm/ctlseqs/ctlseqs.html#Mouse%20Tracking
+  // To better understand these
+  // the xterm code is very helpful:
+  // Relevant files:
+  //   button.c, charproc.c, misc.c
+  // Relevant functions in xterm/button.c:
+  //   BtnCode, EmitButtonCode, EditorButton, SendMousePosition
+  // send a mouse event:
+  // regular/utf8: ^[[M Cb Cx Cy
+  // urxvt: ^[[ Cb ; Cx ; Cy M
+  // sgr: ^[[ Cb ; Cx ; Cy M/m
+  // vt300: ^[[ 24(1/3/5)~ [ Cx , Cy ] \r
+  // locator: CSI P e ; P b ; P r ; P c ; P p & w
+  // motion example of a left click:
+  // ^[[M 3<^[[M@4<^[[M@5<^[[M@6<^[[M@7<^[[M#7<
+  // mouseup, mousedown, mousewheel
+
+  // Cursor Position [row;column] (default = [1,1]) (CUP).
+  cup = this.cursorPos
+  pos = this.cursorPos
+  cursorPos(r, c) {
+    const { zero } = this
+    this.x = c = !zero ? (c || 1) - 1 : c || 0
+    this.y = r = !zero ? (r || 1) - 1 : r || 0
+    this.recoords()
     return this.tput
-      ? this.put.cup(row, col)
-      : this._write(`\x1b[${row + 1};${col + 1}H`)
+      ? this.put.cup(r, c)
+      : this._write(`\x1b[${r + 1};${c + 1}H`)
   }
+
+  ed = this.eraseInDisplay
   eraseInDisplay(param) {
     if (this.tput) {
       switch (param) {
@@ -2397,21 +2147,23 @@ export class Program extends EventEmitter {
     }
     switch (param) {
       case 'above':
-        return this._write('\X1b[1J')
+        return this._write(CSI + '1J')
       case 'all':
-        return this._write('\x1b[2J')
+        return this._write(CSI + '2J')
       case 'saved':
-        return this._write('\x1b[3J')
+        return this._write(CSI + '3J')
       case 'below':
       default:
-        return this._write('\x1b[J')
+        return this._write(CSI + 'J')
     }
   }
   clear() {
     this.x = 0
     this.y = 0
-    return this.tput ? this.put.clear() : this._write('\x1b[H\x1b[J')
+    return this.tput ? this.put.clear() : this._write(CSI + 'H' + CSI + 'J')
   }
+
+  el = this.eraseInLine
   eraseInLine(param) {
     if (this.tput) {
       //if (this.tput.back_color_erase) ...
@@ -2439,12 +2191,12 @@ export class Program extends EventEmitter {
         return this._write('\x1b[K')
     }
   }
+
+  sgr = this.charAttributes
+  attr = this.charAttributes
   charAttributes(param, val) { return this._write(this._attr(param, val)) }
   text(text, attr) { return this._attr(attr, true) + text + this._attr(attr, false) }
-  // CSI Ps ; Ps ; Ps ; Ps ; Ps T
-  //   Initiate highlight mouse tracking.  Parameters are
-  //   [func;startx;starty;firstrow;lastrow].  See the section Mouse
-  // NOTE: sun-color may not allow multiple params for SGR.
+
   _attr(param, val) {
     const self = this
     let parts,
@@ -2598,7 +2350,6 @@ export class Program extends EventEmitter {
       // non-16-color rxvt default fg and bg
       case 'default fg bg':
         return val === false ? '' : this.term('rxvt') ? '\x1b[100m' : '\x1b[39;49m'
-
       default:
         // 256-color fg and bg
         if (param[0] === '#') param = param.replace(/#(?:[0-9a-f]{3}){1,2}/i, colors.match)
@@ -2631,24 +2382,20 @@ export class Program extends EventEmitter {
         return null
     }
   }
-  // CSI > Ps; Ps T
-  //   Reset one or more features of the title modes to the default
-  //   value.  Normally, "reset" disables the feature.  It is possi-
-  //   ble to disable the ability to reset features by compiling a
-  //   different default for the title modes into xterm.
-  //     Ps = 0  -> Do not set window/icon labels using hexadecimal.
-  //     Ps = 1  -> Do not query window/icon labels using hexadeci-
-  //     mal.
-  //     Ps = 2  -> Do not set window/icon labels using UTF-8.
-  //     Ps = 3  -> Do not query window/icon labels using UTF-8.
+
+  fg = this.setForeground
   setForeground(color, val) {
     color = `${color.split(/\s*[,;]\s*/).join(' fg, ')} fg`
     return this.attr(color, val)
   }
+
+  bg = this.setBackground
   setBackground(color, val) {
     color = `${color.split(/\s*[,;]\s*/).join(' bg, ')} bg`
     return this.attr(color, val)
   }
+
+  dsr = this.deviceStatus
   deviceStatus(param, callback, dec, noBypass) {
     return dec
       ? this.response('device-status', `\x1b[?${param || '0'}n`, callback, noBypass)
@@ -2675,75 +2422,97 @@ export class Program extends EventEmitter {
     return this.cup(this._ry, this._rx)
     // return this.nel();
   }
+
+  /**
+   * Additions
+   */
+
+  ich = this.insertChars
   insertChars(param) {
     this.x += param || 1
-    this._ncoords()
+    this.recoords()
     if (this.tput) return this.put.ich(param)
     return this._write(`\x1b[${param || 1}@`)
   }
-  // CSI Pm i  Media Copy (MC).
-  //     Ps = 0  -> Print screen (default).
-  //     Ps = 4  -> Turn off printer controller mode.
-  //     Ps = 5  -> Turn on printer controller mode.
-  // CSI ? Pm i
-  //   Media Copy (MC, DEC-specific).
-  //     Ps = 1  -> Print line containing cursor.
-  //     Ps = 4  -> Turn off autoprint mode.
-  //     Ps = 5  -> Turn on autoprint mode.
-  //     Ps = 1  0  -> Print composed display, ignores DECPEX.
+
+  cnl = this.cursorNextLine
   cursorNextLine(param) {
     this.y += param || 1
-    this._ncoords()
+    this.recoords()
     return this._write(`\x1b[${param || ''}E`)
   }
+
+  cpl = this.cursorPrecedingLine
   cursorPrecedingLine(param) {
     this.y -= param || 1
-    this._ncoords()
+    this.recoords()
     return this._write(`\x1b[${param || ''}F`)
   }
+
+  cha = this.cursorCharAbsolute
   cursorCharAbsolute(param) {
     param = !this.zero ? (param || 1) - 1 : param || 0
     this.x = param
     this.y = 0
-    this._ncoords()
+    this.recoords()
     if (this.tput) return this.put.hpa(param)
     return this._write(`\x1b[${param + 1}G`)
   }
+
+  il = this.insertLines
   insertLines(param) { return this.tput ? this.put.il(param) : this._write(`\x1b[${param || ''}L`) }
+
+  dl = this.deleteLines
   deleteLines(param) { return this.tput ? this.put.dl(param) : this._write(`\x1b[${param || ''}M`) }
+
+  dch = this.deleteChars
   deleteChars(param) { return this.tput ? this.put.dch(param) : this._write(`\x1b[${param || ''}P`) }
+
+  ech = this.deleteChars
   eraseChars(param) { return this.tput ? this.put.ech(param) : this._write(`\x1b[${param || ''}X`) }
+
+  hpa = this.charPosAbsolute
   charPosAbsolute(param) {
     this.x = param || 0
-    this._ncoords()
+    this.recoords()
     if (this.tput) { return this.put.hpa.apply(this.put, arguments) }
     param = slice.call(arguments).join(';')
     return this._write(`\x1b[${param || ''}\``)
   }
+
+  hpr = this.HPositionRelative
   HPositionRelative(param) {
     if (this.tput) return this.cuf(param)
     this.x += param || 1
-    this._ncoords()
+    this.recoords()
     // Does not exist:
     // if (this.tput) return this.put.hpr(param);
     return this._write(`\x1b[${param || ''}a`)
   }
+
+  da = this.sendDeviceAttributes
   sendDeviceAttributes(param, callback) { return this.response('device-attributes', `\x1b[${param || ''}c`, callback) }
+
+  vpa = this.linePosAbsolute
   linePosAbsolute(param) {
     this.y = param || 1
-    this._ncoords()
+    this.recoords()
     if (this.tput) return this.put.vpa.apply(this.put, arguments)
     param = slice.call(arguments).join(';')
     return this._write(`\x1b[${param || ''}d`)
   }
+
+  vpr = this.VPositionRelative
   VPositionRelative(param) {
     if (this.tput) return this.cud(param)
     this.y += param || 1
-    this._ncoords()
+    this.recoords()
     // Does not exist:
     // if (this.tput) return this.put.vpr(param);
     return this._write(`\x1b[${param || ''}e`)
   }
+
+  hvp = this.HVPosition
   HVPosition(row, col) {
     if (!this.zero) {
       row = (row || 1) - 1
@@ -2755,43 +2524,27 @@ export class Program extends EventEmitter {
     }
     this.y = row
     this.x = col
-    this._ncoords()
+    this.recoords()
     // Does not exist (?):
     // if (this.tput) return this.put.hvp(row, col);
     if (this.tput) return this.put.cup(row, col)
     return this._write(`\x1b[${row + 1};${col + 1}f`)
   }
+
+  sm = this.setMode
   setMode() {
     const param = slice.call(arguments).join(';')
     return this._write(`\x1b[${param || ''}h`)
   }
-  // CSI > Ps; Ps m
-  //   Set or reset resource-values used by xterm to decide whether
-  //   to construct escape sequences holding information about the
-  //   modifiers pressed with a given key.  The first parameter iden-
-  //   tifies the resource to set/reset.  The second parameter is the
-  //   value to assign to the resource.  If the second parameter is
-  //   omitted, the resource is reset to its initial value.
-  //     Ps = 1  -> modifyCursorKeys.
-  //     Ps = 2  -> modifyFunctionKeys.
-  //     Ps = 4  -> modifyOtherKeys.
-  //   If no parameters are given, all resources are reset to their
+
   decset() {
     const param = slice.call(arguments).join(';')
     return this.setMode(`?${param}`)
   }
-  // CSI > Ps n
-  //   Disable modifiers which may be enabled via the CSI > Ps; Ps m
-  //   sequence.  This corresponds to a resource value of "-1", which
-  //   cannot be set with the other sequence.  The parameter identi-
-  //   fies the resource to be disabled:
-  //     Ps = 1  -> modifyCursorKeys.
-  //     Ps = 2  -> modifyFunctionKeys.
-  //     Ps = 4  -> modifyOtherKeys.
-  //   If the parameter is omitted, modifyFunctionKeys is disabled.
-  //   When modifyFunctionKeys is disabled, xterm uses the modifier
-  //   keys to make an extended sequence of functions rather than
-  //   adding a parameter to each function key to denote the modi-
+
+  dectcem = this.showCursor
+  cnorm = this.showCursor
+  cvvis = this.showCursor
   showCursor() {
     this.cursorHidden = false
     // NOTE: In xterm terminfo:
@@ -2803,13 +2556,9 @@ export class Program extends EventEmitter {
     // return this._write('\x1b[?12;25h'); // cursor_visible
     return this.setMode('?25')
   }
-  // CSI > Ps p
-  //   Set resource value pointerMode.  This is used by xterm to
-  //   decide whether to hide the pointer cursor as the user types.
-  //   Valid values for the parameter:
-  //     Ps = 0  -> never hide the pointer.
-  //     Ps = 1  -> hide if the mouse tracking mode is not enabled.
-  //     Ps = 2  -> always hide the pointer.  If no parameter is
+
+  alternate = this.alternateBuffer
+  smcup = this.alternateBuffer
   alternateBuffer() {
     this.isAlt = true
     if (this.tput) return this.put.smcup()
@@ -2817,29 +2566,29 @@ export class Program extends EventEmitter {
     this.setMode('?47')
     return this.setMode('?1049')
   }
-  // CSI ! p   Soft terminal reset (DECSTR).
+
+  rm = this.resetMode
   resetMode() {
     const param = slice.call(arguments).join(';')
     return this._write(`\x1b[${param || ''}l`)
   }
+
   decrst() {
     const param = slice.call(arguments).join(';')
     return this.resetMode(`?${param}`)
   }
+
+  dectcemh = this.hideCursor
+  cursor_invisible = this.hideCursor
+  vi = this.hideCursor
+  civis = this.hideCursor
   hideCursor() {
     this.cursorHidden = true
     if (this.tput) return this.put.civis()
     return this.resetMode('?25')
   }
-  // CSI Ps$ p
-  //   Request ANSI mode (DECRQM).  For VT300 and up, reply is
-  //     CSI Ps; Pm$ y
-  //   where Ps is the mode number as in RM, and Pm is the mode
-  //   value:
-  //     0 - not recognized
-  //     1 - set
-  //     2 - reset
-  //     3 - permanently set
+
+  rmcup = this.normalBuffer
   normalBuffer() {
     this.isAlt = false
     if (this.tput) return this.put.rmcup()
@@ -3013,15 +2762,9 @@ export class Program extends EventEmitter {
     // gpm mouse
     if (opt.gpmMouse != null) { opt.gpmMouse ? this.enableGpm() : this.disableGpm() }
   }
-  // CSI Ps ; Ps " p
-  //   Set conformance level (DECSCL).  Valid values for the first
-  //   parameter:
-  //     Ps = 6 1  -> VT100.
-  //     Ps = 6 2  -> VT200.
-  //     Ps = 6 3  -> VT300.
-  //   Valid values for the second parameter:
-  //     Ps = 0  -> 8-bit controls.
-  //     Ps = 1  -> 7-bit controls (always set for VT100).
+
+  decstbm = this.setScrollRegion
+  csr = this.setScrollRegion
   setScrollRegion(top, bottom) {
     if (!this.zero) {
       top = (top || 1) - 1
@@ -3035,162 +2778,101 @@ export class Program extends EventEmitter {
     this.scrollBottom = bottom
     this.x = 0
     this.y = 0
-    this._ncoords()
+    this.recoords()
     if (this.tput) return this.put.csr(top, bottom)
     return this._write(`\x1b[${top + 1};${bottom + 1}r`)
   }
+
+  scA = this.saveCursorA
   saveCursorA() {
     this.savedX = this.x
     this.savedY = this.y
     if (this.tput) return this.put.sc()
     return this._write('\x1b[s')
   }
-  // CSI Ps q  Load LEDs (DECLL).
-  //     Ps = 0  -> Clear all LEDS (default).
-  //     Ps = 1  -> Light Num Lock.
-  //     Ps = 2  -> Light Caps Lock.
-  //     Ps = 3  -> Light Scroll Lock.
-  //     Ps = 2  1  -> Extinguish Num Lock.
-  //     Ps = 2  2  -> Extinguish Caps Lock.
+
+  rcA = this.restoreCursorA
   restoreCursorA() {
     this.x = this.savedX || 0
     this.y = this.savedY || 0
     if (this.tput) return this.put.rc()
     return this._write('\x1b[u')
   }
+
+  cht = this.cursorForwardTab
   cursorForwardTab(param) {
     this.x += 8
-    this._ncoords()
+    this.recoords()
     if (this.tput) return this.put.tab(param)
     return this._write(`\x1b[${param || 1}I`)
   }
-  // CSI Ps SP q
-  //   Set cursor style (DECSCUSR, VT520).
-  //     Ps = 0  -> blinking block.
-  //     Ps = 1  -> blinking block (default).
-  //     Ps = 2  -> steady block.
-  //     Ps = 3  -> blinking underline.
+
+  cht = this.cursorForwardTab
   scrollUp(param) {
     this.y -= param || 1
-    this._ncoords()
+    this.recoords()
     if (this.tput) return this.put.parm_index(param)
     return this._write(`\x1b[${param || 1}S`)
   }
+
+  sd = this.scrollDown
   scrollDown(param) {
     this.y += param || 1
-    this._ncoords()
+    this.recoords()
     if (this.tput) return this.put.parm_rindex(param)
     return this._write(`\x1b[${param || 1}T`)
   }
-  // CSI Ps " q
-  //   Select character protection attribute (DECSCA).  Valid values
-  //   for the parameter:
-  //     Ps = 0  -> DECSED and DECSEL can erase (default).
-  //     Ps = 1  -> DECSED and DECSEL cannot erase.
-  //   Tracking.
+
   initMouseTracking() { return this._write(`\x1b[${slice.call(arguments).join(';')}T`) }
-  //   (See discussion of "Title Modes").
+
   resetTitleModes() { return this._write(`\x1b[>${slice.call(arguments).join(';')}T`) }
-  // CSI ? Pm r
-  //   Restore DEC Private Mode Values.  The value of Ps previously
+
+  cbt = this.cursorBackwardTab
   cursorBackwardTab(param) {
     this.x -= 8
-    this._ncoords()
+    this.recoords()
     if (this.tput) return this.put.cbt(param)
     return this._write(`\x1b[${param || 1}Z`)
   }
-  // CSI Pt; Pl; Pb; Pr; Ps$ r
-  //   Change Attributes in Rectangular Area (DECCARA), VT400 and up.
-  //     Pt; Pl; Pb; Pr denotes the rectangle.
-  //     Ps denotes the SGR attributes to change: 0, 1, 4, 5, 7.
+
+  rep = this.repeatPrecedingCharacter
   repeatPrecedingCharacter(param) {
     this.x += param || 1
-    this._ncoords()
+    this.recoords()
     if (this.tput) return this.put.rep(param)
     return this._write(`\x1b[${param || 1}b`)
   }
+
+  tbc = this.tabClear
   tabClear(param) { return this.tput ? this.put.tbc(param) : this._write(`\x1b[${param || 0}g`) }
-  // CSI ? Pm s
-  //   Save DEC Private Mode Values.  Ps values are the same as for
+
+  mc = this.mediaCopy
   mediaCopy() { return this._write(`\x1b[${slice.call(arguments).join(';')}i`) }
-  // CSI Ps ; Ps ; Ps t
-  //   Window manipulation (from dtterm, as well as extensions).
-  //   These controls may be disabled using the allowWindowOps
-  //   resource.  Valid values for the first (and any additional
-  //   parameters) are:
-  //     Ps = 1  -> De-iconify window.
-  //     Ps = 2  -> Iconify window.
-  //     Ps = 3  ;  x ;  y -> Move window to [x, y].
-  //     Ps = 4  ;  height ;  width -> Resize the xterm window to
-  //     height and width in pixels.
-  //     Ps = 5  -> Raise the xterm window to the front of the stack-
-  //     ing order.
-  //     Ps = 6  -> Lower the xterm window to the bottom of the
-  //     stacking order.
-  //     Ps = 7  -> Refresh the xterm window.
-  //     Ps = 8  ;  height ;  width -> Resize the text area to
-  //     [height;width] in characters.
-  //     Ps = 9  ;  0  -> Restore maximized window.
-  //     Ps = 9  ;  1  -> Maximize window (i.e., resize to screen
-  //     size).
-  //     Ps = 1 0  ;  0  -> Undo full-screen mode.
-  //     Ps = 1 0  ;  1  -> Change to full-screen.
-  //     Ps = 1 1  -> Report xterm window state.  If the xterm window
-  //     is open (non-iconified), it returns CSI 1 t .  If the xterm
-  //     window is iconified, it returns CSI 2 t .
-  //     Ps = 1 3  -> Report xterm window position.  Result is CSI 3
-  //     ; x ; y t
-  //     Ps = 1 4  -> Report xterm window in pixels.  Result is CSI
-  //     4  ;  height ;  width t
-  //     Ps = 1 8  -> Report the size of the text area in characters.
-  //     Result is CSI  8  ;  height ;  width t
-  //     Ps = 1 9  -> Report the size of the screen in characters.
-  //     Result is CSI  9  ;  height ;  width t
-  //     Ps = 2 0  -> Report xterm window's icon label.  Result is
-  //     OSC  L  label ST
-  //     Ps = 2 1  -> Report xterm window's title.  Result is OSC  l
-  //     label ST
-  //     Ps = 2 2  ;  0  -> Save xterm icon and window title on
-  //     stack.
-  //     Ps = 2 2  ;  1  -> Save xterm icon title on stack.
-  //     Ps = 2 2  ;  2  -> Save xterm window title on stack.
-  //     Ps = 2 3  ;  0  -> Restore xterm icon and window title from
-  //     stack.
-  //     Ps = 2 3  ;  1  -> Restore xterm icon title from stack.
-  //     Ps = 2 3  ;  2  -> Restore xterm window title from stack.
+
+  print_screen = this.mc0
+  ps = this.mc0
   mc0() { return this.tput ? this.put.mc0() : this.mc('0') }
-  mc5() {
-    return this.tput ? this.put.mc5() : this.mc('5')
-  }
-  // CSI Pt; Pl; Pb; Pr; Ps$ t
-  //   Reverse Attributes in Rectangular Area (DECRARA), VT400 and
-  //   up.
-  //     Pt; Pl; Pb; Pr denotes the rectangle.
-  //     Ps denotes the attributes to reverse, i.e.,  1, 4, 5, 7.
+
+  prtr_on = this.mc5
+  po = this.mc5
+  mc5() { return this.tput ? this.put.mc5() : this.mc('5') }
+
+  prtr_off = this.mc4
+  pf = this.mc4
   mc4() { return this.tput ? this.put.mc4() : this.mc('4') }
+
+  prtr_non = this.mc5p
+  pO = this.mc5p
   mc5p() { return this.tput ? this.put.mc5p() : this.mc('?5') }
-  // CSI > Ps; Ps t
-  //   Set one or more features of the title modes.  Each parameter
-  //   enables a single feature.
-  //     Ps = 0  -> Set window/icon labels using hexadecimal.
-  //     Ps = 1  -> Query window/icon labels using hexadecimal.
-  //     Ps = 2  -> Set window/icon labels using UTF-8.
-  //     Ps = 3  -> Query window/icon labels using UTF-8.  (See dis-
-  //     cussion of "Title Modes")
-  //   initial values.
+
   setResources() { return this._write(`\x1b[>${slice.call(arguments).join(';')}m`) }
-  // CSI Ps SP t
-  //   Set warning-bell volume (DECSWBV, VT520).
-  //     Ps = 0  or 1  -> off.
-  //     Ps = 2 , 3  or 4  -> low.
-  //   fiers.
+
   disableModifiers(param) { return this._write(`\x1b[>${param || ''}n`) }
-  //     given, xterm uses the default, which is 1 .
+
   setPointerMode(param) { return this._write(`\x1b[>${param || ''}p`) }
-  // CSI Ps SP u
-  //   Set margin-bell volume (DECSMBV, VT520).
-  //     Ps = 1  -> off.
-  //     Ps = 2 , 3  or 4  -> low.
+
+  decstr = this.softReset
+  rs2 = this.softReset
   softReset() {
     //if (this.tput) return this.put.init_2string();
     //if (this.tput) return this.put.reset_2string();
@@ -3199,26 +2881,20 @@ export class Program extends EventEmitter {
     //return this._write('\x1b[!p\x1b[?3;4l\x1b[4l\x1b>'); // init
     return this._write('\x1b[!p\x1b[?3;4l\x1b[4l\x1b>') // reset
   }
+
+  decrqm = this.requestAnsiMode
   requestAnsiMode(param) { return this._write(`\x1b[${param || ''}$p`) }
-  // CSI Pt; Pl; Pb; Pr; Pp; Pt; Pl; Pp$ v
-  //   Copy Rectangular Area (DECCRA, VT400 and up).
-  //     Pt; Pl; Pb; Pr denotes the rectangle.
-  //     Pp denotes the source page.
-  //     Pt; Pl denotes the target location.
-  //     Pp denotes the target page.
+
+  decrqmp = this.requestPrivateMode
   requestPrivateMode(param) { return this._write(`\x1b[?${param || ''}$p`) }
+
+  decscl = this.setConformanceLevel
   setConformanceLevel() { return this._write(`\x1b[${slice.call(arguments).join(';')}"p`) }
-  // CSI Pt ; Pl ; Pb ; Pr ' w
-  //   Enable Filter Rectangle (DECEFR), VT420 and up.
-  //   Parameters are [top;left;bottom;right].
-  //   Defines the coordinates of a filter rectangle and activates
-  //   it.  Anytime the locator is detected outside of the filter
-  //   rectangle, an outside rectangle event is generated and the
-  //   rectangle is disabled.  Filter rectangles are always treated
-  //   as "one-shot" events.  Any parameters that are omitted default
-  //   to the current locator position.  If all parameters are omit-
-  //   ted, any locator motion will be reported.  DECELR always can-
+
+  decll = this.loadLEDs
   loadLEDs(param) { return this._write(`\x1b[${param || ''}q`) }
+
+  decscusr = this.setCursorStyle
   setCursorStyle(param) {
     switch (param) {
       case 'blinking block':
@@ -3251,32 +2927,22 @@ export class Program extends EventEmitter {
     }
     return this._write(`\x1b[${param || 1} q`)
   }
-  // CSI Ps x  Request Terminal Parameters (DECREQTPARM).
-  //   if Ps is a "0" (default) or "1", and xterm is emulating VT100,
-  //   the control sequence elicits a response of the same form whose
-  //   parameters describe the terminal:
-  //     Ps -> the given Ps incremented by 2.
-  //     Pn = 1  <- no parity.
-  //     Pn = 1  <- eight bits.
-  //     Pn = 1  <- 2  8  transmit 38.4k baud.
-  //     Pn = 1  <- 2  8  receive 38.4k baud.
-  //     Pn = 1  <- clock multiplier.
+
+  decsca = this.setCharProtectionAttr
   setCharProtectionAttr(param) {
     return this._write(`\x1b[${param || 0}"q`)
   }
-  //   saved is restored.  Ps values are the same as for DECSET.
+
+  deccara = this.setAttrInRectangle
   restorePrivateValues() { return this._write(`\x1b[?${slice.call(arguments).join(';')}r`) }
-  // CSI Ps x  Select Attribute Change Extent (DECSACE).
-  //     Ps = 0  -> from start to end position, wrapped.
-  //     Ps = 1  -> from start to end position, wrapped.
+
+  decrara = this.reverseAttrInRectangle
   setAttrInRectangle() { return this._write(`\x1b[${slice.call(arguments).join(';')}$r`) }
-  //   DECSET.
+
+  decswbv = this.setWarningBellVolume
   savePrivateValues() { return this._write(`\x1b[?${slice.call(arguments).join(';')}s`) }
-  // CSI Pc; Pt; Pl; Pb; Pr$ x
-  //   Fill Rectangular Area (DECFRA), VT420 and up.
-  //     Pc is the character to use.
-  //     Pt; Pl; Pb; Pr denotes the rectangle.
-  //     Ps >= 2 4  -> Resize to Ps lines (DECSLPP).
+
+  decsmbv = this.setMarginBellVolume
   manipulateWindow() {
     const args = slice.call(arguments)
     const callback = typeof args[args.length - 1] === FUN
@@ -3285,87 +2951,45 @@ export class Program extends EventEmitter {
     return this.response('window-manipulation', `\x1b[${args.join(';')}t`, callback)
   }
   getWindowSize(callback) { return this.manipulateWindow(18, callback) }
-  // CSI Ps ; Pu ' z
-  //   Enable Locator Reporting (DECELR).
-  //   Valid values for the first parameter:
-  //     Ps = 0  -> Locator disabled (default).
-  //     Ps = 1  -> Locator enabled.
-  //     Ps = 2  -> Locator enabled for one report, then disabled.
-  //   The second parameter specifies the coordinate unit for locator
-  //   reports.
-  //   Valid values for the second parameter:
-  //     Pu = 0  <- or omitted -> default to character cells.
-  //     Pu = 1  <- device physical pixels.
+
   reverseAttrInRectangle() { return this._write(`\x1b[${slice.call(arguments).join(';')}$t`) }
-  // XXX VTE bizarelly echos this:
+
   setTitleModeFeature() { return this._twrite(`\x1b[>${slice.call(arguments).join(';')}t`) }
-  // CSI Pt; Pl; Pb; Pr$ z
-  //   Erase Rectangular Area (DECERA), VT400 and up.
-  //     Pt; Pl; Pb; Pr denotes the rectangle.
+
   setWarningBellVolume(param) { return this._write(`\x1b[${param || ''} t`) }
+
   setMarginBellVolume(param) { return this._write(`\x1b[${param || ''} u`) }
-  // CSI Pm ' {
-  //   Select Locator Events (DECSLE).
-  //   Valid values for the first (and any additional parameters)
-  //   are:
-  //     Ps = 0  -> only respond to explicit host requests (DECRQLP).
-  //                (This is default).  It also cancels any filter
-  //   rectangle.
-  //     Ps = 1  -> report button down transitions.
-  //     Ps = 2  -> do not report button down transitions.
-  //     Ps = 3  -> report button up transitions.
+
+  deccra = this.copyRectangle
   copyRectangle() { return this._write(`\x1b[${slice.call(arguments).join(';')}$v`) }
+
+  decefr = this.enableFilterRectangle
   enableFilterRectangle() { return this._write(`\x1b[${slice.call(arguments).join(';')}'w`) }
-  // CSI Pt; Pl; Pb; Pr$ {
-  //   Selective Erase Rectangular Area (DECSERA), VT400 and up.
+
+  decreqtparm = this.requestParameters
   requestParameters(param) { return this._write(`\x1b[${param || 0}x`) }
+
+  decsace = this.selectChangeExtent
   selectChangeExtent(param) { return this._write(`\x1b[${param || 0}x`) }
-  // CSI Ps ' |
-  //   Request Locator Position (DECRQLP).
-  //   Valid values for the parameter are:
-  //     Ps = 0 , 1 or omitted -> transmit a single DECLRP locator
-  //     report.
 
-  //   If Locator Reporting has been enabled by a DECELR, xterm will
-  //   respond with a DECLRP Locator Report.  This report is also
-  //   generated on button up and down events if they have been
-  //   enabled with a DECSLE, or when the locator is detected outside
-  //   of a filter rectangle, if filter rectangles have been enabled
-  //   with a DECEFR.
-
-  //     -> CSI Pe ; Pb ; Pr ; Pc ; Pp &  w
-
-  //   Parameters are [event;button;row;column;page].
-  //   Valid values for the event:
-  //     Pe = 0  -> locator unavailable - no other parameters sent.
-  //     Pe = 1  -> request - xterm received a DECRQLP.
-  //     Pe = 2  -> left button down.
-  //     Pe = 3  -> left button up.
-  //     Pe = 4  -> middle button down.
-  //     Pe = 5  -> middle button up.
-  //     Pe = 6  -> right button down.
-  //     Pe = 7  -> right button up.
-  //     Pe = 8  -> M4 button down.
-  //     Pe = 9  -> M4 button up.
-  //     Pe = 1 0  -> locator outside filter rectangle.
-  //   ``button'' parameter is a bitmask indicating which buttons are
-  //     pressed:
-  //     Pb = 0  <- no buttons down.
-  //     Pb & 1  <- right button down.
-  //     Pb & 2  <- middle button down.
-  //     Pb & 4  <- left button down.
-  //     Pb & 8  <- M4 button down.
-  //   ``row'' and ``column'' parameters are the coordinates of the
-  //     locator position in the xterm window, encoded as ASCII deci-
-  //     mal.
-  //   The ``page'' parameter is not used by xterm, and will be omit-
+  decfra = this.fillRectangle
   fillRectangle() { return this._write(`\x1b[${slice.call(arguments).join(';')}$x`) }
+
+  decelr = this.enableLocatorReporting
   enableLocatorReporting() { return this._write(`\x1b[${slice.call(arguments).join(';')}'z`) }
+
+  decera = this.eraseRectangle
   eraseRectangle() { return this._write(`\x1b[${slice.call(arguments).join(';')}$z`) }
+
+  decsle = this.setLocatorEvents
   setLocatorEvents() { return this._write(`\x1b[${slice.call(arguments).join(';')}'{`) }
-  // CSI P m SP }
-  // Insert P s Column(s) (default = 1) (DECIC), VT420 and up.
+
+  decsera = this.selectiveEraseRectangle
   selectiveEraseRectangle() { return this._write(`\x1b[${slice.call(arguments).join(';')}$\{`) }
+
+  decrqlp = this.requestLocatorPosition
+  req_mouse_pos = this.requestLocatorPosition
+  reqmp = this.requestLocatorPosition
   requestLocatorPosition(param, callback) {
     // See also:
     // get_mouse / getm / Gm
@@ -3377,14 +3001,12 @@ export class Program extends EventEmitter {
     }
     return this.response('locator-position', `\x1b[${param || ''}'|`, callback)
   }
-  // CSI P m SP ~
-  // Delete P s Column(s) (default = 1) (DECDC), VT420 and up
-  insertColumns() {
-    return this._write(`\x1b[${slice.call(arguments).join(';')} }`)
-  }
-  deleteColumns() {
-    return this._write(`\x1b[${slice.call(arguments).join(';')} ~`)
-  }
+
+  decic = this.insertColumns
+  insertColumns() { return this._write(`\x1b[${slice.call(arguments).join(';')} }`) }
+
+  decdc = this.deleteColumns
+  deleteColumns() { return this._write(`\x1b[${slice.call(arguments).join(';')} ~`) }
   out(name) {
     const args = Array.prototype.slice.call(arguments, 1)
     this.ret = true
@@ -3394,7 +3016,7 @@ export class Program extends EventEmitter {
   }
   sigtstp(callback) {
     const resume = this.pause()
-    process.once(SIGCONT, function () { resume(), callback ? callback() : undefined })
+    process.once(SIGCONT, () => { resume(), (callback ? callback() : undefined) })
     process.kill(process.pid, SIGTSTP)
   }
   pause(callback) {

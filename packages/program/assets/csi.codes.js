@@ -1,5 +1,5 @@
 import { SC }  from '@texting/enum-chars'
-import { ESC } from './control.characters'
+import { ESC } from './control.chars'
 
 export const CSI = ESC + '['
 
