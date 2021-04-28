@@ -13,13 +13,14 @@ import { ENTER, LEFT, MIDDLE, RETURN, RIGHT, UNDEFINED, UNKNOWN } from '@pres/en
 import { EventEmitter }                                           from '@pres/events'
 import { Tput }                                                   from '@pres/terminfo-parser'
 import * as colors                                                from '@pres/util-colors'
+import { SC }                                                     from '@texting/enum-chars'
 import { FUN, NUM, STR }                                          from '@typen/enum-data-types'
 import cp                                                         from 'child_process'
 import fs                                                         from 'fs'
 import { StringDecoder }                                          from 'string_decoder'
 import util                                                       from 'util'
 import { BEL, ESC }                                               from '../assets/control.chars'
-import { CSI }                                                    from '../assets/csi.codes'
+import { _CHT, _CUP, _CUU, _ED, _RCP, _SCP, _SD, _SGR, _SU, CSI } from '../assets/csi.codes'
 import { OSC }                                                    from '../assets/osc.codes'
 import { gpmClient }                                              from './gpmclient'
 import { emitKeypressEvents }                                     from './keys'
@@ -1903,7 +1904,7 @@ export class Program extends EventEmitter {
     this.y -= n || 1
     this.recoords()
     return !this.tput
-      ? this.#write(CSI + (n || '') + 'A')
+      ? this.#write(CSI + (n || '') + _CUU)
       : !this.tput.strings.parm_up_cursor
         ? this.#write(this.repeat(this.tput.cuu1(), n))
         : this.put.cuu(n)
@@ -1978,7 +1979,7 @@ export class Program extends EventEmitter {
     this.recoords()
     return this.tput
       ? this.put.cup(r, c)
-      : this.#write(CSI + `${r + 1};${c + 1}H`)
+      : this.#write(CSI + `${r + 1};${c + 1}` + _CUP)
   }
 
   ed = this.eraseInDisplay
@@ -2004,20 +2005,20 @@ export class Program extends EventEmitter {
     }
     switch (param) {
       case 'above':
-        return this.#write(CSI + '1J')
+        return this.#write(CSI + '1' + _ED)
       case 'all':
-        return this.#write(CSI + '2J')
+        return this.#write(CSI + '2' + _ED)
       case 'saved':
-        return this.#write(CSI + '3J')
+        return this.#write(CSI + '3' + _ED)
       case 'below':
       default:
-        return this.#write(CSI + 'J')
+        return this.#write(CSI + _ED)
     }
   }
   clear() {
     this.x = 0
     this.y = 0
-    return this.tput ? this.put.clear() : this.#write(CSI + 'H' + CSI + 'J')
+    return this.tput ? this.put.clear() : this.#write(CSI + _CUP + CSI + _ED)
   }
 
   el = this.eraseInLine
@@ -2091,122 +2092,122 @@ export class Program extends EventEmitter {
       // attributes
       case 'normal':
       case 'default':
-        return val === false ? '' : CSI + 'm'
+        return val === false ? '' : CSI + _SGR
       case 'bold':
-        return val === false ? CSI + '22m' : CSI + '1m'
+        return val === false ? CSI + '22' + _SGR : CSI + '1' + _SGR
       case 'ul':
       case 'underline':
       case 'underlined':
-        return val === false ? CSI + '24m' : CSI + '4m'
+        return val === false ? CSI + '24' + _SGR : CSI + '4' + _SGR
       case 'blink':
-        return val === false ? CSI + '25m' : CSI + '5m'
+        return val === false ? CSI + '25' + _SGR : CSI + '5' + _SGR
       case 'inverse':
-        return val === false ? CSI + '27m' : CSI + '7m'
+        return val === false ? CSI + '27' + _SGR : CSI + '7' + _SGR
       case 'invisible':
-        return val === false ? CSI + '28m' : CSI + '8m'
+        return val === false ? CSI + '28' + _SGR : CSI + '8' + _SGR
       // 8-color foreground
       case 'black fg':
-        return val === false ? CSI + '39m' : CSI + '30m'
+        return val === false ? CSI + '39' + _SGR : CSI + '30' + _SGR
       case 'red fg':
-        return val === false ? CSI + '39m' : CSI + '31m'
+        return val === false ? CSI + '39' + _SGR : CSI + '31' + _SGR
       case 'green fg':
-        return val === false ? CSI + '39m' : CSI + '32m'
+        return val === false ? CSI + '39' + _SGR : CSI + '32' + _SGR
       case 'yellow fg':
-        return val === false ? CSI + '39m' : CSI + '33m'
+        return val === false ? CSI + '39' + _SGR : CSI + '33' + _SGR
       case 'blue fg':
-        return val === false ? CSI + '39m' : CSI + '34m'
+        return val === false ? CSI + '39' + _SGR : CSI + '34' + _SGR
       case 'magenta fg':
-        return val === false ? CSI + '39m' : CSI + '35m'
+        return val === false ? CSI + '39' + _SGR : CSI + '35' + _SGR
       case 'cyan fg':
-        return val === false ? CSI + '39m' : CSI + '36m'
+        return val === false ? CSI + '39' + _SGR : CSI + '36' + _SGR
       case 'white fg':
       case 'light grey fg':
       case 'light gray fg':
       case 'bright grey fg':
       case 'bright gray fg':
-        return val === false ? CSI + '39m' : CSI + '37m'
+        return val === false ? CSI + '39' + _SGR : CSI + '37' + _SGR
       case 'default fg':
-        return val === false ? '' : CSI + '39m'
+        return val === false ? '' : CSI + '39' + _SGR
       // 8-color background
       case 'black bg':
-        return val === false ? CSI + '49m' : CSI + '40m'
+        return val === false ? CSI + '49' + _SGR : CSI + '40' + _SGR
       case 'red bg':
-        return val === false ? CSI + '49m' : CSI + '41m'
+        return val === false ? CSI + '49' + _SGR : CSI + '41' + _SGR
       case 'green bg':
-        return val === false ? CSI + '49m' : CSI + '42m'
+        return val === false ? CSI + '49' + _SGR : CSI + '42' + _SGR
       case 'yellow bg':
-        return val === false ? CSI + '49m' : CSI + '43m'
+        return val === false ? CSI + '49' + _SGR : CSI + '43' + _SGR
       case 'blue bg':
-        return val === false ? CSI + '49m' : CSI + '44m'
+        return val === false ? CSI + '49' + _SGR : CSI + '44' + _SGR
       case 'magenta bg':
-        return val === false ? CSI + '49m' : CSI + '45m'
+        return val === false ? CSI + '49' + _SGR : CSI + '45' + _SGR
       case 'cyan bg':
-        return val === false ? CSI + '49m' : CSI + '46m'
+        return val === false ? CSI + '49' + _SGR : CSI + '46' + _SGR
       case 'white bg':
       case 'light grey bg':
       case 'light gray bg':
       case 'bright grey bg':
       case 'bright gray bg':
-        return val === false ? CSI + '49m' : CSI + '47m'
+        return val === false ? CSI + '49' + _SGR : CSI + '47' + _SGR
       case 'default bg':
-        return val === false ? '' : CSI + '49m'
+        return val === false ? '' : CSI + '49' + _SGR
       // 16-color foreground
       case 'light black fg':
       case 'bright black fg':
       case 'grey fg':
       case 'gray fg':
-        return val === false ? CSI + '39m' : CSI + '90m'
+        return val === false ? CSI + '39' + _SGR : CSI + '90' + _SGR
       case 'light red fg':
       case 'bright red fg':
-        return val === false ? CSI + '39m' : CSI + '91m'
+        return val === false ? CSI + '39' + _SGR : CSI + '91' + _SGR
       case 'light green fg':
       case 'bright green fg':
-        return val === false ? CSI + '39m' : CSI + '92m'
+        return val === false ? CSI + '39' + _SGR : CSI + '92' + _SGR
       case 'light yellow fg':
       case 'bright yellow fg':
-        return val === false ? CSI + '39m' : CSI + '93m'
+        return val === false ? CSI + '39' + _SGR : CSI + '93' + _SGR
       case 'light blue fg':
       case 'bright blue fg':
-        return val === false ? CSI + '39m' : CSI + '94m'
+        return val === false ? CSI + '39' + _SGR : CSI + '94' + _SGR
       case 'light magenta fg':
       case 'bright magenta fg':
-        return val === false ? CSI + '39m' : CSI + '95m'
+        return val === false ? CSI + '39' + _SGR : CSI + '95' + _SGR
       case 'light cyan fg':
       case 'bright cyan fg':
-        return val === false ? CSI + '39m' : CSI + '96m'
+        return val === false ? CSI + '39' + _SGR : CSI + '96' + _SGR
       case 'light white fg':
       case 'bright white fg':
-        return val === false ? CSI + '39m' : CSI + '97m'
+        return val === false ? CSI + '39' + _SGR : CSI + '97' + _SGR
       // 16-color background
       case 'light black bg':
       case 'bright black bg':
       case 'grey bg':
       case 'gray bg':
-        return val === false ? CSI + '49m' : CSI + '100m'
+        return val === false ? CSI + '49' + _SGR : CSI + '100' + _SGR
       case 'light red bg':
       case 'bright red bg':
-        return val === false ? CSI + '49m' : CSI + '101m'
+        return val === false ? CSI + '49' + _SGR : CSI + '101' + _SGR
       case 'light green bg':
       case 'bright green bg':
-        return val === false ? CSI + '49m' : CSI + '102m'
+        return val === false ? CSI + '49' + _SGR : CSI + '102' + _SGR
       case 'light yellow bg':
       case 'bright yellow bg':
-        return val === false ? CSI + '49m' : CSI + '103m'
+        return val === false ? CSI + '49' + _SGR : CSI + '103' + _SGR
       case 'light blue bg':
       case 'bright blue bg':
-        return val === false ? CSI + '49m' : CSI + '104m'
+        return val === false ? CSI + '49' + _SGR : CSI + '104' + _SGR
       case 'light magenta bg':
       case 'bright magenta bg':
-        return val === false ? CSI + '49m' : CSI + '105m'
+        return val === false ? CSI + '49' + _SGR : CSI + '105' + _SGR
       case 'light cyan bg':
       case 'bright cyan bg':
-        return val === false ? CSI + '49m' : CSI + '106m'
+        return val === false ? CSI + '49' + _SGR : CSI + '106' + _SGR
       case 'light white bg':
       case 'bright white bg':
-        return val === false ? CSI + '49m' : CSI + '107m'
+        return val === false ? CSI + '49' + _SGR : CSI + '107' + _SGR
       // non-16-color rxvt default fg and bg
       case 'default fg bg':
-        return val === false ? '' : this.term('rxvt') ? CSI + '100m' : CSI + '39;49m'
+        return val === false ? '' : this.term('rxvt') ? CSI + '100' + _SGR : CSI + '39;49' + _SGR
       default:
         // 256-color fg and bg
         if (param[0] === '#') param = param.replace(/#(?:[0-9a-f]{3}){1,2}/i, colors.match)
@@ -2645,7 +2646,7 @@ export class Program extends EventEmitter {
     this.savedX = this.x
     this.savedY = this.y
     if (this.tput) return this.put.sc()
-    return this.#write(CSI + 's')
+    return this.#write(CSI + _SCP)
   }
 
   rcA = this.restoreCursorA
@@ -2653,7 +2654,7 @@ export class Program extends EventEmitter {
     this.x = this.savedX || 0
     this.y = this.savedY || 0
     if (this.tput) return this.put.rc()
-    return this.#write(CSI + 'u')
+    return this.#write(CSI + _RCP)
   }
 
   cht = this.cursorForwardTab
@@ -2661,7 +2662,7 @@ export class Program extends EventEmitter {
     this.x += 8
     this.recoords()
     if (this.tput) return this.put.tab(param)
-    return this.#write(CSI + `${param || 1}I`)
+    return this.#write(CSI + `${param || 1}` + _CHT)
   }
 
   cht = this.cursorForwardTab
@@ -2669,7 +2670,7 @@ export class Program extends EventEmitter {
     this.y -= param || 1
     this.recoords()
     if (this.tput) return this.put.parm_index(param)
-    return this.#write(CSI + `${param || 1}S`)
+    return this.#write(CSI + `${param || 1}` + _SU)
   }
 
   sd = this.scrollDown
@@ -2677,10 +2678,10 @@ export class Program extends EventEmitter {
     this.y += param || 1
     this.recoords()
     if (this.tput) return this.put.parm_rindex(param)
-    return this.#write(CSI + `${param || 1}T`)
+    return this.#write(CSI + `${param || 1}` + _SD)
   }
 
-  initMouseTracking() { return this.#write(CSI + `${slice.call(arguments).join(';')}T`) }
+  initMouseTracking() { return this.#write(CSI + `${slice.call(arguments).join(SC)}T`) }
 
   resetTitleModes() { return this.#write(CSI + `>${slice.call(arguments).join(';')}T`) }
 
