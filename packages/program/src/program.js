@@ -21,12 +21,10 @@ import { StringDecoder }                                          from 'string_d
 import util                                                       from 'util'
 import { BEL, ESC }                                               from '../assets/control.chars'
 import {
-  _CBT, _CHT, _CNL, _CPL, _CUP, _CUU, _DA, _DCH, _DECLL, _DECRQM, _DECSCA, _DECSCL, _DECSCUSR, _DL, _DSR, _ECH, _ED,
-  _HPR, _HVP,
-  _ICH, _IL,
-  _MC,
-  _RCP, _RM,
-  _SCP, _SD, _SGR, _SM, _SU, _TBC, _VPA, CSI
+  _CBT, _CHT, _CNL, _CPL, _CUP, _CUU, _DA, _DCH, _DECCRA, _DECERA, _DECLL, _DECRQM, _DECSCA, _DECSCL, _DECSCUSR,
+  _DECSMBV,
+  _DECSWBV, _DL,
+  _DSR, _ECH, _ED, _HPR, _HVP, _ICH, _IL, _MC, _RCP, _RM, _SCP, _SD, _SGR, _SM, _SU, _TBC, _VPA, CSI
 } from '../assets/csi.codes'
 import { OSC }                                                    from '../assets/osc.codes'
 import { gpmClient }                                              from './gpmclient'
@@ -2754,10 +2752,10 @@ export class Program extends EventEmitter {
   requestPrivateMode(param) { return this.#write(CSI + `?${param || ''}` + _DECRQM) }
 
   decscl = this.setConformanceLevel
-  setConformanceLevel() { return this.#write(CSI + `${slice.call(arguments).join(SC)}`+_DECSCL) }
+  setConformanceLevel() { return this.#write(CSI + `${slice.call(arguments).join(SC)}` + _DECSCL) }
 
   decll = this.loadLEDs
-  loadLEDs(param) { return this.#write(CSI + `${param || ''}`+_DECLL) }
+  loadLEDs(param) { return this.#write(CSI + `${param || ''}` + _DECLL) }
 
   decscusr = this.setCursorStyle
   setCursorStyle(param) {
@@ -2790,24 +2788,23 @@ export class Program extends EventEmitter {
     if (this.has('Ss')) {
       return this.put.Ss(param)
     }
-    return this.#write(CSI + `${param || 1}`+_DECSCUSR)
+    return this.#write(CSI + `${param || 1}` + _DECSCUSR)
   }
 
   decsca = this.setCharProtectionAttr
   setCharProtectionAttr(param) {
-    return this.#write(CSI + `${param || 0}`+_DECSCA)
+    return this.#write(CSI + `${param || 0}` + _DECSCA)
   }
 
-  deccara = this.setAttrInRectangle
+
   restorePrivateValues() { return this.#write(CSI + `?${slice.call(arguments).join(SC)}r`) }
 
-  decrara = this.reverseAttrInRectangle
+
+  deccara = this.setAttrInRectangle
   setAttrInRectangle() { return this.#write(CSI + `${slice.call(arguments).join(SC)}$r`) }
 
-  decswbv = this.setWarningBellVolume
   savePrivateValues() { return this.#write(CSI + `?${slice.call(arguments).join(SC)}s`) }
 
-  decsmbv = this.setMarginBellVolume
   manipulateWindow() {
     const args = slice.call(arguments)
     const callback = typeof args[args.length - 1] === FUN
@@ -2817,16 +2814,19 @@ export class Program extends EventEmitter {
   }
   getWindowSize(callback) { return this.manipulateWindow(18, callback) }
 
+  decrara = this.reverseAttrInRectangle
   reverseAttrInRectangle() { return this.#write(CSI + `${slice.call(arguments).join(SC)}$t`) }
 
   setTitleModeFeature() { return this.#writeTm(CSI + `>${slice.call(arguments).join(SC)}t`) }
 
-  setWarningBellVolume(param) { return this.#write(CSI + `${param || ''} t`) }
+  decswbv = this.setWarningBellVolume
+  setWarningBellVolume(param) { return this.#write(CSI + `${param || ''}` + _DECSWBV) }
 
-  setMarginBellVolume(param) { return this.#write(CSI + `${param || ''} u`) }
+  decsmbv = this.setMarginBellVolume
+  setMarginBellVolume(param) { return this.#write(CSI + `${param || ''}` + _DECSMBV) }
 
   deccra = this.copyRectangle
-  copyRectangle() { return this.#write(CSI + `${slice.call(arguments).join(SC)}$v`) }
+  copyRectangle() { return this.#write(CSI + `${slice.call(arguments).join(SC)}`+_DECCRA) }
 
   decefr = this.enableFilterRectangle
   enableFilterRectangle() { return this.#write(CSI + `${slice.call(arguments).join(SC)}'w`) }
@@ -2844,7 +2844,7 @@ export class Program extends EventEmitter {
   enableLocatorReporting() { return this.#write(CSI + `${slice.call(arguments).join(SC)}'z`) }
 
   decera = this.eraseRectangle
-  eraseRectangle() { return this.#write(CSI + `${slice.call(arguments).join(SC)}$z`) }
+  eraseRectangle() { return this.#write(CSI + `${slice.call(arguments).join(SC)}`+_DECERA) }
 
   decsle = this.setLocatorEvents
   setLocatorEvents() { return this.#write(CSI + `${slice.call(arguments).join(SC)}'{`) }
