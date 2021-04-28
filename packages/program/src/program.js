@@ -20,7 +20,10 @@ import fs                                                         from 'fs'
 import { StringDecoder }                                          from 'string_decoder'
 import util                                                       from 'util'
 import { BEL, ESC }                                               from '../assets/control.chars'
-import { _CHT, _CUP, _CUU, _ED, _RCP, _SCP, _SD, _SGR, _SU, CSI } from '../assets/csi.codes'
+import {
+  _CBT, _CHT, _CNL, _CPL, _CUP, _CUU, _DA, _DCH, _DL, _DSR, _ECH, _ED, _HPR, _ICH, _IL, _MC, _RCP, _SCP, _SD, _SGR, _SU,
+  _TBC, _VPA, CSI
+}                                                                 from '../assets/csi.codes'
 import { OSC }                                                    from '../assets/osc.codes'
 import { gpmClient }                                              from './gpmclient'
 import { emitKeypressEvents }                                     from './keys'
@@ -2078,7 +2081,7 @@ export class Program extends EventEmitter {
         used[part] = true
         out.push(part)
       })
-      return CSI + `${out.join(SC)}m`
+      return CSI + `${out.join(SC)}` + _SGR
     }
     if (param.indexOf('no ') === 0) {
       param = param.substring(3)
@@ -2231,12 +2234,12 @@ export class Program extends EventEmitter {
                 color += 100
               }
             }
-            return CSI + `${color}m`
+            return CSI + `${color}` + _SGR
           }
-          if (m[2] === 'fg') { return CSI + `38;5;${color}m` }
-          if (m[2] === 'bg') { return CSI + `48;5;${color}m` }
+          if (m[2] === 'fg') { return CSI + `38;5;${color}` + _SGR }
+          if (m[2] === 'bg') { return CSI + `48;5;${color}` + _SGR }
         }
-        if (/^[\d;]*$/.test(param)) { return CSI + `${param}m` }
+        if (/^[\d;]*$/.test(param)) { return CSI + `${param}` + _SGR }
         return null
     }
   }
@@ -2256,8 +2259,8 @@ export class Program extends EventEmitter {
   dsr = this.deviceStatus
   deviceStatus(param, callback, dec, noBypass) {
     return dec
-      ? this.response('device-status', CSI + `?${param || '0'}n`, callback, noBypass)
-      : this.response('device-status', CSI + `${param || '0'}n`, callback, noBypass)
+      ? this.response('device-status', CSI + `?${param || '0'}` + _DSR, callback, noBypass)
+      : this.response('device-status', CSI + `${param || '0'}` + _DSR, callback, noBypass)
   }
   getCursor(callback) { return this.deviceStatus(6, callback, false, true) }
   saveReportedCursor(callback) {
@@ -2290,21 +2293,21 @@ export class Program extends EventEmitter {
     this.x += param || 1
     this.recoords()
     if (this.tput) return this.put.ich(param)
-    return this.#write(CSI + `${param || 1}@`)
+    return this.#write(CSI + `${param || 1}` + _ICH)
   }
 
   cnl = this.cursorNextLine
   cursorNextLine(param) {
     this.y += param || 1
     this.recoords()
-    return this.#write(CSI + `${param || ''}E`)
+    return this.#write(CSI + `${param || ''}` + _CNL)
   }
 
   cpl = this.cursorPrecedingLine
   cursorPrecedingLine(param) {
     this.y -= param || 1
     this.recoords()
-    return this.#write(CSI + `${param || ''}F`)
+    return this.#write(CSI + `${param || ''}` + _CPL)
   }
 
   cha = this.cursorCharAbsolute
@@ -2314,20 +2317,20 @@ export class Program extends EventEmitter {
     this.y = 0
     this.recoords()
     if (this.tput) return this.put.hpa(param)
-    return this.#write(CSI + `${param + 1}G`)
+    return this.#write(CSI + `${param + 1}` + _CHA)
   }
 
   il = this.insertLines
-  insertLines(param) { return this.tput ? this.put.il(param) : this.#write(CSI + `${param || ''}L`) }
+  insertLines(param) { return this.tput ? this.put.il(param) : this.#write(CSI + `${param || ''}` + _IL) }
 
   dl = this.deleteLines
-  deleteLines(param) { return this.tput ? this.put.dl(param) : this.#write(CSI + `${param || ''}M`) }
+  deleteLines(param) { return this.tput ? this.put.dl(param) : this.#write(CSI + `${param || ''}` + _DL) }
 
   dch = this.deleteChars
-  deleteChars(param) { return this.tput ? this.put.dch(param) : this.#write(CSI + `${param || ''}P`) }
+  deleteChars(param) { return this.tput ? this.put.dch(param) : this.#write(CSI + `${param || ''}` + _DCH) }
 
-  ech = this.deleteChars
-  eraseChars(param) { return this.tput ? this.put.ech(param) : this.#write(CSI + `${param || ''}X`) }
+  ech = this.eraseChars
+  eraseChars(param) { return this.tput ? this.put.ech(param) : this.#write(CSI + `${param || ''}` + _ECH) }
 
   hpa = this.charPosAbsolute
   charPosAbsolute(param) {
@@ -2345,11 +2348,11 @@ export class Program extends EventEmitter {
     this.recoords()
     // Does not exist:
     // if (this.tput) return this.put.hpr(param);
-    return this.#write(CSI + `${param || ''}a`)
+    return this.#write(CSI + `${param || ''}` + _HPR)
   }
 
   da = this.sendDeviceAttributes
-  sendDeviceAttributes(param, callback) { return this.response('device-attributes', CSI + `${param || ''}c`, callback) }
+  sendDeviceAttributes(param, callback) { return this.response('device-attributes', CSI + `${param || ''}` + _DA, callback) }
 
   vpa = this.linePosAbsolute
   linePosAbsolute(param) {
@@ -2357,7 +2360,7 @@ export class Program extends EventEmitter {
     this.recoords()
     if (this.tput) return this.put.vpa.apply(this.put, arguments)
     param = slice.call(arguments).join(SC)
-    return this.#write(CSI + `${param || ''}d`)
+    return this.#write(CSI + `${param || ''}` + _VPA)
   }
 
   vpr = this.VPositionRelative
@@ -2690,7 +2693,7 @@ export class Program extends EventEmitter {
     this.x -= 8
     this.recoords()
     if (this.tput) return this.put.cbt(param)
-    return this.#write(CSI + `${param || 1}Z`)
+    return this.#write(CSI + `${param || 1}` + _CBT)
   }
 
   rep = this.repeatPrecedingCharacter
@@ -2698,14 +2701,14 @@ export class Program extends EventEmitter {
     this.x += param || 1
     this.recoords()
     if (this.tput) return this.put.rep(param)
-    return this.#write(CSI + `${param || 1}b`)
+    return this.#write(CSI + `${param || 1}` + _REP)
   }
 
   tbc = this.tabClear
-  tabClear(param) { return this.tput ? this.put.tbc(param) : this.#write(CSI + `${param || 0}g`) }
+  tabClear(param) { return this.tput ? this.put.tbc(param) : this.#write(CSI + `${param || 0}` + _TBC) }
 
   mc = this.mediaCopy
-  mediaCopy() { return this.#write(CSI + `${slice.call(arguments).join(SC)}i`) }
+  mediaCopy() { return this.#write(CSI + `${slice.call(arguments).join(SC)}` + _MC) }
 
   print_screen = this.mc0
   ps = this.mc0
@@ -2723,7 +2726,7 @@ export class Program extends EventEmitter {
   pO = this.mc5p
   mc5p() { return this.tput ? this.put.mc5p() : this.mc('?5') }
 
-  setResources() { return this.#write(CSI + `>${slice.call(arguments).join(SC)}m`) }
+  setResources() { return this.#write(CSI + `>${slice.call(arguments).join(SC)}` + _SGR) }
 
   disableModifiers(param) { return this.#write(CSI + `>${param || ''}n`) }
 
