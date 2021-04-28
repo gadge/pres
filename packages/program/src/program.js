@@ -21,9 +21,13 @@ import { StringDecoder }                                          from 'string_d
 import util                                                       from 'util'
 import { BEL, ESC }                                               from '../assets/control.chars'
 import {
-  _CBT, _CHT, _CNL, _CPL, _CUP, _CUU, _DA, _DCH, _DL, _DSR, _ECH, _ED, _HPR, _ICH, _IL, _MC, _RCP, _SCP, _SD, _SGR, _SU,
-  _TBC, _VPA, CSI
-}                                                                 from '../assets/csi.codes'
+  _CBT, _CHT, _CNL, _CPL, _CUP, _CUU, _DA, _DCH, _DECLL, _DECRQM, _DECSCA, _DECSCL, _DECSCUSR, _DL, _DSR, _ECH, _ED,
+  _HPR, _HVP,
+  _ICH, _IL,
+  _MC,
+  _RCP, _RM,
+  _SCP, _SD, _SGR, _SM, _SU, _TBC, _VPA, CSI
+} from '../assets/csi.codes'
 import { OSC }                                                    from '../assets/osc.codes'
 import { gpmClient }                                              from './gpmclient'
 import { emitKeypressEvents }                                     from './keys'
@@ -2389,13 +2393,13 @@ export class Program extends EventEmitter {
     // Does not exist (?):
     // if (this.tput) return this.put.hvp(row, col);
     if (this.tput) return this.put.cup(row, col)
-    return this.#write(CSI + `${row + 1};${col + 1}f`)
+    return this.#write(CSI + `${row + 1};${col + 1}` + _HVP)
   }
 
   sm = this.setMode
   setMode() {
     const param = slice.call(arguments).join(SC)
-    return this.#write(CSI + `${param || ''}h`)
+    return this.#write(CSI + `${param || ''}` + _SM)
   }
 
   decset() {
@@ -2431,7 +2435,7 @@ export class Program extends EventEmitter {
   rm = this.resetMode
   resetMode() {
     const param = slice.call(arguments).join(SC)
-    return this.#write(CSI + `${param || ''}l`)
+    return this.#write(CSI + `${param || ''}` + _RM)
   }
 
   decrst() {
@@ -2744,16 +2748,16 @@ export class Program extends EventEmitter {
   }
 
   decrqm = this.requestAnsiMode
-  requestAnsiMode(param) { return this.#write(CSI + `${param || ''}$p`) }
+  requestAnsiMode(param) { return this.#write(CSI + `${param || ''}` + _DECRQM) }
 
   decrqmp = this.requestPrivateMode
-  requestPrivateMode(param) { return this.#write(CSI + `?${param || ''}$p`) }
+  requestPrivateMode(param) { return this.#write(CSI + `?${param || ''}` + _DECRQM) }
 
   decscl = this.setConformanceLevel
-  setConformanceLevel() { return this.#write(CSI + `${slice.call(arguments).join(SC)}"p`) }
+  setConformanceLevel() { return this.#write(CSI + `${slice.call(arguments).join(SC)}`+_DECSCL) }
 
   decll = this.loadLEDs
-  loadLEDs(param) { return this.#write(CSI + `${param || ''}q`) }
+  loadLEDs(param) { return this.#write(CSI + `${param || ''}`+_DECLL) }
 
   decscusr = this.setCursorStyle
   setCursorStyle(param) {
@@ -2786,12 +2790,12 @@ export class Program extends EventEmitter {
     if (this.has('Ss')) {
       return this.put.Ss(param)
     }
-    return this.#write(CSI + `${param || 1} q`)
+    return this.#write(CSI + `${param || 1}`+_DECSCUSR)
   }
 
   decsca = this.setCharProtectionAttr
   setCharProtectionAttr(param) {
-    return this.#write(CSI + `${param || 0}"q`)
+    return this.#write(CSI + `${param || 0}`+_DECSCA)
   }
 
   deccara = this.setAttrInRectangle

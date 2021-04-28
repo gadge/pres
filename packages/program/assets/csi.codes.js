@@ -86,10 +86,10 @@ export const __NA5        =  'p'   // _           |                             
 export const __NA6        =  '>p'  // _           | xterm specific cursor display control  | *Ignored (TBD)*                                                                                                                       |
 export const _DECSTR      =  '!p'  // DECSTR      | Soft Terminal Reset                    | Supported                                                                                                                             |
 export const _DECRQM      =  '$p'  // DECRQM      | Request Mode - Host To Terminal        | *Ignored (TBD)*                                                                                                                       |
-export const _DECRQM      =  '?$p' // DECRQM      | Request Mode - Host To Terminal        | *Ignored (TBD)*                                                                                                                       |
+// export const _DECRQM      =  '?$p' // DECRQM      | Request Mode - Host To Terminal        | *Ignored (TBD)*                                                                                                                       |
 export const _DECSCL      =  '"p'  // DECSCL      | Select Conformance Level               | *Ignored (TBD)*                                                                                                                       |
 export const _DECLL       =  'q'   // DECLL       | Load LEDs                              | *Ignored (TBD)*                                                                                                                       |
-export const _DECSCUSR    =  '␠q'  // DECSCUSR    | Set Cursor Style                       | Supported                                                                                                                             |
+export const _DECSCUSR    =  ' q'  // DECSCUSR    | Set Cursor Style                       | Supported                                                                                                                             |
 export const _DECSCA      =  '"q'  // DECSCA      | Select Character Protection Attribute  | Won't support                                                                                                                         |
 export const _DECSTBM     =  'r'   // DECSTBM     | Set Top and Bottom Margins             | Supported                                                                                                                             |
 export const __NA7        =  '?r'  // _           |                                        | Won't support                                                                                                                         |
@@ -117,4 +117,3 @@ export const __NA19       =  '\'{' // _           |                             
 export const __NA20       =  '\'\|'// _           |                                        | *Ignored (TBD)*                                                                                                                       |
 export const _DECIC       =  '\'}' // DECIC       | Insert Column                          | Won't support                                                                                                                         |
 export const _DECDC       =  '\'~' // DECDC       | Delete Column                          | Won't support
-_
