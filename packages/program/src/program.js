@@ -1732,196 +1732,171 @@ export class Program extends EventEmitter {
       : this.#write(CSI + (p === LEFT ? 1 : p === ALL ? 2 : p === RIGHT ? VO : VO) + _EL)
   }
 
-  sgr = this.charAttributes
-  attr = this.charAttributes
-  charAttributes(param, val) { return this.#write(this._attr(param, val)) }
-  text(text, attr) { return this._attr(attr, true) + text + this._attr(attr, false) }
+  sgr = this.charAttr
+  attr = this.charAttr
+  charAttr(param, val) { return this.#write(this.#attr(param, val)) }
+  text(text, attr) { return this.#attr(attr, true) + text + this.#attr(attr, false) }
 
-  _attr(param, val) {
+  parseAttr = this.#attr
+  #attr(param, grain = true) {
     const self = this
-    let parts,
-        color,
-        m
-    if (Array.isArray(param)) {
-      parts = param
-      param = parts[0] || 'normal'
-    }
-    else {
-      param = param || 'normal'
-      parts = param.split(/\s*[,;]\s*/)
-    }
+    let arg,
+        parts = Array.isArray(param)
+          ? (arg = param[0] || 'normal', param)
+          : (arg = param || 'normal').split(/\s*[,;]\s*/)
     if (parts.length > 1) {
-      const used = {},
-            out  = []
-      parts.forEach(function (part) {
-        part = self._attr(part, val).slice(2, -1)
-        if (part === VO) return
-        if (used[part]) return
-        used[part] = true
-        out.push(part)
-      })
-      return CSI + out.join(SC) + _SGR
+      const used = {}, accum = []
+      parts.forEach(el => { if ((el = self.#attr(el, grain).slice(2, -1)) && el !== VO && !used[el]) { used[el] = true, accum.push(el) } })
+      return CSI + accum.join(SC) + _SGR
     }
-    if (param.indexOf('no ') === 0) {
-      param = param.substring(3)
-      val = false
-    }
-    else if (param.indexOf('!') === 0) {
-      param = param.substring(1)
-      val = false
-    }
-    switch (param) {
+    grain = arg.indexOf('no ') === 0 && (arg = arg.slice(3)) ? false
+      : arg.indexOf('!') === 0 && (arg = arg.slice(1)) ? false
+        : grain
+    switch (arg) {
       // attributes
       case 'normal':
       case 'default':
-        return val === false ? VO : CSI + _SGR
+        return grain ? CSI + _SGR : VO
       case 'bold':
-        return val === false ? CSI + '22' + _SGR : CSI + '1' + _SGR
+        return CSI + (grain ? '1' : '22') + _SGR
       case 'ul':
       case 'underline':
       case 'underlined':
-        return val === false ? CSI + '24' + _SGR : CSI + '4' + _SGR
+        return CSI + (grain ? '4' : '24') + _SGR
       case 'blink':
-        return val === false ? CSI + '25' + _SGR : CSI + '5' + _SGR
+        return CSI + (grain ? '5' : '25') + _SGR
       case 'inverse':
-        return val === false ? CSI + '27' + _SGR : CSI + '7' + _SGR
+        return CSI + (grain ? '7' : '27') + _SGR
       case 'invisible':
-        return val === false ? CSI + '28' + _SGR : CSI + '8' + _SGR
+        return CSI + (grain ? '8' : '28') + _SGR
       // 8-color foreground
       case 'black fg':
-        return val === false ? CSI + '39' + _SGR : CSI + '30' + _SGR
+        return CSI + (grain ? '30' : '39') + _SGR
       case 'red fg':
-        return val === false ? CSI + '39' + _SGR : CSI + '31' + _SGR
+        return CSI + (grain ? '31' : '39') + _SGR
       case 'green fg':
-        return val === false ? CSI + '39' + _SGR : CSI + '32' + _SGR
+        return CSI + (grain ? '32' : '39') + _SGR
       case 'yellow fg':
-        return val === false ? CSI + '39' + _SGR : CSI + '33' + _SGR
+        return CSI + (grain ? '33' : '39') + _SGR
       case 'blue fg':
-        return val === false ? CSI + '39' + _SGR : CSI + '34' + _SGR
+        return CSI + (grain ? '34' : '39') + _SGR
       case 'magenta fg':
-        return val === false ? CSI + '39' + _SGR : CSI + '35' + _SGR
+        return CSI + (grain ? '35' : '39') + _SGR
       case 'cyan fg':
-        return val === false ? CSI + '39' + _SGR : CSI + '36' + _SGR
+        return CSI + (grain ? '36' : '39') + _SGR
       case 'white fg':
       case 'light grey fg':
       case 'light gray fg':
       case 'bright grey fg':
       case 'bright gray fg':
-        return val === false ? CSI + '39' + _SGR : CSI + '37' + _SGR
+        return CSI + (grain ? '37' : '39') + _SGR
       case 'default fg':
-        return val === false ? VO : CSI + '39' + _SGR
+        return grain ? CSI + '39' + _SGR : VO
       // 8-color background
       case 'black bg':
-        return val === false ? CSI + '49' + _SGR : CSI + '40' + _SGR
+        return CSI + (grain ? '40' : '49') + _SGR
       case 'red bg':
-        return val === false ? CSI + '49' + _SGR : CSI + '41' + _SGR
+        return CSI + (grain ? '41' : '49') + _SGR
       case 'green bg':
-        return val === false ? CSI + '49' + _SGR : CSI + '42' + _SGR
+        return CSI + (grain ? '42' : '49') + _SGR
       case 'yellow bg':
-        return val === false ? CSI + '49' + _SGR : CSI + '43' + _SGR
+        return CSI + (grain ? '43' : '49') + _SGR
       case 'blue bg':
-        return val === false ? CSI + '49' + _SGR : CSI + '44' + _SGR
+        return CSI + (grain ? '44' : '49') + _SGR
       case 'magenta bg':
-        return val === false ? CSI + '49' + _SGR : CSI + '45' + _SGR
+        return CSI + (grain ? '45' : '49') + _SGR
       case 'cyan bg':
-        return val === false ? CSI + '49' + _SGR : CSI + '46' + _SGR
+        return CSI + (grain ? '46' : '49') + _SGR
       case 'white bg':
       case 'light grey bg':
       case 'light gray bg':
       case 'bright grey bg':
       case 'bright gray bg':
-        return val === false ? CSI + '49' + _SGR : CSI + '47' + _SGR
+        return CSI + (grain ? '47' : '49') + _SGR
       case 'default bg':
-        return val === false ? VO : CSI + '49' + _SGR
+        return grain ? CSI + '49' + _SGR : VO
       // 16-color foreground
       case 'light black fg':
       case 'bright black fg':
       case 'grey fg':
       case 'gray fg':
-        return val === false ? CSI + '39' + _SGR : CSI + '90' + _SGR
+        return CSI + (grain ? '90' : '39') + _SGR
       case 'light red fg':
       case 'bright red fg':
-        return val === false ? CSI + '39' + _SGR : CSI + '91' + _SGR
+        return CSI + (grain ? '91' : '39') + _SGR
       case 'light green fg':
       case 'bright green fg':
-        return val === false ? CSI + '39' + _SGR : CSI + '92' + _SGR
+        return CSI + (grain ? '92' : '39') + _SGR
       case 'light yellow fg':
       case 'bright yellow fg':
-        return val === false ? CSI + '39' + _SGR : CSI + '93' + _SGR
+        return CSI + (grain ? '93' : '39') + _SGR
       case 'light blue fg':
       case 'bright blue fg':
-        return val === false ? CSI + '39' + _SGR : CSI + '94' + _SGR
+        return CSI + (grain ? '94' : '39') + _SGR
       case 'light magenta fg':
       case 'bright magenta fg':
-        return val === false ? CSI + '39' + _SGR : CSI + '95' + _SGR
+        return CSI + (grain ? '95' : '39') + _SGR
       case 'light cyan fg':
       case 'bright cyan fg':
-        return val === false ? CSI + '39' + _SGR : CSI + '96' + _SGR
+        return CSI + (grain ? '96' : '39') + _SGR
       case 'light white fg':
       case 'bright white fg':
-        return val === false ? CSI + '39' + _SGR : CSI + '97' + _SGR
+        return CSI + (grain ? '97' : '39') + _SGR
       // 16-color background
       case 'light black bg':
       case 'bright black bg':
       case 'grey bg':
       case 'gray bg':
-        return val === false ? CSI + '49' + _SGR : CSI + '100' + _SGR
+        return CSI + (grain ? '100' : '49') + _SGR
       case 'light red bg':
       case 'bright red bg':
-        return val === false ? CSI + '49' + _SGR : CSI + '101' + _SGR
+        return CSI + (grain ? '101' : '49') + _SGR
       case 'light green bg':
       case 'bright green bg':
-        return val === false ? CSI + '49' + _SGR : CSI + '102' + _SGR
+        return CSI + (grain ? '102' : '49') + _SGR
       case 'light yellow bg':
       case 'bright yellow bg':
-        return val === false ? CSI + '49' + _SGR : CSI + '103' + _SGR
+        return CSI + (grain ? '103' : '49') + _SGR
       case 'light blue bg':
       case 'bright blue bg':
-        return val === false ? CSI + '49' + _SGR : CSI + '104' + _SGR
+        return CSI + (grain ? '104' : '49') + _SGR
       case 'light magenta bg':
       case 'bright magenta bg':
-        return val === false ? CSI + '49' + _SGR : CSI + '105' + _SGR
+        return CSI + (grain ? '105' : '49') + _SGR
       case 'light cyan bg':
       case 'bright cyan bg':
-        return val === false ? CSI + '49' + _SGR : CSI + '106' + _SGR
+        return CSI + (grain ? '106' : '49') + _SGR
       case 'light white bg':
       case 'bright white bg':
-        return val === false ? CSI + '49' + _SGR : CSI + '107' + _SGR
+        return CSI + (grain ? '107' : '49') + _SGR
       // non-16-color rxvt default fg and bg
       case 'default fg bg':
-        return val === false ? VO : this.term('rxvt') ? CSI + '100' + _SGR : CSI + '39;49' + _SGR
+        return grain ? CSI + (this.term('rxvt') ? '100' : '39;49') + _SGR : VO
       default:
         // 256-color fg and bg
-        if (param[0] === '#') param = param.replace(/#(?:[0-9a-f]{3}){1,2}/i, colors.match)
-        m = /^(-?\d+) (fg|bg)$/.exec(param)
-        if (m) {
-          color = +m[1]
-          if (val === false || color === -1) { return this._attr(`default ${m[2]}`) }
-          color = colors.reduce(color, this.tput.colors)
-          if (color < 16 || (this.tput && this.tput.colors <= 16)) {
-            if (m[2] === 'fg') {
-              if (color < 8) { color += 30 }
-              else if (color < 16) {
-                color -= 8
-                color += 90
-              }
-            }
-            else if (m[2] === 'bg') {
-              if (color < 8) { color += 40 }
-              else if (color < 16) {
-                color -= 8
-                color += 100
-              }
-            }
-            return CSI + color + _SGR
-          }
-          if (m[2] === 'fg') { return CSI + `38;5;${color}` + _SGR }
-          if (m[2] === 'bg') { return CSI + `48;5;${color}` + _SGR }
-        }
-        if (/^[\d;]*$/.test(param)) { return CSI + param + _SGR }
-        return null
+        return this.#attr256(arg, grain)
     }
   }
+
+  #attr256(arg, grain) {
+    if (arg[0] === '#') arg = arg.replace(/#(?:[0-9a-f]{3}){1,2}/i, colors.match)
+    const matches = /^(-?\d+) (fg|bg)$/.exec(arg)
+    if (matches) {
+      let c = +matches[1]
+      if (grain === false || c === -1) { return this.#attr(`default ${matches[2]}`) }
+      c = colors.reduce(c, this.tput.colors)
+      if (c < 16 || (this.tput && this.tput.colors <= 16)) {
+        if (matches[2] === 'fg') { c < 8 ? (c += 30) : c < 16 ? (c -= 8, c += 90) : void 0 }
+        else if (matches[2] === 'bg') { c < 8 ? (c += 40) : c < 16 ? (c -= 8, c += 100) : void 0 }
+        return CSI + c + _SGR
+      }
+      if (matches[2] === 'fg') { return CSI + `38;5;${c}` + _SGR }
+      if (matches[2] === 'bg') { return CSI + `48;5;${c}` + _SGR }
+    }
+    if (/^[\d;]*$/.test(arg)) { return CSI + arg + _SGR }
+    return null
+  }
+
 
   fg = this.setForeground
   setForeground(color, val) {
@@ -1944,24 +1919,15 @@ export class Program extends EventEmitter {
   getCursor(callback) { return this.deviceStatus(6, callback, false, true) }
   saveReportedCursor(callback) {
     const self = this
-    if (this.tput.strings.user7 === CSI + '6n' || this.term('screen')) {
-      return this.getCursor(function (err, data) {
+    return this.tput.strings.user7 === CSI + '6n' || this.term('screen')
+      ? this.getCursor((err, data) => {
         if (data) { (self._rx = data.status.x), (self._ry = data.status.y) }
         return callback ? callback(err) : void 0
       })
-    }
-    return callback ? callback() : void 0
+      : callback ? callback() : void 0
   }
-  // CSI Ps g  Tab Clear (TBC).
-  //     Ps = 0  -> Clear Current Column (default).
-  //     Ps = 3  -> Clear All.
-  // Potentially:
-  //   Ps = 2  -> Clear Stops on Line.
-  restoreReportedCursor() {
-    if (this._rx == null) return
-    return this.cup(this._ry, this._rx)
-    // return this.nel();
-  }
+
+  restoreReportedCursor() { return nullish(this._rx) ? void 0 : this.cup(this._ry, this._rx) }
 
   /**
    * Additions

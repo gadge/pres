@@ -479,7 +479,7 @@ export class Element extends Node {
         attr,
         esc
 
-    for (; ;) {
+    while (true) {
       if (!esc && (cap = /^{escape}/.exec(text))) {
         text = text.substring(cap[0].length)
         esc = true
@@ -513,13 +513,13 @@ export class Element extends Node {
         else state = flag
         if (slash) {
           if (!param) {
-            out += program._attr('normal')
+            out += program.parseAttr('normal')
             bg.length = 0
             fg.length = 0
             flag.length = 0
           }
           else {
-            attr = program._attr(param, false)
+            attr = program.parseAttr(param, false)
             if (attr == null) {
               out += cap[0]
             }
@@ -529,7 +529,7 @@ export class Element extends Node {
               // }
               state.pop()
               if (state.length) {
-                out += program._attr(state[state.length - 1])
+                out += program.parseAttr(state[state.length - 1])
               }
               else {
                 out += attr
@@ -542,7 +542,7 @@ export class Element extends Node {
             out += cap[0]
           }
           else {
-            attr = program._attr(param)
+            attr = program.parseAttr(param)
             if (attr == null) {
               out += cap[0]
             }
