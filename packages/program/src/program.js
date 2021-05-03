@@ -1752,132 +1752,69 @@ export class Program extends EventEmitter {
     grain = arg.indexOf('no ') === 0 && (arg = arg.slice(3)) ? false
       : arg.indexOf('!') === 0 && (arg = arg.slice(1)) ? false
         : grain
-    switch (arg) {
-      // attributes
-      case 'normal':
-      case 'default':
-        return grain ? CSI + _SGR : VO
-      case 'bold':
-        return CSI + (grain ? '1' : '22') + _SGR
-      case 'ul':
-      case 'underline':
-      case 'underlined':
-        return CSI + (grain ? '4' : '24') + _SGR
-      case 'blink':
-        return CSI + (grain ? '5' : '25') + _SGR
-      case 'inverse':
-        return CSI + (grain ? '7' : '27') + _SGR
-      case 'invisible':
-        return CSI + (grain ? '8' : '28') + _SGR
-      // 8-color foreground
-      case 'black fg':
-        return CSI + (grain ? '30' : '39') + _SGR
-      case 'red fg':
-        return CSI + (grain ? '31' : '39') + _SGR
-      case 'green fg':
-        return CSI + (grain ? '32' : '39') + _SGR
-      case 'yellow fg':
-        return CSI + (grain ? '33' : '39') + _SGR
-      case 'blue fg':
-        return CSI + (grain ? '34' : '39') + _SGR
-      case 'magenta fg':
-        return CSI + (grain ? '35' : '39') + _SGR
-      case 'cyan fg':
-        return CSI + (grain ? '36' : '39') + _SGR
-      case 'white fg':
-      case 'light grey fg':
-      case 'light gray fg':
-      case 'bright grey fg':
-      case 'bright gray fg':
-        return CSI + (grain ? '37' : '39') + _SGR
-      case 'default fg':
-        return grain ? CSI + '39' + _SGR : VO
-      // 8-color background
-      case 'black bg':
-        return CSI + (grain ? '40' : '49') + _SGR
-      case 'red bg':
-        return CSI + (grain ? '41' : '49') + _SGR
-      case 'green bg':
-        return CSI + (grain ? '42' : '49') + _SGR
-      case 'yellow bg':
-        return CSI + (grain ? '43' : '49') + _SGR
-      case 'blue bg':
-        return CSI + (grain ? '44' : '49') + _SGR
-      case 'magenta bg':
-        return CSI + (grain ? '45' : '49') + _SGR
-      case 'cyan bg':
-        return CSI + (grain ? '46' : '49') + _SGR
-      case 'white bg':
-      case 'light grey bg':
-      case 'light gray bg':
-      case 'bright grey bg':
-      case 'bright gray bg':
-        return CSI + (grain ? '47' : '49') + _SGR
-      case 'default bg':
-        return grain ? CSI + '49' + _SGR : VO
-      // 16-color foreground
-      case 'light black fg':
-      case 'bright black fg':
-      case 'grey fg':
-      case 'gray fg':
-        return CSI + (grain ? '90' : '39') + _SGR
-      case 'light red fg':
-      case 'bright red fg':
-        return CSI + (grain ? '91' : '39') + _SGR
-      case 'light green fg':
-      case 'bright green fg':
-        return CSI + (grain ? '92' : '39') + _SGR
-      case 'light yellow fg':
-      case 'bright yellow fg':
-        return CSI + (grain ? '93' : '39') + _SGR
-      case 'light blue fg':
-      case 'bright blue fg':
-        return CSI + (grain ? '94' : '39') + _SGR
-      case 'light magenta fg':
-      case 'bright magenta fg':
-        return CSI + (grain ? '95' : '39') + _SGR
-      case 'light cyan fg':
-      case 'bright cyan fg':
-        return CSI + (grain ? '96' : '39') + _SGR
-      case 'light white fg':
-      case 'bright white fg':
-        return CSI + (grain ? '97' : '39') + _SGR
-      // 16-color background
-      case 'light black bg':
-      case 'bright black bg':
-      case 'grey bg':
-      case 'gray bg':
-        return CSI + (grain ? '100' : '49') + _SGR
-      case 'light red bg':
-      case 'bright red bg':
-        return CSI + (grain ? '101' : '49') + _SGR
-      case 'light green bg':
-      case 'bright green bg':
-        return CSI + (grain ? '102' : '49') + _SGR
-      case 'light yellow bg':
-      case 'bright yellow bg':
-        return CSI + (grain ? '103' : '49') + _SGR
-      case 'light blue bg':
-      case 'bright blue bg':
-        return CSI + (grain ? '104' : '49') + _SGR
-      case 'light magenta bg':
-      case 'bright magenta bg':
-        return CSI + (grain ? '105' : '49') + _SGR
-      case 'light cyan bg':
-      case 'bright cyan bg':
-        return CSI + (grain ? '106' : '49') + _SGR
-      case 'light white bg':
-      case 'bright white bg':
-        return CSI + (grain ? '107' : '49') + _SGR
-      // non-16-color rxvt default fg and bg
-      case 'default fg bg':
-        return grain ? CSI + (this.term('rxvt') ? '100' : '39;49') + _SGR : VO
-      default:
-        // 256-color fg and bg
-        return this.#attr256(arg, grain)
+    if (arg === 'normal') { return grain ? CSI + _SGR : VO }
+    if (arg === 'bold') { return CSI + (grain ? '1' : '22') + _SGR }
+    if (arg === 'ul' || arg === 'underline' || arg === 'underlined') { return CSI + (grain ? '4' : '24') + _SGR }
+    if (arg === 'blink') { return CSI + (grain ? '5' : '25') + _SGR }
+    if (arg === 'inverse') { return CSI + (grain ? '7' : '27') + _SGR }
+    if (arg === 'invisible') { return CSI + (grain ? '8' : '28') + _SGR }
+    if (arg.startsWith('default')) {
+      if (arg.endsWith('fg bg')) { return grain ? CSI + (this.term('rxvt') ? '100' : '39;49') + _SGR : VO }
+      if (arg.endsWith('fg')) { return grain ? CSI + '39' + _SGR : VO }
+      if (arg.endsWith('bg')) { return grain ? CSI + '49' + _SGR : VO }
+      return grain ? CSI + _SGR : VO
     }
+    if (arg.endsWith('fg')) {
+      // 8-color foreground
+      if (arg.startsWith('black')) { return CSI + (grain ? '30' : '39') + _SGR }
+      if (arg.startsWith('red')) { return CSI + (grain ? '31' : '39') + _SGR }
+      if (arg.startsWith('green')) { return CSI + (grain ? '32' : '39') + _SGR }
+      if (arg.startsWith('yellow')) { return CSI + (grain ? '33' : '39') + _SGR }
+      if (arg.startsWith('blue')) { return CSI + (grain ? '34' : '39') + _SGR }
+      if (arg.startsWith('magenta')) { return CSI + (grain ? '35' : '39') + _SGR }
+      if (arg.startsWith('cyan')) { return CSI + (grain ? '36' : '39') + _SGR }
+      if (arg.startsWith('white')) { return CSI + (grain ? '37' : '39') + _SGR }
+      if (arg.startsWith('grey') || arg.startsWith('gray')) { return CSI + (grain ? '90' : '39') + _SGR}
+      // 16-color foreground
+      if (arg.startsWith('light') || arg.startsWith('bright')) {
+        if (arg.includes('black')) { return CSI + (grain ? '90' : '39') + _SGR }
+        if (arg.includes('red')) { return CSI + (grain ? '91' : '39') + _SGR }
+        if (arg.includes('green')) { return CSI + (grain ? '92' : '39') + _SGR }
+        if (arg.includes('yellow')) { return CSI + (grain ? '93' : '39') + _SGR }
+        if (arg.includes('blue')) { return CSI + (grain ? '94' : '39') + _SGR }
+        if (arg.includes('magenta')) { return CSI + (grain ? '95' : '39') + _SGR }
+        if (arg.includes('cyan')) { return CSI + (grain ? '96' : '39') + _SGR }
+        if (arg.includes('white')) { return CSI + (grain ? '97' : '39') + _SGR }
+        if (arg.includes('grey') || arg.includes('gray')) { return CSI + (grain ? '37' : '39') + _SGR }
+      }
+    }
+    if (arg.endsWith('bg')) {
+      // 8-color background
+      if (arg.startsWith('black')) { return CSI + (grain ? '40' : '49') + _SGR }
+      if (arg.startsWith('red')) { return CSI + (grain ? '41' : '49') + _SGR }
+      if (arg.startsWith('green')) { return CSI + (grain ? '42' : '49') + _SGR }
+      if (arg.startsWith('yellow')) { return CSI + (grain ? '43' : '49') + _SGR }
+      if (arg.startsWith('blue')) { return CSI + (grain ? '44' : '49') + _SGR }
+      if (arg.startsWith('magenta')) { return CSI + (grain ? '45' : '49') + _SGR }
+      if (arg.startsWith('cyan')) { return CSI + (grain ? '46' : '49') + _SGR }
+      if (arg.startsWith('white')) { return CSI + (grain ? '47' : '49') + _SGR }
+      if (arg.startsWith('grey') || arg.startsWith('gray')) { return CSI + (grain ? '100' : '49') + _SGR }
+      // 16-color background
+      if (arg.startsWith('light') || arg.startsWith('bright')) {
+        if (arg.includes('black')) { return CSI + (grain ? '100' : '49') + _SGR}
+        if (arg.includes('red')) { return CSI + (grain ? '101' : '49') + _SGR}
+        if (arg.includes('green')) { return CSI + (grain ? '102' : '49') + _SGR}
+        if (arg.includes('yellow')) { return CSI + (grain ? '103' : '49') + _SGR}
+        if (arg.includes('blue')) { return CSI + (grain ? '104' : '49') + _SGR}
+        if (arg.includes('magenta')) { return CSI + (grain ? '105' : '49') + _SGR}
+        if (arg.includes('cyan')) { return CSI + (grain ? '106' : '49') + _SGR}
+        if (arg.includes('white')) { return CSI + (grain ? '107' : '49') + _SGR}
+        if (arg.includes('grey') || arg.includes('gray')) { return CSI + (grain ? '47' : '49') + _SGR}
+      }
+    }
+    // 256-color fg and bg
+    return this.#attr256(arg, grain)
   }
-
   #attr256(arg, grain) {
     if (arg[0] === '#') arg = arg.replace(/#(?:[0-9a-f]{3}){1,2}/i, colors.match)
     const matches = /^(-?\d+) (fg|bg)$/.exec(arg)
@@ -1896,7 +1833,6 @@ export class Program extends EventEmitter {
     if (/^[\d;]*$/.test(arg)) { return CSI + arg + _SGR }
     return null
   }
-
 
   fg = this.setForeground
   setForeground(color, val) {
