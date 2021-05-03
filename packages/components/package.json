@@ -1,6 +1,6 @@
 {
   "name": "@pres/components",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "Core components for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,16 +15,16 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/components-chart": "^0.1.3",
-    "@pres/components-core": "^0.1.3",
-    "@pres/components-data": "^0.1.3",
-    "@pres/components-form": "^0.1.3",
-    "@pres/components-geo": "^0.1.3",
-    "@pres/components-inform": "^0.1.3",
-    "@pres/components-layout": "^0.1.3",
-    "@pres/components-text": "^0.1.3",
-    "@pres/components-visual": "^0.1.3",
-    "@pres/enum-events": "^0.1.3"
+    "@pres/components-chart": "^0.1.4",
+    "@pres/components-core": "^0.1.4",
+    "@pres/components-data": "^0.1.4",
+    "@pres/components-form": "^0.1.4",
+    "@pres/components-geo": "^0.1.4",
+    "@pres/components-inform": "^0.1.4",
+    "@pres/components-layout": "^0.1.4",
+    "@pres/components-text": "^0.1.4",
+    "@pres/components-visual": "^0.1.4",
+    "@pres/enum-events": "^0.1.4"
   },
   "repository": {
     "type": "git",
