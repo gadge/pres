@@ -1732,13 +1732,13 @@ export class Program extends EventEmitter {
       : this.#write(CSI + (p === LEFT ? 1 : p === ALL ? 2 : p === RIGHT ? VO : VO) + _EL)
   }
 
-  sgr = this.charAttr
-  attr = this.charAttr
-  charAttr(param, val) { return this.#write(this.#attr(param, val)) }
-  text(text, attr) { return this.#attr(attr, true) + text + this.#attr(attr, false) }
+  charAttr = this.sgr
+  attr = this.sgr
+  sgr(param, val) { return this.#write(this.#sgr(param, val)) }
+  text(text, attr) { return this.#sgr(attr, true) + text + this.#sgr(attr, false) }
 
-  parseAttr = this.#attr
-  #attr(param, grain = true) {
+  parseAttr = this.#sgr
+  #sgr(param, grain = true) {
     const self = this
     let arg,
         parts = Array.isArray(param)
@@ -1746,11 +1746,11 @@ export class Program extends EventEmitter {
           : (arg = param || 'normal').split(/\s*[,;]\s*/)
     if (parts.length > 1) {
       const used = {}, accum = []
-      parts.forEach(el => { if ((el = self.#attr(el, grain).slice(2, -1)) && el !== VO && !used[el]) { used[el] = true, accum.push(el) } })
+      parts.forEach(el => { if ((el = self.#sgr(el, grain).slice(2, -1)) && el !== VO && !used[el]) { used[el] = true, accum.push(el) } })
       return CSI + accum.join(SC) + _SGR
     }
-    grain = arg.indexOf('no ') === 0 && (arg = arg.slice(3)) ? false
-      : arg.indexOf('!') === 0 && (arg = arg.slice(1)) ? false
+    grain = arg.startsWith('no ') && (arg = arg.slice(3)) ? false
+      : arg.startsWith('!') && (arg = arg.slice(1)) ? false
         : grain
     if (arg === 'normal') { return grain ? CSI + _SGR : VO }
     if (arg === 'bold') { return CSI + (grain ? '1' : '22') + _SGR }
@@ -1801,50 +1801,43 @@ export class Program extends EventEmitter {
       if (arg.startsWith('grey') || arg.startsWith('gray')) { return CSI + (grain ? '100' : '49') + _SGR }
       // 16-color background
       if (arg.startsWith('light') || arg.startsWith('bright')) {
-        if (arg.includes('black')) { return CSI + (grain ? '100' : '49') + _SGR}
-        if (arg.includes('red')) { return CSI + (grain ? '101' : '49') + _SGR}
-        if (arg.includes('green')) { return CSI + (grain ? '102' : '49') + _SGR}
-        if (arg.includes('yellow')) { return CSI + (grain ? '103' : '49') + _SGR}
-        if (arg.includes('blue')) { return CSI + (grain ? '104' : '49') + _SGR}
-        if (arg.includes('magenta')) { return CSI + (grain ? '105' : '49') + _SGR}
-        if (arg.includes('cyan')) { return CSI + (grain ? '106' : '49') + _SGR}
-        if (arg.includes('white')) { return CSI + (grain ? '107' : '49') + _SGR}
-        if (arg.includes('grey') || arg.includes('gray')) { return CSI + (grain ? '47' : '49') + _SGR}
+        if (arg.includes('black')) { return CSI + (grain ? '100' : '49') + _SGR }
+        if (arg.includes('red')) { return CSI + (grain ? '101' : '49') + _SGR }
+        if (arg.includes('green')) { return CSI + (grain ? '102' : '49') + _SGR }
+        if (arg.includes('yellow')) { return CSI + (grain ? '103' : '49') + _SGR }
+        if (arg.includes('blue')) { return CSI + (grain ? '104' : '49') + _SGR }
+        if (arg.includes('magenta')) { return CSI + (grain ? '105' : '49') + _SGR }
+        if (arg.includes('cyan')) { return CSI + (grain ? '106' : '49') + _SGR }
+        if (arg.includes('white')) { return CSI + (grain ? '107' : '49') + _SGR }
+        if (arg.includes('grey') || arg.includes('gray')) { return CSI + (grain ? '47' : '49') + _SGR }
       }
     }
     // 256-color fg and bg
-    return this.#attr256(arg, grain)
+    return this.#sgr256(arg, grain)
   }
-  #attr256(arg, grain) {
+  #sgr256(arg, grain) {
     if (arg[0] === '#') arg = arg.replace(/#(?:[0-9a-f]{3}){1,2}/i, colors.match)
-    const matches = /^(-?\d+) (fg|bg)$/.exec(arg)
-    if (matches) {
-      let c = +matches[1]
-      if (grain === false || c === -1) { return this.#attr(`default ${matches[2]}`) }
+    let ms, c, scope
+    if ((ms = /^(-?\d+) (fg|bg)$/.exec(arg)) && ([ , c, scope ] = ms)) {
+      if (!grain || (c = +c) === -1) { return this.#sgr(`default ${scope}`) }
       c = colors.reduce(c, this.tput.colors)
       if (c < 16 || (this.tput && this.tput.colors <= 16)) {
-        if (matches[2] === 'fg') { c < 8 ? (c += 30) : c < 16 ? (c -= 8, c += 90) : void 0 }
-        else if (matches[2] === 'bg') { c < 8 ? (c += 40) : c < 16 ? (c -= 8, c += 100) : void 0 }
+        if (scope === 'fg') { c < 8 ? (c += 30) : c < 16 ? (c -= 8, c += 90) : void 0 }
+        else if (scope === 'bg') { c < 8 ? (c += 40) : c < 16 ? (c -= 8, c += 100) : void 0 }
         return CSI + c + _SGR
       }
-      if (matches[2] === 'fg') { return CSI + `38;5;${c}` + _SGR }
-      if (matches[2] === 'bg') { return CSI + `48;5;${c}` + _SGR }
+      if (scope === 'fg') { return CSI + `38;5;${c}` + _SGR }
+      if (scope === 'bg') { return CSI + `48;5;${c}` + _SGR }
     }
     if (/^[\d;]*$/.test(arg)) { return CSI + arg + _SGR }
     return null
   }
 
-  fg = this.setForeground
-  setForeground(color, val) {
-    color = `${color.split(/\s*[,;]\s*/).join(' fg, ')} fg`
-    return this.attr(color, val)
-  }
+  setForeground = this.fg
+  fg(color, val) { return this.sgr(color.split(/\s*[,;]\s*/).join(' fg, ') + ' fg', val) }
 
-  bg = this.setBackground
-  setBackground(color, val) {
-    color = `${color.split(/\s*[,;]\s*/).join(' bg, ')} bg`
-    return this.attr(color, val)
-  }
+  setBackground = this.bg
+  bg(color, val) { return this.sgr(color.split(/\s*[,;]\s*/).join(' bg, ') + ' bg', val) }
 
   dsr = this.deviceStatus
   deviceStatus(param, callback, dec, noBypass) {
