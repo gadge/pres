@@ -22,6 +22,7 @@
     "@pres/events": "^0.1.4",
     "@pres/terminfo-parser": "^0.1.4",
     "@pres/util-colors": "^0.1.4",
+    "@pres/util-helpers": "^0.1.4",
     "@spare/logger": "^0.11.14",
     "@texting/enum-chars": "^0.0.9",
     "@typen/enum-data-types": "^0.1.16"

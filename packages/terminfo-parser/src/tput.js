@@ -26,6 +26,7 @@ import fs                                from 'fs'
 import path                              from 'path'
 import { noop, sprintf, tryRead, write } from './helpers'
 
+const SCOPES = [ 'bools', 'numbers', 'strings' ]
 /**
  * Terminfo
  */
@@ -328,8 +329,8 @@ export class Tput {
           }
           return info
         }
-        info.header.extended = extended.header;
-        [ 'bools', 'numbers', 'strings' ].forEach(function (key) {
+        info.header.extended = extended.header
+        SCOPES.forEach(function (key) {
           merge(info[key], extended[key])
         })
       }
@@ -458,14 +459,14 @@ export class Tput {
     this.detectFeatures(info)
     this.#debug(info)
     info.all = {}
-    info.methods = {};
+    info.methods = {}
 
-    [ 'bools', 'numbers', 'strings' ].forEach(type => {
+    for (const type of SCOPES) {
       Object.keys(info[type]).forEach(function (key) {
         info.all[key] = info[type][key]
         info.methods[key] = self._compile(info, key, info.all[key])
       })
-    })
+    }
     Tput.bools.forEach(key => { if (info.methods[key] == null) info.methods[key] = false })
     Tput.numbers.forEach(key => { if (info.methods[key] == null) info.methods[key] = -1 })
     Tput.strings.forEach(key => { if (!info.methods[key]) info.methods[key] = noop })
@@ -1766,7 +1767,7 @@ export class Tput {
           term.names.join('/'), names.join('/'))
         const inherit = tc(terms[term.strings.tc])
         if (inherit) {
-          [ 'bools', 'numbers', 'strings' ].forEach(function (type) {
+          SCOPES.forEach(function (type) {
             merge(term[type], inherit[type])
           })
         }
@@ -2445,7 +2446,6 @@ export class Tput {
       } catch (e) { }
       ch = word[0].charCodeAt(0).toString(16)
       if (ch.length < 2) ch = '0' + ch
-
       file = path.resolve(prefix, ch)
       try {
         fs.statSync(file)
@@ -2468,21 +2468,14 @@ export class Tput {
     dir = find(term)
     if (!dir) return
     if (soft) {
-      try {
-        list = fs.readdirSync(dir)
-      } catch (e) { return }
+      try { list = fs.readdirSync(dir) } catch (e) { return }
       list.forEach(function (file) {
         if (file.indexOf(term) === 0) {
           const diff = file.length - term.length
-          if (!sfile || diff < sdiff) {
-            sdiff = diff
-            sfile = file
-          }
+          if (!sfile || diff < sdiff) { sdiff = diff, sfile = file }
         }
       })
-      return sfile && (soft || sdiff === 0)
-        ? path.resolve(dir, sfile)
-        : null
+      return sfile && (soft || sdiff === 0) ? path.resolve(dir, sfile) : null
     }
     file = path.resolve(dir, term)
     try {
@@ -2521,14 +2514,14 @@ export class Tput {
   // ~/ncurses/ncurses/tinfo/lib_tparm.c
 }
 
-[ 'bools', 'numbers', 'strings' ].forEach(type => {
+for (const type of SCOPES) {
   Object.keys(Tput._alias[type]).forEach(key => {
     const aliases = Tput._alias[type][key]
     Tput.alias[key] = [ aliases[0] ]
     Tput.alias[key].terminfo = aliases[0]
     Tput.alias[key].termcap = aliases[1]
   })
-})
+}
 // Bools
 Tput.alias.no_esc_ctlc.push('beehive_glitch')
 Tput.alias.dest_tabs_magic_smso.push('teleray_glitch')

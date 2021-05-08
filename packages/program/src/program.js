@@ -13,6 +13,7 @@ import { ENTER, LEFT, MIDDLE, RETURN, RIGHT, UNDEFINED, UNKNOWN } from '@pres/en
 import { EventEmitter }                                           from '@pres/events'
 import { Tput }                                                   from '@pres/terminfo-parser'
 import * as colors                                                from '@pres/util-colors'
+import { slice }                                                  from '@pres/util-helpers'
 import { SC, SP, VO }                                             from '@texting/enum-chars'
 import { FUN, NUM, STR }                                          from '@typen/enum-data-types'
 import { nullish }                                                from '@typen/nullish'
@@ -32,8 +33,6 @@ import {
 import { OSC }                                                    from '../assets/osc.codes'
 import { gpmClient }                                              from './gpmclient'
 import { emitKeypressEvents }                                     from './keys'
-
-const slice = Array.prototype.slice
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
@@ -225,7 +224,7 @@ export class Program extends EventEmitter {
     if (tput.padding) nextTick(() => self.emit(WARNING, 'Terminfo padding has been enabled.'))
     this.put = function () {
       const
-        args = slice.call(arguments),
+        args = slice(arguments),
         cap  = args.shift()
       if (tput[cap])
         return this.#write(tput[cap].apply(tput, args))
@@ -1814,7 +1813,7 @@ export class Program extends EventEmitter {
     this.x = param || 0
     this.recoords()
     if (this.tput) { return this.put.hpa.apply(this.put, arguments) }
-    param = slice.call(arguments).join(SC)
+    param = slice(arguments).join(SC)
     return this.#write(CSI + (param || VO) + '`')
   }
 
@@ -1836,7 +1835,7 @@ export class Program extends EventEmitter {
     this.y = param || 1
     this.recoords()
     if (this.tput) return this.put.vpa.apply(this.put, arguments)
-    param = slice.call(arguments).join(SC)
+    param = slice(arguments).join(SC)
     return this.#write(CSI + (param || VO) + _VPA)
   }
 
@@ -1870,8 +1869,8 @@ export class Program extends EventEmitter {
   }
 
   sm = this.setMode
-  setMode() { return this.#write(CSI + (slice.call(arguments).join(SC) || VO) + _SM) }
-  decset() { return this.setMode('?' + slice.call(arguments).join(SC)) }
+  setMode() { return this.#write(CSI + (slice(arguments).join(SC) || VO) + _SM) }
+  decset() { return this.setMode('?' + slice(arguments).join(SC)) }
 
   dectcem = this.showCursor
   cnorm = this.showCursor
@@ -1900,11 +1899,11 @@ export class Program extends EventEmitter {
 
   rm = this.resetMode
   resetMode() {
-    const param = slice.call(arguments).join(SC)
+    const param = slice(arguments).join(SC)
     return this.#write(CSI + (param || VO) + _RM)
   }
 
-  decrst() { return this.resetMode('?' + slice.call(arguments).join(SC)) }
+  decrst() { return this.resetMode('?' + slice(arguments).join(SC)) }
 
   dectcemh = this.hideCursor
   cursor_invisible = this.hideCursor
@@ -2108,9 +2107,9 @@ export class Program extends EventEmitter {
     return this.#write(CSI + (param || 1) + _SD)
   }
 
-  initMouseTracking() { return this.#write(CSI + slice.call(arguments).join(SC) + 'T') }
+  initMouseTracking() { return this.#write(CSI + slice(arguments).join(SC) + 'T') }
 
-  resetTitleModes() { return this.#write(CSI + '>' + slice.call(arguments).join(SC) + 'T') }
+  resetTitleModes() { return this.#write(CSI + '>' + slice(arguments).join(SC) + 'T') }
 
   cbt = this.cursorBackwardTab
   cursorBackwardTab(param) {
@@ -2132,7 +2131,7 @@ export class Program extends EventEmitter {
   tabClear(param) { return this.tput ? this.put.tbc(param) : this.#write(CSI + (param || 0) + _TBC) }
 
   mc = this.mediaCopy
-  mediaCopy() { return this.#write(CSI + slice.call(arguments).join(SC) + _MC) }
+  mediaCopy() { return this.#write(CSI + slice(arguments).join(SC) + _MC) }
 
   print_screen = this.mc0
   ps = this.mc0
@@ -2150,7 +2149,7 @@ export class Program extends EventEmitter {
   pO = this.mc5p
   mc5p() { return this.tput ? this.put.mc5p() : this.mc('?5') }
 
-  setResources() { return this.#write(CSI + '>' + slice.call(arguments).join(SC) + _SGR) }
+  setResources() { return this.#write(CSI + '>' + slice(arguments).join(SC) + _SGR) }
 
   disableModifiers(param) { return this.#write(CSI + '>' + (param || VO) + 'n') }
 
@@ -2174,7 +2173,7 @@ export class Program extends EventEmitter {
   requestPrivateMode(param) { return this.#write(CSI + '?' + (param || VO) + _DECRQM) }
 
   decscl = this.setConformanceLevel
-  setConformanceLevel() { return this.#write(CSI + slice.call(arguments).join(SC) + _DECSCL) }
+  setConformanceLevel() { return this.#write(CSI + slice(arguments).join(SC) + _DECSCL) }
 
   decll = this.loadLEDs
   loadLEDs(param) { return this.#write(CSI + (param || VO) + _DECLL) }
@@ -2195,14 +2194,14 @@ export class Program extends EventEmitter {
 
   decsca = this.setCharProtectionAttr
   setCharProtectionAttr(param) { return this.#write(CSI + (param || 0) + _DECSCA) }
-  restorePrivateValues() { return this.#write(CSI + '?' + slice.call(arguments).join(SC) + 'r') }
+  restorePrivateValues() { return this.#write(CSI + '?' + slice(arguments).join(SC) + 'r') }
 
   deccara = this.setAttrInRectangle
-  setAttrInRectangle() { return this.#write(CSI + slice.call(arguments).join(SC) + '$r') }
-  savePrivateValues() { return this.#write(CSI + '?' + slice.call(arguments).join(SC) + 's') }
+  setAttrInRectangle() { return this.#write(CSI + slice(arguments).join(SC) + '$r') }
+  savePrivateValues() { return this.#write(CSI + '?' + slice(arguments).join(SC) + 's') }
 
   manipulateWindow() {
-    const args = slice.call(arguments)
+    const args = slice(arguments)
     const callback = typeof args[args.length - 1] === FUN
       ? args.pop()
       : function () {}
@@ -2211,8 +2210,8 @@ export class Program extends EventEmitter {
   getWindowSize(callback) { return this.manipulateWindow(18, callback) }
 
   decrara = this.reverseAttrInRectangle
-  reverseAttrInRectangle() { return this.#write(CSI + slice.call(arguments).join(SC) + '$t') }
-  setTitleModeFeature() { return this.#writeTm(CSI + '>' + slice.call(arguments).join(SC) + 't') }
+  reverseAttrInRectangle() { return this.#write(CSI + slice(arguments).join(SC) + '$t') }
+  setTitleModeFeature() { return this.#writeTm(CSI + '>' + slice(arguments).join(SC) + 't') }
 
   decswbv = this.setWarningBellVolume
   setWarningBellVolume(param) { return this.#write(CSI + (param || VO) + _DECSWBV) }
@@ -2221,10 +2220,10 @@ export class Program extends EventEmitter {
   setMarginBellVolume(param) { return this.#write(CSI + (param || VO) + _DECSMBV) }
 
   deccra = this.copyRectangle
-  copyRectangle() { return this.#write(CSI + slice.call(arguments).join(SC) + _DECCRA) }
+  copyRectangle() { return this.#write(CSI + slice(arguments).join(SC) + _DECCRA) }
 
   decefr = this.enableFilterRectangle
-  enableFilterRectangle() { return this.#write(CSI + slice.call(arguments).join(SC) + _DECEFR) }
+  enableFilterRectangle() { return this.#write(CSI + slice(arguments).join(SC) + _DECEFR) }
 
   decreqtparm = this.requestParameters
   requestParameters(param) { return this.#write(CSI + (param || 0) + _DECREQTPARM) }
@@ -2234,19 +2233,19 @@ export class Program extends EventEmitter {
   selectChangeExtent(param) { return this.#write(CSI + (param || 0) + _DECSACE) }
 
   decfra = this.fillRectangle
-  fillRectangle() { return this.#write(CSI + slice.call(arguments).join(SC) + '$x') }
+  fillRectangle() { return this.#write(CSI + slice(arguments).join(SC) + '$x') }
 
   decelr = this.enableLocatorReporting
-  enableLocatorReporting() { return this.#write(CSI + slice.call(arguments).join(SC) + '\'z') }
+  enableLocatorReporting() { return this.#write(CSI + slice(arguments).join(SC) + '\'z') }
 
   decera = this.eraseRectangle
-  eraseRectangle() { return this.#write(CSI + slice.call(arguments).join(SC) + _DECERA) }
+  eraseRectangle() { return this.#write(CSI + slice(arguments).join(SC) + _DECERA) }
 
   decsle = this.setLocatorEvents
-  setLocatorEvents() { return this.#write(CSI + slice.call(arguments).join(SC) + '\'{') }
+  setLocatorEvents() { return this.#write(CSI + slice(arguments).join(SC) + '\'{') }
 
   decsera = this.selectiveEraseRectangle
-  selectiveEraseRectangle() { return this.#write(CSI + slice.call(arguments).join(SC) + '${') }
+  selectiveEraseRectangle() { return this.#write(CSI + slice(arguments).join(SC) + '${') }
 
   decrqlp = this.requestLocatorPosition
   req_mouse_pos = this.requestLocatorPosition
@@ -2264,12 +2263,12 @@ export class Program extends EventEmitter {
   }
 
   decic = this.insertColumns
-  insertColumns() { return this.#write(CSI + slice.call(arguments).join(SC) + ' }') }
+  insertColumns() { return this.#write(CSI + slice(arguments).join(SC) + ' }') }
 
   decdc = this.deleteColumns
-  deleteColumns() { return this.#write(CSI + slice.call(arguments).join(SC) + ' ~') }
+  deleteColumns() { return this.#write(CSI + slice(arguments).join(SC) + ' ~') }
   out(name) {
-    const args = slice.call(arguments, 1)
+    const args = slice(arguments, 1)
     this.ret = true
     const out = this[name].apply(this, args)
     this.ret = false
