@@ -1092,15 +1092,12 @@ export class Tput {
       else {
         out += '%{'
         if (c.charCodeAt(0) > 99) {
-          out += String.fromCharCode(
-            (c.charCodeAt(0) / 100 | 0) + '0'.charCodeAt(0))
+          out += String.fromCharCode((c.charCodeAt(0) / 100 | 0) + '0'.charCodeAt(0))
         }
         if (c.charCodeAt(0) > 9) {
-          out += String.fromCharCode(
-            (c.charCodeAt(0) / 10 | 0) % 10 + '0'.charCodeAt(0))
+          out += String.fromCharCode((c.charCodeAt(0) / 10 | 0) % 10 + '0'.charCodeAt(0))
         }
-        out += String.fromCharCode(
-          c.charCodeAt(0) % 10 + '0'.charCodeAt(0))
+        out += String.fromCharCode(c.charCodeAt(0) % 10 + '0'.charCodeAt(0))
         out += '}'
       }
       return len
@@ -1112,9 +1109,7 @@ export class Tput {
         if (n > 1) {
           warn('string may not be optimal')
           out += '%Pa'
-          while (n--) {
-            out += '%ga'
-          }
+          while (n--) { out += '%ga' }
         }
         return
       }
