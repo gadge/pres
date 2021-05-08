@@ -16,7 +16,8 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/enum-terminfo-alias": "^0.1.4"
+    "@pres/enum-terminfo-alias": "^0.1.4",
+    "@typen/enum-data-types": "^0.1.16"
   },
   "repository": {
     "type": "git",

@@ -17,11 +17,12 @@
 // - Possibly switch to other method of finding the
 //   extended data string table: i += h.symOffsetCount * 2;
 
-import * as alias from '@pres/enum-terminfo-alias'
-import assert     from 'assert'
-import cp         from 'child_process'
-import fs         from 'fs'
-import path       from 'path'
+import * as alias        from '@pres/enum-terminfo-alias'
+import { BOO, NUM, STR } from '@typen/enum-data-types'
+import assert            from 'assert'
+import cp                from 'child_process'
+import fs                from 'fs'
+import path              from 'path'
 
 /**
  * Terminfo
@@ -32,7 +33,7 @@ import path       from 'path'
 export class Tput {
   constructor(options = {}) {
     if (!(this instanceof Tput)) return new Tput(options)
-    if (typeof options === 'string') options = { terminal: options }
+    if (typeof options === STR) options = { terminal: options }
     this.options = options
     this.terminal = options.terminal || options.term || process.env.TERM || (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
     this.terminal = this.terminal.toLowerCase()
@@ -111,13 +112,8 @@ export class Tput {
       this._useXtermInfo()
     }
   }
-  term(is) {
-    return this.terminal.indexOf(is) === 0
-  }
-  _debug() {
-    if (!this.debug) return
-    return console.log.apply(console, arguments)
-  }
+  term(is) { return this.terminal.indexOf(is) === 0 }
+  #debug() { if (this.debug) return console.log.apply(console, arguments) }
   // Example:
   // vt102|dec vt102:\
   //  :do=^J:co#80:li#24:cl=50\E[;H\E[2J:\
@@ -131,23 +127,11 @@ export class Tput {
   /**
    * Fallback
    */
-  _useVt102Cap() {
-    return this.injectTermcap('vt102')
-  }
-  _useXtermCap() {
-    return this.injectTermcap(__dirname + '/../usr/xterm.termcap')
-  }
-  _useXtermInfo() {
-    return this.injectTerminfo(__dirname + '/../usr/xterm')
-  }
-  _useInternalInfo(name) {
-    name = path.basename(name)
-    return this.injectTerminfo(__dirname + '/../usr/' + name)
-  }
-  _useInternalCap(name) {
-    name = path.basename(name)
-    return this.injectTermcap(__dirname + '/../usr/' + name + '.termcap')
-  }
+  _useVt102Cap() { return this.injectTermcap('vt102') }
+  _useXtermCap() { return this.injectTermcap(__dirname + '/../usr/xterm.termcap') }
+  _useXtermInfo() { return this.injectTerminfo(__dirname + '/../usr/xterm') }
+  _useInternalInfo(name) { return this.injectTerminfo(__dirname + '/../usr/' + path.basename(name)) }
+  _useInternalCap(name) { return this.injectTermcap(__dirname + '/../usr/' + path.basename(name) + '.termcap') }
   _prefix(term) {
     // If we have a terminfoFile, or our
     // term looks like a filename, use it.
@@ -176,15 +160,11 @@ export class Tput {
         sfile,
         list
     if (Array.isArray(prefix)) {
-      for (i = 0; i < prefix.length; i++) {
-        file = this._tprefix(prefix[i], term, soft)
-        if (file) return file
-      }
-      return
+      for (i = 0; i < prefix.length; i++) if ((file = this._tprefix(prefix[i], term, soft))) return file
+      return void 0
     }
     const find = function (word) {
       let file, ch
-
       file = path.resolve(prefix, word[0])
       try {
         fs.statSync(file)
@@ -192,7 +172,6 @@ export class Tput {
       } catch (e) { }
       ch = word[0].charCodeAt(0).toString(16)
       if (ch.length < 2) ch = '0' + ch
-
       file = path.resolve(prefix, ch)
       try {
         fs.statSync(file)
@@ -258,13 +237,7 @@ export class Tput {
       strCount: (data[9] << 8) | data[8],
       strTableSize: (data[11] << 8) | data[10]
     }
-    h.total = h.headerSize
-      + h.namesSize
-      + h.boolCount
-      + h.numCount * 2
-      + h.strCount * 2
-      + h.strTableSize
-
+    h.total = h.headerSize + h.namesSize + h.boolCount + h.numCount * 2 + h.strCount * 2 + h.strTableSize
     i += h.headerSize
     // Names Section
     const names = data.toString('ascii', i, i + h.namesSize - 1),
@@ -312,12 +285,7 @@ export class Tput {
     o = 0
     for (; i < l; i += 2) {
       v = Tput.strings[o++]
-      if (data[i + 1] === 0xff && data[i] === 0xff) {
-        info.strings[v] = -1
-      }
-      else {
-        info.strings[v] = (data[i + 1] << 8) | data[i]
-      }
+      info.strings[v] = data[i + 1] === 0xff && data[i] === 0xff ? -1 : (data[i + 1] << 8) | data[i]
     }
     // String Table
     Object.keys(info.strings).forEach(function (key) {
@@ -414,25 +382,17 @@ export class Tput {
     // Numbers Section
     const _numbers = []
     l = i + h.numCount * 2
-    for (; i < l; i += 2) {
-      if (data[i + 1] === 0xff && data[i] === 0xff) {
-        _numbers.push(-1)
-      }
-      else {
-        _numbers.push((data[i + 1] << 8) | data[i])
-      }
-    }
+    for (; i < l; i += 2)
+      data[i + 1] === 0xff && data[i] === 0xff
+        ? _numbers.push(-1)
+        : _numbers.push((data[i + 1] << 8) | data[i])
     // Strings Section
     const _strings = []
     l = i + h.strCount * 2
-    for (; i < l; i += 2) {
-      if (data[i + 1] === 0xff && data[i] === 0xff) {
-        _strings.push(-1)
-      }
-      else {
-        _strings.push((data[i + 1] << 8) | data[i])
-      }
-    }
+    for (; i < l; i += 2)
+      data[i + 1] === 0xff && data[i] === 0xff
+        ? _strings.push(-1)
+        : _strings.push((data[i + 1] << 8) | data[i])
     // Pass over the sym offsets and get to the string table.
     i = data.length - h.lastStrTableOffset
     // Might be better to do this instead if the file has trailing bytes:
@@ -442,7 +402,7 @@ export class Tput {
     _strings.forEach(function (offset, k) {
       if (offset === -1) {
         _strings[k] = ''
-        return
+        return void 0
       }
       const s = i + offset
       let j = s
@@ -451,9 +411,7 @@ export class Tput {
       assert(j < data.length)
       // Find out where the string table ends by
       // getting the highest string length.
-      if (high < j - i) {
-        high = j - i
-      }
+      if (high < j - i) high = j - i
       _strings[k] = data.toString('ascii', s, j)
     })
     // Symbol Table
@@ -461,8 +419,8 @@ export class Tput {
     i += high + 1
     l = data.length
 
-    var sym = [],
-        j
+    const sym = []
+    let j
 
     for (; i < l; i++) {
       j = i
@@ -474,17 +432,11 @@ export class Tput {
     j = 0
 
     info.bools = {}
-    _bools.forEach(function (bool) {
-      info.bools[sym[j++]] = bool
-    })
     info.numbers = {}
-    _numbers.forEach(function (number) {
-      info.numbers[sym[j++]] = number
-    })
     info.strings = {}
-    _strings.forEach(function (string) {
-      info.strings[sym[j++]] = string
-    })
+    _bools.forEach(bool => info.bools[sym[j++]] = bool)
+    _numbers.forEach(number => info.numbers[sym[j++]] = number)
+    _strings.forEach(string => info.strings[sym[j++]] = string)
     // Should be the very last bit of data.
     assert.equal(i, data.length)
     return info
@@ -508,7 +460,7 @@ export class Tput {
       throw new Error('Terminal not found.')
     }
     this.detectFeatures(info)
-    this._debug(info)
+    this.#debug(info)
     info.all = {}
     info.methods = {};
 
@@ -577,20 +529,18 @@ export class Tput {
   // ~/ncurses/ncurses/tinfo/comp_scan.c
   _compile(info, key, str) {
     let v
-    this._debug('Compiling %s: %s', key, JSON.stringify(str))
+    this.#debug('Compiling %s: %s', key, JSON.stringify(str))
     switch (typeof str) {
-      case 'boolean':
+      case BOO:
         return str
-      case 'number':
+      case NUM:
         return str
-      case 'string':
+      case STR:
         break
       default:
         return noop
     }
-    if (!str) {
-      return noop
-    }
+    if (!str) return noop
     // See:
     // ~/ncurses/progs/tput.c - tput() - L149
     // ~/ncurses/progs/tset.c - set_init() - L992
@@ -660,7 +610,7 @@ export class Tput {
       // '^A' -> ^A
       if (read(/^\^(.)/i, true)) {
         if (!(ch >= ' ' && ch <= '~')) {
-          this._debug('%s: bad caret char.', tkey)
+          this.#debug('%s: bad caret char.', tkey)
           // NOTE: ncurses appears to simply
           // continue in this situation, but
           // I could be wrong.
@@ -733,7 +683,7 @@ export class Tput {
             ch = '\x07'
             break
           default:
-            this._debug('%s: bad backslash char.', tkey)
+            this.#debug('%s: bad backslash char.', tkey)
             ch = cap[0]
             break
         }
@@ -1128,7 +1078,7 @@ export class Tput {
     const self = this,
           out  = {}
     if (!info) return
-    this._debug(info);
+    this.#debug(info);
 
     [ 'name', 'names', 'desc', 'file', 'termcap' ].forEach(function (key) {
       out[key] = info[key]
@@ -1214,7 +1164,7 @@ export class Tput {
     function warn() {
       const args = Array.prototype.slice.call(arguments)
       args[0] = 'captoinfo: ' + (args[0] || '')
-      return self._debug.apply(self, args)
+      return self.#debug.apply(self, args)
     }
     function isdigit(ch) {
       return ch >= '0' && ch <= '9'
@@ -1863,7 +1813,7 @@ export class Tput {
         const names = terms[term.strings.tc]
           ? terms[term.strings.tc].names
           : [ term.strings.tc ]
-        self._debug('%s inherits from %s.',
+        self.#debug('%s inherits from %s.',
           term.names.join('/'), names.join('/'))
         const inherit = tc(terms[term.strings.tc])
         if (inherit) {
@@ -1880,31 +1830,21 @@ export class Tput {
   }
   // DEC Special Character and Line Drawing Set.
   detectUnicode() {
-    if (process.env.NCURSES_FORCE_UNICODE != null) {
-      return !!+process.env.NCURSES_FORCE_UNICODE
-    }
-    if (this.options.forceUnicode != null) {
-      return this.options.forceUnicode
-    }
-    const LANG = process.env.LANG
-      + ':' + process.env.LANGUAGE
-      + ':' + process.env.LC_ALL
-      + ':' + process.env.LC_CTYPE
+    const { env } = process
+    if (env.NCURSES_FORCE_UNICODE != null) return !!+env.NCURSES_FORCE_UNICODE
+    if (this.options.forceUnicode != null) return this.options.forceUnicode
+    const LANG = env.LANG + ':' + env.LANGUAGE + ':' + env.LC_ALL + ':' + env.LC_CTYPE
     return /utf-?8/i.test(LANG) || (this.GetConsoleCP() === 65001)
   }
   readTerminfo(term) {
     let data,
         file,
         info
-
     term = term || this.terminal
-
     file = path.normalize(this._prefix(term))
     data = fs.readFileSync(file)
     info = this.parseTerminfo(data, file)
-    if (this.debug) {
-      this._terminfo = info
-    }
+    if (this.debug) this._terminfo = info
     return info
   }
 
