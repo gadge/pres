@@ -522,9 +522,7 @@ export class Tput {
       return cap
     }
     function stmt(c) {
-      if (code[code.length - 1] === ',') {
-        code = code.slice(0, -1)
-      }
+      if (code[code.length - 1] === ',') code = code.slice(0, -1)
       code += c
     }
     function expr(c) {
@@ -619,16 +617,9 @@ export class Tput {
       // "Print (e.g., "%d") is a special case."
       // %s   print pop() like %s in printf
       if (read(/^%((?::-|[+# ]){1,4})?(\d+(?:\.\d+)?)?([doxXsc])/)) {
-        if (this.printf || cap[1] || cap[2] || ~'oxX'.indexOf(cap[3])) {
-          echo('sprintf("' + cap[0].replace(':-', '-') + '", stack.pop())')
-        }
-        else if (cap[3] === 'c') {
-          echo('(v = stack.pop(), isFinite(v) '
-            + '? String.fromCharCode(v || 0200) : "")')
-        }
-        else {
-          echo('stack.pop()')
-        }
+        if (this.printf || cap[1] || cap[2] || ~'oxX'.indexOf(cap[3])) { echo('sprintf("' + cap[0].replace(':-', '-') + '", stack.pop())') }
+        else if (cap[3] === 'c') { echo('(v = stack.pop(), isFinite(v) ' + '? String.fromCharCode(v || 0200) : "")') }
+        else { echo('stack.pop()') }
         continue
       }
       // %p[1-9]
@@ -757,14 +748,12 @@ export class Tput {
         els = val.indexOf('%e')
         end = val.indexOf('%;')
         if (end === -1) end = Infinity
-        if (then !== -1 && then < end &&
+        if (
+          then !== -1 && then < end &&
           (fi === -1 || then < fi) &&
-          (els === -1 || then < els)) {
-          stmt('} else if (')
-        }
-        else {
-          stmt('} else {')
-        }
+          (els === -1 || then < els)
+        ) { stmt('} else if (') }
+        else { stmt('} else {') }
         continue
       }
       if (read(/^%;/)) {
@@ -885,10 +874,7 @@ export class Tput {
         //   amount *= process.stdout.rows;
         // }
       }
-      return setTimeout(function () {
-        print(part)
-        return next()
-      }, amount)
+      return setTimeout(() => (print(part), next()), amount)
     })()
   }
   _tryCap(file, term) {
@@ -909,12 +895,8 @@ export class Tput {
       ? tryRead(file)
       : file
     if (!data) return
-
     terms = this.parseTermcap(data, file)
-    if (term && !terms[term]) {
-      return
-    }
-    return terms
+    return term && !terms[term] ? void 0 : terms
   }
   //  :mi:al=\E[L:dc=\E[P:dl=\E[M:ei=\E[4l:im=\E[4h:
   parseTermcap(data, file) {
