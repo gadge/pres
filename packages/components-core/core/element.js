@@ -14,6 +14,7 @@ import * as colors       from '@pres/util-colors'
 import * as helpers      from '@pres/util-helpers'
 import * as unicode      from '@pres/util-unicode'
 import { FUN, NUM, STR } from '@typen/enum-data-types'
+import { nullish }       from '@typen/nullish'
 import assert            from 'assert'
 import { _Scrollable }   from '../utils/_Scrollable'
 import { Box }           from './box'
@@ -443,9 +444,7 @@ export class Element extends Node {
         // XXX Deduplicate code here:
         // content = helpers.dropUnicode(content);
       }
-      if (!noTags) {
-        content = this._parseTags(content)
-      }
+      if (!noTags) { content = this.#parseTags(content) }
       this._clines = this._wrapContent(content, width)
       this._clines.width = width
       this._clines.content = this.content
@@ -464,7 +463,7 @@ export class Element extends Node {
     return false
   }
 // Convert `{red-fg}foo{/red-fg}` to `\x1b[31mfoo\x1b[39m`.
-  _parseTags(text) {
+  #parseTags(text) {
     if (!this.parseTags) return text
     if (!/{\/?[\w\-,;!#]*}/.test(text)) return text
     const program = this.screen.program
@@ -478,15 +477,14 @@ export class Element extends Node {
         param,
         attr,
         esc
-
     while (true) {
       if (!esc && (cap = /^{escape}/.exec(text))) {
-        text = text.substring(cap[0].length)
+        text = text.slice(cap[0].length)
         esc = true
         continue
       }
       if (esc && (cap = /^([\s\S]+?){\/escape}/.exec(text))) {
-        text = text.substring(cap[0].length)
+        text = text.slice(cap[0].length)
         out += cap[1]
         esc = false
         continue
@@ -497,7 +495,7 @@ export class Element extends Node {
         break
       }
       if ((cap = /^{(\/?)([\w\-,;!#]*)}/.exec(text))) {
-        text = text.substring(cap[0].length)
+        text = text.slice(cap[0].length)
         slash = cap[1] === '/'
         param = cap[2].replace(/-/g, ' ')
         if (param === 'open') {
@@ -520,20 +518,12 @@ export class Element extends Node {
           }
           else {
             attr = program.parseAttr(param, false)
-            if (attr == null) {
-              out += cap[0]
+            if (!nullish(attr)) {
+              state.pop()
+              out += state.length ? program.parseAttr(state[state.length - 1]) : attr
             }
             else {
-              // if (param !== state[state.length - 1]) {
-              //   throw new Error('Misnested tags.');
-              // }
-              state.pop()
-              if (state.length) {
-                out += program.parseAttr(state[state.length - 1])
-              }
-              else {
-                out += attr
-              }
+              out += cap[0]
             }
           }
         }
@@ -543,19 +533,19 @@ export class Element extends Node {
           }
           else {
             attr = program.parseAttr(param)
-            if (attr == null) {
-              out += cap[0]
-            }
-            else {
+            if (!nullish(attr)) {
               state.push(param)
               out += attr
+            }
+            else {
+              out += cap[0]
             }
           }
         }
         continue
       }
       if ((cap = /^[\s\S]+?(?={\/?[\w\-,;!#]*})/.exec(text))) {
-        text = text.substring(cap[0].length)
+        text = text.slice(cap[0].length)
         out += cap[0]
         continue
       }
@@ -580,7 +570,7 @@ export class Element extends Node {
       attrs[j] = attr
       for (i = 0; i < line.length; i++) {
         if (line[i] === '\x1b') {
-          if ((c = /^\x1b\[[\d;]*m/.exec(line.substring(i)))) {
+          if ((c = /^\x1b\[[\d;]*m/.exec(line.slice(i)))) {
             attr = this.screen.attrCode(c[0], attr, dattr)
             i += c[0].length - 1
           }
@@ -659,7 +649,7 @@ export class Element extends Node {
         // Handle alignment tags.
         if (tags) {
           if ((cap = /^{(left|center|right)}/.exec(line))) {
-            line = line.substring(cap[0].length)
+            line = line.slice(cap[0].length)
             align = state = cap[1] !== 'left'
               ? cap[1]
               : null
@@ -685,9 +675,9 @@ export class Element extends Node {
               // the control sequences before cutting off the line.
               i++
               if (!wrap) {
-                rest = line.substring(i).match(/\x1b\[[^m]*m/g)
+                rest = line.slice(i).match(/\x1b\[[^m]*m/g)
                 rest = rest ? rest.join('') : ''
-                out.push(this._align(line.substring(0, i) + rest, width, align))
+                out.push(this._align(line.slice(0, i) + rest, width, align))
                 ftor[no].push(out.length - 1)
                 rtof.push(no)
                 continue main
@@ -739,8 +729,8 @@ export class Element extends Node {
               break
             }
           }
-          part = line.substring(0, i)
-          line = line.substring(i)
+          part = line.slice(0, i)
+          line = line.slice(i)
           out.push(this._align(part, width, align))
           ftor[no].push(out.length - 1)
           rtof.push(no)
@@ -1481,7 +1471,7 @@ export class Element extends Node {
     //         }
     //         if (++t === -(xi + this.ileft) + 1) break;
     //       }
-    //       clines[i] = csis + clines[i].substring(j);
+    //       clines[i] = csis + clines[i].slice(j);
     //     }
     //   }
     //   if (yi + this.itop < 0) {

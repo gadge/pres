@@ -53,12 +53,11 @@ export class Layout extends Element {
     // The index of the first child in the row
     let rowIndex = 0
     let lastRowIndex = 0
+
     // Figure out the highest width child
+    let highWidth
     if (this.options.layout === 'grid') {
-      const highWidth = this.sub.reduce((out, el) => {
-        out = Math.max(out, el.width)
-        return out
-      }, 0)
+      highWidth = this.sub.reduce((out, el) => Math.max(out, el.width), 0)
     }
     return function iterator(el, i) {
       // Make our sub shrinkable. If they don't have a height, for
@@ -135,14 +134,8 @@ export class Layout extends Element {
       delete this.lpos
       return
     }
-    if (coords.xl - coords.xi <= 0) {
-      coords.xl = Math.max(coords.xl, coords.xi)
-      return
-    }
-    if (coords.yl - coords.yi <= 0) {
-      coords.yl = Math.max(coords.yl, coords.yi)
-      return
-    }
+    if (coords.xl - coords.xi <= 0) return void (coords.xl = Math.max(coords.xl, coords.xi))
+    if (coords.yl - coords.yi <= 0) return void (coords.yl = Math.max(coords.yl, coords.yi))
     this.lpos = coords
     if (this.border) coords.xi++, coords.xl--, coords.yi++, coords.yl--
     if (this.tpadding) {
@@ -155,10 +148,8 @@ export class Layout extends Element {
       coords.xi -= this.padding.left, coords.xl += this.padding.right
       coords.yi -= this.padding.top, coords.yl += this.padding.bottom
     }
-    this.sub.forEach(function (el, i) {
-      if (el.screen._ci !== -1) {
-        el.index = el.screen._ci++
-      }
+    this.sub.forEach((el, i) => {
+      if (el.screen._ci !== -1) el.index = el.screen._ci++
       const rendered = iterator(el, i)
       if (rendered === false) {
         delete el.lpos

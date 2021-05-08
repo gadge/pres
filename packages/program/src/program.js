@@ -21,11 +21,11 @@ import fs                                                         from 'fs'
 import { StringDecoder }                                          from 'string_decoder'
 import util                                                       from 'util'
 import { ALL }                                                    from '../assets/constants'
-import { BEL, ESC }                                               from '../assets/control.chars'
+import { BEL, DECRC, DECSC, ESC, HTS, IND, NEL, RI, RIS }         from '../assets/control.chars'
 import {
-  _CBT, _CHA, _CHT, _CNL, _CPL, _CUB, _CUD, _CUF, _CUP, _CUU, _DA, _DCH, _DECCRA, _DECERA, _DECLL, _DECRQM, _DECSCA,
-  _DECSCL, _DECSCUSR, _DECSMBV, _DECSWBV, _DL, _DSR, _ECH, _ED, _EL, _HPR, _HVP, _ICH, _IL, _MC, _RCP, _REP, _RM, _SCP,
-  _SD, _SGR, _SM, _SU, _TBC, _VPA, CSI
+  _CBT, _CHA, _CHT, _CNL, _CPL, _CUB, _CUD, _CUF, _CUP, _CUU, _DA, _DCH, _DECCRA, _DECEFR, _DECERA, _DECLL,
+  _DECREQTPARM, _DECRQM, _DECSACE, _DECSCA, _DECSCL, _DECSCUSR, _DECSMBV, _DECSWBV, _DL, _DSR, _ECH, _ED, _EL, _HPR,
+  _HVP, _ICH, _IL, _MC, _RCP, _REP, _RM, _SCP, _SD, _SGR, _SM, _SU, _TBC, _VPA, CSI
 }                                                                 from '../assets/csi.codes'
 import { OSC }                                                    from '../assets/osc.codes'
 import { gpmClient }                                              from './gpmclient'
@@ -1424,7 +1424,7 @@ export class Program extends EventEmitter {
     this.y++
     this.recoords()
     if (this.tput) return this.put.ind()
-    return this.#write('\x1bD')
+    return this.#write(IND)
   }
   ri = this.reverseIndex
   reverse = this.reverseIndex
@@ -1432,7 +1432,7 @@ export class Program extends EventEmitter {
     this.y--
     this.recoords()
     if (this.tput) return this.put.ri()
-    return this.#write('\x1bM')
+    return this.#write(RI)
   }
 
   nextLine() {
@@ -1440,7 +1440,7 @@ export class Program extends EventEmitter {
     this.x = 0
     this.recoords()
     if (this.has('nel')) return this.put.nel()
-    return this.#write('\x1bE')
+    return this.#write(NEL)
   }
   // ESC c Full Reset (RIS).
   reset() {
@@ -1450,17 +1450,17 @@ export class Program extends EventEmitter {
         ? this.put.rs1()
         : this.put.ris()
     }
-    return this.#write('\x1bc')
+    return this.#write(RIS)
   }
   // ESC H Tab Set (HTS is 0x88).
-  tabSet() { return this.tput ? this.put.hts() : this.#write('\x1bH') }
+  tabSet() { return this.tput ? this.put.hts() : this.#write(HTS) }
   sc = this.saveCursor
   saveCursor(key) {
     if (key) return this.lsaveCursor(key)
     this.savedX = this.x || 0
     this.savedY = this.y || 0
     if (this.tput) return this.put.sc()
-    return this.#write('\x1b7')
+    return this.#write(DECSC)
   }
   rc = this.restoreCursor
   restoreCursor(key, hide) {
@@ -1468,7 +1468,7 @@ export class Program extends EventEmitter {
     this.x = this.savedX || 0
     this.y = this.savedY || 0
     if (this.tput) return this.put.rc()
-    return this.#write('\x1b8')
+    return this.#write(DECRC)
   }
   // Save Cursor Locally
   lsaveCursor(key) {
@@ -1491,7 +1491,7 @@ export class Program extends EventEmitter {
       pos.hidden ? this.hideCursor() : this.showCursor()
   }
   // ESC # 3 DEC line height/width
-  lineHeight() { return this.#write('\x1b#') }
+  lineHeight() { return this.#write(ESC + '#') }
   // ESC (,),*,+,-,. Designate G0-G2 Character Set.
   charset(val, level) {
     level = level || 0
@@ -1559,7 +1559,7 @@ export class Program extends EventEmitter {
         val = 'B'
         break
     }
-    return this.#write(`\x1b(${val}`)
+    return this.#write(ESC + '(' + val)
   }
 
   enter_alt_charset_mode = this.smacs
@@ -2320,13 +2320,14 @@ export class Program extends EventEmitter {
   copyRectangle() { return this.#write(CSI + slice.call(arguments).join(SC) + _DECCRA) }
 
   decefr = this.enableFilterRectangle
-  enableFilterRectangle() { return this.#write(CSI + slice.call(arguments).join(SC) + '\'w') }
+  enableFilterRectangle() { return this.#write(CSI + slice.call(arguments).join(SC) + _DECEFR) }
 
   decreqtparm = this.requestParameters
-  requestParameters(param) { return this.#write(CSI + (param || 0) + 'x') }
+  requestParameters(param) { return this.#write(CSI + (param || 0) + _DECREQTPARM) }
 
+  // TODO: pull request - changed x to *x
   decsace = this.selectChangeExtent
-  selectChangeExtent(param) { return this.#write(CSI + (param || 0) + 'x') }
+  selectChangeExtent(param) { return this.#write(CSI + (param || 0) + _DECSACE) }
 
   decfra = this.fillRectangle
   fillRectangle() { return this.#write(CSI + slice.call(arguments).join(SC) + '$x') }
