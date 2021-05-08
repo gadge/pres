@@ -28,6 +28,7 @@ import { ACSC, BOOLS, CPATHS, IPATHS, NUMBERS, STRINGS, TERMCAP, UTOA } from '..
 import { noop, sprintf, tryRead, write }                                from './helpers'
 
 const SCOPES = [ 'bools', 'numbers', 'strings' ]
+const HEADERS = [ 'name', 'names', 'desc', 'file', 'termcap' ]
 /**
  * Terminfo
  */
@@ -293,15 +294,11 @@ export class Tput {
         try {
           extended = this.parseExtended(data.slice(i))
         } catch (e) {
-          if (this.debug) {
-            throw e
-          }
+          if (this.debug) { throw e }
           return info
         }
         info.header.extended = extended.header
-        SCOPES.forEach(function (key) {
-          merge(info[key], extended[key])
-        })
+        SCOPES.forEach(key => merge(info[key], extended[key]))
       }
     }
     return info
@@ -582,55 +579,21 @@ export class Tput {
       // '\r' -> \r
       // '\0' -> \200 (special case)
       if (read(/^\\([eEnlrtbfs\^\\,:0]|.)/, true)) {
-        switch (ch) {
-          case 'e':
-          case 'E':
-            ch = '\x1b'
-            break
-          case 'n':
-            ch = '\n'
-            break
-          case 'l':
-            ch = '\x85'
-            break
-          case 'r':
-            ch = '\r'
-            break
-          case 't':
-            ch = '\t'
-            break
-          case 'b':
-            ch = '\x08'
-            break
-          case 'f':
-            ch = '\x0c'
-            break
-          case 's':
-            ch = ' '
-            break
-          case '^':
-            ch = '^'
-            break
-          case '\\':
-            ch = '\\'
-            break
-          case ',':
-            ch = ','
-            break
-          case ':':
-            ch = ':'
-            break
-          case '0':
-            ch = '\x80'
-            break
-          case 'a':
-            ch = '\x07'
-            break
-          default:
-            this.#debug('%s: bad backslash char.', tkey)
-            ch = cap[0]
-            break
-        }
+        ch = ch === 'e' || ch === 'E' ? '\x1b'
+          : ch === 'n' ? '\n'
+            : ch === 'l' ? '\x85'
+              : ch === 'r' ? '\r'
+                : ch === 't' ? '\t'
+                  : ch === 'b' ? '\x08'
+                    : ch === 'f' ? '\x0c'
+                      : ch === 's' ? ' '
+                        : ch === '^' ? '^'
+                          : ch === '\\' ? '\\'
+                            : ch === ',' ? ','
+                              : ch === ':' ? ':'
+                                : ch === '0' ? '\x80'
+                                  : ch === 'a' ? '\x07'
+                                    : (this.#debug('%s: bad backslash char.', tkey), cap[0])
         print(ch)
         continue
       }
@@ -822,12 +785,8 @@ export class Tput {
     stmt(footer)
     // Optimize and cleanup generated code.
     v = code.slice(header.length, -footer.length)
-    if (!v.length) {
-      code = 'return "";'
-    }
-    else if ((v = /^out\.push\(("(?:[^"]|\\")+")\)$/.exec(v))) {
-      code = 'return ' + v[1] + ';'
-    }
+    if (!v.length) { code = 'return "";' }
+    else if ((v = /^out\.push\(("(?:[^"]|\\")+")\)$/.exec(v))) { code = 'return ' + v[1] + ';' }
     else {
       // Turn `(stack.push(v = params[0]), v),out.push(stack.pop())`
       // into `out.push(params[0])`.
@@ -1022,31 +981,24 @@ export class Tput {
     const self = this,
           out  = {}
     if (!info) return
-    this.#debug(info);
-
-    [ 'name', 'names', 'desc', 'file', 'termcap' ].forEach(function (key) {
-      out[key] = info[key]
-    })
+    this.#debug(info)
+    HEADERS.forEach(key => out[key] = info[key])
     // Separate aliases for termcap
-    const map = (function () {
+    const map = (() => {
       const out = {}
-      Object.keys(Tput.alias).forEach(function (key) {
+      Object.keys(Tput.alias).forEach(key => {
         const aliases = Tput.alias[key]
         out[aliases.termcap] = key
       })
       return out
     })()
-      // Translate termcap cap names to terminfo cap names.
-      // e.g. `up` -> `cursor_up`
-      ['bools', 'numbers', 'strings'].forEach(function (key) {
+    // Translate termcap cap names to terminfo cap names.
+    // e.g. `up` -> `cursor_up`
+    SCOPES.forEach(key => {
       out[key] = {}
       Object.keys(info[key]).forEach(function (cap) {
-        if (key === 'strings') {
-          info.strings[cap] = self._captoinfo(cap, info.strings[cap], 1)
-        }
-        if (map[cap]) {
-          out[key][map[cap]] = info[key][cap]
-        }
+        if (key === 'strings') info.strings[cap] = self._captoinfo(cap, info.strings[cap], 1)
+        if (map[cap]) { out[key][map[cap]] = info[key][cap] }
         else {
           // NOTE: Possibly include all termcap names
           // in a separate alias.js file. Some are
@@ -1070,12 +1022,8 @@ export class Tput {
    *  http://tldp.org/HOWTO/Text-Terminal-HOWTO.html#toc16
    *  man termcap
    */
-  compileTermcap(term) {
-    return this.compile(this.readTermcap(term))
-  }
-  injectTermcap(term) {
-    return this.inject(this.compileTermcap(term))
-  }
+  compileTermcap(term) { return this.compile(this.readTermcap(term)) }
+  injectTermcap(term) { return this.inject(this.compileTermcap(term)) }
   /**
    * _nc_captoinfo - ported to javascript directly from ncurses.
    * Copyright (c) 1998-2009,2010 Free Software Foundation, Inc.
@@ -1177,14 +1125,7 @@ export class Tput {
     }
     // push n copies of param on the terminfo stack if not already there
     function getparm(parm, n) {
-      if (seenr) {
-        if (parm === 1) {
-          parm = 2
-        }
-        else if (parm === 2) {
-          parm = 1
-        }
-      }
+      if (seenr) parm = parm === 1 ? 2 : parm === 2 ? 1 : parm
       if (onstack === parm) {
         if (n > 1) {
           warn('string may not be optimal')
@@ -1195,39 +1136,25 @@ export class Tput {
         }
         return
       }
-      if (onstack !== 0) {
-        push()
-      }
+      if (onstack !== 0) { push() }
       onstack = parm
       while (n--) {
         out += '%p'
         out += String.fromCharCode('0'.charCodeAt(0) + parm)
       }
-      if (seenn && parm < 3) {
-        out += '%{96}%^'
-      }
-      if (seenm && parm < 3) {
-        out += '%{127}%^'
-      }
+      if (seenn && parm < 3) { out += '%{96}%^' }
+      if (seenm && parm < 3) { out += '%{127}%^' }
     }
     // push onstack on to the stack
     function push() {
-      if (stackptr >= MAX_PUSHED) {
-        warn('string too complex to convert')
-      }
-      else {
-        stack[stackptr++] = onstack
-      }
+      if (stackptr >= MAX_PUSHED) { warn('string too complex to convert') }
+      else { stack[stackptr++] = onstack }
     }
     // pop the top of the stack into onstack
     function pop() {
       if (stackptr === 0) {
-        if (onstack === 0) {
-          warn('I\'m confused')
-        }
-        else {
-          onstack = 0
-        }
+        if (onstack === 0) { warn('I\'m confused') }
+        else { onstack = 0 }
       }
       else {
         onstack = stack[--stackptr]
@@ -1268,19 +1195,13 @@ export class Tput {
               out += '%'
               break
             case 'r':
-              if (seenr++ === 1) {
-                warn('saw %%r twice in %s', cap)
-              }
+              if (seenr++ === 1) warn('saw %%r twice in %s', cap)
               break
             case 'm':
-              if (seenm++ === 1) {
-                warn('saw %%m twice in %s', cap)
-              }
+              if (seenm++ === 1) warn('saw %%m twice in %s', cap)
               break
             case 'n':
-              if (seenn++ === 1) {
-                warn('saw %%n twice in %s', cap)
-              }
+              if (seenn++ === 1) warn('saw %%n twice in %s', cap)
               break
             case 'i':
               out += '%i'
@@ -1313,9 +1234,7 @@ export class Tput {
                 s[i + 2] !== '\0' && s[i + 2]) {
                 let l
                 l = 2
-                if (s[i] !== '=') {
-                  getparm(param, 1)
-                }
+                if (s[i] !== '=') { getparm(param, 1) }
                 if (s[i + 1] === 'p') {
                   getparm(param + s[i + 2].charCodeAt(0) - '@'.charCodeAt(0), 1)
                   if (param !== onstack) {
@@ -1324,9 +1243,7 @@ export class Tput {
                   }
                   l++
                 }
-                else {
-                  i += 2, l += cvtchar(s), i -= 2
-                }
+                else { i += 2, l += cvtchar(s), i -= 2 }
                 switch (s[i]) {
                   case '+':
                     out += '%+'
@@ -1341,20 +1258,7 @@ export class Tput {
                     out += '%/'
                     break
                   case '=':
-                    if (seenr) {
-                      if (param === 1) {
-                        onstack = 2
-                      }
-                      else if (param === 2) {
-                        onstack = 1
-                      }
-                      else {
-                        onstack = param
-                      }
-                    }
-                    else {
-                      onstack = param
-                    }
+                    onstack = seenr ? param === 1 ? 2 : param === 2 ? 1 : param : param
                     break
                 }
                 i += l
@@ -1429,73 +1333,6 @@ export class Tput {
               break
           }
           break
-        // #ifdef REVISIBILIZE
-        //    case '\\':
-        //      out += s[i++];
-        //      out += s[i++];
-        //      break;
-        //    case '\n':
-        //      out += '\\n';
-        //      i++;
-        //      break;
-        //    case '\t':
-        //      out += '\\t';
-        //      i++;
-        //      break;
-        //    case '\r':
-        //      out += '\\r';
-        //      i++;
-        //      break;
-        //    case '\200':
-        //      out += '\\0';
-        //      i++;
-        //      break;
-        //    case '\f':
-        //      out += '\\f';
-        //      i++;
-        //      break;
-        //    case '\b':
-        //      out += '\\b';
-        //      i++;
-        //      break;
-        //    case ' ':
-        //      out += '\\s';
-        //      i++;
-        //      break;
-        //    case '^':
-        //      out += '\\^';
-        //      i++;
-        //      break;
-        //    case ':':
-        //      out += '\\:';
-        //      i++;
-        //      break;
-        //    case ',':
-        //      out += '\\,';
-        //      i++;
-        //      break;
-        //    default:
-        //      if (s[i] === '\033') {
-        //        out += '\\E';
-        //        i++;
-        //      } else if (s[i].charCodeAt(0) > 0 && s[i].charCodeAt(0) < 32) {
-        //        out += '^';
-        //        out += String.fromCharCode(s[i].charCodeAt(0) + '@'.charCodeAt(0));
-        //        i++;
-        //      } else if (s[i].charCodeAt(0) <= 0 || s[i].charCodeAt(0) >= 127) {
-        //        out += '\\';
-        //        out += String.fromCharCode(
-        //          ((s[i].charCodeAt(0) & 0300) >> 6) + '0'.charCodeAt(0));
-        //        out += String.fromCharCode(
-        //          ((s[i].charCodeAt(0) & 0070) >> 3) + '0'.charCodeAt(0));
-        //        out += String.fromCharCode(
-        //          (s[i].charCodeAt(0) & 0007) + '0'.charCodeAt(0));
-        //        i++;
-        //      } else {
-        //        out += s[i++];
-        //      }
-        //      break;
-        // #else
         default:
           out += s[i++]
           break
@@ -1507,12 +1344,8 @@ export class Tput {
     if (capstart != null) {
       out += '$<'
       for (i = capstart; ; i++) {
-        if (isdigit(s[i]) || s[i] === '*' || s[i] === '.') {
-          out += s[i]
-        }
-        else {
-          break
-        }
+        if (isdigit(s[i]) || s[i] === '*' || s[i] === '.') { out += s[i] }
+        else { break }
       }
       out += '/>'
     }
@@ -1529,30 +1362,19 @@ export class Tput {
     const dir   = this._prefix(),
           list  = asort(fs.readdirSync(dir)),
           infos = []
-
-    list.forEach(function (letter) {
+    list.forEach(letter => {
       const terms = asort(fs.readdirSync(path.resolve(dir, letter)))
       infos.push.apply(infos, terms)
     })
-    function asort(obj) {
-      return obj.sort(function (a, b) {
-        a = a.toLowerCase().charCodeAt(0)
-        b = b.toLowerCase().charCodeAt(0)
-        return a - b
-      })
-    }
+    function asort(obj) { return obj.sort((a, b) => a.toLowerCase().charCodeAt(0) - b.toLowerCase().charCodeAt(0)) }
     return infos
   }
   compileAll(start) {
     const self = this,
           all  = {}
     this.getAll().forEach(function (name) {
-      if (start && name !== start) {
-        return
-      }
-      else {
-        start = null
-      }
+      if (start && name !== start) { return }
+      else { start = null }
       all[name] = self.compileTerminfo(name)
     })
     return all
@@ -1577,24 +1399,16 @@ export class Tput {
   // ~/ncurses/ncurses/tinfo/lib_setup.c
   detectBrokenACS(info) {
     // ncurses-compatible env variable.
-    if (process.env.NCURSES_NO_UTF8_ACS != null) {
-      return !!+process.env.NCURSES_NO_UTF8_ACS
-    }
+    if (process.env.NCURSES_NO_UTF8_ACS != null) return !!+process.env.NCURSES_NO_UTF8_ACS
     // If the terminal supports unicode, we don't need ACS.
-    if (info.numbers.U8 >= 0) {
-      return !!info.numbers.U8
-    }
+    if (info.numbers.U8 >= 0) return !!info.numbers.U8
     // The linux console is just broken for some reason.
     // Apparently the Linux console does not support ACS,
     // but it does support the PC ROM character set.
-    if (info.name === 'linux') {
-      return true
-    }
+    if (info.name === 'linux') return true
     // PC alternate charset
     // if (acsc.indexOf('+\x10,\x11-\x18.\x190') === 0) {
-    if (this.detectPCRomSet(info)) {
-      return true
-    }
+    if (this.detectPCRomSet(info)) return true
     // screen termcap is bugged?
     if (this.termcap &&
       info.name.indexOf('screen') === 0 &&
@@ -1613,22 +1427,16 @@ export class Tput {
   // See: ~/ncurses/ncurses/tinfo/lib_acs.c
   detectPCRomSet(info) {
     const s = info.strings
-    if (s.enter_pc_charset_mode && s.enter_alt_charset_mode &&
+    return !!(
+      s.enter_pc_charset_mode &&
+      s.enter_alt_charset_mode &&
       s.enter_pc_charset_mode === s.enter_alt_charset_mode &&
-      s.exit_pc_charset_mode === s.exit_alt_charset_mode) {
-      return true
-    }
-    return false
+      s.exit_pc_charset_mode === s.exit_alt_charset_mode
+    )
   }
-  detectMagicCookie() {
-    return process.env.NCURSES_NO_MAGIC_COOKIE == null
-  }
-  detectPadding() {
-    return process.env.NCURSES_NO_PADDING == null
-  }
-  detectSetbuf() {
-    return process.env.NCURSES_NO_SETBUF == null
-  }
+  detectMagicCookie() { return process.env.NCURSES_NO_MAGIC_COOKIE == null }
+  detectPadding() { return process.env.NCURSES_NO_PADDING == null }
+  detectSetbuf() { return process.env.NCURSES_NO_SETBUF == null }
   parseACS(info) {
     const data = {}
     data.acsc = {}
@@ -1654,15 +1462,10 @@ export class Tput {
   }
   GetConsoleCP() {
     let ccp
-    if (process.platform !== 'win32') {
-      return -1
-    }
+    if (process.platform !== 'win32') return -1
     // Allow unicode on all windows consoles for now:
-    if (+process.env.NCURSES_NO_WINDOWS_UNICODE !== 1) {
-      return 65001
-    }
+    if (+process.env.NCURSES_NO_WINDOWS_UNICODE !== 1) return 65001
     // cp.execSync('chcp 65001', { stdio: 'ignore', timeout: 1500 });
-
     try {
       // Produces something like: 'Active code page: 437\n\n'
       ccp = cp.execFileSync(process.env.WINDIR + '\\system32\\chcp.com', [], {
@@ -1675,32 +1478,17 @@ export class Tput {
       //   encoding: 'ascii',
       //   timeout: 1500
       // });
-    } catch (e) {
-
-    }
+    } catch (e) {}
     ccp = /\d+/.exec(ccp)
-    if (!ccp) {
-      return -1
-    }
-    ccp = +ccp[0]
-    return ccp
+    return !ccp ? -1 : (ccp = +ccp[0], ccp)
+
   }
   has(name) {
     name = Tput.aliasMap[name]
     const val = this.all[name]
     return !name ? false : typeof val === NUM ? val !== -1 : !!val
   }
-  // For xterm, header:
-  // Offset: 2342
-  // { header:
-  //    { dataSize: 928,
-  //      headerSize: 10,
-  //      boolCount: 2,
-  //      numCount: 1,
-  //      strCount: 57,
-  //      strTableSize: 117,
   _readTermcap = this.readTermcap
-  // lastStrTableOffset: 680,
   readTermcap(term) {
     const self = this
     let
@@ -1797,35 +1585,7 @@ export class Tput {
   static numbers = NUMBERS
   static strings = STRINGS
   static acsc = ACSC
-  // For xterm, layout:
-  // { header: '0 - 10', // length: 10
-  //   bools: '10 - 12', // length: 2
-  //   numbers: '12 - 14', // length: 2
-  //   strings: '14 - 128', // length: 114 (57 short)
-  //   symoffsets: '128 - 248', // length: 120 (60 short)
-  //   stringtable: '248 - 612', // length: 364
-  //   sym: '612 - 928' } // length: 316
-  //
-  // How lastStrTableOffset works:
-  //   data.length - h.lastStrTableOffset === 248
-  //     (sym-offset end, string-table start)
-  //   364 + 316 === 680 (lastStrTableOffset)
-  // How strTableSize works:
-  //   h.strCount + [symOffsetCount] === h.strTableSize
-  //   57 + 60 === 117 (strTableSize)
-  //   symOffsetCount doesn't actually exist in the header. it's just implied.
-  // Getting the number of sym offsets:
-  //   h.symOffsetCount = h.strTableSize - h.strCount;
   static utoa = UTOA
-  // For xterm, non-extended header:
-  // { dataSize: 3270,
-  //   headerSize: 12,
-  //   magicNumber: 282,
-  //   namesSize: 48,
-  //   boolCount: 38,
-  //   numCount: 15,
-  //   strCount: 413,
-  //   strTableSize: 1388,
   static _tprefix(prefix, term, soft) {
     if (!prefix) return
     let file,
