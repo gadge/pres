@@ -1,4 +1,5 @@
 export {
+  slice,
   merge,
   asort,
   hsort,

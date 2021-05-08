@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "@pres/enum-terminfo-alias": "^0.1.4",
-    "@typen/enum-data-types": "^0.1.16"
+    "@typen/enum-data-types": "^0.1.16",
+    "@pres/util-helpers": "^0.1.4"
   },
   "repository": {
     "type": "git",
