@@ -17,9 +17,9 @@
 // - Possibly switch to other method of finding the
 //   extended data string table: i += h.symOffsetCount * 2;
 
-import * as alias        from '@pres/enum-terminfo-alias'
-import { BOO, NUM, STR } from '@typen/enum-data-types'
-import assert            from 'assert'
+import * as alias             from '@pres/enum-terminfo-alias'
+import { BOO, FUN, NUM, STR } from '@typen/enum-data-types'
+import assert                 from 'assert'
 import cp                from 'child_process'
 import fs                from 'fs'
 import path              from 'path'
@@ -444,51 +444,34 @@ export class Tput {
   // If enter_pc_charset is the same as enter_alt_charset,
   // the terminal does not support SCLD as ACS.
   //      total: 245 },
-  compileTerminfo(term) {
-    return this.compile(this.readTerminfo(term))
-  }
+  compileTerminfo(term) { return this.compile(this.readTerminfo(term)) }
   //   total: 2342 }
-  injectTerminfo(term) {
-    return this.inject(this.compileTerminfo(term))
-  }
+  injectTerminfo(term) { return this.inject(this.compileTerminfo(term)) }
   /**
    * Compiler - terminfo cap->javascript
    */
   compile(info) {
     const self = this
-    if (!info) {
-      throw new Error('Terminal not found.')
-    }
+    if (!info) throw new Error('Terminal not found.')
     this.detectFeatures(info)
     this.#debug(info)
     info.all = {}
     info.methods = {};
 
-    [ 'bools', 'numbers', 'strings' ].forEach(function (type) {
+    [ 'bools', 'numbers', 'strings' ].forEach(type => {
       Object.keys(info[type]).forEach(function (key) {
         info.all[key] = info[type][key]
         info.methods[key] = self._compile(info, key, info.all[key])
       })
     })
-    Tput.bools.forEach(function (key) {
-      if (info.methods[key] == null) info.methods[key] = false
-    })
-    Tput.numbers.forEach(function (key) {
-      if (info.methods[key] == null) info.methods[key] = -1
-    })
-    Tput.strings.forEach(function (key) {
-      if (!info.methods[key]) info.methods[key] = noop
-    })
-    Object.keys(info.methods).forEach(function (key) {
-      if (!Tput.alias[key]) return
-      Tput.alias[key].forEach(function (alias) {
-        info.methods[alias] = info.methods[key]
-      })
-      // Could just use:
-      // Object.keys(Tput.aliasMap).forEach(function(key) {
-      //   info.methods[key] = info.methods[Tput.aliasMap[key]];
-      // });
-    })
+    Tput.bools.forEach(key => { if (info.methods[key] == null) info.methods[key] = false })
+    Tput.numbers.forEach(key => { if (info.methods[key] == null) info.methods[key] = -1 })
+    Tput.strings.forEach(key => { if (!info.methods[key]) info.methods[key] = noop })
+    Object.keys(info.methods).forEach(key => { if (Tput.alias[key]) { Tput.alias[key].forEach(alias => { info.methods[alias] = info.methods[key] }) } })
+    // Could just use:
+    // Object.keys(Tput.aliasMap).forEach(function(key) {
+    //   info.methods[key] = info.methods[Tput.aliasMap[key]];
+    // });
     return info
   }
   // Some data to help understand:
@@ -496,8 +479,8 @@ export class Tput {
     const self    = this,
           methods = info.methods || info
 
-    Object.keys(methods).forEach(function (key) {
-      if (typeof methods[key] !== 'function') {
+    Object.keys(methods).forEach(key => {
+      if (typeof methods[key] !== FUN) {
         self[key] = methods[key]
         return
       }
@@ -1751,11 +1734,7 @@ export class Tput {
   has(name) {
     name = Tput.aliasMap[name]
     const val = this.all[name]
-    if (!name) return false
-    if (typeof val === 'number') {
-      return val !== -1
-    }
-    return !!val
+    return !name ? false : typeof val === NUM ? val !== -1 : !!val
   }
   // For xterm, header:
   // Offset: 2342
@@ -1781,31 +1760,17 @@ export class Tput {
     // so we need to find the one containing our desired terminal.
     if (~term.indexOf(path.sep) && (terms = this._tryCap(path.resolve(term)))) {
       term_ = path.basename(term).split('.')[0]
-      if (terms[process.env.TERM]) {
-        term = process.env.TERM
-      }
-      else if (terms[term_]) {
-        term = term_
-      }
-      else {
-        term = Object.keys(terms)[0]
-      }
+      term = terms[process.env.TERM] ? process.env.TERM : terms[term_] ? term_ : Object.keys(terms)[0]
     }
     else {
       paths = Tput.cpaths.slice()
-      if (this.termcapFile) {
-        paths.unshift(this.termcapFile)
-      }
+      if (this.termcapFile) paths.unshift(this.termcapFile)
       paths.push(Tput.termcap)
       terms = this._tryCap(paths, term)
     }
-    if (!terms) {
-      throw new Error('Cannot find termcap for: ' + term)
-    }
+    if (!terms) throw new Error('Cannot find termcap for: ' + term)
     root = terms[term]
-    if (this.debug) {
-      this._termcap = terms
-    }
+    if (this.debug) this._termcap = terms
     (function tc(term) {
       if (term && term.strings.tc) {
         root.inherits = root.inherits || []
