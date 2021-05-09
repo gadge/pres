@@ -56,9 +56,7 @@ export class ListBar extends Box {
           self.emit(ACTION, self.items[self.selected], self.selected)
           self.emit(SELECT, self.items[self.selected], self.selected)
           const item = self.items[self.selected]
-          if (item._.cmd.callback) {
-            item._.cmd.callback()
-          }
+          if (item._.cmd.callback) item._.cmd.callback()
           self.screen.render()
           return void 0
         }
@@ -70,7 +68,7 @@ export class ListBar extends Box {
       })
     }
     if (options.autoCommandKeys) {
-      this.onScreenEvent(KEYPRESS, function (ch) {
+      this.onScreenEvent(KEYPRESS, ch => {
         if (/^[0-9]$/.test(ch)) {
           let i = +ch - 1
           if (!~i) i = 9
@@ -78,9 +76,7 @@ export class ListBar extends Box {
         }
       })
     }
-    this.on(FOCUS, function () {
-      self.select(self.selected)
-    })
+    this.on(FOCUS, () => self.select(self.selected))
     this.type = 'listbar'
   }
   static build(options) { return new ListBar(options) }
@@ -97,23 +93,16 @@ export class ListBar extends Box {
         }
         if (cmd.text == null) cmd.text = key
         if (cmd.prefix == null) cmd.prefix = ++i + ''
-        if (cmd.text == null && cmd.callback) {
-          cmd.text = cmd.callback.name
-        }
+        if (cmd.text == null && cmd.callback) cmd.text = cmd.callback.name
         obj.push(cmd)
         return obj
       }, [])
     }
-    this.items.forEach(function (el) {
-      el.detach()
-    })
+    this.items.forEach(el => el.detach())
     this.items = []
     this.ritems = []
     this.commands = []
-
-    commands.forEach(function (cmd) {
-      self.add(cmd)
-    })
+    commands.forEach(cmd => self.add(cmd))
     this.emit(SET_ITEMS)
   }
   appendItem(item, callback) {
@@ -123,14 +112,10 @@ export class ListBar extends Box {
         cmd,
         title,
         len
-    if (!this.sup) {
-      drawn = 0
-    }
+    if (!this.sup) { drawn = 0 }
     else {
       drawn = prev ? prev.aleft + prev.width : 0
-      if (!this.screen.autoPadding) {
-        drawn += this.ileft
-      }
+      if (!this.screen.autoPadding) { drawn += this.ileft }
     }
     if (typeof item === 'object') {
       cmd = item
@@ -206,17 +191,13 @@ export class ListBar extends Box {
         })
       }
     }
-    if (this.items.length === 1) {
-      this.select(0)
-    }
+    if (this.items.length === 1) { this.select(0) }
     // XXX May be affected by new element.options.mouse option.
     if (this.mouse) {
       el.on(CLICK, function () {
         self.emit(ACTION, el, self.selected)
         self.emit(SELECT, el, self.selected)
-        if (el._.cmd.callback) {
-          el._.cmd.callback()
-        }
+        if (el._.cmd.callback) { el._.cmd.callback() }
         self.select(el)
         self.screen.render()
       })
