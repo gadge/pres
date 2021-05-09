@@ -4,42 +4,36 @@
  * https://github.com/chjj/blessed
  */
 
-import { SIGCONT, SIGTSTP }   from '@geia/enum-signals'
+import { SIGCONT, SIGTSTP }                                       from '@geia/enum-signals'
 import {
   BLUR, BTNDOWN, BTNUP, DATA, DESTROY, DRAG, ERROR, EXIT, FOCUS, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEUP,
   MOUSEWHEEL, MOVE, NEW_LISTENER, RESIZE, RESPONSE, WARNING, WHEELDOWN, WHEELUP,
-}                             from '@pres/enum-events'
+}                                                                 from '@pres/enum-events'
+import { ENTER, LEFT, MIDDLE, RETURN, RIGHT, UNDEFINED, UNKNOWN } from '@pres/enum-key-names'
+import { EventEmitter }                                           from '@pres/events'
+import { Tput }                                                   from '@pres/terminfo-parser'
+import * as colors                                                from '@pres/util-colors'
+import { slice }                                                  from '@pres/util-helpers'
+import { SC, SP, VO }                                             from '@texting/enum-chars'
+import { FUN, NUM, STR }                                          from '@typen/enum-data-types'
+import { nullish }                                                from '@typen/nullish'
+import cp                                                         from 'child_process'
+import fs                                                         from 'fs'
+import { StringDecoder }                                          from 'string_decoder'
+import util                                                       from 'util'
+import { ALL }                                                    from '../assets/constants'
 import {
-  ENTER, LEFT, MIDDLE, RETURN, RIGHT, UNDEFINED, UNKNOWN
-}                             from '@pres/enum-key-names'
-import { EventEmitter }       from '@pres/events'
-import { Tput }               from '@pres/terminfo-parser'
-import * as colors            from '@pres/util-colors'
-import { slice }              from '@pres/util-helpers'
-import {
-  SC, SP, VO
-}                             from '@texting/enum-chars'
-import {
-  FUN, NUM, STR
-}                             from '@typen/enum-data-types'
-import { nullish }            from '@typen/nullish'
-import cp                     from 'child_process'
-import fs                     from 'fs'
-import { StringDecoder }      from 'string_decoder'
-import util                   from 'util'
-import { ALL }                from '../assets/constants'
-import {
-  BEL, BS, CSI, DECRC, DECSC, ESC, FF, HTS, IND, LF, NEL, OSC, RI, RIS, RN, SI, SO, TAB, VT,
-}                             from '../assets/control.chars'
+  BEL, BS, CSI, DCS, DECKPNM, DECRC, DECSC, ESC, FF, HTS, IND, LF, NEL, OSC, RI, RIS, RN, SI, SO, ST, TAB, VT,
+}                                                                 from '../assets/control.chars'
 import {
   _CBT, _CHA, _CHT, _CNL, _CPL, _CUB, _CUD, _CUF, _CUP, _CUU, _DA, _DCH, _DECCARA, _DECCRA, _DECDC, _DECEFR, _DECELR,
   _DECERA, _DECFRA, _DECIC, _DECLL, _DECRARA, _DECREQTPARM, _DECRQM, _DECSACE, _DECSCA, _DECSCL, _DECSCUSR, _DECSERA,
   _DECSLE, _DECSMBV, _DECSTBM, _DECSWBV, _DL, _DSR, _ECH, _ED, _EL, _HPA, _HPR, _HVP, _ICH, _IL, _MC, _REP, _RM, _SCORC,
   _SCOSC, _SD, _SGR, _SM, _SU, _TBC, _VPA, _VPR, _XTHIMOUSE, _XTMODKEYS, _XTRESTORE, _XTRMTITLE, _XTSAVE, _XTSMPOINTER,
   _XTSMTITLE, _XTUNMODKEYS, _XTWINOPS
-}                             from '../assets/csi.codes'
-import { gpmClient }          from './gpmclient'
-import { emitKeypressEvents } from './keys'
+}                                                                 from '../assets/csi.codes'
+import { gpmClient }                                              from './gpmclient'
+import { emitKeypressEvents }                                     from './keys'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
@@ -963,7 +957,7 @@ export class Program extends EventEmitter {
     //   sleep 2 && echo -ne '\e[21t' & cat -v
     if ((parts = /^\x1b\](l|L)([^\x07\x1b]*)$/.exec(s))) {
       parts[2] = 'rxvt'
-      s = OSC + `${parts[1]}${parts[2]}\x1b\\`
+      s = OSC + parts[1] + parts[2] + ST
     }
     // CSI Ps ; Ps ; Ps t
     //   Window manipulation (from dtterm, as well as extensions).
@@ -1097,7 +1091,7 @@ export class Program extends EventEmitter {
       // Replace all STs with BELs so they can be nested within the DCS code.
       data = data.replace(/\x1b\\/g, BEL)
       // Wrap in tmux forward DCS:
-      data = `\x1bPtmux;\x1b${data}\x1b\\`
+      data = DCS + 'tmux;' + ESC + data + ST
       // If we've never even flushed yet, it means we're still in
       // the normal buffer. Wait for alt screen buffer.
       if (this.output.bytesWritten === 0) {
@@ -1169,13 +1163,13 @@ export class Program extends EventEmitter {
     else if (this.term('xterm') || this.term('screen')) {
       switch (shape) {
         case 'block':
-          !blink ? this.#writeTm(CSI + '0 q') : this.#writeTm(CSI + '1 q')
+          !blink ? this.#writeTm(CSI + '0' + _DECSCUSR) : this.#writeTm(CSI + '1' + _DECSCUSR)
           break
         case 'underline':
-          !blink ? this.#writeTm(CSI + '2 q') : this.#writeTm(CSI + '3 q')
+          !blink ? this.#writeTm(CSI + '2' + _DECSCUSR) : this.#writeTm(CSI + '3' + _DECSCUSR)
           break
         case 'line':
-          !blink ? this.#writeTm(CSI + '4 q') : this.#writeTm(CSI + '5 q')
+          !blink ? this.#writeTm(CSI + '4' + _DECSCUSR) : this.#writeTm(CSI + '5' + _DECSCUSR)
           break
       }
       return true
@@ -1192,7 +1186,7 @@ export class Program extends EventEmitter {
     if (this.term('xterm') || this.term('rxvt') || this.term('screen')) {
       // XXX
       // return this.resetColors();
-      this.#writeTm(CSI + '0 q')
+      this.#writeTm(CSI + '0' + _DECSCUSR)
       this.#writeTm(OSC + '112' + BEL)
       // urxvt doesnt support OSC 112
       this.#writeTm(OSC + '12;white' + BEL)
@@ -1939,14 +1933,14 @@ export class Program extends EventEmitter {
     // urxvt mouse
     if (opt.urxvtMouse != null) { opt.urxvtMouse ? this.setMode('?1015') : this.resetMode('?1015') }
     // dec mouse
-    if (opt.decMouse != null) { opt.decMouse ? this.#write(CSI + '1;2\'z\x1b[1;3\'{') : this.#write(CSI + '\'z') }
+    if (opt.decMouse != null) { opt.decMouse ? this.#write(CSI + '1;2\'z' + CSI + '1;3\'{') : this.#write(CSI + '\'z') }
     // pterm mouse
     if (opt.ptermMouse != null) {
       // + = advanced mode
-      opt.ptermMouse ? this.#write(CSI + '>1h\x1b[>6h\x1b[>7h\x1b[>1h\x1b[>9l') : this.#write(CSI + '>1l\x1b[>6l\x1b[>7l\x1b[>1l\x1b[>9h')
+      opt.ptermMouse ? this.#write(CSI + '>1h' + CSI + '>6h' + CSI + '>7h' + CSI + '>1h' + CSI + '>9l') : this.#write(CSI + '>1l' + CSI + '>6l' + CSI + '>7l' + CSI + '>1l' + CSI + '>9h')
     }
     // jsbterm mouse
-    if (opt.jsbtermMouse != null) { opt.jsbtermMouse ? this.#write(CSI + '0~ZwLMRK+1Q\x1b\\') : this.#write(CSI + '0~ZwQ\x1b\\') }
+    if (opt.jsbtermMouse != null) { opt.jsbtermMouse ? this.#write(CSI + '0~ZwLMRK+1Q' + ST) : this.#write(CSI + '0~ZwQ' + ST) }
     // gpm mouse
     if (opt.gpmMouse != null) { opt.gpmMouse ? this.enableGpm() : this.disableGpm() }
   }
@@ -2074,7 +2068,7 @@ export class Program extends EventEmitter {
     if (this.tput) return this.put.rs2()
     //return this.#write(CSI + '!p');
     //return this.#write(CSI + '!p\x1b[?3;4l\x1b[4l\x1b>'); // init
-    return this.#write(CSI + '!p\x1b[?3;4l\x1b[4l\x1b>') // reset
+    return this.#write(CSI + '!p' + CSI + '?3;4l' + CSI + '4l' + DECKPNM) // reset
   }
 
   requestAnsiMode = this.decrqm

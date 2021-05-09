@@ -8,7 +8,7 @@ const pars = {
   m: 'pmem',
 }
 
-function Proc(table) {
+export function Proc(table) {
   this.table = table
   this.pSort = 'pcpu'
   this.reIndex = false
@@ -57,5 +57,3 @@ Proc.prototype.updateData = function (data) {
   }
   this.table.screen.render()
 }
-
-module.exports = Proc

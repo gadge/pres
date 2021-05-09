@@ -1,9 +1,10 @@
-const si    = require('systeminformation'),
-      utils = require('../utils')
+import si from 'systeminformation'
+
+import utils from '../utils'
 
 const colors = utils.colors
 
-function Cpu(line) {
+export function Cpu(line) {
   this.line = line
   si.currentLoad(data => {
     this.cpuData = data.cpus.map((cpu, i) => ({
@@ -33,5 +34,3 @@ Cpu.prototype.updateData = function (data) {
   this.line.setData(this.cpuData)
   this.line.screen.render()
 }
-
-module.exports = Cpu

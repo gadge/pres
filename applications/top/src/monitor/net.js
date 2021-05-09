@@ -3,7 +3,7 @@ const si    = require('systeminformation'),
 
 const colors = utils.colors
 
-function Net(sparkline) {
+export function Net(sparkline) {
   this.sparkline = sparkline
   this.netData = [ Array(61).fill(0), Array(61).fill(0) ]
 
@@ -42,5 +42,3 @@ Net.prototype.updateData = function (data) {
   this.sparkline.setData([ rx_label, tx_label ], this.netData)
   this.sparkline.screen.render()
 }
-
-module.exports = Net

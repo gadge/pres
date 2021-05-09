@@ -1,9 +1,9 @@
-const si    = require('systeminformation'),
-      utils = require('../utils')
+import si    from 'systeminformation'
+import utils from '../utils'
 
 const colors = utils.colors
 
-function Disk(donut) {
+export function Disk(donut) {
   this.donut = donut
   si.fsSize(data => this.updateData(data))
   this.interval = setInterval(() => {
@@ -24,5 +24,3 @@ Disk.prototype.updateData = function (data) {
   } ])
   this.donut.screen.render()
 }
-
-module.exports = Disk

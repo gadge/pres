@@ -7,15 +7,15 @@
   "files": [
     "dist"
   ],
-  "bin": "./bin/gtop",
+  "bin": "./bin/top",
   "scripts": {
     "test": "echo \"Test will be implemented.\" && exit 0",
     "start": "./bin/gtop",
-    "lint": "prettier --single-quote --trailing-comma es5 --write 'lib/**/*.js'"
+    "lint": "prettier --single-quote --trailing-comma es5 --write 'src/**/*.js'"
   },
   "dependencies": {
-    "@pres/enum-events": "^0.1.1",
-    "@pres/terminal-interface": "^0.1.1",
+    "@pres/enum-events": "^0.1.5",
+    "@pres/terminal-interface": "^0.1.5",
     "blessed": "^0.1.81",
     "blessed-contrib": "^4.8.20",
     "systeminformation": "^4.31.1"

@@ -2,7 +2,7 @@ const si    = require('systeminformation'),
       utils = require('../utils')
 const colors = utils.colors
 
-function Mem(line, memDonut, swapDonut) {
+export function Mem(line, memDonut, swapDonut) {
   this.line = line
   this.memDonut = memDonut
   this.swapDonut = swapDonut
@@ -68,5 +68,3 @@ Mem.prototype.updateData = function (data) {
   }, ])
   this.line.screen.render()
 }
-
-module.exports = Mem
