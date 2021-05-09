@@ -48,11 +48,11 @@ export class Tput {
     this.extended = options.extended
     this.printf = options.printf
     this.termcap = options.termcap
-    this.error = null
     this.terminfoPrefix = options.terminfoPrefix
     this.terminfoFile = options.terminfoFile
     this.termcapFile = options.termcapFile
     if (options.terminal || options.term) this.setup()
+    this.error = null
     // Convert ACS unicode characters to the
     // most similar-looking ascii characters.
     this.utoa = UTOA

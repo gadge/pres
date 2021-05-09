@@ -689,7 +689,7 @@ export class Program extends EventEmitter {
     const self = this
     if (this.gpm) return
     this.gpm = gpmClient()
-    this.gpm.on(BTNDOWN, function (btn, modifier, x, y) {
+    this.gpm.on(BTNDOWN, (btn, modifier, x, y) => {
       x--, y--
       const key = {
         name: MOUSE,
@@ -705,7 +705,7 @@ export class Program extends EventEmitter {
       }
       self.emit(MOUSE, key)
     })
-    this.gpm.on(BTNUP, function (btn, modifier, x, y) {
+    this.gpm.on(BTNUP, (btn, modifier, x, y) => {
       x--, y--
       const key = {
         name: MOUSE,
@@ -721,7 +721,7 @@ export class Program extends EventEmitter {
       }
       self.emit(MOUSE, key)
     })
-    this.gpm.on(MOVE, function (btn, modifier, x, y) {
+    this.gpm.on(MOVE, (btn, modifier, x, y) => {
       x--, y--
       const key = {
         name: MOUSE,
@@ -737,7 +737,7 @@ export class Program extends EventEmitter {
       }
       self.emit(MOUSE, key)
     })
-    this.gpm.on(DRAG, function (btn, modifier, x, y) {
+    this.gpm.on(DRAG, (btn, modifier, x, y) => {
       x--, y--
       const key = {
         name: MOUSE,
@@ -753,7 +753,7 @@ export class Program extends EventEmitter {
       }
       self.emit(MOUSE, key)
     })
-    this.gpm.on(MOUSEWHEEL, function (btn, modifier, x, y, dx, dy) {
+    this.gpm.on(MOUSEWHEEL, (btn, modifier, x, y, dx, dy) => {
       const key = {
         name: MOUSE,
         type: 'GPM',
@@ -1511,18 +1511,13 @@ export class Program extends EventEmitter {
     // }
     return this.#writeTm(OSC + `0;${title}` + BEL)
   }
-  // CSI Ps ; Ps r
-  //   Set Scrolling Region [top;bottom] (default = full size of win-
-  //   dow) (DECSTBM).
+
+  // OSC Ps ; Pt ST
+  // OSC Ps ; Pt BEL
   //   Reset colors
-  resetColors(param) {
-    return this.has('Cr') ? this.put.Cr(param) : this.#writeTm(OSC + '112' + BEL)
-    //return this.#writeTm(OSC + '112;' + param + BEL);
-  }
+  resetColors(param) { return this.has('Cr') ? this.put.Cr(param) : this.#writeTm(OSC + '112' + BEL) }
   //   Change dynamic colors
-  dynamicColors(param) {
-    return this.has('Cs') ? this.put.Cs(param) : this.#writeTm(OSC + `12;${param}` + BEL)
-  }
+  dynamicColors(param) { return this.has('Cs') ? this.put.Cs(param) : this.#writeTm(OSC + `12;${param}` + BEL) }
   // Sel data
   selData(a, b) { return this.has('Ms') ? this.put.Ms(a, b) : this.#writeTm(OSC + `52;${a};${b}` + BEL) }
 

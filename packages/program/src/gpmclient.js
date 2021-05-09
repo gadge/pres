@@ -4,7 +4,7 @@
  * https://github.com/chjj/blessed
  */
 import { BTNDOWN, BTNUP, CLICK, CONNECT, DATA, DBLCLICK, DRAG, ERROR, MOUSEWHEEL, MOVE, } from '@pres/enum-events'
-import { LEFT, RIGHT }                                                                    from '@pres/enum-key-names'
+import { LEFT, MIDDLE, RIGHT }                                                            from '@pres/enum-key-names'
 import { EventEmitter }                                                                   from '@pres/events'
 import fs                                                                                 from 'fs'
 import net                                                                                from 'net'
@@ -53,9 +53,7 @@ function send_config(socket, Gpm_Connect, callback) {
     buffer.writeInt16LE(Gpm_Connect.pid, 8)
     buffer.writeInt16LE(Gpm_Connect.vc, 12)
   }
-  socket.write(buffer, function () {
-    if (callback) callback()
-  })
+  socket.write(buffer, () => { if (callback) callback() })
 }
 // typedef struct Gpm_Event {
 //   unsigned char buttons, modifiers;  // try to be a multiple of 4
@@ -98,14 +96,9 @@ export class GpmClient extends EventEmitter {
     const pid = process.pid
     // check tty for /dev/tty[n]
     let path
-    try {
-      path = fs.readlinkSync('/proc/' + pid + '/fd/0')
-    } catch (e) {
-    }
+    try { path = fs.readlinkSync('/proc/' + pid + '/fd/0') } catch (e) {}
     let tty = /tty[0-9]+$/.exec(path)
-    if (tty === null) {
-      // TODO: should  also check for /dev/input/..
-    }
+    if (tty === null) { } // TODO: should  also check for /dev/input/..
     let vc
     if (tty) {
       tty = tty[0]
@@ -135,45 +128,27 @@ export class GpmClient extends EventEmitter {
           })
         })
         gpm.on(DATA, function (packet) {
-          const evnt = parseEvent(packet)
-          switch (evnt.type & 15) {
+          const event = parseEvent(packet)
+          switch (event.type & 15) {
             case GPM_MOVE:
-              if (evnt.dx || evnt.dy) {
-                self.emit(MOVE, evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
-              }
-              if (evnt.wdx || evnt.wdy) {
-                self.emit(MOUSEWHEEL,
-                  evnt.buttons, evnt.modifiers,
-                  evnt.x, evnt.y, evnt.wdx, evnt.wdy)
-              }
+              if (event.dx || event.dy) { self.emit(MOVE, event.buttons, event.modifiers, event.x, event.y) }
+              if (event.wdx || event.wdy) { self.emit(MOUSEWHEEL, event.buttons, event.modifiers, event.x, event.y, event.wdx, event.wdy) }
               break
             case GPM_DRAG:
-              if (evnt.dx || evnt.dy) {
-                self.emit(DRAG, evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
-              }
-              if (evnt.wdx || evnt.wdy) {
-                self.emit(MOUSEWHEEL,
-                  evnt.buttons, evnt.modifiers,
-                  evnt.x, evnt.y, evnt.wdx, evnt.wdy)
-              }
+              if (event.dx || event.dy) { self.emit(DRAG, event.buttons, event.modifiers, event.x, event.y) }
+              if (event.wdx || event.wdy) { self.emit(MOUSEWHEEL, event.buttons, event.modifiers, event.x, event.y, event.wdx, event.wdy) }
               break
             case GPM_DOWN:
-              self.emit(BTNDOWN, evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
-              if (evnt.type & GPM_DOUBLE) {
-                self.emit(DBLCLICK, evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
-              }
+              self.emit(BTNDOWN, event.buttons, event.modifiers, event.x, event.y)
+              if (event.type & GPM_DOUBLE) { self.emit(DBLCLICK, event.buttons, event.modifiers, event.x, event.y) }
               break
             case GPM_UP:
-              self.emit(BTNUP, evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
-              if (!(evnt.type & GPM_MFLAG)) {
-                self.emit(CLICK, evnt.buttons, evnt.modifiers, evnt.x, evnt.y)
-              }
+              self.emit(BTNUP, event.buttons, event.modifiers, event.x, event.y)
+              if (!(event.type & GPM_MFLAG)) { self.emit(CLICK, event.buttons, event.modifiers, event.x, event.y) }
               break
           }
         })
-        gpm.on(ERROR, function () {
-          self.stop()
-        })
+        gpm.on(ERROR, () => self.stop())
       })
     }
   }
@@ -181,13 +156,8 @@ export class GpmClient extends EventEmitter {
     if (this.gpm) this.gpm.end()
     delete this.gpm
   }
-  ButtonName(btn) {
-    if (btn & 4) return LEFT
-    if (btn & 2) return MIDDLE
-    if (btn & 1) return RIGHT
-    return ''
-  }
-  hasShiftKey(mod) { return (mod & 1) ? true : false }
-  hasCtrlKey(mod) { return (mod & 4) ? true : false }
-  hasMetaKey(mod) { return (mod & 8) ? true : false }
+  ButtonName(btn) { return btn & 4 ? LEFT : btn & 2 ? MIDDLE : btn & 1 ? RIGHT : '' }
+  hasShiftKey(mod) { return !!(mod & 1) }
+  hasCtrlKey(mod) { return !!(mod & 4) }
+  hasMetaKey(mod) { return !!(mod & 8) }
 }
