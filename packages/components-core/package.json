@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-core",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Core components for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -16,13 +16,13 @@
   },
   "dependencies": {
     "@ject/mixin": "^0.0.11",
-    "@pres/components-node": "^0.1.6",
-    "@pres/enum-events": "^0.1.6",
-    "@pres/events": "^0.1.6",
-    "@pres/program": "^0.1.6",
-    "@pres/util-colors": "^0.1.6",
-    "@pres/util-helpers": "^0.1.6",
-    "@pres/util-unicode": "^0.1.6",
+    "@pres/components-node": "^0.1.7",
+    "@pres/enum-events": "^0.1.7",
+    "@pres/events": "^0.1.7",
+    "@pres/program": "^0.1.7",
+    "@pres/util-colors": "^0.1.7",
+    "@pres/util-helpers": "^0.1.7",
+    "@pres/util-unicode": "^0.1.7",
     "@typen/enum-data-types": "^0.1.16",
     "term.js": "^0.0.7"
   },
