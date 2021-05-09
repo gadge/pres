@@ -12,7 +12,7 @@
     "upint": "yarn upgrade-interactive",
     "pub": "lerna publish --force-publish",
     "build": "lerna exec --parallel -- rollup -c ../../rollup.config.js",
-    "build-specific": "lerna exec --scope=@pres/enum-events -- rollup -c ../../rollup.config.js",
+    "build-specific": "lerna exec --scope=@pres/terminfo-parser -- rollup -c ../../rollup.config.js",
     "watch": "lerna exec --parallel -- rollup -c ../../rollup.config.js -w",
     "watch-specific": "lerna exec --scope=@pres/components-core -- rollup -c ../../rollup.config.js -w"
   },

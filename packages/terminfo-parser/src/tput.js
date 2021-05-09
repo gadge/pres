@@ -29,6 +29,7 @@ import { noop, sprintf, tryRead, write }                                from './
 
 const SCOPES = [ 'bools', 'numbers', 'strings' ]
 const HEADERS = [ 'name', 'names', 'desc', 'file', 'termcap' ]
+const USR = __dirname + '/../usr/'
 /**
  * Terminfo
  */
@@ -101,10 +102,10 @@ export class Tput {
    * Fallback
    */
   _useVt102Cap() { return this.injectTermcap('vt102') }
-  _useXtermCap() { return this.injectTermcap(__dirname + '/../usr/xterm.termcap') }
-  _useXtermInfo() { return this.injectTerminfo(__dirname + '/../usr/xterm') }
-  _useInternalInfo(name) { return this.injectTerminfo(__dirname + '/../usr/' + path.basename(name)) }
-  _useInternalCap(name) { return this.injectTermcap(__dirname + '/../usr/' + path.basename(name) + '.termcap') }
+  _useXtermCap() { return this.injectTermcap(USR + 'xterm.termcap') }
+  _useXtermInfo() { return this.injectTerminfo(USR + 'xterm') }
+  _useInternalInfo(name) { return this.injectTerminfo(USR + path.basename(name)) }
+  _useInternalCap(name) { return this.injectTermcap(USR + path.basename(name) + '.termcap') }
   _prefix(term) {
     // If we have a terminfoFile, or our
     // term looks like a filename, use it.
@@ -424,22 +425,20 @@ export class Tput {
     if (!info) throw new Error('Terminal not found.')
     this.detectFeatures(info)
     this.#debug(info)
-    info.all = {}
-    info.methods = {}
+    const all = info.all = {}
+    const methods = info.methods = {}
 
     for (const type of SCOPES) {
-      Object.keys(info[type]).forEach(function (key) {
-        info.all[key] = info[type][key]
-        info.methods[key] = self._compile(info, key, info.all[key])
-      })
+      const o = info[type]
+      Object.keys(o).forEach(key => methods[key] = self._compile(info, key, all[key] = o[key]))
     }
-    Tput.bools.forEach(key => { if (info.methods[key] == null) info.methods[key] = false })
-    Tput.numbers.forEach(key => { if (info.methods[key] == null) info.methods[key] = -1 })
-    Tput.strings.forEach(key => { if (!info.methods[key]) info.methods[key] = noop })
-    Object.keys(info.methods).forEach(key => { if (Tput.alias[key]) { Tput.alias[key].forEach(alias => { info.methods[alias] = info.methods[key] }) } })
+    Tput.bools.forEach(key => { if (methods[key] == null) methods[key] = false })
+    Tput.numbers.forEach(key => { if (methods[key] == null) methods[key] = -1 })
+    Tput.strings.forEach(key => { if (!methods[key]) methods[key] = noop })
+    Object.keys(methods).forEach(key => { if (Tput.alias[key]) { Tput.alias[key].forEach(alias => { methods[alias] = methods[key] }) } })
     // Could just use:
     // Object.keys(Tput.aliasMap).forEach(function(key) {
-    //   info.methods[key] = info.methods[Tput.aliasMap[key]];
+    //   methods[key] = methods[Tput.aliasMap[key]];
     // });
     return info
   }
@@ -1146,8 +1145,7 @@ export class Tput {
     function invalid() {
       out += '%'
       i--
-      warn('unknown %% code %s (%#x) in %s',
-        JSON.stringify(s[i]), s[i].charCodeAt(0), cap)
+      warn('unknown %% code %s (%#x) in %s', JSON.stringify(s[i]), s[i].charCodeAt(0), cap)
     }
     // skip the initial padding (if we haven't been told not to)
     capstart = null
@@ -1327,8 +1325,7 @@ export class Tput {
       out += '/>'
     }
     if (s !== out) {
-      warn('Translating %s from %s to %s.',
-        cap, JSON.stringify(s), JSON.stringify(out))
+      warn('Translating %s from %s to %s.', cap, JSON.stringify(s), JSON.stringify(out))
     }
     return out
   }
@@ -1349,7 +1346,7 @@ export class Tput {
   compileAll(start) {
     const self = this,
           all  = {}
-    this.getAll().forEach(function (name) {
+    this.getAll().forEach(name => {
       if (start && name !== start) { return }
       else { start = null }
       all[name] = self.compileTerminfo(name)
@@ -1657,11 +1654,12 @@ export class Tput {
 }
 
 for (const type of SCOPES) {
-  Object.keys(Tput._alias[type]).forEach(key => {
-    const aliases = Tput._alias[type][key]
-    Tput.alias[key] = [ aliases[0] ]
-    Tput.alias[key].terminfo = aliases[0]
-    Tput.alias[key].termcap = aliases[1]
+  const o = Tput._alias[type]
+  Object.keys(o).forEach(key => {
+    const [ terminfo, termcap ] = o[key]
+    Tput.alias[key] = [ terminfo ]
+    Tput.alias[key].terminfo = terminfo
+    Tput.alias[key].termcap = termcap
   })
 }
 // Bools
