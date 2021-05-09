@@ -1,24 +1,294 @@
-OUT: >>> [Program.prototype._listenInput]\n
+OUT: >>> [Program.prototype.#listenInput]\n
 -
-OUT: ^[[?1049h^[[?1h^[=^[[1;56r^[[?25l^[[1;1H^[[H^[[2J^[[?1000h^[[?1002h^[[?1003h^[[?1005h^[7^[[54;1H^[[3C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[55;1H^[[55;4Hx^[[42m^[(B ^[[m^[[44m ^[[m^[[44;30ma^[[m^[[44m:one ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m2^[[m^[[41m:two ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m3^[[m^[[41m:three ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m4^[[m^[[41m:four ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m5^[[m^[[41m:five ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m6^[[m^[[41m:six ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m7^[[m^[[41m:seven ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m8^[[m^[[41m:eight ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m9^[[m^[[41m:nine ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m10^[[m^[[41m:ten ^[[m^[[42m ^[[m^[(0x^[[56;1H^[[56;4Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8^[7^[[26;1H^[[42C^[(0lq^[[1C^[[1;31m^[(BWARNING^[[1C^[[m^[(0qqqqqqqqqqqk^[[27;1H^[[27;43Hx^[[21Cx^[[28;1H^[[28;43Hx^[[1C^[[1m^[(BTerminfo not found.^[[1C^[[m^[(0x^[[29;1H^[[29;43Hx^[[21Cx^[[30;1H^[[30;43Hmqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+OUT: ^[[?1049h^[[?1h^[=^[[1;71r^[[?25l^[[1;1H^[[H^[[2J^[[?1000h^[[?1002h^[[?1003h^[[?1005h^[7^[[1;1H^[[105C...^[[69;1H^[[3C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[70;1H^[[70;4Hx^[[42m^[(B ^[[m^[[44m ^[[m^[[44;30ma^[[m^[[44m:one ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m2^[[m^[[41m:two ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m3^[[m^[[41m:three ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m4^[[m^[[41m:four ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m5^[[m^[[41m:five ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m6^[[m^[[41m:six ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m7^[[m^[[41m:seven ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m8^[[m^[[41m:eight ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m9^[[m^[[41m:nine ^[[m^[[42m  ^[[m^[[41m ^[[m^[[41;30m10^[[m^[[41m:ten ^[[m^[[42m ^[[m^[(0x^[[71;1H^[[71;4Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
 -
-IN: ^[OC
+IN: ^[[MCrE
 -
-OUT: ^[7^[[55;1H^[[55;6H^[[41m ^[[m^[[41;30ma^[[m^[[41m:one ^[[2C^[[m^[[44m ^[[m^[[44;30m2^[[m^[[44m:two ^[[m^[8
+IN: ^[[MCrF
 -
-IN: ^[OC
+IN: ^[[MCrG
 -
-OUT: ^[7^[[55;1H^[[55;15H^[[41m ^[[m^[[41;30m2^[[m^[[41m:two ^[[2C^[[m^[[44m ^[[m^[[44;30m3^[[m^[[44m:three ^[[m^[8
+IN: ^[[MCrH
 -
-OUT: ^[7^[[26;1H^[[42C  ^[[1C       ^[[1C            ^[[27;1H^[[27;43H ^[[21C ^[[28;1H^[[28;43H ^[[1C                   ^[[1C ^[[29;1H^[[29;43H ^[[21C ^[[30;1H^[[30;43H                       ^[8
+IN: ^[[MCrI
 -
-IN: ^[OC
+IN: ^[[MCqI
 -
-OUT: ^[7^[[55;1H^[[23C^[[41m ^[[m^[[41;30m3^[[m^[[41m:three ^[[2C^[[m^[[44m ^[[m^[[44;30m4^[[m^[[44m:four ^[[m^[8
+IN: ^[[MCqJ
 -
-IN: ^[OC
+IN: ^[[MCqK
 -
-OUT: ^[7^[[55;1H^[[34C^[[41m ^[[m^[[41;30m4^[[m^[[41m:four ^[[2C^[[m^[[44m ^[[m^[[44;30m5^[[m^[[44m:five ^[[m^[8
+IN: ^[[MCqL
+-
+IN: ^[[MCqM
+-
+IN: ^[[MCqN
+-
+IN: ^[[MCqO
+-
+IN: ^[[MCpO
+-
+IN: ^[[MCpP
+-
+IN: ^[[MCpQ
+-
+IN: ^[[MCpR
+-
+IN: ^[[MCpS
+-
+IN: ^[[MCpT
+-
+IN: ^[[MCpU
+-
+IN: ^[[MCpV
+-
+IN: ^[[MCpW
+-
+IN: ^[[MCpX
+-
+IN: ^[[MCpY
+-
+IN: ^[[MCpZ
+-
+IN: ^[[MCo[
+-
+IN: ^[[MCo\
+-
+IN: ^[[MCn\
+-
+IN: ^[[MCn]
+-
+IN: ^[[MCn^
+-
+IN: ^[[MCm^
+-
+IN: ^[[MCm_
+-
+IN: ^[[MCl_
+-
+IN: ^[[MCl`
+-
+IN: ^[[MCk`
+-
+IN: ^[[MCka
+-
+IN: ^[[MCja
+-
+IN: ^[[MCia
+-
+IN: ^[[MCib
+-
+IN: ^[[MChb
+-
+IN: ^[[MCgb
+-
+IN: ^[[MCgc
+-
+IN: ^[[MCfc
+-
+IN: ^[[MCec
+-
+IN: ^[[MCed
+-
+IN: ^[[MCdd
+-
+IN: ^[[MCcd
+-
+IN: ^[[MCce
+-
+IN: ^[[MCbe
+-
+IN: ^[[MCbf
+-
+IN: ^[[MCaf
+-
+IN: ^[[MC`f
+-
+IN: ^[[MC_f
+-
+IN: ^[[MC^f
+-
+IN: ^[[MC]f
+-
+IN: ^[[MC\f
+-
+IN: ^[[MC[f
+-
+IN: ^[[MC[g
+-
+IN: ^[[MC[f
+-
+IN: ^[[MC\f
+-
+IN: ^[[MC\e
+-
+IN: ^[[MC]e
+-
+IN: ^[[MC]d
+-
+IN: ^[[MC]c
+-
+IN: ^[[MC^c
+-
+IN: ^[[MC^b
+-
+IN: ^[[MC_b
+-
+IN: ^[[MC_a
+-
+IN: ^[[MC`a
+-
+IN: ^[[MC``
+-
+IN: ^[[MC`_
+-
+IN: ^[[MCa_
+-
+IN: ^[[MCa^
+-
+IN: ^[[MCa]
+-
+IN: ^[[MCb]
+-
+IN: ^[[MCb\
+-
+IN: ^[[MCc\
+-
+IN: ^[[MCc[
+-
+IN: ^[[MCcZ
+-
+IN: ^[[MCdZ
+-
+IN: ^[[MCdY
+-
+IN: ^[[MCdX
+-
+IN: ^[[MCeX
+-
+IN: ^[[MCeW
+-
+IN: ^[[MCdW
+-
+IN: ^[[MCcW
+-
+IN: ^[[MCbW
+-
+IN: ^[[MCaW
+-
+IN: ^[[MC`W
+-
+IN: ^[[MC_W
+-
+IN: ^[[MC^W
+-
+IN: ^[[MC]W
+-
+IN: ^[[MC\W
+-
+IN: ^[[MC[W
+-
+IN: ^[[MC[X
+-
+IN: ^[[MCZX
+-
+IN: ^[[MCYX
+-
+IN: ^[[MCXX
+-
+IN: ^[[MCWY
+-
+IN: ^[[MCVY
+-
+IN: ^[[MCUY
+-
+IN: ^[[MCTY
+-
+IN: ^[[MCTZ
+-
+IN: ^[[MCSZ
+-
+IN: ^[[MCRZ
+-
+IN: ^[[MCQZ
+-
+IN: ^[[MCQ[
+-
+IN: ^[[MCP[
+-
+IN: ^[[MCO[
+-
+IN: ^[[MCN[
+-
+IN: ^[[MCN\
+-
+IN: ^[[MCM\
+-
+IN: ^[[MCL\
+-
+IN: ^[[MCK\
+-
+IN: ^[[MCK]
+-
+IN: ^[[MCJ]
+-
+IN: ^[[MCI]
+-
+IN: ^[[MCI^
+-
+IN: ^[[MCH^
+-
+IN: ^[[MCG^
+-
+IN: ^[[MCF_
+-
+IN: ^[[MCE_
+-
+IN: ^[[MCE`
+-
+IN: ^[[MCD`
+-
+IN: ^[[MCC`
+-
+IN: ^[[MCCa
+-
+IN: ^[[MCBa
+-
+IN: ^[[MCBb
+-
+IN: ^[[MCAb
+-
+IN: ^[[MCAc
+-
+IN: ^[[MC@c
+-
+IN: ^[[MC@d
+-
+IN: ^[[MC?d
+-
+IN: ^[[MC>d
+-
+IN: ^[[MC>e
+-
+IN: ^[[MC>f
+-
+IN: ^[[MC=f
+-
+IN: ^[[MC<f
+-
+IN: ^[[MC<g
+-
+IN: ^[[MC;g
+-
+IN: ^[[MC:g
+-
+IN: ^[[MC;g
+-
+IN: ^[[MC<g
+-
+IN: ^[[MC<f
+-
+IN: ^[[MC=f
 -
 IN: q
 -

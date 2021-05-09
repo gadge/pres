@@ -492,11 +492,7 @@ export class Program extends EventEmitter {
       else {
         key.action = MOUSEDOWN
         button = b & 3
-        key.button =
-          button === 0 ? LEFT :
-            button === 1 ? MIDDLE :
-              button === 2 ? RIGHT :
-                UNKNOWN
+        key.button = button === 0 ? LEFT : button === 1 ? MIDDLE : button === 2 ? RIGHT : UNKNOWN
         this._lastButton = key.button
       }
       // Probably a movement.
@@ -509,10 +505,7 @@ export class Program extends EventEmitter {
       // xterm: 35, _, 51, _
       // urxvt: 35, _, _, _
       // if (key.action === MOUSEDOWN && key.button === UNKNOWN) {
-      if (
-        b === 35 || b === 39 || b === 51 || b === 43 ||
-        (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))
-      ) {
+      if (b === 35 || b === 39 || b === 51 || b === 43 || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
         delete key.button
         key.action = MOUSEMOVE
       }
@@ -556,11 +549,7 @@ export class Program extends EventEmitter {
       else {
         key.action = MOUSEDOWN
         button = b & 3
-        key.button =
-          button === 0 ? LEFT
-            : button === 1 ? MIDDLE
-            : button === 2 ? RIGHT
-              : UNKNOWN
+        key.button = button === 0 ? LEFT : button === 1 ? MIDDLE : button === 2 ? RIGHT : UNKNOWN
         // NOTE: 0/32 = mousemove, 32/64 = mousemove with left down
         // if ((b >> 1) === 32)
         this._lastButton = key.button
@@ -574,8 +563,7 @@ export class Program extends EventEmitter {
       // urxvt: 35, _, _, _
       // gnome: 32, 36, 48, 40
       // if (key.action === MOUSEDOWN && key.button === UNKNOWN) {
-      if (b === 35 || b === 39 || b === 51 || b === 43 ||
-        (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
+      if (b === 35 || b === 39 || b === 51 || b === 43 || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
         delete key.button
         key.action = MOUSEMOVE
       }
@@ -605,15 +593,9 @@ export class Program extends EventEmitter {
         key.button = MIDDLE
       }
       else {
-        key.action = down
-          ? MOUSEDOWN
-          : MOUSEUP
+        key.action = down ? MOUSEDOWN : MOUSEUP
         button = b & 3
-        key.button =
-          button === 0 ? LEFT
-            : button === 1 ? MIDDLE
-            : button === 2 ? RIGHT
-              : UNKNOWN
+        key.button = button === 0 ? LEFT : button === 1 ? MIDDLE : button === 2 ? RIGHT : UNKNOWN
       }
       // Probably a movement.
       // The *newer* VTE gets mouse movements comepletely wrong.
@@ -624,8 +606,7 @@ export class Program extends EventEmitter {
       // xterm: 35, _, 51, _
       // gnome: 32, 36, 48, 40
       // if (key.action === MOUSEDOWN && key.button === UNKNOWN) {
-      if (b === 35 || b === 39 || b === 51 || b === 43 ||
-        (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
+      if (b === 35 || b === 39 || b === 51 || b === 43 || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
         delete key.button
         key.action = MOUSEMOVE
       }
@@ -649,14 +630,8 @@ export class Program extends EventEmitter {
       key.y = y
       key.page = page
       if (this.zero) key.x--, key.y--
-      key.action = b === 3
-        ? MOUSEUP
-        : MOUSEDOWN
-      key.button =
-        b === 2 ? LEFT
-          : b === 4 ? MIDDLE
-          : b === 6 ? RIGHT
-            : UNKNOWN
+      key.action = b === 3 ? MOUSEUP : MOUSEDOWN
+      key.button = b === 2 ? LEFT : b === 4 ? MIDDLE : b === 6 ? RIGHT : UNKNOWN
       self.emit(MOUSE, key)
       return
     }
@@ -678,9 +653,7 @@ export class Program extends EventEmitter {
       return
     }
     if ((parts = /^\x1b\[(O|I)/.exec(s))) {
-      key.action = parts[1] === 'I'
-        ? FOCUS
-        : BLUR
+      key.action = parts[1] === 'I' ? FOCUS : BLUR
       self.emit(MOUSE, key)
       self.emit(key.action)
     }
@@ -688,85 +661,25 @@ export class Program extends EventEmitter {
   enableGpm() {
     const self = this
     if (this.gpm) return
-    this.gpm = gpmClient()
-    this.gpm.on(BTNDOWN, (btn, modifier, x, y) => {
+    const gpm = this.gpm = gpmClient()
+    this.gpm.on(BTNDOWN, (button, modifier, x, y) => {
       x--, y--
-      const key = {
-        name: MOUSE,
-        type: 'GPM',
-        action: MOUSEDOWN,
-        button: self.gpm.ButtonName(btn),
-        raw: [ btn, modifier, x, y ],
-        x: x,
-        y: y,
-        shift: self.gpm.hasShiftKey(modifier),
-        meta: self.gpm.hasMetaKey(modifier),
-        ctrl: self.gpm.hasCtrlKey(modifier)
-      }
-      self.emit(MOUSE, key)
+      self.emit(MOUSE, gpm.createKey(MOUSEDOWN, button, modifier, x, y))
     })
-    this.gpm.on(BTNUP, (btn, modifier, x, y) => {
+    this.gpm.on(BTNUP, (button, modifier, x, y) => {
       x--, y--
-      const key = {
-        name: MOUSE,
-        type: 'GPM',
-        action: MOUSEUP,
-        button: self.gpm.ButtonName(btn),
-        raw: [ btn, modifier, x, y ],
-        x: x,
-        y: y,
-        shift: self.gpm.hasShiftKey(modifier),
-        meta: self.gpm.hasMetaKey(modifier),
-        ctrl: self.gpm.hasCtrlKey(modifier)
-      }
-      self.emit(MOUSE, key)
+      self.emit(MOUSE, gpm.createKey(MOUSEUP, button, modifier, x, y))
     })
-    this.gpm.on(MOVE, (btn, modifier, x, y) => {
+    this.gpm.on(MOVE, (button, modifier, x, y) => {
       x--, y--
-      const key = {
-        name: MOUSE,
-        type: 'GPM',
-        action: MOUSEMOVE,
-        button: self.gpm.ButtonName(btn),
-        raw: [ btn, modifier, x, y ],
-        x: x,
-        y: y,
-        shift: self.gpm.hasShiftKey(modifier),
-        meta: self.gpm.hasMetaKey(modifier),
-        ctrl: self.gpm.hasCtrlKey(modifier)
-      }
-      self.emit(MOUSE, key)
+      self.emit(MOUSE, gpm.createKey(MOUSEMOVE, button, modifier, x, y))
     })
-    this.gpm.on(DRAG, (btn, modifier, x, y) => {
+    this.gpm.on(DRAG, (button, modifier, x, y) => {
       x--, y--
-      const key = {
-        name: MOUSE,
-        type: 'GPM',
-        action: MOUSEMOVE,
-        button: self.gpm.ButtonName(btn),
-        raw: [ btn, modifier, x, y ],
-        x: x,
-        y: y,
-        shift: self.gpm.hasShiftKey(modifier),
-        meta: self.gpm.hasMetaKey(modifier),
-        ctrl: self.gpm.hasCtrlKey(modifier)
-      }
-      self.emit(MOUSE, key)
+      self.emit(MOUSE, gpm.createKey(MOUSEMOVE, button, modifier, x, y))
     })
-    this.gpm.on(MOUSEWHEEL, (btn, modifier, x, y, dx, dy) => {
-      const key = {
-        name: MOUSE,
-        type: 'GPM',
-        action: dy > 0 ? WHEELUP : WHEELDOWN,
-        button: self.gpm.ButtonName(btn),
-        raw: [ btn, modifier, x, y, dx, dy ],
-        x: x,
-        y: y,
-        shift: self.gpm.hasShiftKey(modifier),
-        meta: self.gpm.hasMetaKey(modifier),
-        ctrl: self.gpm.hasCtrlKey(modifier)
-      }
-      self.emit(MOUSE, key)
+    this.gpm.on(MOUSEWHEEL, (button, modifier, x, y, dx, dy) => {
+      self.emit(MOUSE, gpm.createKey(dy > 0 ? WHEELUP : WHEELDOWN, button, modifier, x, y, dx, dy))
     })
   }
   disableGpm() {
@@ -780,11 +693,7 @@ export class Program extends EventEmitter {
     this._boundResponse = true
     const decoder = new StringDecoder('utf8'),
           self    = this
-    this.on(DATA, function (data) {
-      data = decoder.write(data)
-      if (!data) return
-      self.#bindResponse(data)
-    })
+    this.on(DATA, data => { if ((data = decoder.write(data))) { self.#bindResponse(data) } })
   }
   #bindResponse(s) {
     const out = {}
@@ -845,7 +754,7 @@ export class Program extends EventEmitter {
       out.deviceAttributes = out
       this.emit(RESPONSE, out)
       this.emit(RESPONSE + SP + out.event, out)
-      return
+      return void 0
     }
     // CSI Ps n  Device Status Report (DSR).
     //     Ps = 5  -> Status Report.  Result (``OK'') is
@@ -2010,14 +1919,8 @@ export class Program extends EventEmitter {
     if (opt.allMotion != null) {
       // NOTE: Latest versions of tmux seem to only support cellMotion (not
       // allMotion). We pass all motion through to the terminal.
-      if (this.tmux && this.tmuxVersion >= 2) {
-        if (opt.allMotion) this.#writeTm(CSI + '?1003h')
-        else this.#writeTm(CSI + '?1003l')
-      }
-      else {
-        if (opt.allMotion) this.setMode('?1003')
-        else this.resetMode('?1003')
-      }
+      if (this.tmux && this.tmuxVersion >= 2) { opt.allMotion ? this.#writeTm(CSI + '?1003h') : this.#writeTm(CSI + '?1003l') }
+      else { opt.allMotion ? this.setMode('?1003') : this.resetMode('?1003') }
     }
     //     Ps = 1 0 0 4  -> Send FocusIn/FocusOut events.
     //     Ps = 1 0 0 4  -> Don't send FocusIn/FocusOut events.

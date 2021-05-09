@@ -3,11 +3,13 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-import { BTNDOWN, BTNUP, CLICK, CONNECT, DATA, DBLCLICK, DRAG, ERROR, MOUSEWHEEL, MOVE, } from '@pres/enum-events'
-import { LEFT, MIDDLE, RIGHT }                                                            from '@pres/enum-key-names'
-import { EventEmitter }                                                                   from '@pres/events'
-import fs                                                                                 from 'fs'
-import net                                                                                from 'net'
+import {
+  BTNDOWN, BTNUP, CLICK, CONNECT, DATA, DBLCLICK, DRAG, ERROR, MOUSE, MOUSEWHEEL, MOVE,
+}                              from '@pres/enum-events'
+import { LEFT, MIDDLE, RIGHT } from '@pres/enum-key-names'
+import { EventEmitter }        from '@pres/events'
+import fs                      from 'fs'
+import net                     from 'net'
 
 const GPM_USE_MAGIC = false
 
@@ -107,9 +109,7 @@ export class GpmClient extends EventEmitter {
     const self = this
     if (tty) {
       fs.stat(GPM_SOCKET, function (err, stat) {
-        if (err || !stat.isSocket()) {
-          return
-        }
+        if (err || !stat.isSocket()) { return }
         const conf = {
           eventMask: 0xffff,
           defaultMask: GPM_MOVE | GPM_HARD,
@@ -120,14 +120,14 @@ export class GpmClient extends EventEmitter {
         }
         const gpm = net.createConnection(GPM_SOCKET)
         this.gpm = gpm
-        gpm.on(CONNECT, function () {
-          send_config(gpm, conf, function () {
+        gpm.on(CONNECT, () => {
+          send_config(gpm, conf, () => {
             conf.pid = 0
             conf.vc = GPM_REQ_NOPASTE
             //send_config(gpm, conf);
           })
         })
-        gpm.on(DATA, function (packet) {
+        gpm.on(DATA, packet => {
           const event = parseEvent(packet)
           switch (event.type & 15) {
             case GPM_MOVE:
@@ -156,8 +156,27 @@ export class GpmClient extends EventEmitter {
     if (this.gpm) this.gpm.end()
     delete this.gpm
   }
-  ButtonName(btn) { return btn & 4 ? LEFT : btn & 2 ? MIDDLE : btn & 1 ? RIGHT : '' }
+  buttonName(btn) { return btn & 4 ? LEFT : btn & 2 ? MIDDLE : btn & 1 ? RIGHT : '' }
   hasShiftKey(mod) { return !!(mod & 1) }
   hasCtrlKey(mod) { return !!(mod & 4) }
   hasMetaKey(mod) { return !!(mod & 8) }
+
+  /**
+   * appended
+   */
+  createKey(action, button, modifier, x, y, dx, dy) {
+    const self = this
+    return {
+      name: MOUSE,
+      type: 'GPM',
+      action: action,
+      button: self.buttonName(button),
+      raw: [ button, modifier, x, y, dx, dy ],
+      x: x,
+      y: y,
+      shift: self.hasShiftKey(modifier),
+      meta: self.hasMetaKey(modifier),
+      ctrl: self.hasCtrlKey(modifier),
+    }
+  }
 }
