@@ -179,12 +179,10 @@ export class ListBar extends Box {
     this.append(el)
     if (cmd.callback) {
       if (cmd.keys) {
-        this.screen.key(cmd.keys, function () {
+        this.screen.key(cmd.keys, () => {
           self.emit(ACTION, el, self.selected)
           self.emit(SELECT, el, self.selected)
-          if (el._.cmd.callback) {
-            el._.cmd.callback()
-          }
+          if (el._.cmd.callback) el._.cmd.callback()
           self.select(el)
           self.screen.render()
         })
@@ -209,10 +207,8 @@ export class ListBar extends Box {
     if (!this.screen.autoPadding) {
       drawn += this.ileft
     }
-    this.items.forEach(function (el, i) {
-      if (i < self.leftBase) {
-        el.hide()
-      }
+    this.items.forEach((el, i) => {
+      if (i < self.leftBase) { el.hide() }
       else {
         el.rleft = drawn + 1
         drawn += el.width + 2
@@ -222,15 +218,8 @@ export class ListBar extends Box {
     return this._render()
   }
   select(offset) {
-    if (typeof offset !== 'number') {
-      offset = this.items.indexOf(offset)
-    }
-    if (offset < 0) {
-      offset = 0
-    }
-    else if (offset >= this.items.length) {
-      offset = this.items.length - 1
-    }
+    if (typeof offset !== 'number') offset = this.items.indexOf(offset)
+    offset = offset < 0 ? 0 : offset >= this.items.length ? this.items.length - 1 : offset
     if (!this.sup) {
       this.emit(SELECT_ITEM, this.items[offset], offset)
       return
@@ -242,7 +231,6 @@ export class ListBar extends Box {
     let drawn   = 0,
         visible = 0,
         el
-
     el = this.items[offset]
     if (!el) return
     this.items.forEach(function (el, i) {
