@@ -9,9 +9,7 @@ export function Net(sparkline) {
 
   si.networkInterfaceDefault(iface => {
     const that = this
-    const updater = () => {
-      si.networkStats(iface, data => { that.updateData(data[0]) })
-    }
+    const updater = () => si.networkStats(iface, data => { that.updateData(data[0]) })
     updater()
     this.interval = setInterval(updater, 1000)
   })

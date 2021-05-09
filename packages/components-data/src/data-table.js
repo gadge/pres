@@ -58,25 +58,23 @@ export class DataTable extends Box {
   }
   setData(table) {
     const self = this
-    const dataToString = d => {
+    const dataToString = row => {
       let str = ''
-      d.forEach((r, i) => {
-        const colSize = self.options.columnWidth[i],
-              strip   = clearAnsi(r.toString()),
-              ansiLen = r.toString().length - strip.length
+      row.forEach((cell, i) => {
+        const text    = String(cell),
+              colSize = self.options.columnWidth[i],
+              strip   = clearAnsi(text),
+              ansiLen = text.length - strip.length
         let spaceLength = colSize - strip.length + self.options.columnSpacing
-        r = r.toString().substring(0, colSize + ansiLen) //compensate for ansi len
+        cell = text.substring(0, colSize + ansiLen) //compensate for ansi len
         if (spaceLength < 0) spaceLength = 0
         const spaces = new Array(spaceLength).join(' ')
-        str += r + spaces
+        str += cell + spaces
       })
       return str
     }
     const formatted = []
-    table.data.forEach(function (d) {
-      const str = dataToString(d)
-      formatted.push(str)
-    })
+    table.data.forEach(row => formatted.push(dataToString(row)))
     this.setContent(dataToString(table.headers))
     this.rows.setItems(formatted)
   }

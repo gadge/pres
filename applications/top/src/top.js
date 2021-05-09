@@ -60,7 +60,7 @@ const procTable = grid.set(8, 6, 4, 6, Pres.dataTable, {
 procTable.focus()
 
 screen.render()
-screen.on(RESIZE, function (a) {
+screen.on(RESIZE, () => {
   cpuLine.emit(ATTACH)
   memLine.emit(ATTACH)
   memDonut.emit(ATTACH)
@@ -72,12 +72,13 @@ screen.on(RESIZE, function (a) {
 
 screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
 
-export function init() {
+export async function init() {
   new monitor.Cpu(cpuLine) //no Windows support
   new monitor.Mem(memLine, memDonut, swapDonut)
   new monitor.Net(netSpark)
   new monitor.Disk(diskDonut)
-  new monitor.Proc(procTable) // no Windows support
+  const proc = new monitor.Proc(procTable) // no Windows support
+  await proc.run()
 }
 
 process.on(UNCAUGHT_EXCEPTION, err => {

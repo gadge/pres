@@ -12,7 +12,7 @@ const zipper = Trizipper((name, rgb, hex) => {
   xr()
     .color(name.padStart(7))
     .hex(HexDye(hex)(hex))
-    .rgb(RgbDye(rgb)(rgb.map(x => x.toString().padStart(3))))
+    .rgb(RgbDye(rgb)(rgb.map(x => String(x).padStart(3))))
     .matchRGB(ncolors[convert(rgb)])
     .matchHex(ncolors[convert(hex)])
     |> logger

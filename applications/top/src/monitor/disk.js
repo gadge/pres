@@ -1,4 +1,4 @@
-import si    from 'systeminformation'
+import si        from 'systeminformation'
 import { utils } from '../utils'
 
 const colors = utils.colors
@@ -6,9 +6,7 @@ const colors = utils.colors
 export function Disk(donut) {
   this.donut = donut
   si.fsSize(data => this.updateData(data))
-  this.interval = setInterval(() => {
-    si.fsSize(data => this.updateData(data))
-  }, 10000)
+  this.interval = setInterval(() => si.fsSize(data => this.updateData(data)), 10000)
 }
 
 Disk.prototype.updateData = function (data) {

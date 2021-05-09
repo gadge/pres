@@ -34,7 +34,7 @@ export default [
           [ '@babel/plugin-proposal-pipeline-operator', { proposal: 'minimal' } ],
           [ '@babel/plugin-proposal-class-properties', { loose: true } ],
           [ '@babel/plugin-proposal-private-methods', { loose: true } ],
-          [ '@babel/plugin-transform-runtime', { helpers: false, } ]
+          // [ '@babel/plugin-transform-runtime', { helpers: false, } ]
         ]
       }),
       // terser(),

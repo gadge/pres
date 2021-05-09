@@ -282,34 +282,12 @@ export class Element extends Node {
     this.clearPos()
     return this.position.bottom = val
   }
-  get ileft() {
-    return (this.border ? 1 : 0) + this.padding.left
-    // return (this.border && this.border.left ? 1 : 0) + this.padding.left;
-  }
-  get itop() {
-    return (this.border ? 1 : 0) + this.padding.top
-    // return (this.border && this.border.top ? 1 : 0) + this.padding.top;
-  }
-  get iright() {
-    return (this.border ? 1 : 0) + this.padding.right
-    // return (this.border && this.border.right ? 1 : 0) + this.padding.right;
-  }
-  get ibottom() {
-    return (this.border ? 1 : 0) + this.padding.bottom
-    // return (this.border && this.border.bottom ? 1 : 0) + this.padding.bottom;
-  }
-  get iwidth() {
-    // return (this.border
-    //   ? ((this.border.left ? 1 : 0) + (this.border.right ? 1 : 0)) : 0)
-    //   + this.padding.left + this.padding.right;
-    return (this.border ? 2 : 0) + this.padding.left + this.padding.right
-  }
-  get iheight() {
-    // return (this.border
-    //   ? ((this.border.top ? 1 : 0) + (this.border.bottom ? 1 : 0)) : 0)
-    //   + this.padding.top + this.padding.bottom;
-    return (this.border ? 2 : 0) + this.padding.top + this.padding.bottom
-  }
+  get ileft() { return (this.border ? 1 : 0) + this.padding.left }
+  get itop() { return (this.border ? 1 : 0) + this.padding.top }
+  get iright() { return (this.border ? 1 : 0) + this.padding.right }
+  get ibottom() { return (this.border ? 1 : 0) + this.padding.bottom }
+  get iwidth() { return (this.border ? 2 : 0) + this.padding.left + this.padding.right }
+  get iheight() { return (this.border ? 2 : 0) + this.padding.top + this.padding.bottom }
   get tpadding() { return this.padding.left + this.padding.top + this.padding.right + this.padding.bottom }
   /**
    * Relative coordinates as default properties
@@ -363,9 +341,7 @@ export class Element extends Node {
       const listener = listeners[i]
       if (listener.type === type && listener.handler === handler) {
         listeners.splice(i, 1)
-        if (this._slisteners.length === 0) {
-          delete this._slisteners
-        }
+        if (this._slisteners.length === 0) delete this._slisteners
         break
       }
     }
@@ -1980,48 +1956,21 @@ export class Element extends Node {
     const fake = this._clines.rtof[this.childBase || 0]
     return this.clearLine(fake + i)
   }
-  unshiftLine(line) {
-    return this.insertLine(0, line)
-  }
-  shiftLine(n) {
-    return this.deleteLine(0, n)
-  }
-  pushLine(line) {
-    if (!this.content) return this.setLine(0, line)
-    return this.insertLine(this._clines.fake.length, line)
-  }
-  popLine(n) {
-    return this.deleteLine(this._clines.fake.length - 1, n)
-  }
-  getLines() {
-    return this._clines.fake.slice()
-  }
-  getScreenLines() {
-    return this._clines.slice()
-  }
+  unshiftLine(line) { return this.insertLine(0, line) }
+  shiftLine(n) { return this.deleteLine(0, n) }
+  pushLine(line) { return !this.content ? this.setLine(0, line) : this.insertLine(this._clines.fake.length, line) }
+  popLine(n) { return this.deleteLine(this._clines.fake.length - 1, n) }
+  getLines() { return this._clines.fake.slice() }
+  getScreenLines() { return this._clines.slice() }
   strWidth(text) {
-    text = this.parseTags
-      ? helpers.stripTags(text)
-      : text
-    return this.screen.fullUnicode
-      ? unicode.strWidth(text)
-      : helpers.dropUnicode(text).length
+    text = this.parseTags ? helpers.stripTags(text) : text
+    return this.screen.fullUnicode ? unicode.strWidth(text) : helpers.dropUnicode(text).length
   }
   screenshot(xi, xl, yi, yl) {
     xi = this.lpos.xi + this.ileft + (xi || 0)
-    if (xl != null) {
-      xl = this.lpos.xi + this.ileft + (xl || 0)
-    }
-    else {
-      xl = this.lpos.xl - this.iright
-    }
+    xl = xl != null ? this.lpos.xi + this.ileft + (xl || 0) : this.lpos.xl - this.iright
     yi = this.lpos.yi + this.itop + (yi || 0)
-    if (yl != null) {
-      yl = this.lpos.yi + this.itop + (yl || 0)
-    }
-    else {
-      yl = this.lpos.yl - this.ibottom
-    }
+    yl = yl != null ? this.lpos.yi + this.itop + (yl || 0) : this.lpos.yl - this.ibottom
     return this.screen.screenshot(xi, xl, yi, yl)
   }
 }
