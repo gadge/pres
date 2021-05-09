@@ -1,5 +1,5 @@
-const si    = require('systeminformation'),
-      utils = require('../utils')
+import si    from 'systeminformation'
+import { utils } from '../utils'
 
 const colors = utils.colors
 

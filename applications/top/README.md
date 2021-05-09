@@ -1,14 +1,14 @@
-# gtop
+# @pres/top
 
-![screen record](https://raw.githubusercontent.com/aksakalli/gtop/master/img/demo.gif)
+![screen record](https://raw.githubusercontent.com/aksakalli/@pres/top/master/img/demo.gif)
 
 System monitoring dashboard for terminal.
 
-  [![NPM Version](https://img.shields.io/npm/v/gtop.svg)](https://npmjs.org/package/gtop)
-  [![NPM Downloads](https://img.shields.io/npm/dm/gtop.svg)](https://npmjs.org/package/gtop)
-  [![Snap Status](https://build.snapcraft.io/badge/aksakalli/gtop.svg)](https://build.snapcraft.io/user/aksakalli/gtop)
-  [![Docker Pulls](https://img.shields.io/docker/pulls/aksakalli/gtop)](https://hub.docker.com/r/aksakalli/gtop)
-  [![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/aksakalli/gtop)](https://hub.docker.com/r/aksakalli/gtop/builds)
+  [![NPM Version](https://img.shields.io/npm/v/@pres/top.svg)](https://npmjs.org/package/@pres/top)
+  [![NPM Downloads](https://img.shields.io/npm/dm/@pres/top.svg)](https://npmjs.org/package/@pres/top)
+  [![Snap Status](https://build.snapcraft.io/badge/aksakalli/@pres/top.svg)](https://build.snapcraft.io/user/aksakalli/@pres/top)
+  [![Docker Pulls](https://img.shields.io/docker/pulls/aksakalli/@pres/top)](https://hub.docker.com/r/aksakalli/@pres/top)
+  [![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/aksakalli/@pres/top)](https://hub.docker.com/r/aksakalli/@pres/top/builds)
 
 ### Requirements
 
@@ -18,7 +18,7 @@ System monitoring dashboard for terminal.
 ### Installation
 
 ```sh
-$ npm install gtop -g
+$ npm install @pres/top -g
 ```
 
 #### Docker
@@ -27,30 +27,30 @@ You need to assign host `net` and `pid` to access the metrics in the host machin
 
 ```sh
 $ docker run --rm -it \
-    --name gtop \
+    --name @pres/top \
     --net="host" \
     --pid="host" \
-    aksakalli/gtop
+    aksakalli/@pres/top
 ```
 
 -OR-
 
-Run gtop in your terminal using the `gtop` command, but in a docker container by running the following lines.
+Run @pres/top in your terminal using the `@pres/top` command, but in a docker container by running the following lines.
 ```sh
-$ sh -c "$(curl -fSsL https://raw.githubusercontent.com/aksakalli/gtop/master/gtop-docker.sh)"
+$ sh -c "$(curl -fSsL https://raw.githubusercontent.com/aksakalli/@pres/top/master/@pres/top-docker.sh)"
 
-$ gtop		# Run gtop from your terminal whenever you want to open gtop.
+$ @pres/top		# Run @pres/top from your terminal whenever you want to open @pres/top.
 ```
 
 ### Usage
 
-Start gtop with the `gtop` command
+Start @pres/top with the `@pres/top` command
 
 ```sh
-$ gtop
+$ @pres/top
 ```
 
-To stop gtop use `q`, or `ctrl+c` in most shell environments.
+To stop @pres/top use `q`, or `ctrl+c` in most shell environments.
 
 You can sort the process table by pressing
 
@@ -63,7 +63,7 @@ You can sort the process table by pressing
 If you see question marks or other different characters, try to run it with these environment variables:
 
 ```sh
-$ LANG=en_US.utf8 TERM=xterm-256color gtop
+$ LANG=en_US.utf8 TERM=xterm-256color @pres/top
 ```
 
 ## License

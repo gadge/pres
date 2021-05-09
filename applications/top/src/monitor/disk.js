@@ -1,5 +1,5 @@
 import si    from 'systeminformation'
-import utils from '../utils'
+import { utils } from '../utils'
 
 const colors = utils.colors
 

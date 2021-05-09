@@ -1,4 +1,4 @@
-const utils = {}
+export const utils = {}
 
 utils.humanFileSize = function (bytes, isDecimal) {
   isDecimal = typeof isDecimal !== 'undefined' ? isDecimal : false
@@ -18,4 +18,4 @@ utils.humanFileSize = function (bytes, isDecimal) {
 
 utils.colors = [ 'magenta', 'cyan', 'blue', 'yellow', 'green', 'red' ]
 
-module.exports = utils
+
