@@ -160,9 +160,8 @@ export class ListBar extends Box {
       options.top += this.itop
       options.left += this.ileft
     }
-    [ 'bg', 'fg', 'bold', 'underline',
-      'blink', 'inverse', 'invisible' ].forEach(function (name) {
-      options.style[name] = function () {
+    [ 'bg', 'fg', 'bold', 'underline', 'blink', 'inverse', 'invisible' ].forEach(name => {
+      options.style[name] = () => {
         let attr = self.items[self.selected] === el
           ? self.style.selected[name]
           : self.style.item[name]
@@ -194,7 +193,7 @@ export class ListBar extends Box {
     if (this.items.length === 1) { this.select(0) }
     // XXX May be affected by new element.options.mouse option.
     if (this.mouse) {
-      el.on(CLICK, function () {
+      el.on(CLICK, () => {
         self.emit(ACTION, el, self.selected)
         self.emit(SELECT, el, self.selected)
         if (el._.cmd.callback) { el._.cmd.callback() }
@@ -287,27 +286,17 @@ export class ListBar extends Box {
       this.ritems.splice(i, 1)
       this.commands.splice(i, 1)
       this.remove(child)
-      if (i === this.selected) {
-        this.select(i - 1)
-      }
+      if (i === this.selected) { this.select(i - 1) }
     }
     this.emit(REMOVE_ITEM)
   }
-  move(offset) {
-    this.select(this.selected + offset)
-  }
-  moveLeft(offset) {
-    this.move(-(offset || 1))
-  }
-  moveRight(offset) {
-    this.move(offset || 1)
-  }
+  move(offset) { this.select(this.selected + offset) }
+  moveLeft(offset) { this.move(-(offset || 1)) }
+  moveRight(offset) { this.move(offset || 1) }
   selectTab(index) {
     const item = this.items[index]
     if (item) {
-      if (item._.cmd.callback) {
-        item._.cmd.callback()
-      }
+      if (item._.cmd.callback) { item._.cmd.callback() }
       this.select(index)
       this.screen.render()
     }
