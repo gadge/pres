@@ -976,17 +976,18 @@ export class Tput {
     // Translate termcap cap names to terminfo cap names.
     // e.g. `up` -> `cursor_up`
     SCOPES.forEach(key => {
-      out[key] = {}
-      Object.keys(info[key]).forEach(function (cap) {
+      const source = info[key],
+            target = out[key] = {}
+      Object.keys(source).forEach(cap => {
         if (key === 'strings') info.strings[cap] = self._captoinfo(cap, info.strings[cap], 1)
-        if (map[cap]) { out[key][map[cap]] = info[key][cap] }
+        if (map[cap]) { target[map[cap]] = source[cap] }
         else {
           // NOTE: Possibly include all termcap names
           // in a separate alias.js file. Some are
           // missing from the terminfo alias.js file
           // which is why we have to do this:
           // See: $ man termcap
-          out[key][cap] = info[key][cap]
+          target[cap] = source[cap]
         }
       })
     })
@@ -1064,8 +1065,7 @@ export class Tput {
             case '3':
               len = 1
               while (isdigit(sp[j])) {
-                c = String.fromCharCode(8 * c.charCodeAt(0)
-                  + (sp[j++].charCodeAt(0) - '0'.charCodeAt(0)))
+                c = String.fromCharCode(8 * c.charCodeAt(0) + (sp[j++].charCodeAt(0) - '0'.charCodeAt(0)))
                 len++
               }
               break
@@ -1090,12 +1090,8 @@ export class Tput {
       }
       else {
         out += '%{'
-        if (c.charCodeAt(0) > 99) {
-          out += String.fromCharCode((c.charCodeAt(0) / 100 | 0) + '0'.charCodeAt(0))
-        }
-        if (c.charCodeAt(0) > 9) {
-          out += String.fromCharCode((c.charCodeAt(0) / 10 | 0) % 10 + '0'.charCodeAt(0))
-        }
+        if (c.charCodeAt(0) > 99) { out += String.fromCharCode((c.charCodeAt(0) / 100 | 0) + '0'.charCodeAt(0)) }
+        if (c.charCodeAt(0) > 9) { out += String.fromCharCode((c.charCodeAt(0) / 10 | 0) % 10 + '0'.charCodeAt(0)) }
         out += String.fromCharCode(c.charCodeAt(0) % 10 + '0'.charCodeAt(0))
         out += '}'
       }
@@ -1132,9 +1128,7 @@ export class Tput {
         if (onstack === 0) { warn('I\'m confused') }
         else { onstack = 0 }
       }
-      else {
-        onstack = stack[--stackptr]
-      }
+      else { onstack = stack[--stackptr] }
       param++
     }
     function see03() {
@@ -1418,19 +1412,16 @@ export class Tput {
     // Possibly just return an empty object, as done here, instead of
     // specifically saying ACS is "broken" above. This would be more
     // accurate to ncurses logic. But it doesn't really matter.
-    if (this.detectPCRomSet(info)) {
-      return data
-    }
+    if (this.detectPCRomSet(info)) { return data }
     // See: ~/ncurses/ncurses/tinfo/lib_acs.c: L208
-    Object.keys(Tput.acsc).forEach(function (ch) {
+    Object.keys(Tput.acsc).forEach(ch => {
       const acs_chars = info.strings.acs_chars || '',
             i         = acs_chars.indexOf(ch),
-            next      = acs_chars[i + 1]
-      if (!next || i === -1 || !Tput.acsc[next]) {
-        return
-      }
-      data.acsc[ch] = Tput.acsc[next]
-      data.acscr[Tput.acsc[next]] = ch
+            next      = acs_chars[i + 1],
+            value     = Tput.acsc[next]
+      if (!next || i === -1 || !value) { return }
+      data.acsc[ch] = value
+      data.acscr[value] = ch
     })
     return data
   }
