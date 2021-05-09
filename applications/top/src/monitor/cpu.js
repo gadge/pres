@@ -16,9 +16,7 @@ export function Cpu(line) {
       y: Array(61).fill(0),
     }))
     this.updateData(data)
-    this.interval = setInterval(() => {
-      si.currentLoad(data => this.updateData(data))
-    }, 1000)
+    this.interval = setInterval(() => si.currentLoad(data => this.updateData(data)), 1000)
   })
 }
 
