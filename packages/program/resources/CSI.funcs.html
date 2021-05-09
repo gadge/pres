@@ -1,0 +1,223 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN">
+<html lang="en-us">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>ctlseqs(ms)</title>
+</head>
+<body>
+<h2><a>Functions using CSI , ordered by the final
+    character(s)</a></h2>
+<table>
+    <thead>
+    <tr>
+        <th>code</th>
+        <th>function</th>
+        <th>desc</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr><td>ICH</td><td>'CSI Ps @'</td><td>Insert Ps (Blank) Character(s) (default = 1) (ICH).</td></tr>
+    <tr><td>SL</td><td>'CSI Ps SP @'</td><td>Shift left Ps columns(s) (default = 1) (SL), ECMA-48.</td></tr>
+    <tr><td>CUU</td><td>'CSI Ps A'</td><td>Cursor Up Ps Times (default = 1) (CUU).</td></tr>
+    <tr><td>SR</td><td>'CSI Ps SP A'</td><td>Shift right Ps columns(s) (default = 1) (SR), ECMA-48.</td></tr>
+    <tr><td>CUD</td><td>'CSI Ps B'</td><td>Cursor Down Ps Times (default = 1) (CUD).</td></tr>
+    <tr><td>CUF</td><td>'CSI Ps C'</td><td>Cursor Forward Ps Times (default = 1) (CUF).</td></tr>
+    <tr><td>CUB</td><td>'CSI Ps D'</td><td>Cursor Backward Ps Times (default = 1) (CUB).</td></tr>
+    <tr><td>CNL</td><td>'CSI Ps E'</td><td>Cursor Next Line Ps Times (default = 1) (CNL).</td></tr>
+    <tr><td>CPL</td><td>'CSI Ps F'</td><td>Cursor Preceding Line Ps Times (default = 1) (CPL).</td></tr>
+    <tr><td>CHA</td><td>'CSI Ps G'</td><td>Cursor Character Absolute  [column] (default = [row,1]) (CHA).</td></tr>
+    <tr><td>CUP</td><td>'CSI Ps ; Ps H'</td><td>Cursor Position [row;column] (default = [1,1]) (CUP).</td></tr>
+    <tr><td>CHT</td><td>'CSI Ps I'</td><td>Cursor Forward Tabulation Ps tab stops (default = 1) (CHT).</td></tr>
+    <tr><td>ED</td><td>'CSI Ps J'</td><td>Erase in Display (ED), VT100.</td></tr>
+    <tr><td>DECSED</td><td>'CSI ? Ps J'</td><td>Erase in Display (DECSED), VT220.</td></tr>
+    <tr><td>EL</td><td>'CSI Ps K'</td><td>Erase in Line (EL), VT100.</td></tr>
+    <tr><td>DECSEL</td><td>'CSI ? Ps K'</td><td>Erase in Line (DECSEL), VT220.</td></tr>
+    <tr><td>IL</td><td>'CSI Ps L'</td><td>Insert Ps Line(s) (default = 1) (IL).</td></tr>
+    <tr><td>DL</td><td>'CSI Ps M'</td><td>Delete Ps Line(s) (default = 1) (DL).</td></tr>
+    <tr><td>DCH</td><td>'CSI Ps P'</td><td>Delete Ps Character(s) (default = 1) (DCH).</td></tr>
+    <tr><td>XTPUSHCOLORS</td><td>'CSI # P'</td><td>Push current dynamic- and ANSI-palette colors onto stack (XTPUSHCOLORS), xterm.</td></tr>
+    <tr><td>XTPUSHCOLORS</td><td>'CSI Pm # P'</td><td>Push current dynamic- and ANSI-palette colors onto stack (XTPUSHCOLORS), xterm.</td></tr>
+    <tr><td>XTPOPCOLORS</td><td>'CSI # Q'</td><td>Pop stack to set dynamic- and ANSI-palette colors (XTPOPCOLORS), xterm.</td></tr>
+    <tr><td>XTPOPCOLORS</td><td>'CSI Pm # Q'</td><td>Pop stack to set dynamic- and ANSI-palette colors (XTPOPCOLORS), xterm.</td></tr>
+    <tr><td>XTREPORTCOLORS</td><td>'CSI # R'</td><td>Report the current entry on the palette stack, and the number of palettes stored on the stack, using the same form as XTPOPCOLOR (default = 0) (XTREPORTCOLORS), xterm.</td></tr>
+    <tr><td>SU</td><td>'CSI Ps S'</td><td>Scroll up Ps lines (default = 1) (SU), VT420, ECMA-48.</td></tr>
+    <tr><td>XTSMGRAPHICS</td><td>'CSI ? Pi ; Pa ; Pv S'</td><td>Set or request graphics attribute (XTSMGRAPHICS), xterm.</td></tr>
+    <tr><td>SD</td><td>'CSI Ps T'</td><td>Scroll down Ps lines (default = 1) (SD), VT420.</td></tr>
+    <tr><td>XTHIMOUSE</td><td>'CSI Ps ; Ps ; Ps ; Ps ; Ps T'</td><td>Initiate highlight mouse tracking (XTHIMOUSE), xterm.</td></tr>
+    <tr><td>XTRMTITLE</td><td>'CSI &gt; Pm T'</td><td>Reset title mode features to default value (XTRMTITLE), xterm.</td></tr>
+    <tr><td>ECH</td><td>'CSI Ps X'</td><td>Erase Ps Character(s) (default = 1) (ECH).</td></tr>
+    <tr><td>CBT</td><td>'CSI Ps Z'</td><td>Cursor Backward Tabulation Ps tab stops (default = 1) (CBT).</td></tr>
+    <tr><td>SD</td><td>'CSI Ps ^'</td><td>Scroll down Ps lines (default = 1) (SD), ECMA-48.</td></tr>
+    <tr><td>HPA</td><td>'CSI Ps `'</td><td>Character Position Absolute  [column] (default = [row,1]) (HPA).</td></tr>
+    <tr><td>HPR</td><td>'CSI Ps a'</td><td>Character Position Relative  [columns] (default = [row,col+1]) (HPR).</td></tr>
+    <tr><td>REP</td><td>'CSI Ps b'</td><td>Repeat the preceding graphic character Ps times (REP).</td></tr>
+    <tr><td>Primary_DA</td><td>'CSI Ps c'</td><td>Send Device Attributes (Primary DA).</td></tr>
+    <tr><td>Tertiary_DA</td><td>'CSI = Ps c'</td><td>Send Device Attributes (Tertiary DA).</td></tr>
+    <tr><td>Secondary_DA</td><td>'CSI &gt; Ps c'</td><td>Send Device Attributes (Secondary DA).</td></tr>
+    <tr><td>VPA</td><td>'CSI Ps d'</td><td>Line Position Absolute  [row] (default = [1,column]) (VPA).</td></tr>
+    <tr><td>VPR</td><td>'CSI Ps e'</td><td>Line Position Relative  [rows] (default = [row+1,column]) (VPR).</td></tr>
+    <tr><td>HVP</td><td>'CSI Ps ; Ps f'</td><td>Horizontal and Vertical Position [row;column] (default = [1,1]) (HVP).</td></tr>
+    <tr><td>TBC</td><td>'CSI Ps g'</td><td>Tab Clear (TBC).</td></tr>
+    <tr><td>SM</td><td>'CSI Pm h'</td><td>Set Mode (SM).</td></tr>
+    <tr><td>DECANM</td><td>'CSI ? Pm h'</td><td>DEC Private Mode Set (DECSET). (DECANM), VT100, and set VT100 mode.</td></tr>
+    <tr><td>MC</td><td>'CSI Ps i'</td><td>Media Copy (MC).</td></tr>
+    <tr><td>MC</td><td>'CSI ? Ps i'</td><td>Media Copy (MC), DEC-specific.</td></tr>
+    <tr><td>RM</td><td>'CSI Pm l'</td><td>Reset Mode (RM).</td></tr>
+    <tr><td>DECRST</td><td>'CSI ? Pm l'</td><td>DEC Private Mode Reset (DECRST).</td></tr>
+    <tr><td>SGR</td><td>'CSI Pm m'</td><td>Character Attributes (SGR).</td></tr>
+    <tr><td>XTMODKEYS</td><td>'CSI &gt; Pp ; Pv m'</td><td>Set/reset key modifier options (XTMODKEYS), xterm.</td></tr>
+    <tr><td>XTMODKEYS</td><td>'CSI &gt; Pp m'</td><td>Set/reset key modifier options (XTMODKEYS), xterm.</td></tr>
+    <tr><td>DSR</td><td>'CSI Ps n'</td><td>Device Status Report (DSR).</td></tr>
+    <tr><td>XTUNMODKEYS</td><td>'CSI &gt; Ps n'</td><td>Disable key modifier options, xterm.</td></tr>
+    <tr><td>DSR DEC-specific'</td><td>'CSI ? Ps n'</td><td>Device Status Report (DSR, DEC-specific).</td></tr>
+    <tr><td>XTSMPOINTER</td><td>'CSI &gt; Ps p'</td><td>Set resource value pointerMode (XTSMPOINTER), xterm.</td></tr>
+    <tr><td>DECSTR</td><td>'CSI ! p'</td><td>Soft terminal reset (DECSTR), VT220 and up.</td></tr>
+    <tr><td>DECSCL</td><td>'CSI Pl ; Pc " p'</td><td>Set conformance level (DECSCL), VT220 and up.</td></tr>
+    <tr><td>DECRQM</td><td>'CSI Ps $ p'</td><td>Request ANSI mode (DECRQM).</td></tr>
+    <tr><td>DECRQM</td><td>'CSI ? Ps $ p'</td><td>Request DEC private mode (DECRQM).</td></tr>
+    <tr><td>XTPUSHSGR</td><td>'CSI # p'</td><td>Push video attributes onto stack (XTPUSHSGR), xterm.</td></tr>
+    <tr><td>XTPUSHSGR</td><td>'CSI Pm # p'</td><td>Push video attributes onto stack (XTPUSHSGR), xterm.</td></tr>
+    <tr><td>XTVERSION</td><td>'CSI &gt; Ps q'</td><td>(Ps = 0  ⇒) Report xterm name and version (XTVERSION).</td></tr>
+    <tr><td>DECLL</td><td>'CSI Ps q'</td><td>Load LEDs (DECLL), VT100.</td></tr>
+    <tr><td>DECSCUSR</td><td>'CSI Ps SP q'</td><td>Set cursor style (DECSCUSR), VT520.</td></tr>
+    <tr><td>DECSCA</td><td>'CSI Ps " q'</td><td>Select character protection attribute (DECSCA), VT220.</td></tr>
+    <tr><td>XTPOPSGR</td><td>'CSI # q'</td><td>Pop video attributes from stack (XTPOPSGR), xterm.</td></tr>
+    <tr><td>DECSTBM</td><td>'CSI Ps ; Ps r'</td><td>Set Scrolling Region [top;bottom] (default = full size of window) (DECSTBM), VT100.</td></tr>
+    <tr><td>XTRESTORE</td><td>'CSI ? Pm r'</td><td>Restore DEC Private Mode Values (XTRESTORE), xterm.</td></tr>
+    <tr><td>DECCARA</td><td>'CSI Pt ; Pl ; Pb ; Pr ; Ps $ r'</td><td>Change Attributes in Rectangular Area (DECCARA), VT400 and up.</td></tr>
+    <tr><td>SCOSC</td><td>'CSI s'</td><td>Save cursor, available only when DECLRMM is disabled (SCOSC, also ANSI.SYS).</td></tr>
+    <tr><td>DECSLRM</td><td>'CSI Pl ; Pr s'</td><td>Set left and right margins (DECSLRM), VT420 and up.</td></tr>
+    <tr><td>XTSHIFTESCAPE</td><td>'CSI &gt; Ps s'</td><td>Set/reset shift-escape options (XTSHIFTESCAPE), xterm.</td></tr>
+    <tr><td>XTSAVE</td><td>'CSI ? Pm s'</td><td>Save DEC Private Mode Values (XTSAVE), xterm.</td></tr>
+    <tr><td>XTWINOPS</td><td>'CSI Ps ; Ps ; Ps t'</td><td>Window manipulation (XTWINOPS), dtterm, extended by xterm.</td></tr>
+    <tr><td>XTSMTITLE</td><td>'CSI &gt; Pm t'</td><td>This xterm control sets one or more features of the title modes (XTSMTITLE), xterm.</td></tr>
+    <tr><td>DECSWBV</td><td>'CSI Ps SP t'</td><td>Set warning-bell volume (DECSWBV), VT520.</td></tr>
+    <tr><td>DECRARA</td><td>'CSI Pt ; Pl ; Pb ; Pr ; Ps $ t'</td><td>Reverse Attributes in Rectangular Area (DECRARA), VT400 and up.</td></tr>
+    <tr><td>SCORC</td><td>'CSI u'</td><td>Restore cursor (SCORC, also ANSI.SYS).</td></tr>
+    <tr><td>DECSMBV</td><td>'CSI Ps SP u'</td><td>Set margin-bell volume (DECSMBV), VT520.</td></tr>
+    <tr><td>DECCRA</td><td>'CSI Pt ; Pl ; Pb ; Pr ; Pp ; Pt ; Pl ; Pp $ v'</td><td>Copy Rectangular Area (DECCRA), VT400 and up.</td></tr>
+    <tr><td>DECRQPSR</td><td>'CSI Ps $ w'</td><td>Request presentation state report (DECRQPSR), VT320 and up.</td></tr>
+    <tr><td>DECEFR</td><td>'CSI Pt ; Pl ; Pb ; Pr ' w'</td><td>Enable Filter Rectangle (DECEFR), VT420 and up.</td></tr>
+    <tr><td>DECREQTPARM</td><td>'CSI Ps x'</td><td>Request Terminal Parameters (DECREQTPARM).</td></tr>
+    <tr><td>DECSACE</td><td>'CSI Ps * x'</td><td>Select Attribute Change Extent (DECSACE), VT420 and up.</td></tr>
+    <tr><td>DECFRA</td><td>'CSI Pc ; Pt ; Pl ; Pb ; Pr $ x'</td><td>Fill Rectangular Area (DECFRA), VT420 and up.</td></tr>
+    <tr><td>XTCHECKSUM</td><td>'CSI Ps # y'</td><td>Select checksum extension (XTCHECKSUM), xterm.</td></tr>
+    <tr><td>DECRQCRA</td><td>'CSI Pi ; Pg ; Pt ; Pl ; Pb ; Pr * y'</td><td>Request Checksum of Rectangular Area (DECRQCRA), VT420 and up.</td></tr>
+    <tr><td>DECELR</td><td>'CSI Ps ; Pu ' z'</td><td>Enable Locator Reporting (DECELR).</td></tr>
+    <tr><td>DECERA</td><td>'CSI Pt ; Pl ; Pb ; Pr $ z'</td><td>Erase Rectangular Area (DECERA), VT400 and up.</td></tr>
+    <tr><td>DECSLE</td><td>'CSI Pm ' {'</td><td>Select Locator Events (DECSLE).</td></tr>
+    <tr><td>XTPUSHSGR</td><td>'CSI # {'</td><td>Push video attributes onto stack (XTPUSHSGR), xterm.</td></tr>
+    <tr><td>XTPUSHSGR</td><td>'CSI Pm # {'</td><td>Push video attributes onto stack (XTPUSHSGR), xterm.</td></tr>
+    <tr><td>DECSERA</td><td>'CSI Pt ; Pl ; Pb ; Pr $ {'</td><td>Selective Erase Rectangular Area (DECSERA), VT400 and up.</td></tr>
+    <tr><td>XTREPORTSGR</td><td>'CSI Pt ; Pl ; Pb ; Pr # |'</td><td>Report selected graphic rendition (XTREPORTSGR), xterm.</td></tr>
+    <tr><td>DECSCPP</td><td>'CSI Ps $ \|'</td><td>Select columns per page (DECSCPP), VT340.</td></tr>
+    <tr><td>DECRQLP</td><td>'CSI Ps ' |'</td><td>Request Locator Position (DECRQLP).</td></tr>
+    <tr><td>DECSNLS</td><td>'CSI Ps * |'</td><td>Select number of lines per screen (DECSNLS), VT420 and up.</td></tr>
+    <tr><td>XTPOPSGR</td><td>'CSI # }'</td><td>Pop video attributes from stack (XTPOPSGR), xterm.</td></tr>
+    <tr><td>DECIC</td><td>'CSI Ps ' }'</td><td>Insert Ps Column(s) (default = 1) (DECIC), VT420 and up.</td></tr>
+    <tr><td>DECDC</td><td>'CSI Ps ' ~'</td><td>Delete Ps Column(s) (default = 1) (DECDC), VT420 and up.</td></tr>
+    </tbody>
+</table>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

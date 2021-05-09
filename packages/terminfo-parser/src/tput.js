@@ -37,6 +37,9 @@ const USR = __dirname + '/../usr/'
  * Tput
  */
 export class Tput {
+  debug
+  error = null
+  utoa = UTOA // Convert ACS unicode characters to the most similar-looking ascii characters.
   constructor(options = {}) {
     if (!(this instanceof Tput)) return new Tput(options)
     if (typeof options === STR) options = { terminal: options }
@@ -52,10 +55,6 @@ export class Tput {
     this.terminfoFile = options.terminfoFile
     this.termcapFile = options.termcapFile
     if (options.terminal || options.term) this.setup()
-    this.error = null
-    // Convert ACS unicode characters to the
-    // most similar-looking ascii characters.
-    this.utoa = UTOA
   }
   setup() {
     this.error = null
@@ -174,10 +173,7 @@ export class Tput {
       list.forEach(function (file) {
         if (file.indexOf(term) === 0) {
           const diff = file.length - term.length
-          if (!sfile || diff < sdiff) {
-            sdiff = diff
-            sfile = file
-          }
+          if (!sfile || diff < sdiff) { sdiff = diff, sfile = file }
         }
       })
       return sfile && (soft || sdiff === 0)

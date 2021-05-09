@@ -238,7 +238,6 @@ export class ListBar extends Box {
       const lpos = el._getCoords()
       if (!lpos) return
       if (lpos.xl - lpos.xi <= 0) return
-
       drawn += (lpos.xl - lpos.xi) + 2
       if (drawn <= width) visible++
     })

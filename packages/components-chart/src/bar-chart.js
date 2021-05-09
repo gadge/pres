@@ -40,16 +40,16 @@ export class BarChart extends Canvas {
         context.strokeStyle = 'normal'
       }
       else {
-        context.strokeStyle = bars.preset.back
+        context.strokeStyle = bars.preset?.back
         const height = round(barY * (values[i] / max))
         context.fillRect(x, barY - height + 1, bars.width, height)
       }
       // draw values
-      context.fillStyle = bars.preset.fore
+      context.fillStyle = bars.preset?.fore
       if (this.options.showText) context.fillText(values[i].toString(), x + 1, valueY)
       context.strokeStyle = 'normal'
       // draw labels
-      context.fillStyle = bars.preset.label
+      context.fillStyle = bars.preset?.label
       if (this.options.showText) context.fillText(labels[i], x + 1, labelY)
     }
   }

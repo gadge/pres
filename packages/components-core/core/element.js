@@ -752,20 +752,14 @@ export class Element extends Node {
     out.fake = lines
     out.real = out
 
-    out.mwidth = out.reduce(function (current, line) {
+    out.mwidth = out.reduce((current, line) => {
       line = line.replace(/\x1b\[[\d;]*m/g, '')
-      return line.length > current
-        ? line.length
-        : current
+      return line.length > current ? line.length : current
     }, 0)
     return out
   }
-  enableMouse() {
-    this.screen._listenMouse(this)
-  }
-  enableKeys() {
-    this.screen._listenKeys(this)
-  }
+  enableMouse() { this.screen._listenMouse(this) }
+  enableKeys() { this.screen._listenKeys(this) }
   enableInput() {
     this.screen._listenMouse(this)
     this.screen._listenKeys(this)

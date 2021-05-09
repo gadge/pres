@@ -26,10 +26,12 @@ import {
   BEL, BS, DECRC, DECSC, ESC, FF, HTS, IND, LF, NEL, RI, RIS, RN, SI, SO, TAB, VT
 }                                                                 from '../assets/control.chars'
 import {
-  _CBT, _CHA, _CHT, _CNL, _CPL, _CUB, _CUD, _CUF, _CUP, _CUU, _DA, _DCH, _DECCRA, _DECEFR, _DECERA, _DECLL,
-  _DECREQTPARM, _DECRQM, _DECSACE, _DECSCA, _DECSCL, _DECSCUSR, _DECSMBV, _DECSWBV, _DL, _DSR, _ECH, _ED, _EL, _HPR,
-  _HVP, _ICH, _IL, _MC, _RCP, _REP, _RM, _SCP, _SD, _SGR, _SM, _SU, _TBC, _VPA, CSI
-}                                                                 from '../assets/csi.codes'
+  _CBT, _CHA, _CHT, _CNL, _CPL, _CUB, _CUD, _CUF, _CUP, _CUU, _DA, _DCH, _DECCARA, _DECCRA, _DECEFR, _DECELR, _DECERA,
+  _DECFRA, _DECLL, _DECRARA, _DECREQTPARM, _DECRQM, _DECSACE, _DECSCA, _DECSCL, _DECSCUSR, _DECSERA, _DECSLE, _DECSMBV,
+  _DECSTBM, _DECSWBV, _DL, _DSR, _ECH, _ED, _EL, _HPR, _HVP, _ICH, _IL, _MC, _REP, _RM, _SCORC, _SCOSC, _SD, _SGR, _SM,
+  _SU, _TBC, _VPA, _VPR, _XTHIMOUSE, _XTMODKEYS, _XTRESTORE, _XTSAVE, _XTSMPOINTER, _XTSMTITLE, _XTUNMODKEYS, _XTWINOPS,
+  CSI
+} from '../assets/csi.codes'
 import { OSC }                                                    from '../assets/osc.codes'
 import { gpmClient }                                              from './gpmclient'
 import { emitKeypressEvents }                                     from './keys'
@@ -282,7 +284,7 @@ export class Program extends EventEmitter {
     console.log('>>> [Program.prototype.#listenInput]')
     setTimeout(() => {}, 3000)
     // Input
-    this.input.on(KEYPRESS, this.input._keypressHandler = function (ch, key) {
+    this.input.on(KEYPRESS, this.input._keypressHandler = (ch, key) => {
       key = key || { ch: ch }
       // A mouse sequence. The `keys` module doesn't understand these.
       if (key.name === UNDEFINED && (key.code === '[M' || key.code === '[I' || key.code === '[O')) return
@@ -292,8 +294,8 @@ export class Program extends EventEmitter {
       if (key.name === RETURN && key.sequence === '\r') self.input.emit(KEYPRESS, ch, merge({}, key, { name: ENTER }))
       const name = `${key.ctrl ? 'C-' : VO}${key.meta ? 'M-' : VO}${key.shift && key.name ? 'S-' : VO}${key.name || ch}`
       key.full = name
-      Program.instances.forEach(function (program) {
-        if (program.input !== self.input) return
+      Program.instances.forEach(program => {
+        if (program.input !== self.input) return void 0
         program.emit(KEYPRESS, ch, key)
         program.emit('key' + SP + name, ch, key)
       })
@@ -1061,6 +1063,13 @@ export class Program extends EventEmitter {
   write = this.#out
   _write = this.#write
   #out(text) { if (this.output.writable) this.output.write(text) }
+  out(name) {
+    const args = slice(arguments, 1)
+    this.ret = true
+    const out = this[name].apply(this, args)
+    this.ret = false
+    return out
+  }
   #buffer(text) {
     if (this._exiting) return void (this.flush(), this.#out(text))
     if (this._buf) return void (this._buf += text)
@@ -1750,7 +1759,7 @@ export class Program extends EventEmitter {
     this.recoords()
     // Does not exist:
     // if (this.tput) return this.put.vpr(param);
-    return this.#write(CSI + (param || VO) + 'e')
+    return this.#write(CSI + (param || VO) + _VPR)
   }
 
   hvp = this.HVPosition
@@ -1773,8 +1782,10 @@ export class Program extends EventEmitter {
   }
 
   sm = this.setMode
-  setMode() { return this.#write(CSI + (slice(arguments).join(SC) || VO) + _SM) }
-  decset() { return this.setMode('?' + slice(arguments).join(SC)) }
+  setMode(...args) { return this.#write(CSI + (args.join(SC) || VO) + _SM) }
+
+  setDecPrivMode = this.decset
+  decset(...args) { return this.setMode('?' + args.join(SC)) }
 
   dectcem = this.showCursor
   cnorm = this.showCursor
@@ -1802,12 +1813,12 @@ export class Program extends EventEmitter {
   }
 
   rm = this.resetMode
-  resetMode() {
-    const param = slice(arguments).join(SC)
+  resetMode(...args) {
+    const param = args.join(SC)
     return this.#write(CSI + (param || VO) + _RM)
   }
 
-  decrst() { return this.resetMode('?' + slice(arguments).join(SC)) }
+  decrst(...args) { return this.resetMode('?' + args.join(SC)) }
 
   dectcemh = this.hideCursor
   cursor_invisible = this.hideCursor
@@ -1962,7 +1973,7 @@ export class Program extends EventEmitter {
     this.y = 0
     this.recoords()
     if (this.tput) return this.put.csr(top, bottom)
-    return this.#write(CSI + `${top + 1};${bottom + 1}` + 'r')
+    return this.#write(CSI + `${top + 1};${bottom + 1}` + _DECSTBM)
   }
 
   scA = this.saveCursorA
@@ -1970,7 +1981,7 @@ export class Program extends EventEmitter {
     this.savedX = this.x
     this.savedY = this.y
     if (this.tput) return this.put.sc()
-    return this.#write(CSI + _SCP)
+    return this.#write(CSI + _SCOSC)
   }
 
   rcA = this.restoreCursorA
@@ -1978,7 +1989,7 @@ export class Program extends EventEmitter {
     this.x = this.savedX || 0
     this.y = this.savedY || 0
     if (this.tput) return this.put.rc()
-    return this.#write(CSI + _RCP)
+    return this.#write(CSI + _SCORC)
   }
 
   cht = this.cursorForwardTab
@@ -2005,9 +2016,9 @@ export class Program extends EventEmitter {
     return this.#write(CSI + (param || 1) + _SD)
   }
 
-  initMouseTracking() { return this.#write(CSI + slice(arguments).join(SC) + 'T') }
+  initMouseTracking(...args) { return this.#write(CSI + args.join(SC) + _XTHIMOUSE) }
 
-  resetTitleModes() { return this.#write(CSI + '>' + slice(arguments).join(SC) + 'T') }
+  resetTitleModes(...args) { return this.#write(CSI + '>' + args.join(SC) + 'T') }
 
   cbt = this.cursorBackwardTab
   cursorBackwardTab(param) {
@@ -2028,8 +2039,8 @@ export class Program extends EventEmitter {
   tbc = this.tabClear
   tabClear(param) { return this.tput ? this.put.tbc(param) : this.#write(CSI + (param || 0) + _TBC) }
 
-  mc = this.mediaCopy
-  mediaCopy() { return this.#write(CSI + slice(arguments).join(SC) + _MC) }
+  mediaCopy = this.mc
+  mc(...args) { return this.#write(CSI + args.join(SC) + _MC) }
 
   print_screen = this.mc0
   ps = this.mc0
@@ -2047,11 +2058,12 @@ export class Program extends EventEmitter {
   pO = this.mc5p
   mc5p() { return this.tput ? this.put.mc5p() : this.mc('?5') }
 
-  setResources() { return this.#write(CSI + '>' + slice(arguments).join(SC) + _SGR) }
+  setResources = this.xtmodkeys // Set/reset key modifier options (XTMODKEYS), xterm.
+  xtmodkeys(...args) { return this.#write(CSI + '>' + args.join(SC) + _XTMODKEYS) }
 
-  disableModifiers(param) { return this.#write(CSI + '>' + (param || VO) + 'n') }
+  disableModifiers(param) { return this.#write(CSI + '>' + (param || VO) + _XTUNMODKEYS) }
 
-  setPointerMode(param) { return this.#write(CSI + '>' + (param || VO) + 'p') }
+  setPointerMode(param) { return this.#write(CSI + '>' + (param || VO) + _XTSMPOINTER) }
 
   decstr = this.softReset
   rs2 = this.softReset
@@ -2064,20 +2076,20 @@ export class Program extends EventEmitter {
     return this.#write(CSI + '!p\x1b[?3;4l\x1b[4l\x1b>') // reset
   }
 
-  decrqm = this.requestAnsiMode
-  requestAnsiMode(param) { return this.#write(CSI + (param || VO) + _DECRQM) }
+  requestAnsiMode = this.decrqm
+  decrqm(param) { return this.#write(CSI + (param || VO) + _DECRQM) }
 
-  decrqmp = this.requestPrivateMode
-  requestPrivateMode(param) { return this.#write(CSI + '?' + (param || VO) + _DECRQM) }
+  requestPrivateMode = this.decrqmp
+  decrqmp(param) { return this.#write(CSI + '?' + (param || VO) + _DECRQM) }
 
-  decscl = this.setConformanceLevel
-  setConformanceLevel() { return this.#write(CSI + slice(arguments).join(SC) + _DECSCL) }
+  setConformanceLevel = this.decscl
+  decscl(...args) { return this.#write(CSI + args.join(SC) + _DECSCL) }
 
-  decll = this.loadLEDs
-  loadLEDs(param) { return this.#write(CSI + (param || VO) + _DECLL) }
+  loadLEDs = this.decll
+  decll(param) { return this.#write(CSI + (param || VO) + _DECLL) }
 
-  decscusr = this.setCursorStyle
-  setCursorStyle(p) {
+  setCursorStyle = this.decscusr
+  decscusr(p) {
     p = p === 'blinking block' ? 1
       : p === 'block' || p === 'steady block' ? 2
         : p === 'blinking underline' ? 3
@@ -2090,65 +2102,71 @@ export class Program extends EventEmitter {
     return this.#write(CSI + (p || 1) + _DECSCUSR)
   }
 
-  decsca = this.setCharProtectionAttr
-  setCharProtectionAttr(param) { return this.#write(CSI + (param || 0) + _DECSCA) }
-  restorePrivateValues() { return this.#write(CSI + '?' + slice(arguments).join(SC) + 'r') }
+  setCharProtectionAttr = this.decsca // Select character protection attribute (DECSCA), VT220.
+  decsca(param) { return this.#write(CSI + (param || 0) + _DECSCA) }
 
-  deccara = this.setAttrInRectangle
-  setAttrInRectangle() { return this.#write(CSI + slice(arguments).join(SC) + '$r') }
-  savePrivateValues() { return this.#write(CSI + '?' + slice(arguments).join(SC) + 's') }
+  restorePrivateValues = this.xtrestore
+  xtrestore(...args) { return this.#write(CSI + '?' + args.join(SC) + _XTRESTORE) }
 
-  manipulateWindow() {
-    const args = slice(arguments)
+  setAttrInRectangle = this.deccara
+  deccara(...args) { return this.#write(CSI + args.join(SC) + _DECCARA) }
+
+  savePrivateValues = this.xtsave
+  xtsave(...args) { return this.#write(CSI + '?' + args.join(SC) + _XTSAVE) }
+
+  manipulateWindow = this.xtwinops
+  xtwinops(...args) {
     const callback = typeof args[args.length - 1] === FUN
       ? args.pop()
       : function () {}
-    return this.response('window-manipulation', CSI + args.join(SC) + 't', callback)
+    return this.response('window-manipulation', CSI + args.join(SC) + _XTWINOPS, callback)
   }
   getWindowSize(callback) { return this.manipulateWindow(18, callback) }
 
-  decrara = this.reverseAttrInRectangle
-  reverseAttrInRectangle() { return this.#write(CSI + slice(arguments).join(SC) + '$t') }
-  setTitleModeFeature() { return this.#writeTm(CSI + '>' + slice(arguments).join(SC) + 't') }
+  reverseAttrInRectangle = this.decrara
+  decrara(...args) { return this.#write(CSI + args.join(SC) + _DECRARA) }
 
-  decswbv = this.setWarningBellVolume
-  setWarningBellVolume(param) { return this.#write(CSI + (param || VO) + _DECSWBV) }
+  setTitleModeFeature = this.xtsmtitle
+  xtsmtitle(...args) { return this.#writeTm(CSI + '>' + args.join(SC) + _XTSMTITLE) }
 
-  decsmbv = this.setMarginBellVolume
-  setMarginBellVolume(param) { return this.#write(CSI + (param || VO) + _DECSMBV) }
+  setWarningBellVolume = this.decswbv
+  decswbv(param) { return this.#write(CSI + (param || VO) + _DECSWBV) }
 
-  deccra = this.copyRectangle
-  copyRectangle() { return this.#write(CSI + slice(arguments).join(SC) + _DECCRA) }
+  setMarginBellVolume = this.decsmbv
+  decsmbv(param) { return this.#write(CSI + (param || VO) + _DECSMBV) }
 
-  decefr = this.enableFilterRectangle
-  enableFilterRectangle() { return this.#write(CSI + slice(arguments).join(SC) + _DECEFR) }
+  copyRectangle = this.deccra
+  deccra(...args) { return this.#write(CSI + args.join(SC) + _DECCRA) }
 
-  decreqtparm = this.requestParameters
-  requestParameters(param) { return this.#write(CSI + (param || 0) + _DECREQTPARM) }
+  enableFilterRectangle = this.decefr
+  decefr(...args) { return this.#write(CSI + args.join(SC) + _DECEFR) }
+
+  requestParameters = this.decreqtparm
+  decreqtparm(param = 0) { return this.#write(CSI + param + _DECREQTPARM) }
 
   // TODO: pull request - changed x to *x
-  decsace = this.selectChangeExtent
-  selectChangeExtent(param) { return this.#write(CSI + (param || 0) + _DECSACE) }
+  selectChangeExtent = this.decsace
+  decsace(param = 0) { return this.#write(CSI + param + _DECSACE) }
 
-  decfra = this.fillRectangle
-  fillRectangle() { return this.#write(CSI + slice(arguments).join(SC) + '$x') }
+  fillRectangle = this.decfra
+  decfra(...args) { return this.#write(CSI + args.join(SC) + _DECFRA) }
 
-  decelr = this.enableLocatorReporting
-  enableLocatorReporting() { return this.#write(CSI + slice(arguments).join(SC) + '\'z') }
+  enableLocatorReporting = this.decelr
+  decelr(...args) { return this.#write(CSI + args.join(SC) + _DECELR) }
 
-  decera = this.eraseRectangle
-  eraseRectangle() { return this.#write(CSI + slice(arguments).join(SC) + _DECERA) }
+  eraseRectangle = this.decera
+  decera(...args) { return this.#write(CSI + args.join(SC) + _DECERA) }
 
-  decsle = this.setLocatorEvents
-  setLocatorEvents() { return this.#write(CSI + slice(arguments).join(SC) + '\'{') }
+  setLocatorEvents = this.decsle
+  decsle(...args) { return this.#write(CSI + args.join(SC) + _DECSLE) }
 
-  decsera = this.selectiveEraseRectangle
-  selectiveEraseRectangle() { return this.#write(CSI + slice(arguments).join(SC) + '${') }
+  selectiveEraseRectangle = this.decsera
+  decsera(...args) { return this.#write(CSI + args.join(SC) + _DECSERA) }
 
   decrqlp = this.requestLocatorPosition
   req_mouse_pos = this.requestLocatorPosition
   reqmp = this.requestLocatorPosition
-  requestLocatorPosition(param, callback) {
+  requestLocatorPosition(param = VO, callback) {
     // See also:
     // get_mouse / getm / Gm
     // mouse_info / minfo / Mi
@@ -2157,21 +2175,16 @@ export class Program extends EventEmitter {
       const code = this.tput.req_mouse_pos(param)
       return this.response('locator-position', code, callback)
     }
-    return this.response('locator-position', CSI + (param || VO) + '\'|', callback)
+    return this.response('locator-position', CSI + param + '\'|', callback)
   }
 
-  decic = this.insertColumns
-  insertColumns() { return this.#write(CSI + slice(arguments).join(SC) + ' }') }
+  insertColumns = this.decic
+  decic(...args) { return this.#write(CSI + args.join(SC) + ' }') }
 
-  decdc = this.deleteColumns
-  deleteColumns() { return this.#write(CSI + slice(arguments).join(SC) + ' ~') }
-  out(name) {
-    const args = slice(arguments, 1)
-    this.ret = true
-    const out = this[name].apply(this, args)
-    this.ret = false
-    return out
-  }
+  deleteColumns = this.decdc
+  decdc(...args) { return this.#write(CSI + args.join(SC) + ' ~') }
+
+
   sigtstp(callback) {
     const resume = this.pause()
     process.once(SIGCONT, () => { resume(), (callback ? callback() : undefined) })
