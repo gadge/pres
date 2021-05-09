@@ -26,12 +26,12 @@ import {
   BEL, BS, DECRC, DECSC, ESC, FF, HTS, IND, LF, NEL, RI, RIS, RN, SI, SO, TAB, VT
 }                                                                 from '../assets/control.chars'
 import {
-  _CBT, _CHA, _CHT, _CNL, _CPL, _CUB, _CUD, _CUF, _CUP, _CUU, _DA, _DCH, _DECCARA, _DECCRA, _DECEFR, _DECELR, _DECERA,
-  _DECFRA, _DECLL, _DECRARA, _DECREQTPARM, _DECRQM, _DECSACE, _DECSCA, _DECSCL, _DECSCUSR, _DECSERA, _DECSLE, _DECSMBV,
-  _DECSTBM, _DECSWBV, _DL, _DSR, _ECH, _ED, _EL, _HPR, _HVP, _ICH, _IL, _MC, _REP, _RM, _SCORC, _SCOSC, _SD, _SGR, _SM,
-  _SU, _TBC, _VPA, _VPR, _XTHIMOUSE, _XTMODKEYS, _XTRESTORE, _XTSAVE, _XTSMPOINTER, _XTSMTITLE, _XTUNMODKEYS, _XTWINOPS,
-  CSI
-} from '../assets/csi.codes'
+  _CBT, _CHA, _CHT, _CNL, _CPL, _CUB, _CUD, _CUF, _CUP, _CUU, _DA, _DCH, _DECCARA, _DECCRA, _DECDC, _DECEFR, _DECELR,
+  _DECERA, _DECFRA, _DECIC, _DECLL, _DECRARA, _DECREQTPARM, _DECRQM, _DECSACE, _DECSCA, _DECSCL, _DECSCUSR, _DECSERA,
+  _DECSLE, _DECSMBV, _DECSTBM, _DECSWBV, _DL, _DSR, _ECH, _ED, _EL, _HPR, _HVP, _ICH, _IL, _MC, _REP, _RM, _SCORC,
+  _SCOSC, _SD, _SGR, _SM, _SU, _TBC, _VPA, _VPR, _XTHIMOUSE, _XTMODKEYS, _XTRESTORE, _XTSAVE, _XTSMPOINTER, _XTSMTITLE,
+  _XTUNMODKEYS, _XTWINOPS, CSI
+}                                                                 from '../assets/csi.codes'
 import { OSC }                                                    from '../assets/osc.codes'
 import { gpmClient }                                              from './gpmclient'
 import { emitKeypressEvents }                                     from './keys'
@@ -2061,9 +2061,11 @@ export class Program extends EventEmitter {
   setResources = this.xtmodkeys // Set/reset key modifier options (XTMODKEYS), xterm.
   xtmodkeys(...args) { return this.#write(CSI + '>' + args.join(SC) + _XTMODKEYS) }
 
-  disableModifiers(param) { return this.#write(CSI + '>' + (param || VO) + _XTUNMODKEYS) }
+  disableModifiers = this.xtunmodkeys // Disable key modifier options, xterm.
+  xtunmodkeys(param) { return this.#write(CSI + '>' + (param || VO) + _XTUNMODKEYS) }
 
-  setPointerMode(param) { return this.#write(CSI + '>' + (param || VO) + _XTSMPOINTER) }
+  setPointerMode = this.xtsmpointer // Set resource value pointerMode (XTSMPOINTER), xterm.
+  xtsmpointer(param) { return this.#write(CSI + '>' + (param || VO) + _XTSMPOINTER) }
 
   decstr = this.softReset
   rs2 = this.softReset
@@ -2178,11 +2180,13 @@ export class Program extends EventEmitter {
     return this.response('locator-position', CSI + param + '\'|', callback)
   }
 
-  insertColumns = this.decic
-  decic(...args) { return this.#write(CSI + args.join(SC) + ' }') }
+  // TODO: pull request since modified from ' }' to '\'}'
+  insertColumns = this.decic // Insert Ps Column(s) (default = 1) (DECIC), VT420 and up.
+  decic(...args) { return this.#write(CSI + args.join(SC) + _DECIC) }
 
-  deleteColumns = this.decdc
-  decdc(...args) { return this.#write(CSI + args.join(SC) + ' ~') }
+  // TODO: pull request since modified from ' ~' to '\'~'
+  deleteColumns = this.decdc // Delete Ps Column(s) (default = 1) (DECDC), VT420 and up.
+  decdc(...args) { return this.#write(CSI + args.join(SC) + _DECDC) }
 
 
   sigtstp(callback) {
