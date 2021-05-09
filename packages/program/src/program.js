@@ -4,37 +4,42 @@
  * https://github.com/chjj/blessed
  */
 
-import { SIGCONT, SIGTSTP }                                       from '@geia/enum-signals'
+import { SIGCONT, SIGTSTP }   from '@geia/enum-signals'
 import {
   BLUR, BTNDOWN, BTNUP, DATA, DESTROY, DRAG, ERROR, EXIT, FOCUS, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEUP,
   MOUSEWHEEL, MOVE, NEW_LISTENER, RESIZE, RESPONSE, WARNING, WHEELDOWN, WHEELUP,
-}                                                                 from '@pres/enum-events'
-import { ENTER, LEFT, MIDDLE, RETURN, RIGHT, UNDEFINED, UNKNOWN } from '@pres/enum-key-names'
-import { EventEmitter }                                           from '@pres/events'
-import { Tput }                                                   from '@pres/terminfo-parser'
-import * as colors                                                from '@pres/util-colors'
-import { slice }                                                  from '@pres/util-helpers'
-import { SC, SP, VO }                                             from '@texting/enum-chars'
-import { FUN, NUM, STR }                                          from '@typen/enum-data-types'
-import { nullish }                                                from '@typen/nullish'
-import cp                                                         from 'child_process'
-import fs                                                         from 'fs'
-import { StringDecoder }                                          from 'string_decoder'
-import util                                                       from 'util'
-import { ALL }                                                    from '../assets/constants'
+}                             from '@pres/enum-events'
 import {
-  BEL, BS, DECRC, DECSC, ESC, FF, HTS, IND, LF, NEL, RI, RIS, RN, SI, SO, TAB, VT
-}                                                                 from '../assets/control.chars'
+  ENTER, LEFT, MIDDLE, RETURN, RIGHT, UNDEFINED, UNKNOWN
+}                             from '@pres/enum-key-names'
+import { EventEmitter }       from '@pres/events'
+import { Tput }               from '@pres/terminfo-parser'
+import * as colors            from '@pres/util-colors'
+import { slice }              from '@pres/util-helpers'
+import {
+  SC, SP, VO
+}                             from '@texting/enum-chars'
+import {
+  FUN, NUM, STR
+}                             from '@typen/enum-data-types'
+import { nullish }            from '@typen/nullish'
+import cp                     from 'child_process'
+import fs                     from 'fs'
+import { StringDecoder }      from 'string_decoder'
+import util                   from 'util'
+import { ALL }                from '../assets/constants'
+import {
+  BEL, BS, CSI, DECRC, DECSC, ESC, FF, HTS, IND, LF, NEL, OSC, RI, RIS, RN, SI, SO, TAB, VT,
+}                             from '../assets/control.chars'
 import {
   _CBT, _CHA, _CHT, _CNL, _CPL, _CUB, _CUD, _CUF, _CUP, _CUU, _DA, _DCH, _DECCARA, _DECCRA, _DECDC, _DECEFR, _DECELR,
   _DECERA, _DECFRA, _DECIC, _DECLL, _DECRARA, _DECREQTPARM, _DECRQM, _DECSACE, _DECSCA, _DECSCL, _DECSCUSR, _DECSERA,
   _DECSLE, _DECSMBV, _DECSTBM, _DECSWBV, _DL, _DSR, _ECH, _ED, _EL, _HPR, _HVP, _ICH, _IL, _MC, _REP, _RM, _SCORC,
-  _SCOSC, _SD, _SGR, _SM, _SU, _TBC, _VPA, _VPR, _XTHIMOUSE, _XTMODKEYS, _XTRESTORE, _XTSAVE, _XTSMPOINTER, _XTSMTITLE,
-  _XTUNMODKEYS, _XTWINOPS, CSI
-}                                                                 from '../assets/csi.codes'
-import { OSC }                                                    from '../assets/osc.codes'
-import { gpmClient }                                              from './gpmclient'
-import { emitKeypressEvents }                                     from './keys'
+  _SCOSC, _SD, _SGR, _SM, _SU, _TBC, _VPA, _VPR, _XTHIMOUSE, _XTMODKEYS, _XTRESTORE, _XTRMTITLE, _XTSAVE, _XTSMPOINTER,
+  _XTSMTITLE, _XTUNMODKEYS, _XTWINOPS
+}                             from '../assets/csi.codes'
+import { gpmClient }          from './gpmclient'
+import { emitKeypressEvents } from './keys'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
@@ -1434,7 +1439,7 @@ export class Program extends EventEmitter {
   // OSC Ps ; Pt BEL
   //   Reset colors
   resetColors(param) { return this.has('Cr') ? this.put.Cr(param) : this.#writeTm(OSC + '112' + BEL) }
-  //   Change dynamic colors
+  // Change dynamic colors
   dynamicColors(param) { return this.has('Cs') ? this.put.Cs(param) : this.#writeTm(OSC + `12;${param}` + BEL) }
   // Sel data
   selData(a, b) { return this.has('Ms') ? this.put.Ms(a, b) : this.#writeTm(OSC + `52;${a};${b}` + BEL) }
@@ -1442,12 +1447,9 @@ export class Program extends EventEmitter {
   /**
    * CSI
    */
-
-  // CSI Ps A
-  // Cursor Up Ps Times (default = 1) (CUU).
-  cuu = this.cursorUp
-  up = this.cursorUp
-  cursorUp(n) {
+  cursorUp = this.cuu // Cursor Up Ps Times (default = 1) (CUU).
+  up = this.cuu
+  cuu(n) {
     this.y -= n || 1
     this.recoords()
     return !this.tput
@@ -1456,11 +1458,9 @@ export class Program extends EventEmitter {
         ? this.#write(this.repeat(this.tput.cuu1(), n))
         : this.put.cuu(n)
   }
-  // CSI Ps B
-  // Cursor Down Ps Times (default = 1) (CUD).
-  cud = this.cursorDown
-  down = this.cursorDown
-  cursorDown(n) {
+  cursorDown = this.cud // Cursor Down Ps Times (default = 1) (CUD).
+  down = this.cud
+  cud(n) {
     this.y += n || 1
     this.recoords()
     return !this.tput
@@ -1469,12 +1469,10 @@ export class Program extends EventEmitter {
         ? this.#write(this.repeat(this.tput.cud1(), n))
         : this.put.cud(n)
   }
-  // CSI Ps C
-  // Cursor Forward Ps Times (default = 1) (CUF).
-  cuf = this.cursorForward
-  right = this.cursorForward
-  forward = this.cursorForward
-  cursorForward(n) {
+  cursorForward = this.cuf // Cursor Forward Ps Times (default = 1) (CUF).
+  right = this.cuf
+  forward = this.cuf
+  cuf(n) {
     this.x += n || 1
     this.recoords()
     return !this.tput
@@ -1483,12 +1481,10 @@ export class Program extends EventEmitter {
         ? this.#write(this.repeat(this.tput.cuf1(), n))
         : this.put.cuf(n)
   }
-  // CSI Ps D
-  // Cursor Backward Ps Times (default = 1) (CUB).
-  cub = this.cursorBackward
-  left = this.cursorBackward
-  back = this.cursorBackward
-  cursorBackward(n) {
+  cursorBackward = this.cub // Cursor Backward Ps Times (default = 1) (CUB).
+  left = this.cub
+  back = this.cub
+  cub(n) {
     this.x -= n || 1
     this.recoords()
     return !this.tput
@@ -1517,9 +1513,9 @@ export class Program extends EventEmitter {
   // mouseup, mousedown, mousewheel
 
   // Cursor Position [row;column] (default = [1,1]) (CUP).
-  cup = this.cursorPos
-  pos = this.cursorPos
-  cursorPos(r, c) {
+  cursorPos = this.cup
+  pos = this.cup
+  cup(r, c) {
     const { zero } = this
     this.x = c = !zero ? (c || 1) - 1 : c || 0
     this.y = r = !zero ? (r || 1) - 1 : r || 0
@@ -1529,20 +1525,21 @@ export class Program extends EventEmitter {
       : this.#write(CSI + `${r + 1};${c + 1}` + _CUP)
   }
 
-  ed = this.eraseInDisplay
-  eraseInDisplay(p) {
+  eraseInDisplay = this.ed
+  ed(p) {
     return this.tput
       ? this.put.ed(p === 'above' ? 1 : p === 'all' ? 2 : p === 'saved' ? 3 : p === 'below' ? 0 : 0)
       : this.#write(CSI + (p === 'above' ? 1 : p === 'all' ? 2 : p === 'saved' ? 3 : p === 'below' ? VO : VO) + _ED)
   }
+
   clear() {
     this.x = 0
     this.y = 0
     return this.tput ? this.put.clear() : this.#write(CSI + _CUP + CSI + _ED)
   }
 
-  el = this.eraseInLine
-  eraseInLine(p) {
+  eraseInLine = this.el
+  el(p) {
     return this.tput
       ? this.put.el(p === LEFT ? 1 : p === ALL ? 2 : p === RIGHT ? 0 : 0)
       : this.#write(CSI + (p === LEFT ? 1 : p === ALL ? 2 : p === RIGHT ? VO : VO) + _EL)
@@ -1655,8 +1652,8 @@ export class Program extends EventEmitter {
   setBackground = this.bg
   bg(color, val) { return this.sgr(color.split(/\s*[,;]\s*/).join(' bg, ') + ' bg', val) }
 
-  dsr = this.deviceStatus
-  deviceStatus(param, callback, dec, noBypass) {
+  deviceStatus = this.dsr
+  dsr(param, callback, dec, noBypass) {
     return dec
       ? this.response('device-status', CSI + '?' + (param || '0') + _DSR, callback, noBypass)
       : this.response('device-status', CSI + (param || '0') + _DSR, callback, noBypass)
@@ -1677,30 +1674,30 @@ export class Program extends EventEmitter {
   /**
    * Additions
    */
-  ich = this.insertChars
-  insertChars(param) {
+  insertChars = this.ich
+  ich(param) {
     this.x += param || 1
     this.recoords()
     if (this.tput) return this.put.ich(param)
     return this.#write(CSI + (param || 1) + _ICH)
   }
 
-  cnl = this.cursorNextLine
-  cursorNextLine(param) {
+  cursorNextLine = this.cnl
+  cnl(param) {
     this.y += param || 1
     this.recoords()
     return this.#write(CSI + (param || VO) + _CNL)
   }
 
-  cpl = this.cursorPrecedingLine
-  cursorPrecedingLine(param) {
+  cursorPrecedingLine = this.cpl
+  cpl(param) {
     this.y -= param || 1
     this.recoords()
     return this.#write(CSI + (param || VO) + _CPL)
   }
 
-  cha = this.cursorCharAbsolute
-  cursorCharAbsolute(param) {
+  cursorCharAbsolute = this.cha
+  cha(param) {
     param = !this.zero ? (param || 1) - 1 : param || 0
     this.x = param
     this.y = 0
@@ -1709,20 +1706,20 @@ export class Program extends EventEmitter {
     return this.#write(CSI + (param + 1) + _CHA)
   }
 
-  il = this.insertLines
-  insertLines(param) { return this.tput ? this.put.il(param) : this.#write(CSI + (param || VO) + _IL) }
+  insertLines = this.il
+  il(param) { return this.tput ? this.put.il(param) : this.#write(CSI + (param || VO) + _IL) }
 
-  dl = this.deleteLines
-  deleteLines(param) { return this.tput ? this.put.dl(param) : this.#write(CSI + (param || VO) + _DL) }
+  deleteLines = this.dl
+  dl(param) { return this.tput ? this.put.dl(param) : this.#write(CSI + (param || VO) + _DL) }
 
-  dch = this.deleteChars
-  deleteChars(param) { return this.tput ? this.put.dch(param) : this.#write(CSI + (param || VO) + _DCH) }
+  deleteChars = this.dch
+  dch(param) { return this.tput ? this.put.dch(param) : this.#write(CSI + (param || VO) + _DCH) }
 
-  ech = this.eraseChars
-  eraseChars(param) { return this.tput ? this.put.ech(param) : this.#write(CSI + (param || VO) + _ECH) }
+  eraseChars = this.ech
+  ech(param) { return this.tput ? this.put.ech(param) : this.#write(CSI + (param || VO) + _ECH) }
 
-  hpa = this.charPosAbsolute
-  charPosAbsolute(param) {
+  charPosAbsolute = this.hpa
+  hpa(param) {
     this.x = param || 0
     this.recoords()
     if (this.tput) { return this.put.hpa.apply(this.put, arguments) }
@@ -1730,8 +1727,8 @@ export class Program extends EventEmitter {
     return this.#write(CSI + (param || VO) + '`')
   }
 
-  hpr = this.HPositionRelative
-  HPositionRelative(param) {
+  HPositionRelative = this.hpr
+  hpr(param) {
     if (this.tput) return this.cuf(param)
     this.x += param || 1
     this.recoords()
@@ -1740,11 +1737,11 @@ export class Program extends EventEmitter {
     return this.#write(CSI + (param || VO) + _HPR)
   }
 
-  da = this.sendDeviceAttributes
-  sendDeviceAttributes(param, callback) { return this.response('device-attributes', CSI + (param || VO) + _DA, callback) }
+  sendDeviceAttributes = this.da
+  da(param, callback) { return this.response('device-attributes', CSI + (param || VO) + _DA, callback) }
 
-  vpa = this.linePosAbsolute
-  linePosAbsolute(param) {
+  linePosAbsolute = this.vpa
+  vpa(param) {
     this.y = param || 1
     this.recoords()
     if (this.tput) return this.put.vpa.apply(this.put, arguments)
@@ -1752,8 +1749,8 @@ export class Program extends EventEmitter {
     return this.#write(CSI + (param || VO) + _VPA)
   }
 
-  vpr = this.VPositionRelative
-  VPositionRelative(param) {
+  VPositionRelative = this.vpr
+  vpr(param) {
     if (this.tput) return this.cud(param)
     this.y += param || 1
     this.recoords()
@@ -1762,8 +1759,8 @@ export class Program extends EventEmitter {
     return this.#write(CSI + (param || VO) + _VPR)
   }
 
-  hvp = this.HVPosition
-  HVPosition(row, col) {
+  HVPosition = this.hvp
+  hvp(row, col) {
     if (!this.zero) {
       row = (row || 1) - 1
       col = (col || 1) - 1
@@ -1781,11 +1778,11 @@ export class Program extends EventEmitter {
     return this.#write(CSI + `${row + 1};${col + 1}` + _HVP)
   }
 
-  sm = this.setMode
-  setMode(...args) { return this.#write(CSI + (args.join(SC) || VO) + _SM) }
+  setMode = this.sm
+  sm(...args) { return this.#write(CSI + (args.join(SC) || VO) + _SM) }
 
   setDecPrivMode = this.decset
-  decset(...args) { return this.setMode('?' + args.join(SC)) }
+  decset(...args) { return this.sm('?' + args.join(SC)) }
 
   dectcem = this.showCursor
   cnorm = this.showCursor
@@ -1812,13 +1809,11 @@ export class Program extends EventEmitter {
     return this.setMode('?1049')
   }
 
-  rm = this.resetMode
-  resetMode(...args) {
-    const param = args.join(SC)
-    return this.#write(CSI + (param || VO) + _RM)
-  }
+  resetMode = this.rm
+  rm(...args) { return this.#write(CSI + (args.join(SC) || VO) + _RM) }
 
-  decrst(...args) { return this.resetMode('?' + args.join(SC)) }
+  resetDecPrivMode = this.decrst
+  decrst(...args) { return this.rm('?' + args.join(SC)) }
 
   dectcemh = this.hideCursor
   cursor_invisible = this.hideCursor
@@ -1956,9 +1951,9 @@ export class Program extends EventEmitter {
     if (opt.gpmMouse != null) { opt.gpmMouse ? this.enableGpm() : this.disableGpm() }
   }
 
-  decstbm = this.setScrollRegion
-  csr = this.setScrollRegion
-  setScrollRegion(top, bottom) {
+  setScrollRegion = this.decstbm
+  csr = this.decstbm
+  decstbm(top, bottom) {
     if (!this.zero) {
       top = (top || 1) - 1
       bottom = (bottom || this.rows) - 1
@@ -1976,68 +1971,72 @@ export class Program extends EventEmitter {
     return this.#write(CSI + `${top + 1};${bottom + 1}` + _DECSTBM)
   }
 
-  scA = this.saveCursorA
-  saveCursorA() {
+  scA = this.scosc
+  saveCursorA = this.scosc
+  scosc() {
     this.savedX = this.x
     this.savedY = this.y
     if (this.tput) return this.put.sc()
     return this.#write(CSI + _SCOSC)
   }
 
-  rcA = this.restoreCursorA
-  restoreCursorA() {
+  rcA = this.scorc
+  restoreCursorA = this.scorc
+  scorc() {
     this.x = this.savedX || 0
     this.y = this.savedY || 0
     if (this.tput) return this.put.rc()
     return this.#write(CSI + _SCORC)
   }
 
-  cht = this.cursorForwardTab
-  cursorForwardTab(param) {
+  cursorForwardTab = this.cht
+  cht(param) {
     this.x += 8
     this.recoords()
     if (this.tput) return this.put.tab(param)
     return this.#write(CSI + (param || 1) + _CHT)
   }
 
-  cht = this.cursorForwardTab
-  scrollUp(param) {
+  scrollUp = this.su
+  su(param) {
     this.y -= param || 1
     this.recoords()
     if (this.tput) return this.put.parm_index(param)
     return this.#write(CSI + (param || 1) + _SU)
   }
 
-  sd = this.scrollDown
-  scrollDown(param) {
+  scrollDown = this.sd
+  sd(param) {
     this.y += param || 1
     this.recoords()
     if (this.tput) return this.put.parm_rindex(param)
     return this.#write(CSI + (param || 1) + _SD)
   }
 
-  initMouseTracking(...args) { return this.#write(CSI + args.join(SC) + _XTHIMOUSE) }
+  initMouseTracking = this.xthimouse
+  xthimouse(...args) { return this.#write(CSI + args.join(SC) + _XTHIMOUSE) }
 
-  resetTitleModes(...args) { return this.#write(CSI + '>' + args.join(SC) + 'T') }
+  resetTitleModes = this.xtrmtitle
+  xtrmtitle(...args) { return this.#write(CSI + '>' + args.join(SC) + _XTRMTITLE) }
 
-  cbt = this.cursorBackwardTab
-  cursorBackwardTab(param) {
+  cursorBackwardTab = this.cbt
+  cbt(param) {
     this.x -= 8
     this.recoords()
     if (this.tput) return this.put.cbt(param)
     return this.#write(CSI + (param || 1) + _CBT)
   }
 
-  rep = this.repeatPrecedingCharacter
-  repeatPrecedingCharacter(param) {
+  repeatPrecedingCharacter = this.rep
+  rep(param) {
     this.x += param || 1
     this.recoords()
     if (this.tput) return this.put.rep(param)
     return this.#write(CSI + (param || 1) + _REP)
   }
 
-  tbc = this.tabClear
-  tabClear(param) { return this.tput ? this.put.tbc(param) : this.#write(CSI + (param || 0) + _TBC) }
+  tabClear = this.tbc
+  tbc(param) { return this.tput ? this.put.tbc(param) : this.#write(CSI + (param || 0) + _TBC) }
 
   mediaCopy = this.mc
   mc(...args) { return this.#write(CSI + args.join(SC) + _MC) }
@@ -2046,13 +2045,13 @@ export class Program extends EventEmitter {
   ps = this.mc0
   mc0() { return this.tput ? this.put.mc0() : this.mc('0') }
 
-  prtr_on = this.mc5
-  po = this.mc5
-  mc5() { return this.tput ? this.put.mc5() : this.mc('5') }
-
   prtr_off = this.mc4
   pf = this.mc4
   mc4() { return this.tput ? this.put.mc4() : this.mc('4') }
+
+  prtr_on = this.mc5
+  po = this.mc5
+  mc5() { return this.tput ? this.put.mc5() : this.mc('5') }
 
   prtr_non = this.mc5p
   pO = this.mc5p

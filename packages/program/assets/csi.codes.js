@@ -1,29 +1,3 @@
-import { ESC } from './control.chars'
-
-// initiated by: ESC + [
-// terminated by: m
-export const CSI = ESC + '['
-
-// export const _CUU = 'A'    // CUU   | Cursor Up
-// export const _CUD = 'B'    // CUD   | Cursor Down
-// export const _CUF = 'C'    // CUF   | Cursor Forward
-// export const _CUB = 'D'    // CUB   | Cursor Back
-// export const _CNL = 'E'    // CNL   | Cursor Next Line
-// export const _CPL = 'F'    // CPL   | Cursor Previous Line
-// export const _CHA = 'G'    // CHA   | Cursor Horizontal Absolute
-// export const _CUP = 'H'    // CUP   | Cursor Position
-// export const _ED = 'J'    // ED    | Erase in Display
-// export const _EL = 'K'    // EL    | Erase in Line
-// export const _SU = 'S'    // SU    | Scroll Up
-// export const _SD = 'T'    // SD    | Scroll Down
-// export const _HVP = 'f'    // HVP   | Horizontal Vertical Position
-// export const _SGR = 'm'    // SGR   | Select Graphic Rendition
-// export const _APON = '5i'   // APON  | AUX Port On
-// export const _APOFF = '4i'   // APOFF | AUX Port Off
-// export const _DSR = '6n'   // DSR   | Device Status Report
-export const _SCP = 's'    // SCP, SCOSC | Save Current Cursor Position
-export const _RCP = 'u'    // RCP, SCORC | Restore Saved Cursor Position
-
 export const
   _ICH            = '@',   // ICH            | CSI Ps @                        | Insert Ps (Blank) Character(s) (default = 1) (ICH).                                                                                                                     |
   _SL             = ' @',  // SL             | CSI Ps SP @                     | Shift left Ps columns(s) (default = 1) (SL), ECMA-48.                                                                                                                   |
