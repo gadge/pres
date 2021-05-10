@@ -32,7 +32,7 @@ export class ListBar extends Box {
     if (!this.style.item) this.style.item = {}
     if (options.commands || options.items) this.setItems(options.commands || options.items)
     if (options.keys) {
-      this.on(KEYPRESS, function (ch, key) {
+      this.on(KEYPRESS, (ch, key) => {
         if (key.name === LEFT ||
           (options.vi && key.name === 'h') ||
           (key.shift && key.name === TAB)) {
@@ -84,7 +84,7 @@ export class ListBar extends Box {
   setItems(commands) {
     const self = this
     if (!Array.isArray(commands)) {
-      commands = Object.keys(commands).reduce(function (obj, key, i) {
+      commands = Object.keys(commands).reduce((obj, key, i) => {
         let cmd = commands[key],
             cb
         if (typeof cmd === 'function') {
@@ -233,7 +233,7 @@ export class ListBar extends Box {
         el
     el = this.items[offset]
     if (!el) return
-    this.items.forEach(function (el, i) {
+    this.items.forEach((el, i) => {
       if (i < self.leftBase) return
       const lpos = el._getCoords()
       if (!lpos) return

@@ -7,13 +7,13 @@
 import { LOG as _LOG, SET_CONTENT, } from '@pres/enum-events'
 import { OBJ }                       from '@typen/enum-data-types'
 import util                          from 'util'
+import { ScrollableBox }             from './scrollablebox'
 import { ScrollableText }            from './scrollabletext'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 export class Log extends ScrollableText {
   type = 'log'
-  log = this.add // log() { return this.add() }
-  scroll = this._scroll
+
   /**
    * Log
    */
@@ -25,17 +25,16 @@ export class Log extends ScrollableText {
       ? options.scrollback
       : Infinity
     this.scrollOnInput = options.scrollOnInput
-    this.on(SET_CONTENT, function () {
-      if (!self._userScrolled || self.scrollOnInput) {
-        nextTick(() => {
-          self.setScrollPerc(100)
-          self._userScrolled = false
-          self.screen.render()
-        })
-      }
+    this.on(SET_CONTENT, () => {
+      if (!self._userScrolled || self.scrollOnInput) nextTick(() => {
+        self.setScrollPerc(100)
+        self._userScrolled = false
+        self.screen.render()
+      })
     })
   }
   static build(options) { return new Log(options) }
+  log = this.add // log() { return this.add() }
   add() {
     const args = Array.prototype.slice.call(arguments)
     if (typeof args[0] === OBJ) {
@@ -47,7 +46,8 @@ export class Log extends ScrollableText {
     if (this._clines.fake.length > this.scrollback) this.shiftLine(0, (this.scrollback / 3) | 0)
     return ret
   }
-  _scroll(offset, always) {
+  _scroll = ScrollableBox.prototype.scroll
+  scroll(offset, always) {
     if (offset === 0) return this._scroll(offset, always)
     this._userScrolled = true
     const ret = this._scroll(offset, always)

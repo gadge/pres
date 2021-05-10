@@ -5,7 +5,7 @@
  */
 
 import { Box }     from '@pres/components-core'
-import { PRESS, }  from '@pres/enum-events'
+import { PRESS }   from '@pres/enum-events'
 import { Button }  from './button'
 import { Textbox } from './textbox'
 

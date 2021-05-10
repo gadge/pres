@@ -4,7 +4,6 @@
  * https://github.com/chjj/blessed
  */
 import { NUM, STR }                                                       from '@typen/enum-data-types'
-import { nullish }                                                        from '@typen/nullish'
 import { COLOR_MAPPING, COLOR_NAMES, XTERM_COLORS }                       from './assets'
 import { colors, HEX_COLORS, ncolors, RGB_COLORS, SPARSE_NAMES, vcolors } from './src/manet'
 
@@ -62,11 +61,11 @@ function colorDistance(r_, g_, b_, _r, _g, _b) {
 
 // This might work well enough for a terminal's colors: treat RGB as XYZ in a
 // 3-dimensional space and go midway between the two points.
-export function mixColors(colorA, colorB, alpha) {
+export function mixColors(colorA, colorB, alpha = 0.5) {
   if (colorA === 0x1ff) colorA = 0 // if (colorA === 0x1ff) return colorA;
   if (colorB === 0x1ff) colorB = 0 // if (colorB === 0x1ff) return colorB;
-  if (nullish(alpha)) alpha = 0.5
-  let [ r_, g_, b_ ] = RGB_COLORS[colorA], [ _r, _g, _b ] = RGB_COLORS[colorB]
+  let [ r_, g_, b_ ] = RGB_COLORS[colorA],
+      [ _r, _g, _b ] = RGB_COLORS[colorB]
   r_ += (_r - r_) * alpha | 0
   g_ += (_g - g_) * alpha | 0
   b_ += (_b - b_) * alpha | 0
@@ -139,9 +138,7 @@ export function convert(color) {
   color = typeof color === NUM
     ? color
     : typeof color === STR && (color = color.replace(/[\- ]/g, ''))
-      ? COLOR_NAMES[color] != null
-        ? COLOR_NAMES[color]
-        : match(color)
+      ? COLOR_NAMES[color] ?? match(color)
       : Array.isArray(color)
         ? match(color) : -1
   return color !== -1 ? color : 0x1ff

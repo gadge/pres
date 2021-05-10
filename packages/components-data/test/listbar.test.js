@@ -19,7 +19,7 @@ const box = blessed.box({
   content: '...'
 })
 
-const bar = blessed.listbar({
+const bar = blessed.listBar({
   //sup: screen,
   bottom: 0,
   left: 3,
@@ -48,64 +48,64 @@ const bar = blessed.listbar({
   commands: {
     'one': {
       keys: [ 'a' ],
-      callback: function () {
+      callback: () => {
         box.setContent('Pressed one.')
         screen.render()
       }
     },
-    'two': function () {
+    'two': () => {
       box.setContent('Pressed two.')
       screen.render()
     },
-    'three': function () {
+    'three': () => {
       box.setContent('Pressed three.')
       screen.render()
     },
-    'four': function () {
+    'four': () => {
       box.setContent('Pressed four.')
       screen.render()
     },
-    'five': function () {
+    'five': () => {
       box.setContent('Pressed five.')
       screen.render()
     },
-    'six': function () {
+    'six': () => {
       box.setContent('Pressed six.')
       screen.render()
     },
-    'seven': function () {
+    'seven': () => {
       box.setContent('Pressed seven.')
       screen.render()
     },
-    'eight': function () {
+    'eight': () => {
       box.setContent('Pressed eight.')
       screen.render()
     },
-    'nine': function () {
+    'nine': () => {
       box.setContent('Pressed nine.')
       screen.render()
     },
-    'ten': function () {
+    'ten': () => {
       box.setContent('Pressed ten.')
       screen.render()
     },
-    'eleven': function () {
+    'eleven': () => {
       box.setContent('Pressed eleven.')
       screen.render()
     },
-    'twelve': function () {
+    'twelve': () => {
       box.setContent('Pressed twelve.')
       screen.render()
     },
-    'thirteen': function () {
+    'thirteen': () => {
       box.setContent('Pressed thirteen.')
       screen.render()
     },
-    'fourteen': function () {
+    'fourteen': () => {
       box.setContent('Pressed fourteen.')
       screen.render()
     },
-    'fifteen': function () {
+    'fifteen': () => {
       box.setContent('Pressed fifteen.')
       screen.render()
     }
@@ -116,8 +116,6 @@ screen.append(bar)
 
 bar.focus()
 
-screen.key('q', function () {
-  return screen.destroy()
-})
+screen.key('q', () => screen.destroy())
 
 screen.render()
