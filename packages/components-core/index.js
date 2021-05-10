@@ -5,8 +5,8 @@ import { Screen }         from './core/screen'
 import { Layout }         from './src/layout'
 import { Line }           from './src/line'
 import { Log }            from './src/log'
-import { ScrollableBox }  from './src/scrollablebox'
-import { ScrollableText } from './src/scrollabletext'
+import { ScrollableBox }  from './src/scrollable-box'
+import { ScrollableText } from './src/scrollable-text'
 import { Terminal }       from './src/terminal'
 
 const box = (options) => new Box(options)

@@ -16,8 +16,8 @@ import * as unicode      from '@pres/util-unicode'
 import { FUN, NUM, STR } from '@typen/enum-data-types'
 import { nullish }       from '@typen/nullish'
 import assert            from 'assert'
-import { _Scrollable }   from '../utils/_Scrollable'
 import { Box }           from './box'
+import { Scrollable }    from './scrollable'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 export class Element extends Node {
@@ -28,10 +28,10 @@ export class Element extends Node {
    */
   constructor(options = {}) {
     super(options)
-    if (options.scrollable && !this._ignore && this.type !== 'scrollable-box') {
-      // console.log(Reflect.ownKeys(_Scrollable.prototype))
-      Mixin.assign(this, _Scrollable.prototype)
-      // console.log(Reflect.ownKeys(this))
+    if (options.scrollable) { // && !this._ignore && this.type !== 'scrollable-box'
+      // console.log(Reflect.ownKeys(Scrollable.prototype))
+      Mixin.assign(this, Scrollable.prototype)
+      console.log(this.type, Reflect.ownKeys(this))
     }
     const self = this
     // if (!(this instanceof Node)) { return new Element(options) }
@@ -141,7 +141,7 @@ export class Element extends Node {
     })
     if (this.options.draggable) { this.draggable = true }
     if (options.focused) this.focus()
-    this.constructScrollable?.call(this, options)
+    this.configScroll?.call(this, options)
   }
   static build(options) { return new Element(options) }
   get focused() { return this.screen.focused === this}

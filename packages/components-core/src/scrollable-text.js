@@ -7,7 +7,7 @@
 /**
  * Modules
  */
-import { ScrollableBox } from './scrollablebox'
+import { ScrollableBox } from './scrollable-box'
 
 export class ScrollableText extends ScrollableBox {
   type = 'scrollable-text'
