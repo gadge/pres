@@ -1,0 +1,96 @@
+OUT: >>> [Program.prototype.#listenInput]\n
+-
+OUT: ^[[?1049h^[[?1h^[=^[[1;39r^[[?25l^[[1;1H^[[H^[[2J^[[?1000h^[[?1002h^[[?1003h^[[?1005h^[7^[[17;1H^[[42C^[(0lq^[[1C^[[1;31m^[(BWARNING^[[1C^[[m^[(0qqqqqqqqqqqk^[[18;1H^[[18;43Hx^[[21Cx^[[19;1H^[[19;43Hx^[[1C^[[1m^[(BTerminfo not found.^[[1C^[[m^[(0x^[[20;1H^[[20;43Hx^[[21Cx^[[21;1H^[[21;43Hmqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+-
+IN: ^[[MCjF
+-
+IN: ^[[MCiF
+-
+IN: ^[[MChF
+-
+IN: ^[[MChE
+-
+IN: ^[[MChD
+-
+IN: ^[[MChC
+-
+IN: ^[[MCgC
+-
+IN: ^[[MCgB
+-
+IN: ^[[MCgA
+-
+IN: ^[[MCg@
+-
+IN: ^[[MCh@
+-
+IN: ^[[MCh?
+-
+IN: ^[[MCh>
+-
+IN: ^[[MCh=
+-
+IN: ^[[MCh<
+-
+IN: ^[[MCi<
+-
+IN: ^[[MCi;
+-
+IN: ^[[MCi:
+-
+IN: ^[[MCj:
+-
+IN: ^[[MCj9
+-
+IN: ^[[MCj8
+-
+IN: ^[[MCj7
+-
+IN: ^[[MCk7
+-
+IN: ^[[MCk6
+-
+IN: ^[[MCk5
+-
+IN: ^[[MCl5
+-
+IN: ^[[MCl4
+-
+OUT: ^[7^[[17;1H^[[42C  ^[[1C       ^[[1C            ^[[18;1H^[[18;43H ^[[21C ^[[19;1H^[[19;43H ^[[1C                   ^[[1C ^[[20;1H^[[20;43H ^[[21C ^[[21;1H^[[21;43H                       ^[8
+-
+IN: ^[[MCl3^[[MCl2
+-
+IN: ^[[MCl1
+-
+IN: ^[[MCl0
+-
+IN: ^[[MCk0
+-
+IN: ^[[MCj0
+-
+IN: ^[[MCi0
+-
+IN: ^[[MCh0
+-
+IN: ^[[MCh1
+-
+IN: ^[[MCg1
+-
+IN: ^[[MCf1
+-
+IN: ^[[MCe2
+-
+IN: ^[[MCd2
+-
+IN: ^[[MCd3
+-
+IN: ^[[MCc3
+-
+IN: ^[[MCb3
+-
+IN: ^[[MCb4
+-
+IN: q
+-
+OUT: ^[[?1l^[>^[[?12l^[[?25h^[[H^[[2J^[[?1000l^[[?1002l^[[?1003l^[[?1005l^[[?1049l
+-
