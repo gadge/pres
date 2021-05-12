@@ -4,11 +4,11 @@ import { KEYPRESS, MOUSEDOWN, MOUSEUP, PARSED_CONTENT, SCROLL, WHEELDOWN, WHEELU
  * @extends {Element}
  */
 export class Scroll {
-  constructor(options = {}) {
-    if (!options.lazy) { this.configScroll(options) }
+  constructor(options = {}, lazy) {
+    if (lazy) return this
+    this.config(options)
   }
-
-  configScroll(options) {
+  config(options) {
     const self = this
     // if (options.scrollable === false) return this
     this.scrollable = true

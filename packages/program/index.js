@@ -1,1 +1,2 @@
-export { Program } from './src/program'
+export { Program }           from './src/program'
+export { ProgramCollection } from './src/programCollection'

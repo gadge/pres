@@ -34,6 +34,7 @@ import {
 }                                                                 from '../assets/csi.codes'
 import { gpmClient }                                              from './gpmclient'
 import { emitKeypressEvents }                                     from './keys'
+import { ProgramCollection }                                      from './programCollection'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
@@ -48,7 +49,7 @@ export class Program extends EventEmitter {
     console.log(">> [Program.constructor]")
     const self = this
     // if (!(this instanceof Program)) return new Program(options)
-    Program.configSingleton(this)
+    ProgramCollection.initialize(this)
     // EventEmitter.call(this)
     if (!options || options.__proto__ !== Object.prototype) {
       const [ input, output ] = arguments
@@ -117,34 +118,7 @@ export class Program extends EventEmitter {
     console.log('>> [Program.build]')
     return new Program(options)
   }
-  static configSingleton(program) {
-    if (!Program.global) Program.global = program
-    if (!~Program.instances.indexOf(program)) {
-      Program.instances.push(program)
-      program.index = Program.total
-      Program.total++
-    }
-    console.log('>> [Program.configSingleton]', Program.index, Program.total)
-    if (Program._bound) return
-    Program._bound = true
-    unshiftEvent(process, EXIT, Program._exitHandler = function () {
-      Program.instances.forEach(function (program) {
-        // Potentially reset window title on exit:
-        // if (program._originalTitle) {
-        //   program.setTitle(program._originalTitle);
-        // }
-        // Ensure the buffer is flushed (it should
-        // always be at this point, but who knows).
-        program.flush()
-        // Ensure _exiting is set (could technically
-        // use process._exiting).
-        program._exiting = true
-      })
-    })
-  }
-  static global = null
-  static total = 0
-  static instances = []
+
 
   get terminal() { return this._terminal }
   set terminal(terminal) { return this.setTerminal(terminal), this.terminal }
@@ -284,14 +258,14 @@ export class Program extends EventEmitter {
     this.input.on(KEYPRESS, this.input._keypressHandler = (ch, key) => {
       key = key || { ch: ch }
       // A mouse sequence. The `keys` module doesn't understand these.
-      if (key.name === UNDEFINED && (key.code === '[M' || key.code === '[I' || key.code === '[O')) return
+      if (key.name === UNDEFINED && (key.code === '[M' || key.code === '[I' || key.code === '[O')) return void 0
       // Not sure what this is, but we should probably ignore it.
-      if (key.name === UNDEFINED) return
+      if (key.name === UNDEFINED) return void 0
       if (key.name === ENTER && key.sequence === '\n') key.name = 'linefeed'
       if (key.name === RETURN && key.sequence === '\r') self.input.emit(KEYPRESS, ch, merge({}, key, { name: ENTER }))
       const name = `${key.ctrl ? 'C-' : VO}${key.meta ? 'M-' : VO}${key.shift && key.name ? 'S-' : VO}${key.name || ch}`
       key.full = name
-      Program.instances.forEach(program => {
+      ProgramCollection.instances.forEach(program => {
         if (program.input !== self.input) return void 0
         program.emit(KEYPRESS, ch, key)
         program.emit('key' + SP + name, ch, key)
@@ -299,7 +273,7 @@ export class Program extends EventEmitter {
     })
     this.input.on(DATA,
       this.input._dataHandler =
-        data => Program.instances.forEach(
+        data => ProgramCollection.instances.forEach(
           program => program.input !== self.input ? void 0 : void program.emit(DATA, data)
         )
     )
@@ -310,7 +284,7 @@ export class Program extends EventEmitter {
     if (!this.output.isTTY) nextTick(() => self.emit(WARNING, 'Output is not a TTY'))
     // Output
     function resize() {
-      Program.instances.forEach(p => {
+      ProgramCollection.instances.forEach(p => {
         const { output } = p
         if (output !== self.output) return void 0
         p.cols = output.columns
@@ -319,7 +293,7 @@ export class Program extends EventEmitter {
       })
     }
     this.output.on(RESIZE, this.output._resizeHandler = () => {
-      Program.instances.forEach(p => {
+      ProgramCollection.instances.forEach(p => {
         if (p.output !== self.output) return
         const { options: { resizeTimeout }, _resizeTimer } = p
         if (!resizeTimeout) return resize()
@@ -330,18 +304,18 @@ export class Program extends EventEmitter {
     })
   }
   destroy() {
-    const index = Program.instances.indexOf(this)
+    const index = ProgramCollection.instances.indexOf(this)
     if (~index) {
-      Program.instances.splice(index, 1)
-      Program.total--
+      ProgramCollection.instances.splice(index, 1)
+      ProgramCollection.total--
       this.flush()
       this._exiting = true
-      Program.global = Program.instances[0]
-      if (Program.total === 0) {
-        Program.global = null
-        process.removeListener(EXIT, Program._exitHandler)
-        delete Program._exitHandler
-        delete Program._bound
+      ProgramCollection.global = ProgramCollection.instances[0]
+      if (ProgramCollection.total === 0) {
+        ProgramCollection.global = null
+        process.removeListener(EXIT, ProgramCollection._exitHandler)
+        delete ProgramCollection._exitHandler
+        delete ProgramCollection._bound
       }
       this.input._presInput--
       this.output._presOutput--
@@ -2179,7 +2153,6 @@ export class Program extends EventEmitter {
   deleteColumns = this.decdc // Delete Ps Column(s) (default = 1) (DECDC), VT420 and up.
   decdc(...args) { return this.#write(CSI + args.join(SC) + _DECDC) }
 
-
   sigtstp(callback) {
     const resume = this.pause()
     process.once(SIGCONT, () => { resume(), (callback ? callback() : undefined) })
@@ -2217,15 +2190,7 @@ export class Program extends EventEmitter {
  * Helpers
  */
 
-// We could do this easier by just manipulating the _events object, or for
-// older versions of node, manipulating the array returned by listeners(), but
-// neither of these methods are guaranteed to work in future versions of node.
-function unshiftEvent(target, event, listener) {
-  const listeners = target.listeners(event)
-  target.removeAllListeners(event)
-  target.on(event, listener)
-  listeners.forEach(listener => target.on(event, listener))
-}
+
 function merge(target) {
   slice
     .call(arguments, 1)

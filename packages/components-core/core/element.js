@@ -23,14 +23,16 @@ export class Element extends Node {
   /**
    * Element
    */
-  constructor(options = {}) {
+  constructor(options = {}, lazy) {
     super(options)
-    if (!options.lazy) { this.config(options) }
+    if (lazy) return this
+    Element.prototype.config.call(this, options)
   }
   static build(options) { return new Element(options) }
   config(options) {
     const self = this
     this.name = options.name
+    // console.log('>> [Element.prototype.config]', this.codename)
     const position = this.position = (options.position ?? (options.position = {
       left: options.left,
       right: options.right,

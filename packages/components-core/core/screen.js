@@ -4,59 +4,34 @@
  * https://github.com/chjj/blessed
  */
 
-import { _Screen, Node } from '@pres/components-node'
+import { Node, ScreenCollection } from '@pres/components-node'
 import {
   BLUR, CLICK, DESTROY, ELEMENT_CLICK, ELEMENT_MOUSEOUT, ELEMENT_MOUSEOVER, ELEMENT_MOUSEUP, ERROR, EXIT, FOCUS,
   KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, NEW_LISTENER, PRERENDER, RENDER,
   RESIZE, SIGINT, SIGQUIT, SIGTERM, UNCAUGHT_EXCEPTION, WARNING, WHEELDOWN, WHEELUP,
-}                        from '@pres/enum-events'
-import { Program }       from '@pres/program'
-import * as colors       from '@pres/util-colors'
-import * as helpers      from '@pres/util-helpers'
-import * as unicode      from '@pres/util-unicode'
-import { FUN, OBJ, STR } from '@typen/enum-data-types'
-import cp, { spawn }     from 'child_process'
-import { Log }           from '../src/log'
-import { Box }           from './box'
+}                                 from '@pres/enum-events'
+import { Program }                from '@pres/program'
+import * as colors                from '@pres/util-colors'
+import * as helpers               from '@pres/util-helpers'
+import * as unicode               from '@pres/util-unicode'
+import { FUN, OBJ, STR }          from '@typen/enum-data-types'
+import cp, { spawn }              from 'child_process'
+import { Log }                    from '../src/log'
+import { Box }                    from './box'
 
 export class Screen extends Node {
   type = 'screen'
   constructor(options = {}) {
-    options.lazy = true
-    super(options)
-    const self = this
-    // if (!(this instanceof Node)) return new Screen(options)
-    _Screen.configSingleton(this)
-    if (options.rsety && options.listen) options = { program: options }
-    this.program = options.program
-    if (!this.program) {
-      this.program = Program.build({
-        input: options.input,
-        output: options.output,
-        log: options.log,
-        debug: options.debug,
-        dump: options.dump,
-        terminal: options.terminal || options.term,
-        resizeTimeout: options.resizeTimeout,
-        forceUnicode: options.forceUnicode,
-        tput: true,
-        buffer: true,
-        zero: true
-      })
-    }
-    else {
-      this.program.setupTput()
-      this.program.useBuffer = true
-      this.program.zero = true
-      this.program.options.resizeTimeout = options.resizeTimeout
-      if (options.forceUnicode != null) {
-        this.program.tput.features.unicode = options.forceUnicode
-        this.program.tput.unicode = options.forceUnicode
-      }
-    }
-    this.tput = this.program.tput
-    super.setup(options)
+    super(options, true)
+    ScreenCollection.initialize(this)
+    this.setupProgram(options)
+    Node.prototype.setup.call(this, options)
     // super(options) // Node.call(this, options)
+    Screen.prototype.config.call(this, options)
+  }
+  static build(options) { return new Screen(options) }
+  config(options) {
+    const self = this
     this.autoPadding = options.autoPadding !== false
     this.tabc = Array((options.tabSize || 4) + 1).join(' ')
     this.dockBorders = options.dockBorders
@@ -110,7 +85,7 @@ export class Screen extends Node {
       _state: 1,
       _hidden: true
     }
-    this.program.on(RESIZE, function () {
+    this.program.on(RESIZE, () => {
       self.alloc()
       self.render();
       (function emit(el) {
@@ -118,9 +93,9 @@ export class Screen extends Node {
         el.sub.forEach(emit)
       })(self)
     })
-    this.program.on(FOCUS, () => {self.emit(FOCUS)})
-    this.program.on(BLUR, () => {self.emit(BLUR)})
-    this.program.on(WARNING, text => {self.emit(WARNING, text)})
+    this.program.on(FOCUS, () => self.emit(FOCUS))
+    this.program.on(BLUR, () => self.emit(BLUR))
+    this.program.on(WARNING, text => self.emit(WARNING, text))
     this.on(NEW_LISTENER, type => {
       if (type === KEYPRESS || type.indexOf('key ') === 0 || type === MOUSE) {
         if (type === KEYPRESS || type.indexOf('key ') === 0) self._listenKeys()
@@ -143,7 +118,36 @@ export class Screen extends Node {
     this.enter()
     this.postEnter()
   }
-  static build(options) { return new Screen(options) }
+  setupProgram(options) {
+    if (options.rsety && options.listen) options = { program: options }
+    this.program = options.program
+    if (!this.program) {
+      this.program = Program.build({
+        input: options.input,
+        output: options.output,
+        log: options.log,
+        debug: options.debug,
+        dump: options.dump,
+        terminal: options.terminal || options.term,
+        resizeTimeout: options.resizeTimeout,
+        forceUnicode: options.forceUnicode,
+        tput: true,
+        buffer: true,
+        zero: true
+      })
+    }
+    else {
+      this.program.setupTput()
+      this.program.useBuffer = true
+      this.program.zero = true
+      this.program.options.resizeTimeout = options.resizeTimeout
+      if (options.forceUnicode != null) {
+        this.program.tput.features.unicode = options.forceUnicode
+        this.program.tput.unicode = options.forceUnicode
+      }
+    }
+    this.tput = this.program.tput
+  }
   get title() { return this.program.title }
   set title(title) { return this.program.title = title }
   get terminal() { return this.program.terminal }
@@ -267,24 +271,24 @@ export class Screen extends Node {
   destroy = this._destroy
   _destroy() {
     this.leave()
-    const index = _Screen.instances.indexOf(this)
+    const index = ScreenCollection.instances.indexOf(this)
     if (~index) {
-      _Screen.instances.splice(index, 1)
-      _Screen.total--
-      _Screen.global = _Screen.instances[0]
-      if (_Screen.total === 0) {
-        _Screen.global = null
-        process.removeListener(UNCAUGHT_EXCEPTION, _Screen._exceptionHandler)
-        process.removeListener(SIGTERM, _Screen._sigtermHandler)
-        process.removeListener(SIGINT, _Screen._sigintHandler)
-        process.removeListener(SIGQUIT, _Screen._sigquitHandler)
-        process.removeListener(EXIT, _Screen._exitHandler)
-        delete _Screen._exceptionHandler
-        delete _Screen._sigtermHandler
-        delete _Screen._sigintHandler
-        delete _Screen._sigquitHandler
-        delete _Screen._exitHandler
-        delete _Screen._bound
+      ScreenCollection.instances.splice(index, 1)
+      ScreenCollection.total--
+      ScreenCollection.global = ScreenCollection.instances[0]
+      if (ScreenCollection.total === 0) {
+        ScreenCollection.global = null
+        process.removeListener(UNCAUGHT_EXCEPTION, ScreenCollection._exceptionHandler)
+        process.removeListener(SIGTERM, ScreenCollection._sigtermHandler)
+        process.removeListener(SIGINT, ScreenCollection._sigintHandler)
+        process.removeListener(SIGQUIT, ScreenCollection._sigquitHandler)
+        process.removeListener(EXIT, ScreenCollection._exitHandler)
+        delete ScreenCollection._exceptionHandler
+        delete ScreenCollection._sigtermHandler
+        delete ScreenCollection._sigintHandler
+        delete ScreenCollection._sigquitHandler
+        delete ScreenCollection._exitHandler
+        delete ScreenCollection._bound
       }
       this.destroyed = true
       this.emit(DESTROY)

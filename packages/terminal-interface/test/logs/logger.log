@@ -1,434 +1,228 @@
 OUT: >> [program.#listenInput]\n
 -
-OUT: >> box ^[[33m1^[[39m ^[[90mundefined^[[39m configScroll\n
+OUT: >> [Node.prototype.setup] screen.0 ∈ (\xd8)\n
 -
-OUT: ^[[?1049h^[[?1h^[=^[[1;52r^[[?25l^[[1;1H^[[H^[[2J^[[?1000h^[[?1002h^[[?1003h^[[?1005h^[7^[[14;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[15;1H^[[15;33Hx^[[61Cx^[[16;1H^[[16;33Hx^[[61Cx^[[17;1H^[[17;33Hx^[[61Cx^[[18;1H^[[18;33Hx^[[61Cx^[[19;1H^[[19;33Hx^[[61Cx^[[20;1H^[[20;33Hx^[[61Cx^[[21;1H^[[21;33Hx^[[61Cx^[[22;1H^[[22;33Hx^[[61Cx^[[23;1H^[[23;33Hx^[[61Cx^[[24;1H^[[24;33Hx^[[61Cx^[[25;1H^[[25;33Hx^[[61Cx^[[26;1H^[[26;33Hx^[[61Cx^[[27;1H^[[27;33Hx^[[61Cx^[[28;1H^[[28;33Hx^[[61Cx^[[29;1H^[[29;33Hx^[[61Cx^[[30;1H^[[30;33Hx^[[61Cx^[[31;1H^[[31;33Hx^[[61Cx^[[32;1H^[[32;33Hx^[[61Cx^[[33;1H^[[33;33Hx^[[61Cx^[[34;1H^[[34;33Hx^[[61Cx^[[35;1H^[[35;33Hx^[[61Cx^[[36;1H^[[36;33Hx^[[61Cx^[[37;1H^[[37;33Hx^[[61Cx^[[38;1H^[[38;33Hx^[[61Cx^[[39;1H^[[39;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8^[7^[[24;1H^[[52C^[(0lq^[[1C^[[1;31m^[(BWARNING^[[1C^[[m^[(0qqqqqqqqqqqk^[[25;1H^[[25;53Hx^[[21Cx^[[26;1H^[[26;53Hx^[[1C^[[1m^[(BTerminfo not found.^[[1C^[[m^[(0x^[[27;1H^[[27;53Hx^[[21Cx^[[28;1H^[[28;53Hmqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+OUT: >> [Node.prototype.setup] node.1 ∈ screen.0\n
 -
-OUT: ^[7^[[15;1H^[[33CHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqgww^[[m.^[8
+OUT: >> [Node.constructor] imme node.1 ∈ screen.0\n
 -
-IN: ^[[MC7B
+OUT: >> [Element.prototype.config] element.1\n
 -
-IN: ^[[MC9A
+OUT: >> [Scroll.prototype.config] box.1\n
 -
-IN: ^[[MC<A
+OUT: >> [Node.prototype.setup] node.2 ∈ screen.0\n
 -
-IN: ^[[MC=@
+OUT: >> [Node.constructor] imme node.2 ∈ screen.0\n
 -
-IN: ^[[MC>@
+OUT: >> [Element.prototype.config] element.2\n
 -
-OUT: ^[7^[[24;1H^[[52C  ^[[1C       ^[[1C            ^[[25;1H^[[25;53H ^[[21C ^[[26;1H^[[26;53H ^[[1C                   ^[[1C ^[[27;1H^[[27;53H ^[[21C ^[[28;1H^[[28;53H                       ^[8
+OUT: >> [Node.prototype.setup] node.3 ∈ element.2\n
 -
-OUT: ^[7^[[14;38r^[[16;1H^[[1L^[[1;52r^[[14;38r^[[17;1H^[[1L^[[1;52r^[[16;1H^[[32C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqhoo^[[m.^[[39C^[(0x^[[17;1H^[[17;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[(B^[8
+OUT: >> [Node.constructor] imme node.3 ∈ element.2\n
 -
-IN: ^[[MC=@
+OUT: >> [Element.prototype.config] element.3\n
 -
-IN: ^[[MC<@
+OUT: ^[[?1049h^[[?1h^[=^[[1;39r^[[?25l^[[1;1H^[[H^[[2J^[[?1000h^[[?1002h^[[?1003h^[[?1005h^[7^[[11;1H^[[27C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[12;1H^[[12;28Hx^[[52Cx^[[13;1H^[[13;28Hx^[[52Cx^[[14;1H^[[14;28Hx^[[52Cx^[[15;1H^[[15;28Hx^[[52Cx^[[16;1H^[[16;28Hx^[[52Cx^[[17;1H^[[17;28Hx^[[52Cx^[[18;1H^[[18;28Hx^[[52Cx^[[19;1H^[[19;28Hx^[[52Cx^[[20;1H^[[20;28Hx^[[52Cx^[[21;1H^[[21;28Hx^[[52Cx^[[22;1H^[[22;28Hx^[[52Cx^[[23;1H^[[23;28Hx^[[52Cx^[[24;1H^[[24;28Hx^[[52Cx^[[25;1H^[[25;28Hx^[[52Cx^[[26;1H^[[26;28Hx^[[52Cx^[[27;1H^[[27;28Hx^[[52Cx^[[28;1H^[[28;28Hx^[[52Cx^[[29;1H^[[29;28Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8^[7^[[17;1H^[[42C^[(0lq^[[1C^[[1;31m^[(BWARNING^[[1C^[[m^[(0qqqqqqqqqqqk^[[18;1H^[[18;43Hx^[[21Cx^[[19;1H^[[19;43Hx^[[1C^[[1m^[(BTerminfo not found.^[[1C^[[m^[(0x^[[20;1H^[[20;43Hx^[[21Cx^[[21;1H^[[21;43Hmqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
 -
-IN: ^[[MC;@
+OUT: ^[7^[[11;28r^[[13;1H^[[1L^[[1;39r^[[12;1H^[[28CHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66g48^[[m.^[[13;1H^[[13;28H^[(0x^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[21C^[(0x^[[17;1H^[[17;43Hlq^[[1C^[[1;31m^[(BWARNING^[[1C^[[m^[(0qqqqqqqqqqqk^[[18;1H^[[18;43Hx^[(B ^[[1C       ^[[1C           ^[(0x^[[19;1H^[[19;45H^[[1m^[(BTerminfo not found.^[[m^[[20;1H^[[20;45H                   ^[[21;1H^[[21;43H^[(0mqqqqqqqqqqqqqqqqqqqqqj^[[22;1H^[[22;43H^[(B                       ^[8
 -
-IN: ^[[MC:@
+OUT: ^[7^[[17;1H^[[42C  ^[[1C       ^[[1C            ^[[18;1H^[[18;43H ^[[21C ^[[19;1H^[[19;43H ^[[1C                   ^[[1C ^[[20;1H^[[20;43H ^[[21C ^[[21;1H^[[21;43H                       ^[8
 -
-IN: ^[[MC9@
+IN: ^[[MCh<
 -
-IN: ^[[MC8@
+OUT: ^[7^[[11;28r^[[14;1H^[[1L^[[1;39r^[[11;28r^[[15;1H^[[1L^[[1;39r^[[14;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66gw1^[[m.^[[30C^[(0x^[[15;1H^[[15;28Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[21C^[(0x^[(B^[8
 -
-IN: ^[[MC8?
+IN: ^[[MCg<
 -
-IN: ^[[MC7?
+IN: ^[[MCf<
 -
-OUT: ^[7^[[14;38r^[[18;1H^[[1L^[[1;52r^[[18;1H^[[32C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqigf^[[m.^[[39C^[(0x^[(B^[8
+IN: ^[[MCe<
 -
-IN: ^[[MC7>
+IN: ^[[MCd<
 -
-IN: ^[[MC6>
+IN: ^[[MCc;
 -
-OUT: ^[7^[[14;38r^[[19;1H^[[1L^[[1;52r^[[19;1H^[[32C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqj89^[[m.^[[39C^[(0x^[(B^[8
+IN: ^[[MCb;
 -
-IN: ^[[MC7>
+IN: ^[[MCa;
 -
-IN: ^[[MC8>
+IN: ^[[MC`;
 -
-IN: ^[[MC8?
+IN: ^[[MC`:
 -
-IN: ^[[MC9?
+IN: ^[[MC_:
 -
-IN: ^[[MC:?
+OUT: ^[7^[[11;28r^[[16;1H^[[1L^[[1;39r^[[11;28r^[[17;1H^[[1L^[[1;39r^[[16;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66hnt^[[m.^[[30C^[(0x^[[17;1H^[[17;28Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[21C^[(0x^[(B^[8
 -
-IN: ^[[MC;?
+OUT: ^[7^[[11;28r^[[18;1H^[[1L^[[1;39r^[[11;28r^[[19;1H^[[1L^[[1;39r^[[18;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66ifo^[[m.^[[30C^[(0x^[[19;1H^[[19;28Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[21C^[(0x^[(B^[8
 -
-IN: ^[[MC<@
+OUT: ^[7^[[11;28r^[[20;1H^[[1L^[[1;39r^[[20;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66j7i^[[m.^[[30C^[(0x^[(B^[8
 -
-IN: ^[[MC=@
+OUT: ^[7^[[11;28r^[[21;1H^[[1L^[[1;39r^[[11;28r^[[22;1H^[[1L^[[1;39r^[[21;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66jzc^[[m.^[[30C^[(0x^[[22;1H^[[22;28Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[21C^[(0x^[(B^[8
 -
-IN: ^[[MC>A
+OUT: ^[7^[[11;28r^[[23;1H^[[1L^[[1;39r^[[23;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66kr7^[[m.^[[30C^[(0x^[(B^[8
 -
-IN: ^[[MCAB
+OUT: ^[7^[[11;28r^[[24;1H^[[1L^[[1;39r^[[24;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66lj0^[[m.^[[30C^[(0x^[(B^[8
 -
-IN: ^[[MCCC
+OUT: ^[7^[[11;28r^[[25;1H^[[1L^[[1;39r^[[25;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66mat^[[m.^[[30C^[(0x^[(B^[8
 -
-IN: ^[[MCFD
+OUT: ^[7^[[11;28r^[[26;1H^[[1L^[[1;39r^[[11;28r^[[27;1H^[[1L^[[1;39r^[[26;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66n2n^[[m.^[[30C^[(0x^[[27;1H^[[27;28Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[21C^[(0x^[(B^[8
 -
-IN: ^[[MCHE
+OUT: ^[7^[[11;28r^[[28;1H^[[1L^[[1;39r^[[12;1H^[[79C^[[7m ^[[m^[[13;1H^[[13;80H^[[43m ^[[m^[[14;1H^[[14;80H^[[43m ^[[m^[[15;1H^[[15;80H^[[43m ^[[m^[[16;1H^[[16;80H^[[43m ^[[m^[[17;1H^[[17;80H^[[43m ^[[m^[[18;1H^[[18;80H^[[43m ^[[m^[[19;1H^[[19;80H^[[43m ^[[m^[[20;1H^[[20;80H^[[43m ^[[m^[[21;1H^[[21;80H^[[43m ^[[m^[[22;1H^[[22;80H^[[43m ^[[m^[[23;1H^[[23;80H^[[43m ^[[m^[[24;1H^[[24;80H^[[43m ^[[m^[[25;1H^[[25;80H^[[43m ^[[m^[[26;1H^[[26;80H^[[43m ^[[m^[[27;1H^[[27;80H^[[43m ^[[m^[[28;1H^[[28;28H^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66nug^[[m.^[[29C^[[43m ^[[m^[(0x^[(B^[8^[7^[[12;28r^[[12;1H^[[1M^[[1;39r^[[28;1H^[[28;28H^[(0x^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[20C^[[7m ^[[m^[(0x^[(B^[8
 -
-IN: ^[[MCKF
+OUT: ^[7^[[17;1H^[[17;80H^[[7m ^[[m^[[28;1H^[[28;80H^[[43m ^[[m^[8^[7^[[12;28r^[[12;1H^[[2M^[[1;39r^[[15;1H^[[15;80H^[[43m ^[[m^[[27;1H^[[27;28H^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66oma^[[m.^[[29C^[[43m ^[[m^[(0x^[[28;1H^[[28;28Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[20C^[[7m ^[[m^[(0x^[(B^[8
 -
-IN: ^[[MCMH
+IN: ^[[MC`:
 -
-IN: ^[[MCPI
+IN: ^[[MCa:
 -
-IN: ^[[MCRJ
+IN: ^[[MCa;
 -
-IN: ^[[MCTL
+IN: ^[[MCb;
 -
-IN: ^[[MCWN
+IN: ^[[MCc;
 -
-IN: ^[[MCYP
+IN: ^[[M`c;
 -
-OUT: ^[7^[[14;38r^[[20;1H^[[1L^[[1;52r^[[14;38r^[[21;1H^[[1L^[[1;52r^[[20;1H^[[32C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqk01^[[m.^[[39C^[(0x^[[21;1H^[[21;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[(B^[8
+IN: ^[[M`c;
 -
-IN: ^[[MC[R
+IN: ^[[M`c;
 -
-IN: ^[[MC]S
+IN: ^[[M`c;
 -
-IN: ^[[MC_T
+IN: ^[[M`c;
 -
-IN: ^[[MCeT^[[MCfT
+IN: ^[[M`c;
 -
-OUT: ^[7^[[14;38r^[[22;1H^[[1L^[[1;52r^[[22;1H^[[32C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqkrt^[[m.^[[39C^[(0x^[(B^[8
+IN: ^[[M`c;
 -
-OUT: ^[[H^[[2J^[7^[[14;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[15;1H^[[15;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqgww^[[m.^[[39C^[(0x^[[16;1H^[[16;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqhoo^[[m.^[[39C^[(0x^[[17;1H^[[17;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[[18;1H^[[18;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqigf^[[m.^[[39C^[(0x^[[19;1H^[[19;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqj89^[[m.^[[39C^[(0x^[[20;1H^[[20;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqk01^[[m.^[[39C^[(0x^[[21;1H^[[21;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[[22;1H^[[22;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqkrt^[[m.^[[39C^[(0x^[[23;1H^[[23;33Hx^[[61Cx^[[24;1H^[[24;33Hx^[[61Cx^[[25;1H^[[25;33Hx^[[61Cx^[[26;1H^[[26;33Hx^[[61Cx^[[27;1H^[[27;33Hx^[[61Cx^[[28;1H^[[28;33Hx^[[61Cx^[[29;1H^[[29;33Hx^[[61Cx^[[30;1H^[[30;33Hx^[[61Cx^[[31;1H^[[31;33Hx^[[61Cx^[[32;1H^[[32;33Hx^[[61Cx^[[33;1H^[[33;33Hx^[[61Cx^[[34;1H^[[34;33Hx^[[61Cx^[[35;1H^[[35;33Hx^[[61Cx^[[36;1H^[[36;33Hx^[[61Cx^[[37;1H^[[37;33Hx^[[61Cx^[[38;1H^[[38;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+IN: ^[[M`c;
 -
-OUT: ^[[H^[[2J^[7^[[12;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[13;1H^[[13;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqgww^[[m.^[[39C^[(0x^[[14;1H^[[14;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqhoo^[[m.^[[39C^[(0x^[[15;1H^[[15;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[[16;1H^[[16;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqigf^[[m.^[[39C^[(0x^[[17;1H^[[17;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqj89^[[m.^[[39C^[(0x^[[18;1H^[[18;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqk01^[[m.^[[39C^[(0x^[[19;1H^[[19;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[[20;1H^[[20;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqkrt^[[m.^[[39C^[(0x^[[21;1H^[[21;33Hx^[[61Cx^[[22;1H^[[22;33Hx^[[61Cx^[[23;1H^[[23;33Hx^[[61Cx^[[24;1H^[[24;33Hx^[[61Cx^[[25;1H^[[25;33Hx^[[61Cx^[[26;1H^[[26;33Hx^[[61Cx^[[27;1H^[[27;33Hx^[[61Cx^[[28;1H^[[28;33Hx^[[61Cx^[[29;1H^[[29;33Hx^[[61Cx^[[30;1H^[[30;33Hx^[[61Cx^[[31;1H^[[31;33Hx^[[61Cx^[[32;1H^[[32;33Hx^[[61Cx^[[33;1H^[[33;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+IN: ^[[M`c;
 -
-OUT: ^[[H^[[2J^[7^[[9;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[10;1H^[[10;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqgww^[[m.^[[39C^[(0x^[[11;1H^[[11;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqhoo^[[m.^[[39C^[(0x^[[12;1H^[[12;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[[13;1H^[[13;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqigf^[[m.^[[39C^[(0x^[[14;1H^[[14;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqj89^[[m.^[[39C^[(0x^[[15;1H^[[15;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqk01^[[m.^[[39C^[(0x^[[16;1H^[[16;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[[17;1H^[[17;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqkrt^[[m.^[[39C^[(0x^[[18;1H^[[18;33Hx^[[61Cx^[[19;1H^[[19;33Hx^[[61Cx^[[20;1H^[[20;33Hx^[[61Cx^[[21;1H^[[21;33Hx^[[61Cx^[[22;1H^[[22;33Hx^[[61Cx^[[23;1H^[[23;33Hx^[[61Cx^[[24;1H^[[24;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+IN: ^[[M`c;
 -
-OUT: ^[[H^[[2J^[7^[[9;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[10;1H^[[10;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqgww^[[m.^[[39C^[(0x^[[11;1H^[[11;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqhoo^[[m.^[[39C^[(0x^[[12;1H^[[12;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[[13;1H^[[13;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqigf^[[m.^[[39C^[(0x^[[14;1H^[[14;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqj89^[[m.^[[39C^[(0x^[[15;1H^[[15;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqk01^[[m.^[[39C^[(0x^[[16;1H^[[16;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[[17;1H^[[17;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqkrt^[[m.^[[39C^[(0x^[[18;1H^[[18;33Hx^[[61Cx^[[19;1H^[[19;33Hx^[[61Cx^[[20;1H^[[20;33Hx^[[61Cx^[[21;1H^[[21;33Hx^[[61Cx^[[22;1H^[[22;33Hx^[[61Cx^[[23;1H^[[23;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+IN: ^[[M`c;
 -
-OUT: ^[[H^[[2J^[7^[[7;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[8;1H^[[8;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqgww^[[m.^[[39C^[(0x^[[9;1H^[[9;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqhoo^[[m.^[[39C^[(0x^[[10;1H^[[10;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[[11;1H^[[11;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqigf^[[m.^[[39C^[(0x^[[12;1H^[[12;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqj89^[[m.^[[39C^[(0x^[[13;1H^[[13;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqk01^[[m.^[[39C^[(0x^[[14;1H^[[14;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[[15;1H^[[15;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqkrt^[[m.^[[39C^[(0x^[[16;1H^[[16;33Hx^[[61Cx^[[17;1H^[[17;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+IN: ^[[M`c;
 -
-OUT: ^[[H^[[2J^[7^[[7;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[8;1H^[[8;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqgww^[[m.^[[39C^[(0x^[[9;1H^[[9;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqhoo^[[m.^[[39C^[(0x^[[10;1H^[[10;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[[11;1H^[[11;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqigf^[[m.^[[39C^[(0x^[[12;1H^[[12;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqj89^[[m.^[[39C^[(0x^[[13;1H^[[13;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqk01^[[m.^[[39C^[(0x^[[14;1H^[[14;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[[15;1H^[[15;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqkrt^[[m.^[[39C^[(0x^[[16;1H^[[16;33Hx^[[61Cx^[[17;1H^[[17;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+IN: ^[[MCc:
 -
-OUT: ^[[H^[[2J^[7^[[6;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[7;1H^[[7;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqgww^[[m.^[[39C^[(0x^[[8;1H^[[8;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqhoo^[[m.^[[39C^[(0x^[[9;1H^[[9;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[[10;1H^[[10;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqigf^[[m.^[[39C^[(0x^[[11;1H^[[11;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqj89^[[m.^[[39C^[(0x^[[12;1H^[[12;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqk01^[[m.^[[39C^[(0x^[[13;1H^[[13;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[[14;1H^[[14;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqkrt^[[m.^[[39C^[(0x^[[15;1H^[[15;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+IN: ^[[M`c:
 -
-OUT: ^[[H^[[2J^[7^[[6;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[7;1H^[[7;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqgww^[[m.^[[39C^[(0x^[[8;1H^[[8;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqhoo^[[m.^[[39C^[(0x^[[9;1H^[[9;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[[10;1H^[[10;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqigf^[[m.^[[39C^[(0x^[[11;1H^[[11;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqj89^[[m.^[[39C^[(0x^[[12;1H^[[12;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqk01^[[m.^[[39C^[(0x^[[13;1H^[[13;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[[14;1H^[[14;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqkrt^[[m.^[[39C^[(0x^[[15;1H^[[15;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+IN: ^[[M`c:
 -
-OUT: ^[[H^[[2J^[7^[[6;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[7;1H^[[7;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqgww^[[m.^[[38C^[[7m ^[[m^[(0x^[[8;1H^[[8;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqhoo^[[m.^[[38C^[[43m ^[[m^[(0x^[[9;1H^[[9;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[10;1H^[[10;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqigf^[[m.^[[38C^[[43m ^[[m^[(0x^[[11;1H^[[11;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqj89^[[m.^[[38C^[[43m ^[[m^[(0x^[[12;1H^[[12;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqk01^[[m.^[[38C^[[43m ^[[m^[(0x^[[13;1H^[[13;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[14;1H^[[14;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+IN: ^[[M`c:
 -
-OUT: ^[[H^[[2J^[7^[[5;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[6;1H^[[6;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqgww^[[m.^[[38C^[[7m ^[[m^[(0x^[[7;1H^[[7;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqhoo^[[m.^[[38C^[[43m ^[[m^[(0x^[[8;1H^[[8;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[9;1H^[[9;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqigf^[[m.^[[38C^[[43m ^[[m^[(0x^[[10;1H^[[10;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqj89^[[m.^[[38C^[[43m ^[[m^[(0x^[[11;1H^[[11;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+IN: ^[[Mac:
 -
-OUT: ^[[H^[[2J^[7^[[5;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[6;1H^[[6;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqgww^[[m.^[[38C^[[7m ^[[m^[(0x^[[7;1H^[[7;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqhoo^[[m.^[[38C^[[43m ^[[m^[(0x^[[8;1H^[[8;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[9;1H^[[9;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqigf^[[m.^[[38C^[[43m ^[[m^[(0x^[[10;1H^[[10;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqj89^[[m.^[[38C^[[43m ^[[m^[(0x^[[11;1H^[[11;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+IN: ^[[Mac:
 -
-OUT: ^[[H^[[2J^[7^[[4;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[5;1H^[[5;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqgww^[[m.^[[38C^[[7m ^[[m^[(0x^[[6;1H^[[6;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqhoo^[[m.^[[38C^[[43m ^[[m^[(0x^[[7;1H^[[7;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[8;1H^[[8;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqigf^[[m.^[[38C^[[43m ^[[m^[(0x^[[9;1H^[[9;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+IN: ^[[Mac:
 -
-OUT: ^[[H^[[2J^[7^[[4;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[5;1H^[[5;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqgww^[[m.^[[38C^[[7m ^[[m^[(0x^[[6;1H^[[6;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqhoo^[[m.^[[38C^[[43m ^[[m^[(0x^[[7;1H^[[7;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[8;1H^[[8;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqigf^[[m.^[[38C^[[43m ^[[m^[(0x^[[9;1H^[[9;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+IN: ^[[Mac:
 -
-OUT: ^[7^[[5;1H^[[51C^[[1mk01^[[39C^[[m^[[43m ^[[m^[[6;1H^[[6;34H{ fo^[[1C: { bar: { baz: ^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[7;1H^[[7;34HHell^[[1C ^[[32mworld^[[m: ^[[1mkokvqkrt^[[m.   ^[[1C ^[[1C ^[[1C ^[[8;1H^[[8;52H^[[1mljm^[[39C^[[m^[[7m ^[[m^[8
+IN: ^[[Mac:
 -
-IN: ^[[MCo,
+IN: ^[[Mac:
 -
-IN: ^[[MCn,
+IN: ^[[Mac:
 -
-IN: ^[[MCn+
+IN: ^[[Mac:
 -
-IN: ^[[MCm+
+IN: ^[[Mac:
 -
-IN: ^[[MCm*
+IN: ^[[Mac:
 -
-IN: ^[[MCm)
+IN: ^[[Mac:
 -
-IN: ^[[MCl)
+IN: ^[[Mac:
 -
-IN: ^[[MCk)
+IN: ^[[Mac:
 -
-IN: ^[[MCk(
+IN: ^[[Mac:
 -
-IN: ^[[MCj(
+IN: ^[[Mac:
 -
-IN: ^[[MCj'
+OUT: ^[7^[[24;1H^[[24;80H^[[7m ^[[m^[[28;1H^[[28;80H^[[43m ^[[m^[8^[7^[[12;28r^[[12;1H^[[1M^[[1;39r^[[23;1H^[[23;80H^[[43m ^[[m^[[28;1H^[[28;28H^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66pe1^[[m.^[[29C^[[7m ^[[m^[(0x^[(B^[8
 -
-IN: ^[[MCi'
+IN: ^[[Mac:
 -
-IN: ^[[Mai'
+IN: ^[[Mac:
 -
-IN: ^[[Mai'
+IN: ^[[Mac:
 -
-IN: ^[[Mai'
+IN: ^[[MCb:
 -
-IN: ^[[Mai'
+IN: ^[[MCb9
 -
-IN: ^[[Mai'
+IN: ^[[M`b9
 -
-IN: ^[[Mai'
+IN: ^[[M`b9
 -
-IN: ^[[MCi&
+IN: ^[[M`b9
 -
-IN: ^[[M`i&
+IN: ^[[M`b9
 -
-IN: ^[[MCh&
+IN: ^[[M`b9
 -
-IN: ^[[M`h&
+IN: ^[[M`b9
 -
-IN: ^[[M`h&
+IN: ^[[M`b9
 -
-IN: ^[[MCi&
+IN: ^[[M`b9
 -
-IN: ^[[MCh&^[[M`h&
+IN: ^[[M`b9
 -
-IN: ^[[M`h&
+IN: ^[[M`b9
 -
-IN: ^[[M`h&
+IN: ^[[M`b9
 -
-IN: ^[[M`h&
+IN: ^[[M`b9
 -
-IN: ^[[M`h&
+IN: ^[[M`b9
 -
-IN: ^[[M`h&
+IN: ^[[M`b9
 -
-OUT: ^[7^[[5;8r^[[5;1H^[[1M^[[1;12r^[[7;1H^[[7;94H^[[43m ^[[m^[[8;1H^[[8;33H^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqmbf^[[m.^[[38C^[[7m ^[[m^[(0x^[(B^[8
+IN: ^[[M`b9
 -
-IN: ^[[M`h&
+IN: ^[[M`b9
 -
-IN: ^[[M`h&
+IN: ^[[M`b9
 -
-IN: ^[[M`h&
+IN: ^[[M`b9
 -
-IN: ^[[Mah&
+IN: ^[[Mab9
 -
-IN: ^[[Mah&
+IN: ^[[Mab9
 -
-IN: ^[[Mah&
+IN: ^[[Mab9
 -
-IN: ^[[Mah&
+IN: ^[[Mab9
 -
-IN: ^[[Mah&
+IN: ^[[Mab9
 -
-IN: ^[[Mah&
+IN: ^[[Mab9
 -
-IN: ^[[MCh'
+IN: ^[[Mab9
 -
-IN: ^[[MCh(
+IN: ^[[Mab9
 -
-IN: ^[[MCh)
+IN: ^[[Mab9
 -
-IN: ^[[MCh*
+IN: ^[[Mab9
 -
-IN: ^[[MCh+
+IN: ^[[Mab9
 -
-IN: ^[[MCh,
+IN: ^[[Mab9
 -
-OUT: ^[7^[[5;8r^[[5;1H^[[1M^[[1;12r^[[7;1H^[[7;94H^[[43m ^[[m^[[8;1H^[[8;33H^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqn37^[[m.^[[38C^[[7m ^[[m^[(0x^[(B^[8
+IN: ^[[Mab9
 -
-OUT: ^[7^[[5;8r^[[5;1H^[[2M^[[1;12r^[[6;1H^[[6;94H^[[43m ^[[m^[[7;1H^[[7;33H^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqnv0^[[m.^[[38C^[[43m ^[[m^[(0x^[[8;1H^[[8;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[7m ^[[m^[(0x^[(B^[8
+IN: ^[[Mab9
 -
-OUT: ^[[H^[[2J^[7^[[4;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[5;1H^[[5;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqmbf^[[m.^[[38C^[[43m ^[[m^[(0x^[[6;1H^[[6;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqn37^[[m.^[[38C^[[43m ^[[m^[(0x^[[7;1H^[[7;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqnv0^[[m.^[[38C^[[43m ^[[m^[(0x^[[8;1H^[[8;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[7m ^[[m^[(0x^[[9;1H^[[9;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
--
-OUT: ^[[H^[[2J^[7^[[5;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[6;1H^[[6;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqmbf^[[m.^[[38C^[[43m ^[[m^[(0x^[[7;1H^[[7;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqn37^[[m.^[[38C^[[43m ^[[m^[(0x^[[8;1H^[[8;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqnv0^[[m.^[[38C^[[43m ^[[m^[(0x^[[9;1H^[[9;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[10;1H^[[10;33Hx^[[60C^[[7m^[(B ^[[m^[(0x^[[11;1H^[[11;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
--
-OUT: ^[[H^[[2J^[7^[[5;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[6;1H^[[6;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqmbf^[[m.^[[38C^[[43m ^[[m^[(0x^[[7;1H^[[7;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqn37^[[m.^[[38C^[[43m ^[[m^[(0x^[[8;1H^[[8;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqnv0^[[m.^[[38C^[[43m ^[[m^[(0x^[[9;1H^[[9;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[10;1H^[[10;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[11;1H^[[11;33Hx^[[60C^[[7m^[(B ^[[m^[(0x^[[12;1H^[[12;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
--
-OUT: ^[[H^[[2J^[7^[[6;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[7;1H^[[7;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqmbf^[[m.^[[38C^[[43m ^[[m^[(0x^[[8;1H^[[8;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqn37^[[m.^[[38C^[[43m ^[[m^[(0x^[[9;1H^[[9;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqnv0^[[m.^[[38C^[[43m ^[[m^[(0x^[[10;1H^[[10;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[11;1H^[[11;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[12;1H^[[12;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[13;1H^[[13;33Hx^[[60C^[[7m^[(B ^[[m^[(0x^[[14;1H^[[14;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
--
-OUT: ^[[H^[[2J^[7^[[7;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[8;1H^[[8;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqmbf^[[m.^[[38C^[[43m ^[[m^[(0x^[[9;1H^[[9;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqn37^[[m.^[[38C^[[43m ^[[m^[(0x^[[10;1H^[[10;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqnv0^[[m.^[[38C^[[43m ^[[m^[(0x^[[11;1H^[[11;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[12;1H^[[12;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[13;1H^[[13;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[14;1H^[[14;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[15;1H^[[15;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[16;1H^[[16;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[17;1H^[[17;33Hx^[[60C^[[7m^[(B ^[[m^[(0x^[[18;1H^[[18;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
--
-OUT: ^[[H^[[2J^[7^[[8;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[9;1H^[[9;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqmbf^[[m.^[[38C^[[43m ^[[m^[(0x^[[10;1H^[[10;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqn37^[[m.^[[38C^[[43m ^[[m^[(0x^[[11;1H^[[11;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqnv0^[[m.^[[38C^[[43m ^[[m^[(0x^[[12;1H^[[12;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[13;1H^[[13;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[14;1H^[[14;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[15;1H^[[15;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[16;1H^[[16;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[17;1H^[[17;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[18;1H^[[18;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[19;1H^[[19;33Hx^[[60C^[[7m^[(B ^[[m^[(0x^[[20;1H^[[20;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
--
-OUT: ^[[H^[[2J^[7^[[8;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[9;1H^[[9;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqmbf^[[m.^[[38C^[[43m ^[[m^[(0x^[[10;1H^[[10;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqn37^[[m.^[[38C^[[43m ^[[m^[(0x^[[11;1H^[[11;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqnv0^[[m.^[[38C^[[43m ^[[m^[(0x^[[12;1H^[[12;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[13;1H^[[13;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[14;1H^[[14;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[15;1H^[[15;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[16;1H^[[16;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[17;1H^[[17;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[18;1H^[[18;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[19;1H^[[19;33Hx^[[60C^[[43m^[(B ^[[m^[(0x^[[20;1H^[[20;33Hx^[[60C^[[7m^[(B ^[[m^[(0x^[[21;1H^[[21;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
--
-OUT: ^[[H^[[2J^[7^[[9;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[10;1H^[[10;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqmbf^[[m.^[[39C^[(0x^[[11;1H^[[11;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqn37^[[m.^[[39C^[(0x^[[12;1H^[[12;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqnv0^[[m.^[[39C^[(0x^[[13;1H^[[13;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[30C^[(0x^[[14;1H^[[14;33Hx^[[61Cx^[[15;1H^[[15;33Hx^[[61Cx^[[16;1H^[[16;33Hx^[[61Cx^[[17;1H^[[17;33Hx^[[61Cx^[[18;1H^[[18;33Hx^[[61Cx^[[19;1H^[[19;33Hx^[[61Cx^[[20;1H^[[20;33Hx^[[61Cx^[[21;1H^[[21;33Hx^[[61Cx^[[22;1H^[[22;33Hx^[[61Cx^[[23;1H^[[23;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
--
-IN: ^[[MCl>
--
-IN: ^[[MCl=
--
-IN: ^[[MCl<
--
-IN: ^[[MCk;
--
-IN: ^[[MCk:
--
-IN: ^[[MCk9
--
-IN: ^[[MCj8
--
-IN: ^[[MCj7
--
-IN: ^[[MCj6
--
-IN: ^[[MCj5
--
-IN: ^[[MCj4
--
-IN: ^[[MCj3
--
-IN: ^[[MCi2
--
-IN: ^[[MCi1
--
-IN: ^[[MCi0
--
-IN: ^[[MCh0
--
-IN: ^[[MCi1
--
-IN: ^[[MCi2
--
-IN: ^[[MCj3
--
-OUT: ^[7^[[9;22r^[[22;1H^[[1L^[[1;30r^[[10;1H^[[51C^[[1mhoo^[[39C^[[m^[[43m ^[[m^[[11;1H^[[11;34H{ fo^[[1C: { bar: { baz: ^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[[12;1H^[[12;52H^[[1migf^[[39C^[[m^[[43m ^[[m^[[13;1H^[[13;34HHell^[[1C ^[[32mworld^[[m: ^[[1mkokvqj89^[[m.   ^[[1C ^[[1C ^[[1C ^[[29C^[[43m ^[[m^[[14;1H^[[14;34HHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqk01^[[m.^[[38C^[[43m ^[[m^[[15;1H^[[15;34H{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[[16;1H^[[16;34HHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqkrt^[[m.^[[38C^[[43m ^[[m^[[17;1H^[[17;34HHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqljm^[[m.^[[38C^[[43m ^[[m^[[18;1H^[[18;34HHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqmbf^[[m.^[[38C^[[43m ^[[m^[[19;1H^[[19;34HHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqn37^[[m.^[[38C^[[43m ^[[m^[[20;1H^[[20;34HHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqnv0^[[m.^[[38C^[[43m ^[[m^[[21;1H^[[21;34H{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[[22;1H^[[22;33H^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqomt^[[m.^[[38C^[[7m ^[[m^[(0x^[(B^[8
--
-IN: ^[[MCj4^[[MCk4
--
-IN: ^[[MCk5
--
-IN: ^[[MCk7
--
-IN: ^[[MCk8
--
-IN: ^[[MCk9
--
-IN: ^[[MCk:
--
-IN: ^[[MCl;
--
-IN: ^[[MCl<
--
-IN: ^[[MCl=
--
-IN: ^[[MCl>
--
-IN: ^[[MCk>
--
-OUT: ^[[H^[[2J^[7^[[8;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[9;1H^[[9;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqhoo^[[m.^[[38C^[[43m ^[[m^[(0x^[[10;1H^[[10;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[11;1H^[[11;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqigf^[[m.^[[38C^[[43m ^[[m^[(0x^[[12;1H^[[12;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqj89^[[m.^[[38C^[[43m ^[[m^[(0x^[[13;1H^[[13;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqk01^[[m.^[[38C^[[43m ^[[m^[(0x^[[14;1H^[[14;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[15;1H^[[15;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqkrt^[[m.^[[38C^[[7m ^[[m^[(0x^[[16;1H^[[16;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqljm^[[m.^[[38C^[[43m ^[[m^[(0x^[[17;1H^[[17;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqmbf^[[m.^[[38C^[[43m ^[[m^[(0x^[[18;1H^[[18;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqn37^[[m.^[[38C^[[43m ^[[m^[(0x^[[19;1H^[[19;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqnv0^[[m.^[[38C^[[43m ^[[m^[(0x^[[20;1H^[[20;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[21;1H^[[21;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
--
-OUT: ^[[H^[[2J^[7^[[8;1H^[[32C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[9;1H^[[9;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqhoo^[[m.^[[38C^[[43m ^[[m^[(0x^[[10;1H^[[10;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[11;1H^[[11;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqigf^[[m.^[[38C^[[43m ^[[m^[(0x^[[12;1H^[[12;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqj89^[[m.^[[38C^[[43m ^[[m^[(0x^[[13;1H^[[13;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqk01^[[m.^[[38C^[[43m ^[[m^[(0x^[[14;1H^[[14;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[15;1H^[[15;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqkrt^[[m.^[[38C^[[7m ^[[m^[(0x^[[16;1H^[[16;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqljm^[[m.^[[38C^[[43m ^[[m^[(0x^[[17;1H^[[17;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqmbf^[[m.^[[38C^[[43m ^[[m^[(0x^[[18;1H^[[18;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqn37^[[m.^[[38C^[[43m ^[[m^[(0x^[[19;1H^[[19;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqnv0^[[m.^[[38C^[[43m ^[[m^[(0x^[[20;1H^[[20;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[43m ^[[m^[(0x^[[21;1H^[[21;33Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
--
-OUT: ^[7^[[13;1H^[[13;94H^[[7m ^[[m^[[15;1H^[[15;94H^[[43m ^[[m^[8^[7^[[9;20r^[[9;1H^[[2M^[[1;28r^[[11;1H^[[11;94H^[[43m ^[[m^[[19;1H^[[19;33H^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqomt^[[m.^[[38C^[[43m ^[[m^[(0x^[[20;1H^[[20;33Hx^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqpel^[[m.^[[38C^[[7m ^[[m^[(0x^[(B^[8
--
-IN: ^[[MCk<
--
-IN: ^[[MCl;
--
-IN: ^[[MCl:
--
-IN: ^[[MCl9
--
-IN: ^[[MCl8
--
-IN: ^[[MCl7
--
-IN: ^[[MCl6
--
-IN: ^[[MCl5
--
-IN: ^[[MCl4
--
-IN: ^[[MCl3
--
-IN: ^[[MCl2
--
-IN: ^[[MCl1
--
-IN: ^[[MCl0
--
-IN: ^[[MCl/
--
-IN: ^[[MCl.
--
-IN: ^[[Mal.
--
-IN: ^[[Mal.
--
-IN: ^[[Mal.
--
-IN: ^[[Mal.
--
-IN: ^[[Mal.
--
-IN: ^[[Mal.
--
-IN: ^[[Mal.
--
-IN: ^[[Mal.
--
-IN: ^[[Mal.
--
-IN: ^[[M`l.
--
-IN: ^[[M`l.
--
-IN: ^[[M`l.
--
-IN: ^[[M`l.
--
-IN: ^[[M`l.
--
-IN: ^[[M`l.
--
-IN: ^[[M`l.
--
-IN: ^[[M`l.
--
-IN: ^[[M`l.
--
-OUT: ^[7^[[16;1H^[[16;94H^[[7m ^[[m^[[20;1H^[[20;94H^[[43m ^[[m^[8^[7^[[9;20r^[[9;1H^[[2M^[[1;28r^[[14;1H^[[14;94H^[[43m ^[[m^[[19;1H^[[19;33H^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqq6e^[[m.^[[38C^[[43m ^[[m^[(0x^[[20;1H^[[20;33Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[29C^[[7m ^[[m^[(0x^[(B^[8
--
-IN: 1
--
-IN: ^[[MCk.
--
-IN: ^[[MCk/
--
-IN: ^[[MCk0
--
-OUT: ^[7^[[19;1H^[[19;94H^[[7m ^[[m^[[20;1H^[[20;94H^[[43m ^[[m^[8^[7^[[9;20r^[[9;1H^[[1M^[[1;28r^[[18;1H^[[18;94H^[[43m ^[[m^[[20;1H^[[20;33H^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqqy6^[[m.^[[38C^[[7m ^[[m^[(0x^[(B^[8
--
-IN: ^[
--
-IN: ^[[MCk1
--
-IN: ^[[MCj1
--
-OUT: ^[7^[[19;1H^[[19;94H^[[7m ^[[m^[[20;1H^[[20;94H^[[43m ^[[m^[8^[7^[[9;20r^[[9;1H^[[1M^[[1;28r^[[18;1H^[[18;94H^[[43m ^[[m^[[20;1H^[[20;33H^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqrpz^[[m.^[[38C^[[7m ^[[m^[(0x^[(B^[8
--
-IN: ^[[MCj2
--
-IN: ^[[MCk2
--
-IN: ^[[MCm3
--
-IN: ^[[MCn4
--
-IN: ^[[MCp5
--
-IN: ^[[MCr5
--
-IN: ^[[MCt6
--
-IN: ^[[MCv7
--
-IN: ^[[MCx7
--
-IN: ^[[MCy8
--
-IN: ^[[MCz8
--
-IN: ^[[MC{8
--
-IN: ^[[MC{9
--
-IN: ^[[MCz9
--
-IN: ^[[MCz:
--
-IN: ^[[M z:
--
-IN: ^[[M#z:
--
-IN: ^[[MCy:
--
-OUT: ^[7^[[19;1H^[[19;94H^[[7m ^[[m^[[20;1H^[[20;94H^[[43m ^[[m^[8^[7^[[9;20r^[[9;1H^[[1M^[[1;28r^[[18;1H^[[18;94H^[[43m ^[[m^[[20;1H^[[20;33H^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkokvqshr^[[m.^[[38C^[[7m ^[[m^[(0x^[(B^[8
+IN: ^[[Mab9
 -
 IN: q
 -
-OUT: ^[[?1l^[>^[[1;28r^[[?12l^[[?25h^[[H^[[2J^[[?1000l^[[?1002l^[[?1003l^[[?1005l^[[?1049l
+OUT: ^[[?1l^[>^[[?12l^[[?25h^[[H^[[2J^[[?1000l^[[?1002l^[[?1003l^[[?1005l^[[?1049l
 -

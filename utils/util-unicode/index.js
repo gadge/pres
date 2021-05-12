@@ -5,7 +5,7 @@
  * Borrowed from vangie/east-asian-width, komagata/eastasianwidth,
  * and mathiasbynens/String.prototype.codePointAt. Licenses below.
  */
-import { _Screen } from '@pres/components-node'
+import { ScreenCollection } from '@pres/components-node'
 
 const stringFromCharCode = String.fromCharCode
 const floor = Math.floor
@@ -17,21 +17,12 @@ export function charWidth(str, i) {
   const point = typeof str !== 'number'
     ? codePointAt(str, i || 0)
     : str
-
   // nul
   if (point === 0) return 0
-
   // tab
-  if (point === 0x09) {
-    // if (!exports.blessed) exports.blessed = require('../blessed')
-    return _Screen.global
-      ? _Screen.global.tabc.length
-      : 8
-  }
-
+  if (point === 0x09) { return ScreenCollection.global?.tabc.length ?? 8 }
   // 8-bit control characters (2-width according to unicode??)
   if (point < 32 || (point >= 0x7f && point < 0xa0)) return 0
-
   // search table of non-spacing characters
   // is ucs combining or C0/C1 control character
   if (combining[point]) return 0
@@ -440,7 +431,8 @@ export function fromCodePoint() {
     }
     if (codePoint <= 0xFFFF) { // BMP code point
       codeUnits.push(codePoint)
-    } else { // Astral code point; split in surrogate halves
+    }
+    else { // Astral code point; split in surrogate halves
       // http://mathiasbynens.be/notes/javascript-encoding#surrogate-formulae
       codePoint -= 0x10000
       highSurrogate = (codePoint >> 10) + 0xD800
@@ -514,7 +506,8 @@ chars.combining = combiningTable.reduce(function (out, row) {
       + '[\\u' + low[1] + '-' + '\\u' + high[1] + ']'
     if (!~out.indexOf('|')) out += ']'
     out += '|' + range
-  } else {
+  }
+  else {
     low = hexify(row[0])
     high = hexify(row[1])
     low = '\\u' + low

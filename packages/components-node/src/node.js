@@ -6,19 +6,22 @@
 
 import { ADOPT, ATTACH, DESTROY, DETACH, REMOVE, REPARENT, } from '@pres/enum-events'
 import { EventEmitter }                                      from '@pres/events'
+import { AEU }                                               from '@texting/enum-chars'
 import { FUN }                                               from '@typen/enum-data-types'
-import { _Screen }                                           from './_screen'
+import { last }                                              from '@vect/vector-index'
+import { NodeCollection }                                    from './nodeCollection'
+import { ScreenCollection }                                  from './screenCollection'
 
 export class Node extends EventEmitter {
-  static uid = 0
   type = 'node'
   /**
    * Node
    */
-  constructor(options = {}) {
+  constructor(options = {}, lazy) {
     super(options)
-    // if (!(this instanceof Node)) return new Node(options)
-    if (!options.lazy) this.setup(options)
+    if (lazy) return this
+    this.setup(options)
+    console.log('>> [Node.constructor]', this.codename, '∈', this.sup?.codename ?? AEU)
   }
   static build(options) { return new Node(options) }
   setup(options) {
@@ -29,15 +32,15 @@ export class Node extends EventEmitter {
     if (!this.screen) {
       // console.log(`>>> this.type = ${this.type}`)
       if (this.type === 'screen') { this.screen = this }
-      else if (_Screen.total === 1) { this.screen = _Screen.global }
+      else if (ScreenCollection.total === 1) { this.screen = ScreenCollection.global }
       else if (options.sup) {
         this.screen = options.sup
         while (this.screen && this.screen.type !== 'screen') this.screen = this.screen.sup
       }
-      else if (_Screen.total) {
+      else if (ScreenCollection.total) {
         // This _should_ work in most cases as long as the element is appended
         // synchronously after the screen's creation. Throw error if not.
-        this.screen = _Screen.instances[_Screen.instances.length - 1]
+        this.screen = ScreenCollection.instances |> last
         process.nextTick(() => {
           if (!self.sup) throw new Error('Element (' + self.type + ')'
             + ' was not appended synchronously after the'
@@ -52,12 +55,13 @@ export class Node extends EventEmitter {
     this.sup = options.sup ?? null
     this.sub = []
     this.$ = this._ = this.data = {}
-    this.uid = Node.uid++
+    this.uid = NodeCollection.uid++
     this.index = this.index != null ? this.index : -1
     if (this.type !== 'screen') this.detached = true
     if (this.sup) this.sup.append(this)
     options.sub?.forEach(this.append.bind(this))
   }
+  get codename() { return `${this.name ?? this.type}.${this.uid ?? 'NA'}` }
   insert(element, i) {
     const self = this
     if (element.screen && element.screen !== this.screen) throw new Error('Cannot switch a node\'s screen.')
@@ -175,4 +179,3 @@ export class Node extends EventEmitter {
   get(name, value) { return this.data.hasOwnProperty(name) ? this.data[name] : value }
   set(name, value) { return this.data[name] = value }
 }
-// Node.prototype.__proto__ = EventEmitter.prototype

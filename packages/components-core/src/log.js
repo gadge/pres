@@ -35,8 +35,7 @@ export class Log extends ScrollableText {
   }
   static build(options) { return new Log(options) }
   log = this.add // log() { return this.add() }
-  add() {
-    const args = Array.prototype.slice.call(arguments)
+  add(...args) {
     if (typeof args[0] === OBJ) {
       args[0] = util.inspect(args[0], true, 20, true)
     }
