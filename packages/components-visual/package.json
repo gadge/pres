@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-visual",
-  "version": "0.1.7",
+  "version": "0.1.8",
   "description": "Core components for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -17,10 +17,10 @@
   },
   "dependencies": {
     "@ject/mixin": "^0.0.11",
-    "@pres/components-core": "^0.1.7",
-    "@pres/enum-events": "^0.1.7",
-    "@pres/util-colors": "^0.1.7",
-    "@pres/util-helpers": "^0.1.7",
+    "@pres/components-core": "^0.1.8",
+    "@pres/enum-events": "^0.1.8",
+    "@pres/util-colors": "^0.1.8",
+    "@pres/util-helpers": "^0.1.8",
     "memory-streams": "^0.1.3",
     "memorystream": "^0.3.1",
     "picture-tuber": "^2.0.0"
