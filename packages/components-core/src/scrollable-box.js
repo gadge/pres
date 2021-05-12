@@ -14,7 +14,7 @@ export class ScrollableBox extends Box {
   constructor(options = {}) {
     options.scrollable = true
     super(options)
-    console.log(this.type, Reflect.ownKeys(this))
+    // console.log(this.type, Reflect.ownKeys(this))
     // const self = this
     // // if (!(this instanceof Node)) return new ScrollableBox(options)
     // if (options.scrollable === false) return this

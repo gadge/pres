@@ -1,6 +1,6 @@
+import { Node }           from '@pres/components-node'
 import { Box }            from './core/box'
 import { Element }        from './core/element'
-import { Node }           from './core/node'
 import { Screen }         from './core/screen'
 import { Layout }         from './src/layout'
 import { Line }           from './src/line'

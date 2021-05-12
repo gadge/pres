@@ -1,13 +1,16 @@
-import { Node }                                                                      from '@pres/components-node'
 import { KEYPRESS, MOUSEDOWN, MOUSEUP, PARSED_CONTENT, SCROLL, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
 
-export class Scrollable extends Node {
+/**
+ * @extends {Element}
+ */
+export class Scroll {
   constructor(options = {}) {
-    super(options)
+    if (!options.lazy) { this.configScroll(options) }
   }
+
   configScroll(options) {
     const self = this
-    if (options.scrollable === false) return this
+    // if (options.scrollable === false) return this
     this.scrollable = true
     this.childOffset = 0
     this.childBase = 0
@@ -63,7 +66,7 @@ export class Scrollable extends Node {
             self.screen.render()
             let smd, smu
             self._scrollingBar = true
-            self.onScreenEvent(MOUSEDOWN, smd = function (data) {
+            self.onScreenEvent(MOUSEDOWN, smd = data => {
               const y = data.y - self.atop
               const perc = y / self.height
               self.setScrollPerc(perc * 100 | 0)
@@ -72,7 +75,7 @@ export class Scrollable extends Node {
             // If mouseup occurs out of the window, no mouseup event fires, and
             // scrollbar will drag again on mousedown until another mouseup
             // occurs.
-            self.onScreenEvent(MOUSEUP, smu = function () {
+            self.onScreenEvent(MOUSEUP, smu = () => {
               self._scrollingBar = false
               self.removeScreenEvent(MOUSEDOWN, smd)
               self.removeScreenEvent(MOUSEUP, smu)

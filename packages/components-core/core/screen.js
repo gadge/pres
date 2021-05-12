@@ -21,10 +21,6 @@ import { Box }           from './box'
 
 export class Screen extends Node {
   type = 'screen'
-  focusPrev = this.focusPrevious
-  unkey = this.removeKey
-  cursorReset = this.resetCursor
-  destroy = this._destroy
   constructor(options = {}) {
     options.lazy = true
     super(options)
@@ -122,10 +118,10 @@ export class Screen extends Node {
         el.sub.forEach(emit)
       })(self)
     })
-    this.program.on(FOCUS, function () {self.emit(FOCUS)})
-    this.program.on(BLUR, function () {self.emit(BLUR)})
-    this.program.on(WARNING, function (text) {self.emit(WARNING, text)})
-    this.on(NEW_LISTENER, function fn(type) {
+    this.program.on(FOCUS, () => {self.emit(FOCUS)})
+    this.program.on(BLUR, () => {self.emit(BLUR)})
+    this.program.on(WARNING, text => {self.emit(WARNING, text)})
+    this.on(NEW_LISTENER, type => {
       if (type === KEYPRESS || type.indexOf('key ') === 0 || type === MOUSE) {
         if (type === KEYPRESS || type.indexOf('key ') === 0) self._listenKeys()
         if (type === MOUSE) self._listenMouse()
@@ -268,6 +264,7 @@ export class Screen extends Node {
       })
     }
   }
+  destroy = this._destroy
   _destroy() {
     this.leave()
     const index = _Screen.instances.indexOf(this)
@@ -1181,6 +1178,7 @@ export class Screen extends Node {
     }
     return this.keyable[i].focus()
   }
+  focusPrev = this.focusPrevious
   focusPrevious() { return this.focusOffset(-1) }
   focusNext() { return this.focusOffset(1) }
   focusPush(el) {
@@ -1263,6 +1261,7 @@ export class Screen extends Node {
   }
   key() { return this.program.key.apply(this, arguments) }
   onceKey() { return this.program.onceKey.apply(this, arguments) }
+  unkey = this.removeKey
   removeKey() { return this.program.unkey.apply(this, arguments) }
   spawn = function (file, args, options) {
     if (!Array.isArray(args)) {
@@ -1469,6 +1468,7 @@ export class Screen extends Node {
     if (this.cursor.artificial) { return true }
     return this.program.cursorColor(colors.ncolors[this.cursor.color])
   }
+  cursorReset = this.resetCursor
   resetCursor() {
     this.cursor.shape = 'block'
     this.cursor.blink = false

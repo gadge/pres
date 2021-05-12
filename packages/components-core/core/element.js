@@ -4,7 +4,6 @@
  * https://github.com/chjj/blessed
  */
 
-import * as Mixin        from '@ject/mixin'
 import { Node }          from '@pres/components-node'
 import {
   ATTACH, CLICK, DETACH, HIDE, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, MOVE,
@@ -17,25 +16,20 @@ import { FUN, NUM, STR } from '@typen/enum-data-types'
 import { nullish }       from '@typen/nullish'
 import assert            from 'assert'
 import { Box }           from './box'
-import { Scrollable }    from './scrollable'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 export class Element extends Node {
   type = 'element'
-  _render = Element.prototype.render
   /**
    * Element
    */
   constructor(options = {}) {
     super(options)
-    if (options.scrollable) { // && !this._ignore && this.type !== 'scrollable-box'
-      // console.log(Reflect.ownKeys(Scrollable.prototype))
-      Mixin.assign(this, Scrollable.prototype)
-      console.log(this.type, Reflect.ownKeys(this))
-    }
+    if (!options.lazy) { this.config(options) }
+  }
+  static build(options) { return new Element(options) }
+  config(options) {
     const self = this
-    // if (!(this instanceof Node)) { return new Element(options) }
-    // config scrollable properties
     this.name = options.name
     const position = this.position = (options.position ?? (options.position = {
       left: options.left,
@@ -110,7 +104,7 @@ export class Element extends Node {
     if (options.label) { this.setLabel(options.label) }
     if (options.hoverText) { this.setHover(options.hoverText) }
     // TODO: Possibly move this to Node for onScreenEvent(MOUSE, ...).
-    this.on(NEW_LISTENER, function fn(type) {
+    this.on(NEW_LISTENER, (type) => {
       // type = type.split(' ').slice(1).join(' ');
       if (
         type === CLICK || type === MOUSE || type === MOUSEDOWN || type === MOUSEUP ||
@@ -119,9 +113,9 @@ export class Element extends Node {
       ) { self.screen._listenMouse(self) }
       else if (type === KEYPRESS || type.indexOf('key ') === 0) { self.screen._listenKeys(self) }
     })
-    this.on(RESIZE, function () { self.parseContent() })
-    this.on(ATTACH, function () { self.parseContent() })
-    this.on(DETACH, function () { delete self.lpos })
+    this.on(RESIZE, () => { self.parseContent() })
+    this.on(ATTACH, () => { self.parseContent() })
+    this.on(DETACH, () => { delete self.lpos })
     if (options.hoverBg != null) {
       options.hoverEffects = options.hoverEffects || {}
       options.hoverEffects.bg = options.hoverBg
@@ -132,18 +126,17 @@ export class Element extends Node {
       if (options.effects.hover) options.hoverEffects = options.effects.hover
       if (options.effects.focus) options.focusEffects = options.effects.focus
     }
-    [
+    const EVENT_LIST_COLLECTION = [
       [ 'hoverEffects', 'mouseover', 'mouseout', '_htemp' ],
       [ 'focusEffects', 'focus', 'blur', '_ftemp' ]
-    ].forEach(function (props) {
-      const pname = props[0], over = props[1], out = props[2], temp = props[3]
+    ]
+    EVENT_LIST_COLLECTION.forEach(props => {
+      const [ pname, over, out, temp ] = props
       self.screen.setEffects(self, self, over, out, self.options[pname], temp)
     })
     if (this.options.draggable) { this.draggable = true }
     if (options.focused) this.focus()
-    this.configScroll?.call(this, options)
   }
-  static build(options) { return new Element(options) }
   get focused() { return this.screen.focused === this}
   get visible() {
     let el = this
@@ -1399,6 +1392,7 @@ export class Element extends Node {
       renders: this.screen.renders
     }
   }
+  _render = Element.prototype.render
   render() {
     // console.log(`>>> calling element._render`)
     this._emit(PRERENDER)
