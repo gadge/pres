@@ -22,6 +22,7 @@ import { Box }                    from './box'
 export class Screen extends Node {
   type = 'screen'
   constructor(options = {}) {
+    options.sku = options.sku ?? 'screen'
     super(options, true)
     ScreenCollection.initialize(this)
     this.setupProgram(options)
@@ -32,6 +33,7 @@ export class Screen extends Node {
   static build(options) { return new Screen(options) }
   config(options) {
     const self = this
+    // this.type = this.type ?? 'screen'
     this.autoPadding = options.autoPadding !== false
     this.tabc = Array((options.tabSize || 4) + 1).join(' ')
     this.dockBorders = options.dockBorders

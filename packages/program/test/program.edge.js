@@ -313,8 +313,8 @@ export class Program extends EventEmitter {
       ProgramCollection.global = ProgramCollection.instances[0]
       if (ProgramCollection.total === 0) {
         ProgramCollection.global = null
-        process.removeListener(EXIT, ProgramCollection._exitHandler)
-        delete ProgramCollection._exitHandler
+        process.removeListener(EXIT, ProgramCollection._exitHandler.bind(ProgramCollection))
+        delete ProgramCollection._exitHandler.bind(ProgramCollection)
         delete ProgramCollection._bound
       }
       this.input._presInput--

@@ -6,6 +6,16 @@
 
 import { SIGCONT, SIGTSTP }                                       from '@geia/enum-signals'
 import {
+  BEL, BS, CSI, DCS, DECKPNM, DECRC, DECSC, ESC, FF, HTS, IND, LF, NEL, OSC, RI, RIS, RN, SI, SO, ST, TAB, VT,
+}                                                                 from '@pres/enum-control-chars'
+import {
+  _CBT, _CHA, _CHT, _CNL, _CPL, _CUB, _CUD, _CUF, _CUP, _CUU, _DA, _DCH, _DECCARA, _DECCRA, _DECDC, _DECEFR, _DECELR,
+  _DECERA, _DECFRA, _DECIC, _DECLL, _DECRARA, _DECREQTPARM, _DECRQM, _DECSACE, _DECSCA, _DECSCL, _DECSCUSR, _DECSERA,
+  _DECSLE, _DECSMBV, _DECSTBM, _DECSWBV, _DL, _DSR, _ECH, _ED, _EL, _HPA, _HPR, _HVP, _ICH, _IL, _MC, _REP, _RM, _SCORC,
+  _SCOSC, _SD, _SGR, _SM, _SU, _TBC, _VPA, _VPR, _XTHIMOUSE, _XTMODKEYS, _XTRESTORE, _XTRMTITLE, _XTSAVE, _XTSMPOINTER,
+  _XTSMTITLE, _XTUNMODKEYS, _XTWINOPS
+}                                                                 from '@pres/enum-csi-codes'
+import {
   BLUR, BTNDOWN, BTNUP, DATA, DESTROY, DRAG, ERROR, EXIT, FOCUS, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEUP,
   MOUSEWHEEL, MOVE, NEW_LISTENER, RESIZE, RESPONSE, WARNING, WHEELDOWN, WHEELUP,
 }                                                                 from '@pres/enum-events'
@@ -22,16 +32,6 @@ import fs                                                         from 'fs'
 import { StringDecoder }                                          from 'string_decoder'
 import util                                                       from 'util'
 import { ALL }                                                    from '../assets/constants'
-import {
-  BEL, BS, CSI, DCS, DECKPNM, DECRC, DECSC, ESC, FF, HTS, IND, LF, NEL, OSC, RI, RIS, RN, SI, SO, ST, TAB, VT,
-}                                                                 from '../assets/control.chars'
-import {
-  _CBT, _CHA, _CHT, _CNL, _CPL, _CUB, _CUD, _CUF, _CUP, _CUU, _DA, _DCH, _DECCARA, _DECCRA, _DECDC, _DECEFR, _DECELR,
-  _DECERA, _DECFRA, _DECIC, _DECLL, _DECRARA, _DECREQTPARM, _DECRQM, _DECSACE, _DECSCA, _DECSCL, _DECSCUSR, _DECSERA,
-  _DECSLE, _DECSMBV, _DECSTBM, _DECSWBV, _DL, _DSR, _ECH, _ED, _EL, _HPA, _HPR, _HVP, _ICH, _IL, _MC, _REP, _RM, _SCORC,
-  _SCOSC, _SD, _SGR, _SM, _SU, _TBC, _VPA, _VPR, _XTHIMOUSE, _XTMODKEYS, _XTRESTORE, _XTRMTITLE, _XTSAVE, _XTSMPOINTER,
-  _XTSMTITLE, _XTUNMODKEYS, _XTWINOPS
-}                                                                 from '../assets/csi.codes'
 import { gpmClient }                                              from './gpmclient'
 import { emitKeypressEvents }                                     from './keys'
 import { ProgramCollection }                                      from './programCollection'
@@ -47,9 +47,17 @@ export class Program extends EventEmitter {
   constructor(options = {}) {
     super()
     console.log(">> [Program.constructor]")
-    const self = this
-    // if (!(this instanceof Program)) return new Program(options)
     ProgramCollection.initialize(this)
+    this.config(options)
+  }
+
+  static build(options) {
+    console.log('>> [Program.build]')
+    return new Program(options)
+  }
+
+  config(options) {
+    const self = this
     // EventEmitter.call(this)
     if (!options || options.__proto__ !== Object.prototype) {
       const [ input, output ] = arguments
@@ -113,12 +121,6 @@ export class Program extends EventEmitter {
     if (options.tput !== false) this.setupTput()
     this.listen()
   }
-
-  static build(options) {
-    console.log('>> [Program.build]')
-    return new Program(options)
-  }
-
 
   get terminal() { return this._terminal }
   set terminal(terminal) { return this.setTerminal(terminal), this.terminal }
@@ -313,8 +315,8 @@ export class Program extends EventEmitter {
       ProgramCollection.global = ProgramCollection.instances[0]
       if (ProgramCollection.total === 0) {
         ProgramCollection.global = null
-        process.removeListener(EXIT, ProgramCollection._exitHandler)
-        delete ProgramCollection._exitHandler
+        process.removeListener(EXIT, ProgramCollection._exitHandler.bind(ProgramCollection))
+        delete ProgramCollection._exitHandler.bind(ProgramCollection)
         delete ProgramCollection._bound
       }
       this.input._presInput--

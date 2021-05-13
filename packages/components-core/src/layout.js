@@ -11,6 +11,7 @@ export class Layout extends Element {
    * Layout
    */
   constructor(options = {}) {
+    if (!options.sku) options.sku = 'layout'
     super(options)
     // if (!(this instanceof Node)) return new Layout(options)
     if (

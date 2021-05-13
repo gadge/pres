@@ -5,7 +5,6 @@ export class ProgramCollection {
   static total = 0
   static instances = []
   static _bound = false
-  static _exitHandler = undefined
   static initialize(program) {
     if (!ProgramCollection.global) ProgramCollection.global = program
     if (!~ProgramCollection.instances.indexOf(program)) {
@@ -16,14 +15,6 @@ export class ProgramCollection {
     console.log('>> [ProgramCollection.initialize]', program.index, ProgramCollection.total)
     if (ProgramCollection._bound) return
     ProgramCollection._bound = true
-    ProgramCollection._exitHandler = () => {
-      ProgramCollection.instances.forEach(program => {
-        // Potentially reset window title on exit:
-        // if (program._originalTitle) program.setTitle(program._originalTitle)
-        program.flush()         // Ensure the buffer is flushed (it should always be at this point, but who knows).
-        program._exiting = true // Ensure _exiting is set (could technically use process._exiting).
-      })
-    }
     ProgramCollection.unshiftEvent(process, EXIT, ProgramCollection._exitHandler)
   }
   // We could do this easier by just manipulating the _events object, or for
@@ -34,5 +25,13 @@ export class ProgramCollection {
     target.removeAllListeners(event)
     target.on(event, listener)
     listeners.forEach(listener => target.on(event, listener))
+  }
+  static _exitHandler() {
+    ProgramCollection.instances.forEach(program => {
+      // Potentially reset window title on exit:
+      // if (program._originalTitle) program.setTitle(program._originalTitle)
+      program.flush()         // Ensure the buffer is flushed (it should always be at this point, but who knows).
+      program._exiting = true // Ensure _exiting is set (could technically use process._exiting).
+    })
   }
 }

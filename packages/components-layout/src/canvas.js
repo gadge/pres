@@ -6,6 +6,7 @@ export class Canvas extends Box {
   _h
   _w
   constructor(options = {}, canvasType) {
+    if (!options.sku) options.sku = 'canvas'
     // if (!(this instanceof Node)) return new Canvas(options)
     // this.options = options
     super(options) // Mixin.assign(this, new Box(options)) // Box.call(this, options)

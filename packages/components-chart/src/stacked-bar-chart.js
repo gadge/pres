@@ -5,7 +5,7 @@ import * as utils from '@pres/util-helpers'
 
 export class StackedBarChart extends Canvas {
   constructor(options = {}) {
-    // if (!(this instanceof Node)) { return new StackedBar(options) }
+    if (!options.sku) options.sku = 'bar-chart'
     super(options, require('ansi-term'))
     const self = this
     this.options.barWidth = this.options.barWidth || 6

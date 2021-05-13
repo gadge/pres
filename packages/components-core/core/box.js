@@ -14,6 +14,7 @@ import { Scroll }  from './scroll'
 export class Box extends Element {
   type = 'box'
   constructor(options = {}) {
+    options.sku = options.sku ?? 'box'
     super(options) // // if (!(this instanceof Node)) return new Box(options)
     if (options.scrollable) {
       // console.log(Reflect.ownKeys(Scrollable.prototype))

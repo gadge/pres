@@ -9,6 +9,7 @@ import { Box } from '@pres/components-core'
 
 export class Input extends Box {
   constructor(options = {}) {
+    if (!options.sku) options.sku = 'input'
     super(options)
     this.type = 'input'
   }

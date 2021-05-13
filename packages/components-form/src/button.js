@@ -13,6 +13,7 @@ export class Button extends Input {
    * Button
    */
   constructor(options = {}) {
+    if (!options.sku) options.sku = 'button'
     if (options.autoFocus == null) options.autoFocus = false
     super(options)
     const self = this

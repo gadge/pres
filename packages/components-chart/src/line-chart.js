@@ -17,6 +17,7 @@ export class LineChart extends Canvas {
     const padds = options.padds = Padds.build(options.padds ?? options)
     const ticks = options.ticks = Ticks.build(options.ticks ?? options)
     const labels = options.labels = Labels.build(options.labels ?? options)
+    if (!options.sku) options.sku = 'line-chart'
     super(options)
     // console.log('>>> LineChart this.options')
     // console.log(this.options)

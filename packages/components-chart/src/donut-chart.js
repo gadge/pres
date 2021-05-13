@@ -23,6 +23,7 @@ export class DonutChart extends Canvas {
     if (!options.yPadding) options.yPadding = 2
     if (!options.remainColor) options.remainColor = 'black'
     if (!options.data) options.data = []
+    if (!options.sku) options.sku = 'donut-chart'
     super(options)
     const self = this
     this.on(ATTACH, function () { this.setData(self.options.data) })

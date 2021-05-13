@@ -8,6 +8,7 @@ export class Gauge extends Canvas {
     options.fill = options.fill || 'white'
     options.data = options.data || []
     options.showLabel = options.showLabel !== false
+    if (!options.sku) options.sku = 'gauge'
     super(options, require('ansi-term'))
     const self = this
     this.on(ATTACH, function () {

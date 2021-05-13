@@ -14,6 +14,7 @@ export class Text extends Element {
    * Text
    */
   constructor(options = {}) {
+    if (!options.sku) options.sku = 'text'
     options.shrink = true
     super(options)
     // if (!(this instanceof Node)) return new Text(options)

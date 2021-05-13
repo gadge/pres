@@ -18,12 +18,11 @@ export class Log extends ScrollableText {
    * Log
    */
   constructor(options = {}) {
+    if (!options.sku) options.sku = 'log'
     super(options)
     const self = this
     // if (!(this instanceof Node)) return new Log(options)
-    this.scrollback = options.scrollback != null
-      ? options.scrollback
-      : Infinity
+    this.scrollback = options.scrollback ?? Infinity
     this.scrollOnInput = options.scrollOnInput
     this.on(SET_CONTENT, () => {
       if (!self._userScrolled || self.scrollOnInput) nextTick(() => {

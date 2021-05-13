@@ -21,13 +21,15 @@ export class Node extends EventEmitter {
     super(options)
     if (lazy) return this
     this.setup(options)
-    console.log('>> [Node.constructor]', this.codename, '∈', this.sup?.codename ?? AEU)
   }
   static build(options) { return new Node(options) }
   setup(options) {
     // console.log(`>>> called setup on Node by ${this.type}`)
     const self = this
+    // this.type = this.type ?? 'node'
     this.options = options
+    this.name = options.name
+    this.sku = options.sku
     this.screen = this.screen || options.screen
     if (!this.screen) {
       // console.log(`>>> this.type = ${this.type}`)
@@ -60,8 +62,9 @@ export class Node extends EventEmitter {
     if (this.type !== 'screen') this.detached = true
     if (this.sup) this.sup.append(this)
     options.sub?.forEach(this.append.bind(this))
+    console.log('>> [new node]', this.codename, '∈', this.sup?.codename ?? AEU)
   }
-  get codename() { return `${this.name ?? this.type}.${this.uid ?? 'NA'}` }
+  get codename() { return `${this.name ?? this.sku ?? this.type}.${this.uid ?? 'NA'}` }
   insert(element, i) {
     const self = this
     if (element.screen && element.screen !== this.screen) throw new Error('Cannot switch a node\'s screen.')

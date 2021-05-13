@@ -11,6 +11,7 @@ import { Textarea } from './textarea'
 export class Textbox extends Textarea {
   __olistener = super._listener
   constructor(options = {}) {
+    if (!options.sku) options.sku = 'textbox'
     options.scrollable = false
     super(options)
     // if (!(this instanceof Node)) { return new Textbox(options) }

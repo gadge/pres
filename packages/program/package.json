@@ -25,6 +25,8 @@
     "@pres/util-helpers": "^0.1.8",
     "@spare/logger": "^0.11.14",
     "@texting/enum-chars": "^0.0.9",
+    "@pres/enum-control-chars": "^0.1.8",
+    "@pres/enum-csi-codes": "^0.1.8",
     "@typen/enum-data-types": "^0.1.16"
   },
   "repository": {

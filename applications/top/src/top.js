@@ -10,6 +10,7 @@ const grid = Pres.grid({
 })
 const button = grid.set(4, 6, 4, 2, Pres.button, {})
 const cpuLine = grid.set(0, 0, 4, 12, Pres.lineChart, {
+  name: 'lineChart',
   showNthLabel: 5,
   maxY: 100,
   label: 'CPU History',
@@ -58,7 +59,6 @@ const procTable = grid.set(8, 6, 4, 6, Pres.dataTable, {
 })
 
 procTable.focus()
-
 screen.render()
 screen.on(RESIZE, () => {
   cpuLine.emit(ATTACH)

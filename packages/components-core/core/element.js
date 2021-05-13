@@ -24,6 +24,7 @@ export class Element extends Node {
    * Element
    */
   constructor(options = {}, lazy) {
+    options.sku = options.sku ?? 'element'
     super(options)
     if (lazy) return this
     Element.prototype.config.call(this, options)
@@ -31,7 +32,7 @@ export class Element extends Node {
   static build(options) { return new Element(options) }
   config(options) {
     const self = this
-    this.name = options.name
+    this.type = this.type ?? 'element'
     // console.log('>> [Element.prototype.config]', this.codename)
     const position = this.position = (options.position ?? (options.position = {
       left: options.left,

@@ -15,6 +15,7 @@ export class ScrollableText extends ScrollableBox {
    * ScrollableText
    */
   constructor(options = {}) {
+    if (!options.sku) options.sku = 'scrollable-text'
     options.alwaysScroll = true
     super(options)
     // if (!(this instanceof Node)) return new ScrollableText(options)

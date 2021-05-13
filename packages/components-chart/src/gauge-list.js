@@ -10,6 +10,7 @@ export class GaugeList extends Canvas {
     options.showLabel = options.showLabel !== false
     options.gaugeSpacing = options.gaugeSpacing || 0
     options.gaugeHeight = options.gaugeHeight || 1
+    if (!options.sku) options.sku = 'gauge'
     super(options, require('ansi-term'))
     const self = this
     this.on(ATTACH, function () {

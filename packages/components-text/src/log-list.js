@@ -2,6 +2,7 @@ import { List } from '@pres/components-data'
 
 export class LogList extends List {
   constructor(options) {
+    if (!options.sku) options.sku = 'log-list'
     // if (!(this instanceof Node)) { return new Log(options) }
     options.bufferLength = options.bufferLength || 30
     super(options)

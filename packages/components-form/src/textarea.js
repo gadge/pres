@@ -21,6 +21,7 @@ export class Textarea extends Input {
    * Textarea
    */
   constructor(options = {}) {
+    if (!options.sku) options.sku = 'textarea'
     options.scrollable = options.scrollable !== false
     super(options)
     const self = this

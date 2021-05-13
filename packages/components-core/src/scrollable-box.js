@@ -12,6 +12,7 @@ export class ScrollableBox extends Box {
    * ScrollableBox
    */
   constructor(options = {}) {
+    if (!options.sku) options.sku = 'scrollable-box'
     options.scrollable = true
     super(options)
     // console.log(this.type, Reflect.ownKeys(this))

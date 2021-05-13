@@ -6,6 +6,7 @@ import { Bars }   from '../utils'
 
 export class BarChart extends Canvas {
   constructor(options = {}) {
+    if (!options.sku) options.sku = 'bar-chart'
     // if (!(this instanceof Node)) return new BarChart(options)
     super(options, require('ansi-term'))
     const self = this

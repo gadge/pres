@@ -9,6 +9,7 @@ export class Sparkline extends Box {
     options.bufferLength = options.bufferLength || 30
     options.style = options.style || {}
     options.style.titleFg = options.style.titleFg || 'white'
+    if (!options.sku) options.sku = 'sparkline'
     super(options)
     const self = this
     // this.options = options
