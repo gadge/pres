@@ -35,6 +35,7 @@ export class ListTable extends List {
       __border.right === false) {
       delete options.border
     }
+    if (!options.sku) options.sku = 'list-table'
     super(options)
     const self = this
     if (!(this instanceof Node)) { return new ListTable(options) }

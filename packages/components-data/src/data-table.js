@@ -1,6 +1,7 @@
 import { Box }       from '@pres/components-core'
 import { ATTACH }    from '@pres/enum-events'
 import { clearAnsi } from '@texting/charset-ansi'
+import { UND }       from '@typen/enum-data-types'
 import { List }      from './list'
 // import stripAnsi   from 'strip-ansi'
 
@@ -19,7 +20,8 @@ export class DataTable extends Box {
     options.selectedBg = options.selectedBg || 'blue'
     options.fg = options.fg || 'green'
     options.bg = options.bg || ''
-    options.interactive = (typeof options.interactive === 'undefined') ? true : options.interactive
+    options.interactive = (typeof options.interactive === UND) ? true : options.interactive
+    if (!options.sku) options.sku = 'data-table'
     // this.options = options
     super(options) // Mixin.assign(this, new Box(options)) // Box.call(this, options)
     const self = this
@@ -42,7 +44,8 @@ export class DataTable extends Box {
       mouse: options.mouse,
       tags: true,
       interactive: options.interactive,
-      screen: this.screen
+      screen: this.screen,
+      sup: self
     })
     this.append(this.rows)
     this.on(ATTACH, () => { if (self.options.data) { self.setData(self.options.data) } })

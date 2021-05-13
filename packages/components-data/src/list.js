@@ -10,7 +10,8 @@ import {
   REMOVE, REMOVE_ITEM, RESIZE, SELECT, SELECT_ITEM, SET_ITEMS,
 }                                        from '@pres/enum-events'
 import { DOWN, ENTER, ESCAPE, LEFT, UP } from '@pres/enum-key-names'
-import * as helpers                      from '@pres/util-helpers'
+import * as helpers           from '@pres/util-helpers'
+import { FUN, NUM, OBJ, STR } from '@typen/enum-data-types'
 
 export class List extends Box {
   add = this.appendItem
@@ -23,6 +24,7 @@ export class List extends Box {
     options.ignoreKeys = true
     // Possibly put this here: this.items = [];
     options.scrollable = true
+    if (!options.sku) options.sku = 'list'
     super(options)
     const self = this
     // if (!(this instanceof Node)) return new List(options)
@@ -55,21 +57,15 @@ export class List extends Box {
       this.style.item.invisible = options.itemInvisible
     }
     // Legacy: for apps written before the addition of item attributes.
-    [ 'bg', 'fg', 'bold', 'underline',
-      'blink', 'inverse', 'invisible' ].forEach(function (name) {
-      if (self.style[name] != null && self.style.item[name] == null) {
-        self.style.item[name] = self.style[name]
-      }
-    })
-    if (this.options.itemHoverBg) {
-      this.options.itemHoverEffects = { bg: this.options.itemHoverBg }
-    }
-    if (this.options.itemHoverEffects) {
-      this.style.item.hover = this.options.itemHoverEffects
-    }
-    if (this.options.itemFocusEffects) {
-      this.style.item.focus = this.options.itemFocusEffects
-    }
+    [ 'bg', 'fg', 'bold', 'underline', 'blink', 'inverse', 'invisible' ]
+      .forEach(function (name) {
+        if (self.style[name] != null && self.style.item[name] == null) {
+          self.style.item[name] = self.style[name]
+        }
+      })
+    if (this.options.itemHoverBg) this.options.itemHoverEffects = { bg: this.options.itemHoverBg }
+    if (this.options.itemHoverEffects) this.style.item.hover = this.options.itemHoverEffects
+    if (this.options.itemFocusEffects) this.style.item.focus = this.options.itemFocusEffects
     this.interactive = options.interactive !== false
     this.mouse = options.mouse || false
     if (options.items) {
@@ -79,17 +75,17 @@ export class List extends Box {
     this.select(0)
     if (options.mouse) {
       this.screen._listenMouse(this)
-      this.on(ELEMENT_WHEELDOWN, function () {
+      this.on(ELEMENT_WHEELDOWN, () => {
         self.select(self.selected + 2)
         self.screen.render()
       })
-      this.on(ELEMENT_WHEELUP, function () {
+      this.on(ELEMENT_WHEELUP, () => {
         self.select(self.selected - 2)
         self.screen.render()
       })
     }
     if (options.keys) {
-      this.on(KEYPRESS, function (ch, key) {
+      this.on(KEYPRESS, (ch, key) => {
         if (key.name === UP || (options.vi && key.name === 'k')) {
           self.up()
           self.screen.render()
@@ -100,8 +96,7 @@ export class List extends Box {
           self.screen.render()
           return
         }
-        if (key.name === ENTER ||
-          (options.vi && key.name === 'l' && !key.shift)) {
+        if (key.name === ENTER || (options.vi && key.name === 'l' && !key.shift)) {
           self.enterSelected()
           return
         }
@@ -163,12 +158,9 @@ export class List extends Box {
           return
         }
         if (options.vi && (key.ch === '/' || key.ch === '?')) {
-          if (typeof self.options.search !== 'function') {
-            return
-          }
+          if (typeof self.options.search !== FUN) return
           return self.options.search(function (err, value) {
-            if (typeof err === 'string' || typeof err === 'function' ||
-              typeof err === 'number' || (err && err.test)) {
+            if (typeof err === STR || typeof err === FUN || typeof err === NUM || (err && err.test)) {
               value = err
               err = null
             }
@@ -179,7 +171,7 @@ export class List extends Box {
         }
       })
     }
-    this.on(RESIZE, function () {
+    this.on(RESIZE, () => {
       const visible = self.height - self.iheight
       // if (self.selected < visible - 1) {
       if (visible >= self.selected + 1) {
@@ -192,14 +184,14 @@ export class List extends Box {
         self.childOffset = visible - 1
       }
     })
-    this.on(ADOPT, function (el) {
+    this.on(ADOPT, el => {
       if (!~self.items.indexOf(el)) {
         el.fixed = true
       }
     })
     // Ensure sub are removed from the
     // item list if they are items.
-    this.on(REMOVE, function (el) {
+    this.on(REMOVE, el => {
       self.removeItem(el)
     })
     this.type = 'list'
@@ -238,16 +230,16 @@ export class List extends Box {
         let attr = self.items[self.selected] === item && self.interactive
           ? self.style.selected[name]
           : self.style.item[name]
-        if (typeof attr === 'function') attr = attr(item)
+        if (typeof attr === FUN) attr = attr(item)
         return attr
       }
     })
     if (this.style.transparent) {
       options.transparent = true
     }
-    var item = new Box(options)
+    const item = new Box(options)
     if (this.mouse) {
-      item.on(CLICK, function () {
+      item.on(CLICK, () => {
         self.focus()
         if (self.items[self.selected] === item) {
           self.emit(ACTION, item, self.selected)
@@ -262,7 +254,7 @@ export class List extends Box {
     return item
   }
   appendItem(content) {
-    content = typeof content === 'string' ? content : content.getContent()
+    content = typeof content === STR ? content : content.getContent()
     const item = this.createItem(content)
     item.position.top = this.items.length
     if (!this.screen.autoPadding) {
@@ -294,7 +286,7 @@ export class List extends Box {
     return child
   }
   insertItem(child, content) {
-    content = typeof content === 'string' ? content : content.getContent()
+    content = typeof content === STR ? content : content.getContent()
     const i = this.getItemIndex(child)
     if (!~i) return
     if (i >= this.items.length) return this.appendItem(content)
@@ -315,7 +307,7 @@ export class List extends Box {
     return this.items[this.getItemIndex(child)]
   }
   setItem(child, content) {
-    content = typeof content === 'string' ? content : content.getContent()
+    content = typeof content === STR ? content : content.getContent()
     const i = this.getItemIndex(child)
     if (!~i) return
     this.items[i].setContent(content)
@@ -388,7 +380,7 @@ export class List extends Box {
   fuzzyFind(search, back) {
     const start = this.selected + (back ? -1 : 1)
     let i
-    if (typeof search === 'number') search += ''
+    if (typeof search === NUM) search += ''
     if (search && search[0] === '/' && search[search.length - 1] === '/') {
       try {
         search = new RegExp(search.slice(1, -1))
@@ -396,10 +388,10 @@ export class List extends Box {
 
       }
     }
-    const test = typeof search === 'string'
+    const test = typeof search === STR
       ? function (item) { return !!~item.indexOf(search) }
       : (search.test ? search.test.bind(search) : search)
-    if (typeof test !== 'function') {
+    if (typeof test !== FUN) {
       if (this.screen.options.debug) {
         throw new Error('fuzzyFind(): `test` is not a function.')
       }
@@ -424,10 +416,10 @@ export class List extends Box {
     return this.selected
   }
   getItemIndex(child) {
-    if (typeof child === 'number') {
+    if (typeof child === NUM) {
       return child
     }
-    else if (typeof child === 'string') {
+    else if (typeof child === STR) {
       let i = this.ritems.indexOf(child)
       if (~i) return i
       for (i = 0; i < this.ritems.length; i++) {
@@ -451,7 +443,7 @@ export class List extends Box {
       this.scrollTo(0)
       return
     }
-    if (typeof index === 'object') {
+    if (typeof index === OBJ) {
       index = this.items.indexOf(index)
     }
     if (index < 0) {

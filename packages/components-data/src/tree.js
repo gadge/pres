@@ -1,4 +1,5 @@
 import { Box }  from '@pres/components-core'
+import { FUN }  from '@typen/enum-data-types'
 import { List } from './list'
 
 export class Tree extends Box {
@@ -7,6 +8,7 @@ export class Tree extends Box {
     // options = options || {}
     options.bold = true
     // this.options = options
+    if (!options.sku) options.sku = 'tree'
     super(options) // Mixin.assign(this, new Box(options)) // Box.call(this, options)
     const self = this
     this.data = {}
@@ -64,7 +66,7 @@ export class Tree extends Box {
     node.depth = treeDepth.length - 1
     if (node.sub && node.extended) {
       let i = 0
-      if (typeof node.sub === 'function') node.subContent = node.sub(node)
+      if (typeof node.sub === FUN) node.subContent = node.sub(node)
       if (!node.subContent) node.subContent = node.sub
       for (let unit in node.subContent) {
         if (!node.subContent[unit].name)
@@ -73,7 +75,7 @@ export class Tree extends Box {
         unit.sup = node
         unit.position = i++
         if (typeof unit.extended === 'undefined') unit.extended = this.options.extended
-        if (typeof unit.sub === 'function') unit.subContent = unit.sub(unit)
+        if (typeof unit.sub === FUN) unit.subContent = unit.sub(unit)
         else
           unit.subContent = unit.sub
         const isLastChild = unit.position === Object.keys(unit.sup.subContent).length - 1

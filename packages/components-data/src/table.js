@@ -4,8 +4,7 @@
  * https://github.com/chjj/blessed
  */
 
-import { Box } from '@pres/components-core'
-
+import { Box }             from '@pres/components-core'
 import { ATTACH, RESIZE, } from '@pres/enum-events'
 import { LEFT, RIGHT }     from '@pres/enum-key-names'
 
@@ -24,6 +23,7 @@ export class Table extends Box {
     // Regular tables do not get custom height (this would
     // require extra padding). Maybe add in the future.
     delete options.height
+    if (!options.sku) options.sku = 'table'
     super(options)
     const self = this
     // if (!(this instanceof Node)) { return new Table(options) }

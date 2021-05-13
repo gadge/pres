@@ -9,6 +9,7 @@ export class Scroll {
     this.config(options)
   }
   config(options) {
+    console.log('>> [set scroll]', this?.codename)
     const self = this
     // if (options.scrollable === false) return this
     this.scrollable = true
@@ -48,7 +49,7 @@ export class Scroll {
       }
       // Allow controlling of the scrollbar via the mouse:
       if (options.mouse) {
-        this.on(MOUSEDOWN, function (data) {
+        this.on(MOUSEDOWN, data => {
           if (self._scrollingBar) {
             // Do not allow dragging on the scrollbar:
             delete self.screen._dragging
@@ -85,17 +86,17 @@ export class Scroll {
       }
     }
     if (options.mouse) {
-      this.on(WHEELDOWN, function () {
+      this.on(WHEELDOWN, () => {
         self.scroll(self.height / 2 | 0 || 1)
         self.screen.render()
       })
-      this.on(WHEELUP, function () {
+      this.on(WHEELUP, () => {
         self.scroll(-(self.height / 2 | 0) || -1)
         self.screen.render()
       })
     }
     if (options.keys && !options.ignoreKeys) {
-      this.on(KEYPRESS, function (ch, key) {
+      this.on(KEYPRESS, (ch, key) => {
         if (key.name === 'up' || (options.vi && key.name === 'k')) {
           self.scroll(-1)
           self.screen.render()
@@ -149,13 +150,9 @@ export class Scroll {
     if (!this.scrollable) return 0
     // We could just calculate the sub, but we can
     // optimize for lists by just returning the items.length.
-    if (this._isList) {
-      return this.items ? this.items.length : 0
-    }
-    if (this.lpos && this.lpos._scrollBottom) {
-      return this.lpos._scrollBottom
-    }
-    const bottom = this.sub.reduce(function (current, el) {
+    if (this._isList) return this.items ? this.items.length : 0
+    if (this.lpos && this.lpos._scrollBottom) return this.lpos._scrollBottom
+    const bottom = this.sub.reduce((current, el) => {
       // el.height alone does not calculate the shrunken height, we need to use
       // getCoords. A shrunken box inside a scrollable element will not grow any
       // larger than the scrollable element's context regardless of how much
@@ -164,9 +161,7 @@ export class Scroll {
       // See: $ node test/widget-shrink-fail-2.js
       if (!el.detached) {
         const lpos = el._getCoords(false, true)
-        if (lpos) {
-          return Math.max(current, el.rtop + (lpos.yl - lpos.yi))
-        }
+        if (lpos) return Math.max(current, el.rtop + (lpos.yl - lpos.yi))
       }
       return Math.max(current, el.rtop + el.height)
     }, 0)
@@ -196,11 +191,8 @@ export class Scroll {
         b,
         max,
         emax
-    if (this.alwaysScroll || always) {
-      // Semi-workaround
-      this.childOffset = offset > 0
-        ? visible - 1 + offset
-        : offset
+    if (this.alwaysScroll || always) { // Semi-workaround
+      this.childOffset = offset > 0 ? visible - 1 + offset : offset
     }
     else {
       this.childOffset += offset
@@ -215,18 +207,11 @@ export class Scroll {
       this.childOffset += -d
       this.childBase += d
     }
-    if (this.childBase < 0) {
-      this.childBase = 0
-    }
-    else if (this.childBase > this.baseLimit) {
-      this.childBase = this.baseLimit
-    }
+    this.childBase = this.childBase < 0 ? 0 : this.childBase > this.baseLimit ? this.baseLimit : this.childBase
     // Find max "bottom" value for
     // content and descendant elements.
     // Scroll the content if necessary.
-    if (this.childBase === base) {
-      return this.emit(SCROLL)
-    }
+    if (this.childBase === base) return this.emit(SCROLL)
     // When scrolling text, we want to be able to handle SGR codes as well as line
     // feeds. This allows us to take preformatted text output from other programs
     // and put it in a scrollable text box.
@@ -239,12 +224,7 @@ export class Scroll {
     emax = this._scrollBottom() - (this.height - this.iheight)
     if (emax < 0) emax = 0
     this.childBase = Math.min(this.childBase, Math.max(emax, max))
-    if (this.childBase < 0) {
-      this.childBase = 0
-    }
-    else if (this.childBase > this.baseLimit) {
-      this.childBase = this.baseLimit
-    }
+    this.childBase = this.childBase < 0 ? 0 : this.childBase > this.baseLimit ? this.baseLimit : this.childBase
     // Optimize scrolling with CSR + IL/DL.
     p = this.lpos
     // Only really need _getCoords() if we want
@@ -257,13 +237,11 @@ export class Scroll {
       b = p.yl - this.ibottom - 1
       d = this.childBase - base
       if (d > 0 && d < visible) {
-        // scrolled down
-        this.screen.deleteLine(d, t, t, b)
+        this.screen.deleteLine(d, t, t, b)  // scrolled down
       }
       else if (d < 0 && -d < visible) {
-        // scrolled up
         d = -d
-        this.screen.insertLine(d, t, t, b)
+        this.screen.insertLine(d, t, t, b)  // scrolled up
       }
     }
     return this.emit(SCROLL)
@@ -278,11 +256,7 @@ export class Scroll {
     emax = this._scrollBottom() - (this.height - this.iheight)
     if (emax < 0) emax = 0
     this.childBase = Math.min(this.childBase, Math.max(emax, max))
-    if (this.childBase < 0) {
-      this.childBase = 0
-    }
-    else if (this.childBase > this.baseLimit)
-      this.childBase = this.baseLimit
+    this.childBase = this.childBase < 0 ? 0 : this.childBase > this.baseLimit ? this.baseLimit : this.childBase
   }
   resetScroll() {
     if (!this.scrollable) return

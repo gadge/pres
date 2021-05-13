@@ -9,7 +9,8 @@ import {
   ACTION, ADD_ITEM, CANCEL, CLICK, FOCUS, KEYPRESS, REMOVE_ITEM, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS,
 }                                          from '@pres/enum-events'
 import { ENTER, ESCAPE, LEFT, RIGHT, TAB } from '@pres/enum-key-names'
-import * as helpers                        from '@pres/util-helpers'
+import * as helpers           from '@pres/util-helpers'
+import { FUN, NUM, OBJ, STR } from '@typen/enum-data-types'
 
 export class ListBar extends Box {
   add = this.appendItem
@@ -18,6 +19,7 @@ export class ListBar extends Box {
    * Listbar / HorizontalList
    */
   constructor(options = {}) {
+    if (!options.sku) options.sku = 'list-bar'
     super(options)
     const self = this
     // if (!(this instanceof Node)) return new Listbar(options)
@@ -87,7 +89,7 @@ export class ListBar extends Box {
       commands = Object.keys(commands).reduce((obj, key, i) => {
         let cmd = commands[key],
             cb
-        if (typeof cmd === 'function') {
+        if (typeof cmd === FUN) {
           cb = cmd
           cmd = { callback: cb }
         }
@@ -117,18 +119,18 @@ export class ListBar extends Box {
       drawn = prev ? prev.aleft + prev.width : 0
       if (!this.screen.autoPadding) { drawn += this.ileft }
     }
-    if (typeof item === 'object') {
+    if (typeof item === OBJ) {
       cmd = item
       if (cmd.prefix == null) cmd.prefix = (this.items.length + 1) + ''
     }
-    if (typeof item === 'string') {
+    if (typeof item === STR) {
       cmd = {
         prefix: (this.items.length + 1) + '',
         text: item,
         callback: callback
       }
     }
-    if (typeof item === 'function') {
+    if (typeof item === FUN) {
       cmd = {
         prefix: (this.items.length + 1) + '',
         text: item.name,
@@ -165,7 +167,7 @@ export class ListBar extends Box {
         let attr = self.items[self.selected] === el
           ? self.style.selected[name]
           : self.style.item[name]
-        if (typeof attr === 'function') attr = attr(el)
+        if (typeof attr === FUN) attr = attr(el)
         return attr
       }
     })
@@ -218,7 +220,7 @@ export class ListBar extends Box {
     return this._render()
   }
   select(offset) {
-    if (typeof offset !== 'number') offset = this.items.indexOf(offset)
+    if (typeof offset !== NUM) offset = this.items.indexOf(offset)
     offset = offset < 0 ? 0 : offset >= this.items.length ? this.items.length - 1 : offset
     if (!this.sup) {
       this.emit(SELECT_ITEM, this.items[offset], offset)
@@ -265,7 +267,7 @@ export class ListBar extends Box {
     this.emit(SELECT_ITEM, el, offset)
   }
   removeItem(child) {
-    const i = typeof child !== 'number'
+    const i = typeof child !== NUM
       ? this.items.indexOf(child)
       : child
     if (~i && this.items[i]) {
