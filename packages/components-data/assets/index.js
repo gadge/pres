@@ -1,0 +1,1 @@
+export const EFFECT_COLLECTION = [ 'bg', 'fg', 'bold', 'underline', 'blink', 'inverse', 'invisible' ]

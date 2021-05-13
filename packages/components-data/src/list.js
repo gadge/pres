@@ -10,8 +10,10 @@ import {
   REMOVE, REMOVE_ITEM, RESIZE, SELECT, SELECT_ITEM, SET_ITEMS,
 }                                        from '@pres/enum-events'
 import { DOWN, ENTER, ESCAPE, LEFT, UP } from '@pres/enum-key-names'
-import * as helpers           from '@pres/util-helpers'
-import { FUN, NUM, OBJ, STR } from '@typen/enum-data-types'
+import * as helpers                      from '@pres/util-helpers'
+import { FUN, NUM, OBJ, STR }            from '@typen/enum-data-types'
+import { EFFECT_COLLECTION }             from '../assets'
+
 
 export class List extends Box {
   add = this.appendItem
@@ -56,9 +58,10 @@ export class List extends Box {
       this.style.item.inverse = options.itemInverse
       this.style.item.invisible = options.itemInvisible
     }
+
     // Legacy: for apps written before the addition of item attributes.
-    [ 'bg', 'fg', 'bold', 'underline', 'blink', 'inverse', 'invisible' ]
-      .forEach(function (name) {
+    EFFECT_COLLECTION
+      .forEach(name => {
         if (self.style[name] != null && self.style.item[name] == null) {
           self.style.item[name] = self.style[name]
         }
@@ -159,8 +162,8 @@ export class List extends Box {
         }
         if (options.vi && (key.ch === '/' || key.ch === '?')) {
           if (typeof self.options.search !== FUN) return
-          return self.options.search(function (err, value) {
-            if (typeof err === STR || typeof err === FUN || typeof err === NUM || (err && err.test)) {
+          return self.options.search((err, value) => {
+            if (typeof err === STR || typeof err === FUN || typeof err === NUM || (err?.test)) {
               value = err
               err = null
             }
@@ -211,7 +214,8 @@ export class List extends Box {
       height: 1,
       hoverEffects: this.mouse ? this.style.item.hover : null,
       focusEffects: this.mouse ? this.style.item.focus : null,
-      autoFocus: false
+      autoFocus: false,
+      // sup: self
     }
     if (!this.screen.autoPadding) {
       options.top = 1
@@ -224,9 +228,8 @@ export class List extends Box {
       delete options.right
       options.width = 'shrink'
     }
-    [ 'bg', 'fg', 'bold', 'underline',
-      'blink', 'inverse', 'invisible' ].forEach(function (name) {
-      options[name] = function () {
+    EFFECT_COLLECTION.forEach(name => {
+      options[name] = () => {
         let attr = self.items[self.selected] === item && self.interactive
           ? self.style.selected[name]
           : self.style.item[name]
@@ -234,9 +237,7 @@ export class List extends Box {
         return attr
       }
     })
-    if (this.style.transparent) {
-      options.transparent = true
-    }
+    if (this.style.transparent) options.transparent = true
     const item = new Box(options)
     if (this.mouse) {
       item.on(CLICK, () => {
@@ -257,15 +258,11 @@ export class List extends Box {
     content = typeof content === STR ? content : content.getContent()
     const item = this.createItem(content)
     item.position.top = this.items.length
-    if (!this.screen.autoPadding) {
-      item.position.top = this.itop + this.items.length
-    }
+    if (!this.screen.autoPadding) item.position.top = this.itop + this.items.length
     this.ritems.push(content)
     this.items.push(item)
     this.append(item)
-    if (this.items.length === 1) {
-      this.select(0)
-    }
+    if (this.items.length === 1) this.select(0)
     this.emit(ADD_ITEM)
     return item
   }
@@ -275,12 +272,9 @@ export class List extends Box {
       child = this.items.splice(i, 1)[0]
       this.ritems.splice(i, 1)
       this.remove(child)
-      for (let j = i; j < this.items.length; j++) {
+      for (let j = i; j < this.items.length; j++)
         this.items[j].position.top--
-      }
-      if (i === this.selected) {
-        this.select(i - 1)
-      }
+      if (i === this.selected) this.select(i - 1)
     }
     this.emit(REMOVE_ITEM)
     return child
@@ -291,21 +285,17 @@ export class List extends Box {
     if (!~i) return
     if (i >= this.items.length) return this.appendItem(content)
     const item = this.createItem(content)
-    for (let j = i; j < this.items.length; j++) {
+    for (let j = i; j < this.items.length; j++)
       this.items[j].position.top++
-    }
     item.position.top = i + (!this.screen.autoPadding ? 1 : 0)
     this.ritems.splice(i, 0, content)
     this.items.splice(i, 0, item)
     this.append(item)
-    if (i === this.selected) {
+    if (i === this.selected)
       this.select(i + 1)
-    }
     this.emit(INSERT_ITEM)
   }
-  getItem(child) {
-    return this.items[this.getItemIndex(child)]
-  }
+  getItem(child) { return this.items[this.getItemIndex(child)] }
   setItem(child, content) {
     content = typeof content === STR ? content : content.getContent()
     const i = this.getItemIndex(child)
@@ -313,56 +303,26 @@ export class List extends Box {
     this.items[i].setContent(content)
     this.ritems[i] = content
   }
-  clearItems() {
-    return this.setItems([])
-  }
+  clearItems() { return this.setItems([]) }
   setItems(items) {
     const original = this.items.slice(),
           selected = this.selected
     let sel = this.ritems[this.selected],
         i   = 0
-
     items = items.slice()
     this.select(0)
-    for (; i < items.length; i++) {
-      if (this.items[i]) {
-        this.items[i].setContent(items[i])
-      }
-      else {
-        this.add(items[i])
-      }
-    }
-    for (; i < original.length; i++) {
-      this.remove(original[i])
-    }
+    for (; i < items.length; i++) { this.items[i] ? this.items[i].setContent(items[i]) : this.add(items[i]) }
+    for (; i < original.length; i++) { this.remove(original[i]) }
     this.ritems = items
     // Try to find our old item if it still exists.
     sel = items.indexOf(sel)
-    if (~sel) {
-      this.select(sel)
-    }
-    else if (items.length === original.length) {
-      this.select(selected)
-    }
-    else {
-      this.select(Math.min(selected, items.length - 1))
-    }
+    ~sel ? this.select(sel) : items.length === original.length ? this.select(selected) : this.select(Math.min(selected, items.length - 1))
     this.emit(SET_ITEMS)
   }
-  pushItem(content) {
-    this.appendItem(content)
-    return this.items.length
-  }
-  popItem() {
-    return this.removeItem(this.items.length - 1)
-  }
-  unshiftItem(content) {
-    this.insertItem(0, content)
-    return this.items.length
-  }
-  shiftItem() {
-    return this.removeItem(0)
-  }
+  pushItem(content) { return this.appendItem(content), this.items.length }
+  popItem() { return this.removeItem(this.items.length - 1) }
+  unshiftItem(content) { return this.insertItem(0, content), this.items.length }
+  shiftItem() { return this.removeItem(0) }
   spliceItem(child, n) {
     const self = this
     let i = this.getItemIndex(child)
@@ -372,46 +332,29 @@ export class List extends Box {
     while (n--) {
       removed.push(this.removeItem(i))
     }
-    items.forEach(function (item) {
-      self.insertItem(i++, item)
-    })
+    items.forEach(item => self.insertItem(i++, item))
     return removed
   }
   fuzzyFind(search, back) {
     const start = this.selected + (back ? -1 : 1)
     let i
     if (typeof search === NUM) search += ''
-    if (search && search[0] === '/' && search[search.length - 1] === '/') {
-      try {
-        search = new RegExp(search.slice(1, -1))
-      } catch (e) {
-
-      }
-    }
+    if (search && search[0] === '/' && search[search.length - 1] === '/')
+      try { search = new RegExp(search.slice(1, -1)) } catch (e) { }
     const test = typeof search === STR
-      ? function (item) { return !!~item.indexOf(search) }
+      ? item => !!~item.indexOf(search)
       : (search.test ? search.test.bind(search) : search)
     if (typeof test !== FUN) {
-      if (this.screen.options.debug) {
-        throw new Error('fuzzyFind(): `test` is not a function.')
-      }
+      if (this.screen.options.debug) { throw new Error('fuzzyFind(): `test` is not a function.') }
       return this.selected
     }
     if (!back) {
-      for (i = start; i < this.ritems.length; i++) {
-        if (test(helpers.cleanTags(this.ritems[i]))) return i
-      }
-      for (i = 0; i < start; i++) {
-        if (test(helpers.cleanTags(this.ritems[i]))) return i
-      }
+      for (i = start; i < this.ritems.length; i++) if (test(helpers.cleanTags(this.ritems[i]))) return i
+      for (i = 0; i < start; i++) if (test(helpers.cleanTags(this.ritems[i]))) return i
     }
     else {
-      for (i = start; i >= 0; i--) {
-        if (test(helpers.cleanTags(this.ritems[i]))) return i
-      }
-      for (i = this.ritems.length - 1; i > start; i--) {
-        if (test(helpers.cleanTags(this.ritems[i]))) return i
-      }
+      for (i = start; i >= 0; i--) if (test(helpers.cleanTags(this.ritems[i]))) return i
+      for (i = this.ritems.length - 1; i > start; i--) if (test(helpers.cleanTags(this.ritems[i]))) return i
     }
     return this.selected
   }
@@ -422,11 +365,7 @@ export class List extends Box {
     else if (typeof child === STR) {
       let i = this.ritems.indexOf(child)
       if (~i) return i
-      for (i = 0; i < this.ritems.length; i++) {
-        if (helpers.cleanTags(this.ritems[i]) === child) {
-          return i
-        }
-      }
+      for (i = 0; i < this.ritems.length; i++) if (helpers.cleanTags(this.ritems[i]) === child) return i
       return -1
     }
     else {
@@ -434,9 +373,7 @@ export class List extends Box {
     }
   }
   select(index) {
-    if (!this.interactive) {
-      return
-    }
+    if (!this.interactive) return
     if (!this.items.length) {
       this.selected = 0
       this.value = ''
@@ -461,23 +398,15 @@ export class List extends Box {
     // XXX Move `action` and `select` events here.
     this.emit(SELECT_ITEM, this.items[this.selected], this.selected)
   }
-  move(offset) {
-    this.select(this.selected + offset)
-  }
-  up(offset) {
-    this.move(-(offset || 1))
-  }
-  down(offset) {
-    this.move(offset || 1)
-  }
+  move(offset) { this.select(this.selected + offset) }
+  up(offset) { this.move(-(offset || 1)) }
+  down(offset) { this.move(offset || 1) }
   pick(label, callback) {
     if (!callback) {
       callback = label
       label = null
     }
-    if (!this.interactive) {
-      return callback()
-    }
+    if (!this.interactive) { return callback() }
     const self = this
     const focused = this.screen.focused
     if (focused && focused._done) focused._done('stop')
@@ -491,7 +420,7 @@ export class List extends Box {
     this.select(0)
     if (label) this.setLabel(label)
     this.screen.render()
-    this.once(ACTION, function (el, selected) {
+    this.once(ACTION, (el, selected) => {
       if (label) self.removeLabel()
       self.screen.restoreFocus()
       self.hide()

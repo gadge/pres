@@ -14,7 +14,7 @@ export class DataTable extends Box {
       'Please refere to the README or to https://github.com/yaronn/blessed-contrib/issues/39'
     if (!options.columnWidth) throw 'Error: A table must get columnWidth as a property. Please refer to the README.'
     // options = options || {}
-    options.columnSpacing = options.columnSpacing == null ? 10 : options.columnSpacing
+    options.columnSpacing = options.columnSpacing ?? 10
     options.bold = true
     options.selectedFg = options.selectedFg || 'white'
     options.selectedBg = options.selectedBg || 'blue'

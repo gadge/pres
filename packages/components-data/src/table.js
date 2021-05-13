@@ -27,15 +27,13 @@ export class Table extends Box {
     super(options)
     const self = this
     // if (!(this instanceof Node)) { return new Table(options) }
-    this.pad = options.pad != null
-      ? options.pad
-      : 2
+    this.pad = options.pad ?? 2
     this.setData(options.rows || options.data)
-    this.on(ATTACH, function () {
+    this.on(ATTACH, () => {
       self.setContent('')
       self.setData(self.rows)
     })
-    this.on(RESIZE, function () {
+    this.on(RESIZE, () => {
       self.setContent('')
       self.setData(self.rows)
       self.screen.render()
@@ -48,17 +46,15 @@ export class Table extends Box {
     let maxes = []
     if (this.detached) return
     this.rows = this.rows || []
-    this.rows.forEach(function (row) {
-      row.forEach(function (cell, i) {
+    this.rows.forEach(row => {
+      row.forEach((cell, i) => {
         const clen = self.strWidth(cell)
         if (!maxes[i] || maxes[i] < clen) {
           maxes[i] = clen
         }
       })
     })
-    let total = maxes.reduce(function (total, max) {
-      return total + max
-    }, 0)
+    let total = maxes.reduce((total, max) => total + max, 0)
     total += maxes.length + 1
     // XXX There might be an issue with resizing where on the first resize event
     // width appears to be less than total if it's a percentage or left/right
@@ -82,9 +78,9 @@ export class Table extends Box {
     this.rows = rows || []
     this._calculateMaxes()
     if (!this._maxes) return
-    this.rows.forEach(function (row, i) {
+    this.rows.forEach((row, i) => {
       const isFooter = i === self.rows.length - 1
-      row.forEach(function (cell, i) {
+      row.forEach((cell, i) => {
         const width = self._maxes[i]
         let clen = self.strWidth(cell)
         if (i !== 0) {
@@ -169,7 +165,7 @@ export class Table extends Box {
     for (i = 0; i < self.rows.length + 1; i++) {
       if (!lines[yi + ry]) break
       rx = 0
-      self._maxes.forEach(function (max, i) {
+      self._maxes.forEach((max, i) => {
         rx += max
         if (i === 0) {
           if (!lines[yi + ry][xi + 0]) return
@@ -267,7 +263,7 @@ export class Table extends Box {
     for (ry = 1; ry < self.rows.length * 2; ry++) {
       if (!lines[yi + ry]) break
       rx = 0
-      self._maxes.slice(0, -1).forEach(function (max) {
+      self._maxes.slice(0, -1).forEach(max => {
         rx += max
         if (!lines[yi + ry][xi + rx + 1]) return
         if (ry % 2 !== 0) {
@@ -288,7 +284,7 @@ export class Table extends Box {
         }
       })
       rx = 1
-      self._maxes.forEach(function (max) {
+      self._maxes.forEach(max => {
         while (max--) {
           if (ry % 2 === 0) {
             if (!lines[yi + ry]) break

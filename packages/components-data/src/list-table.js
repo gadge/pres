@@ -50,7 +50,7 @@ export class ListTable extends List {
       style: options.style.header,
       tags: options.parseTags || options.tags
     })
-    this.on(SCROLL, function () {
+    this.on(SCROLL, () => {
       self._header.setFront()
       self._header.rtop = self.childBase
       if (!self.screen.autoPadding) {
@@ -61,10 +61,8 @@ export class ListTable extends List {
       ? options.pad
       : 2
     this.setData(options.rows || options.data)
-    this.on(ATTACH, function () {
-      self.setData(self.rows)
-    })
-    this.on(RESIZE, function () {
+    this.on(ATTACH, () => self.setData(self.rows))
+    this.on(RESIZE, () => {
       const selected = self.selected
       self.setData(self.rows)
       self.select(selected)
@@ -86,10 +84,10 @@ export class ListTable extends List {
     this._calculateMaxes()
     if (!this._maxes) return
     this.addItem('')
-    this.rows.forEach(function (row, i) {
+    this.rows.forEach((row, i) => {
       const isHeader = i === 0
       let text = ''
-      row.forEach(function (cell, i) {
+      row.forEach((cell, i) => {
         const width = self._maxes[i]
         let clen = self.strWidth(cell)
         if (i !== 0) {
@@ -174,7 +172,7 @@ export class ListTable extends List {
     for (i = 0; i < height + 1; i++) {
       if (!lines[yi + ry]) break
       rx = 0
-      self._maxes.slice(0, -1).forEach(function (max) {
+      self._maxes.slice(0, -1).forEach(max => {
         rx += max
         if (!lines[yi + ry][xi + rx + 1]) return
         // center
@@ -211,7 +209,7 @@ export class ListTable extends List {
     for (ry = 1; ry < height; ry++) {
       if (!lines[yi + ry]) break
       rx = 0
-      self._maxes.slice(0, -1).forEach(function (max) {
+      self._maxes.slice(0, -1).forEach(max => {
         rx += max
         if (!lines[yi + ry][xi + rx + 1]) return
         if (self.options.fillCellBorders !== false) {

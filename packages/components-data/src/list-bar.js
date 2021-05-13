@@ -9,8 +9,9 @@ import {
   ACTION, ADD_ITEM, CANCEL, CLICK, FOCUS, KEYPRESS, REMOVE_ITEM, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS,
 }                                          from '@pres/enum-events'
 import { ENTER, ESCAPE, LEFT, RIGHT, TAB } from '@pres/enum-key-names'
-import * as helpers           from '@pres/util-helpers'
-import { FUN, NUM, OBJ, STR } from '@typen/enum-data-types'
+import * as helpers                        from '@pres/util-helpers'
+import { FUN, NUM, OBJ, STR }              from '@typen/enum-data-types'
+import { EFFECT_COLLECTION }               from '../assets'
 
 export class ListBar extends Box {
   add = this.appendItem
@@ -162,7 +163,7 @@ export class ListBar extends Box {
       options.top += this.itop
       options.left += this.ileft
     }
-    [ 'bg', 'fg', 'bold', 'underline', 'blink', 'inverse', 'invisible' ].forEach(name => {
+    EFFECT_COLLECTION.forEach(name => {
       options.style[name] = () => {
         let attr = self.items[self.selected] === el
           ? self.style.selected[name]
@@ -171,7 +172,7 @@ export class ListBar extends Box {
         return attr
       }
     })
-    var el = new Box(options)
+    const el = new Box(options)
     this._[cmd.text] = el
     cmd.element = el
     el._.cmd = cmd
