@@ -9,11 +9,10 @@ import {
   BEL, BS, CSI, DCS, DECKPNM, DECRC, DECSC, ESC, FF, HTS, IND, LF, NEL, OSC, RI, RIS, RN, SI, SO, ST, TAB, VT,
 }                                                                 from '@pres/enum-control-chars'
 import {
-  _CBT, _CHA, _CHT, _CNL, _CPL, _CUB, _CUD, _CUF, _CUP, _CUU, _DA, _DCH, _DECCARA, _DECCRA, _DECDC, _DECEFR, _DECELR,
-  _DECERA, _DECFRA, _DECIC, _DECLL, _DECRARA, _DECREQTPARM, _DECRQM, _DECSACE, _DECSCA, _DECSCL, _DECSCUSR, _DECSERA,
-  _DECSLE, _DECSMBV, _DECSTBM, _DECSWBV, _DL, _DSR, _ECH, _ED, _EL, _HPA, _HPR, _HVP, _ICH, _IL, _MC, _REP, _RM, _SCORC,
-  _SCOSC, _SD, _SGR, _SM, _SU, _TBC, _VPA, _VPR, _XTHIMOUSE, _XTMODKEYS, _XTRESTORE, _XTRMTITLE, _XTSAVE, _XTSMPOINTER,
-  _XTSMTITLE, _XTUNMODKEYS, _XTWINOPS
+  CBT, CHA, CHT, CNL, CPL, CUB, CUD, CUF, CUP, CUU, DA, DCH, DECCARA, DECCRA, DECDC, DECEFR, DECELR, DECERA, DECFRA,
+  DECIC, DECLL, DECRARA, DECREQTPARM, DECRQM, DECSACE, DECSCA, DECSCL, DECSCUSR, DECSERA, DECSLE, DECSMBV, DECSTBM,
+  DECSWBV, DL, DSR, ECH, ED, EL, HPA, HPR, HVP, ICH, IL, MC, REP, RM, SCORC, SCOSC, SD, SGR, SM, SU, TBC, VPA, VPR,
+  XTHIMOUSE, XTMODKEYS, XTRESTORE, XTRMTITLE, XTSAVE, XTSMPOINTER, XTSMTITLE, XTUNMODKEYS, XTWINOPS
 }                                                                 from '@pres/enum-csi-codes'
 import {
   BLUR, BTNDOWN, BTNUP, DATA, DESTROY, DRAG, ERROR, EXIT, FOCUS, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEUP,
@@ -1159,13 +1158,13 @@ export class Program extends EventEmitter {
     else if (this.term('xterm') || this.term('screen')) {
       switch (shape) {
         case 'block':
-          !blink ? this.#writeTm(CSI + '0' + _DECSCUSR) : this.#writeTm(CSI + '1' + _DECSCUSR)
+          !blink ? this.#writeTm(CSI + '0' + DECSCUSR) : this.#writeTm(CSI + '1' + DECSCUSR)
           break
         case 'underline':
-          !blink ? this.#writeTm(CSI + '2' + _DECSCUSR) : this.#writeTm(CSI + '3' + _DECSCUSR)
+          !blink ? this.#writeTm(CSI + '2' + DECSCUSR) : this.#writeTm(CSI + '3' + DECSCUSR)
           break
         case 'line':
-          !blink ? this.#writeTm(CSI + '4' + _DECSCUSR) : this.#writeTm(CSI + '5' + _DECSCUSR)
+          !blink ? this.#writeTm(CSI + '4' + DECSCUSR) : this.#writeTm(CSI + '5' + DECSCUSR)
           break
       }
       return true
@@ -1182,7 +1181,7 @@ export class Program extends EventEmitter {
     if (this.term('xterm') || this.term('rxvt') || this.term('screen')) {
       // XXX
       // return this.resetColors();
-      this.#writeTm(CSI + '0' + _DECSCUSR)
+      this.#writeTm(CSI + '0' + DECSCUSR)
       this.#writeTm(OSC + '112' + BEL)
       // urxvt doesnt support OSC 112
       this.#writeTm(OSC + '12;white' + BEL)
@@ -1439,7 +1438,7 @@ export class Program extends EventEmitter {
     this.y -= n || 1
     this.recoords()
     return !this.tput
-      ? this.#write(CSI + (n || VO) + _CUU)
+      ? this.#write(CSI + (n || VO) + CUU)
       : !this.tput.strings.parm_up_cursor
         ? this.#write(this.repeat(this.tput.cuu1(), n))
         : this.put.cuu(n)
@@ -1450,7 +1449,7 @@ export class Program extends EventEmitter {
     this.y += n || 1
     this.recoords()
     return !this.tput
-      ? this.#write(CSI + (n || VO) + _CUD)
+      ? this.#write(CSI + (n || VO) + CUD)
       : !this.tput.strings.parm_down_cursor
         ? this.#write(this.repeat(this.tput.cud1(), n))
         : this.put.cud(n)
@@ -1462,7 +1461,7 @@ export class Program extends EventEmitter {
     this.x += n || 1
     this.recoords()
     return !this.tput
-      ? this.#write(CSI + (n || VO) + _CUF)
+      ? this.#write(CSI + (n || VO) + CUF)
       : !this.tput.strings.parm_right_cursor
         ? this.#write(this.repeat(this.tput.cuf1(), n))
         : this.put.cuf(n)
@@ -1474,7 +1473,7 @@ export class Program extends EventEmitter {
     this.x -= n || 1
     this.recoords()
     return !this.tput
-      ? this.#write(CSI + (n || VO) + _CUB)
+      ? this.#write(CSI + (n || VO) + CUB)
       : !this.tput.strings.parm_left_cursor
         ? this.#write(this.repeat(this.tput.cub1(), n))
         : this.put.cub(n)
@@ -1508,27 +1507,27 @@ export class Program extends EventEmitter {
     this.recoords()
     return this.tput
       ? this.put.cup(r, c)
-      : this.#write(CSI + `${r + 1};${c + 1}` + _CUP)
+      : this.#write(CSI + `${r + 1};${c + 1}` + CUP)
   }
 
   eraseInDisplay = this.ed
   ed(p) {
     return this.tput
       ? this.put.ed(p === 'above' ? 1 : p === 'all' ? 2 : p === 'saved' ? 3 : p === 'below' ? 0 : 0)
-      : this.#write(CSI + (p === 'above' ? 1 : p === 'all' ? 2 : p === 'saved' ? 3 : p === 'below' ? VO : VO) + _ED)
+      : this.#write(CSI + (p === 'above' ? 1 : p === 'all' ? 2 : p === 'saved' ? 3 : p === 'below' ? VO : VO) + ED)
   }
 
   clear() {
     this.x = 0
     this.y = 0
-    return this.tput ? this.put.clear() : this.#write(CSI + _CUP + CSI + _ED)
+    return this.tput ? this.put.clear() : this.#write(CSI + CUP + CSI + ED)
   }
 
   eraseInLine = this.el
   el(p) {
     return this.tput
       ? this.put.el(p === LEFT ? 1 : p === ALL ? 2 : p === RIGHT ? 0 : 0)
-      : this.#write(CSI + (p === LEFT ? 1 : p === ALL ? 2 : p === RIGHT ? VO : VO) + _EL)
+      : this.#write(CSI + (p === LEFT ? 1 : p === ALL ? 2 : p === RIGHT ? VO : VO) + EL)
   }
 
   charAttr = this.sgr
@@ -1546,69 +1545,69 @@ export class Program extends EventEmitter {
     if (parts.length > 1) {
       const used = {}, accum = []
       parts.forEach(el => { if ((el = self.#sgr(el, grain).slice(2, -1)) && el !== VO && !used[el]) { used[el] = true, accum.push(el) } })
-      return CSI + accum.join(SC) + _SGR
+      return CSI + accum.join(SC) + SGR
     }
     grain = arg.startsWith('no ') && (arg = arg.slice(3)) ? false
       : arg.startsWith('!') && (arg = arg.slice(1)) ? false
         : grain
-    if (arg === 'normal') { return grain ? CSI + _SGR : VO }
-    if (arg === 'bold') { return CSI + (grain ? '1' : '22') + _SGR }
-    if (arg === 'ul' || arg === 'underline' || arg === 'underlined') { return CSI + (grain ? '4' : '24') + _SGR }
-    if (arg === 'blink') { return CSI + (grain ? '5' : '25') + _SGR }
-    if (arg === 'inverse') { return CSI + (grain ? '7' : '27') + _SGR }
-    if (arg === 'invisible') { return CSI + (grain ? '8' : '28') + _SGR }
+    if (arg === 'normal') { return grain ? CSI + SGR : VO }
+    if (arg === 'bold') { return CSI + (grain ? '1' : '22') + SGR }
+    if (arg === 'ul' || arg === 'underline' || arg === 'underlined') { return CSI + (grain ? '4' : '24') + SGR }
+    if (arg === 'blink') { return CSI + (grain ? '5' : '25') + SGR }
+    if (arg === 'inverse') { return CSI + (grain ? '7' : '27') + SGR }
+    if (arg === 'invisible') { return CSI + (grain ? '8' : '28') + SGR }
     if (arg.startsWith('default')) {
-      if (arg.endsWith('fg bg')) { return grain ? CSI + (this.term('rxvt') ? '100' : '39;49') + _SGR : VO }
-      if (arg.endsWith('fg')) { return grain ? CSI + '39' + _SGR : VO }
-      if (arg.endsWith('bg')) { return grain ? CSI + '49' + _SGR : VO }
-      return grain ? CSI + _SGR : VO
+      if (arg.endsWith('fg bg')) { return grain ? CSI + (this.term('rxvt') ? '100' : '39;49') + SGR : VO }
+      if (arg.endsWith('fg')) { return grain ? CSI + '39' + SGR : VO }
+      if (arg.endsWith('bg')) { return grain ? CSI + '49' + SGR : VO }
+      return grain ? CSI + SGR : VO
     }
     if (arg.endsWith('fg')) {
       // 8-color foreground
-      if (arg.startsWith('black')) { return CSI + (grain ? '30' : '39') + _SGR }
-      if (arg.startsWith('red')) { return CSI + (grain ? '31' : '39') + _SGR }
-      if (arg.startsWith('green')) { return CSI + (grain ? '32' : '39') + _SGR }
-      if (arg.startsWith('yellow')) { return CSI + (grain ? '33' : '39') + _SGR }
-      if (arg.startsWith('blue')) { return CSI + (grain ? '34' : '39') + _SGR }
-      if (arg.startsWith('magenta')) { return CSI + (grain ? '35' : '39') + _SGR }
-      if (arg.startsWith('cyan')) { return CSI + (grain ? '36' : '39') + _SGR }
-      if (arg.startsWith('white')) { return CSI + (grain ? '37' : '39') + _SGR }
-      if (arg.startsWith('grey') || arg.startsWith('gray')) { return CSI + (grain ? '90' : '39') + _SGR}
+      if (arg.startsWith('black')) { return CSI + (grain ? '30' : '39') + SGR }
+      if (arg.startsWith('red')) { return CSI + (grain ? '31' : '39') + SGR }
+      if (arg.startsWith('green')) { return CSI + (grain ? '32' : '39') + SGR }
+      if (arg.startsWith('yellow')) { return CSI + (grain ? '33' : '39') + SGR }
+      if (arg.startsWith('blue')) { return CSI + (grain ? '34' : '39') + SGR }
+      if (arg.startsWith('magenta')) { return CSI + (grain ? '35' : '39') + SGR }
+      if (arg.startsWith('cyan')) { return CSI + (grain ? '36' : '39') + SGR }
+      if (arg.startsWith('white')) { return CSI + (grain ? '37' : '39') + SGR }
+      if (arg.startsWith('grey') || arg.startsWith('gray')) { return CSI + (grain ? '90' : '39') + SGR}
       // 16-color foreground
       if (arg.startsWith('light') || arg.startsWith('bright')) {
-        if (arg.includes('black')) { return CSI + (grain ? '90' : '39') + _SGR }
-        if (arg.includes('red')) { return CSI + (grain ? '91' : '39') + _SGR }
-        if (arg.includes('green')) { return CSI + (grain ? '92' : '39') + _SGR }
-        if (arg.includes('yellow')) { return CSI + (grain ? '93' : '39') + _SGR }
-        if (arg.includes('blue')) { return CSI + (grain ? '94' : '39') + _SGR }
-        if (arg.includes('magenta')) { return CSI + (grain ? '95' : '39') + _SGR }
-        if (arg.includes('cyan')) { return CSI + (grain ? '96' : '39') + _SGR }
-        if (arg.includes('white')) { return CSI + (grain ? '97' : '39') + _SGR }
-        if (arg.includes('grey') || arg.includes('gray')) { return CSI + (grain ? '37' : '39') + _SGR }
+        if (arg.includes('black')) { return CSI + (grain ? '90' : '39') + SGR }
+        if (arg.includes('red')) { return CSI + (grain ? '91' : '39') + SGR }
+        if (arg.includes('green')) { return CSI + (grain ? '92' : '39') + SGR }
+        if (arg.includes('yellow')) { return CSI + (grain ? '93' : '39') + SGR }
+        if (arg.includes('blue')) { return CSI + (grain ? '94' : '39') + SGR }
+        if (arg.includes('magenta')) { return CSI + (grain ? '95' : '39') + SGR }
+        if (arg.includes('cyan')) { return CSI + (grain ? '96' : '39') + SGR }
+        if (arg.includes('white')) { return CSI + (grain ? '97' : '39') + SGR }
+        if (arg.includes('grey') || arg.includes('gray')) { return CSI + (grain ? '37' : '39') + SGR }
       }
     }
     if (arg.endsWith('bg')) {
       // 8-color background
-      if (arg.startsWith('black')) { return CSI + (grain ? '40' : '49') + _SGR }
-      if (arg.startsWith('red')) { return CSI + (grain ? '41' : '49') + _SGR }
-      if (arg.startsWith('green')) { return CSI + (grain ? '42' : '49') + _SGR }
-      if (arg.startsWith('yellow')) { return CSI + (grain ? '43' : '49') + _SGR }
-      if (arg.startsWith('blue')) { return CSI + (grain ? '44' : '49') + _SGR }
-      if (arg.startsWith('magenta')) { return CSI + (grain ? '45' : '49') + _SGR }
-      if (arg.startsWith('cyan')) { return CSI + (grain ? '46' : '49') + _SGR }
-      if (arg.startsWith('white')) { return CSI + (grain ? '47' : '49') + _SGR }
-      if (arg.startsWith('grey') || arg.startsWith('gray')) { return CSI + (grain ? '100' : '49') + _SGR }
+      if (arg.startsWith('black')) { return CSI + (grain ? '40' : '49') + SGR }
+      if (arg.startsWith('red')) { return CSI + (grain ? '41' : '49') + SGR }
+      if (arg.startsWith('green')) { return CSI + (grain ? '42' : '49') + SGR }
+      if (arg.startsWith('yellow')) { return CSI + (grain ? '43' : '49') + SGR }
+      if (arg.startsWith('blue')) { return CSI + (grain ? '44' : '49') + SGR }
+      if (arg.startsWith('magenta')) { return CSI + (grain ? '45' : '49') + SGR }
+      if (arg.startsWith('cyan')) { return CSI + (grain ? '46' : '49') + SGR }
+      if (arg.startsWith('white')) { return CSI + (grain ? '47' : '49') + SGR }
+      if (arg.startsWith('grey') || arg.startsWith('gray')) { return CSI + (grain ? '100' : '49') + SGR }
       // 16-color background
       if (arg.startsWith('light') || arg.startsWith('bright')) {
-        if (arg.includes('black')) { return CSI + (grain ? '100' : '49') + _SGR }
-        if (arg.includes('red')) { return CSI + (grain ? '101' : '49') + _SGR }
-        if (arg.includes('green')) { return CSI + (grain ? '102' : '49') + _SGR }
-        if (arg.includes('yellow')) { return CSI + (grain ? '103' : '49') + _SGR }
-        if (arg.includes('blue')) { return CSI + (grain ? '104' : '49') + _SGR }
-        if (arg.includes('magenta')) { return CSI + (grain ? '105' : '49') + _SGR }
-        if (arg.includes('cyan')) { return CSI + (grain ? '106' : '49') + _SGR }
-        if (arg.includes('white')) { return CSI + (grain ? '107' : '49') + _SGR }
-        if (arg.includes('grey') || arg.includes('gray')) { return CSI + (grain ? '47' : '49') + _SGR }
+        if (arg.includes('black')) { return CSI + (grain ? '100' : '49') + SGR }
+        if (arg.includes('red')) { return CSI + (grain ? '101' : '49') + SGR }
+        if (arg.includes('green')) { return CSI + (grain ? '102' : '49') + SGR }
+        if (arg.includes('yellow')) { return CSI + (grain ? '103' : '49') + SGR }
+        if (arg.includes('blue')) { return CSI + (grain ? '104' : '49') + SGR }
+        if (arg.includes('magenta')) { return CSI + (grain ? '105' : '49') + SGR }
+        if (arg.includes('cyan')) { return CSI + (grain ? '106' : '49') + SGR }
+        if (arg.includes('white')) { return CSI + (grain ? '107' : '49') + SGR }
+        if (arg.includes('grey') || arg.includes('gray')) { return CSI + (grain ? '47' : '49') + SGR }
       }
     }
     // 256-color fg and bg
@@ -1623,12 +1622,12 @@ export class Program extends EventEmitter {
       if (c < 16 || (this.tput?.colors <= 16)) {
         if (scope === 'fg') { c < 8 ? (c += 30) : c < 16 ? (c -= 8, c += 90) : void 0 }
         else if (scope === 'bg') { c < 8 ? (c += 40) : c < 16 ? (c -= 8, c += 100) : void 0 }
-        return CSI + c + _SGR
+        return CSI + c + SGR
       }
-      if (scope === 'fg') { return CSI + `38;5;${c}` + _SGR }
-      if (scope === 'bg') { return CSI + `48;5;${c}` + _SGR }
+      if (scope === 'fg') { return CSI + `38;5;${c}` + SGR }
+      if (scope === 'bg') { return CSI + `48;5;${c}` + SGR }
     }
-    if (/^[\d;]*$/.test(arg)) { return CSI + arg + _SGR }
+    if (/^[\d;]*$/.test(arg)) { return CSI + arg + SGR }
     return null
   }
 
@@ -1641,8 +1640,8 @@ export class Program extends EventEmitter {
   deviceStatus = this.dsr
   dsr(arg, callback, dec, noBypass) {
     return dec
-      ? this.response('device-status', CSI + '?' + (arg || '0') + _DSR, callback, noBypass)
-      : this.response('device-status', CSI + (arg || '0') + _DSR, callback, noBypass)
+      ? this.response('device-status', CSI + '?' + (arg || '0') + DSR, callback, noBypass)
+      : this.response('device-status', CSI + (arg || '0') + DSR, callback, noBypass)
   }
   getCursor(callback) { return this.deviceStatus(6, callback, false, true) }
   saveReportedCursor(callback) {
@@ -1665,21 +1664,21 @@ export class Program extends EventEmitter {
     this.x += arg || 1
     this.recoords()
     if (this.tput) return this.put.ich(arg)
-    return this.#write(CSI + (arg || 1) + _ICH)
+    return this.#write(CSI + (arg || 1) + ICH)
   }
 
   cursorNextLine = this.cnl
   cnl(arg) {
     this.y += arg || 1
     this.recoords()
-    return this.#write(CSI + (arg || VO) + _CNL)
+    return this.#write(CSI + (arg || VO) + CNL)
   }
 
   cursorPrecedingLine = this.cpl
   cpl(arg) {
     this.y -= arg || 1
     this.recoords()
-    return this.#write(CSI + (arg || VO) + _CPL)
+    return this.#write(CSI + (arg || VO) + CPL)
   }
 
   cursorCharAbsolute = this.cha
@@ -1689,20 +1688,20 @@ export class Program extends EventEmitter {
     this.y = 0
     this.recoords()
     if (this.tput) return this.put.hpa(arg)
-    return this.#write(CSI + (arg + 1) + _CHA)
+    return this.#write(CSI + (arg + 1) + CHA)
   }
 
   insertLines = this.il
-  il(arg) { return this.tput ? this.put.il(arg) : this.#write(CSI + (arg || VO) + _IL) }
+  il(arg) { return this.tput ? this.put.il(arg) : this.#write(CSI + (arg || VO) + IL) }
 
   deleteLines = this.dl
-  dl(arg) { return this.tput ? this.put.dl(arg) : this.#write(CSI + (arg || VO) + _DL) }
+  dl(arg) { return this.tput ? this.put.dl(arg) : this.#write(CSI + (arg || VO) + DL) }
 
   deleteChars = this.dch
-  dch(arg) { return this.tput ? this.put.dch(arg) : this.#write(CSI + (arg || VO) + _DCH) }
+  dch(arg) { return this.tput ? this.put.dch(arg) : this.#write(CSI + (arg || VO) + DCH) }
 
   eraseChars = this.ech
-  ech(arg) { return this.tput ? this.put.ech(arg) : this.#write(CSI + (arg || VO) + _ECH) }
+  ech(arg) { return this.tput ? this.put.ech(arg) : this.#write(CSI + (arg || VO) + ECH) }
 
   charPosAbsolute = this.hpa // Character Position Absolute [column] (default = [row,1]) (HPA).
   hpa(arg) {
@@ -1710,7 +1709,7 @@ export class Program extends EventEmitter {
     this.recoords()
     if (this.tput) { return this.put.hpa.apply(this.put, arguments) }
     arg = slice(arguments).join(SC)
-    return this.#write(CSI + (arg || VO) + _HPA)
+    return this.#write(CSI + (arg || VO) + HPA)
   }
 
   HPositionRelative = this.hpr // Character Position Relative [columns] (default = [row,col+1]) (HPR).
@@ -1720,11 +1719,11 @@ export class Program extends EventEmitter {
     this.recoords()
     // Does not exist:
     // if (this.tput) return this.put.hpr(arg);
-    return this.#write(CSI + (arg || VO) + _HPR)
+    return this.#write(CSI + (arg || VO) + HPR)
   }
 
   sendDeviceAttributes = this.da
-  da(arg, callback) { return this.response('device-attributes', CSI + (arg || VO) + _DA, callback) }
+  da(arg, callback) { return this.response('device-attributes', CSI + (arg || VO) + DA, callback) }
 
   linePosAbsolute = this.vpa
   vpa(arg) {
@@ -1732,7 +1731,7 @@ export class Program extends EventEmitter {
     this.recoords()
     if (this.tput) return this.put.vpa.apply(this.put, arguments)
     arg = slice(arguments).join(SC)
-    return this.#write(CSI + (arg || VO) + _VPA)
+    return this.#write(CSI + (arg || VO) + VPA)
   }
 
   VPositionRelative = this.vpr
@@ -1742,7 +1741,7 @@ export class Program extends EventEmitter {
     this.recoords()
     // Does not exist:
     // if (this.tput) return this.put.vpr(arg);
-    return this.#write(CSI + (arg || VO) + _VPR)
+    return this.#write(CSI + (arg || VO) + VPR)
   }
 
   HVPosition = this.hvp
@@ -1761,11 +1760,11 @@ export class Program extends EventEmitter {
     // Does not exist (?):
     // if (this.tput) return this.put.hvp(row, col);
     if (this.tput) return this.put.cup(row, col)
-    return this.#write(CSI + `${row + 1};${col + 1}` + _HVP)
+    return this.#write(CSI + `${row + 1};${col + 1}` + HVP)
   }
 
   setMode = this.sm
-  sm(...args) { return this.#write(CSI + (args.join(SC) || VO) + _SM) }
+  sm(...args) { return this.#write(CSI + (args.join(SC) || VO) + SM) }
 
   setDecPrivMode = this.decset
   decset(...args) { return this.sm('?' + args.join(SC)) }
@@ -1796,7 +1795,7 @@ export class Program extends EventEmitter {
   }
 
   resetMode = this.rm
-  rm(...args) { return this.#write(CSI + (args.join(SC) || VO) + _RM) }
+  rm(...args) { return this.#write(CSI + (args.join(SC) || VO) + RM) }
 
   resetDecPrivMode = this.decrst
   decrst(...args) { return this.rm('?' + args.join(SC)) }
@@ -1954,7 +1953,7 @@ export class Program extends EventEmitter {
     this.y = 0
     this.recoords()
     if (this.tput) return this.put.csr(top, bottom)
-    return this.#write(CSI + `${top + 1};${bottom + 1}` + _DECSTBM)
+    return this.#write(CSI + `${top + 1};${bottom + 1}` + DECSTBM)
   }
 
   scA = this.scosc
@@ -1963,7 +1962,7 @@ export class Program extends EventEmitter {
     this.savedX = this.x
     this.savedY = this.y
     if (this.tput) return this.put.sc()
-    return this.#write(CSI + _SCOSC)
+    return this.#write(CSI + SCOSC)
   }
 
   rcA = this.scorc
@@ -1972,7 +1971,7 @@ export class Program extends EventEmitter {
     this.x = this.savedX || 0
     this.y = this.savedY || 0
     if (this.tput) return this.put.rc()
-    return this.#write(CSI + _SCORC)
+    return this.#write(CSI + SCORC)
   }
 
   cursorForwardTab = this.cht
@@ -1980,7 +1979,7 @@ export class Program extends EventEmitter {
     this.x += 8
     this.recoords()
     if (this.tput) return this.put.tab(arg)
-    return this.#write(CSI + (arg || 1) + _CHT)
+    return this.#write(CSI + (arg || 1) + CHT)
   }
 
   scrollUp = this.su
@@ -1988,7 +1987,7 @@ export class Program extends EventEmitter {
     this.y -= arg || 1
     this.recoords()
     if (this.tput) return this.put.parm_index(arg)
-    return this.#write(CSI + (arg || 1) + _SU)
+    return this.#write(CSI + (arg || 1) + SU)
   }
 
   scrollDown = this.sd
@@ -1996,21 +1995,21 @@ export class Program extends EventEmitter {
     this.y += arg || 1
     this.recoords()
     if (this.tput) return this.put.parm_rindex(arg)
-    return this.#write(CSI + (arg || 1) + _SD)
+    return this.#write(CSI + (arg || 1) + SD)
   }
 
   initMouseTracking = this.xthimouse
-  xthimouse(...args) { return this.#write(CSI + args.join(SC) + _XTHIMOUSE) }
+  xthimouse(...args) { return this.#write(CSI + args.join(SC) + XTHIMOUSE) }
 
   resetTitleModes = this.xtrmtitle
-  xtrmtitle(...args) { return this.#write(CSI + '>' + args.join(SC) + _XTRMTITLE) }
+  xtrmtitle(...args) { return this.#write(CSI + '>' + args.join(SC) + XTRMTITLE) }
 
   cursorBackwardTab = this.cbt
   cbt(arg) {
     this.x -= 8
     this.recoords()
     if (this.tput) return this.put.cbt(arg)
-    return this.#write(CSI + (arg || 1) + _CBT)
+    return this.#write(CSI + (arg || 1) + CBT)
   }
 
   repeatPrecedingCharacter = this.rep
@@ -2018,14 +2017,14 @@ export class Program extends EventEmitter {
     this.x += arg || 1
     this.recoords()
     if (this.tput) return this.put.rep(arg)
-    return this.#write(CSI + (arg || 1) + _REP)
+    return this.#write(CSI + (arg || 1) + REP)
   }
 
   tabClear = this.tbc
-  tbc(arg) { return this.tput ? this.put.tbc(arg) : this.#write(CSI + (arg || 0) + _TBC) }
+  tbc(arg) { return this.tput ? this.put.tbc(arg) : this.#write(CSI + (arg || 0) + TBC) }
 
   mediaCopy = this.mc
-  mc(...args) { return this.#write(CSI + args.join(SC) + _MC) }
+  mc(...args) { return this.#write(CSI + args.join(SC) + MC) }
 
   print_screen = this.mc0
   ps = this.mc0
@@ -2044,13 +2043,13 @@ export class Program extends EventEmitter {
   mc5p() { return this.tput ? this.put.mc5p() : this.mc('?5') }
 
   setResources = this.xtmodkeys // Set/reset key modifier options (XTMODKEYS), xterm.
-  xtmodkeys(...args) { return this.#write(CSI + '>' + args.join(SC) + _XTMODKEYS) }
+  xtmodkeys(...args) { return this.#write(CSI + '>' + args.join(SC) + XTMODKEYS) }
 
   disableModifiers = this.xtunmodkeys // Disable key modifier options, xterm.
-  xtunmodkeys(arg) { return this.#write(CSI + '>' + (arg || VO) + _XTUNMODKEYS) }
+  xtunmodkeys(arg) { return this.#write(CSI + '>' + (arg || VO) + XTUNMODKEYS) }
 
   setPointerMode = this.xtsmpointer // Set resource value pointerMode (XTSMPOINTER), xterm.
-  xtsmpointer(arg) { return this.#write(CSI + '>' + (arg || VO) + _XTSMPOINTER) }
+  xtsmpointer(arg) { return this.#write(CSI + '>' + (arg || VO) + XTSMPOINTER) }
 
   decstr = this.softReset
   rs2 = this.softReset
@@ -2064,16 +2063,16 @@ export class Program extends EventEmitter {
   }
 
   requestAnsiMode = this.decrqm
-  decrqm(arg) { return this.#write(CSI + (arg || VO) + _DECRQM) }
+  decrqm(arg) { return this.#write(CSI + (arg || VO) + DECRQM) }
 
   requestPrivateMode = this.decrqmp
-  decrqmp(arg) { return this.#write(CSI + '?' + (arg || VO) + _DECRQM) }
+  decrqmp(arg) { return this.#write(CSI + '?' + (arg || VO) + DECRQM) }
 
   setConformanceLevel = this.decscl
-  decscl(...args) { return this.#write(CSI + args.join(SC) + _DECSCL) }
+  decscl(...args) { return this.#write(CSI + args.join(SC) + DECSCL) }
 
   loadLEDs = this.decll
-  decll(arg) { return this.#write(CSI + (arg || VO) + _DECLL) }
+  decll(arg) { return this.#write(CSI + (arg || VO) + DECLL) }
 
   setCursorStyle = this.decscusr
   decscusr(p) {
@@ -2086,69 +2085,69 @@ export class Program extends EventEmitter {
                 : p
     if (p === 2 && this.has('Se')) return this.put.Se()
     if (this.has('Ss')) return this.put.Ss(p)
-    return this.#write(CSI + (p || 1) + _DECSCUSR)
+    return this.#write(CSI + (p || 1) + DECSCUSR)
   }
 
   setCharProtectionAttr = this.decsca // Select character protection attribute (DECSCA), VT220.
-  decsca(arg) { return this.#write(CSI + (arg || 0) + _DECSCA) }
+  decsca(arg) { return this.#write(CSI + (arg || 0) + DECSCA) }
 
   restorePrivateValues = this.xtrestore
-  xtrestore(...args) { return this.#write(CSI + '?' + args.join(SC) + _XTRESTORE) }
+  xtrestore(...args) { return this.#write(CSI + '?' + args.join(SC) + XTRESTORE) }
 
   setAttrInRectangle = this.deccara // Change Attributes in Rectangular Area (DECCARA), VT400 and up.
-  deccara(...args) { return this.#write(CSI + args.join(SC) + _DECCARA) }
+  deccara(...args) { return this.#write(CSI + args.join(SC) + DECCARA) }
 
   savePrivateValues = this.xtsave
-  xtsave(...args) { return this.#write(CSI + '?' + args.join(SC) + _XTSAVE) }
+  xtsave(...args) { return this.#write(CSI + '?' + args.join(SC) + XTSAVE) }
 
   manipulateWindow = this.xtwinops
   xtwinops(...args) {
     const callback = typeof args[args.length - 1] === FUN
       ? args.pop()
       : function () {}
-    return this.response('window-manipulation', CSI + args.join(SC) + _XTWINOPS, callback)
+    return this.response('window-manipulation', CSI + args.join(SC) + XTWINOPS, callback)
   }
   getWindowSize(callback) { return this.manipulateWindow(18, callback) }
 
   reverseAttrInRectangle = this.decrara
-  decrara(...args) { return this.#write(CSI + args.join(SC) + _DECRARA) }
+  decrara(...args) { return this.#write(CSI + args.join(SC) + DECRARA) }
 
   setTitleModeFeature = this.xtsmtitle
-  xtsmtitle(...args) { return this.#writeTm(CSI + '>' + args.join(SC) + _XTSMTITLE) }
+  xtsmtitle(...args) { return this.#writeTm(CSI + '>' + args.join(SC) + XTSMTITLE) }
 
   setWarningBellVolume = this.decswbv
-  decswbv(arg) { return this.#write(CSI + (arg || VO) + _DECSWBV) }
+  decswbv(arg) { return this.#write(CSI + (arg || VO) + DECSWBV) }
 
   setMarginBellVolume = this.decsmbv
-  decsmbv(arg) { return this.#write(CSI + (arg || VO) + _DECSMBV) }
+  decsmbv(arg) { return this.#write(CSI + (arg || VO) + DECSMBV) }
 
   copyRectangle = this.deccra
-  deccra(...args) { return this.#write(CSI + args.join(SC) + _DECCRA) }
+  deccra(...args) { return this.#write(CSI + args.join(SC) + DECCRA) }
 
   enableFilterRectangle = this.decefr
-  decefr(...args) { return this.#write(CSI + args.join(SC) + _DECEFR) }
+  decefr(...args) { return this.#write(CSI + args.join(SC) + DECEFR) }
 
   requestParameters = this.decreqtparm
-  decreqtparm(arg = 0) { return this.#write(CSI + arg + _DECREQTPARM) }
+  decreqtparm(arg = 0) { return this.#write(CSI + arg + DECREQTPARM) }
 
   // TODO: pull request - changed x to *x
   selectChangeExtent = this.decsace
-  decsace(arg = 0) { return this.#write(CSI + arg + _DECSACE) }
+  decsace(arg = 0) { return this.#write(CSI + arg + DECSACE) }
 
   fillRectangle = this.decfra
-  decfra(...args) { return this.#write(CSI + args.join(SC) + _DECFRA) }
+  decfra(...args) { return this.#write(CSI + args.join(SC) + DECFRA) }
 
   enableLocatorReporting = this.decelr
-  decelr(...args) { return this.#write(CSI + args.join(SC) + _DECELR) }
+  decelr(...args) { return this.#write(CSI + args.join(SC) + DECELR) }
 
   eraseRectangle = this.decera
-  decera(...args) { return this.#write(CSI + args.join(SC) + _DECERA) }
+  decera(...args) { return this.#write(CSI + args.join(SC) + DECERA) }
 
   setLocatorEvents = this.decsle
-  decsle(...args) { return this.#write(CSI + args.join(SC) + _DECSLE) }
+  decsle(...args) { return this.#write(CSI + args.join(SC) + DECSLE) }
 
   selectiveEraseRectangle = this.decsera
-  decsera(...args) { return this.#write(CSI + args.join(SC) + _DECSERA) }
+  decsera(...args) { return this.#write(CSI + args.join(SC) + DECSERA) }
 
   decrqlp = this.requestLocatorPosition
   req_mouse_pos = this.requestLocatorPosition
@@ -2167,11 +2166,11 @@ export class Program extends EventEmitter {
 
   // TODO: pull request since modified from ' }' to '\'}'
   insertColumns = this.decic // Insert Ps Column(s) (default = 1) (DECIC), VT420 and up.
-  decic(...args) { return this.#write(CSI + args.join(SC) + _DECIC) }
+  decic(...args) { return this.#write(CSI + args.join(SC) + DECIC) }
 
   // TODO: pull request since modified from ' ~' to '\'~'
   deleteColumns = this.decdc // Delete Ps Column(s) (default = 1) (DECDC), VT420 and up.
-  decdc(...args) { return this.#write(CSI + args.join(SC) + _DECDC) }
+  decdc(...args) { return this.#write(CSI + args.join(SC) + DECDC) }
 
   sigtstp(callback) {
     const resume = this.pause()
