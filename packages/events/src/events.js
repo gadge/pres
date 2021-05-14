@@ -5,105 +5,87 @@
  */
 
 import { ERROR, EVENT, NEW_LISTENER, REMOVE_LISTENER, } from '@pres/enum-events'
+import { SP }                                           from '@texting/enum-chars'
 import { FUN }                                          from '@typen/enum-data-types'
 
 const slice = Array.prototype.slice
 
 export class EventEmitter {
-  /**
-   * EventEmitter
-   */
-  constructor() {
-    if (!this._events) this._events = {} // console.log('>>> [EventEmitter is constructed]')
+  #events = {}
+  #max = Infinity
+  addListener = this.on
+  removeListener = this.off
+  constructor() { }
+  static build() { return new EventEmitter() }
+  setMaxListeners(n) { this.#max = n }
+  get events() { return this.#events }
+  on(type, listener) {
+    if (!this.#events[type]) { this.#events[type] = listener }
+    else if (typeof this.#events[type] === FUN) { this.#events[type] = [ this.#events[type], listener ] }
+    else { this.#events[type].push(listener) }
+    this.#emit(NEW_LISTENER, [ type, listener ])
   }
-  build() { return new EventEmitter() }
-  setMaxListeners(n) { this._maxListeners = n }
-  on = this.addListener
-  addListener(type, listener) {
-    if (!this._events[type]) { this._events[type] = listener }
-    else if (typeof this._events[type] === FUN) { this._events[type] = [ this._events[type], listener ] }
-    else { this._events[type].push(listener) }
-    this._emit(NEW_LISTENER, [ type, listener ])
-  }
-  off = this.removeListener
-  removeListener(type, listener) {
-    const handler = this._events[type]
-    if (!handler) return
+  off(type, listener) {
+    const handler = this.#events[type]
+    if (!handler) return void 0
     if (typeof handler === FUN || handler.length === 1) {
-      delete this._events[type]
-      this._emit(REMOVE_LISTENER, [ type, listener ])
-      return
+      delete this.#events[type]
+      this.#emit(REMOVE_LISTENER, [ type, listener ])
+      return void 0
     }
     for (let i = 0, hi = handler.length; i < hi; i++) {
       if (handler[i] === listener || handler[i].listener === listener) {
         handler.splice(i, 1)
-        this._emit(REMOVE_LISTENER, [ type, listener ])
-        return
+        this.#emit(REMOVE_LISTENER, [ type, listener ])
+        return void 0
       }
     }
   }
-  removeAllListeners(type) { type ? (delete this._events[type]) : (this._events = {}) }
+  removeAllListeners(type) { type ? (delete this.#events[type]) : (this.#events = {}) }
   once(type, listener) {
     const self = this
-    function on() {
-      self.removeListener(type, on)
-      return listener.apply(self, arguments)
-    }
+    function on() { return self.removeListener(type, on), listener.apply(self, arguments) }
     on.listener = listener
     return this.on(type, on)
   }
-  listeners(type) {
-    return typeof this._events[type] === FUN
-      ? [ this._events[type] ]
-      : this._events[type] || []
-  }
-  _emit(type, args) {
-    const handler = this._events[type]
+  listeners(type) { return typeof this.#events[type] === FUN ? [ this.#events[type] ] : this.#events[type] ?? [] }
+  _emit = this.#emit
+  #emit(type, args) {
+    const handler = this.#events[type]
     let result
-    if (!handler) {
-      if (type === ERROR) throw new args[0]
-      else return void 0
-    }
+    if (!handler) return type === ERROR ? throw new args[0] : void 0
     if (typeof handler === FUN) return handler.apply(this, args)
-    for (let i = 0; i < handler.length; i++)
-      if (handler[i].apply(this, args) === false)
-        result = false
+    for (let i = 0; i < handler.length; i++) if (handler[i].apply(this, args) === false) result = false
     return result !== false
   }
-  emit(type) {
-    const args   = slice.call(arguments, 1),
-          params = slice.call(arguments)
-    let el = this
-    this._emit(EVENT, params)
-    if (this.type === 'screen') return this._emit(type, args)
-    if (this._emit(type, args) === false) return false
-    type = 'element ' + type
-    args.unshift(this)
-    // `element` prefix
-    // params = [type].concat(args);
-    // no `element` prefix
-    // params.splice(1, 0, this);
+  emit(type, ...args) {
+    let node = this
+    this.#emit(EVENT, slice.call(arguments))
+    if (this.type === 'screen') return this.#emit(type, args)
+    if (this.#emit(type, args) === false) return false
+    type = 'element' + SP + type
+    args.unshift(this) // const elementArgs = [ node ].concat(args)
     do {
-      // el._emit(EVENT, params);
-      if (!el._events[type]) continue
-      if (el._emit(type, args) === false) return false
-    } while ((el = el.sup))
+      if (!node.events[type]) continue
+      if (node._emit(type, args) === false) return false
+    } while ((node = node.sup))
     return true
   }
 }
+
 // For hooking into the main EventEmitter if we want to.
 // Might be better to do things this way being that it
 // will always be compatible with node, not to mention
 // it gives us domain support as well.
-// Node.prototype._emit = Node.prototype.emit;
+// Node.prototype.#emit = Node.prototype.emit;
 // Node.prototype.emit = function(type) {
 //   var args, el;
 //
 //   if (this.type === 'screen') {
-//     return this._emit.apply(this, arguments);
+//     return this.#emit.apply(this, arguments);
 //   }
 //
-//   this._emit.apply(this, arguments);
+//   this.#emit.apply(this, arguments);
 //   if (this._bubbleStopped) return false;
 //
 //   args = slice.call(arguments, 1);
@@ -114,8 +96,8 @@ export class EventEmitter {
 //   //args.push(stopBubble);
 //
 //   do {
-//     if (!el._events || !el._events[type]) continue;
-//     el._emit.apply(el, args);
+//     if (!el.#events || !el.#events[type]) continue;
+//     el.#emit.apply(el, args);
 //     if (this._bubbleStopped) return false;
 //   } while ((el = el.sup));
 //

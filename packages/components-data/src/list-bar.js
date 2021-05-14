@@ -165,9 +165,7 @@ export class ListBar extends Box {
     }
     EFFECT_COLLECTION.forEach(name => {
       options.style[name] = () => {
-        let attr = self.items[self.selected] === el
-          ? self.style.selected[name]
-          : self.style.item[name]
+        let attr = self.items[self.selected] === el ? self.style.selected[name] : self.style.item[name]
         if (typeof attr === FUN) attr = attr(el)
         return attr
       }

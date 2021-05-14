@@ -18,7 +18,7 @@ const box = blessed.box({
 })
 
 const bar = blessed.listBar({
-  //sup: screen,
+  sup: screen,
   bottom: 0,
   left: 3,
   right: 3,

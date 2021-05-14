@@ -15,6 +15,7 @@ export class ScreenCollection {
   static total = 0
   static instances = []
   static _bound = false
+  static journal = true
 
   static initialize(screen) {
     if (!ScreenCollection.global) ScreenCollection.global = screen

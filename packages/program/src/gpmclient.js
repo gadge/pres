@@ -75,20 +75,20 @@ function send_config(socket, Gpm_Connect, callback) {
 // } Gpm_Event;
 
 function parseEvent(raw) {
-  const evnt = {}
-  evnt.buttons = raw[0]
-  evnt.modifiers = raw[1]
-  evnt.vc = raw.readUInt16LE(2)
-  evnt.dx = raw.readInt16LE(4)
-  evnt.dy = raw.readInt16LE(6)
-  evnt.x = raw.readInt16LE(8)
-  evnt.y = raw.readInt16LE(10)
-  evnt.type = raw.readInt16LE(12)
-  evnt.clicks = raw.readInt32LE(16)
-  evnt.margin = raw.readInt32LE(20)
-  evnt.wdx = raw.readInt16LE(24)
-  evnt.wdy = raw.readInt16LE(26)
-  return evnt
+  const event = {}
+  event.buttons = raw[0]
+  event.modifiers = raw[1]
+  event.vc = raw.readUInt16LE(2)
+  event.dx = raw.readInt16LE(4)
+  event.dy = raw.readInt16LE(6)
+  event.x = raw.readInt16LE(8)
+  event.y = raw.readInt16LE(10)
+  event.type = raw.readInt16LE(12)
+  event.clicks = raw.readInt32LE(16)
+  event.margin = raw.readInt32LE(20)
+  event.wdx = raw.readInt16LE(24)
+  event.wdy = raw.readInt16LE(26)
+  return event
 }
 export const gpmClient = options => new GpmClient(options)
 export class GpmClient extends EventEmitter {
@@ -165,18 +165,17 @@ export class GpmClient extends EventEmitter {
    * appended
    */
   createKey(action, button, modifier, x, y, dx, dy) {
-    const self = this
     return {
       name: MOUSE,
       type: 'GPM',
       action: action,
-      button: self.buttonName(button),
+      button: this.buttonName(button),
       raw: [ button, modifier, x, y, dx, dy ],
       x: x,
       y: y,
-      shift: self.hasShiftKey(modifier),
-      meta: self.hasMetaKey(modifier),
-      ctrl: self.hasCtrlKey(modifier),
+      shift: this.hasShiftKey(modifier),
+      meta: this.hasMetaKey(modifier),
+      ctrl: this.hasCtrlKey(modifier),
     }
   }
 }

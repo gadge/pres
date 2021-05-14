@@ -16,7 +16,7 @@ import {
   _XTSMTITLE, _XTUNMODKEYS, _XTWINOPS
 }                                                                 from '@pres/enum-csi-codes'
 import {
-  BLUR, BTNDOWN, BTNUP, DATA, DESTROY, DRAG, ERROR, EXIT, FOCUS, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEUP,
+  BLUR, BTNDOWN, BTNUP, DATA, DESTROY, DRAG, ERROR, EXIT, FOCUS, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEUP,
   MOUSEWHEEL, MOVE, NEW_LISTENER, RESIZE, RESPONSE, WARNING, WHEELDOWN, WHEELUP,
 }                                                                 from '@pres/enum-events'
 import { ENTER, LEFT, MIDDLE, RETURN, RIGHT, UNDEFINED, UNKNOWN } from '@pres/enum-key-names'
@@ -46,13 +46,11 @@ export class Program extends EventEmitter {
   type = 'program'
   constructor(options = {}) {
     super()
-    console.log(">> [Program.constructor]")
     ProgramCollection.initialize(this)
     this.config(options)
   }
 
   static build(options) {
-    console.log('>> [Program.build]')
     return new Program(options)
   }
 
@@ -81,16 +79,12 @@ export class Program extends EventEmitter {
     this.rows = this.output.rows || 1
     this.scrollTop = 0
     this.scrollBottom = this.rows - 1
-    this._terminal = options.terminal ||
-      options.term ||
-      process.env.TERM ||
+    this._terminal = options.terminal || options.term || process.env.TERM ||
       (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
     this._terminal = this._terminal.toLowerCase()
     // OSX
     this.isOSXTerm = process.env.TERM_PROGRAM === 'Apple_Terminal'
-    this.isiTerm2 =
-      process.env.TERM_PROGRAM === 'iTerm.app' ||
-      !!process.env.ITERM_SESSION_ID
+    this.isiTerm2 = process.env.TERM_PROGRAM === 'iTerm.app' || !!process.env.ITERM_SESSION_ID
     // VTE
     // NOTE: lxterminal does not provide an env variable to check for.
     // NOTE: gnome-terminal and sakura use a later version of VTE
@@ -98,11 +92,7 @@ export class Program extends EventEmitter {
     this.isXFCE = /xfce/i.test(process.env.COLORTERM)
     this.isTerminator = !!process.env.TERMINATOR_UUID
     this.isLXDE = false
-    this.isVTE =
-      !!process.env.VTE_VERSION ||
-      this.isXFCE ||
-      this.isTerminator ||
-      this.isLXDE
+    this.isVTE = !!process.env.VTE_VERSION || this.isXFCE || this.isTerminator || this.isLXDE
     // xterm and rxvt - not accurate
     this.isRxvt = /rxvt/i.test(process.env.COLORTERM)
     this.isXterm = false
@@ -120,6 +110,7 @@ export class Program extends EventEmitter {
     this._flush = this.flush.bind(this)
     if (options.tput !== false) this.setupTput()
     this.listen()
+    console.log(`>> [new program] (${this.rows},${this.cols})`)
   }
 
   get terminal() { return this._terminal }
@@ -270,7 +261,7 @@ export class Program extends EventEmitter {
       ProgramCollection.instances.forEach(program => {
         if (program.input !== self.input) return void 0
         program.emit(KEYPRESS, ch, key)
-        program.emit('key' + SP + name, ch, key)
+        program.emit(KEY + SP + name, ch, key)
       })
     })
     this.input.on(DATA,
@@ -343,18 +334,38 @@ export class Program extends EventEmitter {
   }
   key(key, listener) {
     if (typeof key === STR) key = key.split(/\s*,\s*/)
-    key.forEach(function (key) { return this.on('key' + SP + key, listener) }, this)
+    key.forEach(function (key) { return this.on(KEY + SP + key, listener) }, this)
   }
   onceKey(key, listener) {
     if (typeof key === STR) key = key.split(/\s*,\s*/)
-    key.forEach(function (key) { return this.once('key' + SP + key, listener) }, this)
+    key.forEach(function (key) { return this.once(KEY + SP + key, listener) }, this)
   }
 
   unkey = this.removeKey
   removeKey(key, listener) {
     if (typeof key === STR) key = key.split(/\s*,\s*/)
-    key.forEach(function (key) { return this.removeListener('key' + SP + key, listener) }, this)
+    key.forEach(function (key) { return this.removeListener(KEY + SP + key, listener) }, this)
   }
+
+  // XTerm mouse events
+// http://invisible-island.net/xterm/ctlseqs/ctlseqs.html#Mouse%20Tracking
+// To better understand these
+// the xterm code is very helpful:
+// Relevant files:
+//   button.c, charproc.c, misc.c
+// Relevant functions in xterm/button.c:
+//   BtnCode, EmitButtonCode, EditorButton, SendMousePosition
+// send a mouse event:
+// regular/utf8: ^[[M Cb Cx Cy
+// urxvt: ^[[ Cb ; Cx ; Cy M
+// sgr: ^[[ Cb ; Cx ; Cy M/m
+// vt300: ^[[ 24(1/3/5)~ [ Cx , Cy ] \r
+// locator: CSI P e ; P b ; P r ; P c ; P p & w
+// motion example of a left click:
+// ^[[M 3<^[[M@4<^[[M@5<^[[M@6<^[[M@7<^[[M#7<
+// mouseup, mousedown, mousewheel
+// left click: ^[[M 3<^[[M#3<
+// mousewheel up: ^[[M`3>
   bindMouse() {
     if (this._boundMouse) return
     this._boundMouse = true
@@ -633,6 +644,8 @@ export class Program extends EventEmitter {
       self.emit(key.action)
     }
   }
+
+  // gpm support for linux vc
   enableGpm() {
     const self = this
     if (this.gpm) return
@@ -663,6 +676,8 @@ export class Program extends EventEmitter {
       delete this.gpm
     }
   }
+
+  // All possible responses from the terminal
   bindResponse() {
     if (this._boundResponse) return
     this._boundResponse = true
@@ -1032,7 +1047,6 @@ export class Program extends EventEmitter {
     return noBypass ? this.#write(text) : this.#writeTm(text)
   }
 
-  // #out=this.#out
   write = this.#out
   _write = this.#write
   #out(text) { if (this.output.writable) this.output.write(text) }
@@ -1115,9 +1129,17 @@ export class Program extends EventEmitter {
     if (!i || i < 0) i = 0
     return Array(i + 1).join(ch)
   }
+
+  // Specific to iTerm2, but I think it's really cool.
+// Example:
+//  if (!screen.copyToClipboard(text)) {
+//    execClipboardProgram(text);
+//  }
   copyToClipboard(text) {
     return this.isiTerm2 ? (this.#writeTm(OSC + `50;CopyToCliboard=${text}` + BEL), true) : false
   }
+
+  // Only XTerm and iTerm2. If you know of any others, post them.
   cursorShape(shape, blink) {
     if (this.isiTerm2) {
       switch (shape) {
@@ -1216,6 +1238,10 @@ export class Program extends EventEmitter {
     this.recoords()
     return this.has('nel') ? this.put.nel() : this.#write(LF)
   }
+
+  /**
+   * Esc
+   */
   ind = this.index
   index() {
     this.y++
@@ -1236,7 +1262,6 @@ export class Program extends EventEmitter {
     this.recoords()
     return this.has('nel') ? this.put.nel() : this.#write(NEL)
   }
-  // ESC c Full Reset (RIS).
   reset() {
     this.x = this.y = 0
     if (this.has('rs1') || this.has('ris')) {
@@ -1246,7 +1271,6 @@ export class Program extends EventEmitter {
     }
     return this.#write(RIS)
   }
-  // ESC H Tab Set (HTS is 0x88).
   tabSet() { return this.tput ? this.put.hts() : this.#write(HTS) }
   sc = this.saveCursor
   saveCursor(key) {
@@ -1384,13 +1408,11 @@ export class Program extends EventEmitter {
     }
     return this.#write(ESC + val)
   }
+
+
   /**
    * OSC
    */
-
-  // OSC Ps ; Pt ST
-  // OSC Ps ; Pt BEL
-  //   Set Text Parameters.
   setTitle(title) {
     this._title = title
     // if (this.term('screen')) {
@@ -1402,10 +1424,6 @@ export class Program extends EventEmitter {
     // }
     return this.#writeTm(OSC + `0;${title}` + BEL)
   }
-
-  // OSC Ps ; Pt ST
-  // OSC Ps ; Pt BEL
-  //   Reset colors
   resetColors(arg) { return this.has('Cr') ? this.put.Cr(arg) : this.#writeTm(OSC + '112' + BEL) }
   // Change dynamic colors
   dynamicColors(arg) { return this.has('Cs') ? this.put.Cs(arg) : this.#writeTm(OSC + `12;${arg}` + BEL) }

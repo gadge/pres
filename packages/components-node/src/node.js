@@ -58,13 +58,16 @@ export class Node extends EventEmitter {
     this.sub = []
     this.$ = this._ = this.data = {}
     this.uid = NodeCollection.uid++
-    this.index = this.index != null ? this.index : -1
+    this.index = this.index ?? -1
     if (this.type !== 'screen') this.detached = true
     if (this.sup) this.sup.append(this)
     options.sub?.forEach(this.append.bind(this))
-    console.log('>> [new node]', this.codename, '∈', this.sup?.codename ?? AEU)
+    if (ScreenCollection.journal) console.log('>> [new node]', this.codename, '∈', this.parent?.codename ?? AEU)
   }
-  get codename() { return `${this.name ?? this.sku ?? this.type}.${this.uid ?? 'NA'}` }
+  get codename() {
+    const _name = `${this.sku ?? this.type ?? ''}.${this.uid ?? 'NA'}`
+    return this.name ? `${this.name}(${_name})` : _name
+  }
   insert(element, i) {
     const self = this
     if (element.screen && element.screen !== this.screen) throw new Error('Cannot switch a node\'s screen.')

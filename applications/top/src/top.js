@@ -78,7 +78,9 @@ export async function init() {
   new monitor.Net(netSpark)
   new monitor.Disk(diskDonut)
   const proc = new monitor.Proc(procTable) // no Windows support
+  screen.emit('adjourn')
   await proc.run()
+
 }
 
 process.on(UNCAUGHT_EXCEPTION, err => {

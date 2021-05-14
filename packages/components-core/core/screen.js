@@ -119,6 +119,7 @@ export class Screen extends Node {
     this.setMaxListeners(Infinity)
     this.enter()
     this.postEnter()
+    this.on('adjourn', () => ScreenCollection.journal = false)
   }
   setupProgram(options) {
     if (options.rsety && options.listen) options = { program: options }
@@ -153,7 +154,7 @@ export class Screen extends Node {
   get title() { return this.program.title }
   set title(title) { return this.program.title = title }
   get terminal() { return this.program.terminal }
-  set terminal(terminal) {return this.setTerminal(terminal), this.program.terminal}
+  set terminal(terminal) {return this.setTerminal(terminal), this.program.terminal }
   get cols() { return this.program.cols }
   get rows() { return this.program.rows }
   get width() { return this.program.cols }
@@ -353,11 +354,7 @@ export class Screen extends Node {
         }
       }
       // Just mouseover?
-      if (
-        (data.action === MOUSEMOVE || data.action === MOUSEDOWN || data.action === MOUSEUP) &&
-        self.hover &&
-        !set
-      ) {
+      if ((data.action === MOUSEMOVE || data.action === MOUSEDOWN || data.action === MOUSEUP) && self.hover && !set) {
         self.hover.emit(MOUSEOUT, data)
         self.hover = null
       }
@@ -375,9 +372,7 @@ export class Screen extends Node {
     //   if (target) target.focus();
     // });
     // Autofocus elements with the appropriate option.
-    this.on(ELEMENT_CLICK, el => {
-      if (el.clickable === true && el.options.autoFocus !== false) el.focus()
-    })
+    this.on(ELEMENT_CLICK, el => { if (el.clickable === true && el.options.autoFocus !== false) el.focus() })
   }
   enableMouse(el) { this._listenMouse(el) }
   _listenKeys(el) {

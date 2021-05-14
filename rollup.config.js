@@ -27,13 +27,14 @@ export default [
         sourceMap: true,
         exclude: 'node_modules/**',
         babelHelpers: 'bundled',
-        presets: [ [ '@babel/preset-env', { targets: { node: '14' } } ] ],
+        presets: [ [ '@babel/preset-env', { targets: { node: '14' }, loose: true } ] ],
         plugins: [
-          [ '@babel/plugin-proposal-optional-chaining' ],
-          [ '@babel/plugin-proposal-nullish-coalescing-operator' ],
+          [ '@babel/plugin-proposal-throw-expressions' ],
+          // [ '@babel/plugin-proposal-optional-chaining' ],
+          // [ '@babel/plugin-proposal-nullish-coalescing-operator' ],
           [ '@babel/plugin-proposal-pipeline-operator', { proposal: 'minimal' } ],
-          [ '@babel/plugin-proposal-class-properties', { loose: true } ],
-          [ '@babel/plugin-proposal-private-methods', { loose: true } ],
+          // [ '@babel/plugin-proposal-class-properties', { loose: true } ],
+          // [ '@babel/plugin-proposal-private-methods', { loose: true } ],
           // [ '@babel/plugin-transform-runtime', { helpers: false, } ]
         ]
       }),
