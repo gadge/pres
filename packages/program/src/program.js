@@ -2026,21 +2026,21 @@ export class Program extends EventEmitter {
   mediaCopy = this.mc
   mc(...args) { return this.#write(CSI + args.join(SC) + MC) }
 
-  print_screen = this.mc0
-  ps = this.mc0
-  mc0() { return this.tput ? this.put.mc0() : this.mc('0') }
+  print_screen = this.ps
+  mc0 = this.ps
+  ps() { return this.tput ? this.put.mc0() : this.mc('0') }
 
-  prtr_off = this.mc4
-  pf = this.mc4
-  mc4() { return this.tput ? this.put.mc4() : this.mc('4') }
+  prtr_off = this.pf
+  mc4 = this.pf
+  pf() { return this.tput ? this.put.mc4() : this.mc('4') }
 
-  prtr_on = this.mc5
-  po = this.mc5
-  mc5() { return this.tput ? this.put.mc5() : this.mc('5') }
+  prtr_on = this.po
+  mc5 = this.po
+  po() { return this.tput ? this.put.mc5() : this.mc('5') }
 
-  prtr_non = this.mc5p
-  pO = this.mc5p
-  mc5p() { return this.tput ? this.put.mc5p() : this.mc('?5') }
+  prtr_non = this.pO
+  mc5p = this.pO
+  pO() { return this.tput ? this.put.mc5p() : this.mc('?5') }
 
   setResources = this.xtmodkeys // Set/reset key modifier options (XTMODKEYS), xterm.
   xtmodkeys(...args) { return this.#write(CSI + '>' + args.join(SC) + XTMODKEYS) }
