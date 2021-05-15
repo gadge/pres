@@ -7,7 +7,7 @@ import {
   BTNDOWN, BTNUP, CLICK, CONNECT, DATA, DBLCLICK, DRAG, ERROR, MOUSE, MOUSEWHEEL, MOVE,
 }                              from '@pres/enum-events'
 import { LEFT, MIDDLE, RIGHT } from '@pres/enum-key-names'
-import { EventEmitter }        from '@pres/events'
+import { EventEmitter }        from 'events'
 import fs                      from 'fs'
 import net                     from 'net'
 

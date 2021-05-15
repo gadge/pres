@@ -19,7 +19,6 @@ import {
   MOUSEWHEEL, MOVE, NEW_LISTENER, RESIZE, RESPONSE, WARNING, WHEELDOWN, WHEELUP,
 }                                                                 from '@pres/enum-events'
 import { ENTER, LEFT, MIDDLE, RETURN, RIGHT, UNDEFINED, UNKNOWN } from '@pres/enum-key-names'
-import { EventEmitter }                                           from '@pres/events'
 import { Tput }                                                   from '@pres/terminfo-parser'
 import * as colors                                                from '@pres/util-colors'
 import { slice }                                                  from '@pres/util-helpers'
@@ -27,6 +26,7 @@ import { SC, SP, VO }                                             from '@texting
 import { FUN, NUM, STR }                                          from '@typen/enum-data-types'
 import { nullish }                                                from '@typen/nullish'
 import cp                                                         from 'child_process'
+import { EventEmitter }                                           from 'events'
 import fs                                                         from 'fs'
 import { StringDecoder }                                          from 'string_decoder'
 import util                                                       from 'util'

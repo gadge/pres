@@ -18,6 +18,8 @@ export class Node extends EventEmitter {
    * Node
    */
   constructor(options = {}, lazy) {
+    options.sup = options.sup ?? options.parent
+    options.sub = options.sub ?? options.children
     super(options)
     if (lazy) return this
     this.setup(options)
@@ -30,6 +32,19 @@ export class Node extends EventEmitter {
     this.options = options
     this.name = options.name
     this.sku = options.sku
+    this.configScreen(options)
+    this.sup = options.sup ?? null
+    this.sub = []
+    this.$ = this._ = this.data = {}
+    this.uid = NodeCollection.uid++
+    this.index = this.index ?? -1
+    if (this.type !== 'screen') this.detached = true
+    if (this.sup) this.sup.append(this)
+    options.sub?.forEach(this.append.bind(this))
+    if (ScreenCollection.journal) console.log('>> [new node]', this.codename, '∈',
+      this.parent?.codename ?? this.screen?.codename ?? AEU)
+  }
+  configScreen(options) {
     this.screen = this.screen || options.screen
     if (!this.screen) {
       // console.log(`>>> this.type = ${this.type}`)
@@ -44,48 +59,43 @@ export class Node extends EventEmitter {
         // synchronously after the screen's creation. Throw error if not.
         this.screen = ScreenCollection.instances |> last
         process.nextTick(() => {
-          if (!self.sup) throw new Error('Element (' + self.type + ')'
-            + ' was not appended synchronously after the'
-            + ' screen\'s creation. Please set a `sup`'
-            + ' or `screen` option in the element\'s constructor'
-            + ' if you are going to use multiple screens and'
-            + ' append the element later.')
+          if (!self.sup) throw new Error(
+            'Element (' + self.type + ') was not appended synchronously after the screen\'s creation. ' +
+            'Please set a \'parent\' or \'screen\' option in the element\'s constructor ' +
+            'if you are going to use multiple screens and append the element later.'
+          )
         })
       }
       else { throw new Error('No active screen.') }
     }
-    this.sup = options.sup ?? null
-    this.sub = []
-    this.$ = this._ = this.data = {}
-    this.uid = NodeCollection.uid++
-    this.index = this.index ?? -1
-    if (this.type !== 'screen') this.detached = true
-    if (this.sup) this.sup.append(this)
-    options.sub?.forEach(this.append.bind(this))
-    if (ScreenCollection.journal) console.log('>> [new node]', this.codename, '∈', this.parent?.codename ?? AEU)
   }
   get codename() {
     const _name = `${this.sku ?? this.type ?? ''}.${this.uid ?? 'NA'}`
     return this.name ? `${this.name}(${_name})` : _name
   }
-  insert(element, i) {
+
+  get parent() { return this.sup }
+  set parent(value) { this.sup = value }
+  get children() { return this.sub }
+  set children(value) { this.sub = value }
+
+  insert(el, i) {
     const self = this
-    if (element.screen && element.screen !== this.screen) throw new Error('Cannot switch a node\'s screen.')
-    element.detach()
-    element.sup = this
-    element.screen = this.screen
-    if (i === 0) { this.sub.unshift(element) }
-    else if (i === this.sub.length) { this.sub.push(element) }
-    else { this.sub.splice(i, 0, element) }
-    element.emit(REPARENT, this)
-    this.emit(ADOPT, element);
-    (function emit(el) {
-      const n = el.detached !== self.detached
+    if (el.screen && el.screen !== this.screen) throw new Error('Cannot switch a node\'s screen.')
+    el.detach()
+    el.sup = this
+    el.screen = this.screen
+    i <= 0 ? this.sub.unshift(el) : i >= this.sub.length ? this.sub.push(el) : this.sub.splice(i, 0, el)
+    el.emit(REPARENT, this)
+    this.emit(ADOPT, el)
+    function subEmitter(el) {
+      const detachDiff = el.detached !== self.detached
       el.detached = self.detached
-      if (n) el.emit(ATTACH)
-      el.sub.forEach(emit)
-    })(element)
-    if (!this.screen.focused) this.screen.focused = element
+      if (detachDiff) el.emit(ATTACH)
+      el.sub.forEach(subEmitter)
+    }
+    subEmitter(el)
+    if (!this.screen.focused) this.screen.focused = el
   }
   prepend(element) { this.insert(element, 0) }
   append(element) { this.insert(element, this.sub.length) }

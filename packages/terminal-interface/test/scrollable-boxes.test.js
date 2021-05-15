@@ -6,9 +6,10 @@ const screen = blessed.screen({
   warnings: true
 })
 
-const box = blessed.box({
+const box = blessed.scrollableBox({
   parent: screen,
   //padding: 2,
+  mouse: true,
   scrollable: true,
   left: 'center',
   top: 'center',
