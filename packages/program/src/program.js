@@ -100,9 +100,7 @@ export class Program extends EventEmitter {
       try {
         const version = cp.execFileSync('tmux', [ '-V' ], { encoding: 'utf8' })
         return +/^tmux ([\d.]+)/i.exec(version.trim().split('\n')[0])[1]
-      } catch (e) {
-        return 2
-      }
+      } catch (e) { return 2 }
     })() // IO
     this._buf = VO // IO
     this._flush = this.flush.bind(this) // IO
