@@ -33,14 +33,16 @@ export class Node extends EventEmitter {
     this.name = options.name
     this.sku = options.sku
     this.configScreen(options)
-    this.sup = options.sup ?? null
+    const sup = options.sup || options.parent,
+          sub = options.sub || options.children
+    this.sup = sup ?? null
     this.sub = []
     this.$ = this._ = this.data = {}
     this.uid = NodeCollection.uid++
     this.index = this.index ?? -1
     if (this.type !== 'screen') this.detached = true
     if (this.sup) this.sup.append(this)
-    options.sub?.forEach(this.append.bind(this))
+    sub?.forEach(this.append.bind(this))
     if (ScreenCollection.journal) console.log('>> [new node]', this.codename, '∈',
       this.parent?.codename ?? this.screen?.codename ?? AEU)
   }
