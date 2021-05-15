@@ -1,6 +1,6 @@
 {
   "name": "@pres/events",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "EventEmitter for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,7 +15,7 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/enum-events": "^0.1.9",
+    "@pres/enum-events": "^0.1.10",
     "@typen/enum-data-types": "^0.1.16"
   },
   "repository": {

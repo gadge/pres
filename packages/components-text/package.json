@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-text",
-  "version": "0.1.9",
+  "version": "0.1.10",
   "description": "Core components for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,9 +15,9 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/components-core": "^0.1.9",
-    "@pres/components-data": "^0.1.9",
-    "@pres/enum-events": "^0.1.9",
+    "@pres/components-core": "^0.1.10",
+    "@pres/components-data": "^0.1.10",
+    "@pres/enum-events": "^0.1.10",
     "chalk": "^4.1.1",
     "marked": "^2.0.3",
     "marked-terminal": "^4.1.1"
