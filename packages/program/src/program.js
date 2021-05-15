@@ -1100,13 +1100,14 @@ export class Program extends EventEmitter {
   }
   print(text, attr) { return attr ? this.#write(this.text(text, attr)) : this.#write(text) }
 
-  recoords() {
+  recoords = this.auto
+  auto() {
     this.x < 0 ? (this.x = 0) : this.x >= this.cols ? (this.x = this.cols - 1) : void 0
     this.y < 0 ? (this.y = 0) : this.y >= this.rows ? (this.y = this.rows - 1) : void 0
   }
-  setx(x) { return this.cursorCharAbsolute(x) }
-  sety(y) { return this.linePosAbsolute(y) }
-  move(x, y) { return this.cursorPos(y, x) }
+  setx(x) { return this.cha(x) }
+  sety(y) { return this.vpa(y) }
+  move(x, y) { return this.cup(y, x) }
   omove(x, y) {
     const { zero } = this
     x = !zero ? (x || 1) - 1 : x || 0
@@ -1202,7 +1203,7 @@ export class Program extends EventEmitter {
   bell() { return this.has('bel') ? this.put.bel() : this.#write(BEL) }
   vtab() {
     this.y++
-    this.recoords()
+    this.auto()
     return this.#write(VT)
   }
   ff = this.form
@@ -1210,13 +1211,13 @@ export class Program extends EventEmitter {
   kbs = this.backspace
   backspace() {
     this.x--
-    this.recoords()
+    this.auto()
     return this.has('kbs') ? this.put.kbs() : this.#write(BS)
   }
   ht = this.tab
   tab() {
     this.x += 8
-    this.recoords()
+    this.auto()
     return this.has('ht') ? this.put.ht() : this.#write(TAB)
   }
   shiftOut() { return this.#write(SO) }
@@ -1233,7 +1234,7 @@ export class Program extends EventEmitter {
     if (this.tput && this.tput.bools.eat_newline_glitch && this.x >= this.cols) return
     this.x = 0
     this.y++
-    this.recoords()
+    this.auto()
     return this.has('nel') ? this.put.nel() : this.#write(LF)
   }
 
@@ -1243,51 +1244,50 @@ export class Program extends EventEmitter {
   ind = this.index
   index() {
     this.y++
-    this.recoords()
+    this.auto()
     return this.tput ? this.put.ind() : this.#write(IND)
   }
   ri = this.reverseIndex
   reverse = this.reverseIndex
   reverseIndex() {
     this.y--
-    this.recoords()
+    this.auto()
     return this.tput ? this.put.ri() : this.#write(RI)
   }
 
   nextLine() {
     this.y++
     this.x = 0
-    this.recoords()
+    this.auto()
     return this.has('nel') ? this.put.nel() : this.#write(NEL)
   }
+
   reset() {
     this.x = this.y = 0
-    if (this.has('rs1') || this.has('ris')) {
-      return this.has('rs1')
-        ? this.put.rs1()
-        : this.put.ris()
-    }
-    return this.#write(RIS)
+    return this.has('rs1') || this.has('ris')
+      ? this.has('rs1') ? this.put.rs1() : this.put.ris()
+      : this.#write(RIS)
   }
   tabSet() { return this.tput ? this.put.hts() : this.#write(HTS) }
-  sc = this.saveCursor
-  saveCursor(key) {
-    if (key) return this.lsaveCursor(key)
+  saveCursor = this.sc
+  sc(key) {
+    if (key) return this.scL(key)
     this.savedX = this.x || 0
     this.savedY = this.y || 0
     if (this.tput) return this.put.sc()
     return this.#write(DECSC)
   }
-  rc = this.restoreCursor
-  restoreCursor(key, hide) {
-    if (key) return this.lrestoreCursor(key, hide)
+  restoreCursor = this.rc
+  rc(key, hide) {
+    if (key) return this.rcL(key, hide)
     this.x = this.savedX || 0
     this.y = this.savedY || 0
     if (this.tput) return this.put.rc()
     return this.#write(DECRC)
   }
   // Save Cursor Locally
-  lsaveCursor(key) {
+  lsaveCursor = this.scL
+  scL(key) {
     key = key || 'local'
     this._saved = this._saved || {}
     this._saved[key] = this._saved[key] || {}
@@ -1296,15 +1296,15 @@ export class Program extends EventEmitter {
     this._saved[key].hidden = this.cursorHidden
   }
   // Restore Cursor Locally
-  lrestoreCursor(key, hide) {
+  lrestoreCursor = this.rcL
+  rcL(key, hide) {
     let pos
     key = key || 'local'
     if (!this._saved || !this._saved[key]) return
     pos = this._saved[key]
     //delete this._saved[key];
     this.cup(pos.y, pos.x)
-    if (hide && pos.hidden !== this.cursorHidden)
-      pos.hidden ? this.hideCursor() : this.showCursor()
+    if (hide && pos.hidden !== this.cursorHidden) pos.hidden ? this.hideCursor() : this.showCursor()
   }
   // ESC # 3 DEC line height/width
   lineHeight() { return this.#write(ESC + '#') }
@@ -1435,7 +1435,7 @@ export class Program extends EventEmitter {
   up = this.cuu
   cuu(n) {
     this.y -= n || 1
-    this.recoords()
+    this.auto()
     return !this.tput
       ? this.#write(CSI + (n || VO) + CUU)
       : !this.tput.strings.parm_up_cursor
@@ -1446,7 +1446,7 @@ export class Program extends EventEmitter {
   down = this.cud
   cud(n) {
     this.y += n || 1
-    this.recoords()
+    this.auto()
     return !this.tput
       ? this.#write(CSI + (n || VO) + CUD)
       : !this.tput.strings.parm_down_cursor
@@ -1458,7 +1458,7 @@ export class Program extends EventEmitter {
   forward = this.cuf
   cuf(n) {
     this.x += n || 1
-    this.recoords()
+    this.auto()
     return !this.tput
       ? this.#write(CSI + (n || VO) + CUF)
       : !this.tput.strings.parm_right_cursor
@@ -1470,7 +1470,7 @@ export class Program extends EventEmitter {
   back = this.cub
   cub(n) {
     this.x -= n || 1
-    this.recoords()
+    this.auto()
     return !this.tput
       ? this.#write(CSI + (n || VO) + CUB)
       : !this.tput.strings.parm_left_cursor
@@ -1503,7 +1503,7 @@ export class Program extends EventEmitter {
     const { zero } = this
     this.x = c = !zero ? (c || 1) - 1 : c || 0
     this.y = r = !zero ? (r || 1) - 1 : r || 0
-    this.recoords()
+    this.auto()
     return this.tput
       ? this.put.cup(r, c)
       : this.#write(CSI + `${r + 1};${c + 1}` + CUP)
@@ -1661,7 +1661,7 @@ export class Program extends EventEmitter {
   insertChars = this.ich
   ich(arg) {
     this.x += arg || 1
-    this.recoords()
+    this.auto()
     if (this.tput) return this.put.ich(arg)
     return this.#write(CSI + (arg || 1) + ICH)
   }
@@ -1669,14 +1669,14 @@ export class Program extends EventEmitter {
   cursorNextLine = this.cnl
   cnl(arg) {
     this.y += arg || 1
-    this.recoords()
+    this.auto()
     return this.#write(CSI + (arg || VO) + CNL)
   }
 
   cursorPrecedingLine = this.cpl
   cpl(arg) {
     this.y -= arg || 1
-    this.recoords()
+    this.auto()
     return this.#write(CSI + (arg || VO) + CPL)
   }
 
@@ -1685,7 +1685,7 @@ export class Program extends EventEmitter {
     arg = !this.zero ? (arg || 1) - 1 : arg || 0
     this.x = arg
     this.y = 0
-    this.recoords()
+    this.auto()
     if (this.tput) return this.put.hpa(arg)
     return this.#write(CSI + (arg + 1) + CHA)
   }
@@ -1705,7 +1705,7 @@ export class Program extends EventEmitter {
   charPosAbsolute = this.hpa // Character Position Absolute [column] (default = [row,1]) (HPA).
   hpa(arg) {
     this.x = arg || 0
-    this.recoords()
+    this.auto()
     if (this.tput) { return this.put.hpa.apply(this.put, arguments) }
     arg = slice(arguments).join(SC)
     return this.#write(CSI + (arg || VO) + HPA)
@@ -1715,7 +1715,7 @@ export class Program extends EventEmitter {
   hpr(arg) {
     if (this.tput) return this.cuf(arg)
     this.x += arg || 1
-    this.recoords()
+    this.auto()
     // Does not exist:
     // if (this.tput) return this.put.hpr(arg);
     return this.#write(CSI + (arg || VO) + HPR)
@@ -1727,7 +1727,7 @@ export class Program extends EventEmitter {
   linePosAbsolute = this.vpa
   vpa(arg) {
     this.y = arg || 1
-    this.recoords()
+    this.auto()
     if (this.tput) return this.put.vpa.apply(this.put, arguments)
     arg = slice(arguments).join(SC)
     return this.#write(CSI + (arg || VO) + VPA)
@@ -1737,7 +1737,7 @@ export class Program extends EventEmitter {
   vpr(arg) {
     if (this.tput) return this.cud(arg)
     this.y += arg || 1
-    this.recoords()
+    this.auto()
     // Does not exist:
     // if (this.tput) return this.put.vpr(arg);
     return this.#write(CSI + (arg || VO) + VPR)
@@ -1755,7 +1755,7 @@ export class Program extends EventEmitter {
     }
     this.y = row
     this.x = col
-    this.recoords()
+    this.auto()
     // Does not exist (?):
     // if (this.tput) return this.put.hvp(row, col);
     if (this.tput) return this.put.cup(row, col)
@@ -1763,7 +1763,7 @@ export class Program extends EventEmitter {
   }
 
   setMode = this.sm
-  sm(...args) { return this.#write(CSI + (args.join(SC) || VO) + SM) }
+  sm(...args) { return this.#write(CSI + args.join(SC) + SM) }
 
   setDecPrivMode = this.decset
   decset(...args) { return this.sm('?' + args.join(SC)) }
@@ -1794,7 +1794,7 @@ export class Program extends EventEmitter {
   }
 
   resetMode = this.rm
-  rm(...args) { return this.#write(CSI + (args.join(SC) || VO) + RM) }
+  rm(...args) { return this.#write(CSI + args.join(SC) + RM) }
 
   resetDecPrivMode = this.decrst
   decrst(...args) { return this.rm('?' + args.join(SC)) }
@@ -1950,7 +1950,7 @@ export class Program extends EventEmitter {
     this.scrollBottom = bottom
     this.x = 0
     this.y = 0
-    this.recoords()
+    this.auto()
     if (this.tput) return this.put.csr(top, bottom)
     return this.#write(CSI + `${top + 1};${bottom + 1}` + DECSTBM)
   }
@@ -1976,7 +1976,7 @@ export class Program extends EventEmitter {
   cursorForwardTab = this.cht
   cht(arg) {
     this.x += 8
-    this.recoords()
+    this.auto()
     if (this.tput) return this.put.tab(arg)
     return this.#write(CSI + (arg || 1) + CHT)
   }
@@ -1984,7 +1984,7 @@ export class Program extends EventEmitter {
   scrollUp = this.su
   su(arg) {
     this.y -= arg || 1
-    this.recoords()
+    this.auto()
     if (this.tput) return this.put.parm_index(arg)
     return this.#write(CSI + (arg || 1) + SU)
   }
@@ -1992,7 +1992,7 @@ export class Program extends EventEmitter {
   scrollDown = this.sd
   sd(arg) {
     this.y += arg || 1
-    this.recoords()
+    this.auto()
     if (this.tput) return this.put.parm_rindex(arg)
     return this.#write(CSI + (arg || 1) + SD)
   }
@@ -2006,7 +2006,7 @@ export class Program extends EventEmitter {
   cursorBackwardTab = this.cbt
   cbt(arg) {
     this.x -= 8
-    this.recoords()
+    this.auto()
     if (this.tput) return this.put.cbt(arg)
     return this.#write(CSI + (arg || 1) + CBT)
   }
@@ -2014,7 +2014,7 @@ export class Program extends EventEmitter {
   repeatPrecedingCharacter = this.rep
   rep(arg) {
     this.x += arg || 1
-    this.recoords()
+    this.auto()
     if (this.tput) return this.put.rep(arg)
     return this.#write(CSI + (arg || 1) + REP)
   }
@@ -2176,11 +2176,12 @@ export class Program extends EventEmitter {
     process.once(SIGCONT, () => { resume(), (callback ? callback() : undefined) })
     process.kill(process.pid, SIGTSTP)
   }
+
   pause(callback) {
     const self         = this,
           isAlt        = this.isAlt,
           mouseEnabled = this.mouseEnabled
-    this.lsaveCursor('pause')
+    this.scL('pause')
     //this.csr(0, screen.height - 1);
     if (isAlt) this.normalBuffer()
     this.showCursor()
@@ -2197,10 +2198,11 @@ export class Program extends EventEmitter {
       if (isAlt) self.alternateBuffer()
       //self.csr(0, screen.height - 1);
       if (mouseEnabled) self.enableMouse()
-      self.lrestoreCursor('pause', true)
+      self.rcL('pause', true)
       if (callback) callback()
     }
   }
+
   resume() { if (this._resume) return this._resume() }
 }
 

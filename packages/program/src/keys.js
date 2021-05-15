@@ -29,22 +29,13 @@ export function emitKeypressEvents(stream) {
     }
     else {
       // Nobody's watching anyway
-      stream.removeListener(DATA, onData)
-      stream.on(NEW_LISTENER, onNewListener)
+      stream.removeListener(DATA, onData), stream.on(NEW_LISTENER, onNewListener)
     }
   }
   function onNewListener(event) {
-    if (event === KEYPRESS) {
-      stream.on(DATA, onData)
-      stream.removeListener(NEW_LISTENER, onNewListener)
-    }
+    if (event === KEYPRESS) {stream.on(DATA, onData), stream.removeListener(NEW_LISTENER, onNewListener)}
   }
-  if (listenerCount(stream, KEYPRESS) > 0) {
-    stream.on(DATA, onData)
-  }
-  else {
-    stream.on(NEW_LISTENER, onNewListener)
-  }
+  listenerCount(stream, KEYPRESS) > 0 ? stream.on(DATA, onData) : stream.on(NEW_LISTENER, onNewListener)
 }
 /*
   Some patterns seen in terminal key escape codes, derived from combos seen
