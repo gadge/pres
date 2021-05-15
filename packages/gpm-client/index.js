@@ -1,0 +1,1 @@
+export { gpmClient, GpmClient } from './src/gpmClient'

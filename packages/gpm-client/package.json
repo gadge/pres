@@ -1,7 +1,7 @@
 {
-  "name": "@pres/program",
+  "name": "@pres/gpm-client",
   "version": "0.1.11",
-  "description": "Curses like basic functionality for pres",
+  "description": "Gpm client for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "files": [
@@ -25,7 +25,6 @@
     "@pres/terminfo-parser": "^0.1.11",
     "@pres/util-colors": "^0.1.11",
     "@pres/util-helpers": "^0.1.11",
-    "@pres/gpm-client": "^0.1.11",
     "@spare/logger": "^0.11.14",
     "@texting/enum-chars": "^0.0.9",
     "@typen/enum-data-types": "^0.1.16"

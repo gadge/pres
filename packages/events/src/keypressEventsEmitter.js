@@ -6,7 +6,8 @@
 import { DATA, KEYPRESS, NEW_LISTENER }                 from '@pres/enum-events'
 import { BACKSPACE, ENTER, ESCAPE, RETURN, SPACE, TAB } from '@pres/enum-key-names'
 import { EventEmitter }                                 from 'events'
-import { StringDecoder }                                from 'string_decoder' // lazy load
+import { StringDecoder }                                from 'string_decoder'
+import { ESCAPE_ANYWHERE, KEYCODE_FUN, KEYCODE_META }   from '../assets/regex' // lazy load
 
 // NOTE: node <=v0.8.x has no EventEmitter.listenerCount
 
@@ -18,67 +19,6 @@ function listenerCount(stream, event) {
 /**
  * accepts a readable Stream instance and makes it emit "keypress" events
  */
-
-export function emitKeypressEvents(stream) {
-  if (stream._keypressDecoder) return
-  stream._keypressDecoder = new StringDecoder('utf8')
-  function onData(b) {
-    if (listenerCount(stream, KEYPRESS) > 0) {
-      const r = stream._keypressDecoder.write(b)
-      if (r) emitKeys(stream, r)
-    }
-    else {
-      // Nobody's watching anyway
-      stream.removeListener(DATA, onData), stream.on(NEW_LISTENER, onNewListener)
-    }
-  }
-  function onNewListener(event) {
-    if (event === KEYPRESS) {stream.on(DATA, onData), stream.removeListener(NEW_LISTENER, onNewListener)}
-  }
-  listenerCount(stream, KEYPRESS) > 0 ? stream.on(DATA, onData) : stream.on(NEW_LISTENER, onNewListener)
-}
-/*
-  Some patterns seen in terminal key escape codes, derived from combos seen
-  at http://www.midnight-commander.org/browser/lib/tty/key.c
-
-  ESC letter
-  ESC [ letter
-  ESC [ modifier letter
-  ESC [ 1 ; modifier letter
-  ESC [ num char
-  ESC [ num ; modifier char
-  ESC O letter
-  ESC O modifier letter
-  ESC O 1 ; modifier letter
-  ESC N letter
-  ESC [ [ num ; modifier char
-  ESC [ [ 1 ; modifier letter
-  ESC ESC [ num char
-  ESC ESC O letter
-
-  - char is usually ~ but $ and ^ also happen with rxvt
-  - modifier is 1 +
-                (shift     * 1) +
-                (left_alt  * 2) +
-                (ctrl      * 4) +
-                (right_alt * 8)
-  - two leading ESCs apparently mean the same as one leading ESC
-*/
-
-// Regexes used for ansi escape code splitting
-const metaKeyCodeReAnywhere = /(?:\x1b)([a-zA-Z0-9])/
-const metaKeyCodeRe = new RegExp('^' + metaKeyCodeReAnywhere.source + '$')
-const functionKeyCodeReAnywhere = new RegExp(
-  '(?:\x1b+)(O|N|\\[|\\[\\[)(?:' + [
-    '(\\d+)(?:;(\\d+))?([~^$])',
-    '(?:M([@ #!a`])(.)(.))', // mouse
-    '(?:1;)?(\\d+)?([a-zA-Z])'
-  ].join('|') + ')'
-)
-const functionKeyCodeRe = new RegExp('^' + functionKeyCodeReAnywhere.source)
-const escapeCodeReAnywhere = new RegExp([
-  functionKeyCodeReAnywhere.source, metaKeyCodeReAnywhere.source, /\x1b./.source
-].join('|'))
 
 function emitKeys(stream, s) {
   if (Buffer.isBuffer(s)) {
@@ -93,7 +33,7 @@ function emitKeys(stream, s) {
   if (isMouse(s)) return
   let buffer = []
   let match
-  while ((match = escapeCodeReAnywhere.exec(s))) {
+  while ((match = ESCAPE_ANYWHERE.exec(s))) {
     buffer = buffer.concat(s.slice(0, match.index).split(''))
     buffer.push(match[0])
     s = s.slice(match.index + match[0].length)
@@ -149,13 +89,13 @@ function emitKeys(stream, s) {
       key.name = s.toLowerCase()
       key.shift = true
     }
-    else if ((parts = metaKeyCodeRe.exec(s))) {
+    else if ((parts = KEYCODE_META.exec(s))) {
       // meta+character key
       key.name = parts[1].toLowerCase()
       key.meta = true
       key.shift = /^[A-Z]$/.test(parts[1])
     }
-    else if ((parts = functionKeyCodeRe.exec(s))) {
+    else if ((parts = KEYCODE_FUN.exec(s))) {
       // ansi escape sequence
       // reassemble the key code leaving out leading \x1b's,
       // the modifier key bitflag and any meaningless "1;" sequence
@@ -453,4 +393,23 @@ function isMouse(s) {
     /\x1b\[<(\d+;\d+;\d+;\d+)&w/.test(s) ||
     /\x1b\[24([0135])~\[(\d+),(\d+)\]\r/.test(s) ||
     /\x1b\[(O|I)/.test(s)
+}
+
+export function keypressEventsEmitter(stream) {
+  if (stream._keypressDecoder) return
+  stream._keypressDecoder = new StringDecoder('utf8')
+  function onData(b) {
+    if (listenerCount(stream, KEYPRESS) > 0) {
+      const r = stream._keypressDecoder.write(b)
+      if (r) emitKeys(stream, r)
+    }
+    else {
+      // Nobody's watching anyway
+      stream.removeListener(DATA, onData), stream.on(NEW_LISTENER, onNewListener)
+    }
+  }
+  function onNewListener(event) {
+    if (event === KEYPRESS) {stream.on(DATA, onData), stream.removeListener(NEW_LISTENER, onNewListener)}
+  }
+  listenerCount(stream, KEYPRESS) > 0 ? stream.on(DATA, onData) : stream.on(NEW_LISTENER, onNewListener)
 }
