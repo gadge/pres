@@ -55,6 +55,7 @@ export class Tput {
     this.terminfoFile = options.terminfoFile
     this.termcapFile = options.termcapFile
     if (options.terminal || options.term) this.setup()
+    console.log(`>> [new tput] (${this.terminal})`)
   }
   setup() {
     this.error = null
@@ -136,7 +137,7 @@ export class Tput {
       for (i = 0; i < prefix.length; i++) if ((file = this._tprefix(prefix[i], term, soft))) return file
       return void 0
     }
-    const find = function (word) {
+    const find = word => {
       let file, ch
       file = path.resolve(prefix, word[0])
       try {
@@ -258,23 +259,16 @@ export class Tput {
       info.strings[v] = data[i + 1] === 0xff && data[i] === 0xff ? -1 : (data[i + 1] << 8) | data[i]
     }
     // String Table
-    Object.keys(info.strings).forEach(function (key) {
-      if (info.strings[key] === -1) {
-        delete info.strings[key]
-        return
-      }
+    Object.keys(info.strings).forEach(key => {
+      if (info.strings[key] === -1) return void (delete info.strings[key])
       // Workaround: fix an odd bug in the screen-256color terminfo where it tries
       // to set -1, but it appears to have {0xfe, 0xff} instead of {0xff, 0xff}.
       // TODO: Possibly handle errors gracefully below, as well as in the
       // extended info. Also possibly do: `if (info.strings[key] >= data.length)`.
-      if (info.strings[key] === 65534) {
-        delete info.strings[key]
-        return
-      }
+      if (info.strings[key] === 65534) return void (delete info.strings[key])
       const s = i + info.strings[key]
       let j = s
       while (data[j]) j++
-
       assert(j < data.length)
       info.strings[key] = data.toString('ascii', s, j)
     })
@@ -365,11 +359,8 @@ export class Tput {
     // i += h.symOffsetCount * 2;
     // String Table
     let high = 0
-    _strings.forEach(function (offset, k) {
-      if (offset === -1) {
-        _strings[k] = ''
-        return void 0
-      }
+    _strings.forEach((offset, k) => {
+      if (offset === -1) return void (_strings[k] = '')
       const s = i + offset
       let j = s
       while (data[j]) j++
@@ -520,16 +511,9 @@ export class Tput {
       if (code[code.length - 1] === ',') code = code.slice(0, -1)
       code += c
     }
-    function expr(c) {
-      code += c + ','
-    }
-    function echo(c) {
-      if (c === '""') return
-      expr('out.push(' + c + ')')
-    }
-    function print(c) {
-      buff += c
-    }
+    function expr(c) { code += c + ',' }
+    function echo(c) { return c === '""' ? void 0 : expr('out.push(' + c + ')') }
+    function print(c) {buff += c}
     function clear() {
       if (buff) {
         echo(JSON.stringify(buff).replace(/\\u00([0-9a-fA-F]{2})/g, '\\x$1'))
@@ -538,9 +522,7 @@ export class Tput {
     }
     while (val) {
       // Ignore newlines
-      if (read(/^\n /, true)) {
-        continue
-      }
+      if (read(/^\n /, true)) continue
       // '^A' -> ^A
       if (read(/^\^(.)/i, true)) {
         if (!(ch >= ' ' && ch <= '~')) {
@@ -551,9 +533,7 @@ export class Tput {
           print(cap[0])
           continue
         }
-        if (ch === '?') {
-          ch = '\x7f'
-        }
+        if (ch === '?') {ch = '\x7f'}
         else {
           ch = ch.charCodeAt(0) & 31
           if (ch === 0) ch = 128

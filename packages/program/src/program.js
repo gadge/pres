@@ -59,17 +59,17 @@ export class Program extends EventEmitter {
     if (!options || options.__proto__ !== Object.prototype) {
       const [ input, output ] = arguments
       options = { input, output }
-    }
+    } // IO
     this.options = options
-    this.input = options.input || process.stdin
-    this.output = options.output || process.stdout
-    options.log = options.log || options.dump
+    this.input = options.input || process.stdin // IO
+    this.output = options.output || process.stdout // IO
+    options.log = options.log || options.dump // IO - logger
     if (options.log) {
       this.#logger = fs.createWriteStream(options.log)
       if (options.dump) this.setupDump()
-    }
+    } // IO - logger
     this.zero = options.zero !== false
-    this.useBuffer = options.buffer
+    this.useBuffer = options.buffer // IO
     this.x = 0
     this.y = 0
     this.savedX = 0
@@ -78,9 +78,8 @@ export class Program extends EventEmitter {
     this.rows = this.output.rows || 1
     this.scrollTop = 0
     this.scrollBottom = this.rows - 1
-    this._terminal = options.terminal || options.term || process.env.TERM ||
-      (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
-    this._terminal = this._terminal.toLowerCase()
+    this._terminal = options.terminal || options.term || process.env.TERM || (process.platform === 'win32' ? 'windows-ansi' : 'xterm') // IO
+    this._terminal = this._terminal.toLowerCase() // IO
     // OSX
     this.isOSXTerm = process.env.TERM_PROGRAM === 'Apple_Terminal'
     this.isiTerm2 = process.env.TERM_PROGRAM === 'iTerm.app' || !!process.env.ITERM_SESSION_ID
@@ -95,7 +94,7 @@ export class Program extends EventEmitter {
     // xterm and rxvt - not accurate
     this.isRxvt = /rxvt/i.test(process.env.COLORTERM)
     this.isXterm = false
-    this.tmux = !!process.env.TMUX
+    this.tmux = !!process.env.TMUX // IO
     this.tmuxVersion = (function () {
       if (!self.tmux) return 2
       try {
@@ -104,10 +103,10 @@ export class Program extends EventEmitter {
       } catch (e) {
         return 2
       }
-    })()
-    this._buf = VO
-    this._flush = this.flush.bind(this)
-    if (options.tput !== false) this.setupTput()
+    })() // IO
+    this._buf = VO // IO
+    this._flush = this.flush.bind(this) // IO
+    if (options.tput !== false) this.setupTput() // IO
     this.listen()
     console.log(`>> [new program] (${this.rows},${this.cols})`)
   }
@@ -241,10 +240,10 @@ export class Program extends EventEmitter {
     // Listen for resize on output
     if (!this.output._presOutput) { (this.output._presOutput = 1), this.#listenOutput() }
     else { this.output._presOutput++ }
+    console.log(`>> [program.listen] [ ${this.eventNames()} ]`)
   }
   #listenInput() {
     const self = this
-    console.log('>> [program.#listenInput]')
     setTimeout(() => {}, 3000)
     // Input
     this.input.on(KEYPRESS, this.input._keypressHandler = (ch, key) => {
@@ -270,6 +269,7 @@ export class Program extends EventEmitter {
         )
     )
     emitKeypressEvents(this.input)
+    console.log(`>> [program.#listenInput] [ ${this.input.eventNames()} ]`)
   }
   #listenOutput() {
     const self = this
@@ -294,6 +294,7 @@ export class Program extends EventEmitter {
         p._resizeTimer = setTimeout(resize, time)
       })
     })
+    console.log(`>> [program.#listenOutput] [ ${this.output.eventNames()} ]`)
   }
   destroy() {
     const index = ProgramCollection.instances.indexOf(this)
