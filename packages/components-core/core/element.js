@@ -1459,10 +1459,7 @@ export class Element extends Node {
         this.screen.fillRegion(dattr, bch, xi, xl, yi, yl)
       }
     }
-    if (this.tpadding) {
-      xi += this.padding.left, xl -= this.padding.right
-      yi += this.padding.top, yl -= this.padding.bottom
-    }
+    if (this.tpadding) { xi += this.padding.left, xl -= this.padding.right, yi += this.padding.top, yl -= this.padding.bottom }
     // Determine where to place the text if it's vertically aligned.
     if (this.valign === 'middle' || this.valign === 'bottom') {
       visible = yl - yi
@@ -1575,12 +1572,9 @@ export class Element extends Node {
         }
       }
     }
-
-
     // Draw the scrollbar.
     // Could possibly draw this after all child elements.
     if (this.scrollbar) {
-      // XXX
       // i = this.getScrollHeight();
       i = Math.max(this._clines.length, this._scrollBottom())
     }
@@ -1601,17 +1595,12 @@ export class Element extends Node {
         }
         ch = this.scrollbar.ch || ' '
         attr = this.sattr(this.style.scrollbar, this.style.scrollbar.fg || this.style.fg, this.style.scrollbar.bg || this.style.bg)
-        if (attr !== cell[0] || ch !== cell[1]) {
-          cell[0] = attr
-          cell[1] = ch
-          lines[y].dirty = true
-        }
+        if (attr !== cell[0] || ch !== cell[1]) { cell[0] = attr, cell[1] = ch, lines[y].dirty = true }
       }
     }
     if (this.border) xi--, xl++, yi--, yl++
     if (this.tpadding) {
-      xi -= this.padding.left, xl += this.padding.right
-      yi -= this.padding.top, yl += this.padding.bottom
+      xi -= this.padding.left, xl += this.padding.right, yi -= this.padding.top, yl += this.padding.bottom
     }
     // Draw the border.
     if (this.border) {
@@ -1826,8 +1815,7 @@ export class Element extends Node {
       }
     }
   }
-  deleteLine(i, n) {
-    n = n || 1
+  deleteLine(i, n = 1) {
     if (i !== i || i == null) i = this._clines.ftor.length - 1
     i = Math.max(i, 0)
     i = Math.min(i, this._clines.ftor.length - 1)
@@ -1871,19 +1859,15 @@ export class Element extends Node {
     const fake = this._clines.rtof[this.childBase || 0]
     return this.deleteLine(fake, n)
   }
-  deleteBottom(n) {
+  deleteBottom(n = 1) {
     const h    = (this.childBase || 0) + this.height - 1 - this.iheight,
           i    = Math.min(h, this._clines.length - 1),
           fake = this._clines.rtof[i]
-
-    n = n || 1
     return this.deleteLine(fake - (n - 1), n)
   }
   setLine(i, line) {
     i = Math.max(i, 0)
-    while (this._clines.fake.length < i) {
-      this._clines.fake.push('')
-    }
+    while (this._clines.fake.length < i) { this._clines.fake.push('') }
     this._clines.fake[i] = line
     return this.setContent(this._clines.fake.join(LF), true)
   }

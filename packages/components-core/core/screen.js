@@ -284,6 +284,9 @@ export class Screen extends Node {
       if (ScreenCollection.total === 0) {
         ScreenCollection.global = null
         process.removeListener(UNCAUGHT_EXCEPTION, ScreenCollection._exceptionHandler)
+        // for (const signal of [ SIGTERM, SIGINT, SIGQUIT ]) {
+        //   process.removeListener(SIGTERM, ScreenCollection['_' + signal.toLowerCase() + 'Handler'])
+        // }
         process.removeListener(SIGTERM, ScreenCollection._sigtermHandler)
         process.removeListener(SIGINT, ScreenCollection._sigintHandler)
         process.removeListener(SIGQUIT, ScreenCollection._sigquitHandler)
