@@ -5,6 +5,8 @@
  */
 
 import { Node, ScreenCollection } from '@pres/components-node'
+import { CSI, LF }                from '@pres/enum-control-chars'
+import { SGR }                    from '@pres/enum-csi-codes'
 import {
   BLUR, CLICK, DESTROY, ELEMENT_CLICK, ELEMENT_MOUSEOUT, ELEMENT_MOUSEOVER, ELEMENT_MOUSEUP, ERROR, EXIT, FOCUS,
   KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, NEW_LISTENER, PRERENDER, RENDER,
@@ -562,7 +564,7 @@ export class Screen extends Node {
     if (!this.tput.strings.change_scroll_region || !this.tput.strings.delete_line) return
     this._buf += this.tput.csr(top, bottom)
     this._buf += this.tput.cup(bottom, 0)
-    this._buf += Array(n + 1).join('\n')
+    this._buf += Array(n + 1).join(LF)
     this._buf += this.tput.csr(0, this.height - 1)
     const j = bottom + 1
     while (n--) {
@@ -837,9 +839,9 @@ export class Screen extends Node {
         ocell[0] = data
         ocell[1] = ch
         if (data !== attr) {
-          if (attr !== this.dattr) { out += '\x1b[m' }
+          if (attr !== this.dattr) { out += CSI + SGR }
           if (data !== this.dattr) {
-            out += '\x1b['
+            out += CSI + ''
             bg = data & 0x1ff
             fg = (data >> 9) & 0x1ff
             flags = data >> 18
@@ -867,7 +869,7 @@ export class Screen extends Node {
               else { out += '38;5;' + fg + ';' }
             }
             if (out[out.length - 1] === ';') out = out.slice(0, -1)
-            out += 'm'
+            out += SGR
           }
         }
         // If we find a double-width char, eat the next character which should be
@@ -943,7 +945,7 @@ export class Screen extends Node {
         out += ch
         attr = data
       }
-      if (attr !== this.dattr) { out += '\x1b[m' }
+      if (attr !== this.dattr) { out += CSI + SGR }
       if (out) { main += this.tput.cup(y, 0) + out }
     }
     if (acs) {
@@ -1111,7 +1113,7 @@ export class Screen extends Node {
       else { out += '38;5;' + fg + ';' }
     }
     if (out[out.length - 1] === ';') out = out.slice(0, -1)
-    return '\x1b[' + out + 'm'
+    return CSI + out + SGR
   }
   focusOffset(offset) {
     const shown = this.keyable.filter(el => !el.detached && el.visible).length
@@ -1325,7 +1327,7 @@ export class Screen extends Node {
           : callback(null, code === 0)
         : void 0
     )
-    ps.stdin.write(input + '\n')
+    ps.stdin.write(input + LF)
     ps.stdin.end()
   }
   setEffects(el, fel, over, out, effects, temp) {
@@ -1520,7 +1522,7 @@ export class Screen extends Node {
         ch = line[x][1]
         if (data !== attr) {
           if (attr !== this.dattr) {
-            out += '\x1b[m'
+            out += CSI + SGR
           }
           if (data !== this.dattr) {
             let _data = data
@@ -1540,17 +1542,11 @@ export class Screen extends Node {
         out += ch
         attr = data
       }
-      if (attr !== this.dattr) {
-        out += '\x1b[m'
-      }
-      if (out) {
-        main += (y > 0 ? '\n' : '') + out
-      }
+      if (attr !== this.dattr) { out += CSI + SGR }
+      if (out) { main += (y > 0 ? LF : '') + out }
     }
-    main = main.replace(/(?:\s*\x1b\[40m\s*\x1b\[m\s*)*$/, '') + '\n'
-    if (term) {
-      this.dattr = sdattr
-    }
+    main = main.replace(/(?:\s*\x1b\[40m\s*\x1b\[m\s*)*$/, '') + LF
+    if (term) { this.dattr = sdattr }
     return main
   }
   /**
@@ -1635,7 +1631,7 @@ const angleTable = {
   '1110': '\u2534', // '┴'
   '1111': '\u253c'  // '┼'
 }
-Object.keys(angleTable).forEach(function (key) {
+Object.keys(angleTable).forEach(key => {
   angleTable[parseInt(key, 2)] = angleTable[key]
   delete angleTable[key]
 })

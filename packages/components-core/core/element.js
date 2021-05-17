@@ -5,6 +5,7 @@
  */
 
 import { Node }          from '@pres/components-node'
+import { ESC, LF, TAB }  from '@pres/enum-control-chars'
 import {
   ATTACH, CLICK, DETACH, HIDE, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, MOVE,
   NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
@@ -12,7 +13,6 @@ import {
 import * as colors       from '@pres/util-colors'
 import * as helpers      from '@pres/util-helpers'
 import * as unicode      from '@pres/util-unicode'
-import { AEU }           from '@texting/enum-chars'
 import { FUN, NUM, STR } from '@typen/enum-data-types'
 import { nullish }       from '@typen/nullish'
 import { last }          from '@vect/vector-index'
@@ -377,7 +377,7 @@ export class Element extends Node {
   }
   getContent() {
     if (!this._clines) return ''
-    return this._clines.fake.join('\n')
+    return this._clines.fake.join(LF)
   }
   setText(content, noClear) {
     content = content || ''
@@ -393,7 +393,7 @@ export class Element extends Node {
       content = content
         .replace(/[\x00-\x08\x0b-\x0c\x0e-\x1a\x1c-\x1f\x7f]/g, '')
         .replace(/\x1b(?!\[[\d;]*m)/g, '')
-        .replace(/\r\n|\r/g, '\n')
+        .replace(/\r\n|\r/g, LF)
         .replace(/\t/g, this.screen.tabc)
       if (this.screen.fullUnicode) {
         // double-width chars will eat the next char after render. create a
@@ -426,7 +426,7 @@ export class Element extends Node {
         this._clines.ci.push(total)
         return total + line.length + 1
       }.bind(this), 0)
-      this._pcontent = this._clines.join('\n')
+      this._pcontent = this._clines.join(LF)
       this.emit(PARSED_CONTENT)
       return true
     }
@@ -538,7 +538,7 @@ export class Element extends Node {
       line = lines[j]
       attrs[j] = attr
       for (i = 0; i < line.length; i++) {
-        if (line[i] === '\x1b') {
+        if (line[i] === ESC) {
           if ((c = /^\x1b\[[\d;]*m/.exec(line.slice(i)))) {
             attr = this.screen.attrCode(c[0], attr, dattr)
             i += c[0].length - 1
@@ -595,7 +595,7 @@ export class Element extends Node {
         lines,
         rest
 
-    lines = content.split('\n')
+    lines = content.split(LF)
     if (!content) {
       out.push(content)
       out.rtof = [ 0 ]
@@ -633,7 +633,7 @@ export class Element extends Node {
         while (line.length > width) {
           // Measure the real width of the string.
           for (i = 0, total = 0; i < line.length; i++) {
-            while (line[i] === '\x1b') {
+            while (line[i] === ESC) {
               while (line[i] && line[i++] !== 'm') {
 
               }
@@ -1208,25 +1208,12 @@ export class Element extends Node {
   _getShrink(xi, xl, yi, yl, get) {
     const shrinkBox     = this._getShrinkBox(xi, xl, yi, yl, get),
           shrinkContent = this._getShrinkContent(xi, xl, yi, yl, get)
-    let xll = xl,
-        yll = yl
+    let xll = xl, yll = yl
     // Figure out which one is bigger and use it.
-    if (shrinkBox.xl - shrinkBox.xi > shrinkContent.xl - shrinkContent.xi) {
-      xi = shrinkBox.xi
-      xl = shrinkBox.xl
-    }
-    else {
-      xi = shrinkContent.xi
-      xl = shrinkContent.xl
-    }
-    if (shrinkBox.yl - shrinkBox.yi > shrinkContent.yl - shrinkContent.yi) {
-      yi = shrinkBox.yi
-      yl = shrinkBox.yl
-    }
-    else {
-      yi = shrinkContent.yi
-      yl = shrinkContent.yl
-    }
+    if (shrinkBox.xl - shrinkBox.xi > shrinkContent.xl - shrinkContent.xi) { xi = shrinkBox.xi, xl = shrinkBox.xl }
+    else { xi = shrinkContent.xi, xl = shrinkContent.xl }
+    if (shrinkBox.yl - shrinkBox.yi > shrinkContent.yl - shrinkContent.yi) { yi = shrinkBox.yi, yl = shrinkBox.yl }
+    else { yi = shrinkContent.yi, yl = shrinkContent.yl }
     // Recenter shrunken elements.
     if (xl < xll && this.position.left === 'center') {
       xll = (xll - xl) / 2 | 0
@@ -1395,9 +1382,6 @@ export class Element extends Node {
         xl = coords.xl,
         yi = coords.yi,
         yl = coords.yl,
-        x,
-        y,
-        cell,
         attr,
         ch
     const content = this._pcontent
@@ -1417,8 +1401,8 @@ export class Element extends Node {
     //       var csi = '';
     //       var csis = '';
     //       for (var j = 0; j < clines[i].length; j++) {
-    //         while (clines[i][j] === '\x1b') {
-    //           csi = '\x1b';
+    //         while (clines[i][j] === ESC) {
+    //           csi = ESC;
     //           while (clines[i][j++] !== 'm') csi += clines[i][j];
     //           csis += csi;
     //         }
@@ -1430,7 +1414,7 @@ export class Element extends Node {
     //   if (yi + this.itop < 0) {
     //     clines = clines.slice(-(yi + this.itop));
     //   }
-    //   content = clines.join('\n');
+    //   content = clines.join(LF);
     // }
     if (coords.base >= this._clines.ci.length) ci = this._pcontent.length
     this.lpos = coords
@@ -1462,17 +1446,18 @@ export class Element extends Node {
     // ahead of time. This could be optimized.
     if (this.tpadding || (this.valign && this.valign !== 'top')) {
       if (this.style.transparent) {
-        for (y = Math.max(yi, 0); y < yl; y++) {
-          if (!lines[y]) break
-          for (x = Math.max(xi, 0); x < xl; x++) {
-            if (!lines[y][x]) break
-            lines[y][x][0] = colors.blend(attr, lines[y][x][0])
-            // lines[y][x][1] = bch;
-            lines[y].dirty = true
+        for (let y = Math.max(yi, 0), line, cell; (y < yl); y++) {
+          if (!(line = lines[y])) break
+          for (let x = Math.max(xi, 0); x < xl; x++) {
+            if (!(cell = line[x])) break
+            cell[0] = colors.blend(attr, cell[0])
+            line.dirty = true // lines[y][x][1] = bch;
           }
         }
       }
-      else { this.screen.fillRegion(dattr, bch, xi, xl, yi, yl) }
+      else {
+        this.screen.fillRegion(dattr, bch, xi, xl, yi, yl)
+      }
     }
     if (this.tpadding) {
       xi += this.padding.left, xl -= this.padding.right
@@ -1493,14 +1478,13 @@ export class Element extends Node {
       }
     }
     // Draw the content and background.
-    for (y = yi; y < yl; y++) {
-      if (!lines[y]) {
+    for (let y = yi, line, cell; y < yl; y++) {
+      if (!(line = lines[y])) {
         if (y >= this.screen.height || yl < this.ibottom) { break }
         else { continue }
       }
-      for (x = xi; x < xl; x++) {
-        cell = lines[y][x]
-        if (!cell) {
+      for (let x = xi; x < xl; x++) {
+        if (!(cell = line[x])) {
           if (x >= this.screen.width || xl < this.iright) { break }
           else { continue }
         }
@@ -1509,7 +1493,7 @@ export class Element extends Node {
         //   coords._contentEnd = { x: x - xi, y: y - yi };
         // }
         // Handle escape codes.
-        while (ch === '\x1b') {
+        while (ch === ESC) {
           if ((c = /^\x1b\[[\d;]*m/.exec(content.slice(ci - 1)))) {
             ci += c[0].length - 1
             attr = this.screen.attrCode(c[0], attr, dattr)
@@ -1525,12 +1509,12 @@ export class Element extends Node {
           }
         }
         // Handle newlines.
-        if (ch === '\t') ch = bch
-        if (ch === '\n') {
+        if (ch === TAB) ch = bch
+        if (ch === LF) {
           // If we're on the first cell and we find a newline and the last cell
           // of the last line was not a newline, let's just treat this like the
           // newline was already "counted".
-          if (x === xi && y !== yi && content[ci - 2] !== '\n') {
+          if (x === xi && y !== yi && content[ci - 2] !== LF) {
             x--
             continue
           }
@@ -1538,18 +1522,17 @@ export class Element extends Node {
           // outer loop, and continue to it instead.
           ch = bch
           for (; x < xl; x++) {
-            cell = lines[y][x]
-            if (!cell) break
+            if (!(cell = line[x])) break
             if (this.style.transparent) {
-              lines[y][x][0] = colors.blend(attr, lines[y][x][0])
-              if (content[ci]) lines[y][x][1] = ch
-              lines[y].dirty = true
+              cell[0] = colors.blend(attr, cell[0])
+              if (content[ci]) cell[1] = ch
+              line.dirty = true
             }
             else {
               if (attr !== cell[0] || ch !== cell[1]) {
-                lines[y][x][0] = attr
-                lines[y][x][1] = ch
-                lines[y].dirty = true
+                cell[0] = attr
+                cell[1] = ch
+                line.dirty = true
               }
             }
           }
@@ -1564,7 +1547,7 @@ export class Element extends Node {
               ch = content[ci - 1] + content[ci]
               ci++
             }
-            if (x - 1 >= xi) { lines[y][x - 1][1] += ch }
+            if (x - 1 >= xi) { line[x - 1][1] += ch }
             else if (y - 1 >= yi) { lines[y - 1][xl - 1][1] += ch }
             x--
             continue
@@ -1577,20 +1560,23 @@ export class Element extends Node {
           }
         }
         if (this._noFill) continue
+        const _cell = line[x]
         if (this.style.transparent) {
-          lines[y][x][0] = colors.blend(attr, lines[y][x][0])
-          if (content[ci]) lines[y][x][1] = ch
-          lines[y].dirty = true
+          _cell[0] = colors.blend(attr, _cell[0])
+          if (content[ci]) _cell[1] = ch
+          line.dirty = true
         }
         else {
           if (attr !== cell[0] || ch !== cell[1]) {
-            lines[y][x][0] = attr
-            lines[y][x][1] = ch
-            lines[y].dirty = true
+            _cell[0] = attr
+            _cell[1] = ch
+            line.dirty = true
           }
         }
       }
     }
+
+
     // Draw the scrollbar.
     // Could possibly draw this after all child elements.
     if (this.scrollbar) {
@@ -1600,14 +1586,13 @@ export class Element extends Node {
     }
     if (coords.notop || coords.nobot) i = -Infinity
     if (this.scrollbar && (yl - yi) < i) {
-      x = xl - 1
+      let x = xl - 1
       if (this.scrollbar.ignoreBorder && this.border) x++
-      y = this.alwaysScroll
-        ? this.childBase / (i - (yl - yi))
-        : (this.childBase + this.childOffset) / (i - 1)
+      let y = this.alwaysScroll ? this.childBase / (i - (yl - yi)) : (this.childBase + this.childOffset) / (i - 1)
       y = yi + ((yl - yi) * y | 0)
       if (y >= yl) y = yl - 1
-      cell = lines[y] && lines[y][x]
+      let line = lines[y],
+          cell = line && line[x]
       if (cell) {
         if (this.track) {
           ch = this.track.ch || ' '
@@ -1617,8 +1602,8 @@ export class Element extends Node {
         ch = this.scrollbar.ch || ' '
         attr = this.sattr(this.style.scrollbar, this.style.scrollbar.fg || this.style.fg, this.style.scrollbar.bg || this.style.bg)
         if (attr !== cell[0] || ch !== cell[1]) {
-          lines[y][x][0] = attr
-          lines[y][x][1] = ch
+          cell[0] = attr
+          cell[1] = ch
           lines[y].dirty = true
         }
       }
@@ -1631,14 +1616,14 @@ export class Element extends Node {
     // Draw the border.
     if (this.border) {
       battr = this.sattr(this.style.border)
-      y = yi
+      let y = yi
       if (coords.notop) y = -1
-      for (x = xi; x < xl; x++) {
-        if (!lines[y]) break
+      let line = lines[y]
+      for (let x = xi, cell; x < xl; x++) {
+        if (!line) break
         if (coords.noleft && x === xi) continue
         if (coords.noright && x === xl - 1) continue
-        cell = lines[y][x]
-        if (!cell) continue
+        if (!(cell = line[x])) continue
         if (this.border.type === 'line') {
           if (x === xi) {
             ch = '\u250c' // '┌'
@@ -1666,72 +1651,68 @@ export class Element extends Node {
         if (!this.border.top && x !== xi && x !== xl - 1) {
           ch = ' '
           if (dattr !== cell[0] || ch !== cell[1]) {
-            lines[y][x][0] = dattr
-            lines[y][x][1] = ch
+            cell[0] = dattr
+            cell[1] = ch
             lines[y].dirty = true
             continue
           }
         }
         if (battr !== cell[0] || ch !== cell[1]) {
-          lines[y][x][0] = battr
-          lines[y][x][1] = ch
-          lines[y].dirty = true
+          cell[0] = battr
+          cell[1] = ch
+          line.dirty = true
         }
       }
-      y = yi + 1
-      for (; y < yl - 1; y++) {
-        if (!lines[y]) continue
-        cell = lines[y][xi]
-        if (cell) {
+      for (let y = yi + 1, line, cell; y < yl - 1; y++) {
+        if (!(line = lines[y])) continue
+        if ((cell = line[xi])) {
           if (this.border.left) {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
             if (!coords.noleft)
               if (battr !== cell[0] || ch !== cell[1]) {
-                lines[y][xi][0] = battr
-                lines[y][xi][1] = ch
-                lines[y].dirty = true
+                cell[0] = battr
+                cell[1] = ch
+                line.dirty = true
               }
           }
           else {
             ch = ' '
             if (dattr !== cell[0] || ch !== cell[1]) {
-              lines[y][xi][0] = dattr
-              lines[y][xi][1] = ch
-              lines[y].dirty = true
+              cell[0] = dattr
+              cell[1] = ch
+              line.dirty = true
             }
           }
         }
-        cell = lines[y][xl - 1]
-        if (cell) {
+        if ((cell = line[xl - 1])) {
           if (this.border.right) {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
             if (!coords.noright)
               if (battr !== cell[0] || ch !== cell[1]) {
-                lines[y][xl - 1][0] = battr
-                lines[y][xl - 1][1] = ch
-                lines[y].dirty = true
+                cell[0] = battr
+                cell[1] = ch
+                line.dirty = true
               }
           }
           else {
             ch = ' '
             if (dattr !== cell[0] || ch !== cell[1]) {
-              lines[y][xl - 1][0] = dattr
-              lines[y][xl - 1][1] = ch
-              lines[y].dirty = true
+              cell[0] = dattr
+              cell[1] = ch
+              line.dirty = true
             }
           }
         }
       }
       y = yl - 1
       if (coords.nobot) y = -1
-      for (x = xi; x < xl; x++) {
-        if (!lines[y]) break
+      for (let x = xi, cell; x < xl; x++) {
+        if (!(line = lines[y])) break
         if (coords.noleft && x === xi) continue
         if (coords.noright && x === xl - 1) continue
-        cell = lines[y][x]
-        if (!cell) continue
+        if (!(cell = line[x])) continue
         if (this.border.type === 'line') {
           if (x === xi) {
             ch = '\u2514' // '└'
@@ -1759,53 +1740,46 @@ export class Element extends Node {
         if (!this.border.bottom && x !== xi && x !== xl - 1) {
           ch = ' '
           if (dattr !== cell[0] || ch !== cell[1]) {
-            lines[y][x][0] = dattr
-            lines[y][x][1] = ch
-            lines[y].dirty = true
+            cell[0] = dattr
+            cell[1] = ch
+            line.dirty = true
           }
           continue
         }
         if (battr !== cell[0] || ch !== cell[1]) {
-          lines[y][x][0] = battr
-          lines[y][x][1] = ch
-          lines[y].dirty = true
+          cell[0] = battr
+          cell[1] = ch
+          line.dirty = true
         }
       }
     }
     if (this.shadow) {
       // right
-      y = Math.max(yi + 1, 0)
-      for (; y < yl + 1; y++) {
-        if (!lines[y]) break
-        x = xl
-        for (; x < xl + 2; x++) {
-          if (!lines[y][x]) break
+      for (let y = Math.max(yi + 1, 0), line; y < yl + 1; y++) {
+        if (!(line = lines[y])) break
+        for (let x = xl, cell; x < xl + 2; x++) {
+          if (!(cell = line[x])) break
           // lines[y][x][0] = colors.blend(this.dattr, lines[y][x][0]);
-          lines[y][x][0] = colors.blend(lines[y][x][0])
-          lines[y].dirty = true
+          cell[0] = colors.blend(cell[0])
+          line.dirty = true
         }
       }
       // bottom
-      y = yl
-      for (; y < yl + 1; y++) {
-        if (!lines[y]) break
-        for (x = Math.max(xi + 1, 0); x < xl; x++) {
-          if (!lines[y][x]) break
+      for (let y = yl, line; y < yl + 1; y++) {
+        if (!(line = lines[y])) break
+        for (let x = Math.max(xi + 1, 0), cell; x < xl; x++) {
+          if (!(cell = line[x])) break
           // lines[y][x][0] = colors.blend(this.dattr, lines[y][x][0]);
-          lines[y][x][0] = colors.blend(lines[y][x][0])
-          lines[y].dirty = true
+          cell[0] = colors.blend(cell[0])
+          line.dirty = true
         }
       }
     }
     this.sub.forEach(el => {
       if (el.screen._ci !== -1) el.index = el.screen._ci++
-      // if (el.screen._rendering) {
-      //   el._rendering = true;
-      // }
+      // if (el.screen._rendering) { el._rendering = true; }
       el.render()
-      // if (el.screen._rendering) {
-      //   el._rendering = false;
-      // }
+      // if (el.screen._rendering) { el._rendering = false; }
     })
     this._emit(RENDER, [ coords ])
     return coords
@@ -1814,7 +1788,7 @@ export class Element extends Node {
    * Content Methods
    */
   insertLine(i, line) {
-    if (typeof line === STR) line = line.split('\n')
+    if (typeof line === STR) line = line.split(LF)
     if (i !== i || i == null) i = this._clines.ftor.length
     i = Math.max(i, 0)
     while (this._clines.fake.length < i) {
@@ -1836,7 +1810,7 @@ export class Element extends Node {
     }
     for (let j = 0; j < line.length; j++)
       this._clines.fake.splice(i + j, 0, line[j])
-    this.setContent(this._clines.fake.join('\n'), true)
+    this.setContent(this._clines.fake.join(LF), true)
     diff = this._clines.length - start
     if (diff > 0) {
       const pos = this._getCoords()
@@ -1863,7 +1837,7 @@ export class Element extends Node {
     let diff
     const real = this._clines.ftor[i][0]
     while (n--) this._clines.fake.splice(i, 1)
-    this.setContent(this._clines.fake.join('\n'), true)
+    this.setContent(this._clines.fake.join(LF), true)
     diff = start - this._clines.length
     // XXX clearPos() without diff statement?
     let height = 0
@@ -1911,7 +1885,7 @@ export class Element extends Node {
       this._clines.fake.push('')
     }
     this._clines.fake[i] = line
-    return this.setContent(this._clines.fake.join('\n'), true)
+    return this.setContent(this._clines.fake.join(LF), true)
   }
   setBaseLine(i, line) {
     const fake = this._clines.rtof[this.childBase || 0]

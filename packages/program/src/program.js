@@ -1259,7 +1259,7 @@ export class Program extends IO {
 
   parseAttr = this.#sgr
   #sgr(params, grain = true) {
-    console.log('>> [program.#sgr]', params, grain)
+    // console.log('>> [program.#sgr]', params, grain)
     const self = this
     let arg,
         parts = Array.isArray(params)
