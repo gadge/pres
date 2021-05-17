@@ -16,6 +16,7 @@ export class ScreenCollection {
   static instances = []
   static _bound = false
   static journal = true
+  static signalHandlers = {}
 
   static initialize(screen) {
     if (!ScreenCollection.global) ScreenCollection.global = screen
@@ -27,16 +28,15 @@ export class ScreenCollection {
     console.log('>> [ScreenCollection.initialize]', screen.index, ScreenCollection.total)
     if (ScreenCollection._bound) return
     ScreenCollection._bound = true
-
     process.on(UNCAUGHT_EXCEPTION, ScreenCollection._exceptionHandler)
     process.on(EXIT, ScreenCollection._exitHandler)
-    SIGNAL_COLLECTION.forEach(signal => {
-      const name = '_' + signal.toLowerCase() + 'Handler'
-      process.on(signal, ScreenCollection[name] = () => {
+    for (const signal of SIGNAL_COLLECTION) {
+      const handlerName = ScreenCollection.signalHandlers[signal] = '_' + signal.toLowerCase() + 'Handler'
+      process.on(signal, ScreenCollection[handlerName] = () => {
         if (process.listeners(signal).length > 1) return
         nextTick(() => process.exit(0))
       })
-    })
+    }
   }
 
   static _exceptionHandler(err) {
