@@ -1,4 +1,4 @@
-export const STRINGS = [
+export const CAPS_STR = [
   'back_tab',
   'bell',
   'carriage_return',

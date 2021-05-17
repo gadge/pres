@@ -2,7 +2,7 @@
  * Terminfo Data
  */
 
-export const BOOLS = [
+export const CAPS_BOO = [
   'auto_left_margin',
   'auto_right_margin',
   'no_esc_ctlc',

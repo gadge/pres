@@ -18,8 +18,6 @@ export class Node extends EventEmitter {
    * Node
    */
   constructor(options = {}, lazy) {
-    options.sup = options.sup ?? options.parent
-    options.sub = options.sub ?? options.children
     super(options)
     if (lazy) return this
     this.setup(options)

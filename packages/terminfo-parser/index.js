@@ -1,4 +1,3 @@
-import { sprintf, tryRead } from './src/helpers'
-import { Tput, }            from './src/tput'
-
-export { Tput, sprintf, tryRead }
+export { sprintf, tryRead } from './src/helpers'
+export { Tput, }            from './src/tput'
+export { TputDes }          from './src/tputDes'

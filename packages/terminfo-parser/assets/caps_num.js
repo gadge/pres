@@ -1,4 +1,4 @@
-export const NUMBERS = [
+export const CAPS_NUM = [
   'columns',
   'init_tabs',
   'lines',

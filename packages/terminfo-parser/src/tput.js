@@ -17,35 +17,53 @@
 // - Possibly switch to other method of finding the
 //   extended data string table: i += h.symOffsetCount * 2;
 
-import * as alias                                                       from '@pres/enum-terminfo-alias'
-import { merge, slice }                                                 from '@pres/util-helpers'
-import { BOO, FUN, NUM, STR }                                           from '@typen/enum-data-types'
-import assert                                                           from 'assert'
-import cp                                                               from 'child_process'
-import fs                                                               from 'fs'
-import path                                                             from 'path'
-import { ACSC, BOOLS, CPATHS, IPATHS, NUMBERS, STRINGS, TERMCAP, UTOA } from '../assets'
-import { noop, sprintf, tryRead, write }                                from './helpers'
+import { merge, slice }           from '@pres/util-helpers'
+import { BOO, FUN, NUM, STR }     from '@typen/enum-data-types'
+import assert                     from 'assert'
+import cp                         from 'child_process'
+import fs                         from 'fs'
+import path                       from 'path'
+import { UTOA }                   from '../assets'
+import { noop, sprintf, tryRead } from './helpers'
+import { termPrint }              from './termPrint'
+import { TputDes }                from './tputDes'
+import { whichTerminal }          from './whichTerminal'
 
-const SCOPES = [ 'bools', 'numbers', 'strings' ]
+const SCOPES = [ 'boo', 'num', 'str' ]
 const HEADERS = [ 'name', 'names', 'desc', 'file', 'termcap' ]
 const USR = __dirname + '/../usr/'
+
 /**
  * Terminfo
- */
-/**
  * Tput
  */
 export class Tput {
-  debug
+  // boo
+  // num
+  // str
+  // all
+  // info
+  // methods
+  // features
+  // terminal
+
+  debug = false
   error = null
   utoa = UTOA // Convert ACS unicode characters to the most similar-looking ascii characters.
+
   constructor(options = {}) {
-    if (!(this instanceof Tput)) return new Tput(options)
     if (typeof options === STR) options = { terminal: options }
+    this.configTput(options)
+    if (options.terminal || options.term) this.setup()
+    console.log('>> [new tput]',
+      `[boo] (${Object.keys(this.boo).length})`,
+      `[num] (${Object.keys(this.num).length})`,
+      `[str] (${Object.keys(this.str).length})`,
+      `[all] (${Object.keys(this.all).length})`)
+  }
+  configTput(options) {
     this.options = options
-    this.terminal = options.terminal || options.term || process.env.TERM || (process.platform === 'win32' ? 'windows-ansi' : 'xterm')
-    this.terminal = this.terminal.toLowerCase()
+    this.terminal = whichTerminal(options)
     this.debug = options.debug
     this.padding = options.padding
     this.extended = options.extended
@@ -54,8 +72,7 @@ export class Tput {
     this.terminfoPrefix = options.terminfoPrefix
     this.terminfoFile = options.terminfoFile
     this.termcapFile = options.termcapFile
-    if (options.terminal || options.term) this.setup()
-    console.log(`>> [new tput] (${this.terminal})`)
+    console.log(`>> [tput.configTput] [terminal] (${this.terminal}) [termcap] (${!!this.termcap})`)
   }
   setup() {
     this.error = null
@@ -66,7 +83,7 @@ export class Tput {
         } catch (e) {
           if (this.debug) throw e
           this.error = new Error('Termcap parse error.')
-          this._useInternalCap(this.terminal)
+          this.#useInternalCap(this.terminal)
         }
       }
       else {
@@ -75,7 +92,7 @@ export class Tput {
         } catch (e) {
           if (this.debug) throw e
           this.error = new Error('Terminfo parse error.')
-          this._useInternalInfo(this.terminal)
+          this.#useInternalInfo(this.terminal)
         }
       }
     } catch (e) {
@@ -83,11 +100,16 @@ export class Tput {
       // to an internally stored terminfo/cap.
       if (this.debug) throw e
       this.error = new Error('Terminfo not found.')
-      this._useXtermInfo()
+      this.#useXtermInfo()
     }
   }
   term(is) { return this.terminal.indexOf(is) === 0 }
   #debug() { if (this.debug) return console.log.apply(console, arguments) }
+
+  get bools() { return this.boo }
+  get numbers() { return this.num }
+  get strings() { return this.str }
+
   // Example:
   // vt102|dec vt102:\
   //  :do=^J:co#80:li#24:cl=50\E[;H\E[2J:\
@@ -101,19 +123,19 @@ export class Tput {
   /**
    * Fallback
    */
-  _useVt102Cap() { return this.injectTermcap('vt102') }
-  _useXtermCap() { return this.injectTermcap(USR + 'xterm.termcap') }
-  _useXtermInfo() { return this.injectTerminfo(USR + 'xterm') }
-  _useInternalInfo(name) { return this.injectTerminfo(USR + path.basename(name)) }
-  _useInternalCap(name) { return this.injectTermcap(USR + path.basename(name) + '.termcap') }
+  #useVt102Cap() { return this.injectTermcap('vt102') }
+  #useXtermCap() { return this.injectTermcap(USR + 'xterm.termcap') }
+  #useXtermInfo() { return this.injectTerminfo(USR + 'xterm') }
+  #useInternalInfo(name) { return this.injectTerminfo(USR + path.basename(name)) }
+  #useInternalCap(name) { return this.injectTermcap(USR + path.basename(name) + '.termcap') }
+
   _prefix(term) {
-    // If we have a terminfoFile, or our
-    // term looks like a filename, use it.
+    // If we have a terminfoFile, or our term looks like a filename, use it.
     if (term) {
       if (~term.indexOf(path.sep)) return term
       if (this.terminfoFile) return this.terminfoFile
     }
-    const paths = Tput.ipaths.slice()
+    const paths = TputDes.ipaths.slice()
     let file
     if (this.terminfoPrefix) paths.unshift(this.terminfoPrefix)
     // Try exact matches.
@@ -203,12 +225,12 @@ export class Tput {
       headerSize: 12,
       magicNumber: (data[1] << 8) | data[0],
       namesSize: (data[3] << 8) | data[2],
-      boolCount: (data[5] << 8) | data[4],
+      booCount: (data[5] << 8) | data[4],
       numCount: (data[7] << 8) | data[6],
       strCount: (data[9] << 8) | data[8],
       strTableSize: (data[11] << 8) | data[10]
     }
-    h.total = h.headerSize + h.namesSize + h.boolCount + h.numCount * 2 + h.strCount * 2 + h.strTableSize
+    h.total = h.headerSize + h.namesSize + h.booCount + h.numCount * 2 + h.strCount * 2 + h.strTableSize
     i += h.headerSize
     // Names Section
     const names = data.toString('ascii', i, i + h.namesSize - 1),
@@ -218,59 +240,61 @@ export class Tput {
     info.name = name
     info.names = parts
     info.desc = desc
-
     info.dir = path.resolve(file, '..', '..')
     info.file = file
+    info.boo = {}
+    info.num = {}
+    info.str = {}
 
     i += h.namesSize - 1
     // Names is nul-terminated.
     assert.equal(data[i], 0)
     i++
     // Booleans Section
-    // One byte for each flag
-    // Same order as <term.h>
-    info.bools = {}
-    l = i + h.boolCount
+    //  One byte for each flag
+    //  Same order as <term.h>
+
+    l = i + h.booCount
     o = 0
     for (; i < l; i++) {
-      v = Tput.bools[o++]
-      info.bools[v] = data[i] === 1
+      v = TputDes.boo[o++]
+      info.boo[v] = data[i] === 1
     }
     // Null byte in between to make sure numbers begin on an even byte.
     if (i % 2) {
       assert.equal(data[i], 0)
       i++
     }
+
     // Numbers Section
-    info.numbers = {}
     l = i + h.numCount * 2
     o = 0
     for (; i < l; i += 2) {
-      v = Tput.numbers[o++]
-      if (data[i + 1] === 0xff && data[i] === 0xff) { info.numbers[v] = -1 }
-      else { info.numbers[v] = (data[i + 1] << 8) | data[i] }
+      v = TputDes.num[o++]
+      if (data[i + 1] === 0xff && data[i] === 0xff) { info.num[v] = -1 }
+      else { info.num[v] = (data[i + 1] << 8) | data[i] }
     }
+
     // Strings Section
-    info.strings = {}
     l = i + h.strCount * 2
     o = 0
     for (; i < l; i += 2) {
-      v = Tput.strings[o++]
-      info.strings[v] = data[i + 1] === 0xff && data[i] === 0xff ? -1 : (data[i + 1] << 8) | data[i]
+      v = TputDes.str[o++]
+      info.str[v] = data[i + 1] === 0xff && data[i] === 0xff ? -1 : (data[i + 1] << 8) | data[i]
     }
     // String Table
-    Object.keys(info.strings).forEach(key => {
-      if (info.strings[key] === -1) return void (delete info.strings[key])
+    Object.keys(info.str).forEach(key => {
+      if (info.str[key] === -1) return void (delete info.str[key])
       // Workaround: fix an odd bug in the screen-256color terminfo where it tries
       // to set -1, but it appears to have {0xfe, 0xff} instead of {0xff, 0xff}.
       // TODO: Possibly handle errors gracefully below, as well as in the
-      // extended info. Also possibly do: `if (info.strings[key] >= data.length)`.
-      if (info.strings[key] === 65534) return void (delete info.strings[key])
-      const s = i + info.strings[key]
+      // extended info. Also possibly do: `if (info.str[key] >= data.length)`.
+      if (info.str[key] === 65534) return void (delete info.str[key])
+      const s = i + info.str[key]
       let j = s
       while (data[j]) j++
       assert(j < data.length)
-      info.strings[key] = data.toString('ascii', s, j)
+      info.str[key] = data.toString('ascii', s, j)
     })
     // Extended Header
     if (this.extended !== false) {
@@ -312,7 +336,7 @@ export class Tput {
     const h = info.header = {
       dataSize: data.length,
       headerSize: 10,
-      boolCount: (data[i + 1] << 8) | data[i + 0],
+      booCount: (data[i + 1] << 8) | data[i + 0],
       numCount: (data[i + 3] << 8) | data[i + 2],
       strCount: (data[i + 5] << 8) | data[i + 4],
       strTableSize: (data[i + 7] << 8) | data[i + 6],
@@ -320,17 +344,13 @@ export class Tput {
     }
     // h.symOffsetCount = h.strTableSize - h.strCount;
 
-    h.total = h.headerSize
-      + h.boolCount
-      + h.numCount * 2
-      + h.strCount * 2
-      + h.strTableSize
+    h.total = h.headerSize + h.booCount + h.numCount * 2 + h.strCount * 2 + h.strTableSize
 
     i += h.headerSize
     // Booleans Section
     // One byte for each flag
     const _bools = []
-    l = i + h.boolCount
+    l = i + h.booCount
     for (; i < l; i++) {
       _bools.push(data[i] === 1)
     }
@@ -388,12 +408,12 @@ export class Tput {
     // Identify by name
     j = 0
 
-    info.bools = {}
-    info.numbers = {}
-    info.strings = {}
-    _bools.forEach(bool => info.bools[sym[j++]] = bool)
-    _numbers.forEach(number => info.numbers[sym[j++]] = number)
-    _strings.forEach(string => info.strings[sym[j++]] = string)
+    info.boo = {}
+    info.num = {}
+    info.str = {}
+    _bools.forEach(bool => info.boo[sym[j++]] = bool)
+    _numbers.forEach(number => info.num[sym[j++]] = number)
+    _strings.forEach(string => info.str[sym[j++]] = string)
     // Should be the very last bit of data.
     assert.equal(i, data.length)
     return info
@@ -419,18 +439,19 @@ export class Tput {
       const o = info[type]
       Object.keys(o).forEach(key => methods[key] = self._compile(info, key, all[key] = o[key]))
     }
-    Tput.bools.forEach(key => { if (methods[key] == null) methods[key] = false })
-    Tput.numbers.forEach(key => { if (methods[key] == null) methods[key] = -1 })
-    Tput.strings.forEach(key => { if (!methods[key]) methods[key] = noop })
-    Object.keys(methods).forEach(key => { if (Tput.alias[key]) { Tput.alias[key].forEach(alias => { methods[alias] = methods[key] }) } })
+    TputDes.boo.forEach(key => { if (methods[key] == null) methods[key] = false })
+    TputDes.num.forEach(key => { if (methods[key] == null) methods[key] = -1 })
+    TputDes.str.forEach(key => { if (!methods[key]) methods[key] = noop })
+    Object.keys(methods).forEach(key => { if (TputDes.alias[key]) { TputDes.alias[key].forEach(alias => { methods[alias] = methods[key] }) } })
     // Could just use:
-    // Object.keys(Tput.aliasMap).forEach(function(key) {
-    //   methods[key] = methods[Tput.aliasMap[key]];
+    // Object.keys(TputDes.keyMap).forEach(function(key) {
+    //   methods[key] = methods[TputDes.keyMap[key]];
     // });
     return info
   }
   // Some data to help understand:
   inject(info) {
+    console.log(`>> [Tput.inject] (${info})`)
     const self    = this,
           methods = info.methods || info
     Object.keys(methods).forEach(key => {
@@ -440,9 +461,9 @@ export class Tput {
     this.info = info
     this.all = info.all
     this.methods = info.methods
-    this.bools = info.bools
-    this.numbers = info.numbers
-    this.strings = info.strings
+    this.boo = info.boo || info.bools
+    this.num = info.num || info.numbers
+    this.str = info.str || info.strings
     if (!~info.names.indexOf(this.terminal)) this.terminal = info.name
     this.features = info.features
     Object.keys(info.features).forEach(key => {
@@ -723,11 +744,7 @@ export class Tput {
         els = val.indexOf('%e')
         end = val.indexOf('%;')
         if (end === -1) end = Infinity
-        if (
-          then !== -1 && then < end &&
-          (fi === -1 || then < fi) &&
-          (els === -1 || then < els)
-        ) { stmt('} else if (') }
+        if (then !== -1 && then < end && (fi === -1 || then < fi) && (els === -1 || then < els)) { stmt('} else if (') }
         else { stmt('} else {') }
         continue
       }
@@ -796,62 +813,7 @@ export class Tput {
     }
   }
   // See: ~/ncurses/ncurses/tinfo/lib_tputs.c
-  _print(code, print, done) {
-    const xon = !this.bools.needs_xon_xoff || this.bools.xon_xoff
-    print = print || write
-    done = done || noop
-    if (!this.padding) {
-      print(code)
-      return done()
-    }
-    const parts = code.split(/(?=\$<[\d.]+[*\/]{0,2}>)/)
-    let i = 0;
-    (function next() {
-      if (i === parts.length) return done()
-      let part = parts[i++]
-      const padding = /^\$<([\d.]+)([*\/]{0,2})>/.exec(part)
-      let amount,
-          suffix
-      // , affect;
-      if (!padding) {
-        print(part)
-        return next()
-      }
-      part = part.substring(padding[0].length)
-      amount = +padding[1]
-      suffix = padding[2]
-      // A `/'  suffix indicates  that  the  padding  is  mandatory and forces a
-      // delay of the given number of milliseconds even on devices for which xon
-      // is present to indicate flow control.
-      if (xon && !~suffix.indexOf('/')) {
-        print(part)
-        return next()
-      }
-      // A `*' indicates that the padding required is proportional to the number
-      // of lines affected by the operation, and  the amount  given  is the
-      // per-affected-unit padding required.  (In the case of insert character,
-      // the factor is still the number of lines affected.) Normally, padding is
-      // advisory if the device has the xon capability; it is used for cost
-      // computation but does not trigger delays.
-      if (~suffix.indexOf('*')) {
-        // XXX Disable this for now.
-        amount = amount
-        // if ((affect = /\x1b\[(\d+)[LM]/.exec(part))) {
-        //   amount *= +affect[1];
-        // }
-        // The above is a huge workaround. In reality, we need to compile
-        // `_print` into the string functions and check the cap name and
-        // params.
-        // if (cap === 'insert_line' || cap === 'delete_line') {
-        //   amount *= params[0];
-        // }
-        // if (cap === 'clear_screen') {
-        //   amount *= process.stdout.rows;
-        // }
-      }
-      return setTimeout(() => (print(part), next()), amount)
-    })()
-  }
+  _print(code, print, done) { return termPrint.call(this, code, print, done)}
   _tryCap(file, term) {
     if (!file) return
     let terms,
@@ -910,21 +872,21 @@ export class Tput {
           for (k = 0; k < names.length; k++) {
             terms[names[k]] = term
           }
-          term.bools = {}
-          term.numbers = {}
-          term.strings = {}
+          term.boo = {}
+          term.num = {}
+          term.str = {}
           continue
         }
         if (~field.indexOf('=')) {
           parts = field.split('=')
-          term.strings[parts[0]] = parts.slice(1).join('=')
+          term.str[parts[0]] = parts.slice(1).join('=')
         }
         else if (~field.indexOf('#')) {
           parts = field.split('#')
-          term.numbers[parts[0]] = +parts.slice(1).join('#')
+          term.num[parts[0]] = +parts.slice(1).join('#')
         }
         else {
-          term.bools[field] = true
+          term.boo[field] = true
         }
       }
     }
@@ -943,8 +905,8 @@ export class Tput {
     // Separate aliases for termcap
     const map = (() => {
       const out = {}
-      Object.keys(Tput.alias).forEach(key => {
-        const aliases = Tput.alias[key]
+      Object.keys(TputDes.alias).forEach(key => {
+        const aliases = TputDes.alias[key]
         out[aliases.termcap] = key
       })
       return out
@@ -955,7 +917,7 @@ export class Tput {
       const source = info[key],
             target = out[key] = {}
       Object.keys(source).forEach(cap => {
-        if (key === 'strings') info.strings[cap] = self._captoinfo(cap, info.strings[cap], 1)
+        if (key === STR) info.str[cap] = self._captoinfo(cap, info.str[cap], 1)
         if (map[cap]) { target[map[cap]] = source[cap] }
         else {
           // NOTE: Possibly include all termcap names
@@ -1323,10 +1285,10 @@ export class Tput {
     })
     return all
   }
-  /**
-   * Detect Features / Quirks
-   */
   detectFeatures(info) {
+    /**
+     * Detect Features / Quirks
+     */
     const data = this.parseACS(info)
     info.features = {
       unicode: this.detectUnicode(info),
@@ -1345,7 +1307,7 @@ export class Tput {
     // ncurses-compatible env variable.
     if (process.env.NCURSES_NO_UTF8_ACS != null) return !!+process.env.NCURSES_NO_UTF8_ACS
     // If the terminal supports unicode, we don't need ACS.
-    if (info.numbers.U8 >= 0) return !!info.numbers.U8
+    if ((info.num || info.numbers)?.U8 >= 0) return !!(info.num || info.numbers).U8
     // The linux console is just broken for some reason.
     // Apparently the Linux console does not support ACS,
     // but it does support the PC ROM character set.
@@ -1355,14 +1317,11 @@ export class Tput {
     if (this.detectPCRomSet(info)) return true
     // screen termcap is bugged?
     if (this.termcap &&
-      info.name.indexOf('screen') === 0 &&
-      process.env.TERMCAP &&
-      ~process.env.TERMCAP.indexOf('screen') &&
-      ~process.env.TERMCAP.indexOf('hhII00')) {
-      if (~info.strings.enter_alt_charset_mode.indexOf('\x0e') ||
-        ~info.strings.enter_alt_charset_mode.indexOf('\x0f') ||
-        ~info.strings.set_attributes.indexOf('\x0e') ||
-        ~info.strings.set_attributes.indexOf('\x0f')) {
+      info.name.indexOf('screen') === 0 && process.env.TERMCAP && ~process.env.TERMCAP.indexOf('screen') && ~process.env.TERMCAP.indexOf('hhII00')) {
+      if (~info.str.enter_alt_charset_mode.indexOf('\x0e') ||
+        ~info.str.enter_alt_charset_mode.indexOf('\x0f') ||
+        ~info.str.set_attributes.indexOf('\x0e') ||
+        ~info.str.set_attributes.indexOf('\x0f')) {
         return true
       }
     }
@@ -1370,7 +1329,7 @@ export class Tput {
   }
   // See: ~/ncurses/ncurses/tinfo/lib_acs.c
   detectPCRomSet(info) {
-    const s = info.strings
+    const s = info.str
     return !!(
       s.enter_pc_charset_mode &&
       s.enter_alt_charset_mode &&
@@ -1390,11 +1349,11 @@ export class Tput {
     // accurate to ncurses logic. But it doesn't really matter.
     if (this.detectPCRomSet(info)) { return data }
     // See: ~/ncurses/ncurses/tinfo/lib_acs.c: L208
-    Object.keys(Tput.acsc).forEach(ch => {
-      const acs_chars = info.strings.acs_chars || '',
+    Object.keys(TputDes.acsc).forEach(ch => {
+      const acs_chars = info.str.acs_chars || '',
             i         = acs_chars.indexOf(ch),
             next      = acs_chars[i + 1],
-            value     = Tput.acsc[next]
+            value     = TputDes.acsc[next]
       if (!next || i === -1 || !value) { return }
       data.acsc[ch] = value
       data.acscr[value] = ch
@@ -1425,7 +1384,7 @@ export class Tput {
 
   }
   has(name) {
-    name = Tput.aliasMap[name]
+    name = TputDes.keyMap[name]
     const val = this.all[name]
     return !name ? false : typeof val === NUM ? val !== -1 : !!val
   }
@@ -1446,24 +1405,24 @@ export class Tput {
       term = terms[process.env.TERM] ? process.env.TERM : terms[term_] ? term_ : Object.keys(terms)[0]
     }
     else {
-      paths = Tput.cpaths.slice()
+      paths = TputDes.cpaths.slice()
       if (this.termcapFile) paths.unshift(this.termcapFile)
-      paths.push(Tput.termcap)
+      paths.push(TputDes.termcap)
       terms = this._tryCap(paths, term)
     }
     if (!terms) throw new Error('Cannot find termcap for: ' + term)
     root = terms[term]
     if (this.debug) this._termcap = terms
     (function tc(term) {
-      if (term && term.strings.tc) {
+      if (term && term.str.tc) {
         root.inherits = root.inherits || []
-        root.inherits.push(term.strings.tc)
-        const names = terms[term.strings.tc]
-          ? terms[term.strings.tc].names
-          : [ term.strings.tc ]
+        root.inherits.push(term.str.tc)
+        const names = terms[term.str.tc]
+          ? terms[term.str.tc].names
+          : [ term.str.tc ]
         self.#debug('%s inherits from %s.',
           term.names.join('/'), names.join('/'))
-        const inherit = tc(terms[term.strings.tc])
+        const inherit = tc(terms[term.str.tc])
         if (inherit) {
           SCOPES.forEach(function (type) {
             merge(term[type], inherit[type])
@@ -1485,6 +1444,7 @@ export class Tput {
     return /utf-?8/i.test(LANG) || (this.GetConsoleCP() === 65001)
   }
   readTerminfo(term) {
+
     let data,
         file,
         info
@@ -1495,146 +1455,4 @@ export class Tput {
     if (this.debug) this._terminfo = info
     return info
   }
-
-  static ipaths = IPATHS
-  /**
-   * Extended Parsing
-   */
-  /**
-   * Termcap
-   */
-  static cpaths = CPATHS
-  static _prefix = CPATHS
-  static _tprefix = CPATHS
-  /**
-   * Aliases
-   */
-  static _alias = alias
-  static alias = {}
-  /**
-   * Feature Checking
-   */
-  static aliasMap = {}
-  /**
-   * Fallback Termcap Entry
-   */
-  static termcap = TERMCAP
-  /**
-   * Terminfo Data
-   */
-  static bools = BOOLS
-  static numbers = NUMBERS
-  static strings = STRINGS
-  static acsc = ACSC
-  static utoa = UTOA
-  static _tprefix(prefix, term, soft) {
-    if (!prefix) return
-    let file,
-        dir,
-        i,
-        sdiff,
-        sfile,
-        list
-    if (Array.isArray(prefix)) {
-      for (i = 0; i < prefix.length; i++) {
-        file = this._tprefix(prefix[i], term, soft)
-        if (file) return file
-      }
-      return
-    }
-    const find = function (word) {
-      let file, ch
-
-      file = path.resolve(prefix, word[0])
-      try {
-        fs.statSync(file)
-        return file
-      } catch (e) { }
-      ch = word[0].charCodeAt(0).toString(16)
-      if (ch.length < 2) ch = '0' + ch
-      file = path.resolve(prefix, ch)
-      try {
-        fs.statSync(file)
-        return file
-      } catch (e) { }
-    }
-    if (!term) {
-      // Make sure the directory's sub-directories
-      // are all one-letter, or hex digits.
-      // return find('x') ? prefix : null;
-      try {
-        dir = fs
-          .readdirSync(prefix)
-          .filter(file => file.length !== 1 && !/^[0-9a-fA-F]{2}$/.test(file))
-        if (!dir.length) return prefix
-      } catch (e) {}
-      return
-    }
-    term = path.basename(term)
-    dir = find(term)
-    if (!dir) return
-    if (soft) {
-      try { list = fs.readdirSync(dir) } catch (e) { return }
-      list.forEach(function (file) {
-        if (file.indexOf(term) === 0) {
-          const diff = file.length - term.length
-          if (!sfile || diff < sdiff) { sdiff = diff, sfile = file }
-        }
-      })
-      return sfile && (soft || sdiff === 0) ? path.resolve(dir, sfile) : null
-    }
-    file = path.resolve(dir, term)
-    try {
-      fs.statSync(file)
-      return file
-    } catch (e) { }
-  }
-  static _prefix(term) {
-    // If we have a terminfoFile, or our
-    // term looks like a filename, use it.
-    if (term) {
-      if (~term.indexOf(path.sep)) { return term }
-      if (this.terminfoFile) { return this.terminfoFile }
-    }
-    const paths = Tput.ipaths.slice()
-    let file
-    if (this.terminfoPrefix) paths.unshift(this.terminfoPrefix)
-    // Try exact matches.
-    file = this._tprefix(paths, term)
-    if (file) return file
-    // Try similar matches.
-    file = this._tprefix(paths, term, true)
-    if (file) return file
-    // Not found.
-    throw new Error('Terminfo directory not found.')
-  }
-  // to easily output text with setTimeouts.
-  static print() {
-    const fake = {
-      padding: true,
-      bools: { needs_xon_xoff: true, xon_xoff: false }
-    }
-    return Tput.prototype._print.apply(fake, arguments)
-  }
-  // See:
-  // ~/ncurses/ncurses/tinfo/lib_tparm.c
 }
-
-for (const type of SCOPES) {
-  const o = Tput._alias[type]
-  Object.keys(o).forEach(key => {
-    const [ terminfo, termcap ] = o[key]
-    Tput.alias[key] = [ terminfo ]
-    Tput.alias[key].terminfo = terminfo
-    Tput.alias[key].termcap = termcap
-  })
-}
-// Bools
-Tput.alias.no_esc_ctlc.push('beehive_glitch')
-Tput.alias.dest_tabs_magic_smso.push('teleray_glitch')
-// Numbers
-Tput.alias.micro_col_size.push('micro_char_size')
-Object.keys(Tput.alias).forEach(key => {
-  Tput.aliasMap[key] = key
-  Tput.alias[key].forEach(k => Tput.aliasMap[k] = key)
-})
