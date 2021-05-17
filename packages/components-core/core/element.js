@@ -14,6 +14,7 @@ import * as helpers      from '@pres/util-helpers'
 import * as unicode      from '@pres/util-unicode'
 import { FUN, NUM, STR } from '@typen/enum-data-types'
 import { nullish }       from '@typen/nullish'
+import { last }          from '@vect/vector-index'
 import assert            from 'assert'
 import { Box }           from './box'
 
@@ -306,6 +307,7 @@ export class Element extends Node {
     if (typeof invisible === FUN) invisible = invisible(this)
     if (typeof fg === FUN) fg = fg(this)
     if (typeof bg === FUN) bg = bg(this)
+    console.log('>> [element.sattr]', fg, 'to', colors.convert(fg), bg, 'to', colors.convert(bg))
     return (
       ((invisible ? 16 : 0) << 18) |
       ((inverse ? 8 : 0) << 18) |
@@ -315,6 +317,7 @@ export class Element extends Node {
       (colors.convert(fg) << 9) |
       (colors.convert(bg))
     ) // return (this.uid << 24) | ((this.dockBorders ? 32 : 0) << 18)
+
   }
   onScreenEvent(type, handler) {
     const listeners = this._slisteners = this._slisteners || []
@@ -492,7 +495,7 @@ export class Element extends Node {
             attr = program.parseAttr(param, false)
             if (!nullish(attr)) {
               state.pop()
-              out += state.length ? program.parseAttr(state[state.length - 1]) : attr
+              out += state.length ? program.parseAttr(last(state)) : attr
             }
             else {
               out += cap[0]
@@ -534,9 +537,7 @@ export class Element extends Node {
         i,
         j,
         c
-    if (lines[0].attr === attr) {
-      return
-    }
+    if (lines[0].attr === attr) return void 0
     for (j = 0; j < lines.length; j++) {
       line = lines[j]
       attrs[j] = attr

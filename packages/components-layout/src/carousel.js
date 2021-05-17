@@ -14,11 +14,8 @@ export class Carousel {
   }
   next() {
     this.currPage++
-    if (this.currPage == this.pages.length) {
-      if (!this.options.rotate) {
-        this.currPage--
-        return
-      }
+    if ((this.currPage === this.pages.length)) {
+      if (!this.options.rotate) return void (this.currPage--)
       else { this.currPage = 0 }
     }
     this.move()
@@ -26,10 +23,7 @@ export class Carousel {
   prev() {
     this.currPage--
     if (this.currPage < 0) {
-      if (!this.options.rotate) {
-        this.currPage++
-        return
-      }
+      if (!this.options.rotate) return void (this.currPage++)
       else { this.currPage = this.pages.length - 1 }
     }
     this.move()

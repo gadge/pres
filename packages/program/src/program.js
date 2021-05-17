@@ -31,6 +31,7 @@ import {
   FUN, STR
 }                            from '@typen/enum-data-types'
 import { nullish }           from '@typen/nullish'
+import { last }              from '@vect/vector-index'
 import { StringDecoder }     from 'string_decoder'
 import { ALL }               from '../assets/constants'
 import { IO }                from './io'
@@ -40,6 +41,9 @@ import { ProgramCollection } from './programCollection'
  * Program
  */
 export class Program extends IO {
+  #boundResponse = false
+  #boundMouse = false
+
   type = 'program'
   constructor(options = {}) {
     super(options)
@@ -144,8 +148,8 @@ export class Program extends IO {
 // left click: ^[[M 3<^[[M#3<
 // mousewheel up: ^[[M`3>
   bindMouse() {
-    if (this._boundMouse) return
-    this._boundMouse = true
+    if (this.#boundMouse) return
+    this.#boundMouse = true
     const decoder = new StringDecoder('utf8'),
           self    = this
     this.on(DATA, function (data) {
@@ -447,17 +451,12 @@ export class Program extends IO {
       self.emit(MOUSE, gpm.createKey(dy > 0 ? WHEELUP : WHEELDOWN, button, modifier, x, y, dx, dy))
     })
   }
-  disableGpm() {
-    if (this.gpm) {
-      this.gpm.stop()
-      delete this.gpm
-    }
-  }
+  disableGpm() { if (this.gpm) { this.gpm.stop(), (delete this.gpm) } }
 
   // All possible responses from the terminal
   bindResponse() {
-    if (this._boundResponse) return
-    this._boundResponse = true
+    if (this.#boundResponse) return void 0
+    this.#boundResponse = true
     const decoder = new StringDecoder('utf8'),
           self    = this
     this.on(DATA, data => { if ((data = decoder.write(data))) { self.#bindResponse(data) } })
@@ -1337,7 +1336,9 @@ export class Program extends IO {
     return this.#sgr256(arg, grain)
   }
   #sgr256(arg, grain) {
+    const temp = arg
     if (arg[0] === '#') arg = arg.replace(/#(?:[0-9a-f]{3}){1,2}/i, colors.match)
+    console.log('program.#sgr256', temp, 'to', arg)
     let ms, c, scope
     if ((ms = /^(-?\d+) (fg|bg)$/.exec(arg)) && ([ , c, scope ] = ms)) {
       if (!grain || (c = +c) === -1) { return this.#sgr(`default ${scope}`) }
@@ -1825,9 +1826,7 @@ export class Program extends IO {
 
   manipulateWindow = this.xtwinops
   xtwinops(...args) {
-    const callback = typeof args[args.length - 1] === FUN
-      ? args.pop()
-      : function () {}
+    const callback = typeof last(args) === FUN ? args.pop() : function () {}
     return this.response('window-manipulation', CSI + args.join(SC) + XTWINOPS, callback)
   }
   getWindowSize(callback) { return this.manipulateWindow(18, callback) }
@@ -1935,9 +1934,4 @@ export class Program extends IO {
  */
 
 
-function merge(target) {
-  slice
-    .call(arguments, 1)
-    .forEach(source => Object.keys(source).forEach(key => target[key] = source[key]))
-  return target
-}
+

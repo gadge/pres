@@ -304,3 +304,10 @@ export class IO extends EventEmitter {
     this._buf = VO
   }
 }
+
+function merge(target) {
+  slice
+    .call(arguments, 1)
+    .forEach(source => Object.keys(source).forEach(key => target[key] = source[key]))
+  return target
+}

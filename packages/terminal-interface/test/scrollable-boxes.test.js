@@ -1,3 +1,4 @@
+import { Cards }   from '@palett/cards'
 import { blessed } from '../index'
 
 const screen = blessed.screen({
@@ -17,7 +18,7 @@ const box = blessed.scrollableBox({
   width: '80%',
   height: '80%',
   style: {
-    bg: 'green'
+    bg: Cards.teal.accent_1
   },
   border: 'line',
   content: 'foobar',
@@ -35,7 +36,7 @@ const text = blessed.box({
   content: 'hello1\nhello2\nhello3\nhello4',
   padding: 2,
   style: {
-    bg: 'red'
+    bg: Cards.red.darken_2
   },
   left: 2,
   top: 30,

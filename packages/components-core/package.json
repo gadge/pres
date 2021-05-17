@@ -23,6 +23,7 @@
     "@pres/util-colors": "^0.1.15",
     "@pres/util-helpers": "^0.1.15",
     "@pres/util-unicode": "^0.1.15",
+    "@vect/vector-index": "^0.3.9",
     "@typen/enum-data-types": "^0.1.16",
     "term.js": "^0.0.7"
   },
