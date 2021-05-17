@@ -1,6 +1,6 @@
 {
   "name": "@pres/terminfo-parser",
-  "version": "0.1.15",
+  "version": "0.1.16",
   "description": "Terminfo parser for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -16,8 +16,8 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/enum-terminfo-alias": "^0.1.15",
-    "@pres/util-helpers": "^0.1.15",
+    "@pres/enum-terminfo-alias": "^0.1.16",
+    "@pres/util-helpers": "^0.1.16",
     "@typen/enum-data-types": "^0.1.16"
   },
   "repository": {
