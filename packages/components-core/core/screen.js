@@ -15,6 +15,7 @@ import * as colors                from '@pres/util-colors'
 import * as helpers               from '@pres/util-helpers'
 import * as unicode               from '@pres/util-unicode'
 import { FUN, OBJ, STR }          from '@typen/enum-data-types'
+import { size }                   from '@vect/matrix'
 import cp, { spawn }              from 'child_process'
 import { Log }                    from '../src/log'
 import { Box }                    from './box'
@@ -477,6 +478,9 @@ export class Screen extends Node {
   }
   realloc() { return this.alloc(true) }
   render() {
+    const [ h, w ] = size(this.lines)
+    // console.log('>> [screen.render]', this.lines)
+    console.log('>> [screen.render]', h, w)
     const self = this
     if (this.destroyed) return
     this.emit(PRERENDER)
@@ -721,20 +725,14 @@ export class Screen extends Node {
     return angleTable[angle] || ch
   }
   draw(start, end) {
-    // this.emit('predraw');
-    let x,
-        y,
-        line,
+    let line,
         out,
         ch,
         data,
         attr,
-        fg,
-        bg,
+        fg, bg,
         flags
-    let main = '',
-        pre,
-        post
+    let main = ''
     let clr,
         neq,
         xx
@@ -742,30 +740,21 @@ export class Screen extends Node {
         ly = -1,
         o
     let acs
-    if (this._buf) {
-      main += this._buf
-      this._buf = ''
-    }
-    for (y = start; y <= end; y++) {
+    if (this._buf) { main += this._buf, this._buf = '' }
+    for (let y = start; y <= end; y++) {
       line = this.lines[y]
       o = this.olines[y]
-      if (!line.dirty && !(this.cursor.artificial && y === this.program.y)) {
-        continue
-      }
+      if (!line.dirty && !(this.cursor.artificial && y === this.program.y)) continue
       line.dirty = false
 
       out = ''
       attr = this.dattr
 
-      for (x = 0; x < line.length; x++) {
+      for (let x = 0; x < line.length; x++) {
         data = line[x][0]
         ch = line[x][1]
         // Render the artificial cursor.
-        if (this.cursor.artificial &&
-          !this.cursor._hidden &&
-          this.cursor._state &&
-          x === this.program.x &&
-          y === this.program.y) {
+        if (this.cursor.artificial && !this.cursor._hidden && this.cursor._state && x === this.program.x && y === this.program.y) {
           const cattr = this._cursorAttr(this.cursor, data)
           if (cattr.ch) ch = cattr.ch
           data = cattr.attr
@@ -991,15 +980,9 @@ export class Screen extends Node {
       acs = false
     }
     if (main) {
-      pre = ''
-      post = ''
-
-      pre += this.tput.sc()
-      post += this.tput.rc()
-      if (!this.program.cursorHidden) {
-        pre += this.tput.civis()
-        post += this.tput.cnorm()
-      }
+      let pre = '', post = ''
+      pre += this.tput.sc(), post += this.tput.rc()
+      if (!this.program.cursorHidden) { pre += this.tput.civis(), post += this.tput.cnorm() }
       // this.program.flush();
       // this.program.write(pre + main + post);
       this.program._write(pre + main + post)
@@ -1246,7 +1229,6 @@ export class Screen extends Node {
         xx
     if (xi < 0) xi = 0
     if (yi < 0) yi = 0
-
     for (; yi < yl; yi++) {
       if (!lines[yi]) break
       for (xx = xi; xx < xl; xx++) {
@@ -1554,9 +1536,7 @@ export class Screen extends Node {
     let main = ''
 
     for (y = yi; y < yl; y++) {
-      line = term
-        ? term.lines[y]
-        : this.lines[y]
+      line = term ? term.lines[y] : this.lines[y]
       if (!line) break
 
       out = ''
