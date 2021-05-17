@@ -10,7 +10,7 @@ import { SGR }                    from '@pres/enum-csi-codes'
 import {
   BLUR, CLICK, DESTROY, ELEMENT_CLICK, ELEMENT_MOUSEOUT, ELEMENT_MOUSEOVER, ELEMENT_MOUSEUP, ERROR, EXIT, FOCUS,
   KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, NEW_LISTENER, PRERENDER, RENDER,
-  RESIZE, SIGINT, SIGQUIT, SIGTERM, UNCAUGHT_EXCEPTION, WARNING, WHEELDOWN, WHEELUP,
+  RESIZE, WARNING, WHEELDOWN, WHEELUP,
 }                                 from '@pres/enum-events'
 import { Program }                from '@pres/program'
 import * as colors                from '@pres/util-colors'
@@ -283,19 +283,10 @@ export class Screen extends Node {
       ScreenCollection.global = ScreenCollection.instances[0]
       if (ScreenCollection.total === 0) {
         ScreenCollection.global = null
-        process.removeListener(UNCAUGHT_EXCEPTION, ScreenCollection._exceptionHandler)
-        // for (const signal of [ SIGTERM, SIGINT, SIGQUIT ]) {
-        //   process.removeListener(SIGTERM, ScreenCollection['_' + signal.toLowerCase() + 'Handler'])
-        // }
-        process.removeListener(SIGTERM, ScreenCollection._sigtermHandler)
-        process.removeListener(SIGINT, ScreenCollection._sigintHandler)
-        process.removeListener(SIGQUIT, ScreenCollection._sigquitHandler)
-        process.removeListener(EXIT, ScreenCollection._exitHandler)
-        delete ScreenCollection._exceptionHandler
-        delete ScreenCollection._sigtermHandler
-        delete ScreenCollection._sigintHandler
-        delete ScreenCollection._sigquitHandler
-        delete ScreenCollection._exitHandler
+        for (const [ signal, handler ] of Object.entries(ScreenCollection.handlers)) {
+          process.off(signal, ScreenCollection[handler])
+          delete ScreenCollection[handler]
+        }
         delete ScreenCollection._bound
       }
       this.destroyed = true
@@ -1075,22 +1066,17 @@ export class Screen extends Node {
     }
     return (effect << 18) | (fore << 9) | back
   }
-// Convert our own attribute format to an SGR string.
+  // Convert our own attribute format to an SGR string.
   codeAttr(code) {
     const flags = (code >> 18) & 0x1ff
     let fg  = (code >> 9) & 0x1ff,
         bg  = code & 0x1ff,
         out = ''
-    // bold
-    if (flags & 1) { out += '1;' }
-    // underline
-    if (flags & 2) { out += '4;' }
-    // blink
-    if (flags & 4) { out += '5;' }
-    // inverse
-    if (flags & 8) { out += '7;' }
-    // invisible
-    if (flags & 16) { out += '8;' }
+    if (flags & 1) { out += '1;' } // bold
+    if (flags & 2) { out += '4;' } // underline
+    if (flags & 4) { out += '5;' } // blink
+    if (flags & 8) { out += '7;' } // inverse
+    if (flags & 16) { out += '8;' } // invisible
     if (bg !== 0x1ff) {
       bg = this._reduceColor(bg)
       if (bg < 16) {
@@ -1200,28 +1186,23 @@ export class Screen extends Node {
   }
   clearRegion(xi, xl, yi, yl, override) { return this.fillRegion(this.dattr, ' ', xi, xl, yi, yl, override) }
   fillRegion(attr, ch, xi, xl, yi, yl, override) {
-    const lines = this.lines
-    let cell,
-        xx
+    const { lines } = this
     if (xi < 0) xi = 0
     if (yi < 0) yi = 0
-    for (; yi < yl; yi++) {
-      if (!lines[yi]) break
-      for (xx = xi; xx < xl; xx++) {
-        cell = lines[yi][xx]
-        if (!cell) break
+    for (let line; yi < yl; yi++) {
+      if (!(line = lines[yi])) break
+      for (let i = xi, cell; i < xl; i++) {
+        if (!(cell = line[i])) break
         if (override || attr !== cell[0] || ch !== cell[1]) {
-          lines[yi][xx][0] = attr
-          lines[yi][xx][1] = ch
-          lines[yi].dirty = true
+          cell[0] = attr, cell[1] = ch, line.dirty = true
         }
       }
     }
   }
-  key() { return this.program.key.apply(this, arguments) }
-  onceKey() { return this.program.onceKey.apply(this, arguments) }
+  key(...args) { return this.program.key.apply(this, args) }
+  onceKey(...args) { return this.program.onceKey.apply(this, args) }
   unkey = this.removeKey
-  removeKey() { return this.program.unkey.apply(this, arguments) }
+  removeKey(...args) { return this.program.unkey.apply(this, args) }
   spawn = function (file, args, options) {
     if (!Array.isArray(args)) {
       options = args
@@ -1234,7 +1215,6 @@ export class Screen extends Node {
 
     options = options || {}
     options.stdio = options.stdio || 'inherit'
-
     program.lsaveCursor('spawn')
     // program.csr(0, program.rows - 1);
     program.normalBuffer()
@@ -1250,7 +1230,6 @@ export class Screen extends Node {
       if (program.input.setRawMode) { program.input.setRawMode(true) }
       program.input.resume()
       program.output.write = write
-
       program.alternateBuffer()
       // program.csr(0, program.rows - 1);
       if (mouse) {

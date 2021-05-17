@@ -8,7 +8,7 @@ import { EXIT, SIGINT, SIGQUIT, SIGTERM, UNCAUGHT_EXCEPTION, } from '@pres/enum-
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
-const SIGNAL_COLLECTION = [ SIGTERM, SIGINT, SIGQUIT ]
+const SIGNAL_COLLECTION = [ SIGTERM, SIGINT, SIGQUIT, EXIT, UNCAUGHT_EXCEPTION ]
 
 export class ScreenCollection {
   static global = null
@@ -16,7 +16,7 @@ export class ScreenCollection {
   static instances = []
   static _bound = false
   static journal = true
-  static signalHandlers = {}
+  static handlers = {}
 
   static initialize(screen) {
     if (!ScreenCollection.global) ScreenCollection.global = screen
@@ -25,21 +25,16 @@ export class ScreenCollection {
       screen.index = ScreenCollection.total
       ScreenCollection.total++
     }
-    console.log('>> [ScreenCollection.initialize]', screen.index, ScreenCollection.total)
     if (ScreenCollection._bound) return
     ScreenCollection._bound = true
-    process.on(UNCAUGHT_EXCEPTION, ScreenCollection._exceptionHandler)
-    process.on(EXIT, ScreenCollection._exitHandler)
     for (const signal of SIGNAL_COLLECTION) {
-      const handlerName = ScreenCollection.signalHandlers[signal] = '_' + signal.toLowerCase() + 'Handler'
-      process.on(signal, ScreenCollection[handlerName] = () => {
-        if (process.listeners(signal).length > 1) return
-        nextTick(() => process.exit(0))
-      })
+      const name = ScreenCollection.handlers[signal] = '_' + signal.toLowerCase() + 'Handler'
+      const onSignal = ScreenCollection[name] ?? (ScreenCollection[name] = signalHandler.bind({ signal }))
+      process.on(signal, onSignal)
     }
+    console.log('>> [ScreenCollection.initialize]', ScreenCollection.total, `[ ${Object.keys(ScreenCollection.handlers)} ]`)
   }
-
-  static _exceptionHandler(err) {
+  static _uncaughtExceptionHandler(err) {
     if (process.listeners(UNCAUGHT_EXCEPTION).length > 1) return
     ScreenCollection.instances.slice()?.forEach(screen => screen?.destroy())
     err = err || new Error('Uncaught Exception.')
@@ -49,4 +44,10 @@ export class ScreenCollection {
   static _exitHandler() {
     ScreenCollection.instances.slice()?.forEach(screen => screen?.destroy())
   }
+}
+
+function signalHandler() {
+  const signal = this?.signal
+  if (process.listeners(signal).length > 1) return
+  nextTick(() => process.exit(0))
 }
