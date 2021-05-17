@@ -72,7 +72,7 @@ export class Tput {
     this.terminfoPrefix = options.terminfoPrefix
     this.terminfoFile = options.terminfoFile
     this.termcapFile = options.termcapFile
-    console.log(`>> [tput.configTput] [terminal] (${this.terminal}) [termcap] (${!!this.termcap})`)
+    console.log(`>> [tput.config] [terminal] (${this.terminal}) [termcap] (${!!this.termcap})`)
   }
   setup() {
     this.error = null
@@ -451,7 +451,6 @@ export class Tput {
   }
   // Some data to help understand:
   inject(info) {
-    console.log(`>> [Tput.inject] (${info})`)
     const self    = this,
           methods = info.methods || info
     Object.keys(methods).forEach(key => {
