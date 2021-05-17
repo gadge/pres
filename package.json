@@ -12,7 +12,7 @@
     "upint": "yarn upgrade-interactive",
     "pub": "lerna publish --force-publish",
     "build": "lerna exec --parallel -- rollup -c ../../rollup.config.js",
-    "build-specific": "lerna exec --scope=@pres/program -- rollup -c ../../rollup.config.js",
+    "build-specific": "lerna exec --scope=@pres/components-core -- rollup -c ../../rollup.config.js",
     "watch": "lerna exec --parallel -- rollup -c ../../rollup.config.js -w",
     "watch-specific": "lerna exec --scope=@pres/components-core -- rollup -c ../../rollup.config.js -w"
   },
@@ -41,6 +41,7 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.0.0",
     "@vect/object": "^0.3.9",
+    "@vect/matrix": "^0.3.9",
     "@vect/vector": "^0.3.9",
     "@vect/vector-index": "^0.3.9",
     "lerna": "^4.0.0",

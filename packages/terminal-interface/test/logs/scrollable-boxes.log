@@ -22,103 +22,411 @@ OUT: >> [new node] screen.0 ∈ screen.0\n
 -
 OUT: >> [new node] log.1 ∈ screen.0\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m ^[[90mundefined^[[39m to ^[[33m511^[[39m\n
+OUT: >> [element.parseContent] log.1 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] log.1 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
 -
 OUT: >> [new node] box.2 ∈ log.1\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m ^[[90mundefined^[[39m to ^[[33m511^[[39m\n
+OUT: >> [element.parseContent] box.2 ^[[90mundefined^[[39m\n
+-
+OUT: >> [program.#sgr] bold ^[[33mtrue^[[39m\n
+-
+OUT: >> [program.#sgr] bold ^[[33mfalse^[[39m\n
+-
+OUT: >> [element.sattr] box.2 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
 -
 OUT: >> [set scroll] log.1\n
 -
 OUT: >> [new node] scrollable-box.3 ∈ screen.0\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
+OUT: >> [element.parseContent] scrollable-box.3 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
 -
 OUT: >> [set scroll] scrollable-box.3\n
 -
 OUT: >> [new node] box.4 ∈ scrollable-box.3\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m #D32F2F to ^[[33m160^[[39m\n
+OUT: >> [element.parseContent] box.4 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.4 (\xd8) to ^[[33m511^[[39m #D32F2F to ^[[33m160^[[39m\n
 -
 OUT: >> [new node] box.5 ∈ scrollable-box.3\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m red to ^[[33m1^[[39m\n
+OUT: >> [element.parseContent] box.5 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.5 (\xd8) to ^[[33m511^[[39m red to ^[[33m1^[[39m\n
 -
 OUT: >> [new node] box.6 ∈ scrollable-box.3\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m magenta to ^[[33m5^[[39m\n
+OUT: >> [element.parseContent] box.6 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.6 (\xd8) to ^[[33m511^[[39m magenta to ^[[33m5^[[39m\n
 -
 OUT: >> [set scroll] box.6\n
 -
 OUT: >> [new node] box.7 ∈ box.6\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m yellow to ^[[33m3^[[39m\n
+OUT: >> [element.parseContent] box.7 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.7 (\xd8) to ^[[33m511^[[39m yellow to ^[[33m3^[[39m\n
 -
 OUT: >> [set scroll] box.7\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m ^[[90mundefined^[[39m to ^[[33m511^[[39m\n
+OUT: >> [screen.render] ^[[33m35^[[39m ^[[33m108^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
+OUT: >> [element.parseContent] log.1 ^[[90mundefined^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
+OUT: >> [element.sattr] log.1 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
+OUT: >> [element.parseContent] scrollable-box.3 ^[[90mundefined^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m ^[[90mundefined^[[39m to ^[[33m511^[[39m\n
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m #D32F2F to ^[[33m160^[[39m\n
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m red to ^[[33m1^[[39m\n
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m magenta to ^[[33m5^[[39m\n
+OUT: >> cell ^[[33m2358942^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m magenta to ^[[33m5^[[39m\n
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m ^[[90mundefined^[[39m to ^[[33m511^[[39m\n
+OUT: >> [element.parseContent] box.4 ^[[90mundefined^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m yellow to ^[[33m3^[[39m\n
+OUT: >> [element.sattr] box.4 (\xd8) to ^[[33m511^[[39m #D32F2F to ^[[33m160^[[39m\n
+-
+OUT: >> [element.parseContent] box.5 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.5 (\xd8) to ^[[33m511^[[39m red to ^[[33m1^[[39m\n
+-
+OUT: >> [element.parseContent] box.6 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.6 (\xd8) to ^[[33m511^[[39m magenta to ^[[33m5^[[39m\n
+-
+OUT: >> [element.sattr] box.6 (\xd8) to ^[[33m511^[[39m magenta to ^[[33m5^[[39m\n
+-
+OUT: >> [element.sattr] box.6 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.parseContent] box.7 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.7 (\xd8) to ^[[33m511^[[39m yellow to ^[[33m3^[[39m\n
 -
 OUT: >> [new node] box.8 ∈ screen.0\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m ^[[90mundefined^[[39m to ^[[33m511^[[39m\n
+OUT: >> [element.parseContent] box.8 ^[[90mundefined^[[39m\n
+-
+OUT: >> [program.#sgr] bold ^[[33mtrue^[[39m\n
+-
+OUT: >> [program.#sgr] bold ^[[33mfalse^[[39m\n
+-
+OUT: >> [element.sattr] box.8 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
 -
 OUT: >> [new node] box.9 ∈ box.8\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m ^[[90mundefined^[[39m to ^[[33m511^[[39m\n
+OUT: >> [element.parseContent] box.9 ^[[90mundefined^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m ^[[90mundefined^[[39m to ^[[33m511^[[39m\n
+OUT: >> [program.#sgr] red fg ^[[33mtrue^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
+OUT: >> [program.#sgr] bold ^[[33mtrue^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
+OUT: >> [program.#sgr] normal ^[[33mtrue^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
+OUT: >> [element.sattr] box.9 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m ^[[90mundefined^[[39m to ^[[33m511^[[39m\n
+OUT: >> [screen.render] ^[[33m35^[[39m ^[[33m108^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m #D32F2F to ^[[33m160^[[39m\n
+OUT: >> [element.parseContent] log.1 ^[[90mundefined^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m red to ^[[33m1^[[39m\n
+OUT: >> [element.sattr] log.1 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m magenta to ^[[33m5^[[39m\n
+OUT: >> [element.parseContent] scrollable-box.3 ^[[90mundefined^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m magenta to ^[[33m5^[[39m\n
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m ^[[90mundefined^[[39m to ^[[33m511^[[39m\n
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m yellow to ^[[33m3^[[39m\n
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m ^[[90mundefined^[[39m to ^[[33m511^[[39m\n
+OUT: >> cell ^[[33m2358942^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m ^[[90mundefined^[[39m to ^[[33m511^[[39m\n
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m ^[[90mundefined^[[39m to ^[[33m511^[[39m\n
+OUT: >> [element.parseContent] box.4 ^[[90mundefined^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m ^[[90mundefined^[[39m to ^[[33m511^[[39m\n
+OUT: >> [element.sattr] box.4 (\xd8) to ^[[33m511^[[39m #D32F2F to ^[[33m160^[[39m\n
 -
-OUT: >> [element.sattr] ^[[90mundefined^[[39m to ^[[33m511^[[39m ^[[90mundefined^[[39m to ^[[33m511^[[39m\n
+OUT: >> [element.parseContent] box.5 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.5 (\xd8) to ^[[33m511^[[39m red to ^[[33m1^[[39m\n
+-
+OUT: >> [element.parseContent] box.6 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.6 (\xd8) to ^[[33m511^[[39m magenta to ^[[33m5^[[39m\n
+-
+OUT: >> [element.sattr] box.6 (\xd8) to ^[[33m511^[[39m magenta to ^[[33m5^[[39m\n
+-
+OUT: >> [element.sattr] box.6 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.parseContent] box.7 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.7 (\xd8) to ^[[33m511^[[39m yellow to ^[[33m3^[[39m\n
+-
+OUT: >> [element.parseContent] box.8 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.8 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.sattr] box.8 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.sattr] box.8 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.parseContent] box.9 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.9 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.sattr] box.9 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
 -
 OUT: ^[[?1049h^[[?1h^[=^[[1;35r^[[?25l^[[1;1H^[[H^[[2J^[[?1000h^[[?1002h^[[?1003h^[[?1005h^[7^[[4;1H^[[11C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[5;1H^[[5;12Hx^[[42m^[(Bfoobar                                                                             ^[[m^[[7;42m ^[[m^[(0x^[[6;1H^[[6;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[7;1H^[[7;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[8;1H^[[8;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[9;1H^[[9;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[10;1H^[[10;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[11;1H^[[11;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[12;1H^[[12;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[13;1H^[[13;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[14;1H^[[14;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[15;1H^[[15;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[16;1H^[[16;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[17;1H^[[17;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[18;1H^[[18;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[19;1H^[[19;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[20;1H^[[20;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[21;1H^[[21;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[22;1H^[[22;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[23;1H^[[23;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[24;1H^[[24;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[25;1H^[[25;12Hx^[[42m^[(B        ^[[m^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[42m^[(B        ^[[m^[(0x^[[26;1H^[[26;12Hx^[[42m^[(B        ^[[m^[(0x^[[45m^[(B                                                                  ^[[m^[(0x^[[42m^[(B        ^[[m^[(0x^[[27;1H^[[27;12Hx^[[42m^[(B        ^[[m^[(0x^[[45m^[(B                                                                  ^[[m^[(0x^[[42m^[(B        ^[[m^[(0x^[[28;1H^[[28;12Hx^[[42m^[(B        ^[[m^[(0x^[[45m^[(B  foo-one                                                         ^[[m^[(0x^[[42m^[(B        ^[[m^[(0x^[[29;1H^[[29;12Hx^[[42m^[(B        ^[[m^[(0x^[[45m^[(B                                                                  ^[[m^[(0x^[[42m^[(B        ^[[m^[(0x^[[30;1H^[[30;12Hx^[[42m^[(B        ^[[m^[(0x^[[45m^[(B                                                                  ^[[m^[(0x^[[42m^[(B        ^[[m^[(0x^[[31;1H^[[31;12Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8^[7^[[15;1H^[[15;43H^[(0lq^[(B ^[[1;31mWARNING^[[m ^[(0qqqqqqqqqqqk^[[16;1H^[[16;43Hx^[(B                     ^[(0x^[[17;1H^[[17;43Hx^[(B ^[[1mTerminfo not found.^[[m ^[(0x^[[18;1H^[[18;43Hx^[(B                     ^[(0x^[[19;1H^[[19;43Hmqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+-
+IN: ^[[MCy,
+-
+IN: ^[[MCy-
+-
+IN: ^[[MCx-
+-
+IN: ^[[MCx.
+-
+IN: ^[[MCx/
+-
+IN: ^[[MCw/
+-
+IN: ^[[MCw0
+-
+IN: ^[[MCv0
+-
+IN: ^[[MCv1
+-
+IN: ^[[MCu1
+-
+IN: ^[[MCu2
+-
+IN: ^[[MCt2
+-
+IN: ^[[MCt3
+-
+IN: ^[[MCs3
+-
+IN: ^[[MCr4
+-
+IN: ^[[MCq4
+-
+IN: ^[[MCq5
+-
+IN: ^[[MCp5
+-
+IN: ^[[MCp6
+-
+IN: ^[[MCo6
+-
+IN: ^[[MCn6
+-
+IN: ^[[MCn7
+-
+IN: ^[[MCm7
+-
+IN: ^[[MCm8
+-
+IN: ^[[MCl8
+-
+IN: ^[[MCl9
+-
+OUT: >> [screen.render] ^[[33m35^[[39m ^[[33m108^[[39m\n
+-
+OUT: >> [element.parseContent] log.1 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] log.1 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.parseContent] scrollable-box.3 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
+-
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
+-
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
+-
+OUT: >> cell ^[[33m2358942^[[39m\n
+-
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.parseContent] box.4 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.4 (\xd8) to ^[[33m511^[[39m #D32F2F to ^[[33m160^[[39m\n
+-
+OUT: >> [element.parseContent] box.5 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.5 (\xd8) to ^[[33m511^[[39m red to ^[[33m1^[[39m\n
+-
+OUT: >> [element.parseContent] box.6 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.6 (\xd8) to ^[[33m511^[[39m red to ^[[33m1^[[39m\n
+-
+OUT: >> [element.sattr] box.6 (\xd8) to ^[[33m511^[[39m red to ^[[33m1^[[39m\n
+-
+OUT: >> [element.sattr] box.6 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.parseContent] box.7 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.7 (\xd8) to ^[[33m511^[[39m yellow to ^[[33m3^[[39m\n
+-
+OUT: >> [element.parseContent] box.8 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.8 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.sattr] box.8 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.sattr] box.8 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.parseContent] box.9 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.9 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.sattr] box.9 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: ^[7^[[26;1H^[[26;22H^[[41m                                                                  ^[[m^[[27;1H^[[27;22H^[[41m                                                                  ^[[m^[[28;1H^[[28;22H^[[41m  foo-one                                                         ^[[m^[[29;1H^[[29;22H^[[41m                                                                  ^[[m^[[30;1H^[[30;22H^[[41m                                                                  ^[[m^[8
+-
+IN: ^[[MCk9^[[MCj9
+-
+IN: ^[[MCj:^[[MCi:^[[MCh;
+-
+IN: ^[[MCg;^[[MCg<^[[MCf<^[[MCf=
+-
+IN: ^[[MCe=
+-
+IN: ^[[MCd=
+-
+IN: ^[[MCd>
+-
+IN: ^[[MCc>
+-
+IN: ^[[MCc=
+-
+IN: ^[[MCc<
+-
+IN: ^[[MCd<
+-
+IN: ^[[MCd;
+-
+IN: ^[[MCd:
+-
+IN: ^[[MCd9
+-
+IN: ^[[MCd8
+-
+OUT: >> [screen.render] ^[[33m35^[[39m ^[[33m108^[[39m\n
+-
+OUT: >> [element.parseContent] log.1 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] log.1 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.parseContent] scrollable-box.3 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
+-
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
+-
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
+-
+OUT: >> cell ^[[33m2358942^[[39m\n
+-
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.parseContent] box.4 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.4 (\xd8) to ^[[33m511^[[39m #D32F2F to ^[[33m160^[[39m\n
+-
+OUT: >> [element.parseContent] box.5 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.5 (\xd8) to ^[[33m511^[[39m red to ^[[33m1^[[39m\n
+-
+OUT: >> [element.parseContent] box.6 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.6 (\xd8) to ^[[33m511^[[39m magenta to ^[[33m5^[[39m\n
+-
+OUT: >> [element.sattr] box.6 (\xd8) to ^[[33m511^[[39m magenta to ^[[33m5^[[39m\n
+-
+OUT: >> [element.sattr] box.6 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.parseContent] box.7 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.7 (\xd8) to ^[[33m511^[[39m yellow to ^[[33m3^[[39m\n
+-
+OUT: >> [element.parseContent] box.8 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.8 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.sattr] box.8 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.sattr] box.8 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.parseContent] box.9 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.9 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.sattr] box.9 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: ^[7^[[26;1H^[[26;22H^[[45m                                                                  ^[[m^[[27;1H^[[27;22H^[[45m                                                                  ^[[m^[[28;1H^[[28;22H^[[45m  foo-one                                                         ^[[m^[[29;1H^[[29;22H^[[45m                                                                  ^[[m^[[30;1H^[[30;22H^[[45m                                                                  ^[[m^[8
+-
+IN: ^[[MCe8^[[MCe7
+-
+IN: ^[[MCe6^[[MCe5
+-
+IN: ^[[MCf5
+-
+IN: ^[[MCf4
+-
+IN: ^[[MCf3
+-
+OUT: >> [screen.render] ^[[33m35^[[39m ^[[33m108^[[39m\n
+-
+OUT: >> [element.parseContent] log.1 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] log.1 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.parseContent] scrollable-box.3 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
+-
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
+-
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m #A7FFEB to ^[[33m158^[[39m\n
+-
+OUT: >> cell ^[[33m2358942^[[39m\n
+-
+OUT: >> [element.sattr] scrollable-box.3 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.parseContent] box.4 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.4 (\xd8) to ^[[33m511^[[39m #D32F2F to ^[[33m160^[[39m\n
+-
+OUT: >> [element.parseContent] box.5 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.5 (\xd8) to ^[[33m511^[[39m red to ^[[33m1^[[39m\n
+-
+OUT: >> [element.parseContent] box.6 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.6 (\xd8) to ^[[33m511^[[39m magenta to ^[[33m5^[[39m\n
+-
+OUT: >> [element.sattr] box.6 (\xd8) to ^[[33m511^[[39m magenta to ^[[33m5^[[39m\n
+-
+OUT: >> [element.sattr] box.6 (\xd8) to ^[[33m511^[[39m (\xd8) to ^[[33m511^[[39m\n
+-
+OUT: >> [element.parseContent] box.7 ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] box.7 (\xd8) to ^[[33m511^[[39m yellow to ^[[33m3^[[39m\n
+-
+OUT: ^[7^[[15;1H^[[15;43H^[[42m                       ^[[m^[[16;1H^[[16;43H^[[42m                       ^[[m^[[17;1H^[[17;43H^[[42m                       ^[[m^[[18;1H^[[18;43H^[[42m                       ^[[m^[[19;1H^[[19;43H^[[42m                       ^[[m^[8
+-
+IN: ^[[MCf2
 -
 IN: q
 -

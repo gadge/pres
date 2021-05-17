@@ -12,6 +12,7 @@ import {
 import * as colors       from '@pres/util-colors'
 import * as helpers      from '@pres/util-helpers'
 import * as unicode      from '@pres/util-unicode'
+import { AEU }           from '@texting/enum-chars'
 import { FUN, NUM, STR } from '@typen/enum-data-types'
 import { nullish }       from '@typen/nullish'
 import { last }          from '@vect/vector-index'
@@ -307,7 +308,7 @@ export class Element extends Node {
     if (typeof invisible === FUN) invisible = invisible(this)
     if (typeof fg === FUN) fg = fg(this)
     if (typeof bg === FUN) bg = bg(this)
-    console.log('>> [element.sattr]', fg, 'to', colors.convert(fg), bg, 'to', colors.convert(bg))
+    console.log('>> [element.sattr]', this.codename, fg ?? AEU, 'to', colors.convert(fg), bg ?? AEU, 'to', colors.convert(bg))
     return (
       ((invisible ? 16 : 0) << 18) |
       ((inverse ? 8 : 0) << 18) |
@@ -385,13 +386,10 @@ export class Element extends Node {
   }
   getText() { return this.getContent().replace(/\x1b\[[\d;]*m/g, '') }
   parseContent(noTags) {
+    console.log('>> [element.parseContent]', this.codename, noTags)
     if (this.detached) return false
     const width = this.width - this.iwidth
-    if (
-      this._clines == null ||
-      this._clines.width !== width ||
-      this._clines.content !== this.content
-    ) {
+    if (this._clines == null || this._clines.width !== width || this._clines.content !== this.content) {
       let content = this.content
       content = content
         .replace(/[\x00-\x08\x0b-\x0c\x0e-\x1a\x1c-\x1f\x7f]/g, '')
@@ -481,9 +479,8 @@ export class Element extends Node {
           out += '}'
           continue
         }
-        if (param.slice(-3) === ' bg') state = bg
-        else if (param.slice(-3) === ' fg') state = fg
-        else state = flag
+        state = param.slice(-3) === ' bg' ? bg : param.slice(-3) === ' fg' ? fg : flag
+        // console.log('>> [element.#parseTags]', param, state)
         if (slash) {
           if (!param) {
             out += program.parseAttr('normal')
@@ -790,23 +787,13 @@ export class Element extends Node {
     this.removeScreenEvent(MOUSE, this._dragM)
     return this._draggable = false
   }
-  key() {
-    return this.screen.program.key.apply(this, arguments)
-  }
-  onceKey() {
-    return this.screen.program.onceKey.apply(this, arguments)
-  }
-  unkey() {
-    return this.screen.program.unkey.apply(this, arguments)
-  }
-  removeKey() {
-    return this.screen.program.unkey.apply(this, arguments)
-  }
+  key() { return this.screen.program.key.apply(this, arguments) }
+  onceKey() { return this.screen.program.onceKey.apply(this, arguments) }
+  unkey() { return this.screen.program.unkey.apply(this, arguments) }
+  removeKey() { return this.screen.program.unkey.apply(this, arguments) }
   setIndex(index) {
     if (!this.sup) return
-    if (index < 0) {
-      index = this.sup.sub.length + index
-    }
+    if (index < 0) { index = this.sup.sub.length + index }
     index = Math.max(index, 0)
     index = Math.min(index, this.sup.sub.length - 1)
     const i = this.sup.sub.indexOf(this)
@@ -1398,7 +1385,6 @@ export class Element extends Node {
   }
   _render = Element.prototype.render
   render() {
-    // console.log(`>>> calling element._render`)
     this._emit(PRERENDER)
     this.parseContent()
     const coords = this._getCoords(true)
@@ -1465,6 +1451,7 @@ export class Element extends Node {
       // this.screen._borderStops[coords.yl - 1] = this.screen._borderStops[coords.yi];
     }
     dattr = this.sattr(this.style)
+    // console.log('>> [element.render] interim', dattr)
     attr = dattr
     // If we're in a scrollable text box, check to
     // see which attributes this line starts with.
@@ -1528,9 +1515,7 @@ export class Element extends Node {
             ci += c[0].length - 1
             attr = this.screen.attrCode(c[0], attr, dattr)
             // Ignore foreground changes for selected items.
-            if (this.sup._isList && this.sup.interactive &&
-              this.sup.items[this.sup.selected] === this &&
-              this.sup.options.invertSelected !== false) {
+            if (this.sup._isList && this.sup.interactive && this.sup.items[this.sup.selected] === this && this.sup.options.invertSelected !== false) {
               attr = (attr & ~(0x1ff << 9)) | (dattr & (0x1ff << 9))
             }
             ch = content[ci] || bch
@@ -1627,15 +1612,13 @@ export class Element extends Node {
       if (cell) {
         if (this.track) {
           ch = this.track.ch || ' '
-          attr = this.sattr(this.style.track,
-            this.style.track.fg || this.style.fg,
-            this.style.track.bg || this.style.bg)
+          attr = this.sattr(this.style.track, this.style.track.fg || this.style.fg, this.style.track.bg || this.style.bg)
+          console.log('>> cell and track', attr)
           this.screen.fillRegion(attr, ch, x, x + 1, yi, yl)
         }
         ch = this.scrollbar.ch || ' '
-        attr = this.sattr(this.style.scrollbar,
-          this.style.scrollbar.fg || this.style.fg,
-          this.style.scrollbar.bg || this.style.bg)
+        attr = this.sattr(this.style.scrollbar, this.style.scrollbar.fg || this.style.fg, this.style.scrollbar.bg || this.style.bg)
+        console.log('>> cell', attr)
         if (attr !== cell[0] || ch !== cell[1]) {
           lines[y][x][0] = attr
           lines[y][x][1] = ch
