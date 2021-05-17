@@ -22,6 +22,7 @@ import { ENTER, LEFT, MIDDLE, RETURN, RIGHT, UNDEFINED, UNKNOWN } from '@pres/en
 import { keypressEventsEmitter }                                  from '@pres/events'
 import { gpmClient }                                              from '@pres/gpm-client'
 import { Tput }                                                   from '@pres/terminfo-parser'
+import { whichTerminal }                                          from '@pres/terminfo-parser/src/whichTerminal'
 import * as colors                                                from '@pres/util-colors'
 import { slice }                                                  from '@pres/util-helpers'
 import { SC, SP, VO }                                             from '@texting/enum-chars'
@@ -70,16 +71,8 @@ export class Program extends EventEmitter {
     } // IO - logger
     this.zero = options.zero !== false
     this.useBuffer = options.buffer // IO
-    this.x = 0
-    this.y = 0
-    this.savedX = 0
-    this.savedY = 0
-    this.cols = this.output.columns || 1
-    this.rows = this.output.rows || 1
-    this.scrollTop = 0
-    this.scrollBottom = this.rows - 1
-    this._terminal = options.terminal || options.term || process.env.TERM || (process.platform === 'win32' ? 'windows-ansi' : 'xterm') // IO
-    this._terminal = this._terminal.toLowerCase() // IO
+
+    this._terminal = whichTerminal(options) // IO
     // OSX
     this.isOSXTerm = process.env.TERM_PROGRAM === 'Apple_Terminal'
     this.isiTerm2 = process.env.TERM_PROGRAM === 'iTerm.app' || !!process.env.ITERM_SESSION_ID
@@ -105,15 +98,26 @@ export class Program extends EventEmitter {
     this._buf = VO // IO
     this._flush = this.flush.bind(this) // IO
     if (options.tput !== false) this.setupTput() // IO
+
+    this.x = 0
+    this.y = 0
+    this.savedX = 0
+    this.savedY = 0
+    this.cols = this.output.columns || 1
+    this.rows = this.output.rows || 1
+    this.scrollTop = 0
+    this.scrollBottom = this.rows - 1
+
     this.listen()
     console.log(`>> [new program] (${this.rows},${this.cols})`)
   }
 
-  get terminal() { return this._terminal }
-  set terminal(terminal) { return this.setTerminal(terminal), this.terminal }
+
   get title() { return this._title }
   set title(title) { return this.setTitle(title), this._title }
 
+  get terminal() { return this._terminal }
+  set terminal(terminal) { return this.setTerminal(terminal), this.terminal }
   log() { return this.#log('LOG', util.format.apply(util, arguments)) }
   debug() {
     return !this.options.debug
@@ -121,7 +125,6 @@ export class Program extends EventEmitter {
       : this.#log('DEBUG', util.format.apply(util, arguments))
   }
   #log(pre, msg) { return this.#logger?.write(pre + ': ' + msg + '\n-\n') }
-
   setupDump() {
     const
       self    = this,
@@ -168,6 +171,7 @@ export class Program extends EventEmitter {
     }
   }
   setupTput() {
+    console.log('>> setupTput')
     if (this._tputSetup) return
     this._tputSetup = true
     const
@@ -188,8 +192,7 @@ export class Program extends EventEmitter {
       const
         args = slice(arguments),
         cap  = args.shift()
-      if (tput[cap])
-        return this.#write(tput[cap].apply(tput, args))
+      if (tput[cap]) return this.#write(tput[cap].apply(tput, args))
     }
     Object.keys(tput).forEach(key => {
       if (self[key] == null) self[key] = tput[key]
@@ -338,6 +341,60 @@ export class Program extends EventEmitter {
     if (typeof key === STR) key = key.split(/\s*,\s*/)
     key.forEach(function (key) { return this.once(KEY + SP + key, listener) }, this)
   }
+
+  write = this.#out
+  _write = this.#write
+  out(name, ...args) {
+    this.ret = true
+    const out = this[name].apply(this, args)
+    this.ret = false
+    return out
+  }
+  #out(text) { if (this.output.writable) this.output.write(text) }
+  #write(text) { return this.ret ? text : this.useBuffer ? this.#buffer(text) : this.#out(text) }
+  #writeTm(data) {
+    const self = this
+    let
+      iter = 0,
+      timer
+    if (this.tmux) {
+      // Replace all STs with BELs so they can be nested within the DCS code.
+      data = data.replace(/\x1b\\/g, BEL)
+      // Wrap in tmux forward DCS:
+      data = DCS + 'tmux;' + ESC + data + ST
+      // If we've never even flushed yet, it means we're still in
+      // the normal buffer. Wait for alt screen buffer.
+      if (this.output.bytesWritten === 0) {
+        timer = setInterval(() => {
+          if (self.output.bytesWritten > 0 || ++iter === 50) {
+            clearInterval(timer)
+            self.flush()
+            self.#out(data)
+          }
+        }, 100)
+        return true
+      }
+      // NOTE: Flushing the buffer is required in some cases.
+      // The DCS code must be at the start of the output.
+      this.flush()
+      // Write out raw now that the buffer is flushed.
+      return this.#out(data)
+    }
+    return this.#write(data)
+  }
+  #buffer(text) {
+    if (this._exiting) return void (this.flush(), this.#out(text))
+    if (this._buf) return void (this._buf += text)
+    this._buf = text
+    nextTick(this._flush)
+    return true
+  }
+  flush() {
+    if (!this._buf) return
+    this.#out(this._buf)
+    this._buf = VO
+  }
+  print(text, attr) { return attr ? this.#write(this.text(text, attr)) : this.#write(text) }
 
   unkey = this.removeKey
   removeKey(key, listener) {
@@ -1044,61 +1101,6 @@ export class Program extends EventEmitter {
     }, 2000)
     return noBypass ? this.#write(text) : this.#writeTm(text)
   }
-
-  write = this.#out
-  _write = this.#write
-  #out(text) { if (this.output.writable) this.output.write(text) }
-  out(name) {
-    const args = slice(arguments, 1)
-    this.ret = true
-    const out = this[name].apply(this, args)
-    this.ret = false
-    return out
-  }
-  #buffer(text) {
-    if (this._exiting) return void (this.flush(), this.#out(text))
-    if (this._buf) return void (this._buf += text)
-    this._buf = text
-    nextTick(this._flush)
-    return true
-  }
-  flush() {
-    if (!this._buf) return
-    this.#out(this._buf)
-    this._buf = VO
-  }
-  #write(text) { return this.ret ? text : this.useBuffer ? this.#buffer(text) : this.#out(text) }
-  #writeTm(data) {
-    const self = this
-    let
-      iter = 0,
-      timer
-    if (this.tmux) {
-      // Replace all STs with BELs so they can be nested within the DCS code.
-      data = data.replace(/\x1b\\/g, BEL)
-      // Wrap in tmux forward DCS:
-      data = DCS + 'tmux;' + ESC + data + ST
-      // If we've never even flushed yet, it means we're still in
-      // the normal buffer. Wait for alt screen buffer.
-      if (this.output.bytesWritten === 0) {
-        timer = setInterval(() => {
-          if (self.output.bytesWritten > 0 || ++iter === 50) {
-            clearInterval(timer)
-            self.flush()
-            self.#out(data)
-          }
-        }, 100)
-        return true
-      }
-      // NOTE: Flushing the buffer is required in some cases.
-      // The DCS code must be at the start of the output.
-      this.flush()
-      // Write out raw now that the buffer is flushed.
-      return this.#out(data)
-    }
-    return this.#write(data)
-  }
-  print(text, attr) { return attr ? this.#write(this.text(text, attr)) : this.#write(text) }
 
   recoords = this.auto
   auto() {

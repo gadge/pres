@@ -1,6 +1,7 @@
 import { blessed } from '../index'
 
 const screen = blessed.screen({
+  debug: true,
   dump: __dirname + '/logs/scrollable-boxes.log',
   smartCSR: true,
   warnings: true

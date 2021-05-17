@@ -41,12 +41,12 @@ export class ScreenCollection {
 
   static _exceptionHandler(err) {
     if (process.listeners(UNCAUGHT_EXCEPTION).length > 1) return
-    ScreenCollection.instances.slice().forEach(screen => screen.destroy())
+    ScreenCollection.instances.slice()?.forEach(screen => screen?.destroy())
     err = err || new Error('Uncaught Exception.')
     console.error(err.stack ? err.stack + '' : err + '')
     nextTick(() => process.exit(1))
   }
   static _exitHandler() {
-    ScreenCollection.instances.slice().forEach(screen => screen.destroy())
+    ScreenCollection.instances.slice()?.forEach(screen => screen?.destroy())
   }
 }

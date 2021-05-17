@@ -154,7 +154,7 @@ export class Screen extends Node {
   get title() { return this.program.title }
   set title(title) { return this.program.title = title }
   get terminal() { return this.program.terminal }
-  set terminal(terminal) {return this.setTerminal(terminal), this.program.terminal }
+  set terminal(terminal) { return this.setTerminal(terminal), this.program.terminal }
   get cols() { return this.program.cols }
   get rows() { return this.program.rows }
   get width() { return this.program.cols }
