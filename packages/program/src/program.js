@@ -1789,13 +1789,13 @@ export class Program extends IO {
   decrqm(arg) { return this.wr(CSI + (arg || VO) + DECRQM) }
 
   requestPrivateMode = this.decrqmp
-  decrqmp(arg) { return this.wr(CSI + '?' + (arg || VO) + DECRQM) }
+  decrqmp(arg = '') { return this.wr(CSI + '?' + arg + DECRQM) }
 
   setConformanceLevel = this.decscl
   decscl(...args) { return this.wr(CSI + args.join(SC) + DECSCL) }
 
   loadLEDs = this.decll
-  decll(arg) { return this.wr(CSI + (arg || VO) + DECLL) }
+  decll(arg = '') { return this.wr(CSI + arg + DECLL) }
 
   setCursorStyle = this.decscusr
   decscusr(p) {

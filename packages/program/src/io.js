@@ -18,6 +18,7 @@ const nextTick = global.setImmediate || process.nextTick.bind(process)
 
 export class IO extends EventEmitter {
   #logger = null
+  #terminal = null
 
   constructor(options) {
     super(options)
@@ -40,7 +41,7 @@ export class IO extends EventEmitter {
     } // IO - logger
     this.zero = options.zero !== false
     this.useBuffer = options.buffer // IO
-    this._terminal = whichTerminal(options) // IO
+    this.#terminal = whichTerminal(options) // IO
     // OSX
     this.isOSXTerm = process.env.TERM_PROGRAM === 'Apple_Terminal'
     this.isiTerm2 = process.env.TERM_PROGRAM === 'iTerm.app' || !!process.env.ITERM_SESSION_ID
@@ -66,10 +67,10 @@ export class IO extends EventEmitter {
     this._buf = VO // IO
     this._flush = this.flush.bind(this) // IO
     if (options.tput !== false) this.setupTput() // IO
-    console.log(`>> [program.configIO] [terminal] ${this._terminal} [tmux] ${this.tmux}`)
+    console.log(`>> [program.configIO] [terminal] ${this.#terminal} [tmux] ${this.tmux}`)
   }
 
-  get terminal() { return this._terminal }
+  get terminal() { return this.#terminal }
   set terminal(terminal) { return this.setTerminal(terminal), this.terminal }
   log() { return this.#log('LOG', util.format.apply(util, arguments)) }
   debug() {
@@ -156,7 +157,7 @@ export class IO extends EventEmitter {
     })
   }
   setTerminal(terminal) {
-    this._terminal = terminal.toLowerCase()
+    this.#terminal = terminal.toLowerCase()
     delete this._tputSetup
     this.setupTput()
   }
