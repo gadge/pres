@@ -15,7 +15,6 @@ import * as colors                from '@pres/util-colors'
 import * as helpers               from '@pres/util-helpers'
 import * as unicode               from '@pres/util-unicode'
 import { FUN, OBJ, STR }          from '@typen/enum-data-types'
-import { size }                   from '@vect/matrix'
 import cp, { spawn }              from 'child_process'
 import { Log }                    from '../src/log'
 import { Box }                    from './box'
@@ -465,22 +464,22 @@ export class Screen extends Node {
     let x, y
     this.lines = []
     for (y = 0; y < this.rows; y++) {
-      this.lines[y] = []
-      for (x = 0; x < this.cols; x++) { this.lines[y][x] = [ this.dattr, ' ' ] }
-      this.lines[y].dirty = !!dirty
+      const line = this.lines[y] = []
+      for (x = 0; x < this.cols; x++) { line[x] = [ this.dattr, ' ' ] }
+      line.dirty = !!dirty
     }
     this.olines = []
     for (y = 0; y < this.rows; y++) {
-      this.olines[y] = []
-      for (x = 0; x < this.cols; x++) { this.olines[y][x] = [ this.dattr, ' ' ] }
+      const line = this.olines[y] = []
+      for (x = 0; x < this.cols; x++) { line[x] = [ this.dattr, ' ' ] }
     }
     this.program.clear()
   }
   realloc() { return this.alloc(true) }
   render() {
-    const [ h, w ] = size(this.lines)
+    // const [ h, w ] = size(this.lines)
     // console.log('>> [screen.render]', this.lines)
-    console.log('>> [screen.render]', h, w)
+    // console.log('>> [screen.render]', h, w)
     const self = this
     if (this.destroyed) return
     this.emit(PRERENDER)
@@ -725,8 +724,7 @@ export class Screen extends Node {
     return angleTable[angle] || ch
   }
   draw(start, end) {
-    let line,
-        out,
+    let out,
         ch,
         data,
         attr,
@@ -734,60 +732,50 @@ export class Screen extends Node {
         flags
     let main = ''
     let clr,
-        neq,
-        xx
+        neq
     let lx = -1,
-        ly = -1,
-        o
+        ly = -1
     let acs
     if (this._buf) { main += this._buf, this._buf = '' }
+    const { cursor, program, tput, options } = this
     for (let y = start; y <= end; y++) {
-      line = this.lines[y]
-      o = this.olines[y]
-      if (!line.dirty && !(this.cursor.artificial && y === this.program.y)) continue
+      let line = this.lines[y], oline = this.olines[y]
+      if (!line.dirty && !(cursor.artificial && y === program.y)) continue
       line.dirty = false
 
       out = ''
       attr = this.dattr
 
-      for (let x = 0; x < line.length; x++) {
-        data = line[x][0]
-        ch = line[x][1]
+      for (let x = 0, cell, ocell; (x < line.length) && (cell = line[x]); x++) {
+        [ data, ch ] = cell
         // Render the artificial cursor.
-        if (this.cursor.artificial && !this.cursor._hidden && this.cursor._state && x === this.program.x && y === this.program.y) {
-          const cattr = this._cursorAttr(this.cursor, data)
-          if (cattr.ch) ch = cattr.ch
-          data = cattr.attr
+        if (cursor.artificial && !cursor._hidden && cursor._state && x === program.x && y === program.y) {
+          const cursorAttr = this._cursorAttr(this.cursor, data)
+          if (cursorAttr.ch) ch = cursorAttr.ch
+          data = cursorAttr.attr
         }
         // Take advantage of xterm's back_color_erase feature by using a
         // lookahead. Stop spitting out so many damn spaces. NOTE: Is checking
         // the bg for non BCE terminals worth the overhead?
-        if (this.options.useBCE &&
+        if (options.useBCE &&
           ch === ' ' &&
-          (this.tput.bools.back_color_erase || (data & 0x1ff) === (this.dattr & 0x1ff)) &&
+          (tput.bools.back_color_erase || (data & 0x1ff) === (this.dattr & 0x1ff)) &&
           ((data >> 18) & 8) === ((this.dattr >> 18) & 8)
         ) {
           clr = true
           neq = false
-          for (xx = x; xx < line.length; xx++) {
-            if (line[xx][0] !== data || line[xx][1] !== ' ') {
+          for (let i = x, cell, ocell; (i < line.length) && (cell = line[i]); i++) {
+            if (cell[0] !== data || cell[1] !== ' ') {
               clr = false
               break
             }
-            if (line[xx][0] !== o[xx][0] || line[xx][1] !== o[xx][1]) { neq = true }
+            if ((ocell = oline[i]) && cell[0] !== ocell[0] || cell[1] !== ocell[1]) { neq = true }
           }
           if (clr && neq) {
             lx = -1, ly = -1
-            if (data !== attr) {
-              out += this.codeAttr(data)
-              attr = data
-            }
-            out += this.tput.cup(y, x)
-            out += this.tput.el()
-            for (xx = x; xx < line.length; xx++) {
-              o[xx][0] = data
-              o[xx][1] = ' '
-            }
+            if (data !== attr) { out += this.codeAttr(data), attr = data }
+            out += this.tput.cup(y, x), out += this.tput.el()
+            for (let i = x, ocell; (i < line.length) && (ocell = oline[i]); i++) { ocell[0] = data, ocell[1] = ' ' }
             break
           }
           // If there's more than 10 spaces, use EL regardless
@@ -836,24 +824,18 @@ export class Screen extends Node {
         }
         // Optimize by comparing the real output
         // buffer to the pending output buffer.
-        if (data === o[x][0] && ch === o[x][1]) {
-          if (lx === -1) {
-            lx = x
-            ly = y
-          }
+        ocell = oline[x]
+        if (data === ocell[0] && ch === ocell[1]) {
+          if (lx === -1) { lx = x, ly = y }
           continue
         }
         else if (lx !== -1) {
-          if (this.tput.strings.parm_right_cursor) {
-            out += y === ly
-              ? this.tput.cuf(x - lx)
-              : this.tput.cup(y, x)
-          }
+          if (this.tput.strings.parm_right_cursor) { out += y === ly ? this.tput.cuf(x - lx) : this.tput.cup(y, x) }
           else { out += this.tput.cup(y, x) }
           lx = -1, ly = -1
         }
-        o[x][0] = data
-        o[x][1] = ch
+        ocell[0] = data
+        ocell[1] = ch
         if (data !== attr) {
           if (attr !== this.dattr) { out += '\x1b[m' }
           if (data !== this.dattr) {
@@ -861,24 +843,16 @@ export class Screen extends Node {
             bg = data & 0x1ff
             fg = (data >> 9) & 0x1ff
             flags = data >> 18
-            // bold
-            if (flags & 1) { out += '1;' }
-            // underline
-            if (flags & 2) { out += '4;' }
-            // blink
-            if (flags & 4) { out += '5;' }
-            // inverse
-            if (flags & 8) { out += '7;' }
-            // invisible
-            if (flags & 16) { out += '8;' }
+            if (flags & 1) { out += '1;' } // bold
+            if (flags & 2) { out += '4;' } // underline
+            if (flags & 4) { out += '5;' } // blink
+            if (flags & 8) { out += '7;' } // inverse
+            if (flags & 16) { out += '8;' } // invisible
             if (bg !== 0x1ff) {
               bg = this._reduceColor(bg)
               if (bg < 16) {
                 if (bg < 8) { bg += 40 }
-                else if (bg < 16) {
-                  bg -= 8
-                  bg += 100
-                }
+                else if (bg < 16) { bg -= 8, bg += 100 }
                 out += bg + ';'
               }
               else { out += '48;5;' + bg + ';' }
@@ -887,10 +861,7 @@ export class Screen extends Node {
               fg = this._reduceColor(fg)
               if (fg < 16) {
                 if (fg < 8) { fg += 30 }
-                else if (fg < 16) {
-                  fg -= 8
-                  fg += 90
-                }
+                else if (fg < 16) { fg -= 8, fg += 90 }
                 out += fg + ';'
               }
               else { out += '38;5;' + fg + ';' }
@@ -913,16 +884,16 @@ export class Screen extends Node {
               // If we're at the end, we don't have enough space for a
               // double-width. Overwrite it with a space and ignore.
               ch = ' '
-              o[x][1] = '\0'
+              ocell[1] = '\0'
             }
             else {
               // ALWAYS refresh double-width chars because this special cursor
               // behavior is needed. There may be a more efficient way of doing
               // this. See above.
-              o[x][1] = '\0'
+              ocell[1] = '\0'
               // Eat the next character by moving forward and marking as a
               // space (which it is).
-              o[++x][1] = '\0'
+              oline[++x][1] = '\0'
             }
           }
         }

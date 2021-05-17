@@ -308,7 +308,7 @@ export class Element extends Node {
     if (typeof invisible === FUN) invisible = invisible(this)
     if (typeof fg === FUN) fg = fg(this)
     if (typeof bg === FUN) bg = bg(this)
-    console.log('>> [element.sattr]', this.codename, fg ?? AEU, 'to', colors.convert(fg), bg ?? AEU, 'to', colors.convert(bg))
+    // console.log('>> [element.sattr]', this.codename, fg ?? AEU, 'to', colors.convert(fg), bg ?? AEU, 'to', colors.convert(bg))
     return (
       ((invisible ? 16 : 0) << 18) |
       ((inverse ? 8 : 0) << 18) |
@@ -386,7 +386,6 @@ export class Element extends Node {
   }
   getText() { return this.getContent().replace(/\x1b\[[\d;]*m/g, '') }
   parseContent(noTags) {
-    console.log('>> [element.parseContent]', this.codename, noTags)
     if (this.detached) return false
     const width = this.width - this.iwidth
     if (this._clines == null || this._clines.width !== width || this._clines.content !== this.content) {
@@ -1613,12 +1612,10 @@ export class Element extends Node {
         if (this.track) {
           ch = this.track.ch || ' '
           attr = this.sattr(this.style.track, this.style.track.fg || this.style.fg, this.style.track.bg || this.style.bg)
-          console.log('>> cell and track', attr)
           this.screen.fillRegion(attr, ch, x, x + 1, yi, yl)
         }
         ch = this.scrollbar.ch || ' '
         attr = this.sattr(this.style.scrollbar, this.style.scrollbar.fg || this.style.fg, this.style.scrollbar.bg || this.style.bg)
-        console.log('>> cell', attr)
         if (attr !== cell[0] || ch !== cell[1]) {
           lines[y][x][0] = attr
           lines[y][x][1] = ch
