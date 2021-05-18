@@ -4,20 +4,21 @@
  * https://github.com/chjj/blessed
  */
 
-import { Node }          from '@pres/components-node'
-import { ESC, LF, TAB }  from '@pres/enum-control-chars'
+import { Node }           from '@pres/components-node'
+import { ESC, LF, TAB }   from '@pres/enum-control-chars'
 import {
   ATTACH, CLICK, DETACH, HIDE, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, MOVE,
   NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
-}                        from '@pres/enum-events'
-import * as colors       from '@pres/util-colors'
-import * as helpers      from '@pres/util-helpers'
-import * as unicode      from '@pres/util-unicode'
-import { FUN, NUM, STR } from '@typen/enum-data-types'
-import { nullish }       from '@typen/nullish'
-import { last }          from '@vect/vector-index'
-import assert            from 'assert'
-import { Box }           from './box'
+}                         from '@pres/enum-events'
+import * as colors        from '@pres/util-colors'
+import * as helpers                      from '@pres/util-helpers'
+import { sgraToMorisot, styleToMorisot } from '@pres/util-morisot'
+import * as unicode                      from '@pres/util-unicode'
+import { FUN, NUM, STR }  from '@typen/enum-data-types'
+import { nullish }        from '@typen/nullish'
+import { last }           from '@vect/vector-index'
+import assert             from 'assert'
+import { Box }            from './box'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 export class Element extends Node {
@@ -298,27 +299,28 @@ export class Element extends Node {
   set top(val) { return this.rtop = val }
   get bottom() { return this.rbottom }
   set bottom(val) { return this.rbottom = val }
-  sattr(style, fg, bg) {
-    let { bold, underline, blink, inverse, invisible } = style
-    if (fg == null && bg == null) { (fg = style.fg), (bg = style.bg) }
-    if (typeof bold === FUN) bold = bold(this)
-    if (typeof underline === FUN) underline = underline(this)
-    if (typeof blink === FUN) blink = blink(this)
-    if (typeof inverse === FUN) inverse = inverse(this)
-    if (typeof invisible === FUN) invisible = invisible(this)
-    if (typeof fg === FUN) fg = fg(this)
-    if (typeof bg === FUN) bg = bg(this)
-    // console.log('>> [element.sattr]', this.codename, fg ?? AEU, 'to', colors.convert(fg), bg ?? AEU, 'to', colors.convert(bg))
-    return (
-      ((invisible ? 16 : 0) << 18) |
-      ((inverse ? 8 : 0) << 18) |
-      ((blink ? 4 : 0) << 18) |
-      ((underline ? 2 : 0) << 18) |
-      ((bold ? 1 : 0) << 18) |
-      (colors.convert(fg) << 9) |
-      (colors.convert(bg))
-    ) // return (this.uid << 24) | ((this.dockBorders ? 32 : 0) << 18)
-  }
+  sattr = styleToMorisot.bind(this)
+  // sattr(style, fg, bg) {
+  // let { bold, underline, blink, inverse, invisible } = style
+  // if (fg == null && bg == null) { (fg = style.fg), (bg = style.bg) }
+  // if (typeof bold === FUN) bold = bold(this)
+  // if (typeof underline === FUN) underline = underline(this)
+  // if (typeof blink === FUN) blink = blink(this)
+  // if (typeof inverse === FUN) inverse = inverse(this)
+  // if (typeof invisible === FUN) invisible = invisible(this)
+  // if (typeof fg === FUN) fg = fg(this)
+  // if (typeof bg === FUN) bg = bg(this)
+  // // console.log('>> [element.sattr]', this.codename, fg ?? AEU, 'to', colors.convert(fg), bg ?? AEU, 'to', colors.convert(bg))
+  // return (
+  //   ((invisible ? 16 : 0) << 18) |
+  //   ((inverse ? 8 : 0) << 18) |
+  //   ((blink ? 4 : 0) << 18) |
+  //   ((underline ? 2 : 0) << 18) |
+  //   ((bold ? 1 : 0) << 18) |
+  //   (colors.convert(fg) << 9) |
+  //   (colors.convert(bg))
+  // ) // return (this.uid << 24) | ((this.dockBorders ? 32 : 0) << 18)
+  // }
   onScreenEvent(type, handler) {
     const listeners = this._slisteners = this._slisteners || []
     listeners.push({ type: type, handler: handler })
@@ -539,7 +541,7 @@ export class Element extends Node {
       for (i = 0; i < line.length; i++) {
         if (line[i] === ESC) {
           if ((c = /^\x1b\[[\d;]*m/.exec(line.slice(i)))) {
-            attr = this.screen.attrCode(c[0], attr, dattr)
+            attr = sgraToMorisot(c[0], attr, dattr)
             i += c[0].length - 1
           }
         }
@@ -1479,7 +1481,7 @@ export class Element extends Node {
         while (ch === ESC) {
           if ((c = /^\x1b\[[\d;]*m/.exec(content.slice(ci - 1)))) {
             ci += c[0].length - 1
-            attr = this.screen.attrCode(c[0], attr, dattr)
+            attr = sgraToMorisot(c[0], attr, dattr)
             // Ignore foreground changes for selected items.
             if (this.sup._isList && this.sup.interactive && this.sup.items[this.sup.selected] === this && this.sup.options.invertSelected !== false) {
               attr = (attr & ~(0x1ff << 9)) | (dattr & (0x1ff << 9))

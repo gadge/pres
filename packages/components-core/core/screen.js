@@ -15,6 +15,7 @@ import {
 import { Program }                from '@pres/program'
 import * as colors                from '@pres/util-colors'
 import * as helpers               from '@pres/util-helpers'
+import { morisotToSgra }          from '@pres/util-morisot'
 import * as unicode               from '@pres/util-unicode'
 import { FUN, OBJ, STR }          from '@typen/enum-data-types'
 import cp, { spawn }              from 'child_process'
@@ -761,7 +762,7 @@ export class Screen extends Node {
           }
           if (clr && neq) {
             lx = -1, ly = -1
-            if (data !== attr) { out += this.codeAttr(data), attr = data }
+            if (data !== attr) { out += morisotToSgra(data, this.tput.colors), attr = data }
             out += this.tput.cup(y, x), out += this.tput.el()
             for (let i = x, ocell; (i < line.length) && (ocell = oline[i]); i++) { ocell[0] = data, ocell.ch = ' ' }
             break
@@ -774,7 +775,7 @@ export class Screen extends Node {
           // if (!clr && neq && (xx - x) > 10) {
           //   lx = -1, ly = -1;
           //   if (data !== attr) {
-          //     out += this.codeAttr(data);
+          //     out += morisotToSgra(data, this.tput.colors);
           //     attr = data;
           //   }
           //   out += this.tput.cup(y, x);
@@ -1504,7 +1505,7 @@ export class Screen extends Node {
               if (((_data >> 9) & 0x1ff) === 257) _data |= 0x1ff << 9
               if ((_data & 0x1ff) === 256) _data |= 0x1ff
             }
-            out += this.codeAttr(_data)
+            out += morisotToSgra(_data, this.tput.colors)
           }
         }
         if (this.fullUnicode) {
