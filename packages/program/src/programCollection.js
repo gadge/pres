@@ -26,6 +26,7 @@ export class ProgramCollection {
     target.on(event, listener)
     listeners.forEach(listener => target.on(event, listener))
   }
+
   static _exitHandler() {
     ProgramCollection.instances.forEach(program => {
       // Potentially reset window title on exit:

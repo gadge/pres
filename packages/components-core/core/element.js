@@ -318,7 +318,6 @@ export class Element extends Node {
       (colors.convert(fg) << 9) |
       (colors.convert(bg))
     ) // return (this.uid << 24) | ((this.dockBorders ? 32 : 0) << 18)
-
   }
   onScreenEvent(type, handler) {
     const listeners = this._slisteners = this._slisteners || []
@@ -554,19 +553,11 @@ export class Element extends Node {
     const cline = line.replace(/\x1b\[[\d;]*m/g, ''),
           len   = cline.length
     let s = width - len
-    if (this.shrink) {
-      s = 0
-    }
+    if (this.shrink) { s = 0 }
     if (len === 0) return line
     if (s < 0) return line
-    if (align === 'center') {
-      s = Array(((s / 2) | 0) + 1).join(' ')
-      return s + line + s
-    }
-    else if (align === 'right') {
-      s = Array(s + 1).join(' ')
-      return s + line
-    }
+    if (align === 'center' && (s = Array(((s / 2) | 0) + 1).join(' '))) return s + line + s
+    else if (align === 'right' && (s = Array(s + 1).join(' '))) return s + line
     else if (this.parseTags && ~line.indexOf('{|}')) {
       const parts = line.split('{|}')
       const cparts = cline.split('{|}')
@@ -633,11 +624,7 @@ export class Element extends Node {
         while (line.length > width) {
           // Measure the real width of the string.
           for (i = 0, total = 0; i < line.length; i++) {
-            while (line[i] === ESC) {
-              while (line[i] && line[i++] !== 'm') {
-
-              }
-            }
+            while (line[i] === ESC) while (line[i] && line[i++] !== 'm') { }
             if (!line[i]) break
             if (++total === width) {
               // If we're not wrapping the text, we have to finish up the rest of
@@ -668,7 +655,8 @@ export class Element extends Node {
                   // NOTE: Could optimize this by putting
                   // it in the sup for loop.
                   if (unicode.isSurrogate(line, i)) i--
-                  for (var s = 0, n = 0; n < i; n++) {
+                  let s = 0, n = 0
+                  for (; n < i; n++) {
                     if (unicode.isSurrogate(line, n)) s++, n++
                   }
                   i += s
@@ -682,15 +670,13 @@ export class Element extends Node {
                     j--
                     if (line[j] === ' ' ||
                       line[j] === '\x03' ||
-                      (unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03') ||
-                      unicode.isCombining(line, j)) {
+                      (unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03') || unicode.isCombining(line, j)) {
                       break
                     }
                   }
                   if (line[j] === ' ' ||
                     line[j] === '\x03' ||
-                    (unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03') ||
-                    unicode.isCombining(line, j)) {
+                    (unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03') || unicode.isCombining(line, j)) {
                     i = j + 1
                   }
                 }
@@ -1804,10 +1790,10 @@ export class Element extends Node {
     if (diff > 0) {
       const pos = this._getCoords()
       if (!pos) return
-      const height  = pos.yl - pos.yi - this.iheight,
-            base    = this.childBase || 0,
-            visible = real >= base && real - base < height
-      if (pos && visible && this.screen.cleanSides(this)) {
+      const ht   = pos.yl - pos.yi - this.iheight,
+            base = this.childBase || 0,
+            vis  = real >= base && real - base < ht // visible
+      if (pos && vis && this.screen.cleanSides(this)) {
         this.screen.insertLine(diff,
           pos.yi + this.itop + real - base,
           pos.yi,
