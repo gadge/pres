@@ -179,16 +179,14 @@ export class Element extends Node {
   set width(val) {
     if (this.position.width === val) return
     if (/^\d+$/.test(val)) val = +val
-    this.emit(RESIZE)
-    this.clearPos()
+    this.emit(RESIZE), this.clearPos()
     return this.position.width = val
   }
   get height() { return this._getHeight(false) }
   set height(val) {
     if (this.position.height === val) return
     if (/^\d+$/.test(val)) val = +val
-    this.emit(RESIZE)
-    this.clearPos()
+    this.emit(RESIZE), this.clearPos()
     return this.position.height = val
   }
   get aleft() { return this._getLeft(false) }
@@ -209,16 +207,14 @@ export class Element extends Node {
     }
     val -= this.sup.aleft
     if (this.position.left === val) return
-    this.emit(MOVE)
-    this.clearPos()
+    this.emit(MOVE), this.clearPos()
     return this.position.left = val
   }
   get aright() { return this._getRight(false) }
   set aright(val) {
     val -= this.sup.aright
     if (this.position.right === val) return
-    this.emit(MOVE)
-    this.clearPos()
+    this.emit(MOVE), this.clearPos()
     return this.position.right = val
   }
   get atop() { return this._getTop(false) }
@@ -239,46 +235,40 @@ export class Element extends Node {
     }
     val -= this.sup.atop
     if (this.position.top === val) return
-    this.emit(MOVE)
-    this.clearPos()
+    this.emit(MOVE), this.clearPos()
     return this.position.top = val
   }
   get abottom() { return this._getBottom(false) }
   set abottom(val) {
     val -= this.sup.abottom
     if (this.position.bottom === val) return
-    this.emit(MOVE)
-    this.clearPos()
+    this.emit(MOVE), this.clearPos()
     return this.position.bottom = val
   }
   get rleft() { return this.aleft - this.sup.aleft }
   set rleft(val) {
     if (this.position.left === val) return
     if (/^\d+$/.test(val)) val = +val
-    this.emit(MOVE)
-    this.clearPos()
+    this.emit(MOVE), this.clearPos()
     return this.position.left = val
   }
   get rright() { return this.aright - this.sup.aright }
   set rright(val) {
     if (this.position.right === val) return
-    this.emit(MOVE)
-    this.clearPos()
+    this.emit(MOVE), this.clearPos()
     return this.position.right = val
   }
   get rtop() { return this.atop - this.sup.atop }
   set rtop(val) {
     if (this.position.top === val) return
     if (/^\d+$/.test(val)) val = +val
-    this.emit(MOVE)
-    this.clearPos()
+    this.emit(MOVE), this.clearPos()
     return this.position.top = val
   }
   get rbottom() { return this.abottom - this.sup.abottom }
   set rbottom(val) {
     if (this.position.bottom === val) return
-    this.emit(MOVE)
-    this.clearPos()
+    this.emit(MOVE), this.clearPos()
     return this.position.bottom = val
   }
   get ileft() { return (this.border ? 1 : 0) + this.padding.left }
@@ -527,8 +517,8 @@ export class Element extends Node {
     return out
   }
   _parseAttr(lines) {
-    const dattr = this.sattr(this.style)
-    let attr = dattr
+    const normAttr = this.sattr(this.style)
+    let attr = normAttr
     const attrs = []
     let line,
         i,
@@ -541,7 +531,7 @@ export class Element extends Node {
       for (i = 0; i < line.length; i++) {
         if (line[i] === ESC) {
           if ((c = /^\x1b\[[\d;]*m/.exec(line.slice(i)))) {
-            attr = sgraToMorisot(c[0], attr, dattr)
+            attr = sgraToMorisot(c[0], attr, normAttr)
             i += c[0].length - 1
           }
         }
@@ -670,14 +660,12 @@ export class Element extends Node {
                   // Break _past_ combining chars.
                   while (j > i - 10 && j > 0) {
                     j--
-                    if (line[j] === ' ' ||
-                      line[j] === '\x03' ||
+                    if (line[j] === ' ' || line[j] === '\x03' ||
                       (unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03') || unicode.isCombining(line, j)) {
                       break
                     }
                   }
-                  if (line[j] === ' ' ||
-                    line[j] === '\x03' ||
+                  if (line[j] === ' ' || line[j] === '\x03' ||
                     (unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03') || unicode.isCombining(line, j)) {
                     i = j + 1
                   }
@@ -1374,8 +1362,8 @@ export class Element extends Node {
         ch
     const content = this._pcontent
     let ci = this._clines.ci[coords.base],
-        battr,
-        dattr,
+        borderAttr,
+        normAttr,
         c,
         visible,
         i
@@ -1421,9 +1409,9 @@ export class Element extends Node {
       // }
       // this.screen._borderStops[coords.yl - 1] = this.screen._borderStops[coords.yi];
     }
-    dattr = this.sattr(this.style)
-    // console.log('>> [element.render] interim', dattr)
-    attr = dattr
+    normAttr = this.sattr(this.style)
+    // console.log('>> [element.render] interim', normAttr)
+    attr = normAttr
     // If we're in a scrollable text box, check to
     // see which attributes this line starts with.
     if (ci > 0) attr = this._clines.attr[Math.min(coords.base, this._clines.length - 1)]
@@ -1444,7 +1432,7 @@ export class Element extends Node {
         }
       }
       else {
-        this.screen.fillRegion(dattr, bch, xi, xl, yi, yl)
+        this.screen.fillRegion(normAttr, bch, xi, xl, yi, yl)
       }
     }
     if (this.tpadding) { xi += this.padding.left, xl -= this.padding.right, yi += this.padding.top, yl -= this.padding.bottom }
@@ -1481,10 +1469,10 @@ export class Element extends Node {
         while (ch === ESC) {
           if ((c = /^\x1b\[[\d;]*m/.exec(content.slice(ci - 1)))) {
             ci += c[0].length - 1
-            attr = sgraToMorisot(c[0], attr, dattr)
+            attr = sgraToMorisot(c[0], attr, normAttr)
             // Ignore foreground changes for selected items.
             if (this.sup._isList && this.sup.interactive && this.sup.items[this.sup.selected] === this && this.sup.options.invertSelected !== false) {
-              attr = (attr & ~(0x1ff << 9)) | (dattr & (0x1ff << 9))
+              attr = (attr & ~(0x1ff << 9)) | (normAttr & (0x1ff << 9))
             }
             ch = content[ci] || bch
             ci++
@@ -1592,7 +1580,7 @@ export class Element extends Node {
     }
     // Draw the border.
     if (this.border) {
-      battr = this.sattr(this.style.border)
+      borderAttr = this.sattr(this.style.border)
       let y = yi
       if (coords.notop) y = -1
       let line = lines[y]
@@ -1627,15 +1615,15 @@ export class Element extends Node {
         else if (this.border.type === 'bg') { ch = this.border.ch }
         if (!this.border.top && x !== xi && x !== xl - 1) {
           ch = ' '
-          if (dattr !== cell[0] || ch !== cell.ch) {
-            cell[0] = dattr
+          if (normAttr !== cell[0] || ch !== cell.ch) {
+            cell[0] = normAttr
             cell.ch = ch
             lines[y].dirty = true
             continue
           }
         }
-        if (battr !== cell[0] || ch !== cell.ch) {
-          cell[0] = battr
+        if (borderAttr !== cell[0] || ch !== cell.ch) {
+          cell[0] = borderAttr
           cell.ch = ch
           line.dirty = true
         }
@@ -1647,16 +1635,16 @@ export class Element extends Node {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
             if (!coords.noleft)
-              if (battr !== cell[0] || ch !== cell.ch) {
-                cell[0] = battr
+              if (borderAttr !== cell[0] || ch !== cell.ch) {
+                cell[0] = borderAttr
                 cell.ch = ch
                 line.dirty = true
               }
           }
           else {
             ch = ' '
-            if (dattr !== cell[0] || ch !== cell.ch) {
-              cell[0] = dattr
+            if (normAttr !== cell[0] || ch !== cell.ch) {
+              cell[0] = normAttr
               cell.ch = ch
               line.dirty = true
             }
@@ -1667,16 +1655,16 @@ export class Element extends Node {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
             if (!coords.noright)
-              if (battr !== cell[0] || ch !== cell.ch) {
-                cell[0] = battr
+              if (borderAttr !== cell[0] || ch !== cell.ch) {
+                cell[0] = borderAttr
                 cell.ch = ch
                 line.dirty = true
               }
           }
           else {
             ch = ' '
-            if (dattr !== cell[0] || ch !== cell.ch) {
-              cell[0] = dattr
+            if (normAttr !== cell[0] || ch !== cell.ch) {
+              cell[0] = normAttr
               cell.ch = ch
               line.dirty = true
             }
@@ -1716,15 +1704,15 @@ export class Element extends Node {
         else if (this.border.type === 'bg') { ch = this.border.ch }
         if (!this.border.bottom && x !== xi && x !== xl - 1) {
           ch = ' '
-          if (dattr !== cell[0] || ch !== cell.ch) {
-            cell[0] = dattr
+          if (normAttr !== cell[0] || ch !== cell.ch) {
+            cell[0] = normAttr
             cell.ch = ch
             line.dirty = true
           }
           continue
         }
-        if (battr !== cell[0] || ch !== cell.ch) {
-          cell[0] = battr
+        if (borderAttr !== cell[0] || ch !== cell.ch) {
+          cell[0] = borderAttr
           cell.ch = ch
           line.dirty = true
         }
