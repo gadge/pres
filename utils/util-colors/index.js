@@ -140,6 +140,7 @@ export function convert(color) {
     : typeof color === STR && (color = color.replace(/[\- ]/g, ''))
       ? COLOR_NAMES[color] ?? match(color)
       : Array.isArray(color)
-        ? match(color) : -1
-  return color !== -1 ? color : 0x1ff
+        ? match(color)
+        : -1
+  return color === -1 ? 0x1ff : color
 }

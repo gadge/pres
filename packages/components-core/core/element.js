@@ -4,21 +4,21 @@
  * https://github.com/chjj/blessed
  */
 
-import { Node }           from '@pres/components-node'
-import { ESC, LF, TAB }   from '@pres/enum-control-chars'
+import { Node }                          from '@pres/components-node'
+import { ESC, LF, TAB }                  from '@pres/enum-control-chars'
 import {
   ATTACH, CLICK, DETACH, HIDE, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, MOVE,
   NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
-}                         from '@pres/enum-events'
-import * as colors        from '@pres/util-colors'
+}                                        from '@pres/enum-events'
+import * as colors                       from '@pres/util-colors'
 import * as helpers                      from '@pres/util-helpers'
 import { sgraToMorisot, styleToMorisot } from '@pres/util-morisot'
 import * as unicode                      from '@pres/util-unicode'
-import { FUN, NUM, STR }  from '@typen/enum-data-types'
-import { nullish }        from '@typen/nullish'
-import { last }           from '@vect/vector-index'
-import assert             from 'assert'
-import { Box }            from './box'
+import { FUN, NUM, STR }                 from '@typen/enum-data-types'
+import { nullish }                       from '@typen/nullish'
+import { last }                          from '@vect/vector-index'
+import assert                            from 'assert'
+import { Box }                           from './box'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 export class Element extends Node {
@@ -322,12 +322,12 @@ export class Element extends Node {
   // ) // return (this.uid << 24) | ((this.dockBorders ? 32 : 0) << 18)
   // }
   onScreenEvent(type, handler) {
-    const listeners = this._slisteners = this._slisteners || []
+    const listeners = this._slisteners ?? (this._slisteners = [])
     listeners.push({ type: type, handler: handler })
     this.screen.on(type, handler)
   }
   onceScreenEvent(type, handler) {
-    const listeners = this._slisteners = this._slisteners || []
+    const listeners = this._slisteners ?? (this._slisteners = [])
     const entry = { type: type, handler: handler }
     listeners.push(entry)
     this.screen.once(type, function () {
@@ -337,7 +337,7 @@ export class Element extends Node {
     })
   }
   removeScreenEvent(type, handler) {
-    const listeners = this._slisteners = this._slisteners || []
+    const listeners = this._slisteners ?? (this._slisteners = [])
     for (let i = 0; i < listeners.length; i++) {
       const listener = listeners[i]
       if (listener.type === type && listener.handler === handler) {
@@ -349,7 +349,7 @@ export class Element extends Node {
     this.screen.removeListener(type, handler)
   }
   free() {
-    const listeners = this._slisteners = this._slisteners || []
+    const listeners = this._slisteners ?? (this._slisteners = [])
     for (let i = 0; i < listeners.length; i++) {
       const listener = listeners[i]
       this.screen.removeListener(listener.type, listener.handler)

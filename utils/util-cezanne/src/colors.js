@@ -1,7 +1,7 @@
 // This might work well enough for a terminal's colors: treat RGB as XYZ in a
 // 3-dimensional space and go midway between the two points.
 
-import { RGB_COLORS, SPARSE_NAMES } from '@pres/util-colors/src/manet'
+import { rgbToInt } from '@palett/convert'
 
 export function mixColors(rgbA, rgbB, alpha = 0.5) {
   let r_ = rgbA >> 16 & 0xFF, g_ = rgbA >> 8 & 0xFF, b_ = rgbA & 0xFF
@@ -12,55 +12,64 @@ export function mixColors(rgbA, rgbB, alpha = 0.5) {
   return (r_, g_, b_)
 }
 
-const NAC = 0x1ff
-export function blend(mori_, _mori, alpha) {
+
+export class Blended {
+  static cache = {}
+}
+
+const NAC = 1 << 24
+const GREY = rgbToInt([ 127, 127, 127 ])
+
+export function blend(x, y, alpha) {
   let name
-  let back_ = mori_ & NAC
-  if (_mori != null) { // if right provided: mixColors
-    let _back = _mori & NAC
+  let [ , fore_, back_ ] = x
+  let _fore, _back
+  if (y) { // if right provided: mixColors
+    [ , _fore, _back ] = y
+    // for back
     if (back_ === NAC) back_ = 0 // if left is NAC: left is noir
     if (_back === NAC) _back = 0 // if right is NAC: right is noir
     back_ = mixColors(back_, _back, alpha) // mix
-  }
-  else { // if right not provided: use cache
-    if (blend._cache[back_]) { back_ = blend._cache[back_] }
-    else if (back_ >= 8 && back_ <= 15) { back_ -= 8 }
-    else if ((name = SPARSE_NAMES[back_])) {
-      for (let i = 0; i < SPARSE_NAMES.length; i++)
-        if (name === SPARSE_NAMES[i] && i !== back_) {
-          const [ r_, g_, b_ ] = RGB_COLORS[i], [ _r, _g, _b ] = RGB_COLORS[back_]
-          if (r_ + g_ + b_ < _r + _g + _b) {
-            back_ = blend._cache[back_] = i
-            break
-          }
-        }
-    }
-  }
-  mori_ &= ~NAC // simply adjust mori_ value
-  mori_ |= back_ // assign new backColor to mori_
-  let fore_ = (mori_ >> 9) & NAC
-  if (_mori != null) {
-    let _fore = (_mori >> 9) & NAC // 0, 7, 188, 231, 251
-    if (fore_ === NAC) { fore_ = 248 } // if left is NAC: left is grey
+
+    // for fore
+    if (fore_ === NAC) { fore_ = GREY } // if left is NAC: left is grey
     else {
-      if (fore_ === NAC) fore_ = 7 // if left is NAC: left is grey
-      if (_fore === NAC) _fore = 7 // if right is NAC: right is grey
+      if (_fore === NAC) _fore = GREY // if right is NAC: right is grey
       fore_ = mixColors(fore_, _fore, alpha) // mix
     }
-  } // if right not provided: use cache
-  else if (blend._cache[fore_] != null) { fore_ = blend._cache[fore_] } // if cached: use cached
-  else if (fore_ >= 8 && fore_ <= 15) { fore_ -= 8 } // if bright: use standard counterpart
-  else if ((name = SPARSE_NAMES[fore_])) {
-    for (let i = 0; i < SPARSE_NAMES.length; i++)
-      if (name === SPARSE_NAMES[i] && i !== fore_) {
-        const [ r_, g_, b_ ] = RGB_COLORS[i], [ _r, _g, _b ] = RGB_COLORS[fore_]
-        if (r_ + g_ + b_ < _r + _g + _b) {
-          fore_ = blend._cache[fore_] = i
-          break
-        }
-      }
   }
-  mori_ &= ~(NAC << 9) // simply adjust mori_ value
-  mori_ |= fore_ << 9 // assign new foreColor to mori_
-  return mori_
+  else { // if right not provided: use cache
+    // for back
+    if (Blended.cache[back_]) { back_ = Blended.cache[back_] }
+    else { back_ = Blended.cache[back_] = back_ }
+    // else if (back_ >= 8 && back_ <= 15) { back_ -= 8 }
+    // else if ((name = SPARSE_NAMES[back_])) {
+    //   for (let i = 0; i < SPARSE_NAMES.length; i++)
+    //     if (name === SPARSE_NAMES[i] && i !== back_) {
+    //       const [ r_, g_, b_ ] = RGB_COLORS[i], [ _r, _g, _b ] = RGB_COLORS[back_]
+    //       if (r_ + g_ + b_ < _r + _g + _b) {
+    //         back_ = Blended.cache[back_] = i
+    //         break
+    //       }
+    //     }
+    // }
+
+    // for fore
+    if (Blended.cache[fore_]) { fore_ = Blended.cache[fore_] } // if cached: use cached
+    else { fore_ = Blended.cache[fore_] = fore_ }
+    // else if (fore_ >= 8 && fore_ <= 15) { fore_ -= 8 } // if bright: use standard counterpart
+    // else if ((name = SPARSE_NAMES[fore_])) {
+    //   for (let i = 0; i < SPARSE_NAMES.length; i++)
+    //     if (name === SPARSE_NAMES[i] && i !== fore_) {
+    //       const [ r_, g_, b_ ] = RGB_COLORS[i], [ _r, _g, _b ] = RGB_COLORS[fore_]
+    //       if (r_ + g_ + b_ < _r + _g + _b) {
+    //         fore_ = Blended.cache[fore_] = i
+    //         break
+    //       }
+    //     }
+    // }
+  }
+  x[1] = fore_
+  x[2] = back_
+  return x
 }
