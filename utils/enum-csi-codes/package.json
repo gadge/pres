@@ -1,6 +1,6 @@
 {
   "name": "@pres/enum-csi-codes",
-  "version": "0.1.17",
+  "version": "0.1.18",
   "description": "Enum for csi codes",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
