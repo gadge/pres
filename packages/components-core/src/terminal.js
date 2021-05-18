@@ -217,13 +217,13 @@ export class Terminal extends Box {
         if (x === cursor) {
           if (this.cursor === 'line') {
             line[x][0] = this.dattr
-            line[x][1] = '\u2502'
+            line[x].ch = '\u2502'
             continue
           }
           else if (this.cursor === 'underline') { line[x][0] = this.dattr | (2 << 18) }
           else if (this.cursor === 'block' || !this.cursor) { line[x][0] = this.dattr | (8 << 18) }
         }
-        line[x][1] = this.term.lines[scrollback + y - yi][x - xi][1]
+        line[x].ch = this.term.lines[scrollback + y - yi][x - xi].ch
         // default foreground = 257
         if (((line[x][0] >> 9) & 0x1ff) === 257) {
           line[x][0] &= ~(0x1ff << 9)

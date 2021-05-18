@@ -695,9 +695,9 @@ PNG.prototype.renderScreen = function (bmp, screen, xi, xl, yi, yl) {
         // translucency / blending
         if (alpha < 1.0) {
           attr = cellLines[yy][xx][0]
-          ch = cellLines[yy][xx][1]
+          ch = cellLines[yy][xx].ch
           lines[y][x][0] = this.colors.blend(lines[y][x][0], attr, alpha)
-          if (ch !== ' ') lines[y][x][1] = ch
+          if (ch !== ' ') lines[y][x].ch = ch
           lines[y].dirty = true
           continue
         }

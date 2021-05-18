@@ -591,10 +591,7 @@ export class Screen extends Node {
       // Maybe just do this instead of parsing.
       if (pos.yi < 0) return pos._cleanSides = false
       if (pos.yl > this.height) return pos._cleanSides = false
-      if (this.width - (pos.xl - pos.xi) < 40) {
-        return pos._cleanSides = true
-      }
-      return pos._cleanSides = false
+      return this.width - (pos.xl - pos.xi) < 40 ? (pos._cleanSides = true) : (pos._cleanSides = false)
     }
     if (!this.options.smartCSR) { return false }
     // The scrollbar can't update properly, and there's also a
@@ -609,32 +606,27 @@ export class Screen extends Node {
     // }
     const yi = pos.yi + el.itop,
           yl = pos.yl - el.ibottom
-    let first,
-        ch,
-        x,
-        y
     if (pos.yi < 0) return pos._cleanSides = false
     if (pos.yl > this.height) return pos._cleanSides = false
     if (pos.xi - 1 < 0) return pos._cleanSides = true
     if (pos.xl > this.width) return pos._cleanSides = true
-    for (x = pos.xi - 1; x >= 0; x--) {
-      if (!this.olines[yi]) break
-      first = this.olines[yi][x]
-      for (y = yi; y < yl; y++) {
-        if (!this.olines[y] || !this.olines[y][x]) break
-        ch = this.olines[y][x]
-        if (ch[0] !== first[0] || ch[1] !== first[1]) {
+    for (let x = pos.xi - 1, line, cell; x >= 0; x--) {
+      if (!(line = this.olines[yi])) break
+      const first = line[x]
+      for (let y = yi; y < yl; y++) {
+        if (!(line = this.olines[y]) || !(cell = line[x])) break
+        cell = line[x]
+        if (cell[0] !== first[0] || cell.ch !== first.ch) {
           return pos._cleanSides = false
         }
       }
     }
-    for (x = pos.xl; x < this.width; x++) {
-      if (!this.olines[yi]) break
-      first = this.olines[yi][x]
-      for (y = yi; y < yl; y++) {
-        if (!this.olines[y] || !this.olines[y][x]) break
-        ch = this.olines[y][x]
-        if (ch[0] !== first[0] || ch[1] !== first[1]) {
+    for (let x = pos.xl, line, cell; x < this.width; x++) {
+      if (!(line = this.olines[yi])) break
+      const first = line[x]
+      for (let y = yi; y < yl; y++) {
+        if (!(line = this.olines[y]) || !(cell = line[x])) break
+        if (cell[0] !== first[0] || cell.ch !== first.ch) {
           return pos._cleanSides = false
         }
       }
@@ -644,9 +636,7 @@ export class Screen extends Node {
   _dockBorders() {
     const lines = this.lines
     let stops = this._borderStops,
-        i,
         y,
-        x,
         ch
     // var keys, stop;
     //
@@ -663,14 +653,15 @@ export class Screen extends Node {
       .keys(stops)
       .map(function (k) { return +k })
       .sort(function (a, b) { return a - b })
-    for (i = 0; i < stops.length; i++) {
+    for (let i = 0, line, cell; i < stops.length; i++) {
       y = stops[i]
-      if (!lines[y]) continue
-      for (x = 0; x < this.width; x++) {
-        ch = lines[y][x][1]
+      if (!(line = lines[y])) continue
+      for (let x = 0; x < this.width; x++) {
+        cell = line[x]
+        ch = cell.ch
         if (angles[ch]) {
-          lines[y][x][1] = this._getAngle(lines, x, y)
-          lines[y].dirty = true
+          cell.ch = this._getAngle(lines, x, y)
+          line.dirty = true
         }
       }
     }
@@ -678,26 +669,26 @@ export class Screen extends Node {
   _getAngle(lines, x, y) {
     let angle = 0
     const attr = lines[y][x][0],
-          ch   = lines[y][x][1]
-    if (lines[y][x - 1] && langles[lines[y][x - 1][1]]) {
+          ch   = lines[y][x].ch
+    if (lines[y][x - 1] && langles[lines[y][x - 1].ch]) {
       if (!this.options.ignoreDockContrast) {
         if (lines[y][x - 1][0] !== attr) return ch
       }
       angle |= 1 << 3
     }
-    if (lines[y - 1] && uangles[lines[y - 1][x][1]]) {
+    if (lines[y - 1] && uangles[lines[y - 1][x].ch]) {
       if (!this.options.ignoreDockContrast) {
         if (lines[y - 1][x][0] !== attr) return ch
       }
       angle |= 1 << 2
     }
-    if (lines[y][x + 1] && rangles[lines[y][x + 1][1]]) {
+    if (lines[y][x + 1] && rangles[lines[y][x + 1].ch]) {
       if (!this.options.ignoreDockContrast) {
         if (lines[y][x + 1][0] !== attr) return ch
       }
       angle |= 1 << 1
     }
-    if (lines[y + 1] && dangles[lines[y + 1][x][1]]) {
+    if (lines[y + 1] && dangles[lines[y + 1][x].ch]) {
       if (!this.options.ignoreDockContrast) { if (lines[y + 1][x][0] !== attr) return ch }
       angle |= 1 << 0
     }
@@ -709,8 +700,8 @@ export class Screen extends Node {
     // +-------+  |
     // |          |
     // +----------+
-    // if (uangles[lines[y][x][1]]) {
-    //   if (lines[y + 1] && cdangles[lines[y + 1][x][1]]) {
+    // if (uangles[lines[y][x].ch]) {
+    //   if (lines[y + 1] && cdangles[lines[y + 1][x].ch]) {
     //     if (!this.options.ignoreDockContrast) {
     //       if (lines[y + 1][x][0] !== attr) return ch;
     //     }
@@ -743,7 +734,8 @@ export class Screen extends Node {
       attr = this.dattr
 
       for (let x = 0, cell, ocell; (x < line.length) && (cell = line[x]); x++) {
-        [ data, ch ] = cell
+        [ data ] = cell;
+        ({ ch } = cell)
         // Render the artificial cursor.
         if (cursor.artificial && !cursor._hidden && cursor._state && x === program.x && y === program.y) {
           const cursorAttr = this._cursorAttr(this.cursor, data)
@@ -761,17 +753,17 @@ export class Screen extends Node {
           clr = true
           neq = false
           for (let i = x, cell, ocell; (i < line.length) && (cell = line[i]); i++) {
-            if (cell[0] !== data || cell[1] !== ' ') {
+            if (cell[0] !== data || cell.ch !== ' ') {
               clr = false
               break
             }
-            if ((ocell = oline[i]) && cell[0] !== ocell[0] || cell[1] !== ocell[1]) { neq = true }
+            if ((ocell = oline[i]) && cell[0] !== ocell[0] || cell.ch !== ocell.ch) { neq = true }
           }
           if (clr && neq) {
             lx = -1, ly = -1
             if (data !== attr) { out += this.codeAttr(data), attr = data }
             out += this.tput.cup(y, x), out += this.tput.el()
-            for (let i = x, ocell; (i < line.length) && (ocell = oline[i]); i++) { ocell[0] = data, ocell[1] = ' ' }
+            for (let i = x, ocell; (i < line.length) && (ocell = oline[i]); i++) { ocell[0] = data, ocell.ch = ' ' }
             break
           }
           // If there's more than 10 spaces, use EL regardless
@@ -807,7 +799,7 @@ export class Screen extends Node {
           // rest of the line is already drawn.
           // if (!neq) {
           //   for (; xx < line.length; xx++) {
-          //     if (line[xx][0] !== o[xx][0] || line[xx][1] !== o[xx][1]) {
+          //     if (line[xx][0] !== o[xx][0] || line[xx].ch !== o[xx].ch) {
           //       neq = true;
           //       break;
           //     }
@@ -821,7 +813,7 @@ export class Screen extends Node {
         // Optimize by comparing the real output
         // buffer to the pending output buffer.
         ocell = oline[x]
-        if (data === ocell[0] && ch === ocell[1]) {
+        if (data === ocell[0] && ch === ocell.ch) {
           if (lx === -1) { lx = x, ly = y }
           continue
         }
@@ -831,7 +823,7 @@ export class Screen extends Node {
           lx = -1, ly = -1
         }
         ocell[0] = data
-        ocell[1] = ch
+        ocell.ch = ch
         if (data !== attr) {
           if (attr !== this.dattr) { out += CSI + SGR }
           if (data !== this.dattr) {
@@ -871,25 +863,25 @@ export class Screen extends Node {
         if (this.fullUnicode) {
           // If this is a surrogate pair double-width char, we can ignore it
           // because parseContent already counted it as length=2.
-          if (unicode.charWidth(line[x][1]) === 2) {
+          if (unicode.charWidth(line[x].ch) === 2) {
             // NOTE: At cols=44, the bug that is avoided
             // by the angles check occurs in widget-unicode:
             // Might also need: `line[x + 1][0] !== line[x][0]`
             // for borderless boxes?
-            if (x === line.length - 1 || angles[line[x + 1][1]]) {
+            if (x === line.length - 1 || angles[line[x + 1].ch]) {
               // If we're at the end, we don't have enough space for a
               // double-width. Overwrite it with a space and ignore.
               ch = ' '
-              ocell[1] = '\0'
+              ocell.ch = '\0'
             }
             else {
               // ALWAYS refresh double-width chars because this special cursor
               // behavior is needed. There may be a more efficient way of doing
               // this. See above.
-              ocell[1] = '\0'
+              ocell.ch = '\0'
               // Eat the next character by moving forward and marking as a
               // space (which it is).
-              oline[++x][1] = '\0'
+              oline[++x].ch = '\0'
             }
           }
         }
@@ -1193,8 +1185,8 @@ export class Screen extends Node {
       if (!(line = lines[yi])) break
       for (let i = xi, cell; i < xl; i++) {
         if (!(cell = line[i])) break
-        if (override || attr !== cell[0] || ch !== cell[1]) {
-          cell[0] = attr, cell[1] = ch, line.dirty = true
+        if (override || attr !== cell[0] || ch !== cell.ch) {
+          cell[0] = attr, cell.ch = ch, line.dirty = true
         }
       }
     }
@@ -1501,7 +1493,7 @@ export class Screen extends Node {
         if (!line[x]) break
 
         data = line[x][0]
-        ch = line[x][1]
+        ch = line[x].ch
         if (data !== attr) {
           if (attr !== this.dattr) {
             out += CSI + SGR
@@ -1516,7 +1508,7 @@ export class Screen extends Node {
           }
         }
         if (this.fullUnicode) {
-          if (unicode.charWidth(line[x][1]) === 2) {
+          if (unicode.charWidth(line[x].ch) === 2) {
             if (x === xl - 1) { ch = ' ' }
             else { x++ }
           }

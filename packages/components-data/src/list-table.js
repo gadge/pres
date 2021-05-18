@@ -180,10 +180,10 @@ export class ListTable extends List {
           // top
           rx++
           lines[yi + ry][xi + rx][0] = battr
-          lines[yi + ry][xi + rx][1] = '\u252c' // '┬'
+          lines[yi + ry][xi + rx].ch = '\u252c' // '┬'
           // XXX If we alter iheight and itop for no borders - nothing should be written here
           if (!border.top) {
-            lines[yi + ry][xi + rx][1] = '\u2502' // '│'
+            lines[yi + ry][xi + rx].ch = '\u2502' // '│'
           }
           lines[yi + ry].dirty = true
         }
@@ -191,10 +191,10 @@ export class ListTable extends List {
           // bottom
           rx++
           lines[yi + ry][xi + rx][0] = battr
-          lines[yi + ry][xi + rx][1] = '\u2534' // '┴'
+          lines[yi + ry][xi + rx].ch = '\u2534' // '┴'
           // XXX If we alter iheight and ibottom for no borders - nothing should be written here
           if (!border.bottom) {
-            lines[yi + ry][xi + rx][1] = '\u2502' // '│'
+            lines[yi + ry][xi + rx].ch = '\u2502' // '│'
           }
           lines[yi + ry].dirty = true
         }
@@ -221,7 +221,7 @@ export class ListTable extends List {
           rx++
           lines[yi + ry][xi + rx][0] = battr
         }
-        lines[yi + ry][xi + rx][1] = '\u2502' // '│'
+        lines[yi + ry][xi + rx].ch = '\u2502' // '│'
         lines[yi + ry].dirty = true
       })
     }

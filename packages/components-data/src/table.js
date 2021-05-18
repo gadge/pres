@@ -173,20 +173,20 @@ export class Table extends Box {
           if (ry === 0) {
             // top
             lines[yi + ry][xi + 0][0] = battr
-            // lines[yi + ry][xi + 0][1] = '\u250c'; // '┌'
+            // lines[yi + ry][xi + 0].ch = '\u250c'; // '┌'
           }
           else if (ry / 2 === self.rows.length) {
             // bottom
             lines[yi + ry][xi + 0][0] = battr
-            // lines[yi + ry][xi + 0][1] = '\u2514'; // '└'
+            // lines[yi + ry][xi + 0].ch = '\u2514'; // '└'
           }
           else {
             // middle
             lines[yi + ry][xi + 0][0] = battr
-            lines[yi + ry][xi + 0][1] = '\u251c' // '├'
+            lines[yi + ry][xi + 0].ch = '\u251c' // '├'
             // XXX If we alter iwidth and ileft for no borders - nothing should be written here
             if (!self.border.left) {
-              lines[yi + ry][xi + 0][1] = '\u2500' // '─'
+              lines[yi + ry][xi + 0].ch = '\u2500' // '─'
             }
           }
           lines[yi + ry].dirty = true
@@ -198,22 +198,22 @@ export class Table extends Box {
             // top
             rx++
             lines[yi + ry][xi + rx][0] = battr
-            // lines[yi + ry][xi + rx][1] = '\u2510'; // '┐'
+            // lines[yi + ry][xi + rx].ch = '\u2510'; // '┐'
           }
           else if (ry / 2 === self.rows.length) {
             // bottom
             rx++
             lines[yi + ry][xi + rx][0] = battr
-            // lines[yi + ry][xi + rx][1] = '\u2518'; // '┘'
+            // lines[yi + ry][xi + rx].ch = '\u2518'; // '┘'
           }
           else {
             // middle
             rx++
             lines[yi + ry][xi + rx][0] = battr
-            lines[yi + ry][xi + rx][1] = '\u2524' // '┤'
+            lines[yi + ry][xi + rx].ch = '\u2524' // '┤'
             // XXX If we alter iwidth and iright for no borders - nothing should be written here
             if (!self.border.right) {
-              lines[yi + ry][xi + rx][1] = '\u2500' // '─'
+              lines[yi + ry][xi + rx].ch = '\u2500' // '─'
             }
           }
           lines[yi + ry].dirty = true
@@ -225,20 +225,20 @@ export class Table extends Box {
           // top
           rx++
           lines[yi + ry][xi + rx][0] = battr
-          lines[yi + ry][xi + rx][1] = '\u252c' // '┬'
+          lines[yi + ry][xi + rx].ch = '\u252c' // '┬'
           // XXX If we alter iheight and itop for no borders - nothing should be written here
           if (!self.border.top) {
-            lines[yi + ry][xi + rx][1] = '\u2502' // '│'
+            lines[yi + ry][xi + rx].ch = '\u2502' // '│'
           }
         }
         else if (ry / 2 === self.rows.length) {
           // bottom
           rx++
           lines[yi + ry][xi + rx][0] = battr
-          lines[yi + ry][xi + rx][1] = '\u2534' // '┴'
+          lines[yi + ry][xi + rx].ch = '\u2534' // '┴'
           // XXX If we alter iheight and ibottom for no borders - nothing should be written here
           if (!self.border.bottom) {
-            lines[yi + ry][xi + rx][1] = '\u2502' // '│'
+            lines[yi + ry][xi + rx].ch = '\u2502' // '│'
           }
         }
         else {
@@ -252,7 +252,7 @@ export class Table extends Box {
             rx++
             lines[yi + ry][xi + rx][0] = battr
           }
-          lines[yi + ry][xi + rx][1] = '\u253c' // '┼'
+          lines[yi + ry][xi + rx].ch = '\u253c' // '┼'
           // rx++;
         }
         lines[yi + ry].dirty = true
@@ -276,7 +276,7 @@ export class Table extends Box {
             rx++
             lines[yi + ry][xi + rx][0] = battr
           }
-          lines[yi + ry][xi + rx][1] = '\u2502' // '│'
+          lines[yi + ry][xi + rx].ch = '\u2502' // '│'
           lines[yi + ry].dirty = true
         }
         else {
@@ -296,7 +296,7 @@ export class Table extends Box {
             else {
               lines[yi + ry][xi + rx][0] = battr
             }
-            lines[yi + ry][xi + rx][1] = '\u2500' // '─'
+            lines[yi + ry][xi + rx].ch = '\u2500' // '─'
             lines[yi + ry].dirty = true
           }
           rx++

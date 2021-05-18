@@ -99,7 +99,7 @@ export class ProgressBar extends Input {
     if (this.content) {
       const line = this.screen.lines[yi]
       for (let i = 0; i < this.content.length; i++) {
-        line[xi + i][1] = this.content[i]
+        line[xi + i].ch = this.content[i]
       }
       line.dirty = true
     }

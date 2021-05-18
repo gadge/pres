@@ -1508,13 +1508,13 @@ export class Element extends Node {
             if (!(cell = line[x])) break
             if (this.style.transparent) {
               cell[0] = colors.blend(attr, cell[0])
-              if (content[ci]) cell[1] = ch
+              if (content[ci]) cell.ch = ch
               line.dirty = true
             }
             else {
-              if (attr !== cell[0] || ch !== cell[1]) {
+              if (attr !== cell[0] || ch !== cell.ch) {
                 cell[0] = attr
-                cell[1] = ch
+                cell.ch = ch
                 line.dirty = true
               }
             }
@@ -1530,8 +1530,8 @@ export class Element extends Node {
               ch = content[ci - 1] + content[ci]
               ci++
             }
-            if (x - 1 >= xi) { line[x - 1][1] += ch }
-            else if (y - 1 >= yi) { lines[y - 1][xl - 1][1] += ch }
+            if (x - 1 >= xi) { line[x - 1].ch += ch }
+            else if (y - 1 >= yi) { lines[y - 1][xl - 1].ch += ch }
             x--
             continue
           }
@@ -1546,13 +1546,13 @@ export class Element extends Node {
         const _cell = line[x]
         if (this.style.transparent) {
           _cell[0] = colors.blend(attr, _cell[0])
-          if (content[ci]) _cell[1] = ch
+          if (content[ci]) _cell.ch = ch
           line.dirty = true
         }
         else {
-          if (attr !== cell[0] || ch !== cell[1]) {
+          if (attr !== cell[0] || ch !== cell.ch) {
             _cell[0] = attr
-            _cell[1] = ch
+            _cell.ch = ch
             line.dirty = true
           }
         }
@@ -1581,7 +1581,7 @@ export class Element extends Node {
         }
         ch = this.scrollbar.ch || ' '
         attr = this.sattr(this.style.scrollbar, this.style.scrollbar.fg || this.style.fg, this.style.scrollbar.bg || this.style.bg)
-        if (attr !== cell[0] || ch !== cell[1]) { cell[0] = attr, cell[1] = ch, lines[y].dirty = true }
+        if (attr !== cell[0] || ch !== cell.ch) { cell[0] = attr, cell.ch = ch, lines[y].dirty = true }
       }
     }
     if (this.border) xi--, xl++, yi--, yl++
@@ -1625,16 +1625,16 @@ export class Element extends Node {
         else if (this.border.type === 'bg') { ch = this.border.ch }
         if (!this.border.top && x !== xi && x !== xl - 1) {
           ch = ' '
-          if (dattr !== cell[0] || ch !== cell[1]) {
+          if (dattr !== cell[0] || ch !== cell.ch) {
             cell[0] = dattr
-            cell[1] = ch
+            cell.ch = ch
             lines[y].dirty = true
             continue
           }
         }
-        if (battr !== cell[0] || ch !== cell[1]) {
+        if (battr !== cell[0] || ch !== cell.ch) {
           cell[0] = battr
-          cell[1] = ch
+          cell.ch = ch
           line.dirty = true
         }
       }
@@ -1645,17 +1645,17 @@ export class Element extends Node {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
             if (!coords.noleft)
-              if (battr !== cell[0] || ch !== cell[1]) {
+              if (battr !== cell[0] || ch !== cell.ch) {
                 cell[0] = battr
-                cell[1] = ch
+                cell.ch = ch
                 line.dirty = true
               }
           }
           else {
             ch = ' '
-            if (dattr !== cell[0] || ch !== cell[1]) {
+            if (dattr !== cell[0] || ch !== cell.ch) {
               cell[0] = dattr
-              cell[1] = ch
+              cell.ch = ch
               line.dirty = true
             }
           }
@@ -1665,17 +1665,17 @@ export class Element extends Node {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
             if (!coords.noright)
-              if (battr !== cell[0] || ch !== cell[1]) {
+              if (battr !== cell[0] || ch !== cell.ch) {
                 cell[0] = battr
-                cell[1] = ch
+                cell.ch = ch
                 line.dirty = true
               }
           }
           else {
             ch = ' '
-            if (dattr !== cell[0] || ch !== cell[1]) {
+            if (dattr !== cell[0] || ch !== cell.ch) {
               cell[0] = dattr
-              cell[1] = ch
+              cell.ch = ch
               line.dirty = true
             }
           }
@@ -1714,16 +1714,16 @@ export class Element extends Node {
         else if (this.border.type === 'bg') { ch = this.border.ch }
         if (!this.border.bottom && x !== xi && x !== xl - 1) {
           ch = ' '
-          if (dattr !== cell[0] || ch !== cell[1]) {
+          if (dattr !== cell[0] || ch !== cell.ch) {
             cell[0] = dattr
-            cell[1] = ch
+            cell.ch = ch
             line.dirty = true
           }
           continue
         }
-        if (battr !== cell[0] || ch !== cell[1]) {
+        if (battr !== cell[0] || ch !== cell.ch) {
           cell[0] = battr
-          cell[1] = ch
+          cell.ch = ch
           line.dirty = true
         }
       }
