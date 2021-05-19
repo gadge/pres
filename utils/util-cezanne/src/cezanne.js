@@ -4,6 +4,7 @@ import { SGR }                from '@pres/enum-csi-codes'
 import * as colors            from '@pres/util-colors'
 import { FUN, NUM, STR }      from '@typen/enum-data-types'
 import { nullish }            from '@typen/nullish'
+import { Presa }              from './presa'
 
 export const NAC = 1 << 24 // 16777216 = 256 * 256 * 256
 
@@ -50,28 +51,28 @@ export function styleToPresa(style = {}, fore, back) {
  *
  * @param {string} target
  * @param {number[]} source
- * @param {number[]} normal
+ * @param {number[]} norm
  * @returns {number[]}
  */
-export function sgraToPresa(target, source, normal) {
+export function sgraToPresa(target, source, norm) {
   if (typeof source === NUM) source = morisotToPresa(source)
-  if (typeof normal === NUM) normal = morisotToPresa(normal)
+  if (typeof norm === NUM) norm = morisotToPresa(norm)
   let [ effect, fore, back ] = source
   const vec = target.slice(2, -1).split(';')
   if (!vec[0]) vec[0] = '0'
   for (let i = 0, len = vec.length, c; i < len; i++) {
     c = +vec[i] || 0
-    if (c === 0) { [ effect, fore, back ] = normal } // normal / reset
+    if (c === 0) { [ effect, fore, back ] = norm } // normal / reset
     else if (c === 1) { effect |= 1 } // bold
     else if (c === 4) { effect |= 2 } // underline
     else if (c === 5) { effect |= 4 } // blink
     else if (c === 7) { effect |= 8 } // inverse
     else if (c === 8) { effect |= 16 } // invisible / conceal / hide
-    else if (c === 22) { effect = normal[0] } // normal intensity
-    else if (c === 24) { effect = normal[0] } // not underlined
-    else if (c === 25) { effect = normal[0] } // not blink
-    else if (c === 27) { effect = normal[0] } // not inverse / reversed
-    else if (c === 28) { effect = normal[0] } // not conceal / reveal
+    else if (c === 22) { effect = norm[0] } // normal intensity
+    else if (c === 24) { effect = norm[0] } // not underlined
+    else if (c === 25) { effect = norm[0] } // not blink
+    else if (c === 27) { effect = norm[0] } // not inverse / reversed
+    else if (c === 28) { effect = norm[0] } // not conceal / reveal
     else if (c >= 30 && c <= 37) { fore = c - 30 } // color
     else if (c === 38) {
       if (+vec[i + 1] === 5) { i += 2, fore = +vec[i] }
@@ -79,7 +80,7 @@ export function sgraToPresa(target, source, normal) {
         ++i , fore = vec[++i] + SC + vec[++i] + SC + vec[++i]
       }
     }
-    else if (c === 39) { fore = normal[1] } // default fg
+    else if (c === 39) { fore = norm[1] } // default fg
     else if (c >= 40 && c <= 47) { back = c - 40 }
     else if (c === 48) {
       if (+vec[i + 1] === 5) { i += 2, back = +vec[i] }
@@ -87,12 +88,12 @@ export function sgraToPresa(target, source, normal) {
         ++i , back = vec[++i] + SC + vec[++i] + SC + vec[++i]
       }
     }
-    else if (c === 49) { back = normal[2] } // default bg
-    else if (c === 100) { fore = normal[1], back = normal[2] } // default fg/bg
+    else if (c === 49) { back = norm[2] } // default bg
+    else if (c === 100) { fore = norm[1], back = norm[2] } // default fg/bg
     else if (c >= 90 && c <= 97) { fore = c - 90, fore += 8 }
     else if (c >= 100 && c <= 107) { back = c - 100, back += 8 }
   }
-  return [ effect, fore, back ]
+  return this ? Presa.inject.call(this, effect, fore, back) : [ effect, fore, back ]
 }
 
 /**
