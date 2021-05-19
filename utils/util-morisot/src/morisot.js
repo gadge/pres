@@ -28,6 +28,13 @@ export function styleToMorisot(style = {}, fg, bg) {
   return (styleToInt.call(this, style) << 18) | (colors.convert(fg) << 9) | (colors.convert(bg))
 }
 
+export function morisotToPresa(code) {
+  const effect = (code >> 18) & 0x1ff,
+        fore   = (code >> 9) & 0x1ff,
+        back   = (code) & 0x1ff
+  return [ effect, fore, back ]
+}
+
 // attrCode
 // Convert an SGR string to our own attribute format.
 export function sgraToMorisot(target, source, normal) {

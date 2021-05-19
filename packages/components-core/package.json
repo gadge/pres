@@ -18,6 +18,7 @@
     "@ject/mixin": "^0.0.12",
     "@pres/components-node": "^0.1.20",
     "@pres/enum-control-chars": "^0.1.20",
+    "@pres/enum-angle-table": "^0.1.20",
     "@pres/enum-csi-codes": "^0.1.20",
     "@pres/enum-events": "^0.1.20",
     "@pres/events": "^0.1.20",

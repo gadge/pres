@@ -8,10 +8,41 @@ import { Presa }              from './presa'
 
 export const NAC = 1 << 24 // 16777216 = 256 * 256 * 256
 
+export const COLOR_CODES = {
+  default: NaN,
+  normal: NaN,
+  bg: NaN,
+  fg: NaN,
+  black: 0,
+  red: 1,
+  green: 2,
+  yellow: 3,
+  blue: 4,
+  magenta: 5,
+  cyan: 6,
+  white: 7,
+  grey: 8,
+  gray: 8,
+}
+
+
+export const LIGHT = /^(?:light(?:en)?|bright(?:en)?)/
+export const PUNC = /[\W_]+/g
+/**
+ *
+ * @param {string} name
+ * @return {number}
+ * // color &= 7, color += 8
+ */
+export const nameToColor = (name) => {
+  if (name[0] === '#') return hexToInt(name)
+  let color = COLOR_CODES[name = name.replace(PUNC, '')]
+  return color ?? ((color = COLOR_CODES[name.replace(LIGHT, '')]) ? color === 8 ? (color - 1) : (color + 8) : null)
+}
 export const convColor = color => {
   const t = typeof color
   color = t === NUM ? color
-    : t === STR ? hexToInt(color)
+    : t === STR ? nameToColor(name) ?? NaN
       : Array.isArray(color) ? rgbToInt(color)
         : NAC
   return color
@@ -33,18 +64,11 @@ export const styleToInt = style => {
 //   return ((styleToInt(style) << 18) | (convColor(fore) << 9) | (convColor(back)))
 // }
 
-export function morisotToPresa(code) {
-  const effect = (code >> 18) & 0x1ff,
-        fore   = (code >> 9) & 0x1ff,
-        back   = (code) & 0x1ff
-  return [ effect, fore, back ]
-}
-
 export function styleToPresa(style = {}, fore, back) {
   if (nullish(fg) && nullish(bg)) { (fore = style.fore || style.fg), (back = style.back || style.bg) }
   if (typeof fore === FUN) fore = fore(this)
   if (typeof back === FUN) back = back(this)
-  return [ styleToInt(style), fore, back ]
+  return [ styleToInt(style), convColor(fore), convColor(back) ]
 }
 
 /**

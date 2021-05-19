@@ -1,226 +1,80 @@
-OUT: >> [program.#listenInput]\n
+OUT: >> [io.setupTput]\n
 -
-OUT: >> [Node.prototype.setup] screen.0 ∈ (\xd8)\n
+OUT: >> [tput.config] [terminal] (alacritty) [termcap] (false)\n
 -
-OUT: >> [Node.prototype.setup] node.1 ∈ screen.0\n
+OUT: >> [new tput] [boo] (40) [num] (15) [str] (231) [all] (286)\n
 -
-OUT: >> [Node.constructor] imme node.1 ∈ screen.0\n
+OUT: >> [program.configIO] [terminal] alacritty [tmux] false\n
 -
-OUT: >> [Element.prototype.config] element.1\n
+OUT: >> [ProgramCollection.initialize] ^[[33m1^[[39m [ newListener,removeListener,warning,SIGWINCH,SIGTERM,SIGINT,SIGQUIT,uncaughtException,exit ]\n
 -
-OUT: >> [Scroll.prototype.config] box.1\n
+OUT: >> [program.configGrid] (34,108)\n
 -
-OUT: >> [Node.prototype.setup] node.2 ∈ screen.0\n
+OUT: >> [program.#listenInput] [ end,pause,data,keypress ]\n
 -
-OUT: >> [Node.constructor] imme node.2 ∈ screen.0\n
+OUT: >> [program.#listenOutput] [ end,resize ]\n
 -
-OUT: >> [Element.prototype.config] element.2\n
+OUT: >> [program.listen] [ newListener ]\n
 -
-OUT: >> [Node.prototype.setup] node.3 ∈ element.2\n
+OUT: >> [new program]\n
 -
-OUT: >> [Node.constructor] imme node.3 ∈ element.2\n
+OUT: >> [new node] screen.0 ∈ screen.0\n
 -
-OUT: >> [Element.prototype.config] element.3\n
+OUT: >> [new node] log.1 ∈ screen.0\n
 -
-OUT: ^[[?1049h^[[?1h^[=^[[1;39r^[[?25l^[[1;1H^[[H^[[2J^[[?1000h^[[?1002h^[[?1003h^[[?1005h^[7^[[11;1H^[[27C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[12;1H^[[12;28Hx^[[52Cx^[[13;1H^[[13;28Hx^[[52Cx^[[14;1H^[[14;28Hx^[[52Cx^[[15;1H^[[15;28Hx^[[52Cx^[[16;1H^[[16;28Hx^[[52Cx^[[17;1H^[[17;28Hx^[[52Cx^[[18;1H^[[18;28Hx^[[52Cx^[[19;1H^[[19;28Hx^[[52Cx^[[20;1H^[[20;28Hx^[[52Cx^[[21;1H^[[21;28Hx^[[52Cx^[[22;1H^[[22;28Hx^[[52Cx^[[23;1H^[[23;28Hx^[[52Cx^[[24;1H^[[24;28Hx^[[52Cx^[[25;1H^[[25;28Hx^[[52Cx^[[26;1H^[[26;28Hx^[[52Cx^[[27;1H^[[27;28Hx^[[52Cx^[[28;1H^[[28;28Hx^[[52Cx^[[29;1H^[[29;28Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8^[7^[[17;1H^[[42C^[(0lq^[[1C^[[1;31m^[(BWARNING^[[1C^[[m^[(0qqqqqqqqqqqk^[[18;1H^[[18;43Hx^[[21Cx^[[19;1H^[[19;43Hx^[[1C^[[1m^[(BTerminfo not found.^[[1C^[[m^[(0x^[[20;1H^[[20;43Hx^[[21Cx^[[21;1H^[[21;43Hmqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+OUT: >> [set scroll] log.1\n
 -
-OUT: ^[7^[[11;28r^[[13;1H^[[1L^[[1;39r^[[12;1H^[[28CHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66g48^[[m.^[[13;1H^[[13;28H^[(0x^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[21C^[(0x^[[17;1H^[[17;43Hlq^[[1C^[[1;31m^[(BWARNING^[[1C^[[m^[(0qqqqqqqqqqqk^[[18;1H^[[18;43Hx^[(B ^[[1C       ^[[1C           ^[(0x^[[19;1H^[[19;45H^[[1m^[(BTerminfo not found.^[[m^[[20;1H^[[20;45H                   ^[[21;1H^[[21;43H^[(0mqqqqqqqqqqqqqqqqqqqqqj^[[22;1H^[[22;43H^[(B                       ^[8
+OUT: >> [new node] box.2 ∈ screen.0\n
 -
-OUT: ^[7^[[17;1H^[[42C  ^[[1C       ^[[1C            ^[[18;1H^[[18;43H ^[[21C ^[[19;1H^[[19;43H ^[[1C                   ^[[1C ^[[20;1H^[[20;43H ^[[21C ^[[21;1H^[[21;43H                       ^[8
+OUT: >> [new node] box.3 ∈ box.2\n
 -
-IN: ^[[MCh<
+OUT: ^[[?1049h^[[?1h^[=^[[1;34r^[[?25l^[[1;1H^[[H^[[2J^[[?1000h^[[?1002h^[[?1003h^[[?1005h^[7^[[10;1H^[[27C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[11;1H^[[11;28Hx^[[52Cx^[[12;1H^[[12;28Hx^[[52Cx^[[13;1H^[[13;28Hx^[[52Cx^[[14;1H^[[14;28Hx^[[52Cx^[[15;1H^[[15;28Hx^[[52Cx^[[16;1H^[[16;28Hx^[[52Cx^[[17;1H^[[17;28Hx^[[52Cx^[[18;1H^[[18;28Hx^[[52Cx^[[19;1H^[[19;28Hx^[[52Cx^[[20;1H^[[20;28Hx^[[52Cx^[[21;1H^[[21;28Hx^[[52Cx^[[22;1H^[[22;28Hx^[[52Cx^[[23;1H^[[23;28Hx^[[52Cx^[[24;1H^[[24;28Hx^[[52Cx^[[25;1H^[[25;28Hx^[[52Cx^[[26;1H^[[26;28Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8^[7^[[16;1H^[[42C^[(0lq^[[1C^[[1;31m^[(BWARNING^[[1C^[[m^[(0qqqqqqqqqqqk^[[17;1H^[[17;43Hx^[[21Cx^[[18;1H^[[18;43Hx^[[1C^[[1m^[(BTerminfo not found.^[[1C^[[m^[(0x^[[19;1H^[[19;43Hx^[[21Cx^[[20;1H^[[20;43Hmqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
 -
-OUT: ^[7^[[11;28r^[[14;1H^[[1L^[[1;39r^[[11;28r^[[15;1H^[[1L^[[1;39r^[[14;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66gw1^[[m.^[[30C^[(0x^[[15;1H^[[15;28Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[21C^[(0x^[(B^[8
+OUT: >> [program.#sgr256] #0fe1ab fg to 43 fg\n
 -
-IN: ^[[MCg<
+OUT: ^[7^[[11;1H^[[28CHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkov4xd6i^[[m.^[8
 -
-IN: ^[[MCf<
+OUT: ^[7^[[16;1H^[[42C  ^[[1C       ^[[1C            ^[[17;1H^[[17;43H ^[[21C ^[[18;1H^[[18;43H ^[[1C                   ^[[1C ^[[19;1H^[[19;43H ^[[21C ^[[20;1H^[[20;43H                       ^[8
 -
-IN: ^[[MCe<
+OUT: >> [program.#sgr256] #0fe1ab fg to 43 fg\n
 -
-IN: ^[[MCd<
+OUT: ^[7^[[10;25r^[[12;1H^[[1L^[[1;34r^[[12;1H^[[27C^[(0x^[(BHello ^[[32mworld^[[m: ^[[1mkov4xdyb^[[m.                              ^[(0x^[(B^[8
 -
-IN: ^[[MCc;
+OUT: >> [program.#sgr256] #0fe1ab fg to 43 fg\n
 -
-IN: ^[[MCb;
+OUT: ^[7^[[13;1H^[[28CHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkov4xeq3^[[m.^[8
 -
-IN: ^[[MCa;
+OUT: >> [program.#sgr256] #0fe1ab fg to 43 fg\n
 -
-IN: ^[[MC`;
+OUT: ^[7^[[14;1H^[[28CHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkov4xfhw^[[m.^[[15;1H^[[15;29H{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[8
 -
-IN: ^[[MC`:
+OUT: >> [program.#sgr256] #0fe1ab fg to 43 fg\n
 -
-IN: ^[[MC_:
+OUT: ^[7^[[16;1H^[[28CHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkov4xg9p^[[m.^[8
 -
-OUT: ^[7^[[11;28r^[[16;1H^[[1L^[[1;39r^[[11;28r^[[17;1H^[[1L^[[1;39r^[[16;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66hnt^[[m.^[[30C^[(0x^[[17;1H^[[17;28Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[21C^[(0x^[(B^[8
+OUT: >> [program.#sgr256] #0fe1ab fg to 43 fg\n
 -
-OUT: ^[7^[[11;28r^[[18;1H^[[1L^[[1;39r^[[11;28r^[[19;1H^[[1L^[[1;39r^[[18;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66ifo^[[m.^[[30C^[(0x^[[19;1H^[[19;28Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[21C^[(0x^[(B^[8
+OUT: ^[7^[[17;1H^[[28CHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkov4xh1j^[[m.^[8
 -
-OUT: ^[7^[[11;28r^[[20;1H^[[1L^[[1;39r^[[20;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66j7i^[[m.^[[30C^[(0x^[(B^[8
+OUT: >> [program.#sgr256] #0fe1ab fg to 43 fg\n
 -
-OUT: ^[7^[[11;28r^[[21;1H^[[1L^[[1;39r^[[11;28r^[[22;1H^[[1L^[[1;39r^[[21;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66jzc^[[m.^[[30C^[(0x^[[22;1H^[[22;28Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[21C^[(0x^[(B^[8
+OUT: ^[7^[[18;1H^[[28CHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkov4xhtc^[[m.^[8
 -
-OUT: ^[7^[[11;28r^[[23;1H^[[1L^[[1;39r^[[23;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66kr7^[[m.^[[30C^[(0x^[(B^[8
+OUT: >> [program.#sgr256] #0fe1ab fg to 43 fg\n
 -
-OUT: ^[7^[[11;28r^[[24;1H^[[1L^[[1;39r^[[24;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66lj0^[[m.^[[30C^[(0x^[(B^[8
+OUT: ^[7^[[19;1H^[[28CHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkov4xil6^[[m.^[8
 -
-OUT: ^[7^[[11;28r^[[25;1H^[[1L^[[1;39r^[[25;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66mat^[[m.^[[30C^[(0x^[(B^[8
+OUT: >> [program.#sgr256] #0fe1ab fg to 43 fg\n
 -
-OUT: ^[7^[[11;28r^[[26;1H^[[1L^[[1;39r^[[11;28r^[[27;1H^[[1L^[[1;39r^[[26;1H^[[27C^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66n2n^[[m.^[[30C^[(0x^[[27;1H^[[27;28Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[21C^[(0x^[(B^[8
+OUT: ^[7^[[20;1H^[[28CHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkov4xjcy^[[m.^[[21;1H^[[21;29H{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[8
 -
-OUT: ^[7^[[11;28r^[[28;1H^[[1L^[[1;39r^[[12;1H^[[79C^[[7m ^[[m^[[13;1H^[[13;80H^[[43m ^[[m^[[14;1H^[[14;80H^[[43m ^[[m^[[15;1H^[[15;80H^[[43m ^[[m^[[16;1H^[[16;80H^[[43m ^[[m^[[17;1H^[[17;80H^[[43m ^[[m^[[18;1H^[[18;80H^[[43m ^[[m^[[19;1H^[[19;80H^[[43m ^[[m^[[20;1H^[[20;80H^[[43m ^[[m^[[21;1H^[[21;80H^[[43m ^[[m^[[22;1H^[[22;80H^[[43m ^[[m^[[23;1H^[[23;80H^[[43m ^[[m^[[24;1H^[[24;80H^[[43m ^[[m^[[25;1H^[[25;80H^[[43m ^[[m^[[26;1H^[[26;80H^[[43m ^[[m^[[27;1H^[[27;80H^[[43m ^[[m^[[28;1H^[[28;28H^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66nug^[[m.^[[29C^[[43m ^[[m^[(0x^[(B^[8^[7^[[12;28r^[[12;1H^[[1M^[[1;39r^[[28;1H^[[28;28H^[(0x^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[20C^[[7m ^[[m^[(0x^[(B^[8
+OUT: >> [program.#sgr256] #0fe1ab fg to 43 fg\n
 -
-OUT: ^[7^[[17;1H^[[17;80H^[[7m ^[[m^[[28;1H^[[28;80H^[[43m ^[[m^[8^[7^[[12;28r^[[12;1H^[[2M^[[1;39r^[[15;1H^[[15;80H^[[43m ^[[m^[[27;1H^[[27;28H^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66oma^[[m.^[[29C^[[43m ^[[m^[(0x^[[28;1H^[[28;28Hx^[(B{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[[20C^[[7m ^[[m^[(0x^[(B^[8
+OUT: ^[7^[[22;1H^[[28CHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkov4xk4r^[[m.^[8
 -
-IN: ^[[MC`:
+OUT: >> [program.#sgr256] #0fe1ab fg to 43 fg\n
 -
-IN: ^[[MCa:
--
-IN: ^[[MCa;
--
-IN: ^[[MCb;
--
-IN: ^[[MCc;
--
-IN: ^[[M`c;
--
-IN: ^[[M`c;
--
-IN: ^[[M`c;
--
-IN: ^[[M`c;
--
-IN: ^[[M`c;
--
-IN: ^[[M`c;
--
-IN: ^[[M`c;
--
-IN: ^[[M`c;
--
-IN: ^[[M`c;
--
-IN: ^[[M`c;
--
-IN: ^[[M`c;
--
-IN: ^[[M`c;
--
-IN: ^[[MCc:
--
-IN: ^[[M`c:
--
-IN: ^[[M`c:
--
-IN: ^[[M`c:
--
-IN: ^[[Mac:
--
-IN: ^[[Mac:
--
-IN: ^[[Mac:
--
-IN: ^[[Mac:
--
-IN: ^[[Mac:
--
-IN: ^[[Mac:
--
-IN: ^[[Mac:
--
-IN: ^[[Mac:
--
-IN: ^[[Mac:
--
-IN: ^[[Mac:
--
-IN: ^[[Mac:
--
-IN: ^[[Mac:
--
-IN: ^[[Mac:
--
-IN: ^[[Mac:
--
-IN: ^[[Mac:
--
-OUT: ^[7^[[24;1H^[[24;80H^[[7m ^[[m^[[28;1H^[[28;80H^[[43m ^[[m^[8^[7^[[12;28r^[[12;1H^[[1M^[[1;39r^[[23;1H^[[23;80H^[[43m ^[[m^[[28;1H^[[28;28H^[(0x^[(BHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkol66pe1^[[m.^[[29C^[[7m ^[[m^[(0x^[(B^[8
--
-IN: ^[[Mac:
--
-IN: ^[[Mac:
--
-IN: ^[[Mac:
--
-IN: ^[[MCb:
--
-IN: ^[[MCb9
--
-IN: ^[[M`b9
--
-IN: ^[[M`b9
--
-IN: ^[[M`b9
--
-IN: ^[[M`b9
--
-IN: ^[[M`b9
--
-IN: ^[[M`b9
--
-IN: ^[[M`b9
--
-IN: ^[[M`b9
--
-IN: ^[[M`b9
--
-IN: ^[[M`b9
--
-IN: ^[[M`b9
--
-IN: ^[[M`b9
--
-IN: ^[[M`b9
--
-IN: ^[[M`b9
--
-IN: ^[[M`b9
--
-IN: ^[[M`b9
--
-IN: ^[[M`b9
--
-IN: ^[[M`b9
--
-IN: ^[[Mab9
--
-IN: ^[[Mab9
--
-IN: ^[[Mab9
--
-IN: ^[[Mab9
--
-IN: ^[[Mab9
--
-IN: ^[[Mab9
--
-IN: ^[[Mab9
--
-IN: ^[[Mab9
--
-IN: ^[[Mab9
--
-IN: ^[[Mab9
--
-IN: ^[[Mab9
--
-IN: ^[[Mab9
--
-IN: ^[[Mab9
--
-IN: ^[[Mab9
--
-IN: ^[[Mab9
+OUT: ^[7^[[23;1H^[[28CHello^[[1C^[[32mworld^[[m:^[[1C^[[1mkov4xkwl^[[m.^[[24;1H^[[24;29H{^[[1Cfoo:^[[1C{^[[1Cbar:^[[1C{^[[1Cbaz:^[[1C^[[33mtrue^[[1C^[[m}^[[1C}^[[1C}^[8
 -
 IN: q
 -

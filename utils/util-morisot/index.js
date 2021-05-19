@@ -1,2 +1,2 @@
-export { morisotToSgra, sgraToMorisot, styleToInt, styleToMorisot } from './src/morisot'
+export { morisotToSgra, morisotToPresa, sgraToMorisot, styleToInt, styleToMorisot } from './src/morisot'
 

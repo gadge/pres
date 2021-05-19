@@ -4,21 +4,22 @@
  * https://github.com/chjj/blessed
  */
 
-import { Node }                          from '@pres/components-node'
-import { ESC, LF, TAB }                  from '@pres/enum-control-chars'
+import { Node }          from '@pres/components-node'
+import { ESC, LF, TAB }  from '@pres/enum-control-chars'
 import {
   ATTACH, CLICK, DETACH, HIDE, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, MOVE,
   NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
-}                                        from '@pres/enum-events'
-import * as colors                       from '@pres/util-colors'
-import * as helpers                      from '@pres/util-helpers'
-import { sgraToMorisot, styleToMorisot } from '@pres/util-morisot'
-import * as unicode                      from '@pres/util-unicode'
-import { FUN, NUM, STR }                 from '@typen/enum-data-types'
-import { nullish }                       from '@typen/nullish'
-import { last }                          from '@vect/vector-index'
-import assert                            from 'assert'
-import { Box }                           from './box'
+}                        from '@pres/enum-events'
+import { styleToPresa }  from '@pres/util-cezanne'
+import * as colors       from '@pres/util-colors'
+import * as helpers      from '@pres/util-helpers'
+import { sgraToMorisot } from '@pres/util-morisot'
+import * as unicode      from '@pres/util-unicode'
+import { FUN, NUM, STR } from '@typen/enum-data-types'
+import { nullish }       from '@typen/nullish'
+import { last }          from '@vect/vector-index'
+import assert            from 'assert'
+import { Box }           from './box'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 export class Element extends Node {
@@ -290,7 +291,10 @@ export class Element extends Node {
   set top(val) { return this.rtop = val }
   get bottom() { return this.rbottom }
   set bottom(val) { return this.rbottom = val }
-  sattr = styleToMorisot.bind(this)
+
+  sattr = styleToPresa.bind(this)
+  // sattr = styleToMorisot.bind(this)
+
   // sattr(style, fg, bg) {
   // let { bold, underline, blink, inverse, invisible } = style
   // if (fg == null && bg == null) { (fg = style.fg), (bg = style.bg) }

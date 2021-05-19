@@ -4,24 +4,25 @@
  * https://github.com/chjj/blessed
  */
 
-import { Node, ScreenCollection } from '@pres/components-node'
-import { CSI, LF }                from '@pres/enum-control-chars'
-import { SGR }                    from '@pres/enum-csi-codes'
+import { Node, ScreenCollection }                                      from '@pres/components-node'
+import { ANGLE_TABLE, ANGLES, ANGLES_D, ANGLES_L, ANGLES_R, ANGLES_U } from '@pres/enum-angle-table'
+import { CSI, LF }                                                     from '@pres/enum-control-chars'
+import { SGR }                                                         from '@pres/enum-csi-codes'
 import {
   BLUR, CLICK, DESTROY, ELEMENT_CLICK, ELEMENT_MOUSEOUT, ELEMENT_MOUSEOVER, ELEMENT_MOUSEUP, ERROR, EXIT, FOCUS, KEY,
   KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, NEW_LISTENER, PRERENDER, RENDER,
   RESIZE, WARNING, WHEELDOWN, WHEELUP,
-}                                 from '@pres/enum-events'
-import { Program }                from '@pres/program'
-import * as colors                from '@pres/util-colors'
-import * as helpers               from '@pres/util-helpers'
-import { morisotToSgra }          from '@pres/util-morisot'
-import * as unicode               from '@pres/util-unicode'
-import { SP }                     from '@texting/enum-chars'
-import { FUN, OBJ, STR }          from '@typen/enum-data-types'
-import cp, { spawn }              from 'child_process'
-import { Log }                    from '../src/log'
-import { Box }                    from './box'
+}                                                                      from '@pres/enum-events'
+import { Program }                                                     from '@pres/program'
+import * as colors                                                     from '@pres/util-colors'
+import * as helpers                                                    from '@pres/util-helpers'
+import { morisotToSgra }                                               from '@pres/util-morisot'
+import * as unicode                                                    from '@pres/util-unicode'
+import { SP }                                                          from '@texting/enum-chars'
+import { FUN, OBJ, STR }                                               from '@typen/enum-data-types'
+import cp, { spawn }                                                   from 'child_process'
+import { Log }                                                         from '../src/log'
+import { Box }                                                         from './box'
 
 export class Screen extends Node {
   type = 'screen'
@@ -44,7 +45,8 @@ export class Screen extends Node {
     this.ignoreLocked = options.ignoreLocked || []
     this._unicode = this.tput.unicode || this.tput.numbers.U8 === 1
     this.fullUnicode = this.options.fullUnicode && this._unicode
-    this.normAttr = ((0 << 18) | (0x1ff << 9)) | 0x1ff // TODO: pr - changed this.dattr to this.normAttr
+    // this.normAttr = ((0 << 18) | (0x1ff << 9)) | 0x1ff // TODO: pr - changed this.dattr to this.normAttr
+    this.normAttr = [ 0, null, null ]
     this.renders = 0
     this.position = {
       left: this.left = this.aleft = this.rleft = 0,
@@ -375,10 +377,7 @@ export class Screen extends Node {
   enableMouse(el) { this._listenMouse(el) }
   _listenKeys(el) {
     const self = this
-    if (el && !~this.keyable.indexOf(el)) {
-      el.keyable = true
-      this.keyable.push(el)
-    }
+    if (el && !~this.keyable.indexOf(el)) { el.keyable = true, this.keyable.push(el) }
     if (this._listenedKeys) return
     this._listenedKeys = true
     // NOTE: The event emissions used to be reversed:
@@ -390,15 +389,14 @@ export class Screen extends Node {
     // weren't changed, and handles those situations appropriately.
     this.program.on(KEYPRESS, (ch, key) => {
       if (self.lockKeys && !~self.ignoreLocked.indexOf(key.full)) { return }
-      const focused  = self.focused,
-            grabKeys = self.grabKeys
+      const { focused, grabKeys } = self
       if (!grabKeys || ~self.ignoreLocked.indexOf(key.full)) {
         self.emit(KEYPRESS, ch, key)
         self.emit(KEY + SP + key.full, ch, key)
       }
       // If something changed from the screen key handler, stop.
       if (self.grabKeys !== grabKeys || self.lockKeys) { return }
-      if (focused && focused.keyable) {
+      if (focused?.keyable) {
         focused.emit(KEYPRESS, ch, key)
         focused.emit(KEY + SP + key.full, ch, key)
       }
@@ -660,36 +658,36 @@ export class Screen extends Node {
       for (let x = 0; x < this.width; x++) {
         cell = line[x]
         ch = cell.ch
-        if (angles[ch]) {
-          cell.ch = this._getAngle(lines, x, y)
+        if (ANGLES[ch]) {
+          cell.ch = this.#getAngle(lines, x, y)
           line.dirty = true
         }
       }
     }
   }
-  _getAngle(lines, x, y) {
+  #getAngle(lines, x, y) {
     let angle = 0,
         line,
         cell,
         row,
         tar
-    if (!(line = lines[y]) || !(cell = line[x])) return angleTable[angle]
+    if (!(line = lines[y]) || !(cell = line[x])) return ANGLE_TABLE[angle]
     const attr               = cell[0],
           ch                 = cell.ch,
           ignoreDockContrast = this.options.ignoreDockContrast
-    if ((tar = line[x - 1]) && langles[tar.ch]) {
+    if ((tar = line[x - 1]) && ANGLES_L[tar.ch]) {
       if (!ignoreDockContrast && tar[0] !== attr) return ch
       angle |= 1 << 3
     }
-    if ((row = lines[y - 1]) && (tar = row[x]) && uangles[tar.ch]) {
+    if ((row = lines[y - 1]) && (tar = row[x]) && ANGLES_U[tar.ch]) {
       if (!ignoreDockContrast && tar[0] !== attr) return ch
       angle |= 1 << 2
     }
-    if ((tar = line[x + 1]) && rangles[tar.ch]) {
+    if ((tar = line[x + 1]) && ANGLES_R[tar.ch]) {
       if (!ignoreDockContrast && tar[0] !== attr) return ch
       angle |= 1 << 1
     }
-    if ((row = lines[y + 1]) && (tar = row[x]) && dangles[tar.ch]) {
+    if ((row = lines[y + 1]) && (tar = row[x]) && ANGLES_D[tar.ch]) {
       if (!ignoreDockContrast && tar[0] !== attr) return ch
       angle |= 1 << 0
     }
@@ -701,15 +699,15 @@ export class Screen extends Node {
     // +-------+  |
     // |          |
     // +----------+
-    // if (uangles[lines[y][x].ch]) {
-    //   if (lines[y + 1] && cdangles[lines[y + 1][x].ch]) {
+    // if (ANGLES_U[lines[y][x].ch]) {
+    //   if (lines[y + 1] && cdANGLES[lines[y + 1][x].ch]) {
     //     if (!this.options.ignoreDockContrast) {
     //       if (lines[y + 1][x][0] !== attr) return ch;
     //     }
     //     angle |= 1 << 0;
     //   }
     // }
-    return angleTable[angle] || ch
+    return ANGLE_TABLE[angle] || ch
   }
   draw(start, end) {
     // console.log('>> [screen.draw]', start, end)
@@ -740,7 +738,7 @@ export class Screen extends Node {
         let [ data ] = ce, { ch } = ce
         // Render the artificial cursor.
         if (curArtiRender && x === _x && y === _y) {
-          const curAttr = this._cursorAttr(this.cursor, data)
+          const curAttr = this.#cursorAttr(this.cursor, data)
           if (curAttr.ch) ch = curAttr.ch
           data = curAttr.attr
         }
@@ -768,10 +766,8 @@ export class Screen extends Node {
             }
             break
           }
-          // If there's more than 10 spaces, use EL regardless
-          // and start over drawing the rest of line. Might
-          // not be worth it. Try to use ECH if the terminal
-          // supports it. Maybe only try to use ECH here.
+          // If there's more than 10 spaces, use EL regardless and start over drawing the rest of line.
+          // Might not be worth it. Try to use ECH if the terminal supports it. Maybe only try to use ECH here.
           // //if (this.tput.strings.erase_chars)
           // if (!clr && neq && (xx - x) > 10) {
           //   lx = -1, ly = -1;
@@ -812,8 +808,7 @@ export class Screen extends Node {
           //   }
           // }
         }
-        // Optimize by comparing the real output
-        // buffer to the pending output buffer.
+        // Optimize by comparing the real output buffer to the pending output buffer.
         oc = ol[x]
         if (data === oc[0] && ch === oc.ch) {
           if (lx === -1) { lx = x, ly = y }
@@ -836,10 +831,10 @@ export class Screen extends Node {
           // because parseContent already counted it as length=2.
           if (unicode.charWidth(ln[x].ch) === 2) {
             // NOTE: At cols=44, the bug that is avoided
-            // by the angles check occurs in widget-unicode:
+            // by the ANGLES check occurs in widget-unicode:
             // Might also need: `line[x + 1][0] !== line[x][0]`
             // for borderless boxes?
-            if (x === ln.length - 1 || angles[ln[x + 1].ch]) {
+            if (x === ln.length - 1 || ANGLES[ln[x + 1].ch]) {
               // If we're at the end, we don't have enough space for a
               // double-width. Overwrite it with a space and ignore.
               ch = ' '
@@ -1382,7 +1377,7 @@ export class Screen extends Node {
     }
     return this.program.cursorReset()
   }
-  _cursorAttr(cursor, normAttr) {
+  #cursorAttr(cursor, normAttr) {
     const { shape } = cursor
     let attr = normAttr || this.normAttr,
         cattr,
@@ -1478,84 +1473,4 @@ export class Screen extends Node {
    */
   _getPos() { return this }
 }
-/**
- * Angle Table
- */
-const angles = {
-  '\u2518': true, // '┘'
-  '\u2510': true, // '┐'
-  '\u250c': true, // '┌'
-  '\u2514': true, // '└'
-  '\u253c': true, // '┼'
-  '\u251c': true, // '├'
-  '\u2524': true, // '┤'
-  '\u2534': true, // '┴'
-  '\u252c': true, // '┬'
-  '\u2502': true, // '│'
-  '\u2500': true  // '─'
-}
-const langles = {
-  '\u250c': true, // '┌'
-  '\u2514': true, // '└'
-  '\u253c': true, // '┼'
-  '\u251c': true, // '├'
-  '\u2534': true, // '┴'
-  '\u252c': true, // '┬'
-  '\u2500': true  // '─'
-}
-const uangles = {
-  '\u2510': true, // '┐'
-  '\u250c': true, // '┌'
-  '\u253c': true, // '┼'
-  '\u251c': true, // '├'
-  '\u2524': true, // '┤'
-  '\u252c': true, // '┬'
-  '\u2502': true  // '│'
-}
-const rangles = {
-  '\u2518': true, // '┘'
-  '\u2510': true, // '┐'
-  '\u253c': true, // '┼'
-  '\u2524': true, // '┤'
-  '\u2534': true, // '┴'
-  '\u252c': true, // '┬'
-  '\u2500': true  // '─'
-}
-const dangles = {
-  '\u2518': true, // '┘'
-  '\u2514': true, // '└'
-  '\u253c': true, // '┼'
-  '\u251c': true, // '├'
-  '\u2524': true, // '┤'
-  '\u2534': true, // '┴'
-  '\u2502': true  // '│'
-}
-// var cdangles = {
-//   '\u250c': true  // '┌'
-// };
 
-// Every ACS angle character can be
-// represented by 4 bits ordered like this:
-// [langle][uangle][rangle][dangle]
-const angleTable = {
-  '0000': '', // ?
-  '0001': '\u2502', // '│' // ?
-  '0010': '\u2500', // '─' // ??
-  '0011': '\u250c', // '┌'
-  '0100': '\u2502', // '│' // ?
-  '0101': '\u2502', // '│'
-  '0110': '\u2514', // '└'
-  '0111': '\u251c', // '├'
-  '1000': '\u2500', // '─' // ??
-  '1001': '\u2510', // '┐'
-  '1010': '\u2500', // '─' // ??
-  '1011': '\u252c', // '┬'
-  '1100': '\u2518', // '┘'
-  '1101': '\u2524', // '┤'
-  '1110': '\u2534', // '┴'
-  '1111': '\u253c'  // '┼'
-}
-Object.keys(angleTable).forEach(key => {
-  angleTable[parseInt(key, 2)] = angleTable[key]
-  delete angleTable[key]
-})

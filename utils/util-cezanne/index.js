@@ -1,7 +1,7 @@
 export {
+  nameToColor,
   convColor,
   styleToInt,
-  morisotToPresa,
   styleToPresa,
   sgraToPresa,
   presaToSgra,
@@ -11,3 +11,5 @@ export {
   mixColors,
   blend,
 } from './src/colors'
+
+export const NAC = 1 << 24
