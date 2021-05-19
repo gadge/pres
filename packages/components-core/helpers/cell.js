@@ -1,8 +1,14 @@
-export function assign(target, source, char) {
+export function inject(target, source, char) {
   target[0] = source[0]
   target[1] = source[1]
   target[2] = source[2]
   if (char) target.ch = char
+  return target
+}
+
+export function shallow(source) {
+  const target = source.slice()
+  target.ch = source.ch
   return target
 }
 

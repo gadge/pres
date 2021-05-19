@@ -17,6 +17,7 @@ import * as colors                from '@pres/util-colors'
 import * as helpers               from '@pres/util-helpers'
 import { morisotToSgra }          from '@pres/util-morisot'
 import * as unicode               from '@pres/util-unicode'
+import { SP }                     from '@texting/enum-chars'
 import { FUN, OBJ, STR }          from '@typen/enum-data-types'
 import cp, { spawn }              from 'child_process'
 import { Log }                    from '../src/log'
@@ -458,17 +459,23 @@ export class Screen extends Node {
     })
   }
   alloc(dirty) {
-    let x, y
     this.lines = []
-    for (y = 0; y < this.rows; y++) {
-      const line = this.lines[y] = []
-      for (x = 0; x < this.cols; x++) { line[x] = [ this.dattr, ' ' ] }
+    const h = this.rows, w = this.cols
+    for (let y = 0, line, cell; y < h; y++) {
+      line = this.lines[y] = []
+      for (let x = 0; x < w; x++) {
+        cell = line[x] = [ this.dattr ]
+        cell.ch = SP
+      }
       line.dirty = !!dirty
     }
     this.olines = []
-    for (y = 0; y < this.rows; y++) {
-      const line = this.olines[y] = []
-      for (x = 0; x < this.cols; x++) { line[x] = [ this.dattr, ' ' ] }
+    for (let y = 0, line, cell; y < h; y++) {
+      line = this.olines[y] = []
+      for (let x = 0; x < w; x++) {
+        cell = line[x] = [ this.dattr ]
+        cell.ch = SP
+      }
     }
     this.program.clear()
   }
@@ -613,32 +620,25 @@ export class Screen extends Node {
     if (pos.xl > this.width) return pos._cleanSides = true
     for (let x = pos.xi - 1, line, cell; x >= 0; x--) {
       if (!(line = this.olines[yi])) break
-      const first = line[x]
+      const alpha = line[x]
       for (let y = yi; y < yl; y++) {
         if (!(line = this.olines[y]) || !(cell = line[x])) break
-        cell = line[x]
-        if (cell[0] !== first[0] || cell.ch !== first.ch) {
-          return pos._cleanSides = false
-        }
+        if (cell[0] !== alpha[0] || cell.ch !== alpha.ch) return pos._cleanSides = false
       }
     }
     for (let x = pos.xl, line, cell; x < this.width; x++) {
       if (!(line = this.olines[yi])) break
-      const first = line[x]
+      const alpha = line[x]
       for (let y = yi; y < yl; y++) {
         if (!(line = this.olines[y]) || !(cell = line[x])) break
-        if (cell[0] !== first[0] || cell.ch !== first.ch) {
-          return pos._cleanSides = false
-        }
+        if (cell[0] !== alpha[0] || cell.ch !== alpha.ch) return pos._cleanSides = false
       }
     }
     return pos._cleanSides = true
   }
   _dockBorders() {
     const lines = this.lines
-    let stops = this._borderStops,
-        y,
-        ch
+    let stops = this._borderStops
     // var keys, stop;
     //
     // keys = Object.keys(this._borderStops)
@@ -654,7 +654,7 @@ export class Screen extends Node {
       .keys(stops)
       .map(k => +k)
       .sort((a, b) => a - b)
-    for (let i = 0, line, cell; i < stops.length; i++) {
+    for (let i = 0, y, line, cell, ch; i < stops.length; i++) {
       y = stops[i]
       if (!(line = lines[y])) continue
       for (let x = 0; x < this.width; x++) {
@@ -668,29 +668,29 @@ export class Screen extends Node {
     }
   }
   _getAngle(lines, x, y) {
-    let angle = 0
-    const attr = lines[y][x][0],
-          ch   = lines[y][x].ch
-    if (lines[y][x - 1] && langles[lines[y][x - 1].ch]) {
-      if (!this.options.ignoreDockContrast) {
-        if (lines[y][x - 1][0] !== attr) return ch
-      }
+    let angle = 0,
+        line,
+        cell,
+        row,
+        tar
+    if (!(line = lines[y]) || !(cell = line[x])) return angleTable[angle]
+    const attr               = cell[0],
+          ch                 = cell.ch,
+          ignoreDockContrast = this.options.ignoreDockContrast
+    if ((tar = line[x - 1]) && langles[tar.ch]) {
+      if (!ignoreDockContrast && tar[0] !== attr) return ch
       angle |= 1 << 3
     }
-    if (lines[y - 1] && uangles[lines[y - 1][x].ch]) {
-      if (!this.options.ignoreDockContrast) {
-        if (lines[y - 1][x][0] !== attr) return ch
-      }
+    if ((row = lines[y - 1]) && (tar = row[x]) && uangles[tar.ch]) {
+      if (!ignoreDockContrast && tar[0] !== attr) return ch
       angle |= 1 << 2
     }
-    if (lines[y][x + 1] && rangles[lines[y][x + 1].ch]) {
-      if (!this.options.ignoreDockContrast) {
-        if (lines[y][x + 1][0] !== attr) return ch
-      }
+    if ((tar = line[x + 1]) && rangles[tar.ch]) {
+      if (!ignoreDockContrast && tar[0] !== attr) return ch
       angle |= 1 << 1
     }
-    if (lines[y + 1] && dangles[lines[y + 1][x].ch]) {
-      if (!this.options.ignoreDockContrast) { if (lines[y + 1][x][0] !== attr) return ch }
+    if ((row = lines[y + 1]) && (tar = row[x]) && dangles[tar.ch]) {
+      if (!ignoreDockContrast && tar[0] !== attr) return ch
       angle |= 1 << 0
     }
     // Experimental: fixes this situation:
@@ -712,47 +712,43 @@ export class Screen extends Node {
     return angleTable[angle] || ch
   }
   draw(start, end) {
-    let out,
-        ch,
-        data,
-        attr,
-        fg, bg,
-        flags
+    // console.log('>> [screen.draw]', start, end)
+    let ch,
+        data
     let main = ''
-    let clr,
-        neq
     let lx = -1,
         ly = -1
     let acs
     if (this._buf) { main += this._buf, this._buf = '' }
     const { cursor, program, tput, options } = this
+    const curArti = cursor.artificial, curHide = cursor._hidden, curState = cursor._state
     for (let y = start; y <= end; y++) {
       let line = this.lines[y], oline = this.olines[y]
       if (!line.dirty && !(cursor.artificial && y === program.y)) continue
       line.dirty = false
 
-      out = ''
-      attr = this.dattr
+      let out = ''
+      let normAttr
+      let attr = normAttr = this.dattr
 
       for (let x = 0, cell, ocell; (x < line.length) && (cell = line[x]); x++) {
         [ data ] = cell;
         ({ ch } = cell)
         // Render the artificial cursor.
         if (cursor.artificial && !cursor._hidden && cursor._state && x === program.x && y === program.y) {
-          const cursorAttr = this._cursorAttr(this.cursor, data)
-          if (cursorAttr.ch) ch = cursorAttr.ch
-          data = cursorAttr.attr
+          const curAttr = this._cursorAttr(this.cursor, data)
+          if (curAttr.ch) ch = curAttr.ch
+          data = curAttr.attr
         }
         // Take advantage of xterm's back_color_erase feature by using a
         // lookahead. Stop spitting out so many damn spaces. NOTE: Is checking
         // the bg for non BCE terminals worth the overhead?
         if (options.useBCE &&
-          ch === ' ' &&
+          ch === SP &&
           (tput.bools.back_color_erase || (data & 0x1ff) === (this.dattr & 0x1ff)) &&
           ((data >> 18) & 8) === ((this.dattr >> 18) & 8)
         ) {
-          clr = true
-          neq = false
+          let clr = true, neq = false
           for (let i = x, cell, ocell; (i < line.length) && (cell = line[i]); i++) {
             if (cell[0] !== data || cell.ch !== ' ') {
               clr = false
@@ -764,7 +760,9 @@ export class Screen extends Node {
             lx = -1, ly = -1
             if (data !== attr) { out += morisotToSgra(data, this.tput.colors), attr = data }
             out += this.tput.cup(y, x), out += this.tput.el()
-            for (let i = x, ocell; (i < line.length) && (ocell = oline[i]); i++) { ocell[0] = data, ocell.ch = ' ' }
+            for (let i = x, ocell; (i < line.length) && (ocell = oline[i]); i++) {
+              ocell[0] = data, ocell.ch = ' '
+            }
             break
           }
           // If there's more than 10 spaces, use EL regardless
@@ -829,31 +827,31 @@ export class Screen extends Node {
           if (attr !== this.dattr) { out += CSI + SGR }
           if (data !== this.dattr) {
             out += CSI + ''
-            bg = data & 0x1ff
-            fg = (data >> 9) & 0x1ff
-            flags = data >> 18
-            if (flags & 1) { out += '1;' } // bold
-            if (flags & 2) { out += '4;' } // underline
-            if (flags & 4) { out += '5;' } // blink
-            if (flags & 8) { out += '7;' } // inverse
-            if (flags & 16) { out += '8;' } // invisible
-            if (bg !== 0x1ff) {
-              bg = this._reduceColor(bg)
-              if (bg < 16) {
-                if (bg < 8) { bg += 40 }
-                else if (bg < 16) { bg -= 8, bg += 100 }
-                out += bg + ';'
+            let back   = data & 0x1ff,
+                fore   = (data >> 9) & 0x1ff,
+                effect = (data >> 18) & 0x1ff
+            if (effect & 1) { out += '1;' } // bold
+            if (effect & 2) { out += '4;' } // underline
+            if (effect & 4) { out += '5;' } // blink
+            if (effect & 8) { out += '7;' } // inverse
+            if (effect & 16) { out += '8;' } // invisible
+            if (back !== 0x1ff) {
+              back = this._reduceColor(back)
+              if (back < 16) {
+                if (back < 8) { back += 40 }
+                else if (back < 16) { back -= 8, back += 100 }
+                out += back + ';'
               }
-              else { out += '48;5;' + bg + ';' }
+              else { out += '48;5;' + back + ';' }
             }
-            if (fg !== 0x1ff) {
-              fg = this._reduceColor(fg)
-              if (fg < 16) {
-                if (fg < 8) { fg += 30 }
-                else if (fg < 16) { fg -= 8, fg += 90 }
-                out += fg + ';'
+            if (fore !== 0x1ff) {
+              fore = this._reduceColor(fore)
+              if (fore < 16) {
+                if (fore < 8) { fore += 30 }
+                else if (fore < 16) { fore -= 8, fore += 90 }
+                out += fore + ';'
               }
-              else { out += '38;5;' + fg + ';' }
+              else { out += '38;5;' + fore + ';' }
             }
             if (out[out.length - 1] === ';') out = out.slice(0, -1)
             out += SGR
@@ -951,59 +949,59 @@ export class Screen extends Node {
   }
   _reduceColor(color) { return colors.reduce(color, this.tput.colors) }
   // Convert an SGR string to our own attribute format.
-  attrCode(code, cur, def) {
-    let effect = (cur >> 18) & 0x1ff,
-        fore   = (cur >> 9) & 0x1ff,
-        back   = (cur) & 0x1ff
-    code = code.slice(2, -1).split(';')
+  attrCode(target, source, normal) {
+    let effect = (source >> 18) & 0x1ff,
+        fore   = (source >> 9) & 0x1ff,
+        back   = (source) & 0x1ff
+    const code = target.slice(2, -1).split(';')
     if (!code[0]) code[0] = '0'
     for (let i = 0, c; i < code.length; i++) {
       c = +code[i] || 0
       switch (c) {
         case 0: // normal
-          back = def & 0x1ff
-          fore = (def >> 9) & 0x1ff
-          effect = (def >> 18) & 0x1ff
+          back = normal & 0x1ff
+          fore = (normal >> 9) & 0x1ff
+          effect = (normal >> 18) & 0x1ff
           break
         case 1: // bold
           effect |= 1
           break
         case 22:
-          effect = (def >> 18) & 0x1ff
+          effect = (normal >> 18) & 0x1ff
           break
         case 4: // underline
           effect |= 2
           break
         case 24:
-          effect = (def >> 18) & 0x1ff
+          effect = (normal >> 18) & 0x1ff
           break
         case 5: // blink
           effect |= 4
           break
         case 25:
-          effect = (def >> 18) & 0x1ff
+          effect = (normal >> 18) & 0x1ff
           break
         case 7: // inverse
           effect |= 8
           break
         case 27:
-          effect = (def >> 18) & 0x1ff
+          effect = (normal >> 18) & 0x1ff
           break
         case 8: // invisible
           effect |= 16
           break
         case 28:
-          effect = (def >> 18) & 0x1ff
+          effect = (normal >> 18) & 0x1ff
           break
         case 39: // default fg
-          fore = (def >> 9) & 0x1ff
+          fore = (normal >> 9) & 0x1ff
           break
         case 49: // default bg
-          back = def & 0x1ff
+          back = normal & 0x1ff
           break
         case 100: // default fg/bg
-          fore = (def >> 9) & 0x1ff
-          back = def & 0x1ff
+          fore = (normal >> 9) & 0x1ff
+          back = normal & 0x1ff
           break
         default: // color
           if (c === 48 && +code[i + 1] === 5) {
@@ -1014,7 +1012,7 @@ export class Screen extends Node {
           else if (c === 48 && +code[i + 1] === 2) {
             i += 2
             back = colors.match(+code[i], +code[i + 1], +code[i + 2])
-            if (back === -1) back = def & 0x1ff
+            if (back === -1) back = normal & 0x1ff
             i += 2
             break
           }
@@ -1026,7 +1024,7 @@ export class Screen extends Node {
           else if (c === 38 && +code[i + 1] === 2) {
             i += 2
             fore = colors.match(+code[i], +code[i + 1], +code[i + 2])
-            if (fore === -1) fore = (def >> 9) & 0x1ff
+            if (fore === -1) fore = (normal >> 9) & 0x1ff
             i += 2
             break
           }
@@ -1038,7 +1036,7 @@ export class Screen extends Node {
             back += 8
           }
           else if (c === 49) {
-            back = def & 0x1ff
+            back = normal & 0x1ff
           }
           else if (c >= 30 && c <= 37) {
             fore = c - 30
@@ -1048,11 +1046,11 @@ export class Screen extends Node {
             fore += 8
           }
           else if (c === 39) {
-            fore = (def >> 9) & 0x1ff
+            fore = (normal >> 9) & 0x1ff
           }
           else if (c === 100) {
-            fore = (def >> 9) & 0x1ff
-            back = def & 0x1ff
+            fore = (normal >> 9) & 0x1ff
+            back = normal & 0x1ff
           }
           break
       }
@@ -1061,38 +1059,32 @@ export class Screen extends Node {
   }
   // Convert our own attribute format to an SGR string.
   codeAttr(code) {
-    const flags = (code >> 18) & 0x1ff
-    let fg  = (code >> 9) & 0x1ff,
-        bg  = code & 0x1ff,
-        out = ''
-    if (flags & 1) { out += '1;' } // bold
-    if (flags & 2) { out += '4;' } // underline
-    if (flags & 4) { out += '5;' } // blink
-    if (flags & 8) { out += '7;' } // inverse
-    if (flags & 16) { out += '8;' } // invisible
-    if (bg !== 0x1ff) {
-      bg = this._reduceColor(bg)
-      if (bg < 16) {
-        if (bg < 8) { bg += 40 }
-        else if (bg < 16) {
-          bg -= 8
-          bg += 100
-        }
-        out += bg + ';'
+    let effect = (code >> 18) & 0x1ff,
+        fore   = (code >> 9) & 0x1ff,
+        back   = code & 0x1ff,
+        out    = ''
+    if (effect & 1) { out += '1;' } // bold
+    if (effect & 2) { out += '4;' } // underline
+    if (effect & 4) { out += '5;' } // blink
+    if (effect & 8) { out += '7;' } // inverse
+    if (effect & 16) { out += '8;' } // invisible
+    if (back !== 0x1ff) {
+      back = this._reduceColor(back)
+      if (back < 16) {
+        if (back < 8) { back += 40 }
+        else if (back < 16) { back -= 8, back += 100 }
+        out += back + ';'
       }
-      else { out += '48;5;' + bg + ';' }
+      else { out += '48;5;' + back + ';' }
     }
-    if (fg !== 0x1ff) {
-      fg = this._reduceColor(fg)
-      if (fg < 16) {
-        if (fg < 8) { fg += 30 }
-        else if (fg < 16) {
-          fg -= 8
-          fg += 90
-        }
-        out += fg + ';'
+    if (fore !== 0x1ff) {
+      fore = this._reduceColor(fore)
+      if (fore < 16) {
+        if (fore < 8) { fore += 30 }
+        else if (fore < 16) { fore -= 8, fore += 90 }
+        out += fore + ';'
       }
-      else { out += '38;5;' + fg + ';' }
+      else { out += '38;5;' + fore + ';' }
     }
     if (out[out.length - 1] === ';') out = out.slice(0, -1)
     return CSI + out + SGR
@@ -1196,7 +1188,7 @@ export class Screen extends Node {
   onceKey(...args) { return this.program.onceKey.apply(this, args) }
   unkey = this.removeKey
   removeKey(...args) { return this.program.unkey.apply(this, args) }
-  spawn (file, args, options) {
+  spawn(file, args, options) {
     if (!Array.isArray(args)) {
       options = args
       args = []
@@ -1472,50 +1464,40 @@ export class Screen extends Node {
     if (yl == null) yl = this.rows
     if (xi < 0) xi = 0
     if (yi < 0) yi = 0
-    let x,
-        y,
-        line,
-        out,
-        ch,
-        data,
-        attr
     const sdattr = this.dattr
     if (term) { this.dattr = term.defAttr }
     let main = ''
-
-    for (y = yi; y < yl; y++) {
+    for (let y = yi, line, out, attr; y < yl; y++) {
       line = term ? term.lines[y] : this.lines[y]
       if (!line) break
 
       out = ''
       attr = this.dattr
 
-      for (x = xi; x < xl; x++) {
-        if (!line[x]) break
+      for (let x = xi, cell, at, ch; x < xl; x++) {
+        if (!(cell = line[x])) break
 
-        data = line[x][0]
-        ch = line[x].ch
-        if (data !== attr) {
-          if (attr !== this.dattr) {
-            out += CSI + SGR
-          }
-          if (data !== this.dattr) {
-            let _data = data
+        at = cell[0]
+        ch = cell.ch
+        if (at !== attr) {
+          if (attr !== this.dattr) out += CSI + SGR
+          if (at !== this.dattr) {
+            let _at = at
             if (term) {
-              if (((_data >> 9) & 0x1ff) === 257) _data |= 0x1ff << 9
-              if ((_data & 0x1ff) === 256) _data |= 0x1ff
+              if (((_at >> 9) & 0x1ff) === 257) _at |= 0x1ff << 9
+              if ((_at & 0x1ff) === 256) _at |= 0x1ff
             }
-            out += morisotToSgra(_data, this.tput.colors)
+            out += morisotToSgra(_at, this.tput.colors)
           }
         }
         if (this.fullUnicode) {
-          if (unicode.charWidth(line[x].ch) === 2) {
-            if (x === xl - 1) { ch = ' ' }
+          if (unicode.charWidth(cell.ch) === 2) {
+            if (x === xl - 1) { ch = SP }
             else { x++ }
           }
         }
         out += ch
-        attr = data
+        attr = at
       }
       if (attr !== this.dattr) { out += CSI + SGR }
       if (out) { main += (y > 0 ? LF : '') + out }
