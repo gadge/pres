@@ -28,7 +28,7 @@ export class Video extends Box {
       args = [ '--vo', 'caca', '--really-quiet', options.file ]
     }
     else {
-      this.parseTags = true
+      this.tags = true
       this.setContent('{red-fg}{bold}Error:{/bold}'
         + ' mplayer or mpv not installed.{/red-fg}')
       return this

@@ -23,6 +23,7 @@ import { Box }                           from './box'
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 export class Element extends Node {
   type = 'element'
+  parseTage = false
   /**
    * Element
    */
@@ -105,7 +106,7 @@ export class Element extends Node {
     // if (options.mouse || options.clickable) {
     if (options.clickable) { this.screen._listenMouse(this) }
     if (options.input || options.keyable) { this.screen._listenKeys(this) }
-    this.parseTags = options.parseTags || options.tags
+    this.tags = options.parseTags || options.tags // TODO: pull request - changed this.parseTags to this.tags
     this.setContent(options.content || '', true)
     if (options.label) { this.setLabel(options.label) }
     if (options.hoverText) { this.setHover(options.hoverText) }
@@ -427,7 +428,7 @@ export class Element extends Node {
   }
 // Convert `{red-fg}foo{/red-fg}` to `\x1b[31mfoo\x1b[39m`.
   #parseTags(text) {
-    if (!this.parseTags) return text
+    if (!this.tags) return text
     if (!/{\/?[\w\-,;!#]*}/.test(text)) return text
     const program = this.screen.program
     let out = '',
@@ -518,21 +519,20 @@ export class Element extends Node {
   }
   _parseAttr(lines) {
     const normAttr = this.sattr(this.style),
-          attrs    = []
+          attrList = []
     if (lines[0].attr === normAttr) return void 0
     for (let j = 0, ht = lines.length, currAttr = normAttr, line; j < ht; j++) {
       line = lines[j]
-      attrs[j] = currAttr
+      attrList[j] = currAttr
       for (let i = 0, wd = line.length, ms, ph; i < wd; i++) {
-        if (line[i] === ESC) {
-          if ((ms = /^\x1b\[[\d;]*m/.exec(line.slice(i))) && (ph = ms[0])) {
-            currAttr = sgraToMorisot(ph, currAttr, normAttr)
-            i += ph.length - 1
-          }
+        if (line[i] === ESC && (ms = /^\x1b\[[\d;]*m/.exec(line.slice(i))) && (ph = ms[0])) {
+          currAttr = sgraToMorisot(ph, currAttr, normAttr)
+          i += ph.length - 1
         }
       }
     }
-    return attrs
+    // console.log('>> [element._parseAttr]', attrList)
+    return attrList
   }
   _align(line, width, align) {
     if (!align) return line
@@ -545,7 +545,7 @@ export class Element extends Node {
     if (s < 0) return line
     if (align === 'center' && (s = Array(((s / 2) | 0) + 1).join(' '))) return s + line + s
     else if (align === 'right' && (s = Array(s + 1).join(' '))) return s + line
-    else if (this.parseTags && ~line.indexOf('{|}')) {
+    else if (this.tags && ~line.indexOf('{|}')) {
       const parts = line.split('{|}')
       const cparts = cline.split('{|}')
       s = Math.max(width - cparts[0].length - cparts[1].length, 0)
@@ -555,7 +555,7 @@ export class Element extends Node {
     return line
   }
   _wrapContent(content, width) {
-    const tags = this.parseTags
+    const tags = this.tags
     let state = this.align
     const wrap = this.wrap
     let margin = 0
@@ -635,10 +635,8 @@ export class Element extends Node {
                 // Try to find a character to break on.
                 if (i !== line.length) {
                   // <XXX>
-                  // Compensate for surrogate length
-                  // counts on wrapping (experimental):
-                  // NOTE: Could optimize this by putting
-                  // it in the sup for loop.
+                  // Compensate for surrogate length counts on wrapping (experimental):
+                  // NOTE: Could optimize this by putting it in the sup for loop.
                   if (unicode.isSurrogate(line, i)) i--
                   let s = 0, n = 0
                   for (; n < i; n++) {
@@ -813,7 +811,7 @@ export class Element extends Node {
       sup: this,
       content: options.text,
       top: -this.itop,
-      tags: this.parseTags,
+      tags: this.tags,
       shrink: true,
       style: this.style.label
     })
@@ -1361,46 +1359,11 @@ export class Element extends Node {
         visible,
         i
     const bch = this.ch
-    // Clip content if it's off the edge of the screen
-    // if (xi + this.ileft < 0 || yi + this.itop < 0) {
-    //   var clines = this._clines.slice();
-    //   if (xi + this.ileft < 0) {
-    //     for (var i = 0; i < clines.length; i++) {
-    //       var t = 0;
-    //       var csi = '';
-    //       var csis = '';
-    //       for (var j = 0; j < clines[i].length; j++) {
-    //         while (clines[i][j] === ESC) {
-    //           csi = ESC;
-    //           while (clines[i][j++] !== 'm') csi += clines[i][j];
-    //           csis += csi;
-    //         }
-    //         if (++t === -(xi + this.ileft) + 1) break;
-    //       }
-    //       clines[i] = csis + clines[i].slice(j);
-    //     }
-    //   }
-    //   if (yi + this.itop < 0) {
-    //     clines = clines.slice(-(yi + this.itop));
-    //   }
-    //   content = clines.join(LF);
-    // }
     if (coords.base >= this._clines.ci.length) ci = this._pcontent.length
     this.lpos = coords
     if (this.border?.type === 'line') {
       this.screen._borderStops[coords.yi] = true
       this.screen._borderStops[coords.yl - 1] = true
-      // if (!this.screen._borderStops[coords.yi]) {
-      //   this.screen._borderStops[coords.yi] = { xi: coords.xi, xl: coords.xl };
-      // } else {
-      //   if (this.screen._borderStops[coords.yi].xi > coords.xi) {
-      //     this.screen._borderStops[coords.yi].xi = coords.xi;
-      //   }
-      //   if (this.screen._borderStops[coords.yi].xl < coords.xl) {
-      //     this.screen._borderStops[coords.yi].xl = coords.xl;
-      //   }
-      // }
-      // this.screen._borderStops[coords.yl - 1] = this.screen._borderStops[coords.yi];
     }
     normAttr = this.sattr(this.style)
     // console.log('>> [element.render] interim', normAttr)
@@ -1409,10 +1372,8 @@ export class Element extends Node {
     // see which attributes this line starts with.
     if (ci > 0) attr = this._clines.attr[Math.min(coords.base, this._clines.length - 1)]
     if (this.border) xi++, xl--, yi++, yl--
-    // If we have padding/valign, that means the
-    // content-drawing loop will skip a few cells/lines.
-    // To deal with this, we can just fill the whole thing
-    // ahead of time. This could be optimized.
+    // If we have padding/valign, that means the content-drawing loop will skip a few cells/lines.
+    // To deal with this, we can just fill the whole thing ahead of time. This could be optimized.
     if (this.tpadding || (this.valign && this.valign !== 'top')) {
       if (this.style.transparent) {
         for (let y = Math.max(yi, 0), line, cell; (y < yl); y++) {
@@ -1868,7 +1829,7 @@ export class Element extends Node {
   getLines() { return this._clines.fake.slice() }
   getScreenLines() { return this._clines.slice() }
   strWidth(text) {
-    text = this.parseTags ? helpers.stripTags(text) : text
+    text = this.tags ? helpers.stripTags(text) : text
     return this.screen.fullUnicode ? unicode.strWidth(text) : helpers.dropUnicode(text).length
   }
   screenshot(xi, xl, yi, yl) {

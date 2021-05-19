@@ -210,7 +210,7 @@ export class List extends Box {
       top: 0,
       left: 0,
       right: (this.scrollbar ? 1 : 0),
-      tags: this.parseTags,
+      tags: this.tags,
       height: 1,
       hoverEffects: this.mouse ? this.style.item.hover : null,
       focusEffects: this.mouse ? this.style.item.focus : null,
