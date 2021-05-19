@@ -713,29 +713,33 @@ export class Screen extends Node {
   }
   draw(start, end) {
     // console.log('>> [screen.draw]', start, end)
-    let ch,
-        data
     let main = ''
-    let lx = -1,
-        ly = -1
+    let lx = -1, ly = -1
     let acs
     if (this._buf) { main += this._buf, this._buf = '' }
-    const { cursor, program, tput, options } = this
-    const curArti = cursor.artificial, curHide = cursor._hidden, curState = cursor._state
+    const { cursor, program, tput, options } = this,
+          curArti                            = cursor.artificial,
+          curArtiRender                      = curArti && !cursor._hidden && cursor._state,
+          _x                                 = program.x,
+          _y                                 = program.y,
+          tBackErase                         = tput.bools.back_color_erase,
+          tParmRCur                          = tput.strings.parm_right_cursor,
+          tEnterAltCharsetMode               = tput.strings.enter_alt_charset_mode,
+          tBrokenACS                         = tput.brokenACS,
+          tColors                            = tput.colors
     for (let y = start; y <= end; y++) {
-      let line = this.lines[y], oline = this.olines[y]
-      if (!line.dirty && !(cursor.artificial && y === program.y)) continue
-      line.dirty = false
+      let ln = this.lines[y], ol = this.olines[y]
+      if (!ln.dirty && !(curArti && y === _y)) continue
+      ln.dirty = false
 
       let out = ''
       let normAttr
       let attr = normAttr = this.dattr
 
-      for (let x = 0, cell, ocell; (x < line.length) && (cell = line[x]); x++) {
-        [ data ] = cell;
-        ({ ch } = cell)
+      for (let x = 0, ce, oc; (x < ln.length) && (ce = ln[x]); x++) {
+        let [ data ] = ce, { ch } = ce
         // Render the artificial cursor.
-        if (cursor.artificial && !cursor._hidden && cursor._state && x === program.x && y === program.y) {
+        if (curArtiRender && x === _x && y === _y) {
           const curAttr = this._cursorAttr(this.cursor, data)
           if (curAttr.ch) ch = curAttr.ch
           data = curAttr.attr
@@ -743,25 +747,24 @@ export class Screen extends Node {
         // Take advantage of xterm's back_color_erase feature by using a
         // lookahead. Stop spitting out so many damn spaces. NOTE: Is checking
         // the bg for non BCE terminals worth the overhead?
-        if (options.useBCE &&
-          ch === SP &&
-          (tput.bools.back_color_erase || (data & 0x1ff) === (this.dattr & 0x1ff)) &&
-          ((data >> 18) & 8) === ((this.dattr >> 18) & 8)
+        if (options.useBCE && ch === SP &&
+          (tBackErase || (data & 0x1ff) === (normAttr & 0x1ff)) &&
+          ((data >> 18) & 8) === ((normAttr >> 18) & 8)
         ) {
           let clr = true, neq = false
-          for (let i = x, cell, ocell; (i < line.length) && (cell = line[i]); i++) {
-            if (cell[0] !== data || cell.ch !== ' ') {
+          for (let i = x, _ce, _oc; (i < ln.length) && (_ce = ln[i]); i++) {
+            if (_ce[0] !== data || _ce.ch !== SP) {
               clr = false
               break
             }
-            if ((ocell = oline[i]) && cell[0] !== ocell[0] || cell.ch !== ocell.ch) { neq = true }
+            if ((_oc = ol[i]) && _ce[0] !== _oc[0] || _ce.ch !== _oc.ch) { neq = true }
           }
           if (clr && neq) {
             lx = -1, ly = -1
-            if (data !== attr) { out += morisotToSgra(data, this.tput.colors), attr = data }
-            out += this.tput.cup(y, x), out += this.tput.el()
-            for (let i = x, ocell; (i < line.length) && (ocell = oline[i]); i++) {
-              ocell[0] = data, ocell.ch = ' '
+            if (data !== attr) { out += morisotToSgra(data, tColors), attr = data }
+            out += tput.cup(y, x), out += tput.el()
+            for (let i = x, _oc; (i < ln.length) && (_oc = ol[i]); i++) {
+              _oc[0] = data, _oc.ch = SP
             }
             break
           }
@@ -811,76 +814,45 @@ export class Screen extends Node {
         }
         // Optimize by comparing the real output
         // buffer to the pending output buffer.
-        ocell = oline[x]
-        if (data === ocell[0] && ch === ocell.ch) {
+        oc = ol[x]
+        if (data === oc[0] && ch === oc.ch) {
           if (lx === -1) { lx = x, ly = y }
           continue
         }
         else if (lx !== -1) {
-          if (this.tput.strings.parm_right_cursor) { out += y === ly ? this.tput.cuf(x - lx) : this.tput.cup(y, x) }
+          if (tParmRCur) { out += y === ly ? this.tput.cuf(x - lx) : this.tput.cup(y, x) }
           else { out += this.tput.cup(y, x) }
           lx = -1, ly = -1
         }
-        ocell[0] = data
-        ocell.ch = ch
+        oc[0] = data, oc.ch = ch
         if (data !== attr) {
-          if (attr !== this.dattr) { out += CSI + SGR }
-          if (data !== this.dattr) {
-            out += CSI + ''
-            let back   = data & 0x1ff,
-                fore   = (data >> 9) & 0x1ff,
-                effect = (data >> 18) & 0x1ff
-            if (effect & 1) { out += '1;' } // bold
-            if (effect & 2) { out += '4;' } // underline
-            if (effect & 4) { out += '5;' } // blink
-            if (effect & 8) { out += '7;' } // inverse
-            if (effect & 16) { out += '8;' } // invisible
-            if (back !== 0x1ff) {
-              back = this._reduceColor(back)
-              if (back < 16) {
-                if (back < 8) { back += 40 }
-                else if (back < 16) { back -= 8, back += 100 }
-                out += back + ';'
-              }
-              else { out += '48;5;' + back + ';' }
-            }
-            if (fore !== 0x1ff) {
-              fore = this._reduceColor(fore)
-              if (fore < 16) {
-                if (fore < 8) { fore += 30 }
-                else if (fore < 16) { fore -= 8, fore += 90 }
-                out += fore + ';'
-              }
-              else { out += '38;5;' + fore + ';' }
-            }
-            if (out[out.length - 1] === ';') out = out.slice(0, -1)
-            out += SGR
-          }
+          if (attr !== normAttr) { out += CSI + SGR }
+          if (data !== normAttr) { out += morisotToSgra(data, this.tput.colors) }
         }
         // If we find a double-width char, eat the next character which should be
         // a space due to parseContent's behavior.
         if (this.fullUnicode) {
           // If this is a surrogate pair double-width char, we can ignore it
           // because parseContent already counted it as length=2.
-          if (unicode.charWidth(line[x].ch) === 2) {
+          if (unicode.charWidth(ln[x].ch) === 2) {
             // NOTE: At cols=44, the bug that is avoided
             // by the angles check occurs in widget-unicode:
             // Might also need: `line[x + 1][0] !== line[x][0]`
             // for borderless boxes?
-            if (x === line.length - 1 || angles[line[x + 1].ch]) {
+            if (x === ln.length - 1 || angles[ln[x + 1].ch]) {
               // If we're at the end, we don't have enough space for a
               // double-width. Overwrite it with a space and ignore.
               ch = ' '
-              ocell.ch = '\0'
+              oc.ch = '\0'
             }
             else {
               // ALWAYS refresh double-width chars because this special cursor
               // behavior is needed. There may be a more efficient way of doing
               // this. See above.
-              ocell.ch = '\0'
+              oc.ch = '\0'
               // Eat the next character by moving forward and marking as a
               // space (which it is).
-              oline[++x].ch = '\0'
+              ol[++x].ch = '\0'
             }
           }
         }
@@ -897,8 +869,8 @@ export class Screen extends Node {
         // supports UTF8, but I imagine it's unlikely.
         // Maybe remove !this.tput.unicode check, however,
         // this seems to be the way ncurses does it.
-        if (this.tput.strings.enter_alt_charset_mode &&
-          !this.tput.brokenACS && (this.tput.acscr[ch] || acs)) {
+        if (tEnterAltCharsetMode &&
+          !tBrokenACS && (this.tput.acscr[ch] || acs)) {
           // Fun fact: even if this.tput.brokenACS wasn't checked here,
           // the linux console would still work fine because the acs
           // table would fail the check of: this.tput.acscr[ch]
@@ -930,20 +902,15 @@ export class Screen extends Node {
         out += ch
         attr = data
       }
-      if (attr !== this.dattr) { out += CSI + SGR }
+      if (attr !== normAttr) { out += CSI + SGR }
       if (out) { main += this.tput.cup(y, 0) + out }
     }
-    if (acs) {
-      main += this.tput.rmacs()
-      acs = false
-    }
+    if (acs) { main += this.tput.rmacs(), acs = false }
     if (main) {
-      let pre = '', post = ''
-      pre += this.tput.sc(), post += this.tput.rc()
-      if (!this.program.cursorHidden) { pre += this.tput.civis(), post += this.tput.cnorm() }
-      // this.program.flush();
-      // this.program.write(pre + main + post);
-      this.program._write(pre + main + post)
+      let l = '', r = ''
+      l += this.tput.sc(), r += this.tput.rc()
+      if (!this.program.cursorHidden) { l += this.tput.civis(), r += this.tput.cnorm() }
+      this.program._write(l + main + r) // this.program.flush(); this.program.write(pre + main + post);
     }
     // this.emit('draw');
   }

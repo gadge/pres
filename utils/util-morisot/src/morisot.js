@@ -142,38 +142,32 @@ export function sgraToMorisot(target, source, normal) {
 // codeAttr
 // Convert our own attribute format to an SGR string.
 export function morisotToSgra(code, tputColors) {
-  const flags = (code >> 18) & 0x1ff
-  let fg  = (code >> 9) & 0x1ff,
-      bg  = code & 0x1ff,
-      out = ''
-  if (flags & 1) { out += '1;' } // bold
-  if (flags & 2) { out += '4;' } // underline
-  if (flags & 4) { out += '5;' } // blink
-  if (flags & 8) { out += '7;' } // inverse
-  if (flags & 16) { out += '8;' } // invisible
-  if (bg !== 0x1ff) {
-    bg = colors.reduce(bg, tputColors)
-    if (bg < 16) {
-      if (bg < 8) { bg += 40 }
-      else if (bg < 16) {
-        bg -= 8
-        bg += 100
-      }
-      out += bg + ';'
+  let effect = (code >> 18) & 0x1ff,
+      fore   = (code >> 9) & 0x1ff,
+      back   = code & 0x1ff,
+      out    = ''
+  if (effect & 1) { out += '1;' } // bold
+  if (effect & 2) { out += '4;' } // underline
+  if (effect & 4) { out += '5;' } // blink
+  if (effect & 8) { out += '7;' } // inverse
+  if (effect & 16) { out += '8;' } // invisible
+  if (back !== 0x1ff) {
+    back = colors.reduce(back, tputColors)
+    if (back < 16) {
+      if (back < 8) { back += 40 }
+      else if (back < 16) { back -= 8, back += 100 }
+      out += back + ';'
     }
-    else { out += '48;5;' + bg + ';' }
+    else { out += '48;5;' + back + ';' }
   }
-  if (fg !== 0x1ff) {
-    fg = colors.reduce(fg, tputColors)
-    if (fg < 16) {
-      if (fg < 8) { fg += 30 }
-      else if (fg < 16) {
-        fg -= 8
-        fg += 90
-      }
-      out += fg + ';'
+  if (fore !== 0x1ff) {
+    fore = colors.reduce(fore, tputColors)
+    if (fore < 16) {
+      if (fore < 8) { fore += 30 }
+      else if (fore < 16) { fore -= 8, fore += 90 }
+      out += fore + ';'
     }
-    else { out += '38;5;' + fg + ';' }
+    else { out += '38;5;' + fore + ';' }
   }
   if (out[out.length - 1] === ';') out = out.slice(0, -1)
   return CSI + out + SGR

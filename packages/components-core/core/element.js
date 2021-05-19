@@ -313,12 +313,12 @@ export class Element extends Node {
   // }
   onScreenEvent(type, handler) {
     const listeners = this._slisteners ?? (this._slisteners = [])
-    listeners.push({ type: type, handler: handler })
+    listeners.push({ type, handler })
     this.screen.on(type, handler)
   }
   onceScreenEvent(type, handler) {
     const listeners = this._slisteners ?? (this._slisteners = [])
-    const entry = { type: type, handler: handler }
+    const entry = { type, handler }
     listeners.push(entry)
     this.screen.once(type, function () {
       const i = listeners.indexOf(entry)
@@ -517,19 +517,17 @@ export class Element extends Node {
     return out
   }
   _parseAttr(lines) {
-    const normAttr = this.sattr(this.style)
-    let attr = normAttr
-    const attrs = []
-    let line
-    if (lines[0].attr === attr) return void 0
-    for (let j = 0; j < lines.length; j++) {
+    const normAttr = this.sattr(this.style),
+          attrs    = []
+    if (lines[0].attr === normAttr) return void 0
+    for (let j = 0, ht = lines.length, currAttr = normAttr, line; j < ht; j++) {
       line = lines[j]
-      attrs[j] = attr
-      for (let i = 0,c; i < line.length; i++) {
+      attrs[j] = currAttr
+      for (let i = 0, wd = line.length, ms, ph; i < wd; i++) {
         if (line[i] === ESC) {
-          if ((c = /^\x1b\[[\d;]*m/.exec(line.slice(i)))) {
-            attr = sgraToMorisot(c[0], attr, normAttr)
-            i += c[0].length - 1
+          if ((ms = /^\x1b\[[\d;]*m/.exec(line.slice(i))) && (ph = ms[0])) {
+            currAttr = sgraToMorisot(ph, currAttr, normAttr)
+            i += ph.length - 1
           }
         }
       }

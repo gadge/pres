@@ -2,11 +2,11 @@ import { mixColors }                from '@pres/util-cezanne/src/colors'
 import { RGB_COLORS, SPARSE_NAMES } from '@pres/util-colors/src/manet'
 
 const NAC = 0x1ff
-export function blend(mori_, _mori, alpha) {
+export function blend(x, y, alpha) {
   let name
-  let back_ = mori_ & NAC
-  if (_mori != null) { // if right provided: mixColors
-    let _back = _mori & NAC
+  let back_ = x & NAC
+  if (y != null) { // if right provided: mixColors
+    let _back = y & NAC
     if (back_ === NAC) back_ = 0 // if left is NAC: left is noir
     if (_back === NAC) _back = 0 // if right is NAC: right is noir
     back_ = mixColors(back_, _back, alpha) // mix
@@ -25,11 +25,11 @@ export function blend(mori_, _mori, alpha) {
         }
     }
   }
-  mori_ &= ~NAC // simply adjust mori_ value
-  mori_ |= back_ // assign new backColor to mori_
-  let fore_ = (mori_ >> 9) & NAC
-  if (_mori != null) {
-    let _fore = (_mori >> 9) & NAC // 0, 7, 188, 231, 251
+  x &= ~NAC // simply adjust mori_ value
+  x |= back_ // assign new backColor to mori_
+  let fore_ = (x >> 9) & NAC
+  if (y != null) {
+    let _fore = (y >> 9) & NAC // 0, 7, 188, 231, 251
     if (fore_ === NAC) { fore_ = 248 } // if left is NAC: left is grey
     else {
       if (fore_ === NAC) fore_ = 7 // if left is NAC: left is grey
@@ -49,7 +49,7 @@ export function blend(mori_, _mori, alpha) {
         }
       }
   }
-  mori_ &= ~(NAC << 9) // simply adjust mori_ value
-  mori_ |= fore_ << 9 // assign new foreColor to mori_
-  return mori_
+  x &= ~(NAC << 9) // simply adjust mori_ value
+  x |= fore_ << 9 // assign new foreColor to mori_
+  return x
 }

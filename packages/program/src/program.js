@@ -1339,7 +1339,7 @@ export class Program extends IO {
   #sgr256(arg, grain) {
     const temp = arg
     if (arg[0] === '#') arg = arg.replace(/#(?:[0-9a-f]{3}){1,2}/i, colors.match)
-    console.log('program.#sgr256', temp, 'to', arg)
+    console.log('>> [program.#sgr256]', temp, 'to', arg)
     let ms, c, scope
     if ((ms = /^(-?\d+) (fg|bg)$/.exec(arg)) && ([ , c, scope ] = ms)) {
       if (!grain || (c = +c) === -1) { return this.#sgr(`default ${scope}`) }
