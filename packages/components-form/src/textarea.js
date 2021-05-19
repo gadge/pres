@@ -53,7 +53,7 @@ export class Textarea extends Input {
     if (this.screen.focused !== this) return
     const lpos = get ? this.lpos : this._getCoords()
     if (!lpos) return
-    let last = this._clines[this._clines.length - 1]
+    let last = this.clines[this.clines.length - 1]
     const program = this.screen.program
     let line,
         cx,
@@ -63,10 +63,10 @@ export class Textarea extends Input {
     // _typeScroll `+ '\n'` thing.
     // Maybe not necessary anymore?
     if (last === '' && this.value[this.value.length - 1] !== '\n') {
-      last = this._clines[this._clines.length - 2] || ''
+      last = this.clines[this.clines.length - 2] || ''
     }
     line = Math.min(
-      this._clines.length - 1 - (this.childBase || 0),
+      this.clines.length - 1 - (this.childBase || 0),
       (lpos.yl - lpos.yi) - this.iheight - 1)
     // When calling clearValue() on a full textarea with a border, the first
     // argument in the above Math.min call ends up being -2. Make sure we stay
@@ -166,7 +166,7 @@ export class Textarea extends Input {
   _typeScroll() {
     // XXX Workaround
     const height = this.height - this.iheight
-    if (this._clines.length - this.childBase > height) { this.scroll(this._clines.length) }
+    if (this.clines.length - this.childBase > height) { this.scroll(this.clines.length) }
   }
   getValue() { return this.value }
   setValue(value) {

@@ -166,7 +166,7 @@ export class Scroll {
       return Math.max(current, el.rtop + el.height)
     }, 0)
     // XXX Use this? Makes .getScrollHeight() useless!
-    // if (bottom < this._clines.length) bottom = this._clines.length;
+    // if (bottom < this.clines.length) bottom = this.clines.length;
     if (this.lpos) this.lpos._scrollBottom = bottom
     return bottom
   }
@@ -219,7 +219,7 @@ export class Scroll {
     // XXX
     // max = this.getScrollHeight() - (this.height - this.iheight);
 
-    max = this._clines.length - (this.height - this.iheight)
+    max = this.clines.length - (this.height - this.iheight)
     if (max < 0) max = 0
     emax = this._scrollBottom() - (this.height - this.iheight)
     if (emax < 0) emax = 0
@@ -251,7 +251,7 @@ export class Scroll {
     if (this.detached || !this.scrollable) return 0
     // XXX
     // max = this.getScrollHeight() - (this.height - this.iheight);
-    max = this._clines.length - (this.height - this.iheight)
+    max = this.clines.length - (this.height - this.iheight)
     if (max < 0) max = 0
     emax = this._scrollBottom() - (this.height - this.iheight)
     if (emax < 0) emax = 0
@@ -265,7 +265,7 @@ export class Scroll {
     return this.emit(SCROLL)
   }
   getScrollHeight() {
-    return Math.max(this._clines.length, this._scrollBottom())
+    return Math.max(this.clines.length, this._scrollBottom())
   }
   getScrollPerc(s) {
     const pos = this.lpos || this._getCoords()
@@ -287,7 +287,7 @@ export class Scroll {
   setScrollPerc(i) {
     // XXX
     // var m = this.getScrollHeight();
-    const m = Math.max(this._clines.length, this._scrollBottom())
+    const m = Math.max(this.clines.length, this._scrollBottom())
     return this.scrollTo((i / 100) * m | 0)
   }
 }

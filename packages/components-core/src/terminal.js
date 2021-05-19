@@ -191,18 +191,19 @@ export class Terminal extends Box {
   }
   write(data) { return this.term.write(data) }
   render() {
+    console.log('>> [terminal.render]')
     const ret = this._render()
     if (!ret) return
-    this.dattr = this.sattr(this.style)
+    const normAttr = this.normAttr = this.sattr(this.style)
     const xi = ret.xi + this.ileft,
           xl = ret.xl - this.iright,
           yi = ret.yi + this.itop,
           yl = ret.yl - this.ibottom
     let cursor
-    const scrollback = this.term.lines.length - (yl - yi)
+    const scrollBack = this.term.lines.length - (yl - yi)
     for (let y = Math.max(yi, 0); y < yl; y++) {
       const line = this.screen.lines[y]
-      if (!line || !this.term.lines[scrollback + y - yi]) break
+      if (!line || !this.term.lines[scrollBack + y - yi]) break
       if (y === yi + this.term.y &&
         this.term.cursorState &&
         this.screen.focused === this &&
@@ -211,28 +212,28 @@ export class Terminal extends Box {
         cursor = xi + this.term.x
       }
       else { cursor = -1 }
-      for (let x = Math.max(xi, 0); x < xl; x++) {
-        if (!line[x] || !this.term.lines[scrollback + y - yi][x - xi]) break
-        line[x][0] = this.term.lines[scrollback + y - yi][x - xi][0]
+      for (let x = Math.max(xi, 0), cell; x < xl; x++) {
+        if (!(cell = line[x]) || !this.term.lines[scrollBack + y - yi][x - xi]) break
+        cell[0] = this.term.lines[scrollBack + y - yi][x - xi][0]
         if (x === cursor) {
           if (this.cursor === 'line') {
-            line[x][0] = this.dattr
-            line[x].ch = '\u2502'
+            cell[0] = normAttr
+            cell.ch = '\u2502'
             continue
           }
-          else if (this.cursor === 'underline') { line[x][0] = this.dattr | (2 << 18) }
-          else if (this.cursor === 'block' || !this.cursor) { line[x][0] = this.dattr | (8 << 18) }
+          else if (this.cursor === 'underline') { cell[0] = normAttr | (2 << 18) }
+          else if (this.cursor === 'block' || !this.cursor) { cell[0] = normAttr | (8 << 18) }
         }
-        line[x].ch = this.term.lines[scrollback + y - yi][x - xi].ch
+        cell.ch = this.term.lines[scrollBack + y - yi][x - xi].ch
         // default foreground = 257
-        if (((line[x][0] >> 9) & 0x1ff) === 257) {
-          line[x][0] &= ~(0x1ff << 9)
-          line[x][0] |= ((this.dattr >> 9) & 0x1ff) << 9
+        if (((cell[0] >> 9) & 0x1ff) === 257) {
+          cell[0] &= ~(0x1ff << 9)
+          cell[0] |= ((normAttr >> 9) & 0x1ff) << 9
         }
         // default background = 256
-        if ((line[x][0] & 0x1ff) === 256) {
-          line[x][0] &= ~0x1ff
-          line[x][0] |= this.dattr & 0x1ff
+        if ((cell[0] & 0x1ff) === 256) {
+          cell[0] &= ~0x1ff
+          cell[0] |= normAttr & 0x1ff
         }
       }
       line.dirty = true

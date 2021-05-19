@@ -41,7 +41,7 @@ export class Log extends ScrollableText {
     const text = util.format.apply(util, args)
     this.emit(_LOG, text)
     const ret = this.pushLine(text)
-    if (this._clines.fake.length > this.scrollback) this.shiftLine(0, (this.scrollback / 3) | 0)
+    if (this.clines.fake.length > this.scrollback) this.shiftLine(0, (this.scrollback / 3) | 0)
     return ret
   }
   _scroll = ScrollableBox.prototype.scroll

@@ -1,10 +1,962 @@
-15 error Error: Command failed with exit code 1: git remote update
-15 error fatal: unable to access 'https://github.com/hoyeungw/pres.git/': GnuTLS recv error (-110): The TLS connection was non-properly terminated.
-15 error error: Could not fetch origin
-15 error Fetching origin
-15 error     at makeError (/home/hazen/banyan/pres/node_modules/execa/lib/error.js:59:11)
-15 error     at Function.module.exports.sync (/home/hazen/banyan/pres/node_modules/execa/index.js:186:17)
-15 error     at Object.execSync (/home/hazen/banyan/pres/node_modules/@lerna/child-process/index.js:39:16)
-15 error     at updateRemote (/home/hazen/banyan/pres/node_modules/@lerna/version/lib/is-behind-upstream.js:34:16)
-15 error     at isBehindUpstream (/home/hazen/banyan/pres/node_modules/@lerna/version/lib/is-behind-upstream.js:16:3)
-15 error     at VersionCommand.initialize (/home/hazen/banyan/pres/node_modules/@lerna/version/index.js:153:9)
+0 silly argv {
+0 silly argv   _: [ 'publish' ],
+0 silly argv   'force-publish': true,
+0 silly argv   forcePublish: true,
+0 silly argv   composed: 'publish',
+0 silly argv   lernaVersion: '4.0.0',
+0 silly argv   '$0': 'node_modules/lerna/cli.js'
+0 silly argv }
+1 notice cli v4.0.0
+2 verbose rootPath /home/hazen/banyan/pres
+3 verbose session 554582b721fdde7e
+4 verbose user-agent lerna/4.0.0/node@v14.17.0+x64 (linux)
+5 silly argv {
+5 silly argv   _: [ 'publish' ],
+5 silly argv   'force-publish': true,
+5 silly argv   forcePublish: true,
+5 silly argv   composed: 'publish',
+5 silly argv   lernaVersion: '4.0.0'
+5 silly argv }
+6 verbose rootPath /home/hazen/banyan/pres
+7 info current version 0.1.19
+8 silly isAnythingCommitted
+9 verbose isAnythingCommitted 1
+10 silly getCurrentBranch
+11 verbose currentBranch master
+12 silly remoteBranchExists
+13 silly isBehindUpstream
+14 silly isBehindUpstream master is behind origin/master by 0 commit(s) and ahead by 6
+15 silly hasTags
+16 verbose hasTags true
+17 silly git-describe.sync "v0.1.19-6-g0baa5e1" => {"lastTagName":"v0.1.19","lastVersion":"v0.1.19","refCount":"6","sha":"0baa5e1","isDirty":false}
+18 warn force-publish all packages
+19 info Assuming all packages changed
+20 verbose updated @pres/top
+21 verbose updated @pres/components-chart
+22 verbose updated @pres/components-core
+23 verbose updated @pres/components-data
+24 verbose updated @pres/components-form
+25 verbose updated @pres/components-geo
+26 verbose updated @pres/components-inform
+27 verbose updated @pres/components-layout
+28 verbose updated @pres/components-node
+29 verbose updated @pres/components-text
+30 verbose updated @pres/components-visual
+31 verbose updated @pres/components
+32 verbose updated @pres/events
+33 verbose updated @pres/gpm-client
+34 verbose updated @pres/program
+35 verbose updated @pres/terminal-interface
+36 verbose updated @pres/terminfo-parser
+37 verbose updated @pres/enum-control-chars
+38 verbose updated @pres/enum-csi-codes
+39 verbose updated @pres/enum-events
+40 verbose updated @pres/enum-key-names
+41 verbose updated @pres/enum-terminfo-alias
+42 verbose updated @pres/util-cezanne
+43 verbose updated @pres/util-colors
+44 verbose updated @pres/util-helpers
+45 verbose updated @pres/util-morisot
+46 verbose updated @pres/util-unicode
+47 info execute Skipping releases
+48 silly lifecycle No script for "preversion" in "root", continuing
+49 silly lifecycle No script for "preversion" in "@pres/enum-control-chars", continuing
+50 silly lifecycle No script for "preversion" in "@pres/enum-csi-codes", continuing
+51 silly lifecycle No script for "preversion" in "@pres/enum-events", continuing
+52 silly lifecycle No script for "preversion" in "@pres/enum-key-names", continuing
+53 silly lifecycle No script for "preversion" in "@pres/enum-terminfo-alias", continuing
+54 silly lifecycle No script for "preversion" in "@pres/util-colors", continuing
+55 silly lifecycle No script for "version" in "@pres/util-colors", continuing
+56 silly lifecycle No script for "version" in "@pres/enum-terminfo-alias", continuing
+57 silly lifecycle No script for "version" in "@pres/enum-csi-codes", continuing
+58 silly lifecycle No script for "version" in "@pres/enum-key-names", continuing
+59 silly lifecycle No script for "version" in "@pres/enum-events", continuing
+60 silly lifecycle No script for "preversion" in "@pres/events", continuing
+61 silly lifecycle No script for "version" in "@pres/enum-control-chars", continuing
+62 silly lifecycle No script for "preversion" in "@pres/util-cezanne", continuing
+63 silly lifecycle No script for "preversion" in "@pres/util-morisot", continuing
+64 silly lifecycle No script for "version" in "@pres/events", continuing
+65 silly lifecycle No script for "preversion" in "@pres/components-node", continuing
+66 silly lifecycle No script for "version" in "@pres/util-morisot", continuing
+67 silly lifecycle No script for "version" in "@pres/util-cezanne", continuing
+68 silly lifecycle No script for "version" in "@pres/components-node", continuing
+69 silly lifecycle No script for "preversion" in "@pres/util-unicode", continuing
+70 silly lifecycle No script for "version" in "@pres/util-unicode", continuing
+71 silly lifecycle No script for "preversion" in "@pres/util-helpers", continuing
+72 silly lifecycle No script for "version" in "@pres/util-helpers", continuing
+73 silly lifecycle No script for "preversion" in "@pres/terminfo-parser", continuing
+74 silly lifecycle No script for "version" in "@pres/terminfo-parser", continuing
+75 silly lifecycle No script for "preversion" in "@pres/gpm-client", continuing
+76 silly lifecycle No script for "version" in "@pres/gpm-client", continuing
+77 silly lifecycle No script for "preversion" in "@pres/program", continuing
+78 silly lifecycle No script for "version" in "@pres/program", continuing
+79 silly lifecycle No script for "preversion" in "@pres/components-core", continuing
+80 silly lifecycle No script for "version" in "@pres/components-core", continuing
+81 silly lifecycle No script for "preversion" in "@pres/components-data", continuing
+82 silly lifecycle No script for "preversion" in "@pres/components-layout", continuing
+83 silly lifecycle No script for "preversion" in "@pres/components-visual", continuing
+84 silly lifecycle No script for "version" in "@pres/components-data", continuing
+85 silly lifecycle No script for "preversion" in "@pres/components-form", continuing
+86 silly lifecycle No script for "preversion" in "@pres/components-text", continuing
+87 silly lifecycle No script for "version" in "@pres/components-layout", continuing
+88 silly lifecycle No script for "preversion" in "@pres/components-chart", continuing
+89 silly lifecycle No script for "preversion" in "@pres/components-geo", continuing
+90 silly lifecycle No script for "version" in "@pres/components-visual", continuing
+91 silly lifecycle No script for "version" in "@pres/components-chart", continuing
+92 silly lifecycle No script for "version" in "@pres/components-geo", continuing
+93 silly lifecycle No script for "version" in "@pres/components-text", continuing
+94 silly lifecycle No script for "version" in "@pres/components-form", continuing
+95 silly lifecycle No script for "preversion" in "@pres/components-inform", continuing
+96 silly lifecycle No script for "version" in "@pres/components-inform", continuing
+97 silly lifecycle No script for "preversion" in "@pres/components", continuing
+98 silly lifecycle No script for "version" in "@pres/components", continuing
+99 silly lifecycle No script for "preversion" in "@pres/terminal-interface", continuing
+100 silly lifecycle No script for "version" in "@pres/terminal-interface", continuing
+101 silly lifecycle No script for "preversion" in "@pres/top", continuing
+102 silly lifecycle No script for "version" in "@pres/top", continuing
+103 silly lifecycle No script for "version" in "root", continuing
+104 silly gitAdd [
+104 silly gitAdd   'utils/util-colors/package.json',
+104 silly gitAdd   'utils/enum-terminfo-alias/package.json',
+104 silly gitAdd   'utils/enum-csi-codes/package.json',
+104 silly gitAdd   'utils/enum-key-names/package.json',
+104 silly gitAdd   'utils/enum-events/package.json',
+104 silly gitAdd   'utils/enum-control-chars/package.json',
+104 silly gitAdd   'packages/events/package.json',
+104 silly gitAdd   'utils/util-morisot/package.json',
+104 silly gitAdd   'utils/util-cezanne/package.json',
+104 silly gitAdd   'packages/components-node/package.json',
+104 silly gitAdd   'utils/util-unicode/package.json',
+104 silly gitAdd   'utils/util-helpers/package.json',
+104 silly gitAdd   'packages/terminfo-parser/package.json',
+104 silly gitAdd   'packages/gpm-client/package.json',
+104 silly gitAdd   'packages/program/package.json',
+104 silly gitAdd   'packages/components-core/package.json',
+104 silly gitAdd   'packages/components-data/package.json',
+104 silly gitAdd   'packages/components-layout/package.json',
+104 silly gitAdd   'packages/components-visual/package.json',
+104 silly gitAdd   'packages/components-chart/package.json',
+104 silly gitAdd   'packages/components-geo/package.json',
+104 silly gitAdd   'packages/components-text/package.json',
+104 silly gitAdd   'packages/components-form/package.json',
+104 silly gitAdd   'packages/components-inform/package.json',
+104 silly gitAdd   'packages/components/package.json',
+104 silly gitAdd   'packages/terminal-interface/package.json',
+104 silly gitAdd   'applications/top/package.json',
+104 silly gitAdd   'lerna.json'
+104 silly gitAdd ]
+105 silly gitCommit v0.1.20
+106 verbose git [ 'commit', '-m', 'v0.1.20' ]
+107 silly gitTag v0.1.20
+108 verbose git [ 'tag', 'v0.1.20', '-m', 'v0.1.20' ]
+109 silly lifecycle No script for "postversion" in "@pres/top", continuing
+110 silly lifecycle No script for "postversion" in "@pres/components-chart", continuing
+111 silly lifecycle No script for "postversion" in "@pres/components-core", continuing
+112 silly lifecycle No script for "postversion" in "@pres/components-data", continuing
+113 silly lifecycle No script for "postversion" in "@pres/components-form", continuing
+114 silly lifecycle No script for "postversion" in "@pres/components-geo", continuing
+115 silly lifecycle No script for "postversion" in "@pres/components-inform", continuing
+116 silly lifecycle No script for "postversion" in "@pres/components-layout", continuing
+117 silly lifecycle No script for "postversion" in "@pres/components-node", continuing
+118 silly lifecycle No script for "postversion" in "@pres/components-text", continuing
+119 silly lifecycle No script for "postversion" in "@pres/components-visual", continuing
+120 silly lifecycle No script for "postversion" in "@pres/components", continuing
+121 silly lifecycle No script for "postversion" in "@pres/events", continuing
+122 silly lifecycle No script for "postversion" in "@pres/gpm-client", continuing
+123 silly lifecycle No script for "postversion" in "@pres/program", continuing
+124 silly lifecycle No script for "postversion" in "@pres/terminal-interface", continuing
+125 silly lifecycle No script for "postversion" in "@pres/terminfo-parser", continuing
+126 silly lifecycle No script for "postversion" in "@pres/enum-control-chars", continuing
+127 silly lifecycle No script for "postversion" in "@pres/enum-csi-codes", continuing
+128 silly lifecycle No script for "postversion" in "@pres/enum-events", continuing
+129 silly lifecycle No script for "postversion" in "@pres/enum-key-names", continuing
+130 silly lifecycle No script for "postversion" in "@pres/enum-terminfo-alias", continuing
+131 silly lifecycle No script for "postversion" in "@pres/util-cezanne", continuing
+132 silly lifecycle No script for "postversion" in "@pres/util-colors", continuing
+133 silly lifecycle No script for "postversion" in "@pres/util-helpers", continuing
+134 silly lifecycle No script for "postversion" in "@pres/util-morisot", continuing
+135 silly lifecycle No script for "postversion" in "@pres/util-unicode", continuing
+136 silly lifecycle No script for "postversion" in "root", continuing
+137 info git Pushing tags...
+138 silly gitPush origin master
+139 info publish Publishing packages to npm...
+140 info Verifying npm credentials
+141 verbose Retrieving npm user profile
+142 http fetch GET 200 https://registry.npmjs.org/-/npm/v1/user 1531ms
+143 silly npm profile get received {"tfa":false,"name":"hoyeung","email":"hoyeungw@outlook.com","email_verified":true,"created":"2019-02-14T08:31:40.801Z","updated":"2020-10-20T10:49:31.417Z","cidr_whitelist":null,"fullname":"Hoyeung Wong","twitter":"wonghoyeung","github":"hoyeungw"}
+144 silly get npm username received {"username":"hoyeung","tfa":false,"name":"hoyeung","email":"hoyeungw@outlook.com","email_verified":true,"created":"2019-02-14T08:31:40.801Z","updated":"2020-10-20T10:49:31.417Z","cidr_whitelist":null,"fullname":"Hoyeung Wong","twitter":"wonghoyeung","github":"hoyeungw"}
+145 silly verifyNpmPackageAccess
+146 http fetch GET 200 https://registry.npmjs.org/-/org/hoyeung/package?format=cli 527ms
+147 info Checking two-factor auth mode
+148 verbose Retrieving npm user profile
+149 http fetch GET 200 https://registry.npmjs.org/-/npm/v1/user 369ms
+150 silly npm profile get received {"tfa":false,"name":"hoyeung","email":"hoyeungw@outlook.com","email_verified":true,"created":"2019-02-14T08:31:40.801Z","updated":"2020-10-20T10:49:31.417Z","cidr_whitelist":null,"fullname":"Hoyeung Wong","twitter":"wonghoyeung","github":"hoyeungw"}
+151 silly 2FA false
+152 silly getCurrentSHA
+153 verbose getCurrentSHA cd08e08c747c79718f67108b82bd666cff637740
+154 silly lifecycle No script for "prepublish" in "root", continuing
+155 silly lifecycle No script for "prepare" in "root", continuing
+156 silly lifecycle No script for "prepublishOnly" in "root", continuing
+157 silly lifecycle No script for "prepack" in "root", continuing
+158 verbose pack-directory utils/enum-control-chars
+159 verbose pack-directory utils/enum-csi-codes
+160 verbose pack-directory utils/enum-events
+161 verbose pack-directory utils/enum-key-names
+162 verbose pack-directory utils/enum-terminfo-alias
+163 verbose pack-directory utils/util-colors
+164 silly lifecycle No script for "prepublish" in "@pres/enum-control-chars", continuing
+165 silly lifecycle No script for "prepublish" in "@pres/enum-csi-codes", continuing
+166 silly lifecycle No script for "prepublish" in "@pres/enum-events", continuing
+167 silly lifecycle No script for "prepublish" in "@pres/enum-key-names", continuing
+168 silly lifecycle No script for "prepublish" in "@pres/enum-terminfo-alias", continuing
+169 silly lifecycle No script for "prepublish" in "@pres/util-colors", continuing
+170 silly lifecycle No script for "prepare" in "@pres/enum-control-chars", continuing
+171 silly lifecycle No script for "prepare" in "@pres/enum-csi-codes", continuing
+172 silly lifecycle No script for "prepare" in "@pres/enum-events", continuing
+173 silly lifecycle No script for "prepare" in "@pres/enum-key-names", continuing
+174 silly lifecycle No script for "prepare" in "@pres/enum-terminfo-alias", continuing
+175 silly lifecycle No script for "prepare" in "@pres/util-colors", continuing
+176 silly lifecycle No script for "prepublishOnly" in "@pres/enum-csi-codes", continuing
+177 silly lifecycle No script for "prepublishOnly" in "@pres/enum-terminfo-alias", continuing
+178 silly lifecycle No script for "prepublishOnly" in "@pres/enum-key-names", continuing
+179 silly lifecycle No script for "prepublishOnly" in "@pres/util-colors", continuing
+180 silly lifecycle No script for "prepublishOnly" in "@pres/enum-events", continuing
+181 silly lifecycle No script for "prepublishOnly" in "@pres/enum-control-chars", continuing
+182 silly lifecycle No script for "prepack" in "@pres/enum-csi-codes", continuing
+183 silly lifecycle No script for "prepack" in "@pres/enum-key-names", continuing
+184 silly lifecycle No script for "prepack" in "@pres/enum-terminfo-alias", continuing
+185 silly lifecycle No script for "prepack" in "@pres/util-colors", continuing
+186 silly lifecycle No script for "prepack" in "@pres/enum-events", continuing
+187 silly lifecycle No script for "prepack" in "@pres/enum-control-chars", continuing
+188 silly lifecycle No script for "postpack" in "@pres/enum-key-names", continuing
+189 verbose packed utils/enum-key-names
+190 silly lifecycle No script for "postpack" in "@pres/enum-events", continuing
+191 verbose packed utils/enum-events
+192 silly lifecycle No script for "postpack" in "@pres/enum-terminfo-alias", continuing
+193 verbose packed utils/enum-terminfo-alias
+194 silly lifecycle No script for "postpack" in "@pres/enum-csi-codes", continuing
+195 verbose packed utils/enum-csi-codes
+196 silly lifecycle No script for "postpack" in "@pres/enum-control-chars", continuing
+197 verbose packed utils/enum-control-chars
+198 silly lifecycle No script for "postpack" in "@pres/util-colors", continuing
+199 verbose packed utils/util-colors
+200 verbose pack-directory packages/events
+201 silly lifecycle No script for "prepublish" in "@pres/events", continuing
+202 silly lifecycle No script for "prepare" in "@pres/events", continuing
+203 verbose pack-directory utils/util-cezanne
+204 verbose pack-directory utils/util-morisot
+205 silly lifecycle No script for "prepublish" in "@pres/util-cezanne", continuing
+206 silly lifecycle No script for "prepublish" in "@pres/util-morisot", continuing
+207 silly lifecycle No script for "prepare" in "@pres/util-cezanne", continuing
+208 silly lifecycle No script for "prepare" in "@pres/util-morisot", continuing
+209 silly lifecycle No script for "prepublishOnly" in "@pres/events", continuing
+210 silly lifecycle No script for "prepublishOnly" in "@pres/util-cezanne", continuing
+211 silly lifecycle No script for "prepublishOnly" in "@pres/util-morisot", continuing
+212 silly lifecycle No script for "prepack" in "@pres/events", continuing
+213 silly lifecycle No script for "prepack" in "@pres/util-cezanne", continuing
+214 silly lifecycle No script for "prepack" in "@pres/util-morisot", continuing
+215 silly lifecycle No script for "postpack" in "@pres/events", continuing
+216 verbose packed packages/events
+217 verbose pack-directory packages/components-node
+218 silly lifecycle No script for "prepublish" in "@pres/components-node", continuing
+219 silly lifecycle No script for "prepare" in "@pres/components-node", continuing
+220 silly lifecycle No script for "postpack" in "@pres/util-cezanne", continuing
+221 verbose packed utils/util-cezanne
+222 silly lifecycle No script for "postpack" in "@pres/util-morisot", continuing
+223 verbose packed utils/util-morisot
+224 silly lifecycle No script for "prepublishOnly" in "@pres/components-node", continuing
+225 silly lifecycle No script for "prepack" in "@pres/components-node", continuing
+226 silly lifecycle No script for "postpack" in "@pres/components-node", continuing
+227 verbose packed packages/components-node
+228 verbose pack-directory utils/util-unicode
+229 silly lifecycle No script for "prepublish" in "@pres/util-unicode", continuing
+230 silly lifecycle No script for "prepare" in "@pres/util-unicode", continuing
+231 silly lifecycle No script for "prepublishOnly" in "@pres/util-unicode", continuing
+232 silly lifecycle No script for "prepack" in "@pres/util-unicode", continuing
+233 silly lifecycle No script for "postpack" in "@pres/util-unicode", continuing
+234 verbose packed utils/util-unicode
+235 verbose pack-directory utils/util-helpers
+236 silly lifecycle No script for "prepublish" in "@pres/util-helpers", continuing
+237 silly lifecycle No script for "prepare" in "@pres/util-helpers", continuing
+238 silly lifecycle No script for "prepublishOnly" in "@pres/util-helpers", continuing
+239 silly lifecycle No script for "prepack" in "@pres/util-helpers", continuing
+240 silly lifecycle No script for "postpack" in "@pres/util-helpers", continuing
+241 verbose packed utils/util-helpers
+242 verbose pack-directory packages/terminfo-parser
+243 silly lifecycle No script for "prepublish" in "@pres/terminfo-parser", continuing
+244 silly lifecycle No script for "prepare" in "@pres/terminfo-parser", continuing
+245 silly lifecycle No script for "prepublishOnly" in "@pres/terminfo-parser", continuing
+246 silly lifecycle No script for "prepack" in "@pres/terminfo-parser", continuing
+247 silly lifecycle No script for "postpack" in "@pres/terminfo-parser", continuing
+248 verbose packed packages/terminfo-parser
+249 verbose pack-directory packages/gpm-client
+250 silly lifecycle No script for "prepublish" in "@pres/gpm-client", continuing
+251 silly lifecycle No script for "prepare" in "@pres/gpm-client", continuing
+252 silly lifecycle No script for "prepublishOnly" in "@pres/gpm-client", continuing
+253 silly lifecycle No script for "prepack" in "@pres/gpm-client", continuing
+254 silly lifecycle No script for "postpack" in "@pres/gpm-client", continuing
+255 verbose packed packages/gpm-client
+256 verbose pack-directory packages/program
+257 silly lifecycle No script for "prepublish" in "@pres/program", continuing
+258 silly lifecycle No script for "prepare" in "@pres/program", continuing
+259 silly lifecycle No script for "prepublishOnly" in "@pres/program", continuing
+260 silly lifecycle No script for "prepack" in "@pres/program", continuing
+261 silly lifecycle No script for "postpack" in "@pres/program", continuing
+262 verbose packed packages/program
+263 verbose pack-directory packages/components-core
+264 silly lifecycle No script for "prepublish" in "@pres/components-core", continuing
+265 silly lifecycle No script for "prepare" in "@pres/components-core", continuing
+266 silly lifecycle No script for "prepublishOnly" in "@pres/components-core", continuing
+267 silly lifecycle No script for "prepack" in "@pres/components-core", continuing
+268 silly lifecycle No script for "postpack" in "@pres/components-core", continuing
+269 verbose packed packages/components-core
+270 verbose pack-directory packages/components-data
+271 verbose pack-directory packages/components-layout
+272 verbose pack-directory packages/components-visual
+273 silly lifecycle No script for "prepublish" in "@pres/components-data", continuing
+274 silly lifecycle No script for "prepublish" in "@pres/components-layout", continuing
+275 silly lifecycle No script for "prepublish" in "@pres/components-visual", continuing
+276 silly lifecycle No script for "prepare" in "@pres/components-data", continuing
+277 silly lifecycle No script for "prepare" in "@pres/components-layout", continuing
+278 silly lifecycle No script for "prepare" in "@pres/components-visual", continuing
+279 silly lifecycle No script for "prepublishOnly" in "@pres/components-data", continuing
+280 silly lifecycle No script for "prepublishOnly" in "@pres/components-visual", continuing
+281 silly lifecycle No script for "prepublishOnly" in "@pres/components-layout", continuing
+282 silly lifecycle No script for "prepack" in "@pres/components-visual", continuing
+283 silly lifecycle No script for "prepack" in "@pres/components-data", continuing
+284 silly lifecycle No script for "prepack" in "@pres/components-layout", continuing
+285 silly lifecycle No script for "postpack" in "@pres/components-data", continuing
+286 verbose packed packages/components-data
+287 silly lifecycle No script for "postpack" in "@pres/components-layout", continuing
+288 verbose packed packages/components-layout
+289 verbose pack-directory packages/components-form
+290 verbose pack-directory packages/components-text
+291 silly lifecycle No script for "prepublish" in "@pres/components-form", continuing
+292 silly lifecycle No script for "prepublish" in "@pres/components-text", continuing
+293 silly lifecycle No script for "prepare" in "@pres/components-form", continuing
+294 silly lifecycle No script for "prepare" in "@pres/components-text", continuing
+295 verbose pack-directory packages/components-chart
+296 verbose pack-directory packages/components-geo
+297 silly lifecycle No script for "prepublish" in "@pres/components-chart", continuing
+298 silly lifecycle No script for "prepublish" in "@pres/components-geo", continuing
+299 silly lifecycle No script for "prepare" in "@pres/components-chart", continuing
+300 silly lifecycle No script for "prepare" in "@pres/components-geo", continuing
+301 silly lifecycle No script for "prepublishOnly" in "@pres/components-text", continuing
+302 silly lifecycle No script for "prepublishOnly" in "@pres/components-form", continuing
+303 silly lifecycle No script for "prepublishOnly" in "@pres/components-chart", continuing
+304 silly lifecycle No script for "prepublishOnly" in "@pres/components-geo", continuing
+305 silly lifecycle No script for "postpack" in "@pres/components-visual", continuing
+306 verbose packed packages/components-visual
+307 silly lifecycle No script for "prepack" in "@pres/components-text", continuing
+308 silly lifecycle No script for "prepack" in "@pres/components-form", continuing
+309 silly lifecycle No script for "prepack" in "@pres/components-geo", continuing
+310 silly lifecycle No script for "prepack" in "@pres/components-chart", continuing
+311 silly lifecycle No script for "postpack" in "@pres/components-text", continuing
+312 verbose packed packages/components-text
+313 silly lifecycle No script for "postpack" in "@pres/components-chart", continuing
+314 verbose packed packages/components-chart
+315 silly lifecycle No script for "postpack" in "@pres/components-form", continuing
+316 verbose packed packages/components-form
+317 silly lifecycle No script for "postpack" in "@pres/components-geo", continuing
+318 verbose packed packages/components-geo
+319 verbose pack-directory packages/components-inform
+320 silly lifecycle No script for "prepublish" in "@pres/components-inform", continuing
+321 silly lifecycle No script for "prepare" in "@pres/components-inform", continuing
+322 silly lifecycle No script for "prepublishOnly" in "@pres/components-inform", continuing
+323 silly lifecycle No script for "prepack" in "@pres/components-inform", continuing
+324 silly lifecycle No script for "postpack" in "@pres/components-inform", continuing
+325 verbose packed packages/components-inform
+326 verbose pack-directory packages/components
+327 silly lifecycle No script for "prepublish" in "@pres/components", continuing
+328 silly lifecycle No script for "prepare" in "@pres/components", continuing
+329 silly lifecycle No script for "prepublishOnly" in "@pres/components", continuing
+330 silly lifecycle No script for "prepack" in "@pres/components", continuing
+331 silly lifecycle No script for "postpack" in "@pres/components", continuing
+332 verbose packed packages/components
+333 verbose pack-directory packages/terminal-interface
+334 silly lifecycle No script for "prepublish" in "@pres/terminal-interface", continuing
+335 silly lifecycle No script for "prepare" in "@pres/terminal-interface", continuing
+336 silly lifecycle No script for "prepublishOnly" in "@pres/terminal-interface", continuing
+337 silly lifecycle No script for "prepack" in "@pres/terminal-interface", continuing
+338 silly lifecycle No script for "postpack" in "@pres/terminal-interface", continuing
+339 verbose packed packages/terminal-interface
+340 verbose pack-directory applications/top
+341 silly lifecycle No script for "prepublish" in "@pres/top", continuing
+342 silly lifecycle No script for "prepare" in "@pres/top", continuing
+343 silly lifecycle No script for "prepublishOnly" in "@pres/top", continuing
+344 silly lifecycle No script for "prepack" in "@pres/top", continuing
+345 silly lifecycle No script for "postpack" in "@pres/top", continuing
+346 verbose packed applications/top
+347 silly lifecycle No script for "postpack" in "root", continuing
+348 verbose publish @pres/enum-control-chars
+349 verbose publish @pres/enum-csi-codes
+350 verbose publish @pres/enum-events
+351 verbose publish @pres/enum-key-names
+352 verbose publish @pres/enum-terminfo-alias
+353 verbose publish @pres/util-colors
+354 http fetch PUT 200 https://registry.npmjs.org/@pres%2fenum-key-names 3950ms
+355 silly lifecycle No script for "publish" in "@pres/enum-key-names", continuing
+356 silly lifecycle No script for "postpublish" in "@pres/enum-key-names", continuing
+357 success published @pres/enum-key-names 0.1.20
+358 notice
+359 notice 📦  @pres/enum-key-names@0.1.20
+360 notice === Tarball Contents ===
+361 notice 1.1kB LICENSE
+361 notice 1.5kB dist/index.cjs.js
+361 notice 1.0kB dist/index.esm.js
+361 notice 863B  package.json
+361 notice 1.6kB README.md
+362 notice === Tarball Details ===
+363 notice name:          @pres/enum-key-names
+363 notice version:       0.1.20
+363 notice filename:      pres-enum-key-names-0.1.20.tgz
+363 notice package size:  2.2 kB
+363 notice unpacked size: 6.0 kB
+363 notice shasum:        f93b0c729601f96cc4ceb930a1a02efcd36cdb79
+363 notice integrity:     sha512-6v/cVfXiHSut+[...]4Dyaw5IrIfSQQ==
+363 notice total files:   5
+364 notice
+365 http fetch PUT 200 https://registry.npmjs.org/@pres%2fenum-control-chars 4236ms
+366 silly lifecycle No script for "publish" in "@pres/enum-control-chars", continuing
+367 silly lifecycle No script for "postpublish" in "@pres/enum-control-chars", continuing
+368 success published @pres/enum-control-chars 0.1.20
+369 notice
+370 notice 📦  @pres/enum-control-chars@0.1.20
+371 notice === Tarball Contents ===
+372 notice 1.1kB LICENSE
+372 notice 6.9kB dist/index.cjs.js
+372 notice 6.0kB dist/index.esm.js
+372 notice 873B  package.json
+372 notice 1.6kB README.md
+373 notice === Tarball Details ===
+374 notice name:          @pres/enum-control-chars
+374 notice version:       0.1.20
+374 notice filename:      pres-enum-control-chars-0.1.20.tgz
+374 notice package size:  3.7 kB
+374 notice unpacked size: 16.4 kB
+374 notice shasum:        eae001adce5c5334cd31a9e3711247b8bd2ee527
+374 notice integrity:     sha512-Nm42BsmT013+6[...]4T/7fDIyJsJrw==
+374 notice total files:   5
+375 notice
+376 http fetch PUT 200 https://registry.npmjs.org/@pres%2fenum-events 4377ms
+377 silly lifecycle No script for "publish" in "@pres/enum-events", continuing
+378 silly lifecycle No script for "postpublish" in "@pres/enum-events", continuing
+379 success published @pres/enum-events 0.1.20
+380 notice
+381 notice 📦  @pres/enum-events@0.1.20
+382 notice === Tarball Contents ===
+383 notice 1.1kB LICENSE
+383 notice 6.4kB dist/index.cjs.js
+383 notice 4.9kB dist/index.esm.js
+383 notice 860B  package.json
+383 notice 1.6kB README.md
+384 notice === Tarball Details ===
+385 notice name:          @pres/enum-events
+385 notice version:       0.1.20
+385 notice filename:      pres-enum-events-0.1.20.tgz
+385 notice package size:  3.4 kB
+385 notice unpacked size: 14.8 kB
+385 notice shasum:        967beb2a136bad4d015324bdebf4d069bb57cb68
+385 notice integrity:     sha512-+UtkxubUhsl2p[...]ssMHbVjCsTPig==
+385 notice total files:   5
+386 notice
+387 verbose publish @pres/events
+388 http fetch PUT 200 https://registry.npmjs.org/@pres%2futil-colors 6053ms
+389 silly lifecycle No script for "publish" in "@pres/util-colors", continuing
+390 silly lifecycle No script for "postpublish" in "@pres/util-colors", continuing
+391 success published @pres/util-colors 0.1.20
+392 notice
+393 notice 📦  @pres/util-colors@0.1.20
+394 notice === Tarball Contents ===
+395 notice 1.1kB LICENSE
+395 notice 9.3kB dist/index.cjs.js
+395 notice 8.9kB dist/index.esm.js
+395 notice 966B  package.json
+395 notice 1.6kB README.md
+396 notice === Tarball Details ===
+397 notice name:          @pres/util-colors
+397 notice version:       0.1.20
+397 notice filename:      pres-util-colors-0.1.20.tgz
+397 notice package size:  5.3 kB
+397 notice unpacked size: 21.8 kB
+397 notice shasum:        42a781bcf219d07f437ac8359f54c13bbc1ac3ee
+397 notice integrity:     sha512-12WAGdJPH/3fl[...]D4QnbfgUEATPA==
+397 notice total files:   5
+398 notice
+399 http fetch PUT 200 https://registry.npmjs.org/@pres%2fenum-terminfo-alias 6937ms
+400 silly lifecycle No script for "publish" in "@pres/enum-terminfo-alias", continuing
+401 silly lifecycle No script for "postpublish" in "@pres/enum-terminfo-alias", continuing
+402 success published @pres/enum-terminfo-alias 0.1.20
+403 notice
+404 notice 📦  @pres/enum-terminfo-alias@0.1.20
+405 notice === Tarball Contents ===
+406 notice 1.1kB  LICENSE
+406 notice 30.5kB dist/index.cjs.js
+406 notice 30.3kB dist/index.esm.js
+406 notice 867B   package.json
+406 notice 1.6kB  README.md
+407 notice === Tarball Details ===
+408 notice name:          @pres/enum-terminfo-alias
+408 notice version:       0.1.20
+408 notice filename:      pres-enum-terminfo-alias-0.1.20.tgz
+408 notice package size:  11.6 kB
+408 notice unpacked size: 64.3 kB
+408 notice shasum:        6d4a7e6fbf76f314c7f8ee9917064586d24ea5aa
+408 notice integrity:     sha512-pYjw1tLSSM5Kc[...]0RD9QjmEytJFg==
+408 notice total files:   5
+409 notice
+410 http fetch PUT 200 https://registry.npmjs.org/@pres%2fenum-csi-codes 8328ms
+411 silly lifecycle No script for "publish" in "@pres/enum-csi-codes", continuing
+412 silly lifecycle No script for "postpublish" in "@pres/enum-csi-codes", continuing
+413 success published @pres/enum-csi-codes 0.1.20
+414 notice
+415 notice 📦  @pres/enum-csi-codes@0.1.20
+416 notice === Tarball Contents ===
+417 notice 1.1kB  LICENSE
+417 notice 53.7kB dist/index.cjs.js
+417 notice 50.5kB dist/index.esm.js
+417 notice 866B   package.json
+417 notice 1.6kB  README.md
+418 notice === Tarball Details ===
+419 notice name:          @pres/enum-csi-codes
+419 notice version:       0.1.20
+419 notice filename:      pres-enum-csi-codes-0.1.20.tgz
+419 notice package size:  8.3 kB
+419 notice unpacked size: 107.7 kB
+419 notice shasum:        bd1fddea30406eb786f160d513343fa464137e4f
+419 notice integrity:     sha512-RQBZJHzl4Tww/[...]AXEHdySTDVTrw==
+419 notice total files:   5
+420 notice
+421 verbose publish @pres/util-cezanne
+422 verbose publish @pres/util-morisot
+423 http fetch PUT 200 https://registry.npmjs.org/@pres%2fevents 4385ms
+424 silly lifecycle No script for "publish" in "@pres/events", continuing
+425 silly lifecycle No script for "postpublish" in "@pres/events", continuing
+426 success published @pres/events 0.1.20
+427 notice
+428 notice 📦  @pres/events@0.1.20
+429 notice === Tarball Contents ===
+430 notice 1.1kB  LICENSE
+430 notice 17.5kB dist/index.cjs.js
+430 notice 17.2kB dist/index.esm.js
+430 notice 1.0kB  package.json
+430 notice 1.6kB  README.md
+431 notice === Tarball Details ===
+432 notice name:          @pres/events
+432 notice version:       0.1.20
+432 notice filename:      pres-events-0.1.20.tgz
+432 notice package size:  6.3 kB
+432 notice unpacked size: 38.3 kB
+432 notice shasum:        3537afd1facc409f4e2753ac732f76ced8e16033
+432 notice integrity:     sha512-pWtrF3r+Lf8at[...]dOo7VeYMCrvuw==
+432 notice total files:   5
+433 notice
+434 verbose publish @pres/components-node
+435 http fetch PUT 200 https://registry.npmjs.org/@pres%2fcomponents-node 4713ms
+436 silly lifecycle No script for "publish" in "@pres/components-node", continuing
+437 silly lifecycle No script for "postpublish" in "@pres/components-node", continuing
+438 success published @pres/components-node 0.1.20
+439 notice
+440 notice 📦  @pres/components-node@0.1.20
+441 notice === Tarball Contents ===
+442 notice 1.1kB LICENSE
+442 notice 9.1kB dist/index.cjs.js
+442 notice 8.9kB dist/index.esm.js
+442 notice 1.1kB package.json
+442 notice 1.6kB README.md
+443 notice === Tarball Details ===
+444 notice name:          @pres/components-node
+444 notice version:       0.1.20
+444 notice filename:      pres-components-node-0.1.20.tgz
+444 notice package size:  4.6 kB
+444 notice unpacked size: 21.7 kB
+444 notice shasum:        0c015be4b6e9eaa580bf450b9852bf4946aaa803
+444 notice integrity:     sha512-ytoYZzErOwDlo[...]GqK5/qmacXbiw==
+444 notice total files:   5
+445 notice
+446 verbose publish @pres/util-unicode
+447 http fetch PUT 200 https://registry.npmjs.org/@pres%2futil-morisot 5818ms
+448 silly lifecycle No script for "publish" in "@pres/util-morisot", continuing
+449 silly lifecycle No script for "postpublish" in "@pres/util-morisot", continuing
+450 success published @pres/util-morisot 0.1.20
+451 notice
+452 notice 📦  @pres/util-morisot@0.1.20
+453 notice === Tarball Contents ===
+454 notice 1.1kB LICENSE
+454 notice 6.1kB dist/index.cjs.js
+454 notice 5.2kB dist/index.esm.js
+454 notice 1.1kB package.json
+454 notice 1.6kB README.md
+455 notice === Tarball Details ===
+456 notice name:          @pres/util-morisot
+456 notice version:       0.1.20
+456 notice filename:      pres-util-morisot-0.1.20.tgz
+456 notice package size:  3.5 kB
+456 notice unpacked size: 15.0 kB
+456 notice shasum:        2feb4d847306bfdd15a18f52a749f743869aabe3
+456 notice integrity:     sha512-PJLTHMConoYjS[...]BKWsXwmpYqLaw==
+456 notice total files:   5
+457 notice
+458 http fetch PUT 200 https://registry.npmjs.org/@pres%2futil-cezanne 5840ms
+459 silly lifecycle No script for "publish" in "@pres/util-cezanne", continuing
+460 silly lifecycle No script for "postpublish" in "@pres/util-cezanne", continuing
+461 success published @pres/util-cezanne 0.1.20
+462 notice
+463 notice 📦  @pres/util-cezanne@0.1.20
+464 notice === Tarball Contents ===
+465 notice 1.1kB  LICENSE
+465 notice 13.2kB dist/index.cjs.js
+465 notice 12.3kB dist/index.esm.js
+465 notice 1.1kB  package.json
+465 notice 1.6kB  README.md
+466 notice === Tarball Details ===
+467 notice name:          @pres/util-cezanne
+467 notice version:       0.1.20
+467 notice filename:      pres-util-cezanne-0.1.20.tgz
+467 notice package size:  5.2 kB
+467 notice unpacked size: 29.3 kB
+467 notice shasum:        c4f18e4769c84316d9a39a8f6ccfbf8c53421590
+467 notice integrity:     sha512-fuE1PHMk02H7f[...]SBjCMgMIQokeQ==
+467 notice total files:   5
+468 notice
+469 http fetch PUT 200 https://registry.npmjs.org/@pres%2futil-unicode 3659ms
+470 silly lifecycle No script for "publish" in "@pres/util-unicode", continuing
+471 silly lifecycle No script for "postpublish" in "@pres/util-unicode", continuing
+472 success published @pres/util-unicode 0.1.20
+473 notice
+474 notice 📦  @pres/util-unicode@0.1.20
+475 notice === Tarball Contents ===
+476 notice 1.1kB  LICENSE
+476 notice 20.7kB dist/index.cjs.js
+476 notice 20.4kB dist/index.esm.js
+476 notice 930B   package.json
+476 notice 1.6kB  README.md
+477 notice === Tarball Details ===
+478 notice name:          @pres/util-unicode
+478 notice version:       0.1.20
+478 notice filename:      pres-util-unicode-0.1.20.tgz
+478 notice package size:  8.0 kB
+478 notice unpacked size: 44.7 kB
+478 notice shasum:        c9a3c41485cdebc57a2bc38bad36cd8bd96644f7
+478 notice integrity:     sha512-WkKlXkzsJZQRD[...]NBUOHPIDeN+oA==
+478 notice total files:   5
+479 notice
+480 verbose publish @pres/util-helpers
+481 http fetch PUT 200 https://registry.npmjs.org/@pres%2futil-helpers 6478ms
+482 silly lifecycle No script for "publish" in "@pres/util-helpers", continuing
+483 silly lifecycle No script for "postpublish" in "@pres/util-helpers", continuing
+484 success published @pres/util-helpers 0.1.20
+485 notice
+486 notice 📦  @pres/util-helpers@0.1.20
+487 notice === Tarball Contents ===
+488 notice 1.1kB LICENSE
+488 notice 6.7kB dist/index.cjs.js
+488 notice 5.3kB dist/index.esm.js
+488 notice 1.1kB package.json
+488 notice 1.6kB README.md
+489 notice === Tarball Details ===
+490 notice name:          @pres/util-helpers
+490 notice version:       0.1.20
+490 notice filename:      pres-util-helpers-0.1.20.tgz
+490 notice package size:  4.4 kB
+490 notice unpacked size: 15.7 kB
+490 notice shasum:        7926c85e25ea61483de1647a62e61b79d3e494c0
+490 notice integrity:     sha512-T8MtyDXwZ9MmO[...]tFuNhfW7z2hAw==
+490 notice total files:   5
+491 notice
+492 verbose publish @pres/terminfo-parser
+493 http fetch PUT 200 https://registry.npmjs.org/@pres%2fterminfo-parser 4069ms
+494 silly lifecycle No script for "publish" in "@pres/terminfo-parser", continuing
+495 silly lifecycle No script for "postpublish" in "@pres/terminfo-parser", continuing
+496 success published @pres/terminfo-parser 0.1.20
+497 notice
+498 notice 📦  @pres/terminfo-parser@0.1.20
+499 notice === Tarball Contents ===
+500 notice 1.1kB  LICENSE
+500 notice 1.8kB  usr/linux
+500 notice 1.5kB  usr/windows-ansi
+500 notice 3.3kB  usr/xterm
+500 notice 3.4kB  usr/xterm-256color
+500 notice 67.3kB dist/index.cjs.js
+500 notice 65.9kB dist/index.esm.js
+500 notice 1.1kB  package.json
+500 notice 1.6kB  README.md
+500 notice 10.3kB usr/xterm.termcap
+500 notice 43.3kB usr/xterm.terminfo
+501 notice === Tarball Details ===
+502 notice name:          @pres/terminfo-parser
+502 notice version:       0.1.20
+502 notice filename:      pres-terminfo-parser-0.1.20.tgz
+502 notice package size:  59.2 kB
+502 notice unpacked size: 200.7 kB
+502 notice shasum:        be97c732367528860a5650062d0ae676250c79f3
+502 notice integrity:     sha512-m4oIMLFTVH8MR[...]yZzT6KCWX2VyQ==
+502 notice total files:   11
+503 notice
+504 verbose publish @pres/gpm-client
+505 http fetch PUT 200 https://registry.npmjs.org/@pres%2fgpm-client 3250ms
+506 silly lifecycle No script for "publish" in "@pres/gpm-client", continuing
+507 silly lifecycle No script for "postpublish" in "@pres/gpm-client", continuing
+508 success published @pres/gpm-client 0.1.20
+509 notice
+510 notice 📦  @pres/gpm-client@0.1.20
+511 notice === Tarball Contents ===
+512 notice 1.1kB LICENSE
+512 notice 6.3kB dist/index.cjs.js
+512 notice 5.8kB dist/index.esm.js
+512 notice 1.4kB package.json
+512 notice 1.6kB README.md
+513 notice === Tarball Details ===
+514 notice name:          @pres/gpm-client
+514 notice version:       0.1.20
+514 notice filename:      pres-gpm-client-0.1.20.tgz
+514 notice package size:  4.1 kB
+514 notice unpacked size: 16.2 kB
+514 notice shasum:        bffb068679650ea973e7a93ecc0847c2b380539f
+514 notice integrity:     sha512-lfKBozpjBImAG[...]foauC4e++vTbQ==
+514 notice total files:   5
+515 notice
+516 verbose publish @pres/program
+517 http fetch PUT 200 https://registry.npmjs.org/@pres%2fprogram 3867ms
+518 silly lifecycle No script for "publish" in "@pres/program", continuing
+519 silly lifecycle No script for "postpublish" in "@pres/program", continuing
+520 success published @pres/program 0.1.20
+521 notice
+522 notice 📦  @pres/program@0.1.20
+523 notice === Tarball Contents ===
+524 notice 1.1kB  LICENSE
+524 notice 92.0kB dist/index.cjs.js
+524 notice 83.6kB dist/index.esm.js
+524 notice 1.4kB  package.json
+524 notice 1.6kB  README.md
+525 notice === Tarball Details ===
+526 notice name:          @pres/program
+526 notice version:       0.1.20
+526 notice filename:      pres-program-0.1.20.tgz
+526 notice package size:  42.1 kB
+526 notice unpacked size: 179.7 kB
+526 notice shasum:        a09ccba31ffe8a4788d18678c072cc938f768896
+526 notice integrity:     sha512-vcRELR8RCpQXZ[...]q9onSzO6VhLkw==
+526 notice total files:   5
+527 notice
+528 verbose publish @pres/components-core
+529 http fetch PUT 200 https://registry.npmjs.org/@pres%2fcomponents-core 4754ms
+530 silly lifecycle No script for "publish" in "@pres/components-core", continuing
+531 silly lifecycle No script for "postpublish" in "@pres/components-core", continuing
+532 success published @pres/components-core 0.1.20
+533 notice
+534 notice 📦  @pres/components-core@0.1.20
+535 notice === Tarball Contents ===
+536 notice 1.1kB   LICENSE
+536 notice 166.2kB dist/index.cjs.js
+536 notice 162.1kB dist/index.esm.js
+536 notice 1.5kB   package.json
+536 notice 1.6kB   README.md
+537 notice === Tarball Details ===
+538 notice name:          @pres/components-core
+538 notice version:       0.1.20
+538 notice filename:      pres-components-core-0.1.20.tgz
+538 notice package size:  75.9 kB
+538 notice unpacked size: 332.4 kB
+538 notice shasum:        b4e8896c4b30708c4b13aa4e0ec54c3f24e68a39
+538 notice integrity:     sha512-d8RIHBFC/94NA[...]H/1gW/TGnQ0Aw==
+538 notice total files:   5
+539 notice
+540 verbose publish @pres/components-data
+541 verbose publish @pres/components-layout
+542 verbose publish @pres/components-visual
+543 http fetch PUT 200 https://registry.npmjs.org/@pres%2fcomponents-layout 3308ms
+544 silly lifecycle No script for "publish" in "@pres/components-layout", continuing
+545 silly lifecycle No script for "postpublish" in "@pres/components-layout", continuing
+546 success published @pres/components-layout 0.1.20
+547 notice
+548 notice 📦  @pres/components-layout@0.1.20
+549 notice === Tarball Contents ===
+550 notice 1.1kB LICENSE
+550 notice 4.8kB dist/index.cjs.js
+550 notice 4.5kB dist/index.esm.js
+550 notice 1.1kB package.json
+550 notice 1.6kB README.md
+551 notice === Tarball Details ===
+552 notice name:          @pres/components-layout
+552 notice version:       0.1.20
+552 notice filename:      pres-components-layout-0.1.20.tgz
+552 notice package size:  3.4 kB
+552 notice unpacked size: 13.0 kB
+552 notice shasum:        e98c8b87b62d11d4f4373231dabafcf064ce0f68
+552 notice integrity:     sha512-szhvNdhGQQ0CB[...]8HjcU0c5jvgmg==
+552 notice total files:   5
+553 notice
+554 verbose publish @pres/components-chart
+555 verbose publish @pres/components-geo
+556 http fetch PUT 200 https://registry.npmjs.org/@pres%2fcomponents-data 4289ms
+557 silly lifecycle No script for "publish" in "@pres/components-data", continuing
+558 silly lifecycle No script for "postpublish" in "@pres/components-data", continuing
+559 success published @pres/components-data 0.1.20
+560 notice
+561 notice 📦  @pres/components-data@0.1.20
+562 notice === Tarball Contents ===
+563 notice 1.1kB  LICENSE
+563 notice 49.5kB dist/index.cjs.js
+563 notice 47.5kB dist/index.esm.js
+563 notice 1.1kB  package.json
+563 notice 1.6kB  README.md
+564 notice === Tarball Details ===
+565 notice name:          @pres/components-data
+565 notice version:       0.1.20
+565 notice filename:      pres-components-data-0.1.20.tgz
+565 notice package size:  21.1 kB
+565 notice unpacked size: 100.8 kB
+565 notice shasum:        965356dfe44bcbf44729a62825cc4c664f181c05
+565 notice integrity:     sha512-FvLTXNxHn2gUD[...]ZSvIQ19x40hXw==
+565 notice total files:   5
+566 notice
+567 verbose publish @pres/components-form
+568 verbose publish @pres/components-text
+569 http fetch PUT 200 https://registry.npmjs.org/@pres%2fcomponents-visual 4887ms
+570 silly lifecycle No script for "publish" in "@pres/components-visual", continuing
+571 silly lifecycle No script for "postpublish" in "@pres/components-visual", continuing
+572 success published @pres/components-visual 0.1.20
+573 notice
+574 notice 📦  @pres/components-visual@0.1.20
+575 notice === Tarball Contents ===
+576 notice 42B     fonts/AUTHORS
+576 notice 4.5kB   fonts/LICENSE
+576 notice 1.1kB   LICENSE
+576 notice 9.2kB   fonts/README
+576 notice 78.4kB  dist/index.cjs.js
+576 notice 75.8kB  dist/index.esm.js
+576 notice 1.2kB   package.json
+576 notice 319.8kB fonts/ter-u14b.json
+576 notice 319.8kB fonts/ter-u14n.json
+576 notice 1.6kB   README.md
+577 notice === Tarball Details ===
+578 notice name:          @pres/components-visual
+578 notice version:       0.1.20
+578 notice filename:      pres-components-visual-0.1.20.tgz
+578 notice package size:  82.2 kB
+578 notice unpacked size: 811.5 kB
+578 notice shasum:        703eeff91c94ba496ea35fde5d5c5628d4b53670
+578 notice integrity:     sha512-4abo+0eD7H77J[...]Eb0ICMTjUYezA==
+578 notice total files:   10
+579 notice
+580 http fetch PUT 200 https://registry.npmjs.org/@pres%2fcomponents-chart 3638ms
+581 silly lifecycle No script for "publish" in "@pres/components-chart", continuing
+582 silly lifecycle No script for "postpublish" in "@pres/components-chart", continuing
+583 success published @pres/components-chart 0.1.20
+584 notice
+585 notice 📦  @pres/components-chart@0.1.20
+586 notice === Tarball Contents ===
+587 notice 1.1kB  LICENSE
+587 notice 31.2kB dist/index.cjs.js
+587 notice 29.7kB dist/index.esm.js
+587 notice 1.2kB  package.json
+587 notice 1.6kB  README.md
+588 notice === Tarball Details ===
+589 notice name:          @pres/components-chart
+589 notice version:       0.1.20
+589 notice filename:      pres-components-chart-0.1.20.tgz
+589 notice package size:  9.6 kB
+589 notice unpacked size: 64.8 kB
+589 notice shasum:        d8349912d8bac4e8f14de12cf6422027c3eb23f1
+589 notice integrity:     sha512-0TdHvTskJclqp[...]3nKk1ev6MDrzg==
+589 notice total files:   5
+590 notice
+591 http fetch PUT 200 https://registry.npmjs.org/@pres%2fcomponents-text 3294ms
+592 silly lifecycle No script for "publish" in "@pres/components-text", continuing
+593 silly lifecycle No script for "postpublish" in "@pres/components-text", continuing
+594 success published @pres/components-text 0.1.20
+595 notice
+596 notice 📦  @pres/components-text@0.1.20
+597 notice === Tarball Contents ===
+598 notice 1.1kB LICENSE
+598 notice 3.4kB dist/index.cjs.js
+598 notice 2.7kB dist/index.esm.js
+598 notice 1.1kB package.json
+598 notice 1.6kB README.md
+599 notice === Tarball Details ===
+600 notice name:          @pres/components-text
+600 notice version:       0.1.20
+600 notice filename:      pres-components-text-0.1.20.tgz
+600 notice package size:  3.0 kB
+600 notice unpacked size: 9.9 kB
+600 notice shasum:        6d7528f0ae6e7c3ea96a7b17a08eae581ed07f32
+600 notice integrity:     sha512-kLMPn+EnO7V+h[...]sFNA0bH7icriA==
+600 notice total files:   5
+601 notice
+602 http fetch PUT 200 https://registry.npmjs.org/@pres%2fcomponents-form 4478ms
+603 silly lifecycle No script for "publish" in "@pres/components-form", continuing
+604 silly lifecycle No script for "postpublish" in "@pres/components-form", continuing
+605 success published @pres/components-form 0.1.20
+606 notice
+607 notice 📦  @pres/components-form@0.1.20
+608 notice === Tarball Contents ===
+609 notice 1.1kB  LICENSE
+609 notice 39.7kB dist/index.cjs.js
+609 notice 37.4kB dist/index.esm.js
+609 notice 1.1kB  package.json
+609 notice 1.6kB  README.md
+610 notice === Tarball Details ===
+611 notice name:          @pres/components-form
+611 notice version:       0.1.20
+611 notice filename:      pres-components-form-0.1.20.tgz
+611 notice package size:  20.1 kB
+611 notice unpacked size: 80.9 kB
+611 notice shasum:        0f22d35b75850ed80918b6a67664867d8a900f37
+611 notice integrity:     sha512-v2z/6kLhu9JwR[...]67jjKPQXoKduA==
+611 notice total files:   5
+612 notice
+613 verbose publish @pres/components-inform
+614 http fetch PUT 200 https://registry.npmjs.org/@pres%2fcomponents-inform 4057ms
+615 silly lifecycle No script for "publish" in "@pres/components-inform", continuing
+616 silly lifecycle No script for "postpublish" in "@pres/components-inform", continuing
+617 success published @pres/components-inform 0.1.20
+618 notice
+619 notice 📦  @pres/components-inform@0.1.20
+620 notice === Tarball Contents ===
+621 notice 1.1kB  LICENSE
+621 notice 23.5kB dist/index.cjs.js
+621 notice 23.1kB dist/index.esm.js
+621 notice 1.1kB  package.json
+621 notice 1.6kB  README.md
+622 notice === Tarball Details ===
+623 notice name:          @pres/components-inform
+623 notice version:       0.1.20
+623 notice filename:      pres-components-inform-0.1.20.tgz
+623 notice package size:  8.2 kB
+623 notice unpacked size: 50.4 kB
+623 notice shasum:        daa4a78189193c7aa0854fc81fa63e4bd6e7421b
+623 notice integrity:     sha512-CmLntiYwq42jc[...]UTMH1WHbDxfVg==
+623 notice total files:   5
+624 notice
+625 silly FetchError: request to https://registry.npmjs.org/@pres%2fcomponents-geo failed, reason: connect ETIMEDOUT 104.16.20.35:443
+625 silly     at ClientRequest.<anonymous> (/home/hazen/banyan/pres/node_modules/minipass-fetch/lib/index.js:97:14)
+625 silly     at ClientRequest.emit (events.js:376:20)
+625 silly     at TLSSocket.socketErrorListener (_http_client.js:475:9)
+625 silly     at TLSSocket.emit (events.js:388:22)
+625 silly     at emitErrorNT (internal/streams/destroy.js:106:8)
+625 silly     at emitErrorCloseNT (internal/streams/destroy.js:74:3)
+625 silly     at processTicksAndRejections (internal/process/task_queues.js:82:21)
+625 silly  FetchError: request to https://registry.npmjs.org/@pres%2fcomponents-geo failed, reason: connect ETIMEDOUT 104.16.20.35:443
+625 silly     at ClientRequest.<anonymous> (/home/hazen/banyan/pres/node_modules/minipass-fetch/lib/index.js:97:14)
+625 silly     at ClientRequest.emit (events.js:376:20)
+625 silly     at TLSSocket.socketErrorListener (_http_client.js:475:9)
+625 silly     at TLSSocket.emit (events.js:388:22)
+625 silly     at emitErrorNT (internal/streams/destroy.js:106:8)
+625 silly     at emitErrorCloseNT (internal/streams/destroy.js:74:3)
+625 silly     at processTicksAndRejections (internal/process/task_queues.js:82:21) {
+625 silly   code: 'ETIMEDOUT',
+625 silly   errno: 'ETIMEDOUT',
+625 silly   syscall: 'connect',
+625 silly   address: '104.16.20.35',
+625 silly   port: 443,
+625 silly   type: 'system'
+625 silly }
+626 error ETIMEDOUT request to https://registry.npmjs.org/@pres%2fcomponents-geo failed, reason: connect ETIMEDOUT 104.16.20.35:443
+627 error FetchError: request to https://registry.npmjs.org/@pres%2fcomponents-geo failed, reason: connect ETIMEDOUT 104.16.20.35:443
+627 error     at ClientRequest.<anonymous> (/home/hazen/banyan/pres/node_modules/minipass-fetch/lib/index.js:97:14)
+627 error     at ClientRequest.emit (events.js:376:20)
+627 error     at TLSSocket.socketErrorListener (_http_client.js:475:9)
+627 error     at TLSSocket.emit (events.js:388:22)
+627 error     at emitErrorNT (internal/streams/destroy.js:106:8)
+627 error     at emitErrorCloseNT (internal/streams/destroy.js:74:3)

@@ -8,7 +8,7 @@ import { Node, ScreenCollection } from '@pres/components-node'
 import { CSI, LF }                from '@pres/enum-control-chars'
 import { SGR }                    from '@pres/enum-csi-codes'
 import {
-  BLUR, CLICK, DESTROY, ELEMENT_CLICK, ELEMENT_MOUSEOUT, ELEMENT_MOUSEOVER, ELEMENT_MOUSEUP, ERROR, EXIT, FOCUS,
+  BLUR, CLICK, DESTROY, ELEMENT_CLICK, ELEMENT_MOUSEOUT, ELEMENT_MOUSEOVER, ELEMENT_MOUSEUP, ERROR, EXIT, FOCUS, KEY,
   KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, NEW_LISTENER, PRERENDER, RENDER,
   RESIZE, WARNING, WHEELDOWN, WHEELUP,
 }                                 from '@pres/enum-events'
@@ -44,7 +44,7 @@ export class Screen extends Node {
     this.ignoreLocked = options.ignoreLocked || []
     this._unicode = this.tput.unicode || this.tput.numbers.U8 === 1
     this.fullUnicode = this.options.fullUnicode && this._unicode
-    this.dattr = ((0 << 18) | (0x1ff << 9)) | 0x1ff
+    this.normAttr = ((0 << 18) | (0x1ff << 9)) | 0x1ff // TODO: pr - changed this.dattr to this.normAttr
     this.renders = 0
     this.position = {
       left: this.left = this.aleft = this.rleft = 0,
@@ -103,8 +103,8 @@ export class Screen extends Node {
     this.program.on(BLUR, () => self.emit(BLUR))
     this.program.on(WARNING, text => self.emit(WARNING, text))
     this.on(NEW_LISTENER, type => {
-      if (type === KEYPRESS || type.indexOf('key ') === 0 || type === MOUSE) {
-        if (type === KEYPRESS || type.indexOf('key ') === 0) self._listenKeys()
+      if (type === KEYPRESS || type.indexOf(KEY + SP) === 0 || type === MOUSE) {
+        if (type === KEYPRESS || type.indexOf(KEY + SP) === 0) self._listenKeys()
         if (type === MOUSE) self._listenMouse()
       }
       if (
@@ -394,13 +394,13 @@ export class Screen extends Node {
             grabKeys = self.grabKeys
       if (!grabKeys || ~self.ignoreLocked.indexOf(key.full)) {
         self.emit(KEYPRESS, ch, key)
-        self.emit('key ' + key.full, ch, key)
+        self.emit(KEY + SP + key.full, ch, key)
       }
       // If something changed from the screen key handler, stop.
       if (self.grabKeys !== grabKeys || self.lockKeys) { return }
       if (focused && focused.keyable) {
         focused.emit(KEYPRESS, ch, key)
-        focused.emit('key ' + key.full, ch, key)
+        focused.emit(KEY + SP + key.full, ch, key)
       }
     })
   }
@@ -464,7 +464,7 @@ export class Screen extends Node {
     for (let y = 0, line, cell; y < h; y++) {
       line = this.lines[y] = []
       for (let x = 0; x < w; x++) {
-        cell = line[x] = [ this.dattr ]
+        cell = line[x] = [ this.normAttr ]
         cell.ch = SP
       }
       line.dirty = !!dirty
@@ -473,7 +473,7 @@ export class Screen extends Node {
     for (let y = 0, line, cell; y < h; y++) {
       line = this.olines[y] = []
       for (let x = 0; x < w; x++) {
-        cell = line[x] = [ this.dattr ]
+        cell = line[x] = [ this.normAttr ]
         cell.ch = SP
       }
     }
@@ -510,7 +510,7 @@ export class Screen extends Node {
 // Scroll down (up cursor-wise).
   blankLine(ch, dirty) {
     const out = []
-    for (let x = 0; x < this.cols; x++) { out[x] = [ this.dattr, ch || ' ' ] }
+    for (let x = 0; x < this.cols; x++) { out[x] = [ this.normAttr, ch || ' ' ] }
     out.dirty = dirty
     return out
   }
@@ -734,7 +734,7 @@ export class Screen extends Node {
 
       let out = ''
       let normAttr
-      let attr = normAttr = this.dattr
+      let attr = normAttr = this.normAttr
 
       for (let x = 0, ce, oc; (x < ln.length) && (ce = ln[x]); x++) {
         let [ data ] = ce, { ch } = ce
@@ -1136,7 +1136,7 @@ export class Screen extends Node {
     if (old) { old.emit(BLUR, self) }
     self.emit(FOCUS, old)
   }
-  clearRegion(xi, xl, yi, yl, override) { return this.fillRegion(this.dattr, ' ', xi, xl, yi, yl, override) }
+  clearRegion(xi, xl, yi, yl, override) { return this.fillRegion(this.normAttr, ' ', xi, xl, yi, yl, override) }
   fillRegion(attr, ch, xi, xl, yi, yl, override) {
     const { lines } = this
     if (xi < 0) xi = 0
@@ -1382,9 +1382,9 @@ export class Screen extends Node {
     }
     return this.program.cursorReset()
   }
-  _cursorAttr(cursor, dattr) {
+  _cursorAttr(cursor, normAttr) {
     const { shape } = cursor
-    let attr = dattr || this.dattr,
+    let attr = normAttr || this.normAttr,
         cattr,
         ch
     if (shape === 'line') {
@@ -1431,15 +1431,15 @@ export class Screen extends Node {
     if (yl == null) yl = this.rows
     if (xi < 0) xi = 0
     if (yi < 0) yi = 0
-    const sdattr = this.dattr
-    if (term) { this.dattr = term.defAttr }
+    const screenAttr = this.normAttr
+    if (term) { this.normAttr = term.defAttr }
     let main = ''
     for (let y = yi, line, out, attr; y < yl; y++) {
       line = term ? term.lines[y] : this.lines[y]
       if (!line) break
 
       out = ''
-      attr = this.dattr
+      attr = this.normAttr
 
       for (let x = xi, cell, at, ch; x < xl; x++) {
         if (!(cell = line[x])) break
@@ -1447,8 +1447,8 @@ export class Screen extends Node {
         at = cell[0]
         ch = cell.ch
         if (at !== attr) {
-          if (attr !== this.dattr) out += CSI + SGR
-          if (at !== this.dattr) {
+          if (attr !== this.normAttr) out += CSI + SGR
+          if (at !== this.normAttr) {
             let _at = at
             if (term) {
               if (((_at >> 9) & 0x1ff) === 257) _at |= 0x1ff << 9
@@ -1466,11 +1466,11 @@ export class Screen extends Node {
         out += ch
         attr = at
       }
-      if (attr !== this.dattr) { out += CSI + SGR }
+      if (attr !== this.normAttr) { out += CSI + SGR }
       if (out) { main += (y > 0 ? LF : '') + out }
     }
     main = main.replace(/(?:\s*\x1b\[40m\s*\x1b\[m\s*)*$/, '') + LF
-    if (term) { this.dattr = sdattr }
+    if (term) { this.normAttr = screenAttr }
     return main
   }
   /**

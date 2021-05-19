@@ -368,8 +368,8 @@ export class Element extends Node {
     this.emit(SET_CONTENT)
   }
   getContent() {
-    if (!this._clines) return ''
-    return this._clines.fake.join(LF)
+    if (!this.clines) return ''
+    return this.clines.fake.join(LF)
   }
   setText(content, noClear) {
     content = content || ''
@@ -380,7 +380,7 @@ export class Element extends Node {
   parseContent(noTags) {
     if (this.detached) return false
     const width = this.width - this.iwidth
-    if (this._clines == null || this._clines.width !== width || this._clines.content !== this.content) {
+    if (this.clines == null || this.clines.width !== width || this.clines.content !== this.content) {
       let content = this.content
       content = content
         .replace(/[\x00-\x08\x0b-\x0c\x0e-\x1a\x1c-\x1f\x7f]/g, '')
@@ -409,21 +409,21 @@ export class Element extends Node {
         // content = helpers.dropUnicode(content);
       }
       if (!noTags) { content = this.#parseTags(content) }
-      this._clines = this._wrapContent(content, width)
-      this._clines.width = width
-      this._clines.content = this.content
-      this._clines.attr = this._parseAttr(this._clines)
-      this._clines.ci = []
-      this._clines.reduce(function (total, line) {
-        this._clines.ci.push(total)
+      this.clines = this.#wrapContent(content, width) // TODO: pr - changed this._clines to this.clines
+      this.clines.width = width
+      this.clines.content = this.content
+      this.clines.attr = this._parseAttr(this.clines)
+      this.clines.ci = []
+      this.clines.reduce(function (total, line) {
+        this.clines.ci.push(total)
         return total + line.length + 1
       }.bind(this), 0)
-      this._pcontent = this._clines.join(LF)
+      this._pcontent = this.clines.join(LF)
       this.emit(PARSED_CONTENT)
       return true
     }
     // Need to calculate this every time because the default fg/bg may change.
-    this._clines.attr = this._parseAttr(this._clines) || this._clines.attr
+    this.clines.attr = this._parseAttr(this.clines) || this.clines.attr
     return false
   }
 // Convert `{red-fg}foo{/red-fg}` to `\x1b[31mfoo\x1b[39m`.
@@ -554,7 +554,7 @@ export class Element extends Node {
     }
     return line
   }
-  _wrapContent(content, width) {
+  #wrapContent(content, width) {
     const tags = this.tags
     let state = this.align
     const wrap = this.wrap
@@ -1153,8 +1153,8 @@ export class Element extends Node {
     return { xi: xi, xl: xl, yi: yi, yl: yl }
   }
   _getShrinkContent(xi, xl, yi, yl) {
-    const h = this._clines.length,
-          w = this._clines.mwidth || 1
+    const h = this.clines.length,
+          w = this.clines.mwidth || 1
     if (
       (this.position.width == null) &&
       (this.position.left == null || this.position.right == null)
@@ -1352,14 +1352,14 @@ export class Element extends Node {
         attr,
         ch
     const content = this._pcontent
-    let ci = this._clines.ci[coords.base],
+    let ci = this.clines.ci[coords.base],
         borderAttr,
         normAttr,
         c,
         visible,
         i
     const bch = this.ch
-    if (coords.base >= this._clines.ci.length) ci = this._pcontent.length
+    if (coords.base >= this.clines.ci.length) ci = this._pcontent.length
     this.lpos = coords
     if (this.border?.type === 'line') {
       this.screen._borderStops[coords.yi] = true
@@ -1370,7 +1370,7 @@ export class Element extends Node {
     attr = normAttr
     // If we're in a scrollable text box, check to
     // see which attributes this line starts with.
-    if (ci > 0) attr = this._clines.attr[Math.min(coords.base, this._clines.length - 1)]
+    if (ci > 0) attr = this.clines.attr[Math.min(coords.base, this.clines.length - 1)]
     if (this.border) xi++, xl--, yi++, yl--
     // If we have padding/valign, that means the content-drawing loop will skip a few cells/lines.
     // To deal with this, we can just fill the whole thing ahead of time. This could be optimized.
@@ -1393,13 +1393,13 @@ export class Element extends Node {
     // Determine where to place the text if it's vertically aligned.
     if (this.valign === 'middle' || this.valign === 'bottom') {
       visible = yl - yi
-      if (this._clines.length < visible) {
+      if (this.clines.length < visible) {
         if (this.valign === 'middle') {
           visible = visible / 2 | 0
-          visible -= this._clines.length / 2 | 0
+          visible -= this.clines.length / 2 | 0
         }
         else if (this.valign === 'bottom') {
-          visible -= this._clines.length
+          visible -= this.clines.length
         }
         ci -= visible * (xl - xi)
       }
@@ -1506,7 +1506,7 @@ export class Element extends Node {
     // Could possibly draw this after all child elements.
     if (this.scrollbar) {
       // i = this.getScrollHeight();
-      i = Math.max(this._clines.length, this._scrollBottom())
+      i = Math.max(this.clines.length, this._scrollBottom())
     }
     if (coords.notop || coords.nobot) i = -Infinity
     if (this.scrollbar && (yl - yi) < i) {
@@ -1678,7 +1678,7 @@ export class Element extends Node {
         if (!(line = lines[y])) break
         for (let x = xl, cell; x < xl + 2; x++) {
           if (!(cell = line[x])) break
-          // lines[y][x][0] = colors.blend(this.dattr, lines[y][x][0]);
+          // lines[y][x][0] = colors.blend(this.normAttr, lines[y][x][0]);
           cell[0] = colors.blend(cell[0])
           line.dirty = true
         }
@@ -1688,7 +1688,7 @@ export class Element extends Node {
         if (!(line = lines[y])) break
         for (let x = Math.max(xi + 1, 0), cell; x < xl; x++) {
           if (!(cell = line[x])) break
-          // lines[y][x][0] = colors.blend(this.dattr, lines[y][x][0]);
+          // lines[y][x][0] = colors.blend(this.normAttr, lines[y][x][0]);
           cell[0] = colors.blend(cell[0])
           line.dirty = true
         }
@@ -1708,29 +1708,29 @@ export class Element extends Node {
    */
   insertLine(i, line) {
     if (typeof line === STR) line = line.split(LF)
-    if (i !== i || i == null) i = this._clines.ftor.length
+    if (i !== i || i == null) i = this.clines.ftor.length
     i = Math.max(i, 0)
-    while (this._clines.fake.length < i) {
-      this._clines.fake.push('')
-      this._clines.ftor.push([ this._clines.push('') - 1 ])
-      this._clines.rtof(this._clines.fake.length - 1)
+    while (this.clines.fake.length < i) {
+      this.clines.fake.push('')
+      this.clines.ftor.push([ this.clines.push('') - 1 ])
+      this.clines.rtof(this.clines.fake.length - 1)
     }
     // NOTE: Could possibly compare the first and last ftor line numbers to see
     // if they're the same, or if they fit in the visible region entirely.
-    const start = this._clines.length
+    const start = this.clines.length
     let diff,
         real
-    if (i >= this._clines.ftor.length) {
-      real = this._clines.ftor[this._clines.ftor.length - 1]
+    if (i >= this.clines.ftor.length) {
+      real = this.clines.ftor[this.clines.ftor.length - 1]
       real = real[real.length - 1] + 1
     }
     else {
-      real = this._clines.ftor[i][0]
+      real = this.clines.ftor[i][0]
     }
     for (let j = 0; j < line.length; j++)
-      this._clines.fake.splice(i + j, 0, line[j])
-    this.setContent(this._clines.fake.join(LF), true)
-    diff = this._clines.length - start
+      this.clines.fake.splice(i + j, 0, line[j])
+    this.setContent(this.clines.fake.join(LF), true)
+    diff = this.clines.length - start
     if (diff > 0) {
       const pos = this._getCoords()
       if (!pos) return
@@ -1746,17 +1746,17 @@ export class Element extends Node {
     }
   }
   deleteLine(i, n = 1) {
-    if (i !== i || i == null) i = this._clines.ftor.length - 1
+    if (i !== i || i == null) i = this.clines.ftor.length - 1
     i = Math.max(i, 0)
-    i = Math.min(i, this._clines.ftor.length - 1)
+    i = Math.min(i, this.clines.ftor.length - 1)
     // NOTE: Could possibly compare the first and last ftor line numbers to see
     // if they're the same, or if they fit in the visible region entirely.
-    const start = this._clines.length
+    const start = this.clines.length
     let diff
-    const real = this._clines.ftor[i][0]
-    while (n--) this._clines.fake.splice(i, 1)
-    this.setContent(this._clines.fake.join(LF), true)
-    diff = start - this._clines.length
+    const real = this.clines.ftor[i][0]
+    while (n--) this.clines.fake.splice(i, 1)
+    this.setContent(this.clines.fake.join(LF), true)
+    diff = start - this.clines.length
     // XXX clearPos() without diff statement?
     let height = 0
     if (diff > 0) {
@@ -1773,61 +1773,61 @@ export class Element extends Node {
           pos.yl - this.ibottom - 1)
       }
     }
-    if (this._clines.length < height) this.clearPos()
+    if (this.clines.length < height) this.clearPos()
   }
   insertTop(line) {
-    const fake = this._clines.rtof[this.childBase || 0]
+    const fake = this.clines.rtof[this.childBase || 0]
     return this.insertLine(fake, line)
   }
   insertBottom(line) {
     const h    = (this.childBase || 0) + this.height - this.iheight,
-          i    = Math.min(h, this._clines.length),
-          fake = this._clines.rtof[i - 1] + 1
+          i    = Math.min(h, this.clines.length),
+          fake = this.clines.rtof[i - 1] + 1
     return this.insertLine(fake, line)
   }
   deleteTop(n) {
-    const fake = this._clines.rtof[this.childBase || 0]
+    const fake = this.clines.rtof[this.childBase || 0]
     return this.deleteLine(fake, n)
   }
   deleteBottom(n = 1) {
     const h    = (this.childBase || 0) + this.height - 1 - this.iheight,
-          i    = Math.min(h, this._clines.length - 1),
-          fake = this._clines.rtof[i]
+          i    = Math.min(h, this.clines.length - 1),
+          fake = this.clines.rtof[i]
     return this.deleteLine(fake - (n - 1), n)
   }
   setLine(i, line) {
     i = Math.max(i, 0)
-    while (this._clines.fake.length < i) { this._clines.fake.push('') }
-    this._clines.fake[i] = line
-    return this.setContent(this._clines.fake.join(LF), true)
+    while (this.clines.fake.length < i) { this.clines.fake.push('') }
+    this.clines.fake[i] = line
+    return this.setContent(this.clines.fake.join(LF), true)
   }
   setBaseLine(i, line) {
-    const fake = this._clines.rtof[this.childBase || 0]
+    const fake = this.clines.rtof[this.childBase || 0]
     return this.setLine(fake + i, line)
   }
   getLine(i) {
     i = Math.max(i, 0)
-    i = Math.min(i, this._clines.fake.length - 1)
-    return this._clines.fake[i]
+    i = Math.min(i, this.clines.fake.length - 1)
+    return this.clines.fake[i]
   }
   getBaseLine(i) {
-    const fake = this._clines.rtof[this.childBase || 0]
+    const fake = this.clines.rtof[this.childBase || 0]
     return this.getLine(fake + i)
   }
   clearLine(i) {
-    i = Math.min(i, this._clines.fake.length - 1)
+    i = Math.min(i, this.clines.fake.length - 1)
     return this.setLine(i, '')
   }
   clearBaseLine(i) {
-    const fake = this._clines.rtof[this.childBase || 0]
+    const fake = this.clines.rtof[this.childBase || 0]
     return this.clearLine(fake + i)
   }
   unshiftLine(line) { return this.insertLine(0, line) }
   shiftLine(n) { return this.deleteLine(0, n) }
-  pushLine(line) { return !this.content ? this.setLine(0, line) : this.insertLine(this._clines.fake.length, line) }
-  popLine(n) { return this.deleteLine(this._clines.fake.length - 1, n) }
-  getLines() { return this._clines.fake.slice() }
-  getScreenLines() { return this._clines.slice() }
+  pushLine(line) { return !this.content ? this.setLine(0, line) : this.insertLine(this.clines.fake.length, line) }
+  popLine(n) { return this.deleteLine(this.clines.fake.length - 1, n) }
+  getLines() { return this.clines.fake.slice() }
+  getScreenLines() { return this.clines.slice() }
   strWidth(text) {
     text = this.tags ? helpers.stripTags(text) : text
     return this.screen.fullUnicode ? unicode.strWidth(text) : helpers.dropUnicode(text).length
