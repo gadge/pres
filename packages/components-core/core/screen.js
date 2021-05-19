@@ -311,8 +311,8 @@ export class Screen extends Node {
     this._listenedMouse = true
     this.program.enableMouse()
     if (this.options.sendFocus) this.program.setMouse({ sendFocus: true }, true)
-    this.on(RENDER, function () { self._needsClickableSort = true })
-    this.program.on(MOUSE, function (data) {
+    this.on(RENDER, () => { self._needsClickableSort = true })
+    this.program.on(MOUSE, data => {
       if (self.lockKeys) return
       if (self._needsClickableSort) {
         self.clickable = helpers.hsort(self.clickable)
@@ -387,7 +387,7 @@ export class Screen extends Node {
     // After the first keypress emitted, the handler
     // checks to make sure grabKeys, lockKeys, and focused
     // weren't changed, and handles those situations appropriately.
-    this.program.on(KEYPRESS, function (ch, key) {
+    this.program.on(KEYPRESS, (ch, key) => {
       if (self.lockKeys && !~self.ignoreLocked.indexOf(key.full)) { return }
       const focused  = self.focused,
             grabKeys = self.grabKeys
@@ -427,13 +427,13 @@ export class Screen extends Node {
         fg: 'default'
       }
     })
-    this.on(MOUSEMOVE, function (data) {
+    this.on(MOUSEMOVE, data => {
       if (self._hoverText.detached) return
       self._hoverText.rleft = data.x + 1
       self._hoverText.rtop = data.y
       self.render()
     })
-    this.on(ELEMENT_MOUSEOVER, function (el, data) {
+    this.on(ELEMENT_MOUSEOVER, (el, data) => {
       if (!el._hoverOptions) return
       self._hoverText.parseTags = el.parseTags
       self._hoverText.setContent(el._hoverOptions.text)
@@ -442,7 +442,7 @@ export class Screen extends Node {
       self._hoverText.rtop = data.y
       self.render()
     })
-    this.on(ELEMENT_MOUSEOUT, function () {
+    this.on(ELEMENT_MOUSEOUT, () => {
       if (self._hoverText.detached) return
       self._hoverText.detach()
       self.render()
@@ -450,7 +450,7 @@ export class Screen extends Node {
     // XXX This can cause problems if the
     // terminal does not support allMotion.
     // Workaround: check to see if content is set.
-    this.on(ELEMENT_MOUSEUP, function (el) {
+    this.on(ELEMENT_MOUSEUP, el => {
       if (!self._hoverText.getContent()) return
       if (!el._hoverOptions) return
       self.append(self._hoverText)
@@ -652,8 +652,8 @@ export class Screen extends Node {
     //   for (x = stop.xi; x < stop.xl; x++) {
     stops = Object
       .keys(stops)
-      .map(function (k) { return +k })
-      .sort(function (a, b) { return a - b })
+      .map(k => +k)
+      .sort((a, b) => a - b)
     for (let i = 0, line, cell; i < stops.length; i++) {
       y = stops[i]
       if (!(line = lines[y])) continue
@@ -1196,7 +1196,7 @@ export class Screen extends Node {
   onceKey(...args) { return this.program.onceKey.apply(this, args) }
   unkey = this.removeKey
   removeKey(...args) { return this.program.unkey.apply(this, args) }
-  spawn = function (file, args, options) {
+  spawn (file, args, options) {
     if (!Array.isArray(args)) {
       options = args
       args = []
@@ -1214,10 +1214,10 @@ export class Screen extends Node {
     program.showCursor()
     if (mouse) program.disableMouse()
     const write = program.output.write
-    program.output.write = function () {}
+    program.output.write = () => {}
     program.input.pause()
     if (program.input.setRawMode) { program.input.setRawMode(false) }
-    const resume = function () {
+    const resume = () => {
       if (resume.done) return
       resume.done = true
       if (program.input.setRawMode) { program.input.setRawMode(true) }
@@ -1247,7 +1247,7 @@ export class Screen extends Node {
   readEditor(options, callback) {
     if (typeof options === STR) { options = { editor: options } }
     if (!callback) { (callback = options), (options = null) }
-    if (!callback) { callback = function () {} }
+    if (!callback) { callback = () => {} }
     options = options || {}
     const self   = this,
           editor = options.editor || process.env.EDITOR || 'vi',
@@ -1266,9 +1266,9 @@ export class Screen extends Node {
       if (!options.value) return callback()
       return fs.writeFile(file, options.value, callback)
     }
-    return writeFile(function (err) {
+    return writeFile(err => {
       if (err) return callback(err)
-      return self.exec(editor, args, opt, function (err, success) {
+      return self.exec(editor, args, opt, (err, success) => {
         if (err) return callback(err)
         return fs.readFile(file, 'utf8',
           (err, data) => fs.unlink(file, () => {
@@ -1311,11 +1311,11 @@ export class Screen extends Node {
     if (temp) el[temp] = tmp
     if (typeof el !== FUN) {
       const _el = el
-      el = function () { return _el }
+      el = () => _el
     }
-    fel.on(over, function () {
+    fel.on(over, () => {
       const element = el()
-      Object.keys(effects).forEach(function (key) {
+      Object.keys(effects).forEach(key => {
         const val = effects[key]
         if (val !== null && typeof val === OBJ) {
           tmp[key] = tmp[key] || {}
@@ -1366,7 +1366,7 @@ export class Screen extends Node {
       if (!this.program.hideCursor_old) {
         const hideCursor = this.program.hideCursor
         this.program.hideCursor_old = this.program.hideCursor
-        this.program.hideCursor = function () {
+        this.program.hideCursor = () => {
           hideCursor.call(self.program)
           self.cursor._hidden = true
           if (self.renders) self.render()
@@ -1375,7 +1375,7 @@ export class Screen extends Node {
       if (!this.program.showCursor_old) {
         const showCursor = this.program.showCursor
         this.program.showCursor_old = this.program.showCursor
-        this.program.showCursor = function () {
+        this.program.showCursor = () => {
           self.cursor._hidden = false
           if (self.program._exiting) showCursor.call(self.program)
           if (self.renders) self.render()
