@@ -520,15 +520,12 @@ export class Element extends Node {
     const normAttr = this.sattr(this.style)
     let attr = normAttr
     const attrs = []
-    let line,
-        i,
-        j,
-        c
+    let line
     if (lines[0].attr === attr) return void 0
-    for (j = 0; j < lines.length; j++) {
+    for (let j = 0; j < lines.length; j++) {
       line = lines[j]
       attrs[j] = attr
-      for (i = 0; i < line.length; i++) {
+      for (let i = 0,c; i < line.length; i++) {
         if (line[i] === ESC) {
           if ((c = /^\x1b\[[\d;]*m/.exec(line.slice(i)))) {
             attr = sgraToMorisot(c[0], attr, normAttr)
@@ -602,9 +599,7 @@ export class Element extends Node {
         if (tags) {
           if ((cap = /^{(left|center|right)}/.exec(line))) {
             line = line.slice(cap[0].length)
-            align = state = cap[1] !== 'left'
-              ? cap[1]
-              : null
+            align = state = cap[1] !== 'left' ? cap[1] : null
           }
           if ((cap = /{\/(left|center|right)}$/.exec(line))) {
             line = line.slice(0, -cap[0].length)
