@@ -1,4 +1,9 @@
-import { SC } from '@texting/enum-chars'
+import { rgbToInt }  from '@palett/convert'
+import { SC }        from '@texting/enum-chars'
+import { mixColors } from './colors'
+
+const NAC = 1 << 24
+const GREY = rgbToInt([ 127, 127, 127 ])
 
 export class Presa extends Array {
   constructor() {
@@ -16,6 +21,22 @@ export class Presa extends Array {
     this[1] = source[1]
     this[2] = source[2]
     if (char) this.ch = char
+    return this
+  }
+  blend(beta, alpha) {
+    if (beta) { // if right provided: mixColors
+      let [ , f_, b_ ] = this,
+          [ , _f, _b ] = beta
+      if (b_ === NAC) b_ = 0 // if left is NAC: left is noir
+      if (_b === NAC) _b = 0 // if right is NAC: right is noir
+      b_ = mixColors(b_, _b, alpha) // mix
+      if (f_ === NAC) { f_ = GREY } // if left is NAC: left is grey
+      else {
+        if (_f === NAC) _f = GREY // if right is NAC: right is grey
+        f_ = mixColors(f_, _f, alpha) // mix
+      }
+      this[1] = f_, this[2] = b_
+    }
     return this
   }
   shallow() {

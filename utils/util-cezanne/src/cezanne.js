@@ -11,6 +11,8 @@ export const NAC = 1 << 24 // 16777216 = 256 * 256 * 256
 export const COLOR_CODES = {
   default: NaN,
   normal: NaN,
+  fore: NaN,
+  back: NaN,
   bg: NaN,
   fg: NaN,
   black: 0,
@@ -26,23 +28,29 @@ export const COLOR_CODES = {
 }
 
 
+export const tryHexToInt = hex => hex[0] === '#' ? hexToInt(hex) : null
+
 export const LIGHT = /^(?:light(?:en)?|bright(?:en)?)/
 export const PUNC = /[\W_]+/g
 /**
  *
  * @param {string} name
- * @return {number}
+ * @return {?number}
  * // color &= 7, color += 8
  */
 export const nameToColor = (name) => {
-  if (name[0] === '#') return hexToInt(name)
-  let color = COLOR_CODES[name = name.replace(PUNC, '')]
-  return color ?? ((color = COLOR_CODES[name.replace(LIGHT, '')]) ? color === 8 ? (color - 1) : (color + 8) : null)
+  let color
+  if (name) color = COLOR_CODES[name = name.replace(PUNC, '')]
+  if (!nullish(color)) return isNaN(color) ? NAC : ~color // 按位取反
+  if (LIGHT.test(name)) color = COLOR_CODES[name.replace(LIGHT, '')]
+  if (!nullish(color)) return isNaN(color) ? NAC : ~(color === 8 ? (color - 1) : (color + 8))
+  return null
 }
+
 export const convColor = color => {
   const t = typeof color
   color = t === NUM ? color
-    : t === STR ? nameToColor(name) ?? NaN
+    : t === STR ? tryHexToInt(name) ?? nameToColor(name) ?? NAC
       : Array.isArray(color) ? rgbToInt(color)
         : NAC
   return color

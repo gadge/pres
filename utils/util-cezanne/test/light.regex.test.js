@@ -9,6 +9,9 @@ const candidates = {
   fg: -1,
   'some': -1,
   'nan': -1,
+  '#000000': 0,
+  '#888': 8947848,
+  '#ffffff': 0xffffff,
   black: 0,   // normal
   red: 1,
   green: 2,
@@ -45,11 +48,13 @@ const candidates = {
 
 
 for (const [ name, value ] of Object.entries(candidates)) {
+  let color = nameToColor(name)
+  if (color < 0) { color = ~color }
   xr()
     [name](String(LIGHT.exec(name)))
     .match(LIGHT.test(name))
     .to(name.replace(LIGHT, '').replace(PUNC, ''))
-    .color(String(nameToColor(name)))
+    .color(String(color))
     .assert(value)
     |> logger
 }

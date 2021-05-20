@@ -9,7 +9,7 @@ export function mixColors(rgbA, rgbB, alpha = 0.5) {
   r_ += (_r - r_) * alpha | 0
   g_ += (_g - g_) * alpha | 0
   b_ += (_b - b_) * alpha | 0
-  return (r_, g_, b_)
+  return ((r_ & 0xFF) << 16) + ((g_ & 0xFF) << 8) + (b_ & 0xFF) // return [r_, g_, b_]
 }
 
 
