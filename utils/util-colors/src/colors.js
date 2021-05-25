@@ -65,10 +65,8 @@ export function mixColors(colorA, colorB, alpha = 0.5) {
 }
 
 export function blend(attr, attr2, alpha) {
-  let name, c, nc
+  let name
   let bg = attr & 0x1ff
-  // const [ first, second, third ] = nc
-  // const [ first1, second1, third1 ] = c
   if (attr2 != null) {
     let _bg = attr2 & 0x1ff
     if (bg === 0x1ff) bg = 0

@@ -16,11 +16,13 @@ export class Box extends Element {
   constructor(options = {}) {
     options.sku = options.sku ?? 'box'
     super(options) // // if (!(this instanceof Node)) return new Box(options)
+    console.log('>> [new box]')
     if (options.scrollable) {
       // console.log(Reflect.ownKeys(Scrollable.prototype))
       mixin.assign(this, Scroll.prototype)
       Scroll.prototype.config.call(this, options)
     }
+
   }
   static build(options) { return new Box(options) }
 }

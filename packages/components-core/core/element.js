@@ -4,22 +4,20 @@
  * https://github.com/chjj/blessed
  */
 
-import { Node }          from '@pres/components-node'
-import { ESC, LF, TAB }  from '@pres/enum-control-chars'
+import { Node }                         from '@pres/components-node'
+import { ESC, LF, TAB }                 from '@pres/enum-control-chars'
 import {
   ATTACH, CLICK, DETACH, HIDE, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, MOVE,
   NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
-}                        from '@pres/enum-events'
-import { styleToPresa }  from '@pres/util-cezanne'
-import * as colors       from '@pres/util-colors'
-import * as helpers      from '@pres/util-helpers'
-import { sgraToMorisot } from '@pres/util-morisot'
-import * as unicode      from '@pres/util-unicode'
-import { FUN, NUM, STR } from '@typen/enum-data-types'
-import { nullish }       from '@typen/nullish'
-import { last }          from '@vect/vector-index'
-import assert            from 'assert'
-import { Box }           from './box'
+}                                       from '@pres/enum-events'
+import { convColor, Presa, styleToInt } from '@pres/util-cezanne'
+import * as helpers                     from '@pres/util-helpers'
+import * as unicode                     from '@pres/util-unicode'
+import { FUN, NUM, STR }                from '@typen/enum-data-types'
+import { nullish }                      from '@typen/nullish'
+import { last }                         from '@vect/vector-index'
+import assert                           from 'assert'
+import { Box }                          from './box'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 export class Element extends Node {
@@ -38,7 +36,7 @@ export class Element extends Node {
   config(options) {
     const self = this
     this.type = this.type ?? 'element'
-    // console.log('>> [Element.prototype.config]', this.codename)
+    console.log('>> [Element.prototype.config]', this.codename)
     const position = this.position = (options.position ?? (options.position = {
       left: options.left,
       right: options.right,
@@ -109,6 +107,7 @@ export class Element extends Node {
     if (options.input || options.keyable) { this.screen._listenKeys(this) }
     this.tags = options.parseTags || options.tags // TODO: pull request - changed this.parseTags to this.tags
     this.setContent(options.content || '', true)
+    console.log('>> [Element.prototype.config]', this.codename)
     if (options.label) { this.setLabel(options.label) }
     if (options.hoverText) { this.setHover(options.hoverText) }
     // TODO: Possibly move this to Node for onScreenEvent(MOUSE, ...).
@@ -292,30 +291,16 @@ export class Element extends Node {
   get bottom() { return this.rbottom }
   set bottom(val) { return this.rbottom = val }
 
-  sattr = styleToPresa.bind(this)
+  sattr(style = {}, fore, back) { // styleToPresa
+    if (nullish(fore) && nullish(back)) { fore = style.fore || style.fg, back = style.back || style.bg }
+    if (typeof fore === FUN) fore = fore(this)
+    if (typeof back === FUN) back = back(this)
+    const out = Presa.build().inject(styleToInt(style), convColor(fore), convColor(back))
+    console.log('>> [element.sattr]', style, out)
+    return out
+  }
   // sattr = styleToMorisot.bind(this)
 
-  // sattr(style, fg, bg) {
-  // let { bold, underline, blink, inverse, invisible } = style
-  // if (fg == null && bg == null) { (fg = style.fg), (bg = style.bg) }
-  // if (typeof bold === FUN) bold = bold(this)
-  // if (typeof underline === FUN) underline = underline(this)
-  // if (typeof blink === FUN) blink = blink(this)
-  // if (typeof inverse === FUN) inverse = inverse(this)
-  // if (typeof invisible === FUN) invisible = invisible(this)
-  // if (typeof fg === FUN) fg = fg(this)
-  // if (typeof bg === FUN) bg = bg(this)
-  // // console.log('>> [element.sattr]', this.codename, fg ?? AEU, 'to', colors.convert(fg), bg ?? AEU, 'to', colors.convert(bg))
-  // return (
-  //   ((invisible ? 16 : 0) << 18) |
-  //   ((inverse ? 8 : 0) << 18) |
-  //   ((blink ? 4 : 0) << 18) |
-  //   ((underline ? 2 : 0) << 18) |
-  //   ((bold ? 1 : 0) << 18) |
-  //   (colors.convert(fg) << 9) |
-  //   (colors.convert(bg))
-  // ) // return (this.uid << 24) | ((this.dockBorders ? 32 : 0) << 18)
-  // }
   onScreenEvent(type, handler) {
     const listeners = this._slisteners ?? (this._slisteners = [])
     listeners.push({ type, handler })
@@ -521,21 +506,26 @@ export class Element extends Node {
     }
     return out
   }
+  /**
+   * @return {Presa[]}
+   */
   _parseAttr(lines) {
-    const normAttr = this.sattr(this.style),
-          attrList = []
-    if (lines[0].attr === normAttr) return void 0
+    console.log('>> [element._parseAttr]', 'pre')
+    const normAttr = this.sattr(this.style)
+    console.log('>> [element._parseAttr]', 'normAttr', normAttr)
+    /** @type {[Presa]} */  const attrList = []
+    if (Presa.prototype.eq.call(lines[0].attr, normAttr)) return void 0 // lines[0].attr === normAttr
     for (let j = 0, ht = lines.length, currAttr = normAttr, line; j < ht; j++) {
       line = lines[j]
       attrList[j] = currAttr
       for (let i = 0, wd = line.length, ms, ph; i < wd; i++) {
         if (line[i] === ESC && (ms = /^\x1b\[[\d;]*m/.exec(line.slice(i))) && (ph = ms[0])) {
-          currAttr = sgraToMorisot(ph, currAttr, normAttr)
+          Presa.prototype.mergeSGR.call(currAttr, ph, normAttr) // currAttr = sgraToMorisot(ph, currAttr, normAttr)
           i += ph.length - 1
         }
       }
     }
-    // console.log('>> [element._parseAttr]', attrList)
+    console.log('>> [element._parseAttr]', attrList)
     return attrList
   }
   _align(line, width, align) {
@@ -1342,6 +1332,7 @@ export class Element extends Node {
   }
   _render = Element.prototype.render
   render() {
+    console.log('>> [element.render]')
     this._emit(PRERENDER)
     this.parseContent()
     const coords = this._getCoords(true)
@@ -1378,13 +1369,13 @@ export class Element extends Node {
     if (this.border) xi++, xl--, yi++, yl--
     // If we have padding/valign, that means the content-drawing loop will skip a few cells/lines.
     // To deal with this, we can just fill the whole thing ahead of time. This could be optimized.
-    if (this.tpadding || (this.valign && this.valign !== 'top')) {
+    if (this.tpadding || this?.valign !== 'top') {
       if (this.style.transparent) {
         for (let y = Math.max(yi, 0), line, cell; (y < yl); y++) {
           if (!(line = lines[y])) break
           for (let x = Math.max(xi, 0); x < xl; x++) {
             if (!(cell = line[x])) break
-            cell[0] = colors.blend(attr, cell[0])
+            Presa.prototype.reblend.call(cell, attr) // cell[0] = colors.blend(attr, cell[0])
             line.dirty = true // lines[y][x][1] = bch;
           }
         }
@@ -1420,17 +1411,22 @@ export class Element extends Node {
           else { continue }
         }
         ch = content[ci++] || bch
-        // if (!content[ci] && !coords._contentEnd) {
-        //   coords._contentEnd = { x: x - xi, y: y - yi };
-        // }
+        // if (!content[ci] && !coords._contentEnd) { coords._contentEnd = { x: x - xi, y: y - yi }; }
         // Handle escape codes.
         while (ch === ESC) {
           if ((c = /^\x1b\[[\d;]*m/.exec(content.slice(ci - 1)))) {
             ci += c[0].length - 1
-            attr = sgraToMorisot(c[0], attr, normAttr)
+            Presa.prototype.mergeSGR.call(attr, c[0], normAttr) // sgraToMorisot(c[0], attr, normAttr)
+            console.log('>> [element.render presa.merge]', attr, c[0])
             // Ignore foreground changes for selected items.
-            if (this.sup._isList && this.sup.interactive && this.sup.items[this.sup.selected] === this && this.sup.options.invertSelected !== false) {
-              attr = (attr & ~(0x1ff << 9)) | (normAttr & (0x1ff << 9))
+            if (
+              this.sup._isList &&
+              this.sup.interactive &&
+              this.sup.items[this.sup.selected] === this &&
+              this.sup.options.invertSelected !== false
+            ) {
+              // attr = (attr & ~(0x1ff << 9)) | (normAttr & (0x1ff << 9)) // paste foreColor of normAttr
+              attr[1] = normAttr[1]
             }
             ch = content[ci] || bch
             ci++
@@ -1455,14 +1451,13 @@ export class Element extends Node {
           for (; x < xl; x++) {
             if (!(cell = line[x])) break
             if (this.style.transparent) {
-              cell[0] = colors.blend(attr, cell[0])
+              Presa.prototype.reblend.call(cell, attr) // cell[0] = colors.blend(attr, cell[0])
               if (content[ci]) cell.ch = ch
               line.dirty = true
             }
             else {
-              if (attr !== cell[0] || ch !== cell.ch) {
-                cell[0] = attr
-                cell.ch = ch
+              if (!Presa.prototype.eq.call(attr, cell) || ch !== cell.ch) { // attr !== cell[0]
+                Presa.prototype.assign.call(cell, attr, ch) // cell[0] = attr, cell.ch = ch
                 line.dirty = true
               }
             }
@@ -1493,14 +1488,13 @@ export class Element extends Node {
         if (this._noFill) continue
         const _cell = line[x]
         if (this.style.transparent) {
-          _cell[0] = colors.blend(attr, _cell[0])
+          Presa.prototype.reblend.call(_cell, attr) // _cell[0] = colors.blend(attr, _cell[0])
           if (content[ci]) _cell.ch = ch
           line.dirty = true
         }
         else {
-          if (attr !== cell[0] || ch !== cell.ch) {
-            _cell[0] = attr
-            _cell.ch = ch
+          if (!Presa.prototype.eq.call(attr, cell) || ch !== cell.ch) { // attr !== cell[0]
+            Presa.prototype.assign.call(_cell, attr, ch) // _cell[0] = attr, _cell.ch = ch
             line.dirty = true
           }
         }
@@ -1529,7 +1523,10 @@ export class Element extends Node {
         }
         ch = this.scrollbar.ch || ' '
         attr = this.sattr(this.style.scrollbar, this.style.scrollbar.fg || this.style.fg, this.style.scrollbar.bg || this.style.bg)
-        if (attr !== cell[0] || ch !== cell.ch) { cell[0] = attr, cell.ch = ch, lines[y].dirty = true }
+        if (!Presa.prototype.eq.call(attr, cell) || ch !== cell.ch) { // attr !== cell[0]
+          Presa.prototype.assign.call(cell, attr, ch) // cell[0] = attr, cell.ch = ch,
+          lines[y].dirty = true
+        }
       }
     }
     if (this.border) xi--, xl++, yi--, yl++
@@ -1573,16 +1570,14 @@ export class Element extends Node {
         else if (this.border.type === 'bg') { ch = this.border.ch }
         if (!this.border.top && x !== xi && x !== xl - 1) {
           ch = ' '
-          if (normAttr !== cell[0] || ch !== cell.ch) {
-            cell[0] = normAttr
-            cell.ch = ch
+          if (!Presa.prototype.eq.call(normAttr, cell) || ch !== cell.ch) { // normAttr !== cell[0]
+            Presa.prototype.assign.call(cell, normAttr, ch) // cell[0] = normAttr, cell.ch = ch
             lines[y].dirty = true
             continue
           }
         }
-        if (borderAttr !== cell[0] || ch !== cell.ch) {
-          cell[0] = borderAttr
-          cell.ch = ch
+        if (!Presa.prototype.eq.call(borderAttr, cell) || ch !== cell.ch) { // borderAttr !== cell[0]
+          Presa.prototype.assign.call(cell, borderAttr, ch) // cell[0] = borderAttr, cell.ch = ch
           line.dirty = true
         }
       }
@@ -1593,17 +1588,15 @@ export class Element extends Node {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
             if (!coords.noleft)
-              if (borderAttr !== cell[0] || ch !== cell.ch) {
-                cell[0] = borderAttr
-                cell.ch = ch
+              if (!Presa.prototype.eq.call(borderAttr, cell) || ch !== cell.ch) { // borderAttr !== cell[0]
+                Presa.prototype.assign.call(cell, borderAttr, ch) // cell[0] = borderAttr, cell.ch = ch
                 line.dirty = true
               }
           }
           else {
             ch = ' '
-            if (normAttr !== cell[0] || ch !== cell.ch) {
-              cell[0] = normAttr
-              cell.ch = ch
+            if (!Presa.prototype.eq.call(normAttr, cell) || ch !== cell.ch) { // normAttr !== cell[0]
+              Presa.prototype.assign.call(cell, normAttr, ch) // cell[0] = normAttr, cell.ch = ch
               line.dirty = true
             }
           }
@@ -1613,17 +1606,15 @@ export class Element extends Node {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
             if (!coords.noright)
-              if (borderAttr !== cell[0] || ch !== cell.ch) {
-                cell[0] = borderAttr
-                cell.ch = ch
+              if (!Presa.prototype.eq.call(borderAttr, cell) || ch !== cell.ch) { // borderAttr !== cell[0]
+                Presa.prototype.assign.call(cell, borderAttr, ch) // cell[0] = borderAttr, cell.ch = ch
                 line.dirty = true
               }
           }
           else {
             ch = ' '
-            if (normAttr !== cell[0] || ch !== cell.ch) {
-              cell[0] = normAttr
-              cell.ch = ch
+            if (!Presa.prototype.eq.call(normAttr, cell) || ch !== cell.ch) { // normAttr !== cell[0]
+              Presa.prototype.assign.call(cell, normAttr, ch) // cell[0] = normAttr, cell.ch = ch
               line.dirty = true
             }
           }
@@ -1662,16 +1653,14 @@ export class Element extends Node {
         else if (this.border.type === 'bg') { ch = this.border.ch }
         if (!this.border.bottom && x !== xi && x !== xl - 1) {
           ch = ' '
-          if (normAttr !== cell[0] || ch !== cell.ch) {
-            cell[0] = normAttr
-            cell.ch = ch
+          if (!Presa.prototype.eq.call(normAttr, cell) || ch !== cell.ch) { // normAttr !== cell[0]
+            Presa.prototype.assign.call(cell, normAttr, ch) // cell[0] = normAttr, cell.ch = ch
             line.dirty = true
           }
           continue
         }
-        if (borderAttr !== cell[0] || ch !== cell.ch) {
-          cell[0] = borderAttr
-          cell.ch = ch
+        if (!Presa.prototype.eq.call(borderAttr, cell) || ch !== cell.ch) { // borderAttr !== cell[0]
+          Presa.prototype.assign.call(cell, borderAttr, ch) // cell[0] = borderAttr, cell.ch = ch
           line.dirty = true
         }
       }
@@ -1683,7 +1672,7 @@ export class Element extends Node {
         for (let x = xl, cell; x < xl + 2; x++) {
           if (!(cell = line[x])) break
           // lines[y][x][0] = colors.blend(this.normAttr, lines[y][x][0]);
-          cell[0] = colors.blend(cell[0])
+          Presa.prototype.blend.call(cell) // cell[0] = colors.blend(cell[0])
           line.dirty = true
         }
       }
@@ -1693,7 +1682,7 @@ export class Element extends Node {
         for (let x = Math.max(xi + 1, 0), cell; x < xl; x++) {
           if (!(cell = line[x])) break
           // lines[y][x][0] = colors.blend(this.normAttr, lines[y][x][0]);
-          cell[0] = colors.blend(cell[0])
+          Presa.prototype.blend.call(cell) // cell[0] = colors.blend(cell[0])
           line.dirty = true
         }
       }

@@ -14,12 +14,15 @@ import {
   RESIZE, WARNING, WHEELDOWN, WHEELUP,
 }                                                                      from '@pres/enum-events'
 import { Program }                                                     from '@pres/program'
+import { Presa, presaToSgra }                                          from '@pres/util-cezanne'
+import { COLORS_4_BITS }                                               from '@pres/util-cezanne/src/cezanne'
 import * as colors                                                     from '@pres/util-colors'
 import * as helpers                                                    from '@pres/util-helpers'
 import { morisotToSgra }                                               from '@pres/util-morisot'
 import * as unicode                                                    from '@pres/util-unicode'
 import { SP }                                                          from '@texting/enum-chars'
 import { FUN, OBJ, STR }                                               from '@typen/enum-data-types'
+import { size }                                                        from '@vect/matrix'
 import cp, { spawn }                                                   from 'child_process'
 import { Log }                                                         from '../src/log'
 import { Box }                                                         from './box'
@@ -37,6 +40,7 @@ export class Screen extends Node {
   }
   static build(options) { return new Screen(options) }
   config(options) {
+
     const self = this
     // this.type = this.type ?? 'screen'
     this.autoPadding = options.autoPadding !== false
@@ -47,6 +51,7 @@ export class Screen extends Node {
     this.fullUnicode = this.options.fullUnicode && this._unicode
     // this.normAttr = ((0 << 18) | (0x1ff << 9)) | 0x1ff // TODO: pr - changed this.dattr to this.normAttr
     this.normAttr = [ 0, null, null ]
+
     this.renders = 0
     this.position = {
       left: this.left = this.aleft = this.rleft = 0,
@@ -93,6 +98,7 @@ export class Screen extends Node {
       _state: 1,
       _hidden: true
     }
+
     this.program.on(RESIZE, () => {
       self.alloc()
       self.render();
@@ -126,6 +132,7 @@ export class Screen extends Node {
     this.enter()
     this.postEnter()
     this.on('adjourn', () => ScreenCollection.journal = false)
+    console.log('>> [screen.config]', this.normAttr)
   }
   setupProgram(options) {
     if (options.rsety && options.listen) options = { program: options }
@@ -480,7 +487,7 @@ export class Screen extends Node {
   realloc() { return this.alloc(true) }
   render() {
     // const [ h, w ] = size(this.lines)
-    // console.log('>> [screen.render]', this.lines)
+    console.log('>> [screen.render]', size(this.lines), 'this.lines[0][0]', this.lines[0][0])
     // console.log('>> [screen.render]', h, w)
     const self = this
     if (this.destroyed) return
@@ -621,7 +628,7 @@ export class Screen extends Node {
       const alpha = line[x]
       for (let y = yi; y < yl; y++) {
         if (!(line = this.olines[y]) || !(cell = line[x])) break
-        if (cell[0] !== alpha[0] || cell.ch !== alpha.ch) return pos._cleanSides = false
+        if (!Presa.prototype.eq.call(cell, alpha) || cell.ch !== alpha.ch) return pos._cleanSides = false // cell[0] !== alpha[0]
       }
     }
     for (let x = pos.xl, line, cell; x < this.width; x++) {
@@ -629,7 +636,7 @@ export class Screen extends Node {
       const alpha = line[x]
       for (let y = yi; y < yl; y++) {
         if (!(line = this.olines[y]) || !(cell = line[x])) break
-        if (cell[0] !== alpha[0] || cell.ch !== alpha.ch) return pos._cleanSides = false
+        if (!Presa.prototype.eq.call(cell, alpha) || cell.ch !== alpha.ch) return pos._cleanSides = false // cell[0] !== alpha[0]
       }
     }
     return pos._cleanSides = true
@@ -672,23 +679,23 @@ export class Screen extends Node {
         row,
         tar
     if (!(line = lines[y]) || !(cell = line[x])) return ANGLE_TABLE[angle]
-    const attr               = cell[0],
+    const attr               = cell,
           ch                 = cell.ch,
           ignoreDockContrast = this.options.ignoreDockContrast
     if ((tar = line[x - 1]) && ANGLES_L[tar.ch]) {
-      if (!ignoreDockContrast && tar[0] !== attr) return ch
+      if (!ignoreDockContrast && !Presa.prototype.eq.call(tar, attr)) return ch // tar[0] !== attr
       angle |= 1 << 3
     }
     if ((row = lines[y - 1]) && (tar = row[x]) && ANGLES_U[tar.ch]) {
-      if (!ignoreDockContrast && tar[0] !== attr) return ch
+      if (!ignoreDockContrast && !Presa.prototype.eq.call(tar, attr)) return ch // tar[0] !== attr
       angle |= 1 << 2
     }
     if ((tar = line[x + 1]) && ANGLES_R[tar.ch]) {
-      if (!ignoreDockContrast && tar[0] !== attr) return ch
+      if (!ignoreDockContrast && !Presa.prototype.eq.call(tar, attr)) return ch // tar[0] !== attr
       angle |= 1 << 1
     }
     if ((row = lines[y + 1]) && (tar = row[x]) && ANGLES_D[tar.ch]) {
-      if (!ignoreDockContrast && tar[0] !== attr) return ch
+      if (!ignoreDockContrast && !Presa.prototype.eq.call(tar, attr)) return ch // tar[0] !== attr
       angle |= 1 << 0
     }
     // Experimental: fixes this situation:
@@ -716,8 +723,8 @@ export class Screen extends Node {
     let acs
     if (this._buf) { main += this._buf, this._buf = '' }
     const { cursor, program, tput, options } = this,
-          curArti                            = cursor.artificial,
-          curArtiRender                      = curArti && !cursor._hidden && cursor._state,
+          cursorArti                         = cursor.artificial,
+          cursorArtiRender                   = cursorArti && !cursor._hidden && cursor._state,
           _x                                 = program.x,
           _y                                 = program.y,
           tBackErase                         = tput.bools.back_color_erase,
@@ -727,90 +734,49 @@ export class Screen extends Node {
           tColors                            = tput.colors
     for (let y = start; y <= end; y++) {
       let ln = this.lines[y], ol = this.olines[y]
-      if (!ln.dirty && !(curArti && y === _y)) continue
+      if (!ln.dirty && !(cursorArti && y === _y)) continue
       ln.dirty = false
 
       let out = ''
-      let normAttr
-      let attr = normAttr = this.normAttr
+      let normAttr = Presa.build().assign(this.normAttr)
+      let attr = Presa.build().assign(this.normAttr)
 
       for (let x = 0, ce, oc; (x < ln.length) && (ce = ln[x]); x++) {
-        let [ data ] = ce, { ch } = ce
+        let data = Presa.build().assign(ce), ch = ce.ch//let [ data ] = ce, { ch } = ce
         // Render the artificial cursor.
-        if (curArtiRender && x === _x && y === _y) {
-          const curAttr = this.#cursorAttr(this.cursor, data)
-          if (curAttr.ch) ch = curAttr.ch
-          data = curAttr.attr
+        if (cursorArtiRender && x === _x && y === _y) {
+          const cursorAttr = this.#cursorAttr(this.cursor, data)
+          if (cursorAttr.ch) ch = cursorAttr.ch
+          data = cursorAttr.attr
         }
-        // Take advantage of xterm's back_color_erase feature by using a
-        // lookahead. Stop spitting out so many damn spaces. NOTE: Is checking
-        // the bg for non BCE terminals worth the overhead?
+        // Take advantage of xterm's back_color_erase feature by using a lookahead.
+        // Stop spitting out so many damn spaces.
+        // NOTE: Is checking the bg for non BCE terminals worth the overhead?
         if (options.useBCE && ch === SP &&
-          (tBackErase || (data & 0x1ff) === (normAttr & 0x1ff)) &&
-          ((data >> 18) & 8) === ((normAttr >> 18) & 8)
+          (tBackErase || (data[2]) === (normAttr[2])) && // (tBackErase || (data & 0x1ff) === (normAttr & 0x1ff)) &&
+          ((data[0]) & 8) === ((normAttr[0]) & 8) //  ((data >> 18) & 8) === ((normAttr >> 18) & 8)
         ) {
           let clr = true, neq = false
           for (let i = x, _ce, _oc; (i < ln.length) && (_ce = ln[i]); i++) {
-            if (_ce[0] !== data || _ce.ch !== SP) {
+            if (!Presa.prototype.eq.call(_ce, data) || _ce.ch !== SP) { //  if (_ce[0] !== data || _ce.ch !== SP) {
               clr = false
               break
             }
-            if ((_oc = ol[i]) && _ce[0] !== _oc[0] || _ce.ch !== _oc.ch) { neq = true }
+            if ((_oc = ol[i]) && !Presa.prototype.eq.call(_ce, _oc) || _ce.ch !== _oc.ch) { neq = true } // _ce[0] !== _oc[0]
           }
           if (clr && neq) {
             lx = -1, ly = -1
             if (data !== attr) { out += morisotToSgra(data, tColors), attr = data }
             out += tput.cup(y, x), out += tput.el()
             for (let i = x, _oc; (i < ln.length) && (_oc = ol[i]); i++) {
-              _oc[0] = data, _oc.ch = SP
+              Presa.prototype.assign.call(_oc, data, SP) // _oc[0] = data, _oc.ch = SP
             }
             break
           }
-          // If there's more than 10 spaces, use EL regardless and start over drawing the rest of line.
-          // Might not be worth it. Try to use ECH if the terminal supports it. Maybe only try to use ECH here.
-          // //if (this.tput.strings.erase_chars)
-          // if (!clr && neq && (xx - x) > 10) {
-          //   lx = -1, ly = -1;
-          //   if (data !== attr) {
-          //     out += morisotToSgra(data, this.tput.colors);
-          //     attr = data;
-          //   }
-          //   out += this.tput.cup(y, x);
-          //   if (this.tput.strings.erase_chars) {
-          //     // Use erase_chars to avoid erasing the whole line.
-          //     out += this.tput.ech(xx - x);
-          //   } else {
-          //     out += this.tput.el();
-          //   }
-          //   if (this.tput.strings.parm_right_cursor) {
-          //     out += this.tput.cuf(xx - x);
-          //   } else {
-          //     out += this.tput.cup(y, xx);
-          //   }
-          //   this.fillRegion(data, ' ',
-          //     x, this.tput.strings.erase_chars ? xx : line.length,
-          //     y, y + 1);
-          //   x = xx - 1;
-          //   continue;
-          // }
-          // Skip to the next line if the
-          // rest of the line is already drawn.
-          // if (!neq) {
-          //   for (; xx < line.length; xx++) {
-          //     if (line[xx][0] !== o[xx][0] || line[xx].ch !== o[xx].ch) {
-          //       neq = true;
-          //       break;
-          //     }
-          //   }
-          //   if (!neq) {
-          //     attr = data;
-          //     break;
-          //   }
-          // }
         }
         // Optimize by comparing the real output buffer to the pending output buffer.
         oc = ol[x]
-        if (data === oc[0] && ch === oc.ch) {
+        if (Presa.prototype.eq.call(data, oc) && ch === oc.ch) { // data === oc[0]
           if (lx === -1) { lx = x, ly = y }
           continue
         }
@@ -819,10 +785,10 @@ export class Screen extends Node {
           else { out += this.tput.cup(y, x) }
           lx = -1, ly = -1
         }
-        oc[0] = data, oc.ch = ch
-        if (data !== attr) {
-          if (attr !== normAttr) { out += CSI + SGR }
-          if (data !== normAttr) { out += morisotToSgra(data, this.tput.colors) }
+        Presa.prototype.assign(oc, data, ch) // oc[0] = data, oc.ch = ch
+        if (data !== attr) { // data !== attr
+          if (attr !== normAttr) { out += CSI + SGR } // attr !== normAttr
+          if (data !== normAttr) { out += morisotToSgra(data, this.tput.colors) } // data !== normAttr
         }
         // If we find a double-width char, eat the next character which should be
         // a space due to parseContent's behavior.
@@ -853,22 +819,15 @@ export class Screen extends Node {
         }
         // Attempt to use ACS for supported characters.
         // This is not ideal, but it's how ncurses works.
-        // There are a lot of terminals that support ACS
-        // *and UTF8, but do not declare U8. So ACS ends
-        // up being used (slower than utf8). Terminals
-        // that do not support ACS and do not explicitly
-        // support UTF8 get their unicode characters
-        // replaced with really ugly ascii characters.
-        // It is possible there is a terminal out there
-        // somewhere that does not support ACS, but
-        // supports UTF8, but I imagine it's unlikely.
-        // Maybe remove !this.tput.unicode check, however,
-        // this seems to be the way ncurses does it.
+        // There are a lot of terminals that support ACS *and UTF8, but do not declare U8. So ACS ends up being used (slower than utf8).
+        // Terminals that do not support ACS and do not explicitly support UTF8 get their unicode characters replaced with really ugly ascii characters.
+        // It is possible there is a terminal out there somewhere that does not support ACS,
+        // but supports UTF8, but I imagine it's unlikely.
+        // Maybe remove !this.tput.unicode check, however, this seems to be the way ncurses does it.
         if (tEnterAltCharsetMode &&
           !tBrokenACS && (this.tput.acscr[ch] || acs)) {
-          // Fun fact: even if this.tput.brokenACS wasn't checked here,
-          // the linux console would still work fine because the acs
-          // table would fail the check of: this.tput.acscr[ch]
+          // Fun fact: even if this.tput.brokenACS wasn't checked here, the linux console would still work fine
+          // because the acs table would fail the check of: this.tput.acscr[ch]
           if (this.tput.acscr[ch]) {
             if (acs) { ch = this.tput.acscr[ch] }
             else {
@@ -882,15 +841,11 @@ export class Screen extends Node {
           }
         }
         else {
-          // U8 is not consistently correct. Some terminfo's
-          // terminals that do not declare it may actually
-          // support utf8 (e.g. urxvt), but if the terminal
-          // does not declare support for ACS (and U8), chances
-          // are it does not support UTF8. This is probably
-          // the "safest" way to do this. Should fix things
-          // like sun-color.
-          // NOTE: It could be the case that the $LANG
-          // is all that matters in some cases:
+          // U8 is not consistently correct. Some terminfo's terminals that do not declare it may actually support utf8 (e.g. urxvt),
+          // but if the terminal does not declare support for ACS (and U8), chances are it does not support UTF8.
+          // This is probably the "safest" way to do this.
+          // Should fix things like sun-color.
+          // NOTE: It could be the case that the $LANG is all that matters in some cases:
           // if (!this.tput.unicode && ch > '~') {
           if (!this.tput.unicode && this.tput.numbers.U8 !== 1 && ch > '~') ch = this.tput.utoa[ch] || '?'
         }
@@ -910,7 +865,7 @@ export class Screen extends Node {
     // this.emit('draw');
   }
   _reduceColor(color) { return colors.reduce(color, this.tput.colors) }
-  // Convert an SGR string to our own attribute format.
+  // Convert an SGR string to our own attribute format. -> sgraToPresa
   attrCode(target, source, normal) {
     let effect = (source >> 18) & 0x1ff,
         fore   = (source >> 9) & 0x1ff,
@@ -1019,7 +974,7 @@ export class Screen extends Node {
     }
     return (effect << 18) | (fore << 9) | back
   }
-  // Convert our own attribute format to an SGR string.
+  // Convert our own attribute format to an SGR string. -> presaToSgra
   codeAttr(code) {
     let effect = (code >> 18) & 0x1ff,
         fore   = (code >> 9) & 0x1ff,
@@ -1051,6 +1006,7 @@ export class Screen extends Node {
     if (out[out.length - 1] === ';') out = out.slice(0, -1)
     return CSI + out + SGR
   }
+
   focusOffset(offset) {
     const shown = this.keyable.filter(el => !el.detached && el.visible).length
     if (!shown || !offset) { return }
@@ -1133,6 +1089,7 @@ export class Screen extends Node {
   }
   clearRegion(xi, xl, yi, yl, override) { return this.fillRegion(this.normAttr, ' ', xi, xl, yi, yl, override) }
   fillRegion(attr, ch, xi, xl, yi, yl, override) {
+    console.log('>> [screen.fillRegion]', attr, ch, xi, xl, yi, yl, override)
     const { lines } = this
     if (xi < 0) xi = 0
     if (yi < 0) yi = 0
@@ -1140,8 +1097,8 @@ export class Screen extends Node {
       if (!(line = lines[yi])) break
       for (let i = xi, cell; i < xl; i++) {
         if (!(cell = line[i])) break
-        if (override || attr !== cell[0] || ch !== cell.ch) {
-          cell[0] = attr, cell.ch = ch, line.dirty = true
+        if (override || !Presa.prototype.eq.call(attr, cell) || ch !== cell.ch) { // if (override || attr !== cell[0] || ch !== cell.ch) {
+          Presa.prototype.assign.call(cell, attr, ch), line.dirty = true // cell[0] = attr, cell.ch = ch, line.dirty = true
         }
       }
     }
@@ -1378,78 +1335,90 @@ export class Screen extends Node {
     return this.program.cursorReset()
   }
   #cursorAttr(cursor, normAttr) {
+    console.log('>> [screen.#cursorAttr]')
     const { shape } = cursor
-    let attr = normAttr || this.normAttr,
-        cattr,
+    let attr = Presa.build().assign(normAttr || this.normAttr), // attr = normAttr || this.normAttr
+        cursorAttr,
         ch
     if (shape === 'line') {
-      attr &= ~(0x1ff << 9)
-      attr |= 7 << 9
+      // attr &= ~(0x1ff << 9) // clear foreColor to 0
+      // attr |= 7 << 9 // set foreColor to 7
+      attr[1] = COLORS_4_BITS[7]
       ch = '\u2502'
     }
     else if (shape === 'underline') {
-      attr &= ~(0x1ff << 9)
-      attr |= 7 << 9
-      attr |= 2 << 18
+      // attr &= ~(0x1ff << 9) // clear foreColor to 0
+      // attr |= 7 << 9 // set foreColor to 7
+      // attr |= 2 << 18 // set effect to 2
+      attr[1] = COLORS_4_BITS[7]
+      attr[0] |= 2
     }
     else if (shape === 'block') {
-      attr &= ~(0x1ff << 9)
-      attr |= 7 << 9
-      attr |= 8 << 18
+      // attr &= ~(0x1ff << 9) // clear foreColor to 0
+      // attr |= 7 << 9 // set foreColor to 7
+      // attr |= 8 << 18 // set effect to 8
+      attr[1] = COLORS_4_BITS[7]
+      attr[0] |= 8
     }
     else if (typeof shape === OBJ && shape) {
-      cattr = Element.prototype.sattr.call(cursor, shape)
+      cursorAttr = Element.prototype.sattr.call(cursor, shape)
       if (shape.bold || shape.underline || shape.blink || shape.inverse || shape.invisible) {
-        attr &= ~(0x1ff << 18)
-        attr |= ((cattr >> 18) & 0x1ff) << 18
+        // attr &= ~(0x1ff << 18) // clear effect to 0
+        // attr |= ((cursorAttr >> 18) & 0x1ff) << 18 // clean cursorAttr effect and paste the effect to attr
+        attr[0] |= cursorAttr[0]
       }
       if (shape.fg) {
-        attr &= ~(0x1ff << 9)
-        attr |= ((cattr >> 9) & 0x1ff) << 9
+        // attr &= ~(0x1ff << 9) // clear foreColor to 0
+        // attr |= ((cursorAttr >> 9) & 0x1ff) << 9  // clean cursorAttr foreColor and paste the foreColor to attr
+        attr[1] = cursorAttr[1]
       }
       if (shape.bg) {
-        attr &= ~(0x1ff << 0)
-        attr |= cattr & 0x1ff
+        // attr &= ~(0x1ff << 0) // clear backColor to 0
+        // attr |= cursorAttr & 0x1ff // clean cursorAttr backColor and paste the backColor to attr
+        attr[2] = cursorAttr[2]
       }
       if (shape.ch) { ch = shape.ch }
     }
     if (cursor.color != null) {
-      attr &= ~(0x1ff << 9)
-      attr |= cursor.color << 9
+      // attr &= ~(0x1ff << 9) // clear foreColor to 0
+      // attr |= cursor.color << 9 // shift cursor.color to foreColor bit-position and paste it to attr
+      attr[1] = cursor.color
     }
     return { ch, attr }
   }
   screenshot(xi, xl, yi, yl, term) {
+    console.log('>> [screen.screenShot]')
     if (xi == null) xi = 0
     if (xl == null) xl = this.cols
     if (yi == null) yi = 0
     if (yl == null) yl = this.rows
     if (xi < 0) xi = 0
     if (yi < 0) yi = 0
-    const screenAttr = this.normAttr
-    if (term) { this.normAttr = term.defAttr }
+    const screenAttr = Presa.build().assign(this.normAttr) // screenAttr = this.normAttr
+    if (term) { Presa.prototype.assign.call(this.normAttr, term.defAttr) } // this.normAttr = term.defAttr
     let main = ''
-    for (let y = yi, line, out, attr; y < yl; y++) {
+    for (let y = yi, line, out, attr = Presa.build(); y < yl; y++) {
       line = term ? term.lines[y] : this.lines[y]
       if (!line) break
 
       out = ''
-      attr = this.normAttr
+      Presa.prototype.assign.call(attr, this.normAttr) // attr = this.normAttr
 
       for (let x = xi, cell, at, ch; x < xl; x++) {
         if (!(cell = line[x])) break
-
-        at = cell[0]
-        ch = cell.ch
-        if (at !== attr) {
-          if (attr !== this.normAttr) out += CSI + SGR
-          if (at !== this.normAttr) {
-            let _at = at
+        at = cell, ch = cell.ch // at = cell[0], ch = cell.ch
+        if (!Presa.prototype.eq.call(at, attr)) { // at !== attr
+          if (!Presa.prototype.eq.call(attr, this.normAttr)) out += CSI + SGR // at !== this.normAttr
+          if (!Presa.prototype.eq.call(at, this.normAttr)) { // at !== this.normAttr
+            let _at = at.slice() // let _at = at
             if (term) {
-              if (((_at >> 9) & 0x1ff) === 257) _at |= 0x1ff << 9
-              if ((_at & 0x1ff) === 256) _at |= 0x1ff
+              // if (((_at >> 9) & 0x1ff) === 257) _at |= 0x1ff << 9 // if foreColor is 257, foreColor set to NAC
+              // if ((_at & 0x1ff) === 256) _at |= 0x1ff // if backColor is 256, backColor set to NAC
+              //
+              // if (_at[1] === NAC) {}
+              // if (_at[0] === NAC) {}
             }
-            out += morisotToSgra(_at, this.tput.colors)
+            out += presaToSgra(_at, this.tput.colors) // morisotToSgra(_at, this.tput.colors)
           }
         }
         if (this.fullUnicode) {
@@ -1459,13 +1428,13 @@ export class Screen extends Node {
           }
         }
         out += ch
-        attr = at
+        Presa.prototype.assign.call(attr, at) // attr = at
       }
-      if (attr !== this.normAttr) { out += CSI + SGR }
+      if (!Presa.prototype.eq.call(attr, this.normAttr)) { out += CSI + SGR } // attr !== this.normAttr
       if (out) { main += (y > 0 ? LF : '') + out }
     }
     main = main.replace(/(?:\s*\x1b\[40m\s*\x1b\[m\s*)*$/, '') + LF
-    if (term) { this.normAttr = screenAttr }
+    if (term) { Presa.prototype.assign.call(this.normAttr, screenAttr) } // this.normAttr = screenAttr
     return main
   }
   /**

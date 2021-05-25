@@ -9,6 +9,7 @@ export class Presa extends Array {
   constructor() {
     super(3) // this[0] = e, this[1] = f, this[2] = b
   }
+  static build() { return new Presa() }
   inject(e, f, b, c) {
     this[0] = e
     this[1] = f
@@ -23,10 +24,22 @@ export class Presa extends Array {
     if (char) this.ch = char
     return this
   }
-  blend(beta, alpha) {
-    if (beta) { // if right provided: mixColors
+  copy() { return (new Presa).assign(this, this.ch) }
+  shallow() {
+    const vec = this.slice()
+    vec.ch = this.ch
+    return vec
+  }
+  eq(y) {
+    if (this === y) return true
+    if (!this) return false
+    if (!y) return false
+    return this[0] === y[0] && this[1] === y[1] && this[2] === y[2]
+  }
+  blend(support, alpha) {
+    if (support) { // if right provided: mixColors
       let [ , f_, b_ ] = this,
-          [ , _f, _b ] = beta
+          [ , _f, _b ] = support
       if (b_ === NAC) b_ = 0 // if left is NAC: left is noir
       if (_b === NAC) _b = 0 // if right is NAC: right is noir
       b_ = mixColors(b_, _b, alpha) // mix
@@ -37,15 +50,27 @@ export class Presa extends Array {
       }
       this[1] = f_, this[2] = b_
     }
+    else {
+
+    }
     return this
   }
-  shallow() {
-    const vec = this.slice()
-    vec.ch = this.ch
-    return vec
+  reblend(main, alpha) {
+    if (main) { // if right provided: mixColors
+      let [ , f_, b_ ] = this,
+          [ , _f, _b ] = main
+      if (b_ === NAC) b_ = 0 // if left is NAC: left is noir
+      if (_b === NAC) _b = 0 // if right is NAC: right is noir
+      _b = mixColors(_b, b_, alpha) // mix
+      if (_f === NAC) { _f = GREY } // if left is NAC: left is grey
+      else {
+        if (f_ === NAC) f_ = GREY // if right is NAC: right is grey
+        _f = mixColors(_f, f_, alpha) // mix
+      }
+      this[1] = _f, this[2] = _b
+    }
+    return this
   }
-  eq(y) { return this[0] === y[0] && this[1] === y[1] && this[2] === y[2] }
-
   mergeSGR(sgrAttr, norm) {
     const vec = sgrAttr.slice(2, -1).split(';')
     if (!vec[0]) vec[0] = '0'

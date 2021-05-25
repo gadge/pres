@@ -1,6 +1,9 @@
+import { Dye }                      from '@palett/dye'
+import { DyeFab }                   from '@palett/dye-factory'
+import { INVERSE, UNDERLINE }       from '@palett/enum-font-effects'
+import { intToStr }                 from '@palett/stringify'
 import { logger, xr }               from '@spare/logger'
 import { LIGHT, nameToColor, PUNC } from '../src/cezanne'
-
 
 const candidates = {
   default: -1,   // special
@@ -46,15 +49,16 @@ const candidates = {
   brightgray: 7
 }
 
-
+const FabInv = DyeFab.prep(INVERSE)
+const FabUnd = DyeFab.prep(UNDERLINE)
 for (const [ name, value ] of Object.entries(candidates)) {
   let color = nameToColor(name)
-  if (color < 0) { color = ~color }
+  let dye = Dye.int.call(FabInv, color)
   xr()
-    [name](String(LIGHT.exec(name)))
+    [dye(name.padStart(14))](String(LIGHT.exec(name)).padStart(8))
     .match(LIGHT.test(name))
-    .to(name.replace(LIGHT, '').replace(PUNC, ''))
-    .color(String(color))
+    .to(name.replace(LIGHT, '').replace(PUNC, '').padStart(7))
+    .color(intToStr.call(FabUnd, color))
     .assert(value)
     |> logger
 }

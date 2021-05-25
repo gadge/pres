@@ -2,6 +2,7 @@ import { hexToInt, rgbToInt } from '@palett/convert'
 import { CSI }                from '@pres/enum-control-chars'
 import { SGR }                from '@pres/enum-csi-codes'
 import * as colors            from '@pres/util-colors'
+import { SC }                 from '@texting/enum-chars'
 import { FUN, NUM, STR }      from '@typen/enum-data-types'
 import { nullish }            from '@typen/nullish'
 import { Presa }              from './presa'
@@ -27,6 +28,25 @@ export const COLOR_CODES = {
   gray: 8,
 }
 
+export const COLORS_4_BITS = [
+  [ 0, 0, 0 ], // noir
+  [ 205, 0, 0 ], // rouge
+  [ 0, 205, 0 ], // vert
+  [ 205, 205, 0 ], // jaune
+  [ 0, 0, 238 ], // bleu
+  [ 205, 0, 205 ], // magenta
+  [ 0, 205, 205 ], // cyan
+  [ 229, 229, 229 ], // blanc
+  [ 127, 127, 127 ], // noir_brillant
+  [ 255, 0, 0 ], // rouge_brillant
+  [ 0, 255, 0 ], // vert_brillant
+  [ 255, 255, 0 ], // jaune_brillant
+  [ 92, 92, 255 ], // bleu_brillant
+  [ 255, 0, 255 ], // magenta_brillant
+  [ 0, 255, 255 ], // cyan_brillant
+  [ 255, 255, 255 ], // blanc_brillant
+].map(rgbToInt)
+
 
 export const tryHexToInt = hex => hex[0] === '#' ? hexToInt(hex) : null
 
@@ -39,18 +59,18 @@ export const PUNC = /[\W_]+/g
  * // color &= 7, color += 8
  */
 export const nameToColor = (name) => {
-  let color
-  if (name) color = COLOR_CODES[name = name.replace(PUNC, '')]
-  if (!nullish(color)) return isNaN(color) ? NAC : ~color // 按位取反
-  if (LIGHT.test(name)) color = COLOR_CODES[name.replace(LIGHT, '')]
-  if (!nullish(color)) return isNaN(color) ? NAC : ~(color === 8 ? (color - 1) : (color + 8))
+  let index
+  if (name) index = COLOR_CODES[name = name.replace(PUNC, '')]
+  if (!nullish(index)) return isNaN(index) ? NAC : COLORS_4_BITS[index] // 按位取反
+  if (LIGHT.test(name)) index = COLOR_CODES[name.replace(LIGHT, '')]
+  if (!nullish(index)) return isNaN(index) ? NAC : COLORS_4_BITS[index === 8 ? index - 1 : index + 8]
   return null
 }
 
 export const convColor = color => {
   const t = typeof color
   color = t === NUM ? color
-    : t === STR ? tryHexToInt(name) ?? nameToColor(name) ?? NAC
+    : t === STR ? tryHexToInt(color) ?? nameToColor(color) ?? NAC
       : Array.isArray(color) ? rgbToInt(color)
         : NAC
   return color
@@ -73,7 +93,7 @@ export const styleToInt = style => {
 // }
 
 export function styleToPresa(style = {}, fore, back) {
-  if (nullish(fg) && nullish(bg)) { (fore = style.fore || style.fg), (back = style.back || style.bg) }
+  if (nullish(fore) && nullish(back)) { (fore = style.fore || style.fg), (back = style.back || style.bg) }
   if (typeof fore === FUN) fore = fore(this)
   if (typeof back === FUN) back = back(this)
   return [ styleToInt(style), convColor(fore), convColor(back) ]
@@ -87,8 +107,8 @@ export function styleToPresa(style = {}, fore, back) {
  * @returns {number[]}
  */
 export function sgraToPresa(target, source, norm) {
-  if (typeof source === NUM) source = morisotToPresa(source)
-  if (typeof norm === NUM) norm = morisotToPresa(norm)
+  // if (typeof source === NUM) source = morisotToPresa(source)
+  // if (typeof norm === NUM) norm = morisotToPresa(norm)
   let [ effect, fore, back ] = source
   const vec = target.slice(2, -1).split(';')
   if (!vec[0]) vec[0] = '0'

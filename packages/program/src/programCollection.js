@@ -15,7 +15,7 @@ export class ProgramCollection {
     if (ProgramCollection._bound) return
     ProgramCollection._bound = true
     ProgramCollection.unshiftEvent(process, EXIT, ProgramCollection._exitHandler)
-    console.log('>> [ProgramCollection.initialize]', ProgramCollection.total, `[ ${process.eventNames()} ]`)
+    console.log('>> static [program.initialize]', ProgramCollection.total, `[ ${process.eventNames()} ]`)
   }
   // We could do this easier by just manipulating the _events object, or for
   // older versions of node, manipulating the array returned by listeners(), but

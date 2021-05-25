@@ -8,7 +8,10 @@ import { EXIT, SIGINT, SIGQUIT, SIGTERM, UNCAUGHT_EXCEPTION, } from '@pres/enum-
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
-const SIGNAL_COLLECTION = [ SIGTERM, SIGINT, SIGQUIT, EXIT, UNCAUGHT_EXCEPTION ]
+const SIGNAL_COLLECTION = [
+  SIGTERM, SIGINT, SIGQUIT,
+  EXIT, UNCAUGHT_EXCEPTION
+]
 
 export class ScreenCollection {
   static global = null
@@ -32,22 +35,27 @@ export class ScreenCollection {
       const onSignal = ScreenCollection[name] ?? (ScreenCollection[name] = signalHandler.bind({ signal }))
       process.on(signal, onSignal)
     }
-    console.log('>> [ScreenCollection.initialize]', ScreenCollection.total, `[ ${Object.keys(ScreenCollection.handlers)} ]`)
+    console.log('>> static [screen.initialize]', ScreenCollection.total, `[ ${Object.keys(ScreenCollection.handlers)} ]`)
   }
   static _uncaughtExceptionHandler(err) {
     if (process.listeners(UNCAUGHT_EXCEPTION).length > 1) return
     ScreenCollection.instances.slice()?.forEach(screen => screen?.destroy())
     err = err || new Error('Uncaught Exception.')
+    console.log('>> static [screen.uncaughtExceptionHandler]')
     console.error(err.stack ? err.stack + '' : err + '')
     nextTick(() => process.exit(1))
   }
-  static _exitHandler() {
+  static _exitHandler(err) {
+    console.error('>> static [screen.exitHandler]')
+    console.error(err)
     ScreenCollection.instances.slice()?.forEach(screen => screen?.destroy())
   }
 }
 
-function signalHandler() {
+function signalHandler(err) {
   const signal = this?.signal
+  console.error('>> static [screen.signalHandler]', signal)
+  console.error(err)
   if (process.listeners(signal).length > 1) return
   nextTick(() => process.exit(0))
 }

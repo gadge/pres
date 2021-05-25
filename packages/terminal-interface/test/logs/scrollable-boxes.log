@@ -6,9 +6,9 @@ OUT: >> [new tput] [boo] (40) [num] (15) [str] (231) [all] (286)\n
 -
 OUT: >> [program.configIO] [terminal] alacritty [tmux] false\n
 -
-OUT: >> [ProgramCollection.initialize] ^[[33m1^[[39m [ newListener,removeListener,warning,SIGWINCH,SIGTERM,SIGINT,SIGQUIT,uncaughtException,exit ]\n
+OUT: >> static [program.initialize] ^[[33m1^[[39m [ newListener,removeListener,warning,SIGWINCH,SIGTERM,SIGINT,SIGQUIT,uncaughtException,exit ]\n
 -
-OUT: >> [program.configGrid] (34,108)\n
+OUT: >> [program.configGrid] (32,108)\n
 -
 OUT: >> [program.#listenInput] [ end,pause,data,keypress ]\n
 -
@@ -22,123 +22,607 @@ OUT: >> [new node] screen.0 ∈ screen.0\n
 -
 OUT: >> [new node] log.1 ∈ screen.0\n
 -
+OUT: >> [Element.prototype.config] log.1\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  fg: ^[[90mundefined^[[39m,\n  bg: ^[[90mundefined^[[39m,\n  bold: ^[[90mundefined^[[39m,\n  underline: ^[[90mundefined^[[39m,\n  blink: ^[[90mundefined^[[39m,\n  inverse: ^[[90mundefined^[[39m,\n  invisible: ^[[90mundefined^[[39m,\n  transparent: ^[[90mundefined^[[39m,\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ] ]\n
+-
+OUT: >> [Element.prototype.config] log.1\n
+-
 OUT: >> [new node] box.2 ∈ log.1\n
+-
+OUT: >> [Element.prototype.config] box.2\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  fg: ^[[90mundefined^[[39m,\n  bg: ^[[90mundefined^[[39m,\n  bold: ^[[90mundefined^[[39m,\n  underline: ^[[90mundefined^[[39m,\n  blink: ^[[90mundefined^[[39m,\n  inverse: ^[[90mundefined^[[39m,\n  invisible: ^[[90mundefined^[[39m,\n  transparent: ^[[90mundefined^[[39m\n} ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m1^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ] ]\n
+-
+OUT: >> [Element.prototype.config] box.2\n
+-
+OUT: >> [new box]\n
+-
+OUT: >> [new box]\n
 -
 OUT: >> [set scroll] log.1\n
 -
+OUT: >> [screen.config] [ ^[[33m0^[[39m, ^[[1mnull^[[22m, ^[[1mnull^[[22m ]\n
+-
 OUT: >> [new node] scrollable-box.3 ∈ screen.0\n
+-
+OUT: >> [Element.prototype.config] scrollable-box.3\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] { bg: ^[[32m'#A7FFEB'^[[39m, border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m } } ^[[90mundefined^[[39m #A7FFEB\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ] ]\n
+-
+OUT: >> [Element.prototype.config] scrollable-box.3\n
+-
+OUT: >> [new box]\n
 -
 OUT: >> [set scroll] scrollable-box.3\n
 -
 OUT: >> [new node] box.4 ∈ scrollable-box.3\n
 -
+OUT: >> [Element.prototype.config] box.4\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] { bg: ^[[32m'#D32F2F'^[[39m } ^[[90mundefined^[[39m #D32F2F\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ]\n]\n
+-
+OUT: >> [Element.prototype.config] box.4\n
+-
+OUT: >> [new box]\n
+-
 OUT: >> [new node] box.5 ∈ scrollable-box.3\n
 -
+OUT: >> [Element.prototype.config] box.5\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] { bg: ^[[32m'red'^[[39m } ^[[90mundefined^[[39m red\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13434880^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13434880^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13434880^[[39m ] ]\n
+-
+OUT: >> [Element.prototype.config] box.5\n
+-
+OUT: >> [new box]\n
+-
 OUT: >> [new node] box.6 ∈ scrollable-box.3\n
+-
+OUT: >> [Element.prototype.config] box.6\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'magenta'^[[39m,\n  focus: { bg: ^[[32m'blue'^[[39m },\n  hover: { bg: ^[[32m'red'^[[39m },\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m magenta\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n]\n
+-
+OUT: >> [Element.prototype.config] box.6\n
+-
+OUT: >> [new box]\n
 -
 OUT: >> [set scroll] box.6\n
 -
 OUT: >> [new node] box.7 ∈ box.6\n
 -
+OUT: >> [Element.prototype.config] box.7\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'yellow'^[[39m,\n  focus: { bg: ^[[32m'blue'^[[39m },\n  hover: { bg: ^[[32m'red'^[[39m },\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m yellow\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13487360^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13487360^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13487360^[[39m ] ]\n
+-
+OUT: >> [Element.prototype.config] box.7\n
+-
+OUT: >> [new box]\n
+-
 OUT: >> [set scroll] box.7\n
+-
+OUT: >> [screen.render] [ ^[[33m32^[[39m, ^[[33m108^[[39m ] this.lines[0][0] [ [ ^[[33m0^[[39m, ^[[1mnull^[[22m, ^[[1mnull^[[22m ], ch: ^[[32m' '^[[39m ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  fg: ^[[90mundefined^[[39m,\n  bg: ^[[90mundefined^[[39m,\n  bold: ^[[90mundefined^[[39m,\n  underline: ^[[90mundefined^[[39m,\n  blink: ^[[90mundefined^[[39m,\n  inverse: ^[[90mundefined^[[39m,\n  invisible: ^[[90mundefined^[[39m,\n  transparent: ^[[90mundefined^[[39m,\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m },\n  scrollbar: { inverse: ^[[33mtrue^[[39m },\n  track: {\n    fg: ^[[90mundefined^[[39m,\n    bg: ^[[32m'yellow'^[[39m,\n    bold: ^[[90mundefined^[[39m,\n    underline: ^[[90mundefined^[[39m,\n    inverse: ^[[90mundefined^[[39m,\n    invisible: ^[[90mundefined^[[39m\n  }\n} ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ] ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'#A7FFEB'^[[39m,\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m },\n  scrollbar: {\n    fg: ^[[90mundefined^[[39m,\n    bg: ^[[90mundefined^[[39m,\n    bold: ^[[90mundefined^[[39m,\n    underline: ^[[90mundefined^[[39m,\n    inverse: ^[[33mtrue^[[39m,\n    invisible: ^[[90mundefined^[[39m\n  }\n} ^[[90mundefined^[[39m #A7FFEB\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ] ]\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'#A7FFEB'^[[39m,\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m },\n  scrollbar: {\n    fg: ^[[90mundefined^[[39m,\n    bg: ^[[90mundefined^[[39m,\n    bold: ^[[90mundefined^[[39m,\n    underline: ^[[90mundefined^[[39m,\n    inverse: ^[[33mtrue^[[39m,\n    invisible: ^[[90mundefined^[[39m\n  }\n} ^[[90mundefined^[[39m #A7FFEB\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element.sattr] {\n  fg: ^[[90mundefined^[[39m,\n  bg: ^[[90mundefined^[[39m,\n  bold: ^[[90mundefined^[[39m,\n  underline: ^[[90mundefined^[[39m,\n  inverse: ^[[33mtrue^[[39m,\n  invisible: ^[[90mundefined^[[39m\n} ^[[90mundefined^[[39m #A7FFEB\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m8^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element.sattr] { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m } ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] { bg: ^[[32m'#D32F2F'^[[39m } ^[[90mundefined^[[39m #D32F2F\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ]\n]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] { bg: ^[[32m'red'^[[39m } ^[[90mundefined^[[39m red\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13434880^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13434880^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13434880^[[39m ] ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'magenta'^[[39m,\n  focus: { bg: ^[[32m'blue'^[[39m },\n  hover: { bg: ^[[32m'red'^[[39m },\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m magenta\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n]\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'magenta'^[[39m,\n  focus: { bg: ^[[32m'blue'^[[39m },\n  hover: { bg: ^[[32m'red'^[[39m },\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m magenta\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n
+-
+OUT: >> [element.sattr] { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m } ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'yellow'^[[39m,\n  focus: { bg: ^[[32m'blue'^[[39m },\n  hover: { bg: ^[[32m'red'^[[39m },\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m yellow\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13487360^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13487360^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13487360^[[39m ] ]\n
 -
 OUT: >> [new node] box.8 ∈ screen.0\n
 -
+OUT: >> [Element.prototype.config] box.8\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  fg: ^[[90mundefined^[[39m,\n  bg: ^[[90mundefined^[[39m,\n  bold: ^[[90mundefined^[[39m,\n  underline: ^[[90mundefined^[[39m,\n  blink: ^[[90mundefined^[[39m,\n  inverse: ^[[90mundefined^[[39m,\n  invisible: ^[[90mundefined^[[39m,\n  transparent: ^[[90mundefined^[[39m,\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m1^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ] ]\n
+-
+OUT: >> [Element.prototype.config] box.8\n
+-
 OUT: >> [new node] box.9 ∈ box.8\n
 -
-OUT: ^[[?1049h^[[?1h^[=^[[1;34r^[[?25l^[[1;1H^[[H^[[2J^[[?1000h^[[?1002h^[[?1003h^[[?1005h^[7^[[5;1H^[[11C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[6;1H^[[6;12Hx^[[42m^[(Bfoobar                                                                             ^[[m^[[7;42m ^[[m^[(0x^[[7;1H^[[7;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[8;1H^[[8;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[9;1H^[[9;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[10;1H^[[10;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[11;1H^[[11;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[12;1H^[[12;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[13;1H^[[13;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[14;1H^[[14;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[15;1H^[[15;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[16;1H^[[16;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[17;1H^[[17;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[18;1H^[[18;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[19;1H^[[19;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[20;1H^[[20;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[21;1H^[[21;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[22;1H^[[22;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[23;1H^[[23;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[24;1H^[[24;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[25;1H^[[25;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[26;1H^[[26;12Hx^[[42m^[(B        ^[[m^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[42m^[(B        ^[[m^[(0x^[[27;1H^[[27;12Hx^[[42m^[(B        ^[[m^[(0x^[[45m^[(B                                                                  ^[[m^[(0x^[[42m^[(B        ^[[m^[(0x^[[28;1H^[[28;12Hx^[[42m^[(B        ^[[m^[(0x^[[45m^[(B                                                                  ^[[m^[(0x^[[42m^[(B        ^[[m^[(0x^[[29;1H^[[29;12Hx^[[42m^[(B        ^[[m^[(0x^[[45m^[(B                                                                  ^[[m^[(0x^[[42m^[(B        ^[[m^[(0x^[[30;1H^[[30;12Hx^[[42m^[(B        ^[[m^[(0x^[[45m^[(B                                                                  ^[[m^[(0x^[[42m^[(B        ^[[m^[(0x^[[31;1H^[[31;12Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8^[7^[[16;1H^[[16;43H^[(0lq^[(B ^[[1;31mWARNING^[[m ^[(0qqqqqqqqqqqk^[[17;1H^[[17;43Hx^[(B                     ^[(0x^[[18;1H^[[18;43Hx^[(B ^[[1mTerminfo not found.^[[m ^[(0x^[[19;1H^[[19;43Hx^[(B                     ^[(0x^[[20;1H^[[20;43Hmqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+OUT: >> [Element.prototype.config] box.9\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  fg: ^[[90mundefined^[[39m,\n  bg: ^[[90mundefined^[[39m,\n  bold: ^[[90mundefined^[[39m,\n  underline: ^[[90mundefined^[[39m,\n  blink: ^[[90mundefined^[[39m,\n  inverse: ^[[90mundefined^[[39m,\n  invisible: ^[[90mundefined^[[39m,\n  transparent: ^[[90mundefined^[[39m\n} ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m1^[[39m, ^[[33m1^[[39m, ^[[33m16777216^[[39m ] ]\n
+-
+OUT: >> [Element.prototype.config] box.9\n
+-
+OUT: >> [new box]\n
+-
+OUT: >> [new box]\n
+-
+OUT: >> [screen.render] [ ^[[33m32^[[39m, ^[[33m108^[[39m ] this.lines[0][0] [ [ ^[[33m0^[[39m, ^[[1mnull^[[22m, ^[[1mnull^[[22m ], ch: ^[[32m' '^[[39m ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  fg: ^[[90mundefined^[[39m,\n  bg: ^[[90mundefined^[[39m,\n  bold: ^[[90mundefined^[[39m,\n  underline: ^[[90mundefined^[[39m,\n  blink: ^[[90mundefined^[[39m,\n  inverse: ^[[90mundefined^[[39m,\n  invisible: ^[[90mundefined^[[39m,\n  transparent: ^[[90mundefined^[[39m,\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m },\n  scrollbar: { inverse: ^[[33mtrue^[[39m },\n  track: {\n    fg: ^[[90mundefined^[[39m,\n    bg: ^[[32m'yellow'^[[39m,\n    bold: ^[[90mundefined^[[39m,\n    underline: ^[[90mundefined^[[39m,\n    inverse: ^[[90mundefined^[[39m,\n    invisible: ^[[90mundefined^[[39m\n  }\n} ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ] ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'#A7FFEB'^[[39m,\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m },\n  scrollbar: {\n    fg: ^[[90mundefined^[[39m,\n    bg: ^[[90mundefined^[[39m,\n    bold: ^[[90mundefined^[[39m,\n    underline: ^[[90mundefined^[[39m,\n    inverse: ^[[33mtrue^[[39m,\n    invisible: ^[[90mundefined^[[39m\n  }\n} ^[[90mundefined^[[39m #A7FFEB\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ] ]\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'#A7FFEB'^[[39m,\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m },\n  scrollbar: {\n    fg: ^[[90mundefined^[[39m,\n    bg: ^[[90mundefined^[[39m,\n    bold: ^[[90mundefined^[[39m,\n    underline: ^[[90mundefined^[[39m,\n    inverse: ^[[33mtrue^[[39m,\n    invisible: ^[[90mundefined^[[39m\n  }\n} ^[[90mundefined^[[39m #A7FFEB\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element.sattr] {\n  fg: ^[[90mundefined^[[39m,\n  bg: ^[[90mundefined^[[39m,\n  bold: ^[[90mundefined^[[39m,\n  underline: ^[[90mundefined^[[39m,\n  inverse: ^[[33mtrue^[[39m,\n  invisible: ^[[90mundefined^[[39m\n} ^[[90mundefined^[[39m #A7FFEB\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m8^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element.sattr] { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m } ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] { bg: ^[[32m'#D32F2F'^[[39m } ^[[90mundefined^[[39m #D32F2F\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ]\n]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] { bg: ^[[32m'red'^[[39m } ^[[90mundefined^[[39m red\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13434880^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13434880^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13434880^[[39m ] ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'magenta'^[[39m,\n  focus: { bg: ^[[32m'blue'^[[39m },\n  hover: { bg: ^[[32m'red'^[[39m },\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m magenta\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n]\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'magenta'^[[39m,\n  focus: { bg: ^[[32m'blue'^[[39m },\n  hover: { bg: ^[[32m'red'^[[39m },\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m magenta\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n
+-
+OUT: >> [element.sattr] { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m } ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'yellow'^[[39m,\n  focus: { bg: ^[[32m'blue'^[[39m },\n  hover: { bg: ^[[32m'red'^[[39m },\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m yellow\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13487360^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13487360^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13487360^[[39m ] ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  fg: ^[[90mundefined^[[39m,\n  bg: ^[[90mundefined^[[39m,\n  bold: ^[[90mundefined^[[39m,\n  underline: ^[[90mundefined^[[39m,\n  blink: ^[[90mundefined^[[39m,\n  inverse: ^[[90mundefined^[[39m,\n  invisible: ^[[90mundefined^[[39m,\n  transparent: ^[[90mundefined^[[39m,\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m1^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ] ]\n
+-
+OUT: >> [element.sattr] {\n  fg: ^[[90mundefined^[[39m,\n  bg: ^[[90mundefined^[[39m,\n  bold: ^[[90mundefined^[[39m,\n  underline: ^[[90mundefined^[[39m,\n  blink: ^[[90mundefined^[[39m,\n  inverse: ^[[90mundefined^[[39m,\n  invisible: ^[[90mundefined^[[39m,\n  transparent: ^[[90mundefined^[[39m,\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element.render presa.merge] Presa(3) [ ^[[33m1^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ] ^[[1m\n
+-
+OUT: >> [element.sattr] { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m } ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  fg: ^[[90mundefined^[[39m,\n  bg: ^[[90mundefined^[[39m,\n  bold: ^[[90mundefined^[[39m,\n  underline: ^[[90mundefined^[[39m,\n  blink: ^[[90mundefined^[[39m,\n  inverse: ^[[90mundefined^[[39m,\n  invisible: ^[[90mundefined^[[39m,\n  transparent: ^[[90mundefined^[[39m\n} ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m1^[[39m, ^[[33m1^[[39m, ^[[33m16777216^[[39m ] ]\n
+-
+OUT: >> [element.sattr] {\n  fg: ^[[90mundefined^[[39m,\n  bg: ^[[90mundefined^[[39m,\n  bold: ^[[90mundefined^[[39m,\n  underline: ^[[90mundefined^[[39m,\n  blink: ^[[90mundefined^[[39m,\n  inverse: ^[[90mundefined^[[39m,\n  invisible: ^[[90mundefined^[[39m,\n  transparent: ^[[90mundefined^[[39m\n} ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element.render presa.merge] Presa(3) [ ^[[33m0^[[39m, ^[[33m1^[[39m, ^[[33m16777216^[[39m ] ^[[31m\n
+-
+OUT: >> [element.render presa.merge] Presa(3) [ ^[[33m1^[[39m, ^[[33m1^[[39m, ^[[33m16777216^[[39m ] ^[[1m\n
+-
+OUT: >> [element.render presa.merge] Presa(3) [ ^[[33m1^[[39m, ^[[33m1^[[39m, ^[[33m16777216^[[39m ] ^[[m\n
+-
+OUT: ^[[?1049h^[[?1h^[=^[[1;32r^[[?25l^[[1;1H^[[H^[[2J^[[?1000h^[[?1002h^[[?1003h^[[?1005h^[7^[[5;1H^[[11C^[[m^[[40;30m^[(0l^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mk^[[m^[[6;1H^[[6;12H^[[m^[[40;30mx^[[m^[[40;30m^[(Bf^[[m^[[40;30mo^[[m^[[40;30mo^[[m^[[40;30mb^[[m^[[40;30ma^[[m^[[40;30mr^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[7;1H^[[7;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[8;1H^[[8;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[9;1H^[[9;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[10;1H^[[10;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[11;1H^[[11;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[12;1H^[[12;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[13;1H^[[13;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[14;1H^[[14;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[15;1H^[[15;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[16;1H^[[16;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[17;1H^[[17;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[18;1H^[[18;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[19;1H^[[19;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[20;1H^[[20;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[21;1H^[[21;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[22;1H^[[22;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[23;1H^[[23;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[24;1H^[[24;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[25;1H^[[25;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[26;1H^[[26;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0l^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mk^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[27;1H^[[27;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[28;1H^[[28;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[29;1H^[[29;12H^[[m^[[40;30mm^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mj^[[m^[(B^[8^[7^[[6;1H^[[11C^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(Bf^[[m^[[40;30mo^[[m^[[40;30mo^[[m^[[40;30mb^[[m^[[40;30ma^[[m^[[40;30mr^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[9;1H^[[9;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[14;1H^[[14;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0l^[[m^[[40;30mq^[[m^[[40;30m^[(B ^[[m^[[40;30mW^[[m^[[40;30mA^[[m^[[40;30mR^[[m^[[40;30mN^[[m^[[40;30mI^[[m^[[40;30mN^[[m^[[40;30mG^[[m^[[40;30m ^[[m^[[40;30m^[(0q^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mk^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[15;1H^[[15;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[16;1H^[[16;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30mT^[[m^[[40;30me^[[m^[[40;30mr^[[m^[[40;30mm^[[m^[[40;30mi^[[m^[[40;30mn^[[m^[[40;30mf^[[m^[[40;30mo^[[m^[[40;30m ^[[m^[[40;30mn^[[m^[[40;30mo^[[m^[[40;30mt^[[m^[[40;30m ^[[m^[[40;30mf^[[m^[[40;30mo^[[m^[[40;30mu^[[m^[[40;30mn^[[m^[[40;30md^[[m^[[40;30m.^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[17;1H^[[17;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[18;1H^[[18;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0m^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mj^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[26;1H^[[26;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0l^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mk^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[27;1H^[[27;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[28;1H^[[28;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[(B^[8
+-
+OUT: >> [screen.render] [ ^[[33m32^[[39m, ^[[33m108^[[39m ] this.lines[0][0] [ [ ^[[33m0^[[39m, ^[[1mnull^[[22m, ^[[1mnull^[[22m ], ch: ^[[32m' '^[[39m ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  fg: ^[[90mundefined^[[39m,\n  bg: ^[[90mundefined^[[39m,\n  bold: ^[[90mundefined^[[39m,\n  underline: ^[[90mundefined^[[39m,\n  blink: ^[[90mundefined^[[39m,\n  inverse: ^[[90mundefined^[[39m,\n  invisible: ^[[90mundefined^[[39m,\n  transparent: ^[[90mundefined^[[39m,\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m },\n  scrollbar: { inverse: ^[[33mtrue^[[39m },\n  track: {\n    fg: ^[[90mundefined^[[39m,\n    bg: ^[[32m'yellow'^[[39m,\n    bold: ^[[90mundefined^[[39m,\n    underline: ^[[90mundefined^[[39m,\n    inverse: ^[[90mundefined^[[39m,\n    invisible: ^[[90mundefined^[[39m\n  }\n} ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ] ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'#A7FFEB'^[[39m,\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m },\n  scrollbar: {\n    fg: ^[[90mundefined^[[39m,\n    bg: ^[[90mundefined^[[39m,\n    bold: ^[[90mundefined^[[39m,\n    underline: ^[[90mundefined^[[39m,\n    inverse: ^[[33mtrue^[[39m,\n    invisible: ^[[90mundefined^[[39m\n  }\n} ^[[90mundefined^[[39m #A7FFEB\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ] ]\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'#A7FFEB'^[[39m,\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m },\n  scrollbar: {\n    fg: ^[[90mundefined^[[39m,\n    bg: ^[[90mundefined^[[39m,\n    bold: ^[[90mundefined^[[39m,\n    underline: ^[[90mundefined^[[39m,\n    inverse: ^[[33mtrue^[[39m,\n    invisible: ^[[90mundefined^[[39m\n  }\n} ^[[90mundefined^[[39m #A7FFEB\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element.sattr] {\n  fg: ^[[90mundefined^[[39m,\n  bg: ^[[90mundefined^[[39m,\n  bold: ^[[90mundefined^[[39m,\n  underline: ^[[90mundefined^[[39m,\n  inverse: ^[[33mtrue^[[39m,\n  invisible: ^[[90mundefined^[[39m\n} ^[[90mundefined^[[39m #A7FFEB\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m8^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element.sattr] { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m } ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] { bg: ^[[32m'#D32F2F'^[[39m } ^[[90mundefined^[[39m #D32F2F\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ]\n]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] { bg: ^[[32m'red'^[[39m } ^[[90mundefined^[[39m red\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13434880^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13434880^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13434880^[[39m ] ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'magenta'^[[39m,\n  focus: { bg: ^[[32m'blue'^[[39m },\n  hover: { bg: ^[[32m'red'^[[39m },\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m magenta\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n]\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'magenta'^[[39m,\n  focus: { bg: ^[[32m'blue'^[[39m },\n  hover: { bg: ^[[32m'red'^[[39m },\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m magenta\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n
+-
+OUT: >> [element.sattr] { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m } ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'yellow'^[[39m,\n  focus: { bg: ^[[32m'blue'^[[39m },\n  hover: { bg: ^[[32m'red'^[[39m },\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m yellow\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13487360^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13487360^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13487360^[[39m ] ]\n
+-
+OUT: ^[7^[[6;1H^[[11C^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(Bf^[[m^[[40;30mo^[[m^[[40;30mo^[[m^[[40;30mb^[[m^[[40;30ma^[[m^[[40;30mr^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[14;1H^[[14;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[15;1H^[[15;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[16;1H^[[16;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[17;1H^[[17;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[18;1H^[[18;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[26;1H^[[26;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0l^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mk^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[27;1H^[[27;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[28;1H^[[28;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[(B^[8
+-
+IN: ^[[MC\x87-
+-
+IN: ^[[MC\x88-
+-
+IN: ^[[MC\x89-
+-
+IN: ^[[MC\x89,
+-
+IN: ^[[MC\x8a,
+-
+IN: ^[[MC\x8b,
+-
+IN: ^[[MC\x8c,
+-
+IN: ^[[MC\x8c+
+-
+IN: ^[[MC\x8c*
+-
+IN: ^[[MC\x8c)
+-
+IN: ^[[MC\x8c(
+-
+IN: ^[[MC\x8c'
+-
+IN: ^[[MC\x8c&
+-
+IN: ^[[MC\x8c%
+-
+IN: ^[[MC\x8c$
+-
+IN: ^[[MC\x8c#
+-
+IN: ^[[MC\x8c"
+-
+IN: ^[[MC\x8c#
+-
+IN: ^[[MC\x8c$
+-
+IN: ^[[MC\x8b$
+-
+IN: ^[[MC\x8b%
+-
+IN: ^[[MC\x8a%
+-
+IN: ^[[MC\x8a&
+-
+IN: ^[[MC\x89&
+-
+IN: ^[[MC\x88&
+-
+IN: ^[[MC\x88'
+-
+IN: ^[[MC\x87'
+-
+IN: ^[[MC\x86'
+-
+IN: ^[[MC\x85'
+-
+IN: ^[[MC\x85(
+-
+IN: ^[[MC\x84(
+-
+IN: ^[[MC\x83(
+-
+IN: ^[[MC\x82(
+-
+IN: ^[[MC\x82)
+-
+IN: ^[[MC\x81)
+-
+IN: ^[[MC^@)
+-
+IN: ^[[MC^?)
+-
+IN: ^[[MC~)
+-
+IN: ^[[MC})
+-
+IN: ^[[MC}*
 -
 IN: ^[[MC|*
 -
-IN: ^[[MC|+
+IN: ^[[MC{*
 -
-IN: ^[[MC{+
+IN: ^[[MCz*
 -
-IN: ^[[MCz+
+IN: ^[[MCy*
 -
-IN: ^[[MCz,
+IN: ^[[MCx*
 -
-IN: ^[[MCz-
+IN: ^[[MCw*
 -
-IN: ^[[MCz.
+IN: ^[[MCw+
 -
-IN: ^[[MC{.
+IN: ^[[MCv+
 -
-IN: ^[[MC|.
+IN: ^[[MCu+
 -
-IN: ^[[Ma|.
+IN: ^[[MCt+
 -
-OUT: ^[7^[[6;30r^[[6;1H^[[13M^[[1;34r^[[6;1H^[[42C^[[42m                       ^[[m^[[7;1H^[[7;43H^[[42m                       ^[[m^[[16;1H^[[16;24H^[[45mfoo-one^[[12C^[[m^[(0lq^[(B ^[[1;31mWARNING^[[m ^[(0qqqqqqqqqqqk^[[17;1H^[[17;24H^[[45m^[(Bfoo-two^[[12C^[[m^[(0x^[(B                     ^[(0x^[[30C^[[7;42m^[(B ^[[m^[[18;1H^[[18;12H^[(0x^[[42m^[(B        ^[[m^[(0x^[[45m^[(B  foo-three          ^[[m^[(0x^[(B ^[[1mTerminfo not found.^[[m ^[(0x^[[45m^[(B                      ^[[m^[(0x^[[42m^[(B        ^[[m^[(0x^[[19;1H^[[19;12Hx^[[42m^[(B        ^[[m^[(0x^[[45m^[(B     ^[[m^[(0lqqqk^[[45m^[(B           ^[[m^[(0x^[(B                     ^[(0x^[[45m^[(B                      ^[[m^[(0x^[[42m^[(B        ^[[m^[(0x^[[20;1H^[[20;12Hx^[[42m^[(B        ^[[m^[(0x^[[45m^[(B     ^[[m^[(0x^[[43m^[(Bfoo^[[m^[(0x^[[45m^[(B           ^[[m^[(0mqqqqqqqqqqqqqqqqqqqqqj^[[45m^[(B                      ^[[m^[(0x^[[42m^[(B        ^[[m^[(0x^[[21;1H^[[21;12Hx^[[42m^[(B        ^[[m^[(0mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[[42m^[(B        ^[[m^[(0x^[[22;1H^[[22;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[23;1H^[[23;12Hx^[[42m^[(B  ^[[m^[[41m                                           ^[[m^[[42m                                       ^[[m^[(0x^[[24;1H^[[24;12Hx^[[42m^[(B  ^[[m^[[41m                                           ^[[m^[[42m                                       ^[[m^[(0x^[[25;1H^[[25;12Hx^[[42m^[(B  ^[[m^[[41m  hello1                                   ^[[m^[[42m                                       ^[[m^[(0x^[[26;1H^[[26;12Hx^[[42m^[(B  ^[[m^[[41m  hello2                                   ^[[m^[[42m                                       ^[[m^[(0x^[[27;1H^[[27;12Hx^[[42m^[(B  ^[[m^[[41m                                           ^[[m^[[42m                                       ^[[m^[(0x^[[28;1H^[[28;12Hx^[[42m^[(B  ^[[m^[[41m                                           ^[[m^[[42m                                       ^[[m^[(0x^[[29;1H^[[29;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[[30;1H^[[30;12Hx^[[42m^[(B                                                                                    ^[[m^[(0x^[(B^[8
--
-IN: ^[[Ma|.^[[Ma|.
--
-OUT: ^[7^[[6;1H^[[20C^[(0x^[[45m^[(B     ^[[m^[(0lqqqk^[[45m^[(B                                                        ^[[m^[(0x^[[7;1H^[[7;21Hx^[[45m^[(B     ^[[m^[(0x^[[43m^[(Bfoo^[[m^[(0x^[[45m^[(B                                                        ^[[m^[(0x^[[8;1H^[[8;21Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[[10;1H^[[10;15H^[[41m^[(B                                           ^[[m^[[11;1H^[[11;15H^[[41m                                           ^[[m^[[12;1H^[[12;15H^[[41m  hello1                                   ^[[m^[[13;1H^[[13;15H^[[41m  hello2                                   ^[[m^[[42m                               ^[[m^[[14;1H^[[14;15H^[[41m                                           ^[[m^[[42m                               ^[[m^[[15;1H^[[15;15H^[[41m                                           ^[[m^[[42m                               ^[[m^[[16;1H^[[16;21H^[[42m                      ^[[23C                       ^[[m^[[17;1H^[[17;21H^[[42m                      ^[[23C                       ^[[7C ^[[m^[[18;1H^[[18;21H^[[42m                      ^[[23C                       ^[[m^[[19;1H^[[19;21H^[[42m                      ^[[23C                       ^[[m^[[20;1H^[[20;21H^[[42m                      ^[[23C                       ^[[m^[[21;1H^[[21;21H^[[42m                                                                    ^[[m^[[23;1H^[[23;15H^[[42m                                           ^[[m^[[24;1H^[[24;15H^[[42m                                           ^[[m^[[25;1H^[[25;15H^[[42m                                           ^[[m^[[26;1H^[[26;15H^[[42m                                           ^[[m^[[27;1H^[[27;15H^[[42m                                           ^[[m^[[28;1H^[[28;15H^[[42m                                           ^[[38C^[[m^[[7;42m ^[[m^[[30;1H^[[30;15H^[[41m                                           ^[[m^[8
--
-IN: ^[[Ma|.
--
-OUT: ^[7^[[6;1H^[[20C^[[42m                                                                    ^[[m^[[7;1H^[[7;15H^[[41m                                           ^[[m^[[42m                               ^[[m^[[8;1H^[[8;15H^[[41m                                           ^[[m^[[42m                               ^[[m^[[9;1H^[[9;15H^[[41m  hello1                                   ^[[m^[[10;1H^[[10;17H^[[41mhello2^[[m^[[12;1H^[[12;17H^[[41m      ^[[m^[[13;1H^[[13;15H^[[42m                                           ^[[m^[[14;1H^[[14;15H^[[42m                                           ^[[m^[[15;1H^[[15;15H^[[42m                                           ^[[m^[[27;1H^[[27;15H^[[41m                                           ^[[m^[[28;1H^[[28;15H^[[41m world                                     ^[[38C^[[m^[[42m ^[[m^[[29;1H^[[29;15H^[[41m                                           ^[[m^[[30;1H^[[30;15H^[[42m                                           ^[[38C^[[m^[[7;42m ^[[m^[8
--
-IN: ^[[Ma|.
--
-IN: ^[[Ma|.
--
-IN: ^[[Ma|.
--
-IN: ^[[Ma|.
--
-IN: ^[[Ma|.
--
-IN: ^[[M`|.
--
-OUT: ^[7^[[7;1H^[[14C^[[42m                                           ^[[m^[[8;1H^[[8;15H^[[42m                                           ^[[m^[[9;1H^[[9;15H^[[42m                                           ^[[m^[[10;1H^[[10;15H^[[42m      ^[[m^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[11;1H^[[11;15H^[[42m^[(B      ^[[m^[(0x^[[45m^[(B                                                                  ^[[m^[(0x^[[12;1H^[[12;15H^[[42m^[(B      ^[[m^[(0x^[[45m^[(B                                                                  ^[[m^[(0x^[[13;1H^[[13;21Hx^[[45m^[(B  foo-one                                                         ^[[m^[(0x^[[14;1H^[[14;21Hx^[[45m^[(B  foo-two                                                         ^[[m^[(0x^[[15;1H^[[15;21Hx^[[45m^[(B  foo-three                                                       ^[[m^[(0x^[[16;1H^[[16;21Hx^[[45m^[(B     ^[[m^[(0lqqqk^[[45m^[(B           ^[[23C                      ^[[m^[(0x^[[17;1H^[[17;21Hx^[[45m^[(B     ^[[m^[(0x^[[43m^[(Bfoo^[[m^[(0x^[[45m^[(B           ^[[23C                      ^[[m^[(0x^[[18;1H^[[18;21Hmqqqqqqqqqqqqqqqqqqqqq^[[23Cqqqqqqqqqqqqqqqqqqqqqqj^[[19;1H^[[19;96H^[[7;42m^[(B ^[[m^[[20;1H^[[20;15H^[[41m                            ^[[m^[[21;1H^[[21;15H^[[41m                                           ^[[m^[[22;1H^[[22;15H^[[41m  hello1                                   ^[[m^[[23;1H^[[23;15H^[[41m  hello2                                   ^[[m^[[24;1H^[[24;15H^[[41m                                           ^[[m^[[25;1H^[[25;15H^[[41m                                           ^[[m^[[27;1H^[[27;15H^[[42m                                           ^[[m^[[28;1H^[[28;15H^[[42m                                           ^[[m^[[29;1H^[[29;15H^[[42m                                           ^[[m^[[30;1H^[[30;96H^[[42m ^[[m^[8
--
-IN: ^[[M`|.
--
-OUT: ^[7^[[8;1H^[[95C^[[7;42m ^[[m^[[10;1H^[[10;21H^[[42m                                                                    ^[[m^[[11;1H^[[11;21H^[[42m                                                                    ^[[m^[[12;1H^[[12;21H^[[42m                                                                    ^[[m^[[13;1H^[[13;21H^[[42m                                                                    ^[[m^[[14;1H^[[14;21H^[[42m                                                                    ^[[m^[[15;1H^[[15;21H^[[42m                                                                    ^[[m^[[16;1H^[[16;21H^[[42m                      ^[[23C                       ^[[m^[[17;1H^[[17;21H^[[42m                      ^[[23C                       ^[[m^[[18;1H^[[18;21H^[[42m                      ^[[23C                       ^[[m^[[19;1H^[[19;96H^[[42m ^[[m^[[20;1H^[[20;15H^[[42m                            ^[[m^[[21;1H^[[21;15H^[[42m                                           ^[[m^[[22;1H^[[22;15H^[[42m                                           ^[[m^[[23;1H^[[23;15H^[[42m      ^[[m^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[24;1H^[[24;15H^[[42m^[(B      ^[[m^[(0x^[[45m^[(B                                                                  ^[[m^[(0x^[[25;1H^[[25;15H^[[42m^[(B      ^[[m^[(0x^[[45m^[(B                                                                  ^[[m^[(0x^[[26;1H^[[26;21Hx^[[45m^[(B  foo-one                                                         ^[[m^[(0x^[[27;1H^[[27;21Hx^[[45m^[(B  foo-two                                                         ^[[m^[(0x^[[28;1H^[[28;21Hx^[[45m^[(B  foo-three                                                       ^[[m^[(0x^[[29;1H^[[29;21Hx^[[45m^[(B     ^[[m^[(0lqqqk^[[45m^[(B                                                        ^[[m^[(0x^[[30;1H^[[30;21Hx^[[45m^[(B     ^[[m^[(0x^[[43m^[(Bfoo^[[m^[(0x^[[45m^[(B                                                        ^[[m^[(0x^[(B^[8
--
-IN: ^[[M`|.
--
-OUT: ^[7^[[6;1H^[[12C^[[42mfoobar^[[77C^[[m^[[7;42m ^[[m^[[8;1H^[[8;96H^[[42m ^[[m^[[23;1H^[[23;21H^[[42m                                                                    ^[[m^[[24;1H^[[24;21H^[[42m                                                                    ^[[m^[[25;1H^[[25;21H^[[42m                                                                    ^[[m^[[26;1H^[[26;21H^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[27;1H^[[27;24H^[[45m^[(B       ^[[m^[[28;1H^[[28;24H^[[45m         ^[[m^[[29;1H^[[29;27H^[[45m     ^[[m^[[30;1H^[[30;27H^[[45m     ^[[m^[8
--
-IN: ^[[M`|.^[[M`|.^[[M`|.
--
-IN: ^[[M`|.
--
-IN: ^[[M`|.
--
-IN: ^[[M`|.
--
-IN: ^[[M`|.
--
-IN: ^[[M`|.
--
-IN: ^[[M`|.
--
-OUT: ^[7^[[16;1H^[[16;43H^[[42m                       ^[[m^[[17;1H^[[17;43H^[[42m                       ^[[m^[[18;1H^[[18;43H^[[42m                       ^[[m^[[19;1H^[[19;43H^[[42m                       ^[[m^[[20;1H^[[20;43H^[[42m                       ^[[m^[8
--
-IN: ^[[MC{.
--
-IN: ^[[MC{-
--
-IN: ^[[MCz-
--
-IN: ^[[MCy-
--
-IN: ^[[MCx-
--
-IN: ^[[MCw-
--
-IN: ^[[MCw,
--
-IN: ^[[MCv,
--
-IN: ^[[MCu,
--
-IN: ^[[MCt,
--
-IN: ^[[MCs,
--
-IN: ^[[MCr,
+IN: ^[[MCs+
 -
 IN: ^[[MCr+
 -
@@ -146,135 +630,137 @@ IN: ^[[MCq+
 -
 IN: ^[[MCp+
 -
-IN: ^[[MCo+
+IN: ^[[MCp,
 -
-IN: ^[[MCn+
+IN: ^[[MCo,
 -
-IN: ^[[MCm+
+IN: ^[[MCn,
 -
-IN: ^[[MCl*
+IN: ^[[MCm,
 -
-IN: ^[[MCk*
+IN: ^[[MCl,
 -
-IN: ^[[MCj*
+IN: ^[[MCk,
 -
-IN: ^[[MCi*
+IN: ^[[MCj,
 -
-IN: ^[[MCh*
+IN: ^[[MCi,
 -
-IN: ^[[MCg*
+IN: ^[[MCh,
 -
-IN: ^[[MCg)
+IN: ^[[MCg,
 -
-IN: ^[[MCf)
+IN: ^[[MCf,
 -
-IN: ^[[MCe)
+IN: ^[[MCe,
 -
-IN: ^[[MCd)
+IN: ^[[MCd,
 -
-IN: ^[[MCc)
+IN: ^[[MCc,
 -
-IN: ^[[MCb)
+IN: ^[[MCb+
 -
-IN: ^[[MCb(
+IN: ^[[MCa+
 -
-IN: ^[[MCa(
+IN: ^[[MC`+
 -
-IN: ^[[MC`(
+IN: ^[[MC_+
 -
-IN: ^[[MC_(
+IN: ^[[MC^+
 -
-IN: ^[[MC^(
+IN: ^[[MC]+
 -
-IN: ^[[MC](
+IN: ^[[MC\+
 -
-IN: ^[[MC\(
+IN: ^[[MC[+
 -
-IN: ^[[MC['
+IN: ^[[MCZ+
 -
-IN: ^[[MCZ'
+IN: ^[[MCY+
 -
-IN: ^[[MCY'
+IN: ^[[MCX+
 -
-IN: ^[[MCX'
+IN: ^[[MCW+
 -
-IN: ^[[MCW'
+IN: ^[[MCV+
 -
-IN: ^[[MCV'
+IN: ^[[MCU+
 -
-IN: ^[[MCU'
+IN: ^[[MCT+
 -
-IN: ^[[MCU&
+IN: ^[[MCT*
 -
-IN: ^[[MCT&
+IN: ^[[MCS*
 -
-IN: ^[[MCS&
+IN: ^[[MCR*
 -
-IN: ^[[MCR&
+IN: ^[[MCQ*
 -
-IN: ^[[MCQ&
+IN: ^[[MCP*
 -
-IN: ^[[MCP&
+IN: ^[[MCP)
 -
-IN: ^[[MCO&
+IN: ^[[MCO)
 -
-IN: ^[[MCN&
+IN: ^[[MCN)
 -
-IN: ^[[MCN%
+IN: ^[[MCM)
 -
-IN: ^[[MCM%
+IN: ^[[MCL)
 -
-IN: ^[[MCL%
+IN: ^[[MCL(
 -
-IN: ^[[MCK%
+IN: ^[[MCK(
 -
-IN: ^[[MCJ%
+IN: ^[[MCJ(
 -
-IN: ^[[MCI%
+IN: ^[[MCI(
 -
-IN: ^[[MCH%
+IN: ^[[MCH(
 -
-IN: ^[[MCG%
+IN: ^[[MCH'
 -
-IN: ^[[MCF$
+IN: ^[[MCG'
 -
-IN: ^[[MCE$
+IN: ^[[MCF'
 -
-IN: ^[[MCD$
+IN: ^[[MCE'
 -
-IN: ^[[MCC$
+IN: ^[[MCD'
 -
-IN: ^[[MCB$
+IN: ^[[MCC&
 -
-IN: ^[[MCA$
+IN: ^[[MCB&
 -
-IN: ^[[MC@$
+IN: ^[[MCA&
 -
-IN: ^[[MC?$
+IN: ^[[MC@&
 -
-IN: ^[[MC>$
+IN: ^[[MC?%
 -
-IN: ^[[MC=#
+IN: ^[[MC>%
 -
-IN: ^[[MC<#
+IN: ^[[MC=%
 -
-IN: ^[[MC;#
+IN: ^[[MC<%
 -
-IN: ^[[MC:#
+IN: ^[[MC;$
 -
-IN: ^[[MC9#
+IN: ^[[MC:$
 -
-IN: ^[[MC8#
+IN: ^[[MC9$
 -
-IN: ^[[MC7#
+IN: ^[[MC8$
+-
+IN: ^[[MC7$
 -
 IN: ^[[MC6#
 -
-IN: ^[[MC5"
+IN: ^[[MC5#
 -
-IN: ^[[MC4"
+IN: ^[[MC4#
 -
-IN: ^[[MC3"
+IN: ^[[MC3#
 -
 IN: ^[[MC2"
 -
@@ -296,117 +782,573 @@ IN: ^[[MC*!
 -
 IN: ^[[MC)!
 -
-IN: ^[[MC(!
+IN: ^[[MC!+
 -
-IN: ^[[MC'!
+IN: ^[[MC"+
 -
-IN: ^[[MC:!
+IN: ^[[MC#,
 -
-IN: ^[[MC;!
+IN: ^[[MC$,
 -
-IN: ^[[MC<!
+IN: ^[[MC%,
 -
-IN: ^[[MC=!
+IN: ^[[MC&,
 -
-IN: ^[[MC>!
+IN: ^[[MC',
 -
-IN: ^[[MC?!
+IN: ^[[MC(,
 -
-IN: ^[[MC@!
+IN: ^[[MC(-
 -
-IN: ^[[MCA"
+IN: ^[[MC)-
 -
-IN: ^[[MCB"
+IN: ^[[MC*-
 -
-IN: ^[[MCC"
+IN: ^[[MC+-
 -
-IN: ^[[MCD"
+IN: ^[[MC,-
 -
-IN: ^[[MCE"
+IN: ^[[MC--
 -
-IN: ^[[MCF"
+IN: ^[[MC.-
+-
+IN: ^[[MC/.
+-
+IN: ^[[MC0.
+-
+IN: ^[[MC1.
+-
+IN: ^[[MC2.
+-
+IN: ^[[MC3.
+-
+IN: ^[[MC4.
+-
+IN: ^[[MC5.
+-
+IN: ^[[MC6.
+-
+IN: ^[[MC6/
+-
+IN: ^[[MC7/
+-
+IN: ^[[MC8/
+-
+IN: ^[[MC9/
+-
+IN: ^[[MC:/
+-
+IN: ^[[MC;/
+-
+IN: ^[[MC</
+-
+IN: ^[[MC=/
+-
+IN: ^[[MC>/
+-
+IN: ^[[MC?/
+-
+IN: ^[[MC@/
+-
+IN: ^[[MCA/
+-
+IN: ^[[MCB/
+-
+IN: ^[[MCC/
+-
+IN: ^[[MCD/
+-
+IN: ^[[MCE/
+-
+IN: ^[[MCE.
+-
+IN: ^[[MCE-
+-
+IN: ^[[MCE,
+-
+IN: ^[[MCD,
+-
+IN: ^[[MCD+
+-
+IN: ^[[MCC+
+-
+IN: ^[[MCC*
+-
+IN: ^[[MCB*
+-
+IN: ^[[MCA*
+-
+IN: ^[[MCA)
+-
+IN: ^[[MC@)
+-
+IN: ^[[MC?)
+-
+IN: ^[[MC>)
+-
+IN: ^[[MC=)
+-
+IN: ^[[MC=(
+-
+IN: ^[[MC<(
+-
+IN: ^[[MC;(
+-
+IN: ^[[MC:(
+-
+IN: ^[[MC9(
+-
+IN: ^[[MC8(
+-
+IN: ^[[MC7(
+-
+IN: ^[[MC7'
+-
+IN: ^[[MC6'
+-
+IN: ^[[MC5'
+-
+IN: ^[[MC4'
+-
+IN: ^[[MC3'
+-
+IN: ^[[MC2'
+-
+IN: ^[[MC1'
+-
+IN: ^[[MC0'
+-
+IN: ^[[MC/&
+-
+IN: ^[[MC.&
+-
+IN: ^[[MC-&
+-
+IN: ^[[MC,&
+-
+IN: ^[[MC+&
+-
+IN: ^[[MC*&
+-
+IN: ^[[MC)&
+-
+IN: ^[[MC(&
+-
+IN: ^[[MC'&
+-
+IN: ^[[MC&&
+-
+IN: ^[[MC&%
+-
+IN: ^[[MC%%
+-
+IN: ^[[MC$%
+-
+IN: ^[[MC#%
+-
+IN: ^[[MC"%
+-
+IN: ^[[MC!%
+-
+IN: ^[[MCa!
+-
+IN: ^[[MC`!
+-
+IN: ^[[MC_!
+-
+IN: ^[[MC^!
+-
+IN: ^[[MC]!
+-
+IN: ^[[MC\!
+-
+IN: ^[[MC[!
+-
+IN: ^[[MCZ!
+-
+IN: ^[[MCY!
+-
+IN: ^[[MCY"
+-
+IN: ^[[MCX"
+-
+IN: ^[[MCW"
+-
+IN: ^[[MCV"
+-
+IN: ^[[MCU"
+-
+IN: ^[[MCT"
+-
+IN: ^[[MCS"
+-
+IN: ^[[MCR"
+-
+IN: ^[[MCQ"
+-
+IN: ^[[MCP"
+-
+IN: ^[[MCO"
+-
+IN: ^[[MCN"
+-
+IN: ^[[MCM"
+-
+IN: ^[[MCL"
+-
+IN: ^[[MCK"
+-
+IN: ^[[MCJ"
+-
+IN: ^[[MCI"
+-
+IN: ^[[MCH"
 -
 IN: ^[[MCG"
 -
-IN: ^[[MCH#
+IN: ^[[MCF"
 -
-IN: ^[[MCI#
+IN: ^[[MCF!
 -
-IN: ^[[MCJ#
+IN: ^[[MC@!
 -
-IN: ^[[MCK#
+IN: ^[[MC?!
 -
-IN: ^[[MCL#
+IN: ^[[MC>!
 -
-IN: ^[[MCM#
+IN: ^[[MC=!
 -
-IN: ^[[MCM$
+IN: ^[[MC<!
 -
-IN: ^[[MCN$
+IN: ^[[MC;!
 -
-IN: ^[[MCO$
+IN: ^[[MC:!
 -
-IN: ^[[MCP$
+IN: ^[[MC9!
 -
-IN: ^[[MCQ$
+IN: ^[[MC8!
 -
-IN: ^[[MCR$
+IN: ^[[MC7!
 -
-IN: ^[[MCR%
+IN: ^[[MC7"
 -
-IN: ^[[MCS%
+IN: ^[[MC6"
 -
-IN: ^[[MCT%
+IN: ^[[MC5"
 -
-IN: ^[[MCU%
+IN: ^[[MC4"
 -
-IN: ^[[MCV%
+IN: ^[[MC3"
 -
-IN: ^[[MCV&
+IN: ^[[MC2"
 -
-IN: ^[[MCW&
+IN: ^[[MC1"
 -
-IN: ^[[MCX&
+IN: ^[[MC0"
 -
-IN: ^[[MCY&
+IN: ^[[MC0#
 -
-IN: ^[[MCY'
+IN: ^[[MC/#
 -
-IN: ^[[MCZ'
+IN: ^[[MC.#
 -
-IN: ^[[MC['
+IN: ^[[MC-#
 -
-IN: ^[[MC\'
+IN: ^[[MC,#
 -
-IN: ^[[MC]'
+IN: ^[[MC+#
 -
-IN: ^[[MC](
+IN: ^[[MC*$
 -
-IN: ^[[MC^(
+IN: ^[[MC)$
 -
-IN: ^[[MC_(
+IN: ^[[MC($
 -
-IN: ^[[MC`(
+IN: ^[[MC'$
 -
-IN: ^[[MCa(
+IN: ^[[MC&$
 -
-IN: ^[[MCb(
+IN: ^[[MC&%
 -
-IN: ^[[MCc(
+IN: ^[[MC%%
 -
-IN: ^[[MCd)
+IN: ^[[MC$%
 -
-IN: ^[[MCe)
+IN: ^[[MC#%
 -
-IN: ^[[MCf)
+IN: ^[[MC"%
 -
-IN: ^[[MCg)
+IN: ^[[MC!&
 -
-IN: ^[[MCh)
+IN: ^[[MCb"
 -
-IN: ^[[MCi)
+IN: ^[[MCc"
 -
-IN: ^[[MCj)
+IN: ^[[MCc#
+-
+IN: ^[[MCd#
+-
+IN: ^[[MCe#
+-
+IN: ^[[MCe$
+-
+IN: ^[[MCf$
+-
+IN: ^[[MCg$
+-
+IN: ^[[M g$
+-
+IN: ^[[M#g$
+-
+IN: ^[[MCf$
+-
+IN: ^[[MCe$
+-
+IN: ^[[MCd$
+-
+IN: ^[[MCc$
+-
+IN: ^[[MCb$
+-
+IN: ^[[MCb#
+-
+IN: ^[[MCa#
+-
+IN: ^[[MC`#
+-
+IN: ^[[MC_#
+-
+IN: ^[[MC^#
+-
+IN: ^[[MC]#
+-
+IN: ^[[MC\#
+-
+IN: ^[[MC[#
+-
+IN: ^[[MCZ#
+-
+IN: ^[[MCY#
+-
+IN: ^[[MCX#
+-
+IN: ^[[MCW#
+-
+IN: ^[[MCV#
+-
+IN: ^[[MCV"
+-
+IN: ^[[MCU"
+-
+IN: ^[[MCT"
+-
+IN: ^[[MCS"
+-
+IN: ^[[MCR"
+-
+IN: ^[[MCQ"
+-
+IN: ^[[MCP"
+-
+IN: ^[[MCO"
+-
+IN: ^[[MCO!
+-
+IN: ^[[MCN!
+-
+IN: ^[[MCM!
+-
+IN: ^[[MCL!
+-
+IN: ^[[MCK!
+-
+IN: ^[[MCJ!
+-
+IN: ^[[MCI!
+-
+IN: ^[[MC{!
+-
+IN: ^[[MC{"
+-
+IN: ^[[MC|"
+-
+IN: ^[[MC|#
+-
+IN: ^[[MC|$
+-
+IN: ^[[MC|%
+-
+IN: ^[[MC|&
+-
+IN: ^[[MC|'
+-
+IN: ^[[MC|(
+-
+IN: ^[[MC|)
+-
+IN: ^[[MC|*
+-
+IN: ^[[MC|+
+-
+IN: ^[[MC|,
+-
+IN: ^[[M |,
+-
+IN: ^[[M#|,
+-
+IN: ^[OA
+-
+OUT: >> [screen.render] [ ^[[33m32^[[39m, ^[[33m108^[[39m ] this.lines[0][0] [ [ ^[[33m0^[[39m, ^[[1mnull^[[22m, ^[[1mnull^[[22m ], ch: ^[[32m' '^[[39m ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  fg: ^[[90mundefined^[[39m,\n  bg: ^[[90mundefined^[[39m,\n  bold: ^[[90mundefined^[[39m,\n  underline: ^[[90mundefined^[[39m,\n  blink: ^[[90mundefined^[[39m,\n  inverse: ^[[90mundefined^[[39m,\n  invisible: ^[[90mundefined^[[39m,\n  transparent: ^[[90mundefined^[[39m,\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m },\n  scrollbar: { inverse: ^[[33mtrue^[[39m },\n  track: {\n    fg: ^[[90mundefined^[[39m,\n    bg: ^[[32m'yellow'^[[39m,\n    bold: ^[[90mundefined^[[39m,\n    underline: ^[[90mundefined^[[39m,\n    inverse: ^[[90mundefined^[[39m,\n    invisible: ^[[90mundefined^[[39m\n  }\n} ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ] ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'#A7FFEB'^[[39m,\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m },\n  scrollbar: {\n    fg: ^[[90mundefined^[[39m,\n    bg: ^[[90mundefined^[[39m,\n    bold: ^[[90mundefined^[[39m,\n    underline: ^[[90mundefined^[[39m,\n    inverse: ^[[33mtrue^[[39m,\n    invisible: ^[[90mundefined^[[39m\n  }\n} ^[[90mundefined^[[39m #A7FFEB\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ] ]\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'#A7FFEB'^[[39m,\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m },\n  scrollbar: {\n    fg: ^[[90mundefined^[[39m,\n    bg: ^[[90mundefined^[[39m,\n    bold: ^[[90mundefined^[[39m,\n    underline: ^[[90mundefined^[[39m,\n    inverse: ^[[33mtrue^[[39m,\n    invisible: ^[[90mundefined^[[39m\n  }\n} ^[[90mundefined^[[39m #A7FFEB\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element.sattr] {\n  fg: ^[[90mundefined^[[39m,\n  bg: ^[[90mundefined^[[39m,\n  bold: ^[[90mundefined^[[39m,\n  underline: ^[[90mundefined^[[39m,\n  inverse: ^[[33mtrue^[[39m,\n  invisible: ^[[90mundefined^[[39m\n} ^[[90mundefined^[[39m #A7FFEB\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m8^[[39m, ^[[33m16777216^[[39m, ^[[33m11010027^[[39m ]\n
+-
+OUT: >> [element.sattr] { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m } ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] { bg: ^[[32m'#D32F2F'^[[39m } ^[[90mundefined^[[39m #D32F2F\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13840175^[[39m ]\n]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] { bg: ^[[32m'red'^[[39m } ^[[90mundefined^[[39m red\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13434880^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13434880^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13434880^[[39m ] ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'magenta'^[[39m,\n  focus: { bg: ^[[32m'blue'^[[39m },\n  hover: { bg: ^[[32m'red'^[[39m },\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m magenta\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ],\n  Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n]\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'magenta'^[[39m,\n  focus: { bg: ^[[32m'blue'^[[39m },\n  hover: { bg: ^[[32m'red'^[[39m },\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m magenta\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13435085^[[39m ]\n
+-
+OUT: >> [element.sattr] { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m } ^[[90mundefined^[[39m ^[[90mundefined^[[39m\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m16777216^[[39m ]\n
+-
+OUT: >> [element.render]\n
+-
+OUT: >> [element._parseAttr] pre\n
+-
+OUT: >> [element.sattr] {\n  bg: ^[[32m'yellow'^[[39m,\n  focus: { bg: ^[[32m'blue'^[[39m },\n  hover: { bg: ^[[32m'red'^[[39m },\n  border: { fg: ^[[90mundefined^[[39m, bg: ^[[90mundefined^[[39m }\n} ^[[90mundefined^[[39m yellow\n
+-
+OUT: >> [element.sattr] Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13487360^[[39m ]\n
+-
+OUT: >> [element._parseAttr] normAttr Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13487360^[[39m ]\n
+-
+OUT: >> [element._parseAttr] [ Presa(3) [ ^[[33m0^[[39m, ^[[33m16777216^[[39m, ^[[33m13487360^[[39m ] ]\n
+-
+OUT: ^[7^[[6;1H^[[11C^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(Bf^[[m^[[40;30mo^[[m^[[40;30mo^[[m^[[40;30mb^[[m^[[40;30ma^[[m^[[40;30mr^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[26;1H^[[26;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0l^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mq^[[m^[[40;30mk^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[27;1H^[[27;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[28;1H^[[28;12H^[[m^[[40;30mx^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[[40;30m^[(B ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m ^[[m^[[40;30m^[(0x^[[m^[(B^[8
+-
+IN: ^[^L
+-
+IN: ^[[MC{,
+-
+IN: ^[[MC{-
+-
+IN: ^[[MCz-
+-
+IN: ^[[MCz.
+-
+IN: ^[[MCy.
+-
+IN: ^[[MCy/
+-
+IN: ^[[MCx/
+-
+IN: ^[[MCx0
+-
+IN: ^[[MCw0
+-
+IN: ^[[MCw1
+-
+IN: ^[[MCv1
+-
+IN: ^[[MCv2
+-
+IN: ^[[MCu2
+-
+IN: ^[[MCu3
+-
+IN: ^[[MCt3
+-
+IN: ^[[MCt4
+-
+IN: ^[[MCs4
+-
+IN: ^[[MCr4
+-
+IN: ^[[M r4
+-
+IN: ^[[M#r4
+-
+IN: ^[[MCs4
+-
+IN: ^[[MCt4
+-
+IN: ^[[MCt3
+-
+IN: ^[[MCu3
+-
+IN: ^[[MCv3
+-
+IN: ^[[MCv2
+-
+IN: ^[[MCw2
 -
 IN: q
 -
