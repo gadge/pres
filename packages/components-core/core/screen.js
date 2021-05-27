@@ -14,14 +14,12 @@ import {
   RESIZE, WARNING, WHEELDOWN, WHEELUP,
 }                                                                      from '@pres/enum-events'
 import { Program }                                                     from '@pres/program'
-import { Presa, presaToSgra, COLORS_4_BITS }                           from '@pres/util-cezanne'
+import { COLORS_4_BITS, Presa, presaToSgra }                           from '@pres/util-cezanne'
 import * as colors                                                     from '@pres/util-colors'
 import * as helpers                                                    from '@pres/util-helpers'
-import { morisotToSgra }                                               from '@pres/util-morisot'
 import * as unicode                                                    from '@pres/util-unicode'
 import { SP }                                                          from '@texting/enum-chars'
 import { FUN, OBJ, STR }                                               from '@typen/enum-data-types'
-import { size }                                                        from '@vect/matrix'
 import cp, { spawn }                                                   from 'child_process'
 import { Log }                                                         from '../src/log'
 import { Box }                                                         from './box'
@@ -466,7 +464,7 @@ export class Screen extends Node {
     // console.log('>> [screen.alloc]')
     this.lines = []
 
-    const h    = this.rows, w = this.cols
+    const h = this.rows, w = this.cols
     for (let y = 0, line; y < h; y++) {
       line = this.lines[y] = []
       for (let x = 0; x < w; x++) {
