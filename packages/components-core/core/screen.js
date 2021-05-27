@@ -14,8 +14,7 @@ import {
   RESIZE, WARNING, WHEELDOWN, WHEELUP,
 }                                                                      from '@pres/enum-events'
 import { Program }                                                     from '@pres/program'
-import { Presa, presaToSgra }                                          from '@pres/util-cezanne'
-import { COLORS_4_BITS }                                               from '@pres/util-cezanne/src/cezanne'
+import { Presa, presaToSgra, COLORS_4_BITS }                           from '@pres/util-cezanne'
 import * as colors                                                     from '@pres/util-colors'
 import * as helpers                                                    from '@pres/util-helpers'
 import { morisotToSgra }                                               from '@pres/util-morisot'
@@ -41,19 +40,19 @@ export class Screen extends Node {
   static build(options) { return new Screen(options) }
   config(options) {
 
-    const self = this
+    const self        = this
     // this.type = this.type ?? 'screen'
-    this.autoPadding = options.autoPadding !== false
-    this.tabc = Array((options.tabSize || 4) + 1).join(' ')
-    this.dockBorders = options.dockBorders
+    this.autoPadding  = options.autoPadding !== false
+    this.tabc         = Array((options.tabSize || 4) + 1).join(' ')
+    this.dockBorders  = options.dockBorders
     this.ignoreLocked = options.ignoreLocked || []
-    this._unicode = this.tput.unicode || this.tput.numbers.U8 === 1
-    this.fullUnicode = this.options.fullUnicode && this._unicode
+    this._unicode     = this.tput.unicode || this.tput.numbers.U8 === 1
+    this.fullUnicode  = this.options.fullUnicode && this._unicode
     // this.normAttr = ((0 << 18) | (0x1ff << 9)) | 0x1ff // TODO: pr - changed this.dattr to this.normAttr
-    this.normAttr = [ 0, null, null ]
+    this.normAttr     = [ 0, null, null ]
 
-    this.renders = 0
-    this.position = {
+    this.renders   = 0
+    this.position  = {
       left: this.left = this.aleft = this.rleft = 0,
       right: this.right = this.aright = this.rright = 0,
       top: this.top = this.atop = this.rtop = 0,
@@ -61,27 +60,27 @@ export class Screen extends Node {
       get height() { return self.height },
       get width() { return self.width }
     }
-    this.ileft = 0
-    this.itop = 0
-    this.iright = 0
-    this.ibottom = 0
-    this.iheight = 0
-    this.iwidth = 0
-    this.padding = {
+    this.ileft     = 0
+    this.itop      = 0
+    this.iright    = 0
+    this.ibottom   = 0
+    this.iheight   = 0
+    this.iwidth    = 0
+    this.padding   = {
       left: 0,
       top: 0,
       right: 0,
       bottom: 0
     }
-    this.hover = null
-    this.history = []
+    this.hover     = null
+    this.history   = []
     this.clickable = []
-    this.keyable = []
-    this.grabKeys = false
-    this.lockKeys = false
+    this.keyable   = []
+    this.grabKeys  = false
+    this.lockKeys  = false
     this.focused
     this._buf = ''
-    this._ci = -1
+    this._ci  = -1
     if (options.title) this.title = options.title
     options.cursor = options.cursor || {
       artificial: options.artificialCursor,
@@ -89,7 +88,7 @@ export class Screen extends Node {
       blink: options.cursorBlink,
       color: options.cursorColor
     }
-    this.cursor = {
+    this.cursor    = {
       artificial: options.cursor.artificial || false,
       shape: options.cursor.shape || 'block',
       blink: options.cursor.blink || false,
@@ -132,7 +131,7 @@ export class Screen extends Node {
     this.enter()
     this.postEnter()
     this.on('adjourn', () => ScreenCollection.journal = false)
-    console.log('>> [screen.config]', this.normAttr)
+    // console.log('>> [screen.config]', '' + this.normAttr)
   }
   setupProgram(options) {
     if (options.rsety && options.listen) options = { program: options }
@@ -154,12 +153,12 @@ export class Screen extends Node {
     }
     else {
       this.program.setupTput()
-      this.program.useBuffer = true
-      this.program.zero = true
+      this.program.useBuffer             = true
+      this.program.zero                  = true
       this.program.options.resizeTimeout = options.resizeTimeout
       if (options.forceUnicode != null) {
         this.program.tput.features.unicode = options.forceUnicode
-        this.program.tput.unicode = options.forceUnicode
+        this.program.tput.unicode          = options.forceUnicode
       }
     }
     this.tput = this.program.tput
@@ -177,7 +176,7 @@ export class Screen extends Node {
   setTerminal(terminal) {
     const entered = !!this.program.isAlt
     if (entered) {
-      this._buf = ''
+      this._buf         = ''
       this.program._buf = ''
       this.leave()
     }
@@ -224,7 +223,7 @@ export class Screen extends Node {
   postEnter() {
     const self = this
     if (this.options.debug) {
-      this.debugLog = new Log({
+      this.debugLog        = new Log({
         screen: this,
         sup: this,
         hidden: true,
@@ -325,7 +324,7 @@ export class Screen extends Node {
     this.program.on(MOUSE, data => {
       if (self.lockKeys) return
       if (self._needsClickableSort) {
-        self.clickable = helpers.hsort(self.clickable)
+        self.clickable           = helpers.hsort(self.clickable)
         self._needsClickableSort = false
       }
       let i = 0,
@@ -436,7 +435,7 @@ export class Screen extends Node {
     this.on(MOUSEMOVE, data => {
       if (self._hoverText.detached) return
       self._hoverText.rleft = data.x + 1
-      self._hoverText.rtop = data.y
+      self._hoverText.rtop  = data.y
       self.render()
     })
     this.on(ELEMENT_MOUSEOVER, (el, data) => {
@@ -445,7 +444,7 @@ export class Screen extends Node {
       self._hoverText.setContent(el._hoverOptions.text)
       self.append(self._hoverText)
       self._hoverText.rleft = data.x + 1
-      self._hoverText.rtop = data.y
+      self._hoverText.rtop  = data.y
       self.render()
     })
     this.on(ELEMENT_MOUSEOUT, () => {
@@ -464,13 +463,14 @@ export class Screen extends Node {
     })
   }
   alloc(dirty) {
+    // console.log('>> [screen.alloc]')
     this.lines = []
-    const h = this.rows, w = this.cols
-    for (let y = 0, line, cell; y < h; y++) {
+
+    const h    = this.rows, w = this.cols
+    for (let y = 0, line; y < h; y++) {
       line = this.lines[y] = []
       for (let x = 0; x < w; x++) {
-        cell = line[x] = [ this.normAttr ]
-        cell.ch = SP
+        line[x] = Presa.build().assign(this.normAttr, SP) // cell = line[x] = [this.normAttr], cell.ch = SP
       }
       line.dirty = !!dirty
     }
@@ -478,8 +478,7 @@ export class Screen extends Node {
     for (let y = 0, line, cell; y < h; y++) {
       line = this.olines[y] = []
       for (let x = 0; x < w; x++) {
-        cell = line[x] = [ this.normAttr ]
-        cell.ch = SP
+        line[x] = Presa.build().assign(this.normAttr, SP) // cell = line[x] = [this.normAttr], cell.ch = SP
       }
     }
     this.program.clear()
@@ -487,7 +486,7 @@ export class Screen extends Node {
   realloc() { return this.alloc(true) }
   render() {
     // const [ h, w ] = size(this.lines)
-    console.log('>> [screen.render]', size(this.lines), 'this.lines[0][0]', this.lines[0][0])
+    // console.log('>> [screen.render]', size(this.lines), 'this.lines[0][0]', '' + this.lines[0][0])
     // console.log('>> [screen.render]', h, w)
     const self = this
     if (this.destroyed) return
@@ -515,7 +514,9 @@ export class Screen extends Node {
 // Scroll down (up cursor-wise).
   blankLine(ch, dirty) {
     const out = []
-    for (let x = 0; x < this.cols; x++) { out[x] = [ this.normAttr, ch || ' ' ] }
+    for (let x = 0; x < this.cols; x++) {
+      out[x] = Presa.build().assign(this.normAttr, ch || SP) // out[x] = [this.normAttr, ch || ' ']
+    }
     out.dirty = dirty
     return out
   }
@@ -643,7 +644,7 @@ export class Screen extends Node {
   }
   _dockBorders() {
     const lines = this.lines
-    let stops = this._borderStops
+    let stops   = this._borderStops
     // var keys, stop;
     //
     // keys = Object.keys(this._borderStops)
@@ -664,9 +665,9 @@ export class Screen extends Node {
       if (!(line = lines[y])) continue
       for (let x = 0; x < this.width; x++) {
         cell = line[x]
-        ch = cell.ch
+        ch   = cell.ch
         if (ANGLES[ch]) {
-          cell.ch = this.#getAngle(lines, x, y)
+          cell.ch    = this.#getAngle(lines, x, y)
           line.dirty = true
         }
       }
@@ -719,7 +720,7 @@ export class Screen extends Node {
   draw(start, end) {
     // console.log('>> [screen.draw]', start, end)
     let main = ''
-    let lx = -1, ly = -1
+    let lx   = -1, ly = -1
     let acs
     if (this._buf) { main += this._buf, this._buf = '' }
     const { cursor, program, tput, options } = this,
@@ -737,9 +738,9 @@ export class Screen extends Node {
       if (!ln.dirty && !(cursorArti && y === _y)) continue
       ln.dirty = false
 
-      let out = ''
+      let out      = ''
       let normAttr = Presa.build().assign(this.normAttr)
-      let attr = Presa.build().assign(this.normAttr)
+      let attr     = Presa.build().assign(this.normAttr)
 
       for (let x = 0, ce, oc; (x < ln.length) && (ce = ln[x]); x++) {
         let data = Presa.build().assign(ce), ch = ce.ch//let [ data ] = ce, { ch } = ce
@@ -753,8 +754,8 @@ export class Screen extends Node {
         // Stop spitting out so many damn spaces.
         // NOTE: Is checking the bg for non BCE terminals worth the overhead?
         if (options.useBCE && ch === SP &&
-          (tBackErase || (data[2]) === (normAttr[2])) && // (tBackErase || (data & 0x1ff) === (normAttr & 0x1ff)) &&
-          ((data[0]) & 8) === ((normAttr[0]) & 8) //  ((data >> 18) & 8) === ((normAttr >> 18) & 8)
+          (tBackErase || data[2] === normAttr[2]) && // (tBackErase || (data & 0x1ff) === (normAttr & 0x1ff)) &&
+          (data[0] & 8) === (normAttr[0] & 8) //  ((data >> 18) & 8) === ((normAttr >> 18) & 8)
         ) {
           let clr = true, neq = false
           for (let i = x, _ce, _oc; (i < ln.length) && (_ce = ln[i]); i++) {
@@ -766,7 +767,7 @@ export class Screen extends Node {
           }
           if (clr && neq) {
             lx = -1, ly = -1
-            if (data !== attr) { out += morisotToSgra(data, tColors), attr = data }
+            if (data !== attr) { out += presaToSgra(data, tColors), attr = data } // if (data !== attr) { out += morisotToSgra(data, tColors), attr = data }
             out += tput.cup(y, x), out += tput.el()
             for (let i = x, _oc; (i < ln.length) && (_oc = ol[i]); i++) {
               Presa.prototype.assign.call(_oc, data, SP) // _oc[0] = data, _oc.ch = SP
@@ -786,9 +787,9 @@ export class Screen extends Node {
           lx = -1, ly = -1
         }
         Presa.prototype.assign(oc, data, ch) // oc[0] = data, oc.ch = ch
-        if (data !== attr) { // data !== attr
-          if (attr !== normAttr) { out += CSI + SGR } // attr !== normAttr
-          if (data !== normAttr) { out += morisotToSgra(data, this.tput.colors) } // data !== normAttr
+        if (!Presa.prototype.eq.call(data, attr)) { // data !== attr
+          if (!Presa.prototype.eq.call(attr, normAttr)) { out += CSI + SGR } // attr !== normAttr
+          if (!Presa.prototype.eq.call(data, normAttr)) { out += presaToSgra(data, this.tput.colors) } // data !== normAttr
         }
         // If we find a double-width char, eat the next character which should be
         // a space due to parseContent's behavior.
@@ -803,7 +804,7 @@ export class Screen extends Node {
             if (x === ln.length - 1 || ANGLES[ln[x + 1].ch]) {
               // If we're at the end, we don't have enough space for a
               // double-width. Overwrite it with a space and ignore.
-              ch = ' '
+              ch    = ' '
               oc.ch = '\0'
             }
             else {
@@ -831,12 +832,12 @@ export class Screen extends Node {
           if (this.tput.acscr[ch]) {
             if (acs) { ch = this.tput.acscr[ch] }
             else {
-              ch = this.tput.smacs() + this.tput.acscr[ch]
+              ch  = this.tput.smacs() + this.tput.acscr[ch]
               acs = true
             }
           }
           else if (acs) {
-            ch = this.tput.rmacs() + ch
+            ch  = this.tput.rmacs() + ch
             acs = false
           }
         }
@@ -876,8 +877,8 @@ export class Screen extends Node {
       c = +code[i] || 0
       switch (c) {
         case 0: // normal
-          back = normal & 0x1ff
-          fore = (normal >> 9) & 0x1ff
+          back   = normal & 0x1ff
+          fore   = (normal >> 9) & 0x1ff
           effect = (normal >> 18) & 0x1ff
           break
         case 1: // bold
@@ -1089,7 +1090,7 @@ export class Screen extends Node {
   }
   clearRegion(xi, xl, yi, yl, override) { return this.fillRegion(this.normAttr, ' ', xi, xl, yi, yl, override) }
   fillRegion(attr, ch, xi, xl, yi, yl, override) {
-    console.log('>> [screen.fillRegion]', attr, ch, xi, xl, yi, yl, override)
+    // console.log('>> [screen.fillRegion]', attr, ch, xi, xl, yi, yl, override)
     const { lines } = this
     if (xi < 0) xi = 0
     if (yi < 0) yi = 0
@@ -1110,21 +1111,21 @@ export class Screen extends Node {
   spawn(file, args, options) {
     if (!Array.isArray(args)) {
       options = args
-      args = []
+      args    = []
     }
     const screen  = this,
           program = screen.program,
           mouse   = program.mouseEnabled
     let ps
 
-    options = options || {}
+    options       = options || {}
     options.stdio = options.stdio || 'inherit'
     program.lsaveCursor('spawn')
     // program.csr(0, program.rows - 1);
     program.normalBuffer()
     program.showCursor()
     if (mouse) program.disableMouse()
-    const write = program.output.write
+    const write          = program.output.write
     program.output.write = () => {}
     program.input.pause()
     if (program.input.setRawMode) { program.input.setRawMode(false) }
@@ -1144,7 +1145,7 @@ export class Screen extends Node {
       screen.render()
       screen.program.lrestoreCursor('spawn', true)
     }
-    ps = spawn(file, args, options)
+    ps           = spawn(file, args, options)
     ps.on(ERROR, resume)
     ps.on(EXIT, resume)
     return ps
@@ -1159,7 +1160,7 @@ export class Screen extends Node {
     if (typeof options === STR) { options = { editor: options } }
     if (!callback) { (callback = options), (options = null) }
     if (!callback) { callback = () => {} }
-    options = options || {}
+    options      = options || {}
     const self   = this,
           editor = options.editor || process.env.EDITOR || 'vi',
           name   = options.name || process.title || 'blessed',
@@ -1197,14 +1198,14 @@ export class Screen extends Node {
     }
     file = path.resolve(process.cwd(), file)
     if (!~file.indexOf('://')) file = 'file://' + file
-    const args = [ 'w3m', '-T', 'text/html' ]
+    const args  = [ 'w3m', '-T', 'text/html' ]
     const input = '<title>press q to exit</title>' + '<img align="center" src="' + file + '">'
-    const opt = {
+    const opt   = {
       stdio: [ 'pipe', 1, 2 ],
       env: process.env,
       cwd: process.env.HOME
     }
-    const ps = this.spawn(args[0], args.slice(1), opt)
+    const ps    = this.spawn(args[0], args.slice(1), opt)
     ps.on(ERROR, err => callback ? callback(err) : void 0)
     ps.on(EXIT,
       code => callback
@@ -1222,7 +1223,7 @@ export class Screen extends Node {
     if (temp) el[temp] = tmp
     if (typeof el !== FUN) {
       const _el = el
-      el = () => _el
+      el        = () => _el
     }
     fel.on(over, () => {
       const element = el()
@@ -1232,13 +1233,13 @@ export class Screen extends Node {
           tmp[key] = tmp[key] || {}
           // element.style[key] = element.style[key] || {};
           Object.keys(val).forEach(k => {
-            const v = val[k]
-            tmp[key][k] = element.style[key][k]
+            const v               = val[k]
+            tmp[key][k]           = element.style[key][k]
             element.style[key][k] = v
           })
           return
         }
-        tmp[key] = element.style[key]
+        tmp[key]           = element.style[key]
         element.style[key] = val
       })
       element.screen.render()
@@ -1269,24 +1270,24 @@ export class Screen extends Node {
   }
   copyToClipboard(text) { return this.program.copyToClipboard(text) }
   cursorShape(shape, blink) {
-    const self = this
+    const self        = this
     this.cursor.shape = shape || 'block'
     this.cursor.blink = blink || false
-    this.cursor._set = true
+    this.cursor._set  = true
     if (this.cursor.artificial) {
       if (!this.program.hideCursor_old) {
-        const hideCursor = this.program.hideCursor
+        const hideCursor            = this.program.hideCursor
         this.program.hideCursor_old = this.program.hideCursor
-        this.program.hideCursor = () => {
+        this.program.hideCursor     = () => {
           hideCursor.call(self.program)
           self.cursor._hidden = true
           if (self.renders) self.render()
         }
       }
       if (!this.program.showCursor_old) {
-        const showCursor = this.program.showCursor
+        const showCursor            = this.program.showCursor
         this.program.showCursor_old = this.program.showCursor
-        this.program.showCursor = () => {
+        this.program.showCursor     = () => {
           self.cursor._hidden = false
           if (self.program._exiting) showCursor.call(self.program)
           if (self.renders) self.render()
@@ -1306,7 +1307,7 @@ export class Screen extends Node {
   }
   cursorColor(color) {
     this.cursor.color = color != null ? colors.convert(color) : null
-    this.cursor._set = true
+    this.cursor._set  = true
     if (this.cursor.artificial) { return true }
     return this.program.cursorColor(colors.ncolors[this.cursor.color])
   }
@@ -1315,7 +1316,7 @@ export class Screen extends Node {
     this.cursor.shape = 'block'
     this.cursor.blink = false
     this.cursor.color = null
-    this.cursor._set = false
+    this.cursor._set  = false
     if (this.cursor.artificial) {
       this.cursor.artificial = false
       if (this.program.hideCursor_old) {
@@ -1335,16 +1336,16 @@ export class Screen extends Node {
     return this.program.cursorReset()
   }
   #cursorAttr(cursor, normAttr) {
-    console.log('>> [screen.#cursorAttr]')
+    // console.log('>> [screen.#cursorAttr]')
     const { shape } = cursor
-    let attr = Presa.build().assign(normAttr || this.normAttr), // attr = normAttr || this.normAttr
+    let attr        = Presa.build().assign(normAttr || this.normAttr), // attr = normAttr || this.normAttr
         cursorAttr,
         ch
     if (shape === 'line') {
       // attr &= ~(0x1ff << 9) // clear foreColor to 0
       // attr |= 7 << 9 // set foreColor to 7
       attr[1] = COLORS_4_BITS[7]
-      ch = '\u2502'
+      ch      = '\u2502'
     }
     else if (shape === 'underline') {
       // attr &= ~(0x1ff << 9) // clear foreColor to 0
@@ -1387,7 +1388,7 @@ export class Screen extends Node {
     return { ch, attr }
   }
   screenshot(xi, xl, yi, yl, term) {
-    console.log('>> [screen.screenShot]')
+    // console.log('>> [screen.screenShot]')
     if (xi == null) xi = 0
     if (xl == null) xl = this.cols
     if (yi == null) yi = 0

@@ -1,15 +1,21 @@
-import { rgbToInt }  from '@palett/convert'
-import { SC }        from '@texting/enum-chars'
-import { mixColors } from './colors'
+import { rgbToInt }         from '@palett/convert'
+import { SC }               from '@texting/enum-chars'
+import { mixColors }        from './colors'
+import { presaToPrimitive } from './presaToPrimitive'
 
-const NAC = 1 << 24
+// const NAC    = 1 << 24
+const NAC  = null
 const GREY = rgbToInt([ 127, 127, 127 ])
+
 
 export class Presa extends Array {
   constructor() {
-    super(3) // this[0] = e, this[1] = f, this[2] = b
+    super(3).fill(null) // this[0] = e, this[1] = f, this[2] = b
   }
   static build() { return new Presa() }
+  [Symbol.toPrimitive](h) { return presaToPrimitive.call(this, h) }
+  toString() { return presaToPrimitive.call(this) }
+  // get [Symbol.toStringTag]() { return 'Presa' }
   inject(e, f, b, c) {
     this[0] = e
     this[1] = f
@@ -27,7 +33,7 @@ export class Presa extends Array {
   copy() { return (new Presa).assign(this, this.ch) }
   shallow() {
     const vec = this.slice()
-    vec.ch = this.ch
+    vec.ch    = this.ch
     return vec
   }
   eq(y) {
@@ -107,9 +113,19 @@ export class Presa extends Array {
     }
     return this ? Presa.prototype.inject.call(this, effect, fore, back) : [ effect, fore, back ]
   }
+  get effectCollection() {
+    const [ e ] = this
+    let t       = ''
+    t += e & 1 ? 'B' : '-' // bold
+    t += e & 2 ? 'U' : '-' // underline
+    t += e & 4 ? 'B' : '-' // blink
+    t += e & 8 ? 'I' : '-' // inverse
+    t += e & 16 ? 'H' : '-' // hide
+    return t
+  }
 
-  static inject = Presa.prototype.inject
-  static assign = Presa.prototype.assign
+  static inject  = Presa.prototype.inject
+  static assign  = Presa.prototype.assign
   static shallow = Presa.prototype.shallow
 
   static equal(x, y) { return x[0] === y[0] && x[1] === y[1] && x[2] === y[2] }

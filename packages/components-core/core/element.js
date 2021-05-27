@@ -21,7 +21,7 @@ import { Box }                          from './box'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 export class Element extends Node {
-  type = 'element'
+  type      = 'element'
   parseTage = false
   /**
    * Element
@@ -34,9 +34,9 @@ export class Element extends Node {
   }
   static build(options) { return new Element(options) }
   config(options) {
-    const self = this
-    this.type = this.type ?? 'element'
-    console.log('>> [Element.prototype.config]', this.codename)
+    const self     = this
+    this.type      = this.type ?? 'element'
+    // console.log(`>> [{${ this.codename }}.config]`, this.codename)
     const position = this.position = (options.position ?? (options.position = {
       left: options.left,
       right: options.right,
@@ -51,10 +51,10 @@ export class Element extends Node {
       options.shrink = true
     }
     // this.position = position
-    this.noOverflow = options.noOverflow
+    this.noOverflow  = options.noOverflow
     this.dockBorders = options.dockBorders
-    this.shadow = options.shadow
-    this.style = options.style ?? {
+    this.shadow      = options.shadow
+    this.style       = options.style ?? {
       fg: options.fg,
       bg: options.bg,
       bold: options.bold,
@@ -64,14 +64,14 @@ export class Element extends Node {
       invisible: options.invisible,
       transparent: options.transparent,
     }
-    this.hidden = options.hidden || false
-    this.fixed = options.fixed || false
-    this.align = options.align || 'left'
-    this.valign = options.valign || 'top'
-    this.wrap = options.wrap !== false
-    this.shrink = options.shrink
-    this.fixed = options.fixed
-    this.ch = options.ch || ' '
+    this.hidden      = options.hidden || false
+    this.fixed       = options.fixed || false
+    this.align       = options.align || 'left'
+    this.valign      = options.valign || 'top'
+    this.wrap        = options.wrap !== false
+    this.shrink      = options.shrink
+    this.fixed       = options.fixed
+    this.ch          = options.ch || ' '
     if (typeof options.padding === NUM || !options.padding) options.padding = {
       left: options.padding,
       top: options.padding,
@@ -84,15 +84,15 @@ export class Element extends Node {
       right: options.padding.right || 0,
       bottom: options.padding.bottom || 0
     }
-    this.border = options.border
+    this.border  = options.border
     if (this.border) {
       if (typeof this.border === STR) { this.border = { type: this.border } }
       this.border.type = this.border.type || 'bg'
       if (this.border.type === 'ascii') this.border.type = 'line'
-      this.border.ch = this.border.ch || ' '
+      this.border.ch    = this.border.ch || ' '
       this.style.border = this.style.border || this.border.style
       if (!this.style.border) {
-        this.style.border = {}
+        this.style.border    = {}
         this.style.border.fg = this.border.fg
         this.style.border.bg = this.border.bg
       }
@@ -107,7 +107,7 @@ export class Element extends Node {
     if (options.input || options.keyable) { this.screen._listenKeys(this) }
     this.tags = options.parseTags || options.tags // TODO: pull request - changed this.parseTags to this.tags
     this.setContent(options.content || '', true)
-    console.log('>> [Element.prototype.config]', this.codename)
+    // console.log(`>> [{${ this.codename }}.config]`)
     if (options.label) { this.setLabel(options.label) }
     if (options.hoverText) { this.setHover(options.hoverText) }
     // TODO: Possibly move this to Node for onScreenEvent(MOUSE, ...).
@@ -124,7 +124,7 @@ export class Element extends Node {
     this.on(ATTACH, () => { self.parseContent() })
     this.on(DETACH, () => { delete self.lpos })
     if (options.hoverBg != null) {
-      options.hoverEffects = options.hoverEffects || {}
+      options.hoverEffects    = options.hoverEffects || {}
       options.hoverEffects.bg = options.hoverBg
     }
     if (this.style.hover) { options.hoverEffects = this.style.hover }
@@ -200,9 +200,9 @@ export class Element extends Node {
       }
       else {
         expr = val.split(/(?=\+|-)/)
-        val = expr[0]
-        val = +val.slice(0, -1) / 100
-        val = this.screen.width * val | 0
+        val  = expr[0]
+        val  = +val.slice(0, -1) / 100
+        val  = this.screen.width * val | 0
         val += +(expr[1] || 0)
       }
     }
@@ -228,9 +228,9 @@ export class Element extends Node {
       }
       else {
         expr = val.split(/(?=\+|-)/)
-        val = expr[0]
-        val = +val.slice(0, -1) / 100
-        val = this.screen.height * val | 0
+        val  = expr[0]
+        val  = +val.slice(0, -1) / 100
+        val  = this.screen.height * val | 0
         val += +(expr[1] || 0)
       }
     }
@@ -296,7 +296,7 @@ export class Element extends Node {
     if (typeof fore === FUN) fore = fore(this)
     if (typeof back === FUN) back = back(this)
     const out = Presa.build().inject(styleToInt(style), convColor(fore), convColor(back))
-    console.log('>> [element.sattr]', style, out)
+    // console.log(`>> [{${ this.codename }}.sattr]`, '' + out)
     return out
   }
   // sattr = styleToMorisot.bind(this)
@@ -308,7 +308,7 @@ export class Element extends Node {
   }
   onceScreenEvent(type, handler) {
     const listeners = this._slisteners ?? (this._slisteners = [])
-    const entry = { type, handler }
+    const entry     = { type, handler }
     listeners.push(entry)
     this.screen.once(type, function () {
       const i = listeners.indexOf(entry)
@@ -371,7 +371,7 @@ export class Element extends Node {
     const width = this.width - this.iwidth
     if (this.clines == null || this.clines.width !== width || this.clines.content !== this.content) {
       let content = this.content
-      content = content
+      content     = content
         .replace(/[\x00-\x08\x0b-\x0c\x0e-\x1a\x1c-\x1f\x7f]/g, '')
         .replace(/\x1b(?!\[[\d;]*m)/g, '')
         .replace(/\r\n|\r/g, LF)
@@ -398,11 +398,11 @@ export class Element extends Node {
         // content = helpers.dropUnicode(content);
       }
       if (!noTags) { content = this.#parseTags(content) }
-      this.clines = this.#wrapContent(content, width) // TODO: pr - changed this._clines to this.clines
-      this.clines.width = width
+      this.clines         = this.#wrapContent(content, width) // TODO: pr - changed this._clines to this.clines
+      this.clines.width   = width
       this.clines.content = this.content
-      this.clines.attr = this._parseAttr(this.clines)
-      this.clines.ci = []
+      this.clines.attr    = this._parseAttr(this.clines)
+      this.clines.ci      = []
       this.clines.reduce(function (total, line) {
         this.clines.ci.push(total)
         return total + line.length + 1
@@ -420,11 +420,11 @@ export class Element extends Node {
     if (!this.tags) return text
     if (!/{\/?[\w\-,;!#]*}/.test(text)) return text
     const program = this.screen.program
-    let out = '',
+    let out       = '',
         state
-    const bg   = [],
-          fg   = [],
-          flag = []
+    const bg      = [],
+          fg      = [],
+          flag    = []
     let cap,
         slash,
         param,
@@ -433,13 +433,13 @@ export class Element extends Node {
     while (true) {
       if (!esc && (cap = /^{escape}/.exec(text))) {
         text = text.slice(cap[0].length)
-        esc = true
+        esc  = true
         continue
       }
       if (esc && (cap = /^([\s\S]+?){\/escape}/.exec(text))) {
         text = text.slice(cap[0].length)
         out += cap[1]
-        esc = false
+        esc  = false
         continue
       }
       if (esc) {
@@ -448,7 +448,7 @@ export class Element extends Node {
         break
       }
       if ((cap = /^{(\/?)([\w\-,;!#]*)}/.exec(text))) {
-        text = text.slice(cap[0].length)
+        text  = text.slice(cap[0].length)
         slash = cap[1] === '/'
         param = cap[2].replace(/-/g, ' ')
         if (param === 'open') {
@@ -464,8 +464,8 @@ export class Element extends Node {
         if (slash) {
           if (!param) {
             out += program.parseAttr('normal')
-            bg.length = 0
-            fg.length = 0
+            bg.length   = 0
+            fg.length   = 0
             flag.length = 0
           }
           else {
@@ -510,13 +510,12 @@ export class Element extends Node {
    * @return {Presa[]}
    */
   _parseAttr(lines) {
-    console.log('>> [element._parseAttr]', 'pre')
-    const normAttr = this.sattr(this.style)
-    console.log('>> [element._parseAttr]', 'normAttr', normAttr)
+    const normAttr                         = this.sattr(this.style)
+    // console.log(`>> [{${ this.codename }}.#parseAttr]`, 'normAttr', '' + normAttr)
     /** @type {[Presa]} */  const attrList = []
     if (Presa.prototype.eq.call(lines[0].attr, normAttr)) return void 0 // lines[0].attr === normAttr
     for (let j = 0, ht = lines.length, currAttr = normAttr, line; j < ht; j++) {
-      line = lines[j]
+      line        = lines[j]
       attrList[j] = currAttr
       for (let i = 0, wd = line.length, ms, ph; i < wd; i++) {
         if (line[i] === ESC && (ms = /^\x1b\[[\d;]*m/.exec(line.slice(i))) && (ph = ms[0])) {
@@ -525,7 +524,7 @@ export class Element extends Node {
         }
       }
     }
-    console.log('>> [element._parseAttr]', attrList)
+    // console.log(`>> [{${ this.codename }}.#parseAttr]`, 'attrList', attrList)
     return attrList
   }
   _align(line, width, align) {
@@ -533,30 +532,30 @@ export class Element extends Node {
     //if (!align && !~line.indexOf('{|}')) return line;
     const cline = line.replace(/\x1b\[[\d;]*m/g, ''),
           len   = cline.length
-    let s = width - len
+    let s       = width - len
     if (this.shrink) { s = 0 }
     if (len === 0) return line
     if (s < 0) return line
     if (align === 'center' && (s = Array(((s / 2) | 0) + 1).join(' '))) return s + line + s
     else if (align === 'right' && (s = Array(s + 1).join(' '))) return s + line
     else if (this.tags && ~line.indexOf('{|}')) {
-      const parts = line.split('{|}')
+      const parts  = line.split('{|}')
       const cparts = cline.split('{|}')
-      s = Math.max(width - cparts[0].length - cparts[1].length, 0)
-      s = Array(s + 1).join(' ')
+      s            = Math.max(width - cparts[0].length - cparts[1].length, 0)
+      s            = Array(s + 1).join(' ')
       return parts[0] + s + parts[1]
     }
     return line
   }
   #wrapContent(content, width) {
     const tags = this.tags
-    let state = this.align
+    let state  = this.align
     const wrap = this.wrap
     let margin = 0
     const rtof = [],
           ftor = [],
           out  = []
-    let no = 0,
+    let no     = 0,
         line,
         align,
         cap,
@@ -570,10 +569,10 @@ export class Element extends Node {
     lines = content.split(LF)
     if (!content) {
       out.push(content)
-      out.rtof = [ 0 ]
-      out.ftor = [ [ 0 ] ]
-      out.fake = lines
-      out.real = out
+      out.rtof   = [ 0 ]
+      out.ftor   = [ [ 0 ] ]
+      out.fake   = lines
+      out.real   = out
       out.mwidth = 0
       return out
     }
@@ -583,18 +582,18 @@ export class Element extends Node {
 
     main:
       for (; no < lines.length; no++) {
-        line = lines[no]
+        line  = lines[no]
         align = state
 
         ftor.push([])
         // Handle alignment tags.
         if (tags) {
           if ((cap = /^{(left|center|right)}/.exec(line))) {
-            line = line.slice(cap[0].length)
+            line  = line.slice(cap[0].length)
             align = state = cap[1] !== 'left' ? cap[1] : null
           }
           if ((cap = /{\/(left|center|right)}$/.exec(line))) {
-            line = line.slice(0, -cap[0].length)
+            line  = line.slice(0, -cap[0].length)
             //state = null;
             state = this.align
           }
@@ -703,7 +702,7 @@ export class Element extends Node {
       if (self.screen._dragging) return
       if (!verify(data)) return
       self.screen._dragging = self
-      self._drag = {
+      self._drag            = {
         x: data.x - self.aleft,
         y: data.y - self.atop
       }
@@ -734,7 +733,7 @@ export class Element extends Node {
         self.position.bottom = null
       }
       self.rleft = x
-      self.rtop = y
+      self.rtop  = y
       self.screen.render()
     })
     return this._draggable = true
@@ -754,8 +753,8 @@ export class Element extends Node {
   setIndex(index) {
     if (!this.sup) return
     if (index < 0) { index = this.sup.sub.length + index }
-    index = Math.max(index, 0)
-    index = Math.min(index, this.sup.sub.length - 1)
+    index   = Math.max(index, 0)
+    index   = Math.min(index, this.sup.sub.length - 1)
     const i = this.sup.sub.indexOf(this)
     if (!~i) return
     const item = this.sup.sub.splice(i, 1)[0]
@@ -785,18 +784,14 @@ export class Element extends Node {
     if (this._label) {
       this._label.setContent(options.text)
       if (options.side !== 'right') {
-        this._label.rleft = 2 + (this.border ? -1 : 0)
+        this._label.rleft          = 2 + (this.border ? -1 : 0)
         this._label.position.right = undefined
-        if (!this.screen.autoPadding) {
-          this._label.rleft = 2
-        }
+        if (!this.screen.autoPadding) { this._label.rleft = 2 }
       }
       else {
-        this._label.rright = 2 + (this.border ? -1 : 0)
+        this._label.rright        = 2 + (this.border ? -1 : 0)
         this._label.position.left = undefined
-        if (!this.screen.autoPadding) {
-          this._label.rright = 2
-        }
+        if (!this.screen.autoPadding) { this._label.rright = 2 }
       }
       return
     }
@@ -868,12 +863,12 @@ export class Element extends Node {
     assert.ok(pos)
     if (pos.aleft != null) return pos
 
-    pos.aleft = pos.xi
-    pos.atop = pos.yi
-    pos.aright = this.screen.cols - pos.xl
+    pos.aleft   = pos.xi
+    pos.atop    = pos.yi
+    pos.aright  = this.screen.cols - pos.xl
     pos.abottom = this.screen.rows - pos.yl
-    pos.width = pos.xl - pos.xi
-    pos.height = pos.yl - pos.yi
+    pos.width   = pos.xl - pos.xi
+    pos.height  = pos.yl - pos.yi
     return pos
   }
   /**
@@ -886,7 +881,7 @@ export class Element extends Node {
         expr
     if (typeof width === STR) {
       if (width === 'half') width = '50%'
-      expr = width.split(/(?=\+|-)/)
+      expr  = width.split(/(?=\+|-)/)
       width = expr[0]
       width = +width.slice(0, -1) / 100
       width = sup.width * width | 0
@@ -921,13 +916,13 @@ export class Element extends Node {
     return width
   }
   _getHeight(get) {
-    const sup = get ? this.sup._getPos() : this.sup
+    const sup  = get ? this.sup._getPos() : this.sup
     let height = this.position.height,
         top,
         expr
     if (typeof height === STR) {
       if (height === 'half') height = '50%'
-      expr = height.split(/(?=\+|-)/)
+      expr   = height.split(/(?=\+|-)/)
       height = expr[0]
       height = +height.slice(0, -1) / 100
       height = sup.height * height | 0
@@ -945,9 +940,9 @@ export class Element extends Node {
       if (typeof top === STR) {
         if (top === 'center') top = '50%'
         expr = top.split(/(?=\+|-)/)
-        top = expr[0]
-        top = +top.slice(0, -1) / 100
-        top = sup.height * top | 0
+        top  = expr[0]
+        top  = +top.slice(0, -1) / 100
+        top  = sup.height * top | 0
         top += +(expr[1] || 0)
       }
       height = sup.height - (this.position.bottom || 0) - top
@@ -964,7 +959,7 @@ export class Element extends Node {
   }
   _getLeft(get) {
     const sup = get ? this.sup._getPos() : this.sup
-    let left = this.position.left || 0,
+    let left  = this.position.left || 0,
         expr
     if (typeof left === STR) {
       if (left === 'center') left = '50%'
@@ -1003,14 +998,14 @@ export class Element extends Node {
   }
   _getTop(get) {
     const sup = get ? this.sup._getPos() : this.sup
-    let top = this.position.top || 0,
+    let top   = this.position.top || 0,
         expr
     if (typeof top === STR) {
       if (top === 'center') top = '50%'
       expr = top.split(/(?=\+|-)/)
-      top = expr[0]
-      top = +top.slice(0, -1) / 100
-      top = sup.height * top | 0
+      top  = expr[0]
+      top  = +top.slice(0, -1) / 100
+      top  = sup.height * top | 0
       top += +(expr[1] || 0)
       if (this.position.top === 'center') top -= this._getHeight(get) / 2 | 0
     }
@@ -1051,7 +1046,7 @@ export class Element extends Node {
     // far.
     let _lpos
     if (get) {
-      _lpos = this.lpos
+      _lpos     = this.lpos
       this.lpos = { xi: xi, xl: xl, yi: yi, yl: yl }
       //this.shrink = false;
     }
@@ -1169,7 +1164,7 @@ export class Element extends Node {
   _getShrink(xi, xl, yi, yl, get) {
     const shrinkBox     = this._getShrinkBox(xi, xl, yi, yl, get),
           shrinkContent = this._getShrinkContent(xi, xl, yi, yl, get)
-    let xll = xl, yll = yl
+    let xll             = xl, yll = yl
     // Figure out which one is bigger and use it.
     if (shrinkBox.xl - shrinkBox.xi > shrinkContent.xl - shrinkContent.xi) { xi = shrinkBox.xi, xl = shrinkBox.xl }
     else { xi = shrinkContent.xi, xl = shrinkContent.xl }
@@ -1266,7 +1261,7 @@ export class Element extends Node {
         else {
           // Is partially covered above.
           notop = true
-          v = ppos.yi - yi
+          v     = ppos.yi - yi
           if (this.border) v--
           if (thisparent.border) v++
           base += v
@@ -1281,7 +1276,7 @@ export class Element extends Node {
         else {
           // Is partially covered below.
           nobot = true
-          v = yl - ppos.yl
+          v     = yl - ppos.yl
           if (this.border) v--
           if (thisparent.border) v++
           yl -= v
@@ -1293,13 +1288,13 @@ export class Element extends Node {
       // Could allow overlapping stuff in scrolling elements
       // if we cleared the pending buffer before every draw.
       if (xi < el.lpos.xi) {
-        xi = el.lpos.xi
+        xi     = el.lpos.xi
         noleft = true
         if (this.border) xi--
         if (thisparent.border) xi++
       }
       if (xl > el.lpos.xl) {
-        xl = el.lpos.xl
+        xl      = el.lpos.xl
         noright = true
         if (this.border) xl++
         if (thisparent.border) xl--
@@ -1332,40 +1327,40 @@ export class Element extends Node {
   }
   _render = Element.prototype.render
   render() {
-    console.log('>> [element.render]')
+    // console.log(`>> [{${ this.codename }}.render]`)
     this._emit(PRERENDER)
     this.parseContent()
     const coords = this._getCoords(true)
     if (!coords) return void (delete this.lpos)
     if (coords.xl - coords.xi <= 0) return void (coords.xl = Math.max(coords.xl, coords.xi))
     if (coords.yl - coords.yi <= 0) return void (coords.yl = Math.max(coords.yl, coords.yi))
-    const lines = this.screen.lines
-    let xi = coords.xi,
-        xl = coords.xl,
-        yi = coords.yi,
-        yl = coords.yl,
+    const lines   = this.screen.lines
+    let xi        = coords.xi,
+        xl        = coords.xl,
+        yi        = coords.yi,
+        yl        = coords.yl,
         attr,
         ch
     const content = this._pcontent
-    let ci = this.clines.ci[coords.base],
+    let ci        = this.clines.ci[coords.base],
         borderAttr,
         normAttr,
         c,
         visible,
         i
-    const bch = this.ch
+    const bch     = this.ch
     if (coords.base >= this.clines.ci.length) ci = this._pcontent.length
     this.lpos = coords
     if (this.border?.type === 'line') {
-      this.screen._borderStops[coords.yi] = true
+      this.screen._borderStops[coords.yi]     = true
       this.screen._borderStops[coords.yl - 1] = true
     }
     normAttr = this.sattr(this.style)
     // console.log('>> [element.render] interim', normAttr)
-    attr = normAttr
+    attr     = normAttr
     // If we're in a scrollable text box, check to
     // see which attributes this line starts with.
-    if (ci > 0) attr = this.clines.attr[Math.min(coords.base, this.clines.length - 1)]
+    if (ci > 0) { attr = this.clines.attr[Math.min(coords.base, this.clines.length - 1)] }
     if (this.border) xi++, xl--, yi++, yl--
     // If we have padding/valign, that means the content-drawing loop will skip a few cells/lines.
     // To deal with this, we can just fill the whole thing ahead of time. This could be optimized.
@@ -1417,7 +1412,7 @@ export class Element extends Node {
           if ((c = /^\x1b\[[\d;]*m/.exec(content.slice(ci - 1)))) {
             ci += c[0].length - 1
             Presa.prototype.mergeSGR.call(attr, c[0], normAttr) // sgraToMorisot(c[0], attr, normAttr)
-            console.log('>> [element.render presa.merge]', attr, c[0])
+            // console.log('>> [element.render presa.merge]', '' + attr, '' + c[0])
             // Ignore foreground changes for selected items.
             if (
               this.sup._isList &&
@@ -1499,6 +1494,7 @@ export class Element extends Node {
           }
         }
       }
+      // console.log(`>> [{${ this.codename }}.render]`, 'line', line.map(x => x.toString()))
     }
     // Draw the scrollbar.
     // Could possibly draw this after all child elements.
@@ -1511,17 +1507,17 @@ export class Element extends Node {
       let x = xl - 1
       if (this.scrollbar.ignoreBorder && this.border) x++
       let y = this.alwaysScroll ? this.childBase / (i - (yl - yi)) : (this.childBase + this.childOffset) / (i - 1)
-      y = yi + ((yl - yi) * y | 0)
+      y     = yi + ((yl - yi) * y | 0)
       if (y >= yl) y = yl - 1
       let line = lines[y],
           cell = line && line[x]
       if (cell) {
         if (this.track) {
-          ch = this.track.ch || ' '
+          ch   = this.track.ch || ' '
           attr = this.sattr(this.style.track, this.style.track.fg || this.style.fg, this.style.track.bg || this.style.bg)
           this.screen.fillRegion(attr, ch, x, x + 1, yi, yl)
         }
-        ch = this.scrollbar.ch || ' '
+        ch   = this.scrollbar.ch || ' '
         attr = this.sattr(this.style.scrollbar, this.style.scrollbar.fg || this.style.fg, this.style.scrollbar.bg || this.style.bg)
         if (!Presa.prototype.eq.call(attr, cell) || ch !== cell.ch) { // attr !== cell[0]
           Presa.prototype.assign.call(cell, attr, ch) // cell[0] = attr, cell.ch = ch,
@@ -1536,7 +1532,7 @@ export class Element extends Node {
     // Draw the border.
     if (this.border) {
       borderAttr = this.sattr(this.style.border)
-      let y = yi
+      let y      = yi
       if (coords.notop) y = -1
       let line = lines[y]
       for (let x = xi, cell; x < xl; x++) {
@@ -1693,6 +1689,7 @@ export class Element extends Node {
       el.render()
       // if (el.screen._rendering) { el._rendering = false; }
     })
+    // console.log(`>> [{${ this.codename }}.render]`, 'render coords', coords)
     this._emit(RENDER, [ coords ])
     return coords
   }
@@ -1746,17 +1743,17 @@ export class Element extends Node {
     // if they're the same, or if they fit in the visible region entirely.
     const start = this.clines.length
     let diff
-    const real = this.clines.ftor[i][0]
+    const real  = this.clines.ftor[i][0]
     while (n--) this.clines.fake.splice(i, 1)
     this.setContent(this.clines.fake.join(LF), true)
-    diff = start - this.clines.length
+    diff       = start - this.clines.length
     // XXX clearPos() without diff statement?
     let height = 0
     if (diff > 0) {
       const pos = this._getCoords()
       if (!pos) return
 
-      height = pos.yl - pos.yi - this.iheight
+      height        = pos.yl - pos.yi - this.iheight
       const base    = this.childBase || 0,
             visible = real >= base && real - base < height
       if (pos && visible && this.screen.cleanSides(this)) {

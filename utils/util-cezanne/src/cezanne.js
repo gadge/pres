@@ -1,13 +1,13 @@
 import { hexToInt, rgbToInt } from '@palett/convert'
 import { CSI }                from '@pres/enum-control-chars'
 import { SGR }                from '@pres/enum-csi-codes'
-import * as colors            from '@pres/util-colors'
 import { SC }                 from '@texting/enum-chars'
 import { FUN, NUM, STR }      from '@typen/enum-data-types'
 import { nullish }            from '@typen/nullish'
 import { Presa }              from './presa'
 
-export const NAC = 1 << 24 // 16777216 = 256 * 256 * 256
+// export const NAC = 1 << 24 // 16777216 = 256 * 256 * 256
+export const NAC = null
 
 export const COLOR_CODES = {
   default: NaN,
@@ -50,8 +50,8 @@ export const COLORS_4_BITS = [
 
 export const tryHexToInt = hex => hex[0] === '#' ? hexToInt(hex) : null
 
-export const LIGHT = /^(?:light(?:en)?|bright(?:en)?)/
-export const PUNC = /[\W_]+/g
+export const LIGHT       = /^(?:light(?:en)?|bright(?:en)?)/
+export const PUNC        = /[\W_]+/g
 /**
  *
  * @param {string} name
@@ -69,7 +69,7 @@ export const nameToColor = (name) => {
 
 export const convColor = color => {
   const t = typeof color
-  color = t === NUM ? color
+  color   = t === NUM ? color
     : t === STR ? tryHexToInt(color) ?? nameToColor(color) ?? NAC
       : Array.isArray(color) ? rgbToInt(color)
         : NAC
@@ -110,7 +110,7 @@ export function sgraToPresa(target, source, norm) {
   // if (typeof source === NUM) source = morisotToPresa(source)
   // if (typeof norm === NUM) norm = morisotToPresa(norm)
   let [ effect, fore, back ] = source
-  const vec = target.slice(2, -1).split(';')
+  const vec                  = target.slice(2, -1).split(';')
   if (!vec[0]) vec[0] = '0'
   for (let i = 0, len = vec.length, c; i < len; i++) {
     c = +vec[i] || 0
@@ -129,7 +129,7 @@ export function sgraToPresa(target, source, norm) {
     else if (c === 38) {
       if (+vec[i + 1] === 5) { i += 2, fore = +vec[i] }
       else if (+vec[i + 1] === 2) {
-        ++i , fore = vec[++i] + SC + vec[++i] + SC + vec[++i]
+        ++i, fore = vec[++i] + SC + vec[++i] + SC + vec[++i]
       }
     }
     else if (c === 39) { fore = norm[1] } // default fg
@@ -137,7 +137,7 @@ export function sgraToPresa(target, source, norm) {
     else if (c === 48) {
       if (+vec[i + 1] === 5) { i += 2, back = +vec[i] }
       else if (+vec[i + 1] === 2) {
-        ++i , back = vec[++i] + SC + vec[++i] + SC + vec[++i]
+        ++i, back = vec[++i] + SC + vec[++i] + SC + vec[++i]
       }
     }
     else if (c === 49) { back = norm[2] } // default bg
@@ -155,31 +155,16 @@ export function sgraToPresa(target, source, norm) {
  * @returns {string}
  */
 export function presaToSgra(code, tputColors) {
-  let [ effect, fore, back ] = code,
-      out                    = ''
-  if (effect & 1) { out += '1;' } // bold
-  if (effect & 2) { out += '4;' } // underline
-  if (effect & 4) { out += '5;' } // blink
-  if (effect & 8) { out += '7;' } // inverse
-  if (effect & 16) { out += '8;' } // invisible
-  if (back !== 0x1ff) {
-    back = colors.reduce(back, tputColors)
-    if (back < 16) {
-      if (back < 8) { back += 40 }
-      else if (back < 16) { back -= 8, back += 100 }
-      out += back + ';'
-    }
-    else { out += '48;5;' + back + ';' }
-  }
-  if (fore !== 0x1ff) {
-    fore = colors.reduce(fore, tputColors)
-    if (fore < 16) {
-      if (fore < 8) { fore += 30 }
-      else if (fore < 16) { fore -= 8, fore += 90 }
-      out += fore + ';'
-    }
-    else { out += '38;5;' + fore + ';' }
-  }
-  if (out[out.length - 1] === ';') out = out.slice(0, -1)
-  return CSI + out + SGR
+  let [ e, f, b ] = code,
+      tx          = ''
+  if (e & 1) { tx += '1;' } // bold
+  if (e & 2) { tx += '4;' } // underline
+  if (e & 4) { tx += '5;' } // blink
+  if (e & 8) { tx += '7;' } // inverse
+  if (e & 16) { tx += '8;' } // invisible
+  if (!nullish(b)) { tx += '48;2;' + (b >> 16 & 0xFF) + ';' + (b >> 8 & 0xFF) + ';' + (b & 0xFF) + ';' }
+  if (!nullish(f)) { tx += '38;2;' + (f >> 16 & 0xFF) + ';' + (f >> 8 & 0xFF) + ';' + (f & 0xFF) + ';' }
+  if (tx[tx.length - 1] === ';') tx = tx.slice(0, -1)
+  // console.log('>> [presa -> sgra]', tx)
+  return CSI + tx + SGR
 }

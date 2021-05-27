@@ -11,9 +11,9 @@ import { FUN }                                          from '@typen/enum-data-t
 const slice = Array.prototype.slice
 
 export class EventEmitter {
-  #events = {}
-  #max = Infinity
-  addListener = this.on
+  #events        = {}
+  #max           = Infinity
+  addListener    = this.on
   removeListener = this.off
   constructor() { }
   static build() { return new EventEmitter() }
@@ -59,7 +59,7 @@ export class EventEmitter {
     return result !== false
   }
   emit(type, ...args) {
-    let node = this
+    /** @type {Node} */ let node = this
     this.#emit(EVENT, slice.call(arguments))
     if (this.type === 'screen') return this.#emit(type, args)
     if (this.#emit(type, args) === false) return false

@@ -15,10 +15,15 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@palett/convert": "^0.8.3",
+    "@palett/cards": "^0.8.5",
+    "@palett/convert": "^0.8.5",
+    "@palett/fluo": "^0.8.5",
+    "@palett/presets": "^0.8.5",
+    "@palett/projector-factory": "^0.8.5",
     "@pres/enum-control-chars": "^0.1.20",
     "@pres/enum-csi-codes": "^0.1.20",
     "@pres/util-colors": "^0.1.20",
+    "@texting/enum-chars": "^0.0.10",
     "@typen/enum-data-types": "^0.1.16",
     "@typen/nullish": "^0.1.16"
   },
