@@ -12,7 +12,10 @@
     "upint": "yarn upgrade-interactive",
     "pub": "lerna publish --force-publish",
     "build": "lerna exec --parallel -- rollup -c ../../rollup.config.js",
-    "build-specific": "lerna exec --scope=@pres/components-core -- rollup -c ../../rollup.config.js",
+    "build-specific": "lerna exec --scope=@pres/${PART:-program} -- rollup -c ../../rollup.config.js",
+    "build-application": "lerna exec --scope=@pres/${PART:-top} -- rollup -c ../../rollup.config.js",
+    "build-component": "lerna exec --scope=@pres/components-${PART:-core} -- rollup -c ../../rollup.config.js",
+    "build-util": "lerna exec --scope=@pres/util-${PART:-core} -- rollup -c ../../rollup.config.js",
     "watch": "lerna exec --parallel -- rollup -c ../../rollup.config.js -w",
     "watch-specific": "lerna exec --scope=@pres/components-core -- rollup -c ../../rollup.config.js -w"
   },

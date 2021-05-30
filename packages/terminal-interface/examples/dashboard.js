@@ -1,8 +1,8 @@
 import { flop, rand, ziggurat } from '@aryth/rand'
 import { ATTACH, RESIZE }       from '@pres/enum-events'
 import { last }                 from '@vect/vector-index'
-import * as contrib from '../index'
-import { TI }       from '../src/terminal-interface'
+import * as contrib             from '../index'
+import { TI }                   from '../src/terminal-interface'
 
 const normDist = ziggurat(0, 5, 0)
 
@@ -222,7 +222,7 @@ function updateDonut() {
   if (pct >= 0.5) color = 'yellow'
   if (pct >= 0.75) color = 'red'
   donut.setData([
-    { percent: parseFloat((pct + 0.00) % 1).toFixed(2), label: 'storage', 'color': color } ])
+    { percent: parseFloat(( pct + 0.00 ) % 1).toFixed(2), label: 'storage', 'color': color } ])
   pct += 0.01
 }
 setInterval(() => { updateDonut(), screen.render() }, 500)
@@ -259,3 +259,4 @@ screen.on(RESIZE, () => {
   logList.emit(ATTACH)
 })
 screen.render()
+screen.emit('adjourn')

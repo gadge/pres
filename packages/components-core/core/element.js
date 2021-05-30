@@ -7,12 +7,14 @@
 import { Node }          from '@pres/components-node'
 import { ESC, LF, TAB }  from '@pres/enum-control-chars'
 import {
-  ATTACH, CLICK, DETACH, HIDE, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, MOVE,
+  ATTACH, CLICK, DETACH, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL,
+  MOVE,
   NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
 }                        from '@pres/enum-events'
 import * as colors       from '@pres/util-colors'
 import * as helpers      from '@pres/util-helpers'
 import * as unicode      from '@pres/util-unicode'
+import { SP }            from '@texting/enum-chars'
 import { FUN, NUM, STR } from '@typen/enum-data-types'
 import { nullish }       from '@typen/nullish'
 import { last }          from '@vect/vector-index'
@@ -36,14 +38,14 @@ export class Element extends Node {
     const self = this
     this.type = this.type ?? 'element'
     // console.log('>> [Element.prototype.config]', this.codename)
-    const position = this.position = (options.position ?? (options.position = {
+    const position = this.position = ( options.position ?? ( options.position = {
       left: options.left,
       right: options.right,
       top: options.top,
       bottom: options.bottom,
       width: options.width,
       height: options.height
-    }))
+    } ) )
     if (position.width === 'shrink' || position.height === 'shrink') {
       if (position.width === 'shrink') delete position.width
       if (position.height === 'shrink') delete position.height
@@ -85,7 +87,7 @@ export class Element extends Node {
     }
     this.border = options.border
     if (this.border) {
-      if (typeof this.border === STR) { this.border = { type: this.border } }
+      if (typeof this.border === STR) this.border = { type: this.border }
       this.border.type = this.border.type || 'bg'
       if (this.border.type === 'ascii') this.border.type = 'line'
       this.border.ch = this.border.ch || ' '
@@ -116,11 +118,11 @@ export class Element extends Node {
         type === MOUSEMOVE || type === MOUSEOVER || type === MOUSEOUT || type === MOUSEWHEEL ||
         type === WHEELDOWN || type === WHEELUP
       ) { self.screen._listenMouse(self) }
-      else if (type === KEYPRESS || type.indexOf('key ') === 0) { self.screen._listenKeys(self) }
+      else if (type === KEYPRESS || type.indexOf(KEY + SP) === 0) { self.screen._listenKeys(self) }
     })
-    this.on(RESIZE, () => { self.parseContent() })
-    this.on(ATTACH, () => { self.parseContent() })
-    this.on(DETACH, () => { delete self.lpos })
+    this.on(RESIZE, () => self.parseContent())
+    this.on(ATTACH, () => self.parseContent())
+    this.on(DETACH, () => delete self.lpos)
     if (options.hoverBg != null) {
       options.hoverEffects = options.hoverEffects || {}
       options.hoverEffects.bg = options.hoverBg
@@ -150,7 +152,7 @@ export class Element extends Node {
       if (el.hidden) return false
       // if (!el.lpos) return false;
       // if (el.position.width === 0 || el.position.height === 0) return false;
-    } while ((el = el.sup))
+    } while (( el = el.sup ))
     return true
   }
   get _detached() {
@@ -158,10 +160,10 @@ export class Element extends Node {
     do {
       if (el.type === 'screen') return false
       if (!el.sup) return true
-    } while ((el = el.sup))
+    } while (( el = el.sup ))
     return false
   }
-  get draggable() { return this._draggable === true}
+  get draggable() { return this._draggable === true }
   set draggable(draggable) { return draggable ? this.enableDrag(draggable) : this.disableDrag() }
   /**
    * Positioning
@@ -203,7 +205,7 @@ export class Element extends Node {
         val = expr[0]
         val = +val.slice(0, -1) / 100
         val = this.screen.width * val | 0
-        val += +(expr[1] || 0)
+        val += +( expr[1] || 0 )
       }
     }
     val -= this.sup.aleft
@@ -233,7 +235,7 @@ export class Element extends Node {
         val = expr[0]
         val = +val.slice(0, -1) / 100
         val = this.screen.height * val | 0
-        val += +(expr[1] || 0)
+        val += +( expr[1] || 0 )
       }
     }
     val -= this.sup.atop
@@ -280,12 +282,12 @@ export class Element extends Node {
     this.clearPos()
     return this.position.bottom = val
   }
-  get ileft() { return (this.border ? 1 : 0) + this.padding.left }
-  get itop() { return (this.border ? 1 : 0) + this.padding.top }
-  get iright() { return (this.border ? 1 : 0) + this.padding.right }
-  get ibottom() { return (this.border ? 1 : 0) + this.padding.bottom }
-  get iwidth() { return (this.border ? 2 : 0) + this.padding.left + this.padding.right }
-  get iheight() { return (this.border ? 2 : 0) + this.padding.top + this.padding.bottom }
+  get ileft() { return ( this.border ? 1 : 0 ) + this.padding.left }
+  get itop() { return ( this.border ? 1 : 0 ) + this.padding.top }
+  get iright() { return ( this.border ? 1 : 0 ) + this.padding.right }
+  get ibottom() { return ( this.border ? 1 : 0 ) + this.padding.bottom }
+  get iwidth() { return ( this.border ? 2 : 0 ) + this.padding.left + this.padding.right }
+  get iheight() { return ( this.border ? 2 : 0 ) + this.padding.top + this.padding.bottom }
   get tpadding() { return this.padding.left + this.padding.top + this.padding.right + this.padding.bottom }
   /**
    * Relative coordinates as default properties
@@ -298,9 +300,10 @@ export class Element extends Node {
   set top(val) { return this.rtop = val }
   get bottom() { return this.rbottom }
   set bottom(val) { return this.rbottom = val }
+
   sattr(style, fg, bg) {
     let { bold, underline, blink, inverse, invisible } = style
-    if (fg == null && bg == null) { (fg = style.fg), (bg = style.bg) }
+    if (fg == null && bg == null) { ( fg = style.fg ), ( bg = style.bg ) }
     if (typeof bold === FUN) bold = bold(this)
     if (typeof underline === FUN) underline = underline(this)
     if (typeof blink === FUN) blink = blink(this)
@@ -310,80 +313,16 @@ export class Element extends Node {
     if (typeof bg === FUN) bg = bg(this)
     // console.log('>> [element.sattr]', this.codename, fg ?? AEU, 'to', colors.convert(fg), bg ?? AEU, 'to', colors.convert(bg))
     return (
-      ((invisible ? 16 : 0) << 18) |
-      ((inverse ? 8 : 0) << 18) |
-      ((blink ? 4 : 0) << 18) |
-      ((underline ? 2 : 0) << 18) |
-      ((bold ? 1 : 0) << 18) |
-      (colors.convert(fg) << 9) |
-      (colors.convert(bg))
+      ( ( invisible ? 16 : 0 ) << 18 ) |
+      ( ( inverse ? 8 : 0 ) << 18 ) |
+      ( ( blink ? 4 : 0 ) << 18 ) |
+      ( ( underline ? 2 : 0 ) << 18 ) |
+      ( ( bold ? 1 : 0 ) << 18 ) |
+      ( colors.convert(fg) << 9 ) |
+      ( colors.convert(bg) )
     ) // return (this.uid << 24) | ((this.dockBorders ? 32 : 0) << 18)
   }
-  onScreenEvent(type, handler) {
-    const listeners = this._slisteners = this._slisteners || []
-    listeners.push({ type: type, handler: handler })
-    this.screen.on(type, handler)
-  }
-  onceScreenEvent(type, handler) {
-    const listeners = this._slisteners = this._slisteners || []
-    const entry = { type: type, handler: handler }
-    listeners.push(entry)
-    this.screen.once(type, function () {
-      const i = listeners.indexOf(entry)
-      if (~i) listeners.splice(i, 1)
-      return handler.apply(this, arguments)
-    })
-  }
-  removeScreenEvent(type, handler) {
-    const listeners = this._slisteners = this._slisteners || []
-    for (let i = 0; i < listeners.length; i++) {
-      const listener = listeners[i]
-      if (listener.type === type && listener.handler === handler) {
-        listeners.splice(i, 1)
-        if (this._slisteners.length === 0) delete this._slisteners
-        break
-      }
-    }
-    this.screen.removeListener(type, handler)
-  }
-  free() {
-    const listeners = this._slisteners = this._slisteners || []
-    for (let i = 0; i < listeners.length; i++) {
-      const listener = listeners[i]
-      this.screen.removeListener(listener.type, listener.handler)
-    }
-    delete this._slisteners
-  }
-  hide() {
-    if (this.hidden) return
-    this.clearPos()
-    this.hidden = true
-    this.emit(HIDE)
-    if (this.screen.focused === this) this.screen.rewindFocus()
-  }
-  show() {
-    if (!this.hidden) return
-    this.hidden = false
-    this.emit(SHOW)
-  }
-  toggle() { return this.hidden ? this.show() : this.hide() }
-  focus() { return this.screen.focused = this }
-  setContent(content, noClear, noTags) {
-    if (!noClear) this.clearPos()
-    this.content = content || ''
-    this.parseContent(noTags)
-    this.emit(SET_CONTENT)
-  }
-  getContent() {
-    if (!this._clines) return ''
-    return this._clines.fake.join(LF)
-  }
-  setText(content, noClear) {
-    content = content || ''
-    content = content.replace(/\x1b\[[\d;]*m/g, '')
-    return this.setContent(content, noClear, true)
-  }
-  getText() { return this.getContent().replace(/\x1b\[[\d;]*m/g, '') }
+  // Convert `{red-fg}foo{/red-fg}` to `\x1b[31mfoo\x1b[39m`.
   parseContent(noTags) {
     if (this.detached) return false
     const width = this.width - this.iwidth
@@ -419,7 +358,7 @@ export class Element extends Node {
       this._clines = this._wrapContent(content, width)
       this._clines.width = width
       this._clines.content = this.content
-      this._clines.attr = this._parseAttr(this._clines)
+      this._clines.attr = this.#parseAttr(this._clines)
       this._clines.ci = []
       this._clines.reduce(function (total, line) {
         this._clines.ci.push(total)
@@ -430,10 +369,9 @@ export class Element extends Node {
       return true
     }
     // Need to calculate this every time because the default fg/bg may change.
-    this._clines.attr = this._parseAttr(this._clines) || this._clines.attr
+    this._clines.attr = this.#parseAttr(this._clines) || this._clines.attr
     return false
   }
-// Convert `{red-fg}foo{/red-fg}` to `\x1b[31mfoo\x1b[39m`.
   #parseTags(text) {
     if (!this.parseTags) return text
     if (!/{\/?[\w\-,;!#]*}/.test(text)) return text
@@ -449,12 +387,12 @@ export class Element extends Node {
         attr,
         esc
     while (true) {
-      if (!esc && (cap = /^{escape}/.exec(text))) {
+      if (!esc && ( cap = /^{escape}/.exec(text) )) {
         text = text.slice(cap[0].length)
         esc = true
         continue
       }
-      if (esc && (cap = /^([\s\S]+?){\/escape}/.exec(text))) {
+      if (esc && ( cap = /^([\s\S]+?){\/escape}/.exec(text) )) {
         text = text.slice(cap[0].length)
         out += cap[1]
         esc = false
@@ -465,7 +403,7 @@ export class Element extends Node {
         out += text
         break
       }
-      if ((cap = /^{(\/?)([\w\-,;!#]*)}/.exec(text))) {
+      if (( cap = /^{(\/?)([\w\-,;!#]*)}/.exec(text) )) {
         text = text.slice(cap[0].length)
         slash = cap[1] === '/'
         param = cap[2].replace(/-/g, ' ')
@@ -514,7 +452,7 @@ export class Element extends Node {
         }
         continue
       }
-      if ((cap = /^[\s\S]+?(?={\/?[\w\-,;!#]*})/.exec(text))) {
+      if (( cap = /^[\s\S]+?(?={\/?[\w\-,;!#]*})/.exec(text) )) {
         text = text.slice(cap[0].length)
         out += cap[0]
         continue
@@ -524,7 +462,7 @@ export class Element extends Node {
     }
     return out
   }
-  _parseAttr(lines) {
+  #parseAttr(lines) {
     const dattr = this.sattr(this.style)
     let attr = dattr
     const attrs = []
@@ -538,7 +476,7 @@ export class Element extends Node {
       attrs[j] = attr
       for (i = 0; i < line.length; i++) {
         if (line[i] === ESC) {
-          if ((c = /^\x1b\[[\d;]*m/.exec(line.slice(i)))) {
+          if (( c = /^\x1b\[[\d;]*m/.exec(line.slice(i)) )) {
             attr = this.screen.attrCode(c[0], attr, dattr)
             i += c[0].length - 1
           }
@@ -547,6 +485,481 @@ export class Element extends Node {
     }
     return attrs
   }
+  _render = Element.prototype.render
+  render() {
+    this._emit(PRERENDER)
+    this.parseContent()
+    const coords = this._getCoords(true)
+    if (!coords) return void ( delete this.lpos )
+    if (coords.xl - coords.xi <= 0) return void ( coords.xl = Math.max(coords.xl, coords.xi) )
+    if (coords.yl - coords.yi <= 0) return void ( coords.yl = Math.max(coords.yl, coords.yi) )
+    const lines = this.screen.lines
+    let xi = coords.xi,
+        xl = coords.xl,
+        yi = coords.yi,
+        yl = coords.yl,
+        attr,
+        ch
+    const content = this._pcontent
+    let ci = this._clines.ci[coords.base],
+        battr,
+        dattr,
+        c,
+        visible,
+        i
+    const bch = this.ch
+    // Clip content if it's off the edge of the screen
+    // if (xi + this.ileft < 0 || yi + this.itop < 0) {
+    //   var clines = this._clines.slice();
+    //   if (xi + this.ileft < 0) {
+    //     for (var i = 0; i < clines.length; i++) {
+    //       var t = 0;
+    //       var csi = '';
+    //       var csis = '';
+    //       for (var j = 0; j < clines[i].length; j++) {
+    //         while (clines[i][j] === ESC) {
+    //           csi = ESC;
+    //           while (clines[i][j++] !== 'm') csi += clines[i][j];
+    //           csis += csi;
+    //         }
+    //         if (++t === -(xi + this.ileft) + 1) break;
+    //       }
+    //       clines[i] = csis + clines[i].slice(j);
+    //     }
+    //   }
+    //   if (yi + this.itop < 0) {
+    //     clines = clines.slice(-(yi + this.itop));
+    //   }
+    //   content = clines.join(LF);
+    // }
+    if (coords.base >= this._clines.ci.length) ci = this._pcontent.length
+    this.lpos = coords
+    if (this.border?.type === 'line') {
+      this.screen._borderStops[coords.yi] = true
+      this.screen._borderStops[coords.yl - 1] = true
+      // if (!this.screen._borderStops[coords.yi]) {
+      //   this.screen._borderStops[coords.yi] = { xi: coords.xi, xl: coords.xl };
+      // } else {
+      //   if (this.screen._borderStops[coords.yi].xi > coords.xi) {
+      //     this.screen._borderStops[coords.yi].xi = coords.xi;
+      //   }
+      //   if (this.screen._borderStops[coords.yi].xl < coords.xl) {
+      //     this.screen._borderStops[coords.yi].xl = coords.xl;
+      //   }
+      // }
+      // this.screen._borderStops[coords.yl - 1] = this.screen._borderStops[coords.yi];
+    }
+    dattr = this.sattr(this.style)
+    // console.log('>> [element.render] interim', dattr)
+    attr = dattr
+    // If we're in a scrollable text box, check to
+    // see which attributes this line starts with.
+    if (ci > 0) attr = this._clines.attr[Math.min(coords.base, this._clines.length - 1)]
+    if (this.border) xi++, xl--, yi++, yl--
+    // If we have padding/valign, that means the
+    // content-drawing loop will skip a few cells/lines.
+    // To deal with this, we can just fill the whole thing
+    // ahead of time. This could be optimized.
+    if (this.tpadding || ( this.valign && this.valign !== 'top' )) {
+      if (this.style.transparent) {
+        for (let y = Math.max(yi, 0), line, cell; ( y < yl ); y++) {
+          if (!( line = lines[y] )) break
+          for (let x = Math.max(xi, 0); x < xl; x++) {
+            if (!( cell = line[x] )) break
+            cell[0] = colors.blend(attr, cell[0])
+            line.dirty = true // lines[y][x][1] = bch;
+          }
+        }
+      }
+      else {
+        this.screen.fillRegion(dattr, bch, xi, xl, yi, yl)
+      }
+    }
+    if (this.tpadding) { xi += this.padding.left, xl -= this.padding.right, yi += this.padding.top, yl -= this.padding.bottom }
+    // Determine where to place the text if it's vertically aligned.
+    if (this.valign === 'middle' || this.valign === 'bottom') {
+      visible = yl - yi
+      if (this._clines.length < visible) {
+        if (this.valign === 'middle') {
+          visible = visible / 2 | 0
+          visible -= this._clines.length / 2 | 0
+        }
+        else if (this.valign === 'bottom') {
+          visible -= this._clines.length
+        }
+        ci -= visible * ( xl - xi )
+      }
+    }
+    // Draw the content and background.
+    for (let y = yi, line, cell; y < yl; y++) {
+      if (!( line = lines[y] )) {
+        if (y >= this.screen.height || yl < this.ibottom) { break }
+        else { continue }
+      }
+      for (let x = xi; x < xl; x++) {
+        if (!( cell = line[x] )) {
+          if (x >= this.screen.width || xl < this.iright) { break }
+          else { continue }
+        }
+        ch = content[ci++] || bch
+        // if (!content[ci] && !coords._contentEnd) {
+        //   coords._contentEnd = { x: x - xi, y: y - yi };
+        // }
+        // Handle escape codes.
+        while (ch === ESC) {
+          if (( c = /^\x1b\[[\d;]*m/.exec(content.slice(ci - 1)) )) {
+            ci += c[0].length - 1
+            attr = this.screen.attrCode(c[0], attr, dattr)
+            // Ignore foreground changes for selected items.
+            if (this.sup._isList && this.sup.interactive && this.sup.items[this.sup.selected] === this && this.sup.options.invertSelected !== false) {
+              attr = ( attr & ~( 0x1ff << 9 ) ) | ( dattr & ( 0x1ff << 9 ) )
+            }
+            ch = content[ci] || bch
+            ci++
+          }
+          else {
+            break
+          }
+        }
+        // Handle newlines.
+        if (ch === TAB) ch = bch
+        if (ch === LF) {
+          // If we're on the first cell and we find a newline and the last cell
+          // of the last line was not a newline, let's just treat this like the
+          // newline was already "counted".
+          if (x === xi && y !== yi && content[ci - 2] !== LF) {
+            x--
+            continue
+          }
+          // We could use fillRegion here, name the
+          // outer loop, and continue to it instead.
+          ch = bch
+          for (; x < xl; x++) {
+            if (!( cell = line[x] )) break
+            if (this.style.transparent) {
+              cell[0] = colors.blend(attr, cell[0])
+              if (content[ci]) cell.ch = ch
+              line.dirty = true
+            }
+            else {
+              if (attr !== cell[0] || ch !== cell.ch) {
+                cell[0] = attr
+                cell.ch = ch
+                line.dirty = true
+              }
+            }
+          }
+          continue
+        }
+        if (this.screen.fullUnicode && content[ci - 1]) {
+          const point = unicode.codePointAt(content, ci - 1)
+          // Handle combining chars:
+          // Make sure they get in the same cell and are counted as 0.
+          if (unicode.combining[point]) {
+            if (point > 0x00ffff) {
+              ch = content[ci - 1] + content[ci]
+              ci++
+            }
+            if (x - 1 >= xi) { line[x - 1].ch += ch }
+            else if (y - 1 >= yi) { lines[y - 1][xl - 1].ch += ch }
+            x--
+            continue
+          }
+          // Handle surrogate pairs:
+          // Make sure we put surrogate pair chars in one cell.
+          if (point > 0x00ffff) {
+            ch = content[ci - 1] + content[ci]
+            ci++
+          }
+        }
+        if (this._noFill) continue
+        const _cell = line[x]
+        if (this.style.transparent) {
+          _cell[0] = colors.blend(attr, _cell[0])
+          if (content[ci]) _cell.ch = ch
+          line.dirty = true
+        }
+        else {
+          if (attr !== cell[0] || ch !== cell.ch) {
+            _cell[0] = attr
+            _cell.ch = ch
+            line.dirty = true
+          }
+        }
+      }
+    }
+    // Draw the scrollbar.
+    // Could possibly draw this after all child elements.
+    if (this.scrollbar) {
+      // i = this.getScrollHeight();
+      i = Math.max(this._clines.length, this._scrollBottom())
+    }
+    if (coords.notop || coords.nobot) i = -Infinity
+    if (this.scrollbar && ( yl - yi ) < i) {
+      let x = xl - 1
+      if (this.scrollbar.ignoreBorder && this.border) x++
+      let y = this.alwaysScroll ? this.childBase / ( i - ( yl - yi ) ) : ( this.childBase + this.childOffset ) / ( i - 1 )
+      y = yi + ( ( yl - yi ) * y | 0 )
+      if (y >= yl) y = yl - 1
+      let line = lines[y],
+          cell = line && line[x]
+      if (cell) {
+        if (this.track) {
+          ch = this.track.ch || ' '
+          attr = this.sattr(this.style.track, this.style.track.fg || this.style.fg, this.style.track.bg || this.style.bg)
+          this.screen.fillRegion(attr, ch, x, x + 1, yi, yl)
+        }
+        ch = this.scrollbar.ch || ' '
+        attr = this.sattr(this.style.scrollbar, this.style.scrollbar.fg || this.style.fg, this.style.scrollbar.bg || this.style.bg)
+        if (attr !== cell[0] || ch !== cell.ch) { cell[0] = attr, cell.ch = ch, lines[y].dirty = true }
+      }
+    }
+    if (this.border) xi--, xl++, yi--, yl++
+    if (this.tpadding) {
+      xi -= this.padding.left, xl += this.padding.right, yi -= this.padding.top, yl += this.padding.bottom
+    }
+    // Draw the border.
+    if (this.border) {
+      battr = this.sattr(this.style.border)
+      let y = yi
+      if (coords.notop) y = -1
+      let line = lines[y]
+      for (let x = xi, cell; x < xl; x++) {
+        if (!line) break
+        if (coords.noleft && x === xi) continue
+        if (coords.noright && x === xl - 1) continue
+        if (!( cell = line[x] )) continue
+        if (this.border.type === 'line') {
+          if (x === xi) {
+            ch = '\u250c' // '┌'
+            if (!this.border.left) {
+              if (this.border.top) { ch = '\u2500' } // '─'
+              else { continue }
+            }
+            else {
+              if (!this.border.top) { ch = '\u2502' } // '│'
+            }
+          }
+          else if (x === xl - 1) {
+            ch = '\u2510' // '┐'
+            if (!this.border.right) {
+              if (this.border.top) { ch = '\u2500' } // '─'
+              else { continue }
+            }
+            else {
+              if (!this.border.top) { ch = '\u2502' } // '│'
+            }
+          }
+          else { ch = '\u2500' } // '─'
+        }
+        else if (this.border.type === 'bg') { ch = this.border.ch }
+        if (!this.border.top && x !== xi && x !== xl - 1) {
+          ch = ' '
+          if (dattr !== cell[0] || ch !== cell.ch) {
+            cell[0] = dattr
+            cell.ch = ch
+            lines[y].dirty = true
+            continue
+          }
+        }
+        if (battr !== cell[0] || ch !== cell.ch) {
+          cell[0] = battr
+          cell.ch = ch
+          line.dirty = true
+        }
+      }
+      for (let y = yi + 1, line, cell; y < yl - 1; y++) {
+        if (!( line = lines[y] )) continue
+        if (( cell = line[xi] )) {
+          if (this.border.left) {
+            if (this.border.type === 'line') { ch = '\u2502' } // '│'
+            else if (this.border.type === 'bg') { ch = this.border.ch }
+            if (!coords.noleft)
+              if (battr !== cell[0] || ch !== cell.ch) {
+                cell[0] = battr
+                cell.ch = ch
+                line.dirty = true
+              }
+          }
+          else {
+            ch = ' '
+            if (dattr !== cell[0] || ch !== cell.ch) {
+              cell[0] = dattr
+              cell.ch = ch
+              line.dirty = true
+            }
+          }
+        }
+        if (( cell = line[xl - 1] )) {
+          if (this.border.right) {
+            if (this.border.type === 'line') { ch = '\u2502' } // '│'
+            else if (this.border.type === 'bg') { ch = this.border.ch }
+            if (!coords.noright)
+              if (battr !== cell[0] || ch !== cell.ch) {
+                cell[0] = battr
+                cell.ch = ch
+                line.dirty = true
+              }
+          }
+          else {
+            ch = ' '
+            if (dattr !== cell[0] || ch !== cell.ch) {
+              cell[0] = dattr
+              cell.ch = ch
+              line.dirty = true
+            }
+          }
+        }
+      }
+      y = yl - 1
+      if (coords.nobot) y = -1
+      for (let x = xi, cell; x < xl; x++) {
+        if (!( line = lines[y] )) break
+        if (coords.noleft && x === xi) continue
+        if (coords.noright && x === xl - 1) continue
+        if (!( cell = line[x] )) continue
+        if (this.border.type === 'line') {
+          if (x === xi) {
+            ch = '\u2514' // '└'
+            if (!this.border.left) {
+              if (this.border.bottom) { ch = '\u2500' } // '─'
+              else { continue }
+            }
+            else {
+              if (!this.border.bottom) { ch = '\u2502' } // '│'
+            }
+          }
+          else if (x === xl - 1) {
+            ch = '\u2518' // '┘'
+            if (!this.border.right) {
+              if (this.border.bottom) { ch = '\u2500' } // '─'
+              else { continue }
+            }
+            else {
+              if (!this.border.bottom) { ch = '\u2502' } // '│'
+            }
+          }
+          else { ch = '\u2500' } // '─'
+        }
+        else if (this.border.type === 'bg') { ch = this.border.ch }
+        if (!this.border.bottom && x !== xi && x !== xl - 1) {
+          ch = ' '
+          if (dattr !== cell[0] || ch !== cell.ch) {
+            cell[0] = dattr
+            cell.ch = ch
+            line.dirty = true
+          }
+          continue
+        }
+        if (battr !== cell[0] || ch !== cell.ch) {
+          cell[0] = battr
+          cell.ch = ch
+          line.dirty = true
+        }
+      }
+    }
+    if (this.shadow) {
+      // right
+      for (let y = Math.max(yi + 1, 0), line; y < yl + 1; y++) {
+        if (!( line = lines[y] )) break
+        for (let x = xl, cell; x < xl + 2; x++) {
+          if (!( cell = line[x] )) break
+          // lines[y][x][0] = colors.blend(this.dattr, lines[y][x][0]);
+          cell[0] = colors.blend(cell[0])
+          line.dirty = true
+        }
+      }
+      // bottom
+      for (let y = yl, line; y < yl + 1; y++) {
+        if (!( line = lines[y] )) break
+        for (let x = Math.max(xi + 1, 0), cell; x < xl; x++) {
+          if (!( cell = line[x] )) break
+          // lines[y][x][0] = colors.blend(this.dattr, lines[y][x][0]);
+          cell[0] = colors.blend(cell[0])
+          line.dirty = true
+        }
+      }
+    }
+    this.sub.forEach(el => {
+      if (el.screen._ci !== -1) el.index = el.screen._ci++
+      // if (el.screen._rendering) { el._rendering = true; }
+      el.render()
+      // if (el.screen._rendering) { el._rendering = false; }
+    })
+    this._emit(RENDER, [ coords ])
+    return coords
+  }
+  screenshot(xi, xl, yi, yl) {
+    xi = this.lpos.xi + this.ileft + ( xi || 0 )
+    xl = xl != null ? this.lpos.xi + this.ileft + ( xl || 0 ) : this.lpos.xl - this.iright
+    yi = this.lpos.yi + this.itop + ( yi || 0 )
+    yl = yl != null ? this.lpos.yi + this.itop + ( yl || 0 ) : this.lpos.yl - this.ibottom
+    return this.screen.screenshot(xi, xl, yi, yl)
+  }
+
+  onScreenEvent(type, handler) {
+    const listeners = this._slisteners ?? ( this._slisteners = [] )
+    listeners.push({ type, handler })
+    this.screen.on(type, handler)
+  }
+  onceScreenEvent(type, handler) {
+    const listeners = this._slisteners ?? ( this._slisteners = [] )
+    const entry = { type, handler }
+    listeners.push(entry)
+    this.screen.once(type, function () {
+      const i = listeners.indexOf(entry)
+      if (~i) listeners.splice(i, 1)
+      return handler.apply(this, arguments)
+    })
+  }
+  removeScreenEvent(type, handler) {
+    const listeners = this._slisteners ?? ( this._slisteners = [] )
+    for (let i = 0; i < listeners.length; i++) {
+      const listener = listeners[i]
+      if (listener.type === type && listener.handler === handler) {
+        listeners.splice(i, 1)
+        if (this._slisteners.length === 0) delete this._slisteners
+        break
+      }
+    }
+    this.screen.removeListener(type, handler)
+  }
+  free() {
+    const listeners = this._slisteners ?? ( this._slisteners = [] )
+    for (let i = 0; i < listeners.length; i++) {
+      const listener = listeners[i]
+      this.screen.removeListener(listener.type, listener.handler)
+    }
+    delete this._slisteners
+  }
+  hide() {
+    if (this.hidden) return
+    this.clearPos()
+    this.hidden = true
+    this.emit(HIDE)
+    if (this.screen.focused === this) this.screen.rewindFocus()
+  }
+  show() {
+    if (!this.hidden) return
+    this.hidden = false
+    this.emit(SHOW)
+  }
+  toggle() { return this.hidden ? this.show() : this.hide() }
+  focus() { return this.screen.focused = this }
+  setContent(content, noClear, noTags) {
+    if (!noClear) this.clearPos()
+    this.content = content || ''
+    this.parseContent(noTags)
+    this.emit(SET_CONTENT)
+  }
+  getContent() { return this._clines?.fake.join(LF) ?? '' }
+  setText(content, noClear) {
+    content = content || ''
+    content = content.replace(/\x1b\[[\d;]*m/g, '')
+    return this.setContent(content, noClear, true)
+  }
+  getText() { return this.getContent().replace(/\x1b\[[\d;]*m/g, '') }
+
   _align(line, width, align) {
     if (!align) return line
     //if (!align && !~line.indexOf('{|}')) return line;
@@ -556,8 +969,8 @@ export class Element extends Node {
     if (this.shrink) { s = 0 }
     if (len === 0) return line
     if (s < 0) return line
-    if (align === 'center' && (s = Array(((s / 2) | 0) + 1).join(' '))) return s + line + s
-    else if (align === 'right' && (s = Array(s + 1).join(' '))) return s + line
+    if (align === 'center' && ( s = Array(( ( s / 2 ) | 0 ) + 1).join(' ') )) return s + line + s
+    else if (align === 'right' && ( s = Array(s + 1).join(' ') )) return s + line
     else if (this.parseTags && ~line.indexOf('{|}')) {
       const parts = line.split('{|}')
       const cparts = cline.split('{|}')
@@ -608,13 +1021,13 @@ export class Element extends Node {
         ftor.push([])
         // Handle alignment tags.
         if (tags) {
-          if ((cap = /^{(left|center|right)}/.exec(line))) {
+          if (( cap = /^{(left|center|right)}/.exec(line) )) {
             line = line.slice(cap[0].length)
             align = state = cap[1] !== 'left'
               ? cap[1]
               : null
           }
-          if ((cap = /{\/(left|center|right)}$/.exec(line))) {
+          if (( cap = /{\/(left|center|right)}$/.exec(line) )) {
             line = line.slice(0, -cap[0].length)
             //state = null;
             state = this.align
@@ -670,13 +1083,13 @@ export class Element extends Node {
                     j--
                     if (line[j] === ' ' ||
                       line[j] === '\x03' ||
-                      (unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03') || unicode.isCombining(line, j)) {
+                      ( unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03' ) || unicode.isCombining(line, j)) {
                       break
                     }
                   }
                   if (line[j] === ' ' ||
                     line[j] === '\x03' ||
-                    (unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03') || unicode.isCombining(line, j)) {
+                    ( unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03' ) || unicode.isCombining(line, j)) {
                     i = j + 1
                   }
                 }
@@ -751,11 +1164,11 @@ export class Element extends Node {
             x  = data.x - px - ox,
             y  = data.y - py - oy
       if (self.position.right != null) {
-        if (self.position.left != null) self.width = '100%-' + (self.sup.width - self.width)
+        if (self.position.left != null) self.width = '100%-' + ( self.sup.width - self.width )
         self.position.right = null
       }
       if (self.position.bottom != null) {
-        if (self.position.top != null) self.height = '100%-' + (self.sup.height - self.height)
+        if (self.position.top != null) self.height = '100%-' + ( self.sup.height - self.height )
         self.position.bottom = null
       }
       self.rleft = x
@@ -804,24 +1217,18 @@ export class Element extends Node {
   setLabel(options) {
     const self = this
     // const Box = require('./box')
-    if (typeof options === STR) {
-      options = { text: options }
-    }
+    if (typeof options === STR) options = { text: options }
     if (this._label) {
       this._label.setContent(options.text)
       if (options.side !== 'right') {
-        this._label.rleft = 2 + (this.border ? -1 : 0)
+        this._label.rleft = 2 + ( this.border ? -1 : 0 )
         this._label.position.right = undefined
-        if (!this.screen.autoPadding) {
-          this._label.rleft = 2
-        }
+        if (!this.screen.autoPadding) this._label.rleft = 2
       }
       else {
-        this._label.rright = 2 + (this.border ? -1 : 0)
+        this._label.rright = 2 + ( this.border ? -1 : 0 )
         this._label.position.left = undefined
-        if (!this.screen.autoPadding) {
-          this._label.rright = 2
-        }
+        if (!this.screen.autoPadding) this._label.rright = 2
       }
       return
     }
@@ -843,8 +1250,8 @@ export class Element extends Node {
       this._label.rtop = 0
     }
     const reposition = () => {
-      self._label.rtop = (self.childBase || 0) - self.itop
-      if (!self.screen.autoPadding) { self._label.rtop = (self.childBase || 0) }
+      self._label.rtop = ( self.childBase || 0 ) - self.itop
+      if (!self.screen.autoPadding) { self._label.rtop = ( self.childBase || 0 ) }
       self.screen.render()
     }
     this.on(SCROLL, this._labelScroll = () => reposition())
@@ -860,9 +1267,7 @@ export class Element extends Node {
     delete this._label
   }
   setHover(options) {
-    if (typeof options === STR) {
-      options = { text: options }
-    }
+    if (typeof options === STR) options = { text: options }
     this._hoverOptions = options
     this.enableMouse()
     this.screen._initHover()
@@ -886,13 +1291,11 @@ export class Element extends Node {
     this.screen._hoverText.detach()
     this.screen.render()
   }
-// it doesn't handle content shrinkage).
+  // it doesn't handle content shrinkage).
   _getPos() {
     const pos = this.lpos
-
     assert.ok(pos)
     if (pos.aleft != null) return pos
-
     pos.aleft = pos.xi
     pos.atop = pos.yi
     pos.aright = this.screen.cols - pos.xl
@@ -915,7 +1318,7 @@ export class Element extends Node {
       width = expr[0]
       width = +width.slice(0, -1) / 100
       width = sup.width * width | 0
-      width += +(expr[1] || 0)
+      width += +( expr[1] || 0 )
       return width
     }
     // This is for if the element is being streched or shrunken.
@@ -932,11 +1335,11 @@ export class Element extends Node {
         left = expr[0]
         left = +left.slice(0, -1) / 100
         left = sup.width * left | 0
-        left += +(expr[1] || 0)
+        left += +( expr[1] || 0 )
       }
-      width = sup.width - (this.position.right || 0) - left
+      width = sup.width - ( this.position.right || 0 ) - left
       if (this.screen.autoPadding) {
-        if ((this.position.left != null || this.position.right == null) &&
+        if (( this.position.left != null || this.position.right == null ) &&
           this.position.left !== 'center') {
           width -= this.sup.ileft
         }
@@ -956,7 +1359,7 @@ export class Element extends Node {
       height = expr[0]
       height = +height.slice(0, -1) / 100
       height = sup.height * height | 0
-      height += +(expr[1] || 0)
+      height += +( expr[1] || 0 )
       return height
     }
     // This is for if the element is being streched or shrunken.
@@ -973,12 +1376,12 @@ export class Element extends Node {
         top = expr[0]
         top = +top.slice(0, -1) / 100
         top = sup.height * top | 0
-        top += +(expr[1] || 0)
+        top += +( expr[1] || 0 )
       }
-      height = sup.height - (this.position.bottom || 0) - top
+      height = sup.height - ( this.position.bottom || 0 ) - top
       if (this.screen.autoPadding) {
-        if ((this.position.top != null ||
-          this.position.bottom == null) &&
+        if (( this.position.top != null ||
+          this.position.bottom == null ) &&
           this.position.top !== 'center') {
           height -= this.sup.itop
         }
@@ -997,7 +1400,7 @@ export class Element extends Node {
       left = expr[0]
       left = +left.slice(0, -1) / 100
       left = sup.width * left | 0
-      left += +(expr[1] || 0)
+      left += +( expr[1] || 0 )
       if (this.position.left === 'center') {
         left -= this._getWidth(get) / 2 | 0
       }
@@ -1006,23 +1409,23 @@ export class Element extends Node {
       return this.screen.cols - this._getWidth(get) - this._getRight(get)
     }
     if (this.screen.autoPadding) {
-      if ((this.position.left != null ||
-        this.position.right == null) &&
+      if (( this.position.left != null ||
+        this.position.right == null ) &&
         this.position.left !== 'center') {
         left += this.sup.ileft
       }
     }
-    return (sup.aleft || 0) + left
+    return ( sup.aleft || 0 ) + left
   }
   _getRight(get) {
     const sup = get ? this.sup._getPos() : this.sup
     let right
     if (this.position.right == null && this.position.left != null) {
-      right = this.screen.cols - (this._getLeft(get) + this._getWidth(get))
+      right = this.screen.cols - ( this._getLeft(get) + this._getWidth(get) )
       if (this.screen.autoPadding) right += this.sup.iright
       return right
     }
-    right = (sup.aright || 0) + (this.position.right || 0)
+    right = ( sup.aright || 0 ) + ( this.position.right || 0 )
     if (this.screen.autoPadding) right += this.sup.iright
     return right
   }
@@ -1036,30 +1439,30 @@ export class Element extends Node {
       top = expr[0]
       top = +top.slice(0, -1) / 100
       top = sup.height * top | 0
-      top += +(expr[1] || 0)
+      top += +( expr[1] || 0 )
       if (this.position.top === 'center') top -= this._getHeight(get) / 2 | 0
     }
     if (this.position.top == null && this.position.bottom != null) {
       return this.screen.rows - this._getHeight(get) - this._getBottom(get)
     }
     if (this.screen.autoPadding) {
-      if ((this.position.top != null ||
-        this.position.bottom == null) &&
+      if (( this.position.top != null ||
+        this.position.bottom == null ) &&
         this.position.top !== 'center') {
         top += this.sup.itop
       }
     }
-    return (sup.atop || 0) + top
+    return ( sup.atop || 0 ) + top
   }
   _getBottom(get) {
     const sup = get ? this.sup._getPos() : this.sup
     let bottom
     if (this.position.bottom == null && this.position.top != null) {
-      bottom = this.screen.rows - (this._getTop(get) + this._getHeight(get))
+      bottom = this.screen.rows - ( this._getTop(get) + this._getHeight(get) )
       if (this.screen.autoPadding) bottom += this.sup.ibottom
       return bottom
     }
-    bottom = (sup.abottom || 0) + (this.position.bottom || 0)
+    bottom = ( sup.abottom || 0 ) + ( this.position.bottom || 0 )
     if (this.screen.autoPadding) bottom += this.sup.ibottom
     return bottom
   }
@@ -1094,7 +1497,7 @@ export class Element extends Node {
       // element.
       // if (get) {
       if (el.position.left == null && el.position.right != null) {
-        ret.xl = xi + (ret.xl - ret.xi)
+        ret.xl = xi + ( ret.xl - ret.xi )
         ret.xi = xi
         if (this.screen.autoPadding) {
           // Maybe just do this no matter what.
@@ -1103,7 +1506,7 @@ export class Element extends Node {
         }
       }
       if (el.position.top == null && el.position.bottom != null) {
-        ret.yl = yi + (ret.yl - ret.yi)
+        ret.yl = yi + ( ret.yl - ret.yi )
         ret.yi = yi
         if (this.screen.autoPadding) {
           // Maybe just do this no matter what.
@@ -1121,11 +1524,11 @@ export class Element extends Node {
       //this.shrink = true;
     }
     if (
-      (this.position.width == null) &&
-      (this.position.left == null || this.position.right == null)
+      ( this.position.width == null ) &&
+      ( this.position.left == null || this.position.right == null )
     ) {
       if (this.position.left == null && this.position.right != null) {
-        xi = xl - (mxl - mxi)
+        xi = xl - ( mxl - mxi )
         xi -= !this.screen.autoPadding ? this.padding.left + this.padding.right : this.ileft
       }
       else {
@@ -1149,9 +1552,9 @@ export class Element extends Node {
       }
     }
     if (
-      (this.position.height == null) &&
-      (this.position.top == null || this.position.bottom == null) &&
-      (!this.scrollable || this._isList)
+      ( this.position.height == null ) &&
+      ( this.position.top == null || this.position.bottom == null ) &&
+      ( !this.scrollable || this._isList )
     ) {
       // NOTE: Lists get special treatment if they are shrunken - assume they
       // want all list items showing. This is one case we can calculate the
@@ -1161,7 +1564,7 @@ export class Element extends Node {
         myl = this.items.length + this.ibottom
       }
       if (this.position.top == null && this.position.bottom != null) {
-        yi = yl - (myl - myi)
+        yi = yl - ( myl - myi )
         yi -= !this.screen.autoPadding ? this.padding.top + this.padding.bottom : this.itop
       }
       else {
@@ -1175,16 +1578,16 @@ export class Element extends Node {
     const h = this._clines.length,
           w = this._clines.mwidth || 1
     if (
-      (this.position.width == null) &&
-      (this.position.left == null || this.position.right == null)
+      ( this.position.width == null ) &&
+      ( this.position.left == null || this.position.right == null )
     ) {
       if (this.position.left == null && this.position.right != null) { xi = xl - w - this.iwidth }
       else { xl = xi + w + this.iwidth }
     }
     if (
-      (this.position.height == null) &&
-      (this.position.top == null || this.position.bottom == null) &&
-      (!this.scrollable || this._isList)
+      ( this.position.height == null ) &&
+      ( this.position.top == null || this.position.bottom == null ) &&
+      ( !this.scrollable || this._isList )
     ) {
       if (this.position.top == null && this.position.bottom != null) { yi = yl - h - this.iheight }
       else { yl = yi + h + this.iheight }
@@ -1202,12 +1605,12 @@ export class Element extends Node {
     else { yi = shrinkContent.yi, yl = shrinkContent.yl }
     // Recenter shrunken elements.
     if (xl < xll && this.position.left === 'center') {
-      xll = (xll - xl) / 2 | 0
+      xll = ( xll - xl ) / 2 | 0
       xi += xll
       xl += xll
     }
     if (yl < yll && this.position.top === 'center') {
-      yll = (yll - yl) / 2 | 0
+      yll = ( yll - yl ) / 2 | 0
       yi += yll
       yl += yll
     }
@@ -1241,7 +1644,7 @@ export class Element extends Node {
       yi = coords.yi, yl = coords.yl
     }
     // Find a scrollable ancestor if we have one.
-    while ((el = el.sup)) {
+    while (( el = el.sup )) {
       if (el.scrollable) {
         if (fixed) {
           fixed = false
@@ -1355,410 +1758,6 @@ export class Element extends Node {
       renders: this.screen.renders
     }
   }
-  _render = Element.prototype.render
-  render() {
-    this._emit(PRERENDER)
-    this.parseContent()
-    const coords = this._getCoords(true)
-    if (!coords) return void (delete this.lpos)
-    if (coords.xl - coords.xi <= 0) return void (coords.xl = Math.max(coords.xl, coords.xi))
-    if (coords.yl - coords.yi <= 0) return void (coords.yl = Math.max(coords.yl, coords.yi))
-    const lines = this.screen.lines
-    let xi = coords.xi,
-        xl = coords.xl,
-        yi = coords.yi,
-        yl = coords.yl,
-        attr,
-        ch
-    const content = this._pcontent
-    let ci = this._clines.ci[coords.base],
-        battr,
-        dattr,
-        c,
-        visible,
-        i
-    const bch = this.ch
-    // Clip content if it's off the edge of the screen
-    // if (xi + this.ileft < 0 || yi + this.itop < 0) {
-    //   var clines = this._clines.slice();
-    //   if (xi + this.ileft < 0) {
-    //     for (var i = 0; i < clines.length; i++) {
-    //       var t = 0;
-    //       var csi = '';
-    //       var csis = '';
-    //       for (var j = 0; j < clines[i].length; j++) {
-    //         while (clines[i][j] === ESC) {
-    //           csi = ESC;
-    //           while (clines[i][j++] !== 'm') csi += clines[i][j];
-    //           csis += csi;
-    //         }
-    //         if (++t === -(xi + this.ileft) + 1) break;
-    //       }
-    //       clines[i] = csis + clines[i].slice(j);
-    //     }
-    //   }
-    //   if (yi + this.itop < 0) {
-    //     clines = clines.slice(-(yi + this.itop));
-    //   }
-    //   content = clines.join(LF);
-    // }
-    if (coords.base >= this._clines.ci.length) ci = this._pcontent.length
-    this.lpos = coords
-    if (this.border?.type === 'line') {
-      this.screen._borderStops[coords.yi] = true
-      this.screen._borderStops[coords.yl - 1] = true
-      // if (!this.screen._borderStops[coords.yi]) {
-      //   this.screen._borderStops[coords.yi] = { xi: coords.xi, xl: coords.xl };
-      // } else {
-      //   if (this.screen._borderStops[coords.yi].xi > coords.xi) {
-      //     this.screen._borderStops[coords.yi].xi = coords.xi;
-      //   }
-      //   if (this.screen._borderStops[coords.yi].xl < coords.xl) {
-      //     this.screen._borderStops[coords.yi].xl = coords.xl;
-      //   }
-      // }
-      // this.screen._borderStops[coords.yl - 1] = this.screen._borderStops[coords.yi];
-    }
-    dattr = this.sattr(this.style)
-    // console.log('>> [element.render] interim', dattr)
-    attr = dattr
-    // If we're in a scrollable text box, check to
-    // see which attributes this line starts with.
-    if (ci > 0) attr = this._clines.attr[Math.min(coords.base, this._clines.length - 1)]
-    if (this.border) xi++, xl--, yi++, yl--
-    // If we have padding/valign, that means the
-    // content-drawing loop will skip a few cells/lines.
-    // To deal with this, we can just fill the whole thing
-    // ahead of time. This could be optimized.
-    if (this.tpadding || (this.valign && this.valign !== 'top')) {
-      if (this.style.transparent) {
-        for (let y = Math.max(yi, 0), line, cell; (y < yl); y++) {
-          if (!(line = lines[y])) break
-          for (let x = Math.max(xi, 0); x < xl; x++) {
-            if (!(cell = line[x])) break
-            cell[0] = colors.blend(attr, cell[0])
-            line.dirty = true // lines[y][x][1] = bch;
-          }
-        }
-      }
-      else {
-        this.screen.fillRegion(dattr, bch, xi, xl, yi, yl)
-      }
-    }
-    if (this.tpadding) { xi += this.padding.left, xl -= this.padding.right, yi += this.padding.top, yl -= this.padding.bottom }
-    // Determine where to place the text if it's vertically aligned.
-    if (this.valign === 'middle' || this.valign === 'bottom') {
-      visible = yl - yi
-      if (this._clines.length < visible) {
-        if (this.valign === 'middle') {
-          visible = visible / 2 | 0
-          visible -= this._clines.length / 2 | 0
-        }
-        else if (this.valign === 'bottom') {
-          visible -= this._clines.length
-        }
-        ci -= visible * (xl - xi)
-      }
-    }
-    // Draw the content and background.
-    for (let y = yi, line, cell; y < yl; y++) {
-      if (!(line = lines[y])) {
-        if (y >= this.screen.height || yl < this.ibottom) { break }
-        else { continue }
-      }
-      for (let x = xi; x < xl; x++) {
-        if (!(cell = line[x])) {
-          if (x >= this.screen.width || xl < this.iright) { break }
-          else { continue }
-        }
-        ch = content[ci++] || bch
-        // if (!content[ci] && !coords._contentEnd) {
-        //   coords._contentEnd = { x: x - xi, y: y - yi };
-        // }
-        // Handle escape codes.
-        while (ch === ESC) {
-          if ((c = /^\x1b\[[\d;]*m/.exec(content.slice(ci - 1)))) {
-            ci += c[0].length - 1
-            attr = this.screen.attrCode(c[0], attr, dattr)
-            // Ignore foreground changes for selected items.
-            if (this.sup._isList && this.sup.interactive && this.sup.items[this.sup.selected] === this && this.sup.options.invertSelected !== false) {
-              attr = (attr & ~(0x1ff << 9)) | (dattr & (0x1ff << 9))
-            }
-            ch = content[ci] || bch
-            ci++
-          }
-          else {
-            break
-          }
-        }
-        // Handle newlines.
-        if (ch === TAB) ch = bch
-        if (ch === LF) {
-          // If we're on the first cell and we find a newline and the last cell
-          // of the last line was not a newline, let's just treat this like the
-          // newline was already "counted".
-          if (x === xi && y !== yi && content[ci - 2] !== LF) {
-            x--
-            continue
-          }
-          // We could use fillRegion here, name the
-          // outer loop, and continue to it instead.
-          ch = bch
-          for (; x < xl; x++) {
-            if (!(cell = line[x])) break
-            if (this.style.transparent) {
-              cell[0] = colors.blend(attr, cell[0])
-              if (content[ci]) cell.ch = ch
-              line.dirty = true
-            }
-            else {
-              if (attr !== cell[0] || ch !== cell.ch) {
-                cell[0] = attr
-                cell.ch = ch
-                line.dirty = true
-              }
-            }
-          }
-          continue
-        }
-        if (this.screen.fullUnicode && content[ci - 1]) {
-          const point = unicode.codePointAt(content, ci - 1)
-          // Handle combining chars:
-          // Make sure they get in the same cell and are counted as 0.
-          if (unicode.combining[point]) {
-            if (point > 0x00ffff) {
-              ch = content[ci - 1] + content[ci]
-              ci++
-            }
-            if (x - 1 >= xi) { line[x - 1].ch += ch }
-            else if (y - 1 >= yi) { lines[y - 1][xl - 1].ch += ch }
-            x--
-            continue
-          }
-          // Handle surrogate pairs:
-          // Make sure we put surrogate pair chars in one cell.
-          if (point > 0x00ffff) {
-            ch = content[ci - 1] + content[ci]
-            ci++
-          }
-        }
-        if (this._noFill) continue
-        const _cell = line[x]
-        if (this.style.transparent) {
-          _cell[0] = colors.blend(attr, _cell[0])
-          if (content[ci]) _cell.ch = ch
-          line.dirty = true
-        }
-        else {
-          if (attr !== cell[0] || ch !== cell.ch) {
-            _cell[0] = attr
-            _cell.ch = ch
-            line.dirty = true
-          }
-        }
-      }
-    }
-    // Draw the scrollbar.
-    // Could possibly draw this after all child elements.
-    if (this.scrollbar) {
-      // i = this.getScrollHeight();
-      i = Math.max(this._clines.length, this._scrollBottom())
-    }
-    if (coords.notop || coords.nobot) i = -Infinity
-    if (this.scrollbar && (yl - yi) < i) {
-      let x = xl - 1
-      if (this.scrollbar.ignoreBorder && this.border) x++
-      let y = this.alwaysScroll ? this.childBase / (i - (yl - yi)) : (this.childBase + this.childOffset) / (i - 1)
-      y = yi + ((yl - yi) * y | 0)
-      if (y >= yl) y = yl - 1
-      let line = lines[y],
-          cell = line && line[x]
-      if (cell) {
-        if (this.track) {
-          ch = this.track.ch || ' '
-          attr = this.sattr(this.style.track, this.style.track.fg || this.style.fg, this.style.track.bg || this.style.bg)
-          this.screen.fillRegion(attr, ch, x, x + 1, yi, yl)
-        }
-        ch = this.scrollbar.ch || ' '
-        attr = this.sattr(this.style.scrollbar, this.style.scrollbar.fg || this.style.fg, this.style.scrollbar.bg || this.style.bg)
-        if (attr !== cell[0] || ch !== cell.ch) { cell[0] = attr, cell.ch = ch, lines[y].dirty = true }
-      }
-    }
-    if (this.border) xi--, xl++, yi--, yl++
-    if (this.tpadding) {
-      xi -= this.padding.left, xl += this.padding.right, yi -= this.padding.top, yl += this.padding.bottom
-    }
-    // Draw the border.
-    if (this.border) {
-      battr = this.sattr(this.style.border)
-      let y = yi
-      if (coords.notop) y = -1
-      let line = lines[y]
-      for (let x = xi, cell; x < xl; x++) {
-        if (!line) break
-        if (coords.noleft && x === xi) continue
-        if (coords.noright && x === xl - 1) continue
-        if (!(cell = line[x])) continue
-        if (this.border.type === 'line') {
-          if (x === xi) {
-            ch = '\u250c' // '┌'
-            if (!this.border.left) {
-              if (this.border.top) { ch = '\u2500' } // '─'
-              else { continue }
-            }
-            else {
-              if (!this.border.top) { ch = '\u2502' } // '│'
-            }
-          }
-          else if (x === xl - 1) {
-            ch = '\u2510' // '┐'
-            if (!this.border.right) {
-              if (this.border.top) { ch = '\u2500' } // '─'
-              else { continue }
-            }
-            else {
-              if (!this.border.top) { ch = '\u2502' } // '│'
-            }
-          }
-          else { ch = '\u2500' } // '─'
-        }
-        else if (this.border.type === 'bg') { ch = this.border.ch }
-        if (!this.border.top && x !== xi && x !== xl - 1) {
-          ch = ' '
-          if (dattr !== cell[0] || ch !== cell.ch) {
-            cell[0] = dattr
-            cell.ch = ch
-            lines[y].dirty = true
-            continue
-          }
-        }
-        if (battr !== cell[0] || ch !== cell.ch) {
-          cell[0] = battr
-          cell.ch = ch
-          line.dirty = true
-        }
-      }
-      for (let y = yi + 1, line, cell; y < yl - 1; y++) {
-        if (!(line = lines[y])) continue
-        if ((cell = line[xi])) {
-          if (this.border.left) {
-            if (this.border.type === 'line') { ch = '\u2502' } // '│'
-            else if (this.border.type === 'bg') { ch = this.border.ch }
-            if (!coords.noleft)
-              if (battr !== cell[0] || ch !== cell.ch) {
-                cell[0] = battr
-                cell.ch = ch
-                line.dirty = true
-              }
-          }
-          else {
-            ch = ' '
-            if (dattr !== cell[0] || ch !== cell.ch) {
-              cell[0] = dattr
-              cell.ch = ch
-              line.dirty = true
-            }
-          }
-        }
-        if ((cell = line[xl - 1])) {
-          if (this.border.right) {
-            if (this.border.type === 'line') { ch = '\u2502' } // '│'
-            else if (this.border.type === 'bg') { ch = this.border.ch }
-            if (!coords.noright)
-              if (battr !== cell[0] || ch !== cell.ch) {
-                cell[0] = battr
-                cell.ch = ch
-                line.dirty = true
-              }
-          }
-          else {
-            ch = ' '
-            if (dattr !== cell[0] || ch !== cell.ch) {
-              cell[0] = dattr
-              cell.ch = ch
-              line.dirty = true
-            }
-          }
-        }
-      }
-      y = yl - 1
-      if (coords.nobot) y = -1
-      for (let x = xi, cell; x < xl; x++) {
-        if (!(line = lines[y])) break
-        if (coords.noleft && x === xi) continue
-        if (coords.noright && x === xl - 1) continue
-        if (!(cell = line[x])) continue
-        if (this.border.type === 'line') {
-          if (x === xi) {
-            ch = '\u2514' // '└'
-            if (!this.border.left) {
-              if (this.border.bottom) { ch = '\u2500' } // '─'
-              else { continue }
-            }
-            else {
-              if (!this.border.bottom) { ch = '\u2502' } // '│'
-            }
-          }
-          else if (x === xl - 1) {
-            ch = '\u2518' // '┘'
-            if (!this.border.right) {
-              if (this.border.bottom) { ch = '\u2500' } // '─'
-              else { continue }
-            }
-            else {
-              if (!this.border.bottom) { ch = '\u2502' } // '│'
-            }
-          }
-          else { ch = '\u2500' } // '─'
-        }
-        else if (this.border.type === 'bg') { ch = this.border.ch }
-        if (!this.border.bottom && x !== xi && x !== xl - 1) {
-          ch = ' '
-          if (dattr !== cell[0] || ch !== cell.ch) {
-            cell[0] = dattr
-            cell.ch = ch
-            line.dirty = true
-          }
-          continue
-        }
-        if (battr !== cell[0] || ch !== cell.ch) {
-          cell[0] = battr
-          cell.ch = ch
-          line.dirty = true
-        }
-      }
-    }
-    if (this.shadow) {
-      // right
-      for (let y = Math.max(yi + 1, 0), line; y < yl + 1; y++) {
-        if (!(line = lines[y])) break
-        for (let x = xl, cell; x < xl + 2; x++) {
-          if (!(cell = line[x])) break
-          // lines[y][x][0] = colors.blend(this.dattr, lines[y][x][0]);
-          cell[0] = colors.blend(cell[0])
-          line.dirty = true
-        }
-      }
-      // bottom
-      for (let y = yl, line; y < yl + 1; y++) {
-        if (!(line = lines[y])) break
-        for (let x = Math.max(xi + 1, 0), cell; x < xl; x++) {
-          if (!(cell = line[x])) break
-          // lines[y][x][0] = colors.blend(this.dattr, lines[y][x][0]);
-          cell[0] = colors.blend(cell[0])
-          line.dirty = true
-        }
-      }
-    }
-    this.sub.forEach(el => {
-      if (el.screen._ci !== -1) el.index = el.screen._ci++
-      // if (el.screen._rendering) { el._rendering = true; }
-      el.render()
-      // if (el.screen._rendering) { el._rendering = false; }
-    })
-    this._emit(RENDER, [ coords ])
-    return coords
-  }
   /**
    * Content Methods
    */
@@ -1836,7 +1835,7 @@ export class Element extends Node {
     return this.insertLine(fake, line)
   }
   insertBottom(line) {
-    const h    = (this.childBase || 0) + this.height - this.iheight,
+    const h    = ( this.childBase || 0 ) + this.height - this.iheight,
           i    = Math.min(h, this._clines.length),
           fake = this._clines.rtof[i - 1] + 1
     return this.insertLine(fake, line)
@@ -1846,10 +1845,10 @@ export class Element extends Node {
     return this.deleteLine(fake, n)
   }
   deleteBottom(n = 1) {
-    const h    = (this.childBase || 0) + this.height - 1 - this.iheight,
+    const h    = ( this.childBase || 0 ) + this.height - 1 - this.iheight,
           i    = Math.min(h, this._clines.length - 1),
           fake = this._clines.rtof[i]
-    return this.deleteLine(fake - (n - 1), n)
+    return this.deleteLine(fake - ( n - 1 ), n)
   }
   setLine(i, line) {
     i = Math.max(i, 0)
@@ -1888,11 +1887,5 @@ export class Element extends Node {
     text = this.parseTags ? helpers.stripTags(text) : text
     return this.screen.fullUnicode ? unicode.strWidth(text) : helpers.dropUnicode(text).length
   }
-  screenshot(xi, xl, yi, yl) {
-    xi = this.lpos.xi + this.ileft + (xi || 0)
-    xl = xl != null ? this.lpos.xi + this.ileft + (xl || 0) : this.lpos.xl - this.iright
-    yi = this.lpos.yi + this.itop + (yi || 0)
-    yl = yl != null ? this.lpos.yi + this.itop + (yl || 0) : this.lpos.yl - this.ibottom
-    return this.screen.screenshot(xi, xl, yi, yl)
-  }
+
 }

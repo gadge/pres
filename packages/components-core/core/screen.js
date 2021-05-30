@@ -1195,7 +1195,7 @@ export class Screen extends Node {
   onceKey(...args) { return this.program.onceKey.apply(this, args) }
   unkey = this.removeKey
   removeKey(...args) { return this.program.unkey.apply(this, args) }
-  spawn = function (file, args, options) {
+  spawn(file, args, options) {
     if (!Array.isArray(args)) {
       options = args
       args = []
@@ -1605,6 +1605,7 @@ const angleTable = {
   '1110': '\u2534', // '┴'
   '1111': '\u253c'  // '┼'
 }
+
 Object.keys(angleTable).forEach(key => {
   angleTable[parseInt(key, 2)] = angleTable[key]
   delete angleTable[key]
