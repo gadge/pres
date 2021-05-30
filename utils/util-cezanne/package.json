@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-cezanne",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Cezanne color scheme for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -22,7 +22,7 @@
     "@palett/projector-factory": "^0.8.5",
     "@pres/enum-control-chars": "^0.2.1",
     "@pres/enum-csi-codes": "^0.2.1",
-    "@pres/util-colors": "^0.2.1",
+    "@pres/util-colors": "^0.2.2",
     "@texting/enum-chars": "^0.0.10",
     "@typen/enum-data-types": "^0.1.16",
     "@typen/nullish": "^0.1.16"
