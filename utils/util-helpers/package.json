@@ -15,9 +15,9 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/util-colors": "^0.1.16",
+    "@pres/util-colors": "^0.2.1",
     "@pres/util-unicode": "^0.1.16",
-    "@texting/enum-chars": "^0.0.9",
+    "@texting/enum-chars": "^0.0.10",
     "@typen/enum-data-types": "^0.1.16",
     "@typen/nullish": "^0.1.16",
     "x256": "^0.0.2"

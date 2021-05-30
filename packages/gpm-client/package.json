@@ -16,17 +16,17 @@
   },
   "dependencies": {
     "@geia/enum-signals": "^0.0.19",
-    "@ject/noop": "^0.0.11",
+    "@ject/noop": "^0.0.12",
     "@pres/enum-control-chars": "^0.1.16",
     "@pres/enum-csi-codes": "^0.1.16",
     "@pres/enum-events": "^0.1.16",
     "@pres/enum-key-names": "^0.1.16",
     "@pres/events": "^0.1.16",
     "@pres/terminfo-parser": "^0.1.16",
-    "@pres/util-colors": "^0.1.16",
+    "@pres/util-colors": "^0.2.1",
     "@pres/util-helpers": "^0.1.16",
-    "@spare/logger": "^0.11.14",
-    "@texting/enum-chars": "^0.0.9",
+    "@spare/logger": "^0.11.16",
+    "@texting/enum-chars": "^0.0.10",
     "@typen/enum-data-types": "^0.1.16"
   },
   "repository": {

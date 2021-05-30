@@ -19,7 +19,7 @@
     "@pres/components": "^0.1.16",
     "@pres/program": "^0.1.16",
     "@pres/terminfo-parser": "^0.1.16",
-    "@pres/util-colors": "^0.1.16",
+    "@pres/util-colors": "^0.2.1",
     "@pres/util-helpers": "^0.1.16",
     "@pres/util-unicode": "^0.1.16",
     "url": "^0.11.0"

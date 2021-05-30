@@ -20,8 +20,8 @@
   "dependencies": {
     "@pres/enum-events": "^0.1.16",
     "@pres/terminal-interface": "^0.1.16",
-    "@valjoux/linger": "^0.2.9",
-    "systeminformation": "^5.6.20"
+    "@valjoux/linger": "^0.2.11",
+    "systeminformation": "^5.7.4"
   },
   "repository": {
     "type": "git",
