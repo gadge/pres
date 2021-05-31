@@ -4,22 +4,23 @@
  * https://github.com/chjj/blessed
  */
 
-import { Node, ScreenCollection } from '@pres/components-node'
-import { CSI, LF }                from '@pres/enum-control-chars'
-import { SGR }                    from '@pres/enum-csi-codes'
+import { Node, ScreenCollection }                                      from '@pres/components-node'
+import { ANGLE_TABLE, ANGLES, ANGLES_D, ANGLES_L, ANGLES_R, ANGLES_U } from '@pres/enum-angle-table'
+import { CSI, LF }                                                     from '@pres/enum-control-chars'
+import { SGR }                                                         from '@pres/enum-csi-codes'
 import {
   BLUR, CLICK, DESTROY, ELEMENT_CLICK, ELEMENT_MOUSEOUT, ELEMENT_MOUSEOVER, ELEMENT_MOUSEUP, ERROR, EXIT, FOCUS,
   KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, NEW_LISTENER, PRERENDER, RENDER,
   RESIZE, WARNING, WHEELDOWN, WHEELUP,
-}                                 from '@pres/enum-events'
-import { Program }                from '@pres/program'
-import * as colors                from '@pres/util-colors'
-import * as helpers               from '@pres/util-helpers'
-import * as unicode               from '@pres/util-unicode'
-import { FUN, OBJ, STR }          from '@typen/enum-data-types'
-import cp, { spawn }              from 'child_process'
-import { Log }                    from '../src/log'
-import { Box }                    from './box'
+}                                                                      from '@pres/enum-events'
+import { Program }                                                     from '@pres/program'
+import * as colors                                                     from '@pres/util-colors'
+import * as helpers                                                    from '@pres/util-helpers'
+import * as unicode                                                    from '@pres/util-unicode'
+import { FUN, OBJ, STR }                                               from '@typen/enum-data-types'
+import cp, { spawn }                                                   from 'child_process'
+import { Log }                                                         from '../src/log'
+import { Box }                                                         from './box'
 
 export class Screen extends Node {
   type = 'screen'
@@ -37,12 +38,12 @@ export class Screen extends Node {
     const self = this
     // this.type = this.type ?? 'screen'
     this.autoPadding = options.autoPadding !== false
-    this.tabc = Array((options.tabSize || 4) + 1).join(' ')
+    this.tabc = Array(( options.tabSize || 4 ) + 1).join(' ')
     this.dockBorders = options.dockBorders
     this.ignoreLocked = options.ignoreLocked || []
     this._unicode = this.tput.unicode || this.tput.numbers.U8 === 1
     this.fullUnicode = this.options.fullUnicode && this._unicode
-    this.dattr = ((0 << 18) | (0x1ff << 9)) | 0x1ff
+    this.dattr = ( ( 0 << 18 ) | ( 0x1ff << 9 ) ) | 0x1ff
     this.renders = 0
     this.position = {
       left: this.left = this.aleft = this.rleft = 0,
@@ -92,10 +93,10 @@ export class Screen extends Node {
     this.program.on(RESIZE, () => {
       self.alloc()
       self.render();
-      (function emit(el) {
+      ( function emit(el) {
         el.emit(RESIZE)
         el.sub.forEach(emit)
-      })(self)
+      } )(self)
     })
     this.program.on(FOCUS, () => self.emit(FOCUS))
     this.program.on(BLUR, () => self.emit(BLUR))
@@ -163,6 +164,537 @@ export class Screen extends Node {
   get height() { return this.program.rows }
   get focused() { return this.history[this.history.length - 1] }
   set focused(el) {return this.focusPush(el) }
+
+  alloc(dirty) {
+    let x, y
+    this.lines = []
+    for (y = 0; y < this.rows; y++) {
+      const line = this.lines[y] = []
+      for (x = 0; x < this.cols; x++) { line[x] = [ this.dattr, ' ' ] }
+      line.dirty = !!dirty
+    }
+    this.olines = []
+    for (y = 0; y < this.rows; y++) {
+      const line = this.olines[y] = []
+      for (x = 0; x < this.cols; x++) { line[x] = [ this.dattr, ' ' ] }
+    }
+    this.program.clear()
+  }
+  realloc() { return this.alloc(true) }
+  render() {
+    // const [ h, w ] = size(this.lines)
+    // console.log('>> [screen.render]', this.lines)
+    // console.log('>> [screen.render]', h, w)
+    const self = this
+    if (this.destroyed) return
+    this.emit(PRERENDER)
+    this._borderStops = {}
+    // TODO: Possibly get rid of .dirty altogether.
+    // TODO: Could possibly drop .dirty and just clear the `lines` buffer every
+    // time before a screen.render. This way clearRegion doesn't have to be
+    // called in arbitrary places for the sake of clearing a spot where an
+    // element used to be (e.g. when an element moves or is hidden). There could
+    // be some overhead though.
+    // this.screen.clearRegion(0, this.cols, 0, this.rows);
+    this._ci = 0
+    this.sub.forEach(el => { ( el.index = self._ci++ ), el.render() })
+    this._ci = -1
+    if (this.screen.dockBorders) { this._dockBorders() }
+    this.draw(0, this.lines.length - 1)
+    // XXX Workaround to deal with cursor pos before the screen has rendered and
+    // lpos is not reliable (stale).
+    if (this.focused && this.focused._updateCursor) { this.focused._updateCursor(true) }
+    this.renders++
+    this.emit(RENDER)
+  }
+  draw(start, end) {
+    let out,
+        ch,
+        data,
+        attr,
+        fg, bg,
+        flags
+    let main = ''
+    let clr,
+        neq
+    let lx = -1,
+        ly = -1
+    let acs
+    if (this._buf) { main += this._buf, this._buf = '' }
+    const { cursor, program, tput, options } = this
+    for (let y = start; y <= end; y++) {
+      let line = this.lines[y], oline = this.olines[y]
+      if (!line.dirty && !( cursor.artificial && y === program.y )) continue
+      line.dirty = false
+
+      out = ''
+      attr = this.dattr
+
+      for (let x = 0, cell, ocell; ( x < line.length ) && ( cell = line[x] ); x++) {
+        [ data ] = cell;
+        ( { ch } = cell )
+        // Render the artificial cursor.
+        if (cursor.artificial && !cursor._hidden && cursor._state && x === program.x && y === program.y) {
+          const cursorAttr = this._cursorAttr(this.cursor, data)
+          if (cursorAttr.ch) ch = cursorAttr.ch
+          data = cursorAttr.attr
+        }
+        // Take advantage of xterm's back_color_erase feature by using a
+        // lookahead. Stop spitting out so many damn spaces. NOTE: Is checking
+        // the bg for non BCE terminals worth the overhead?
+        if (options.useBCE &&
+          ch === ' ' &&
+          ( tput.bools.back_color_erase || ( data & 0x1ff ) === ( this.dattr & 0x1ff ) ) &&
+          ( ( data >> 18 ) & 8 ) === ( ( this.dattr >> 18 ) & 8 )
+        ) {
+          clr = true
+          neq = false
+          for (let i = x, cell, ocell; ( i < line.length ) && ( cell = line[i] ); i++) {
+            if (cell[0] !== data || cell.ch !== ' ') {
+              clr = false
+              break
+            }
+            if (( ocell = oline[i] ) && cell[0] !== ocell[0] || cell.ch !== ocell.ch) { neq = true }
+          }
+          if (clr && neq) {
+            lx = -1, ly = -1
+            if (data !== attr) { out += this.codeAttr(data), attr = data }
+            out += this.tput.cup(y, x), out += this.tput.el()
+            for (let i = x, ocell; ( i < line.length ) && ( ocell = oline[i] ); i++) { ocell[0] = data, ocell.ch = ' ' }
+            break
+          }
+          // If there's more than 10 spaces, use EL regardless
+          // and start over drawing the rest of line. Might
+          // not be worth it. Try to use ECH if the terminal
+          // supports it. Maybe only try to use ECH here.
+          // //if (this.tput.strings.erase_chars)
+          // if (!clr && neq && (xx - x) > 10) {
+          //   lx = -1, ly = -1;
+          //   if (data !== attr) {
+          //     out += this.codeAttr(data);
+          //     attr = data;
+          //   }
+          //   out += this.tput.cup(y, x);
+          //   if (this.tput.strings.erase_chars) {
+          //     // Use erase_chars to avoid erasing the whole line.
+          //     out += this.tput.ech(xx - x);
+          //   } else {
+          //     out += this.tput.el();
+          //   }
+          //   if (this.tput.strings.parm_right_cursor) {
+          //     out += this.tput.cuf(xx - x);
+          //   } else {
+          //     out += this.tput.cup(y, xx);
+          //   }
+          //   this.fillRegion(data, ' ',
+          //     x, this.tput.strings.erase_chars ? xx : line.length,
+          //     y, y + 1);
+          //   x = xx - 1;
+          //   continue;
+          // }
+          // Skip to the next line if the
+          // rest of the line is already drawn.
+          // if (!neq) {
+          //   for (; xx < line.length; xx++) {
+          //     if (line[xx][0] !== o[xx][0] || line[xx].ch !== o[xx].ch) {
+          //       neq = true;
+          //       break;
+          //     }
+          //   }
+          //   if (!neq) {
+          //     attr = data;
+          //     break;
+          //   }
+          // }
+        }
+        // Optimize by comparing the real output
+        // buffer to the pending output buffer.
+        ocell = oline[x]
+        if (data === ocell[0] && ch === ocell.ch) {
+          if (lx === -1) { lx = x, ly = y }
+          continue
+        }
+        else if (lx !== -1) {
+          if (this.tput.strings.parm_right_cursor) { out += y === ly ? this.tput.cuf(x - lx) : this.tput.cup(y, x) }
+          else { out += this.tput.cup(y, x) }
+          lx = -1, ly = -1
+        }
+        ocell[0] = data
+        ocell.ch = ch
+        if (data !== attr) {
+          if (attr !== this.dattr) { out += CSI + SGR }
+          if (data !== this.dattr) {
+            out += CSI + ''
+            bg = data & 0x1ff
+            fg = ( data >> 9 ) & 0x1ff
+            flags = data >> 18
+            if (flags & 1) { out += '1;' } // bold
+            if (flags & 2) { out += '4;' } // underline
+            if (flags & 4) { out += '5;' } // blink
+            if (flags & 8) { out += '7;' } // inverse
+            if (flags & 16) { out += '8;' } // invisible
+            if (bg !== 0x1ff) {
+              bg = this._reduceColor(bg)
+              if (bg < 16) {
+                if (bg < 8) { bg += 40 }
+                else if (bg < 16) { bg -= 8, bg += 100 }
+                out += bg + ';'
+              }
+              else { out += '48;5;' + bg + ';' }
+            }
+            if (fg !== 0x1ff) {
+              fg = this._reduceColor(fg)
+              if (fg < 16) {
+                if (fg < 8) { fg += 30 }
+                else if (fg < 16) { fg -= 8, fg += 90 }
+                out += fg + ';'
+              }
+              else { out += '38;5;' + fg + ';' }
+            }
+            if (out[out.length - 1] === ';') out = out.slice(0, -1)
+            out += SGR
+          }
+        }
+        // If we find a double-width char, eat the next character which should be
+        // a space due to parseContent's behavior.
+        if (this.fullUnicode) {
+          // If this is a surrogate pair double-width char, we can ignore it
+          // because parseContent already counted it as length=2.
+          if (unicode.charWidth(line[x].ch) === 2) {
+            // NOTE: At cols=44, the bug that is avoided
+            // by the angles check occurs in widget-unicode:
+            // Might also need: `line[x + 1][0] !== line[x][0]`
+            // for borderless boxes?
+            if (x === line.length - 1 || ANGLES[line[x + 1].ch]) {
+              // If we're at the end, we don't have enough space for a
+              // double-width. Overwrite it with a space and ignore.
+              ch = ' '
+              ocell.ch = '\0'
+            }
+            else {
+              // ALWAYS refresh double-width chars because this special cursor
+              // behavior is needed. There may be a more efficient way of doing
+              // this. See above.
+              ocell.ch = '\0'
+              // Eat the next character by moving forward and marking as a
+              // space (which it is).
+              oline[++x].ch = '\0'
+            }
+          }
+        }
+        // Attempt to use ACS for supported characters.
+        // This is not ideal, but it's how ncurses works.
+        // There are a lot of terminals that support ACS
+        // *and UTF8, but do not declare U8. So ACS ends
+        // up being used (slower than utf8). Terminals
+        // that do not support ACS and do not explicitly
+        // support UTF8 get their unicode characters
+        // replaced with really ugly ascii characters.
+        // It is possible there is a terminal out there
+        // somewhere that does not support ACS, but
+        // supports UTF8, but I imagine it's unlikely.
+        // Maybe remove !this.tput.unicode check, however,
+        // this seems to be the way ncurses does it.
+        if (this.tput.strings.enter_alt_charset_mode &&
+          !this.tput.brokenACS && ( this.tput.acscr[ch] || acs )) {
+          // Fun fact: even if this.tput.brokenACS wasn't checked here,
+          // the linux console would still work fine because the acs
+          // table would fail the check of: this.tput.acscr[ch]
+          if (this.tput.acscr[ch]) {
+            if (acs) { ch = this.tput.acscr[ch] }
+            else {
+              ch = this.tput.smacs() + this.tput.acscr[ch]
+              acs = true
+            }
+          }
+          else if (acs) {
+            ch = this.tput.rmacs() + ch
+            acs = false
+          }
+        }
+        else {
+          // U8 is not consistently correct. Some terminfo's
+          // terminals that do not declare it may actually
+          // support utf8 (e.g. urxvt), but if the terminal
+          // does not declare support for ACS (and U8), chances
+          // are it does not support UTF8. This is probably
+          // the "safest" way to do this. Should fix things
+          // like sun-color.
+          // NOTE: It could be the case that the $LANG
+          // is all that matters in some cases:
+          // if (!this.tput.unicode && ch > '~') {
+          if (!this.tput.unicode && this.tput.numbers.U8 !== 1 && ch > '~') ch = this.tput.utoa[ch] || '?'
+        }
+        out += ch
+        attr = data
+      }
+      if (attr !== this.dattr) { out += CSI + SGR }
+      if (out) { main += this.tput.cup(y, 0) + out }
+    }
+    if (acs) {
+      main += this.tput.rmacs()
+      acs = false
+    }
+    if (main) {
+      let pre = '', post = ''
+      pre += this.tput.sc(), post += this.tput.rc()
+      if (!this.program.cursorHidden) { pre += this.tput.civis(), post += this.tput.cnorm() }
+      // this.program.flush();
+      // this.program.write(pre + main + post);
+      this.program._write(pre + main + post)
+    }
+    // this.emit('draw');
+  }
+  _reduceColor(color) { return colors.reduce(color, this.tput.colors) }
+  _cursorAttr(cursor, dattr) {
+    const { shape } = cursor
+    let attr = dattr || this.dattr,
+        cattr,
+        ch
+    if (shape === 'line') {
+      attr &= ~( 0x1ff << 9 )
+      attr |= 7 << 9
+      ch = '\u2502'
+    }
+    else if (shape === 'underline') {
+      attr &= ~( 0x1ff << 9 )
+      attr |= 7 << 9
+      attr |= 2 << 18
+    }
+    else if (shape === 'block') {
+      attr &= ~( 0x1ff << 9 )
+      attr |= 7 << 9
+      attr |= 8 << 18
+    }
+    else if (typeof shape === OBJ && shape) {
+      cattr = Element.prototype.sattr.call(cursor, shape)
+      if (shape.bold || shape.underline || shape.blink || shape.inverse || shape.invisible) {
+        attr &= ~( 0x1ff << 18 )
+        attr |= ( ( cattr >> 18 ) & 0x1ff ) << 18
+      }
+      if (shape.fg) {
+        attr &= ~( 0x1ff << 9 )
+        attr |= ( ( cattr >> 9 ) & 0x1ff ) << 9
+      }
+      if (shape.bg) {
+        attr &= ~( 0x1ff << 0 )
+        attr |= cattr & 0x1ff
+      }
+      if (shape.ch) { ch = shape.ch }
+    }
+    if (cursor.color != null) {
+      attr &= ~( 0x1ff << 9 )
+      attr |= cursor.color << 9
+    }
+    return { ch, attr }
+  }
+  screenshot(xi, xl, yi, yl, term) {
+    if (xi == null) xi = 0
+    if (xl == null) xl = this.cols
+    if (yi == null) yi = 0
+    if (yl == null) yl = this.rows
+    if (xi < 0) xi = 0
+    if (yi < 0) yi = 0
+    let x,
+        y,
+        line,
+        out,
+        ch,
+        data,
+        attr
+    const sdattr = this.dattr
+    if (term) { this.dattr = term.defAttr }
+    let main = ''
+
+    for (y = yi; y < yl; y++) {
+      line = term ? term.lines[y] : this.lines[y]
+      if (!line) break
+
+      out = ''
+      attr = this.dattr
+
+      for (x = xi; x < xl; x++) {
+        if (!line[x]) break
+
+        data = line[x][0]
+        ch = line[x].ch
+        if (data !== attr) {
+          if (attr !== this.dattr) {
+            out += CSI + SGR
+          }
+          if (data !== this.dattr) {
+            let _data = data
+            if (term) {
+              if (( ( _data >> 9 ) & 0x1ff ) === 257) _data |= 0x1ff << 9
+              if (( _data & 0x1ff ) === 256) _data |= 0x1ff
+            }
+            out += this.codeAttr(_data)
+          }
+        }
+        if (this.fullUnicode) {
+          if (unicode.charWidth(line[x].ch) === 2) {
+            if (x === xl - 1) { ch = ' ' }
+            else { x++ }
+          }
+        }
+        out += ch
+        attr = data
+      }
+      if (attr !== this.dattr) { out += CSI + SGR }
+      if (out) { main += ( y > 0 ? LF : '' ) + out }
+    }
+    main = main.replace(/(?:\s*\x1b\[40m\s*\x1b\[m\s*)*$/, '') + LF
+    if (term) { this.dattr = sdattr }
+    return main
+  }
+  // Convert an SGR string to our own attribute format.
+  attrCode(code, cur, def) {
+    let effect = ( cur >> 18 ) & 0x1ff,
+        fore   = ( cur >> 9 ) & 0x1ff,
+        back   = ( cur ) & 0x1ff
+    code = code.slice(2, -1).split(';')
+    if (!code[0]) code[0] = '0'
+    for (let i = 0, c; i < code.length; i++) {
+      c = +code[i] || 0
+      switch (c) {
+        case 0: // normal
+          back = def & 0x1ff
+          fore = ( def >> 9 ) & 0x1ff
+          effect = ( def >> 18 ) & 0x1ff
+          break
+        case 1: // bold
+          effect |= 1
+          break
+        case 22:
+          effect = ( def >> 18 ) & 0x1ff
+          break
+        case 4: // underline
+          effect |= 2
+          break
+        case 24:
+          effect = ( def >> 18 ) & 0x1ff
+          break
+        case 5: // blink
+          effect |= 4
+          break
+        case 25:
+          effect = ( def >> 18 ) & 0x1ff
+          break
+        case 7: // inverse
+          effect |= 8
+          break
+        case 27:
+          effect = ( def >> 18 ) & 0x1ff
+          break
+        case 8: // invisible
+          effect |= 16
+          break
+        case 28:
+          effect = ( def >> 18 ) & 0x1ff
+          break
+        case 39: // default fg
+          fore = ( def >> 9 ) & 0x1ff
+          break
+        case 49: // default bg
+          back = def & 0x1ff
+          break
+        case 100: // default fg/bg
+          fore = ( def >> 9 ) & 0x1ff
+          back = def & 0x1ff
+          break
+        default: // color
+          if (c === 48 && +code[i + 1] === 5) {
+            i += 2
+            back = +code[i]
+            break
+          }
+          else if (c === 48 && +code[i + 1] === 2) {
+            i += 2
+            back = colors.match(+code[i], +code[i + 1], +code[i + 2])
+            if (back === -1) back = def & 0x1ff
+            i += 2
+            break
+          }
+          else if (c === 38 && +code[i + 1] === 5) {
+            i += 2
+            fore = +code[i]
+            break
+          }
+          else if (c === 38 && +code[i + 1] === 2) {
+            i += 2
+            fore = colors.match(+code[i], +code[i + 1], +code[i + 2])
+            if (fore === -1) fore = ( def >> 9 ) & 0x1ff
+            i += 2
+            break
+          }
+          if (c >= 40 && c <= 47) {
+            back = c - 40
+          }
+          else if (c >= 100 && c <= 107) {
+            back = c - 100
+            back += 8
+          }
+          else if (c === 49) {
+            back = def & 0x1ff
+          }
+          else if (c >= 30 && c <= 37) {
+            fore = c - 30
+          }
+          else if (c >= 90 && c <= 97) {
+            fore = c - 90
+            fore += 8
+          }
+          else if (c === 39) {
+            fore = ( def >> 9 ) & 0x1ff
+          }
+          else if (c === 100) {
+            fore = ( def >> 9 ) & 0x1ff
+            back = def & 0x1ff
+          }
+          break
+      }
+    }
+    return ( effect << 18 ) | ( fore << 9 ) | back
+  }
+  // Convert our own attribute format to an SGR string.
+  codeAttr(code) {
+    const flags = ( code >> 18 ) & 0x1ff
+    let fg  = ( code >> 9 ) & 0x1ff,
+        bg  = code & 0x1ff,
+        out = ''
+    if (flags & 1) { out += '1;' } // bold
+    if (flags & 2) { out += '4;' } // underline
+    if (flags & 4) { out += '5;' } // blink
+    if (flags & 8) { out += '7;' } // inverse
+    if (flags & 16) { out += '8;' } // invisible
+    if (bg !== 0x1ff) {
+      bg = this._reduceColor(bg)
+      if (bg < 16) {
+        if (bg < 8) { bg += 40 }
+        else if (bg < 16) {
+          bg -= 8
+          bg += 100
+        }
+        out += bg + ';'
+      }
+      else { out += '48;5;' + bg + ';' }
+    }
+    if (fg !== 0x1ff) {
+      fg = this._reduceColor(fg)
+      if (fg < 16) {
+        if (fg < 8) { fg += 30 }
+        else if (fg < 16) {
+          fg -= 8
+          fg += 90
+        }
+        out += fg + ';'
+      }
+      else { out += '38;5;' + fg + ';' }
+    }
+    if (out[out.length - 1] === ';') out = out.slice(0, -1)
+    return CSI + out + SGR
+  }
+
   setTerminal(terminal) {
     const entered = !!this.program.isAlt
     if (entered) {
@@ -333,7 +865,7 @@ export class Screen extends Node {
           el.emit(MOUSE, data)
           if (data.action === MOUSEDOWN) { self.mouseDown = el }
           else if (data.action === MOUSEUP) {
-            (self.mouseDown || el).emit(CLICK, data)
+            ( self.mouseDown || el ).emit(CLICK, data)
             self.mouseDown = null
           }
           else if (data.action === MOUSEMOVE) {
@@ -350,7 +882,7 @@ export class Screen extends Node {
         }
       }
       // Just mouseover?
-      if ((data.action === MOUSEMOVE || data.action === MOUSEDOWN || data.action === MOUSEUP) && self.hover && !set) {
+      if (( data.action === MOUSEMOVE || data.action === MOUSEDOWN || data.action === MOUSEUP ) && self.hover && !set) {
         self.hover.emit(MOUSEOUT, data)
         self.hover = null
       }
@@ -456,48 +988,7 @@ export class Screen extends Node {
       self.render()
     })
   }
-  alloc(dirty) {
-    let x, y
-    this.lines = []
-    for (y = 0; y < this.rows; y++) {
-      const line = this.lines[y] = []
-      for (x = 0; x < this.cols; x++) { line[x] = [ this.dattr, ' ' ] }
-      line.dirty = !!dirty
-    }
-    this.olines = []
-    for (y = 0; y < this.rows; y++) {
-      const line = this.olines[y] = []
-      for (x = 0; x < this.cols; x++) { line[x] = [ this.dattr, ' ' ] }
-    }
-    this.program.clear()
-  }
-  realloc() { return this.alloc(true) }
-  render() {
-    // const [ h, w ] = size(this.lines)
-    // console.log('>> [screen.render]', this.lines)
-    // console.log('>> [screen.render]', h, w)
-    const self = this
-    if (this.destroyed) return
-    this.emit(PRERENDER)
-    this._borderStops = {}
-    // TODO: Possibly get rid of .dirty altogether.
-    // TODO: Could possibly drop .dirty and just clear the `lines` buffer every
-    // time before a screen.render. This way clearRegion doesn't have to be
-    // called in arbitrary places for the sake of clearing a spot where an
-    // element used to be (e.g. when an element moves or is hidden). There could
-    // be some overhead though.
-    // this.screen.clearRegion(0, this.cols, 0, this.rows);
-    this._ci = 0
-    this.sub.forEach(el => { (el.index = self._ci++), el.render() })
-    this._ci = -1
-    if (this.screen.dockBorders) { this._dockBorders() }
-    this.draw(0, this.lines.length - 1)
-    // XXX Workaround to deal with cursor pos before the screen has rendered and
-    // lpos is not reliable (stale).
-    if (this.focused && this.focused._updateCursor) { this.focused._updateCursor(true) }
-    this.renders++
-    this.emit(RENDER)
-  }
+
 // This is how ncurses does it.
 // Scroll down (up cursor-wise).
   blankLine(ch, dirty) {
@@ -591,7 +1082,7 @@ export class Screen extends Node {
       // Maybe just do this instead of parsing.
       if (pos.yi < 0) return pos._cleanSides = false
       if (pos.yl > this.height) return pos._cleanSides = false
-      return this.width - (pos.xl - pos.xi) < 40 ? (pos._cleanSides = true) : (pos._cleanSides = false)
+      return this.width - ( pos.xl - pos.xi ) < 40 ? ( pos._cleanSides = true ) : ( pos._cleanSides = false )
     }
     if (!this.options.smartCSR) { return false }
     // The scrollbar can't update properly, and there's also a
@@ -611,10 +1102,10 @@ export class Screen extends Node {
     if (pos.xi - 1 < 0) return pos._cleanSides = true
     if (pos.xl > this.width) return pos._cleanSides = true
     for (let x = pos.xi - 1, line, cell; x >= 0; x--) {
-      if (!(line = this.olines[yi])) break
+      if (!( line = this.olines[yi] )) break
       const first = line[x]
       for (let y = yi; y < yl; y++) {
-        if (!(line = this.olines[y]) || !(cell = line[x])) break
+        if (!( line = this.olines[y] ) || !( cell = line[x] )) break
         cell = line[x]
         if (cell[0] !== first[0] || cell.ch !== first.ch) {
           return pos._cleanSides = false
@@ -622,10 +1113,10 @@ export class Screen extends Node {
       }
     }
     for (let x = pos.xl, line, cell; x < this.width; x++) {
-      if (!(line = this.olines[yi])) break
+      if (!( line = this.olines[yi] )) break
       const first = line[x]
       for (let y = yi; y < yl; y++) {
-        if (!(line = this.olines[y]) || !(cell = line[x])) break
+        if (!( line = this.olines[y] ) || !( cell = line[x] )) break
         if (cell[0] !== first[0] || cell.ch !== first.ch) {
           return pos._cleanSides = false
         }
@@ -655,11 +1146,11 @@ export class Screen extends Node {
       .sort(function (a, b) { return a - b })
     for (let i = 0, line, cell; i < stops.length; i++) {
       y = stops[i]
-      if (!(line = lines[y])) continue
+      if (!( line = lines[y] )) continue
       for (let x = 0; x < this.width; x++) {
         cell = line[x]
         ch = cell.ch
-        if (angles[ch]) {
+        if (ANGLES[ch]) {
           cell.ch = this._getAngle(lines, x, y)
           line.dirty = true
         }
@@ -670,25 +1161,25 @@ export class Screen extends Node {
     let angle = 0
     const attr = lines[y][x][0],
           ch   = lines[y][x].ch
-    if (lines[y][x - 1] && langles[lines[y][x - 1].ch]) {
+    if (lines[y][x - 1] && ANGLES_L[lines[y][x - 1].ch]) {
       if (!this.options.ignoreDockContrast) {
         if (lines[y][x - 1][0] !== attr) return ch
       }
       angle |= 1 << 3
     }
-    if (lines[y - 1] && uangles[lines[y - 1][x].ch]) {
+    if (lines[y - 1] && ANGLES_U[lines[y - 1][x].ch]) {
       if (!this.options.ignoreDockContrast) {
         if (lines[y - 1][x][0] !== attr) return ch
       }
       angle |= 1 << 2
     }
-    if (lines[y][x + 1] && rangles[lines[y][x + 1].ch]) {
+    if (lines[y][x + 1] && ANGLES_R[lines[y][x + 1].ch]) {
       if (!this.options.ignoreDockContrast) {
         if (lines[y][x + 1][0] !== attr) return ch
       }
       angle |= 1 << 1
     }
-    if (lines[y + 1] && dangles[lines[y + 1][x].ch]) {
+    if (lines[y + 1] && ANGLES_D[lines[y + 1][x].ch]) {
       if (!this.options.ignoreDockContrast) { if (lines[y + 1][x][0] !== attr) return ch }
       angle |= 1 << 0
     }
@@ -708,394 +1199,9 @@ export class Screen extends Node {
     //     angle |= 1 << 0;
     //   }
     // }
-    return angleTable[angle] || ch
+    return ANGLE_TABLE[angle] || ch
   }
-  draw(start, end) {
-    let out,
-        ch,
-        data,
-        attr,
-        fg, bg,
-        flags
-    let main = ''
-    let clr,
-        neq
-    let lx = -1,
-        ly = -1
-    let acs
-    if (this._buf) { main += this._buf, this._buf = '' }
-    const { cursor, program, tput, options } = this
-    for (let y = start; y <= end; y++) {
-      let line = this.lines[y], oline = this.olines[y]
-      if (!line.dirty && !(cursor.artificial && y === program.y)) continue
-      line.dirty = false
 
-      out = ''
-      attr = this.dattr
-
-      for (let x = 0, cell, ocell; (x < line.length) && (cell = line[x]); x++) {
-        [ data ] = cell;
-        ({ ch } = cell)
-        // Render the artificial cursor.
-        if (cursor.artificial && !cursor._hidden && cursor._state && x === program.x && y === program.y) {
-          const cursorAttr = this._cursorAttr(this.cursor, data)
-          if (cursorAttr.ch) ch = cursorAttr.ch
-          data = cursorAttr.attr
-        }
-        // Take advantage of xterm's back_color_erase feature by using a
-        // lookahead. Stop spitting out so many damn spaces. NOTE: Is checking
-        // the bg for non BCE terminals worth the overhead?
-        if (options.useBCE &&
-          ch === ' ' &&
-          (tput.bools.back_color_erase || (data & 0x1ff) === (this.dattr & 0x1ff)) &&
-          ((data >> 18) & 8) === ((this.dattr >> 18) & 8)
-        ) {
-          clr = true
-          neq = false
-          for (let i = x, cell, ocell; (i < line.length) && (cell = line[i]); i++) {
-            if (cell[0] !== data || cell.ch !== ' ') {
-              clr = false
-              break
-            }
-            if ((ocell = oline[i]) && cell[0] !== ocell[0] || cell.ch !== ocell.ch) { neq = true }
-          }
-          if (clr && neq) {
-            lx = -1, ly = -1
-            if (data !== attr) { out += this.codeAttr(data), attr = data }
-            out += this.tput.cup(y, x), out += this.tput.el()
-            for (let i = x, ocell; (i < line.length) && (ocell = oline[i]); i++) { ocell[0] = data, ocell.ch = ' ' }
-            break
-          }
-          // If there's more than 10 spaces, use EL regardless
-          // and start over drawing the rest of line. Might
-          // not be worth it. Try to use ECH if the terminal
-          // supports it. Maybe only try to use ECH here.
-          // //if (this.tput.strings.erase_chars)
-          // if (!clr && neq && (xx - x) > 10) {
-          //   lx = -1, ly = -1;
-          //   if (data !== attr) {
-          //     out += this.codeAttr(data);
-          //     attr = data;
-          //   }
-          //   out += this.tput.cup(y, x);
-          //   if (this.tput.strings.erase_chars) {
-          //     // Use erase_chars to avoid erasing the whole line.
-          //     out += this.tput.ech(xx - x);
-          //   } else {
-          //     out += this.tput.el();
-          //   }
-          //   if (this.tput.strings.parm_right_cursor) {
-          //     out += this.tput.cuf(xx - x);
-          //   } else {
-          //     out += this.tput.cup(y, xx);
-          //   }
-          //   this.fillRegion(data, ' ',
-          //     x, this.tput.strings.erase_chars ? xx : line.length,
-          //     y, y + 1);
-          //   x = xx - 1;
-          //   continue;
-          // }
-          // Skip to the next line if the
-          // rest of the line is already drawn.
-          // if (!neq) {
-          //   for (; xx < line.length; xx++) {
-          //     if (line[xx][0] !== o[xx][0] || line[xx].ch !== o[xx].ch) {
-          //       neq = true;
-          //       break;
-          //     }
-          //   }
-          //   if (!neq) {
-          //     attr = data;
-          //     break;
-          //   }
-          // }
-        }
-        // Optimize by comparing the real output
-        // buffer to the pending output buffer.
-        ocell = oline[x]
-        if (data === ocell[0] && ch === ocell.ch) {
-          if (lx === -1) { lx = x, ly = y }
-          continue
-        }
-        else if (lx !== -1) {
-          if (this.tput.strings.parm_right_cursor) { out += y === ly ? this.tput.cuf(x - lx) : this.tput.cup(y, x) }
-          else { out += this.tput.cup(y, x) }
-          lx = -1, ly = -1
-        }
-        ocell[0] = data
-        ocell.ch = ch
-        if (data !== attr) {
-          if (attr !== this.dattr) { out += CSI + SGR }
-          if (data !== this.dattr) {
-            out += CSI + ''
-            bg = data & 0x1ff
-            fg = (data >> 9) & 0x1ff
-            flags = data >> 18
-            if (flags & 1) { out += '1;' } // bold
-            if (flags & 2) { out += '4;' } // underline
-            if (flags & 4) { out += '5;' } // blink
-            if (flags & 8) { out += '7;' } // inverse
-            if (flags & 16) { out += '8;' } // invisible
-            if (bg !== 0x1ff) {
-              bg = this._reduceColor(bg)
-              if (bg < 16) {
-                if (bg < 8) { bg += 40 }
-                else if (bg < 16) { bg -= 8, bg += 100 }
-                out += bg + ';'
-              }
-              else { out += '48;5;' + bg + ';' }
-            }
-            if (fg !== 0x1ff) {
-              fg = this._reduceColor(fg)
-              if (fg < 16) {
-                if (fg < 8) { fg += 30 }
-                else if (fg < 16) { fg -= 8, fg += 90 }
-                out += fg + ';'
-              }
-              else { out += '38;5;' + fg + ';' }
-            }
-            if (out[out.length - 1] === ';') out = out.slice(0, -1)
-            out += SGR
-          }
-        }
-        // If we find a double-width char, eat the next character which should be
-        // a space due to parseContent's behavior.
-        if (this.fullUnicode) {
-          // If this is a surrogate pair double-width char, we can ignore it
-          // because parseContent already counted it as length=2.
-          if (unicode.charWidth(line[x].ch) === 2) {
-            // NOTE: At cols=44, the bug that is avoided
-            // by the angles check occurs in widget-unicode:
-            // Might also need: `line[x + 1][0] !== line[x][0]`
-            // for borderless boxes?
-            if (x === line.length - 1 || angles[line[x + 1].ch]) {
-              // If we're at the end, we don't have enough space for a
-              // double-width. Overwrite it with a space and ignore.
-              ch = ' '
-              ocell.ch = '\0'
-            }
-            else {
-              // ALWAYS refresh double-width chars because this special cursor
-              // behavior is needed. There may be a more efficient way of doing
-              // this. See above.
-              ocell.ch = '\0'
-              // Eat the next character by moving forward and marking as a
-              // space (which it is).
-              oline[++x].ch = '\0'
-            }
-          }
-        }
-        // Attempt to use ACS for supported characters.
-        // This is not ideal, but it's how ncurses works.
-        // There are a lot of terminals that support ACS
-        // *and UTF8, but do not declare U8. So ACS ends
-        // up being used (slower than utf8). Terminals
-        // that do not support ACS and do not explicitly
-        // support UTF8 get their unicode characters
-        // replaced with really ugly ascii characters.
-        // It is possible there is a terminal out there
-        // somewhere that does not support ACS, but
-        // supports UTF8, but I imagine it's unlikely.
-        // Maybe remove !this.tput.unicode check, however,
-        // this seems to be the way ncurses does it.
-        if (this.tput.strings.enter_alt_charset_mode &&
-          !this.tput.brokenACS && (this.tput.acscr[ch] || acs)) {
-          // Fun fact: even if this.tput.brokenACS wasn't checked here,
-          // the linux console would still work fine because the acs
-          // table would fail the check of: this.tput.acscr[ch]
-          if (this.tput.acscr[ch]) {
-            if (acs) { ch = this.tput.acscr[ch] }
-            else {
-              ch = this.tput.smacs() + this.tput.acscr[ch]
-              acs = true
-            }
-          }
-          else if (acs) {
-            ch = this.tput.rmacs() + ch
-            acs = false
-          }
-        }
-        else {
-          // U8 is not consistently correct. Some terminfo's
-          // terminals that do not declare it may actually
-          // support utf8 (e.g. urxvt), but if the terminal
-          // does not declare support for ACS (and U8), chances
-          // are it does not support UTF8. This is probably
-          // the "safest" way to do this. Should fix things
-          // like sun-color.
-          // NOTE: It could be the case that the $LANG
-          // is all that matters in some cases:
-          // if (!this.tput.unicode && ch > '~') {
-          if (!this.tput.unicode && this.tput.numbers.U8 !== 1 && ch > '~') ch = this.tput.utoa[ch] || '?'
-        }
-        out += ch
-        attr = data
-      }
-      if (attr !== this.dattr) { out += CSI + SGR }
-      if (out) { main += this.tput.cup(y, 0) + out }
-    }
-    if (acs) {
-      main += this.tput.rmacs()
-      acs = false
-    }
-    if (main) {
-      let pre = '', post = ''
-      pre += this.tput.sc(), post += this.tput.rc()
-      if (!this.program.cursorHidden) { pre += this.tput.civis(), post += this.tput.cnorm() }
-      // this.program.flush();
-      // this.program.write(pre + main + post);
-      this.program._write(pre + main + post)
-    }
-    // this.emit('draw');
-  }
-  _reduceColor(color) { return colors.reduce(color, this.tput.colors) }
-  // Convert an SGR string to our own attribute format.
-  attrCode(code, cur, def) {
-    let effect = (cur >> 18) & 0x1ff,
-        fore   = (cur >> 9) & 0x1ff,
-        back   = (cur) & 0x1ff
-    code = code.slice(2, -1).split(';')
-    if (!code[0]) code[0] = '0'
-    for (let i = 0, c; i < code.length; i++) {
-      c = +code[i] || 0
-      switch (c) {
-        case 0: // normal
-          back = def & 0x1ff
-          fore = (def >> 9) & 0x1ff
-          effect = (def >> 18) & 0x1ff
-          break
-        case 1: // bold
-          effect |= 1
-          break
-        case 22:
-          effect = (def >> 18) & 0x1ff
-          break
-        case 4: // underline
-          effect |= 2
-          break
-        case 24:
-          effect = (def >> 18) & 0x1ff
-          break
-        case 5: // blink
-          effect |= 4
-          break
-        case 25:
-          effect = (def >> 18) & 0x1ff
-          break
-        case 7: // inverse
-          effect |= 8
-          break
-        case 27:
-          effect = (def >> 18) & 0x1ff
-          break
-        case 8: // invisible
-          effect |= 16
-          break
-        case 28:
-          effect = (def >> 18) & 0x1ff
-          break
-        case 39: // default fg
-          fore = (def >> 9) & 0x1ff
-          break
-        case 49: // default bg
-          back = def & 0x1ff
-          break
-        case 100: // default fg/bg
-          fore = (def >> 9) & 0x1ff
-          back = def & 0x1ff
-          break
-        default: // color
-          if (c === 48 && +code[i + 1] === 5) {
-            i += 2
-            back = +code[i]
-            break
-          }
-          else if (c === 48 && +code[i + 1] === 2) {
-            i += 2
-            back = colors.match(+code[i], +code[i + 1], +code[i + 2])
-            if (back === -1) back = def & 0x1ff
-            i += 2
-            break
-          }
-          else if (c === 38 && +code[i + 1] === 5) {
-            i += 2
-            fore = +code[i]
-            break
-          }
-          else if (c === 38 && +code[i + 1] === 2) {
-            i += 2
-            fore = colors.match(+code[i], +code[i + 1], +code[i + 2])
-            if (fore === -1) fore = (def >> 9) & 0x1ff
-            i += 2
-            break
-          }
-          if (c >= 40 && c <= 47) {
-            back = c - 40
-          }
-          else if (c >= 100 && c <= 107) {
-            back = c - 100
-            back += 8
-          }
-          else if (c === 49) {
-            back = def & 0x1ff
-          }
-          else if (c >= 30 && c <= 37) {
-            fore = c - 30
-          }
-          else if (c >= 90 && c <= 97) {
-            fore = c - 90
-            fore += 8
-          }
-          else if (c === 39) {
-            fore = (def >> 9) & 0x1ff
-          }
-          else if (c === 100) {
-            fore = (def >> 9) & 0x1ff
-            back = def & 0x1ff
-          }
-          break
-      }
-    }
-    return (effect << 18) | (fore << 9) | back
-  }
-  // Convert our own attribute format to an SGR string.
-  codeAttr(code) {
-    const flags = (code >> 18) & 0x1ff
-    let fg  = (code >> 9) & 0x1ff,
-        bg  = code & 0x1ff,
-        out = ''
-    if (flags & 1) { out += '1;' } // bold
-    if (flags & 2) { out += '4;' } // underline
-    if (flags & 4) { out += '5;' } // blink
-    if (flags & 8) { out += '7;' } // inverse
-    if (flags & 16) { out += '8;' } // invisible
-    if (bg !== 0x1ff) {
-      bg = this._reduceColor(bg)
-      if (bg < 16) {
-        if (bg < 8) { bg += 40 }
-        else if (bg < 16) {
-          bg -= 8
-          bg += 100
-        }
-        out += bg + ';'
-      }
-      else { out += '48;5;' + bg + ';' }
-    }
-    if (fg !== 0x1ff) {
-      fg = this._reduceColor(fg)
-      if (fg < 16) {
-        if (fg < 8) { fg += 30 }
-        else if (fg < 16) {
-          fg -= 8
-          fg += 90
-        }
-        out += fg + ';'
-      }
-      else { out += '38;5;' + fg + ';' }
-    }
-    if (out[out.length - 1] === ';') out = out.slice(0, -1)
-    return CSI + out + SGR
-  }
   focusOffset(offset) {
     const shown = this.keyable.filter(el => !el.detached && el.visible).length
     if (!shown || !offset) { return }
@@ -1154,7 +1260,7 @@ export class Screen extends Node {
   _focus(self, old) {
     // Find a scrollable ancestor if we have one.
     let el = self
-    while ((el = el.sup)) if (el.scrollable) break
+    while (( el = el.sup )) if (el.scrollable) break
     // If we're in a scrollable element,
     // automatically scroll to the focused element.
     if (el && !el.detached) {
@@ -1169,7 +1275,7 @@ export class Screen extends Node {
       else if (self.rtop + self.height - self.ibottom > el.childBase + visible) {
         // Explanation for el.itop here: takes into account scrollable elements
         // with borders otherwise the element gets covered by the bottom border:
-        el.scrollTo(self.rtop - (el.height - self.height) + el.itop, true)
+        el.scrollTo(self.rtop - ( el.height - self.height ) + el.itop, true)
         self.screen.render()
       }
     }
@@ -1182,9 +1288,9 @@ export class Screen extends Node {
     if (xi < 0) xi = 0
     if (yi < 0) yi = 0
     for (let line; yi < yl; yi++) {
-      if (!(line = lines[yi])) break
+      if (!( line = lines[yi] )) break
       for (let i = xi, cell; i < xl; i++) {
-        if (!(cell = line[i])) break
+        if (!( cell = line[i] )) break
         if (override || attr !== cell[0] || ch !== cell.ch) {
           cell[0] = attr, cell.ch = ch, line.dirty = true
         }
@@ -1245,7 +1351,7 @@ export class Screen extends Node {
   }
   readEditor(options, callback) {
     if (typeof options === STR) { options = { editor: options } }
-    if (!callback) { (callback = options), (options = null) }
+    if (!callback) { ( callback = options ), ( options = null ) }
     if (!callback) { callback = function () {} }
     options = options || {}
     const self   = this,
@@ -1422,191 +1528,8 @@ export class Screen extends Node {
     }
     return this.program.cursorReset()
   }
-  _cursorAttr(cursor, dattr) {
-    const { shape } = cursor
-    let attr = dattr || this.dattr,
-        cattr,
-        ch
-    if (shape === 'line') {
-      attr &= ~(0x1ff << 9)
-      attr |= 7 << 9
-      ch = '\u2502'
-    }
-    else if (shape === 'underline') {
-      attr &= ~(0x1ff << 9)
-      attr |= 7 << 9
-      attr |= 2 << 18
-    }
-    else if (shape === 'block') {
-      attr &= ~(0x1ff << 9)
-      attr |= 7 << 9
-      attr |= 8 << 18
-    }
-    else if (typeof shape === OBJ && shape) {
-      cattr = Element.prototype.sattr.call(cursor, shape)
-      if (shape.bold || shape.underline || shape.blink || shape.inverse || shape.invisible) {
-        attr &= ~(0x1ff << 18)
-        attr |= ((cattr >> 18) & 0x1ff) << 18
-      }
-      if (shape.fg) {
-        attr &= ~(0x1ff << 9)
-        attr |= ((cattr >> 9) & 0x1ff) << 9
-      }
-      if (shape.bg) {
-        attr &= ~(0x1ff << 0)
-        attr |= cattr & 0x1ff
-      }
-      if (shape.ch) { ch = shape.ch }
-    }
-    if (cursor.color != null) {
-      attr &= ~(0x1ff << 9)
-      attr |= cursor.color << 9
-    }
-    return { ch, attr }
-  }
-  screenshot(xi, xl, yi, yl, term) {
-    if (xi == null) xi = 0
-    if (xl == null) xl = this.cols
-    if (yi == null) yi = 0
-    if (yl == null) yl = this.rows
-    if (xi < 0) xi = 0
-    if (yi < 0) yi = 0
-    let x,
-        y,
-        line,
-        out,
-        ch,
-        data,
-        attr
-    const sdattr = this.dattr
-    if (term) { this.dattr = term.defAttr }
-    let main = ''
-
-    for (y = yi; y < yl; y++) {
-      line = term ? term.lines[y] : this.lines[y]
-      if (!line) break
-
-      out = ''
-      attr = this.dattr
-
-      for (x = xi; x < xl; x++) {
-        if (!line[x]) break
-
-        data = line[x][0]
-        ch = line[x].ch
-        if (data !== attr) {
-          if (attr !== this.dattr) {
-            out += CSI + SGR
-          }
-          if (data !== this.dattr) {
-            let _data = data
-            if (term) {
-              if (((_data >> 9) & 0x1ff) === 257) _data |= 0x1ff << 9
-              if ((_data & 0x1ff) === 256) _data |= 0x1ff
-            }
-            out += this.codeAttr(_data)
-          }
-        }
-        if (this.fullUnicode) {
-          if (unicode.charWidth(line[x].ch) === 2) {
-            if (x === xl - 1) { ch = ' ' }
-            else { x++ }
-          }
-        }
-        out += ch
-        attr = data
-      }
-      if (attr !== this.dattr) { out += CSI + SGR }
-      if (out) { main += (y > 0 ? LF : '') + out }
-    }
-    main = main.replace(/(?:\s*\x1b\[40m\s*\x1b\[m\s*)*$/, '') + LF
-    if (term) { this.dattr = sdattr }
-    return main
-  }
   /**
    * Positioning
    */
   _getPos() { return this }
 }
-/**
- * Angle Table
- */
-const angles = {
-  '\u2518': true, // '┘'
-  '\u2510': true, // '┐'
-  '\u250c': true, // '┌'
-  '\u2514': true, // '└'
-  '\u253c': true, // '┼'
-  '\u251c': true, // '├'
-  '\u2524': true, // '┤'
-  '\u2534': true, // '┴'
-  '\u252c': true, // '┬'
-  '\u2502': true, // '│'
-  '\u2500': true  // '─'
-}
-const langles = {
-  '\u250c': true, // '┌'
-  '\u2514': true, // '└'
-  '\u253c': true, // '┼'
-  '\u251c': true, // '├'
-  '\u2534': true, // '┴'
-  '\u252c': true, // '┬'
-  '\u2500': true  // '─'
-}
-const uangles = {
-  '\u2510': true, // '┐'
-  '\u250c': true, // '┌'
-  '\u253c': true, // '┼'
-  '\u251c': true, // '├'
-  '\u2524': true, // '┤'
-  '\u252c': true, // '┬'
-  '\u2502': true  // '│'
-}
-const rangles = {
-  '\u2518': true, // '┘'
-  '\u2510': true, // '┐'
-  '\u253c': true, // '┼'
-  '\u2524': true, // '┤'
-  '\u2534': true, // '┴'
-  '\u252c': true, // '┬'
-  '\u2500': true  // '─'
-}
-const dangles = {
-  '\u2518': true, // '┘'
-  '\u2514': true, // '└'
-  '\u253c': true, // '┼'
-  '\u251c': true, // '├'
-  '\u2524': true, // '┤'
-  '\u2534': true, // '┴'
-  '\u2502': true  // '│'
-}
-// var cdangles = {
-//   '\u250c': true  // '┌'
-// };
-
-// Every ACS angle character can be
-// represented by 4 bits ordered like this:
-// [langle][uangle][rangle][dangle]
-const angleTable = {
-  '0000': '', // ?
-  '0001': '\u2502', // '│' // ?
-  '0010': '\u2500', // '─' // ??
-  '0011': '\u250c', // '┌'
-  '0100': '\u2502', // '│' // ?
-  '0101': '\u2502', // '│'
-  '0110': '\u2514', // '└'
-  '0111': '\u251c', // '├'
-  '1000': '\u2500', // '─' // ??
-  '1001': '\u2510', // '┐'
-  '1010': '\u2500', // '─' // ??
-  '1011': '\u252c', // '┬'
-  '1100': '\u2518', // '┘'
-  '1101': '\u2524', // '┤'
-  '1110': '\u2534', // '┴'
-  '1111': '\u253c'  // '┼'
-}
-
-Object.keys(angleTable).forEach(key => {
-  angleTable[parseInt(key, 2)] = angleTable[key]
-  delete angleTable[key]
-})

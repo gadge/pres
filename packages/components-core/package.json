@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@ject/mixin": "^0.0.12",
+    "@pres/enum-angle-table": "^0.2.1",
     "@pres/components-node": "^0.2.2",
     "@pres/enum-control-chars": "^0.2.2",
     "@pres/enum-csi-codes": "^0.2.2",

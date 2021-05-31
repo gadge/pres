@@ -9,14 +9,14 @@ const und = DyeFab.prep(UNDERLINE)
 const inv = DyeFab.prep(INVERSE)
 
 const zipper = Trizipper((name, rgb, hex, i) => {
-  const _convRgb = String(convert(rgb))
-  const _convHex = String(convert(hex))
+  const rgbConverted = String(convert(rgb))
+  const hexConverted = String(convert(hex))
   xr()
     [String(i).padStart(3)](name.padStart(7))
     .rgb(rgbToStr.call(und, rgb))
     .hex(hexToStr.call(inv, hex))
-    [_convRgb.padStart(3)](SPARSE_NAMES[_convRgb].padStart(7))
-    [_convHex.padStart(3)](SPARSE_NAMES[_convHex].padStart(7))
+    [rgbConverted.padStart(3)](SPARSE_NAMES[rgbConverted].padStart(7))
+    [hexConverted.padStart(3)](SPARSE_NAMES[hexConverted].padStart(7))
     |> logger
 })
 
