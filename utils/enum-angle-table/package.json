@@ -1,0 +1,38 @@
+{
+  "name": "@pres/enum-angle-table",
+  "version": "0.2.1",
+  "description": "Angle table for pres",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "pub": "npm publish",
+    "test": "node -r @babel/register test/test.index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoyeungw/pres/alias.git"
+  },
+  "keywords": [
+    "pres",
+    "process",
+    "signal-handler",
+    "alias"
+  ],
+  "author": {
+    "name": "Hoyeung Wong",
+    "email": "hoyeungw@outlook.com",
+    "url": "https://github.com/hoyeungw"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hoyeungw/pres/cluster"
+  },
+  "homepage": "https://github.com/hoyeungw/pres/cluster#readme",
+  "gitHead": "cd08e08c747c79718f67108b82bd666cff637740"
+}
