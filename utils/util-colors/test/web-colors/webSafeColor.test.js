@@ -5,16 +5,16 @@ import { zipper }                                 from '@vect/vector'
 import { webSafeColorHexes, webSafeColorIndexes } from './webSafeColor.tables'
 
 
-export const coordToHex = (i, j) => {
-  const n = ( j << 8 ) + ( ~~( i / 6 ) << 4 ) + i % 6
+export const coordToHex = (x, y) => {
+  const n = ( y << 8 ) + ( ~~( x / 6 ) << 4 ) + x % 6
   return '#' + ( n * 3 ).toString(16).padStart(3, '0').toUpperCase()
 }
-export const indexToCoord = (index) => {
-  index -= 16
-  const x = index % 36, y = ~~( index / 36 )
+export const indexToCoord = (i) => {
+  i -= 16
+  const x = i % 36, y = ~~( i / 36 )
   return [ x, y ]
 }
-export const indexToHex = (index) => coordToHex.apply(null, indexToCoord(index))
+export const indexToHex = (i) => coordToHex.apply(null, indexToCoord(i))
 
 zipper(webSafeColorIndexes, webSafeColorHexes, (indexRow, hexRow, i) => {
   let row = ''
