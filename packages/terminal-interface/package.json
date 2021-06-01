@@ -1,6 +1,6 @@
 {
   "name": "@pres/terminal-interface",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "description": "Terminfo parser for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -16,12 +16,12 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/components": "^0.2.3",
-    "@pres/program": "^0.2.3",
-    "@pres/terminfo-parser": "^0.2.3",
-    "@pres/util-colors": "^0.2.3",
-    "@pres/util-helpers": "^0.2.3",
-    "@pres/util-unicode": "^0.2.3",
+    "@pres/components": "^0.2.4",
+    "@pres/program": "^0.2.4",
+    "@pres/terminfo-parser": "^0.2.4",
+    "@pres/util-colors": "^0.2.4",
+    "@pres/util-helpers": "^0.2.4",
+    "@pres/util-unicode": "^0.2.4",
     "url": "^0.11.0"
   },
   "repository": {
