@@ -16,12 +16,12 @@ export function blend(attr_, _attr, alpha) {
     back_ = mixColors(back_ === 0x1ff ? 0 : back_, _back === 0x1ff ? 0 : _back, alpha)
   }
   else {
-    fore_ = fore_ in BLEND_CACHE ? BLEND_CACHE[fore_]
-      : fore_ >= 8 && fore_ < 16 ? fore_ - 8
-        : fore_ in SPARSE_NAMES ? dimmer(fore_) : fore_
-    back_ = back_ in BLEND_CACHE ? BLEND_CACHE[back_]
-      : back_ >= 8 && back_ < 16 ? back_ - 8
-        : back_ in SPARSE_NAMES ? dimmer(back_) : back_
+    fore_ = fore_ in BLEND_CACHE ? BLEND_CACHE[fore_] // if cached, get cached
+      : fore_ >= 8 && fore_ < 16 ? fore_ - 8 // dimmer fore_
+        : fore_ in SPARSE_NAMES ? BLEND_CACHE[fore_] = dimmer(fore_) : fore_ // find dimmer fore_ and cache
+    back_ = back_ in BLEND_CACHE ? BLEND_CACHE[back_] // if cached, get cached
+      : back_ >= 8 && back_ < 16 ? back_ - 8 // dimmer back_
+        : back_ in SPARSE_NAMES ? BLEND_CACHE[back_] = dimmer(back_) : back_ // find dimmer back_ and cache
   }
 
   // paste blended fore_ and back_ to attr_
@@ -30,15 +30,19 @@ export function blend(attr_, _attr, alpha) {
   return attr_
 }
 
-export function dimmer(index_) {
-  for (let _index = 0, sparseName_ = SPARSE_NAMES[index_]; _index < SPARSE_NAMES.length; _index++)
-    if (SPARSE_NAMES[_index] === sparseName_ && _index !== index_) {
-      const [ r_, g_, b_ ] = RGB_COLORS[_index],
-            [ _r, _g, _b ] = RGB_COLORS[index_]
-      if (r_ + g_ + b_ < _r + _g + _b) {
-        index_ = BLEND_CACHE[index_] = _index
-        break
-      }
-    }
-  return index_
+export function dimmer(i) {
+  // console.log('>> dimmer', index_)
+  for (
+    let j = 0, sparseName = SPARSE_NAMES[i], r_, g_, b_, _r, _g, _b;
+    j < SPARSE_NAMES.length;
+    j++
+  )
+    if (
+      SPARSE_NAMES[j] === sparseName && // two indexes have identical sparseName
+      j !== i && // different indexes
+      ( [ r_, g_, b_ ] = RGB_COLORS[i] ) &&
+      ( [ _r, _g, _b ] = RGB_COLORS[j] ) &&
+      ( r_ + g_ + b_ > _r + _g + _b ) // find _index whose color is dimmer
+    ) return j
+  return i
 }
