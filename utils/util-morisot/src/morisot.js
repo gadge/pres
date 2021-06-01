@@ -38,9 +38,9 @@ export function morisotToPresa(code) {
 // attrCode
 // Convert an SGR string to our own attribute format.
 export function sgraToMorisot(target, source, normal) {
-  let effect = ( source >> 18 ) & 0x1ff,
-      fore   = ( source >> 9 ) & 0x1ff,
-      back   = ( source ) & 0x1ff
+  let mode = ( source >> 18 ) & 0x1ff,
+      fore = ( source >> 9 ) & 0x1ff,
+      back = ( source ) & 0x1ff
   let code = target.slice(2, -1).split(';')
   if (!code[0]) code[0] = '0'
   for (let i = 0, c; i < code.length; i++) {
@@ -49,37 +49,37 @@ export function sgraToMorisot(target, source, normal) {
       case 0: // normal
         back = normal & 0x1ff
         fore = ( normal >> 9 ) & 0x1ff
-        effect = ( normal >> 18 ) & 0x1ff
+        mode = ( normal >> 18 ) & 0x1ff
         break
       case 1: // bold
-        effect |= 1
+        mode |= 1
         break
       case 22:
-        effect = ( normal >> 18 ) & 0x1ff
+        mode = ( normal >> 18 ) & 0x1ff
         break
       case 4: // underline
-        effect |= 2
+        mode |= 2
         break
       case 24:
-        effect = ( normal >> 18 ) & 0x1ff
+        mode = ( normal >> 18 ) & 0x1ff
         break
       case 5: // blink
-        effect |= 4
+        mode |= 4
         break
       case 25:
-        effect = ( normal >> 18 ) & 0x1ff
+        mode = ( normal >> 18 ) & 0x1ff
         break
       case 7: // inverse
-        effect |= 8
+        mode |= 8
         break
       case 27:
-        effect = ( normal >> 18 ) & 0x1ff
+        mode = ( normal >> 18 ) & 0x1ff
         break
       case 8: // invisible
-        effect |= 16
+        mode |= 16
         break
       case 28:
-        effect = ( normal >> 18 ) & 0x1ff
+        mode = ( normal >> 18 ) & 0x1ff
         break
       case 39: // default fg
         fore = ( normal >> 9 ) & 0x1ff
@@ -116,34 +116,17 @@ export function sgraToMorisot(target, source, normal) {
           i += 2
           break
         }
-        if (c >= 40 && c <= 47) {
-          back = c - 40
-        }
-        else if (c >= 100 && c <= 107) {
-          back = c - 100
-          back += 8
-        }
-        else if (c === 49) {
-          back = normal & 0x1ff
-        }
-        else if (c >= 30 && c <= 37) {
-          fore = c - 30
-        }
-        else if (c >= 90 && c <= 97) {
-          fore = c - 90
-          fore += 8
-        }
-        else if (c === 39) {
-          fore = ( normal >> 9 ) & 0x1ff
-        }
-        else if (c === 100) {
-          fore = ( normal >> 9 ) & 0x1ff
-          back = normal & 0x1ff
-        }
+        if (c >= 40 && c <= 47) { back = c - 40 }
+        else if (c >= 100 && c <= 107) { back = c - 100, back += 8 }
+        else if (c === 49) { back = normal & 0x1ff }
+        else if (c >= 30 && c <= 37) { fore = c - 30 }
+        else if (c >= 90 && c <= 97) { fore = c - 90, fore += 8 }
+        else if (c === 39) { fore = ( normal >> 9 ) & 0x1ff }
+        else if (c === 100) { fore = ( normal >> 9 ) & 0x1ff, back = ( normal ) & 0x1ff }
         break
     }
   }
-  return ( effect << 18 ) | ( fore << 9 ) | back
+  return ( mode << 18 ) | ( fore << 9 ) | back
 }
 
 // codeAttr

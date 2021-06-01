@@ -18,6 +18,7 @@ import * as colors                                                     from '@pr
 import * as helpers                                                    from '@pres/util-helpers'
 import * as unicode                                                    from '@pres/util-unicode'
 import { FUN, OBJ, STR }                                               from '@typen/enum-data-types'
+import { last }                                                        from '@vect/vector'
 import cp, { spawn }                                                   from 'child_process'
 import { Log }                                                         from '../src/log'
 import { Box }                                                         from './box'
@@ -59,12 +60,7 @@ export class Screen extends Node {
     this.ibottom = 0
     this.iheight = 0
     this.iwidth = 0
-    this.padding = {
-      left: 0,
-      top: 0,
-      right: 0,
-      bottom: 0
-    }
+    this.padding = { left: 0, top: 0, right: 0, bottom: 0 }
     this.hover = null
     this.history = []
     this.clickable = []
@@ -170,8 +166,8 @@ export class Screen extends Node {
     this.lines = []
     this.olines = []
     for (y = 0; y < this.rows; y++) {
-      const line = this.lines[y] = []
-      const oline = this.olines[y] = []
+      const line  = this.lines[y] = [],
+            oline = this.olines[y] = []
       line.dirty = !!dirty
       for (x = 0; x < this.cols; x++) {
         line[x] = [ this.dattr, ' ' ]
@@ -182,7 +178,7 @@ export class Screen extends Node {
   }
   realloc() { return this.alloc(true) }
   clearRegion(xi, xl, yi, yl, override) { return this.fillRegion(this.dattr, ' ', xi, xl, yi, yl, override) }
-  fillRegion(attr, ch, xi, xl, yi, yl, override) {
+  fillRegion(at, ch, xi, xl, yi, yl, override) {
     const { lines } = this
     if (xi < 0) xi = 0
     if (yi < 0) yi = 0
@@ -190,8 +186,8 @@ export class Screen extends Node {
       if (!( line = lines[yi] )) break
       for (let i = xi, cell; i < xl; i++) {
         if (!( cell = line[i] )) break
-        if (override || attr !== cell[0] || ch !== cell.ch) {
-          cell[0] = attr, cell.ch = ch, line.dirty = true
+        if (override || at !== cell[0] || ch !== cell.ch) {
+          cell[0] = at, cell.ch = ch, line.dirty = true
         }
       }
     }
@@ -299,151 +295,70 @@ export class Screen extends Node {
     return main
   }
   // Convert an SGR string to our own attribute format.
-  attrCode(code, cur, def) {
-    let effect = ( cur >> 18 ) & 0x1ff,
-        fore   = ( cur >> 9 ) & 0x1ff,
-        back   = ( cur ) & 0x1ff
-    code = code.slice(2, -1).split(';')
-    if (!code[0]) code[0] = '0'
-    for (let i = 0, c; i < code.length; i++) {
-      c = +code[i] || 0
-      switch (c) {
-        case 0: // normal
-          back = def & 0x1ff
-          fore = ( def >> 9 ) & 0x1ff
-          effect = ( def >> 18 ) & 0x1ff
-          break
-        case 1: // bold
-          effect |= 1
-          break
-        case 22:
-          effect = ( def >> 18 ) & 0x1ff
-          break
-        case 4: // underline
-          effect |= 2
-          break
-        case 24:
-          effect = ( def >> 18 ) & 0x1ff
-          break
-        case 5: // blink
-          effect |= 4
-          break
-        case 25:
-          effect = ( def >> 18 ) & 0x1ff
-          break
-        case 7: // inverse
-          effect |= 8
-          break
-        case 27:
-          effect = ( def >> 18 ) & 0x1ff
-          break
-        case 8: // invisible
-          effect |= 16
-          break
-        case 28:
-          effect = ( def >> 18 ) & 0x1ff
-          break
-        case 39: // default fg
-          fore = ( def >> 9 ) & 0x1ff
-          break
-        case 49: // default bg
-          back = def & 0x1ff
-          break
-        case 100: // default fg/bg
-          fore = ( def >> 9 ) & 0x1ff
-          back = def & 0x1ff
-          break
-        default: // color
-          if (c === 48 && +code[i + 1] === 5) {
-            i += 2
-            back = +code[i]
-            break
-          }
-          else if (c === 48 && +code[i + 1] === 2) {
-            i += 2
-            back = colors.match(+code[i], +code[i + 1], +code[i + 2])
-            if (back === -1) back = def & 0x1ff
-            i += 2
-            break
-          }
-          else if (c === 38 && +code[i + 1] === 5) {
-            i += 2
-            fore = +code[i]
-            break
-          }
-          else if (c === 38 && +code[i + 1] === 2) {
-            i += 2
-            fore = colors.match(+code[i], +code[i + 1], +code[i + 2])
-            if (fore === -1) fore = ( def >> 9 ) & 0x1ff
-            i += 2
-            break
-          }
-          if (c >= 40 && c <= 47) {
-            back = c - 40
-          }
-          else if (c >= 100 && c <= 107) {
-            back = c - 100
-            back += 8
-          }
-          else if (c === 49) {
-            back = def & 0x1ff
-          }
-          else if (c >= 30 && c <= 37) {
-            fore = c - 30
-          }
-          else if (c >= 90 && c <= 97) {
-            fore = c - 90
-            fore += 8
-          }
-          else if (c === 39) {
-            fore = ( def >> 9 ) & 0x1ff
-          }
-          else if (c === 100) {
-            fore = ( def >> 9 ) & 0x1ff
-            back = def & 0x1ff
-          }
-          break
-      }
+  attrCode(sgr, cur, def) {
+    const ve = sgr.slice(2, -1).split(';')
+    let m = ( cur >> 18 ) & 0x1ff, f = ( cur >> 9 ) & 0x1ff, b = ( cur ) & 0x1ff
+    if (!ve[0]) ve[0] = '0'
+    for (let i = 0, hi = ve.length, c; i < hi; i++) {
+      c = +ve[i] || 0
+      c === 0 ? ( m = def >> 18 & 0x1ff, f = def >> 9 & 0x1ff, b = def & 0x1ff )
+        : c === 1 ? ( m |= 1 ) // bold
+        : c === 4 ? ( m |= 2 ) // underline
+          : c === 5 ? ( m |= 4 ) // blink
+            : c === 7 ? ( m |= 8 ) // inverse
+              : c === 8 ? ( m |= 16 ) // invisible
+                : c === 22 ? ( m = def >> 18 & 0x1ff )
+                  : c === 24 ? ( m = def >> 18 & 0x1ff )
+                    : c === 25 ? ( m = def >> 18 & 0x1ff )
+                      : c === 27 ? ( m = def >> 18 & 0x1ff )
+                        : c === 28 ? ( m = def >> 18 & 0x1ff )
+                          : c >= 30 && c <= 37 ? ( f = c - 30 )
+                            : c === 38 && ( c = +ve[++i] ) ? (
+                                f = c === 5 ? +ve[++i]
+                                  : c === 2 ? ( ( f = colors.match(+ve[++i], +ve[++i], +ve[++i]) ) === -1 ? def >> 9 & 0x1ff : f )
+                                    : f
+                              )
+                              : c === 39 ? ( f = def >> 9 & 0x1ff )
+                                : c >= 90 && c <= 97 ? ( f = c - 90, f += 8 )
+                                  : c >= 40 && c <= 47 ? ( b = c - 40 )
+                                    : c === 48 && ( c = +ve[++i] ) ? (
+                                        b = c === 5 ? +ve[++i]
+                                          : c === 2 ? ( ( b = colors.match(+ve[++i], +ve[++i], +ve[++i]) ) === -1 ? def & 0x1ff : b )
+                                            : b
+                                      )
+                                      : c === 49 ? ( b = def & 0x1ff )
+                                        : c === 100 ? ( f = def >> 9 & 0x1ff, b = def & 0x1ff )
+                                          : c >= 100 && c <= 107 ? ( b = c - 100, b += 8 )
+                                            : void 0
     }
-    return ( effect << 18 ) | ( fore << 9 ) | back
+    return ( m << 18 ) | ( f << 9 ) | b
   }
   // Convert our own attribute format to an SGR string.
   codeAttr(code) {
-    const flags = ( code >> 18 ) & 0x1ff
-    let fg  = ( code >> 9 ) & 0x1ff,
-        bg  = code & 0x1ff,
-        out = ''
-    if (flags & 1) { out += '1;' } // bold
-    if (flags & 2) { out += '4;' } // underline
-    if (flags & 4) { out += '5;' } // blink
-    if (flags & 8) { out += '7;' } // inverse
-    if (flags & 16) { out += '8;' } // invisible
-    if (bg !== 0x1ff) {
-      bg = this.#reduceColor(bg)
-      if (bg < 16) {
-        if (bg < 8) { bg += 40 }
-        else if (bg < 16) {
-          bg -= 8
-          bg += 100
-        }
-        out += bg + ';'
+    let out = ''
+    let m = ( code >> 18 ) & 0x1ff, f = ( code >> 9 ) & 0x1ff, b = code & 0x1ff
+    if (m & 1) { out += '1;' } // bold
+    if (m & 2) { out += '4;' } // underline
+    if (m & 4) { out += '5;' } // blink
+    if (m & 8) { out += '7;' } // inverse
+    if (m & 16) { out += '8;' } // invisible
+    if (f !== 0x1ff) {
+      f = this.#reduceColor(f)
+      if (f < 16) {
+        f += f < 8 ? 30 : f < 16 ? ( f -= 8, 90 ) : 0
+        out += f + ';'
       }
-      else { out += '48;5;' + bg + ';' }
+      else { out += '38;5;' + f + ';' }
     }
-    if (fg !== 0x1ff) {
-      fg = this.#reduceColor(fg)
-      if (fg < 16) {
-        if (fg < 8) { fg += 30 }
-        else if (fg < 16) {
-          fg -= 8
-          fg += 90
-        }
-        out += fg + ';'
+    if (b !== 0x1ff) {
+      b = this.#reduceColor(b)
+      if (b < 16) {
+        b += b < 8 ? 40 : b < 16 ? ( b -= 8, 100 ) : 0
+        out += b + ';'
       }
-      else { out += '38;5;' + fg + ';' }
+      else { out += '48;5;' + b + ';' }
     }
-    if (out[out.length - 1] === ';') out = out.slice(0, -1)
-    return CSI + out + SGR
+    return CSI + ( last(out) === ';' ? out.slice(0, -1) : out ) + SGR
   }
   render() {
     // const [ h, w ] = size(this.lines)
