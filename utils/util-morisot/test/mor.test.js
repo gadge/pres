@@ -22,6 +22,8 @@ mor.inverse = true
 mor.hide = true
 
 mor.modeSign |> logger
+mor.clearBold().modeSign |> logger
+
 
 mor.bold = !mor.bold
 mor.underline = mor.underline
