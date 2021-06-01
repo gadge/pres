@@ -1,4 +1,4 @@
-export const webSafeColorIndexes = [
+export const WEB_SAFE_COLOR_INDEXES = [
   [ 16, 52, 88, 124, 160, 196, ],
   [ 17, 53, 89, 125, 161, 197, ],
   [ 18, 54, 90, 126, 162, 198, ],
@@ -42,7 +42,7 @@ export const webSafeColorIndexes = [
   [ 51, 87, 123, 159, 195, 231, ],
 ]
 
-export const webSafeColorHexes = [
+export const WEB_SAFE_COLOR_HEXES = [
   [ '#000', '#300', '#600', '#900', '#C00', '#F00', ],
   [ '#003', '#303', '#603', '#903', '#C03', '#F03', ],
   [ '#006', '#306', '#606', '#906', '#C06', '#F06', ],

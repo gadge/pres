@@ -4,6 +4,11 @@
  * https://github.com/chjj/blessed
  */
 
-export { COLOR_MAPPING, COLOR_NAMES, XTERM_COLORS }                             from './assets'
-export { colors, vcolors, ncolors, HEX_COLORS, RGB_COLORS, SPARSE_NAMES, }      from './src/manet'
-export { _cache, match, RGBToHex, hexToRGB, mixColors, blend, reduce, convert } from './src/colors'
+export {
+  colors, vcolors, ncolors, HEX_COLORS, RGB_COLORS, SPARSE_NAMES, COLOR_MAPPING, COLOR_NAMES, XTERM_COLORS
+}                                      from './assets'
+export { blend, BLEND_CACHE }          from './src/blend'
+export { RGBToHex, hexToRGB, convert } from './src/convert'
+export { match }                       from './src/match'
+export { mixColors }                   from './src/mixColors'
+export { reduce }                      from './src/reduce'

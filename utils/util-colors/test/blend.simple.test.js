@@ -6,10 +6,10 @@ import { RGB_COLORS }         from '../dist/index.esm'
 import { blend }              from '../src/colors'
 
 function colorDistance([ r_, g_, b_ ], [ _r, _g, _b ]) { return ( ( 30 * ( r_ - _r ) ) ** 2 ) + ( ( 59 * ( g_ - _g ) ) ** 2 ) + ( ( 11 * ( b_ - _b ) ) ** 2 ) }
-const toAttr = (effect, fore, back) => { return ( effect & 0xFF ) << 18 | ( fore & 0xFF ) << 9 | ( back & 0xFF ) }
-const getEffect = (attr) => { return ( attr >> 18 ) & 0xFF }
-const getFore = (attr) => { return ( attr >> 9 ) & 0xFF }
-const getBack = (attr) => { return ( attr & 0xFF ) }
+const toAttr = (effect, fore, back) => ( effect & 0xFF ) << 18 | ( fore & 0xFF ) << 9 | ( back & 0xFF )
+const getMode = (attr) => ( attr >> 18 ) & 0xFF
+const getFore = (attr) => ( attr >> 9 ) & 0xFF
+const getBack = (attr) => ( attr & 0xFF )
 
 for (let origin of range(0, 15)) {
   const attr = toAttr(0, 0, origin)

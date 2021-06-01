@@ -1063,10 +1063,8 @@ export class Element extends Node {
                 // Try to find a character to break on.
                 if (i !== line.length) {
                   // <XXX>
-                  // Compensate for surrogate length
-                  // counts on wrapping (experimental):
-                  // NOTE: Could optimize this by putting
-                  // it in the sup for loop.
+                  // Compensate for surrogate length counts on wrapping (experimental):
+                  // NOTE: Could optimize this by putting it in the sup for loop.
                   if (unicode.isSurrogate(line, i)) i--
                   let s = 0, n = 0
                   for (; n < i; n++) {

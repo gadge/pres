@@ -1,5 +1,8 @@
-import { NUM }                                      from '@typen/enum-data-types'
-import { COLOR_MAPPING, COLOR_NAMES, XTERM_COLORS } from '../assets'
+import { NUM }           from '@typen/enum-data-types'
+import { COLOR_MAPPING } from './colorMapping'
+import { COLOR_NAMES }   from './colorNames'
+import { XTERM_COLORS }  from './xtermColors'
+
 
 class Manet {
   static HEX_COLORS = []
@@ -23,20 +26,20 @@ class Manet {
     // 0 - 15
     XTERM_COLORS.forEach((c, i) => {
       c = parseInt(c.substring(1), 16)
-      push(i, (c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff)
+      push(i, ( c >> 16 ) & 0xff, ( c >> 8 ) & 0xff, c & 0xff)
     })
     // 16 - 231
     for (r = 0; r < 6; r++) {
       for (g = 0; g < 6; g++) {
         for (b = 0; b < 6; b++) {
-          i = 16 + (r * 36) + (g * 6) + b
-          push(i, r ? (r * 40 + 55) : 0, g ? (g * 40 + 55) : 0, b ? (b * 40 + 55) : 0)
+          i = 16 + ( r * 36 ) + ( g * 6 ) + b
+          push(i, r ? ( r * 40 + 55 ) : 0, g ? ( g * 40 + 55 ) : 0, b ? ( b * 40 + 55 ) : 0)
         }
       }
     }
     // 232 - 255 are grey.
     for (g = 0; g < 24; g++) {
-      l = (g * 10) + 8
+      l = ( g * 10 ) + 8
       i = 232 + g
       push(i, l, l, l)
     }
