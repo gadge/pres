@@ -5,11 +5,14 @@ import { hexToRGB }   from './convert'
 export const MATCH_CACHE = {}
 
 export function match(...args) {
-  const ini = args[0]
-  let [ r_, g_, b_ ] = typeof ini === STR ? ( ini[0] !== '#' ? [] : hexToRGB(ini) )
+  const [ ini ] = args
+  let [ r_, g_, b_ ] = typeof ini === STR ? ( ini[0] !== '#' ? [ -1 ] : hexToRGB(ini) )
     : Array.isArray(ini) ? ini
       : args
-  if (r_ == null) return -1
+  return r_ === -1 ? -1 : approximate(r_, g_, b_)
+}
+
+function approximate(r_, g_, b_) {
   const hash = ( r_ << 16 ) | ( g_ << 8 ) | b_
   if (MATCH_CACHE[hash]) return MATCH_CACHE[hash]
   let index_ = -1

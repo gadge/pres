@@ -68,12 +68,10 @@ class Manet {
 Manet.initHexAndRgbColors()
 Manet.initSparseNames()
 
-const HEX_COLORS   = Manet.HEX_COLORS,
-      RGB_COLORS   = Manet.RGB_COLORS,
-      SPARSE_NAMES = Manet.SPARSE_NAMES
+export const HEX_COLORS   = Manet.HEX_COLORS,
+             RGB_COLORS   = Manet.RGB_COLORS,
+             SPARSE_NAMES = Manet.SPARSE_NAMES,
+             colors       = HEX_COLORS,
+             vcolors      = RGB_COLORS,
+             ncolors      = SPARSE_NAMES
 
-export {
-  HEX_COLORS, HEX_COLORS as colors,
-  RGB_COLORS, RGB_COLORS as vcolors,
-  SPARSE_NAMES, SPARSE_NAMES as ncolors,
-}
