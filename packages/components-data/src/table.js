@@ -137,10 +137,10 @@ export class Table extends Box {
     let rx,
         ry,
         i
-    const dattr = this.sattr(this.style),
-          hattr = this.sattr(this.style.header),
-          cattr = this.sattr(this.style.cell),
-          battr = this.sattr(this.style.border)
+    const normAttr   = this.sattr(this.style),
+          headAttr   = this.sattr(this.style.header),
+          cellAttr   = this.sattr(this.style.cell),
+          borderAttr = this.sattr(this.style.border)
     const width  = coords.xl - coords.xi - this.iright,
           height = coords.yl - coords.yi - this.ibottom
     // Apply attributes to header cells and cells.
@@ -149,12 +149,12 @@ export class Table extends Box {
       for (let x = this.ileft; x < width; x++) {
         if (!lines[yi + y][xi + x]) break
         // Check to see if it's not the default attr. Allows for tags:
-        if (lines[yi + y][xi + x][0] !== dattr) continue
+        if (lines[yi + y][xi + x][0] !== normAttr) continue
         if (y === this.itop) {
-          lines[yi + y][xi + x][0] = hattr
+          lines[yi + y][xi + x][0] = headAttr
         }
         else {
-          lines[yi + y][xi + x][0] = cattr
+          lines[yi + y][xi + x][0] = cellAttr
         }
         lines[yi + y].dirty = true
       }
@@ -172,17 +172,17 @@ export class Table extends Box {
           // left side
           if (ry === 0) {
             // top
-            lines[yi + ry][xi + 0][0] = battr
+            lines[yi + ry][xi + 0][0] = borderAttr
             // lines[yi + ry][xi + 0].ch = '\u250c'; // '┌'
           }
           else if (ry / 2 === self.rows.length) {
             // bottom
-            lines[yi + ry][xi + 0][0] = battr
+            lines[yi + ry][xi + 0][0] = borderAttr
             // lines[yi + ry][xi + 0].ch = '\u2514'; // '└'
           }
           else {
             // middle
-            lines[yi + ry][xi + 0][0] = battr
+            lines[yi + ry][xi + 0][0] = borderAttr
             lines[yi + ry][xi + 0].ch = '\u251c' // '├'
             // XXX If we alter iwidth and ileft for no borders - nothing should be written here
             if (!self.border.left) {
@@ -197,19 +197,19 @@ export class Table extends Box {
           if (ry === 0) {
             // top
             rx++
-            lines[yi + ry][xi + rx][0] = battr
+            lines[yi + ry][xi + rx][0] = borderAttr
             // lines[yi + ry][xi + rx].ch = '\u2510'; // '┐'
           }
           else if (ry / 2 === self.rows.length) {
             // bottom
             rx++
-            lines[yi + ry][xi + rx][0] = battr
+            lines[yi + ry][xi + rx][0] = borderAttr
             // lines[yi + ry][xi + rx].ch = '\u2518'; // '┘'
           }
           else {
             // middle
             rx++
-            lines[yi + ry][xi + rx][0] = battr
+            lines[yi + ry][xi + rx][0] = borderAttr
             lines[yi + ry][xi + rx].ch = '\u2524' // '┤'
             // XXX If we alter iwidth and iright for no borders - nothing should be written here
             if (!self.border.right) {
@@ -224,7 +224,7 @@ export class Table extends Box {
         if (ry === 0) {
           // top
           rx++
-          lines[yi + ry][xi + rx][0] = battr
+          lines[yi + ry][xi + rx][0] = borderAttr
           lines[yi + ry][xi + rx].ch = '\u252c' // '┬'
           // XXX If we alter iheight and itop for no borders - nothing should be written here
           if (!self.border.top) {
@@ -234,7 +234,7 @@ export class Table extends Box {
         else if (ry / 2 === self.rows.length) {
           // bottom
           rx++
-          lines[yi + ry][xi + rx][0] = battr
+          lines[yi + ry][xi + rx][0] = borderAttr
           lines[yi + ry][xi + rx].ch = '\u2534' // '┴'
           // XXX If we alter iheight and ibottom for no borders - nothing should be written here
           if (!self.border.bottom) {
@@ -244,13 +244,13 @@ export class Table extends Box {
         else {
           // middle
           if (self.options.fillCellBorders) {
-            const lbg = (ry <= 2 ? hattr : cattr) & 0x1ff
+            const lbg = ( ry <= 2 ? headAttr : cellAttr ) & 0x1ff
             rx++
-            lines[yi + ry][xi + rx][0] = (battr & ~0x1ff) | lbg
+            lines[yi + ry][xi + rx][0] = ( borderAttr & ~0x1ff ) | lbg
           }
           else {
             rx++
-            lines[yi + ry][xi + rx][0] = battr
+            lines[yi + ry][xi + rx][0] = borderAttr
           }
           lines[yi + ry][xi + rx].ch = '\u253c' // '┼'
           // rx++;
@@ -268,13 +268,13 @@ export class Table extends Box {
         if (!lines[yi + ry][xi + rx + 1]) return
         if (ry % 2 !== 0) {
           if (self.options.fillCellBorders) {
-            const lbg = (ry <= 2 ? hattr : cattr) & 0x1ff
+            const lbg = ( ry <= 2 ? headAttr : cellAttr ) & 0x1ff
             rx++
-            lines[yi + ry][xi + rx][0] = (battr & ~0x1ff) | lbg
+            lines[yi + ry][xi + rx][0] = ( borderAttr & ~0x1ff ) | lbg
           }
           else {
             rx++
-            lines[yi + ry][xi + rx][0] = battr
+            lines[yi + ry][xi + rx][0] = borderAttr
           }
           lines[yi + ry][xi + rx].ch = '\u2502' // '│'
           lines[yi + ry].dirty = true
@@ -290,11 +290,11 @@ export class Table extends Box {
             if (!lines[yi + ry]) break
             if (!lines[yi + ry][xi + rx + 1]) break
             if (self.options.fillCellBorders) {
-              const lbg = (ry <= 2 ? hattr : cattr) & 0x1ff
-              lines[yi + ry][xi + rx][0] = (battr & ~0x1ff) | lbg
+              const lbg = ( ry <= 2 ? headAttr : cellAttr ) & 0x1ff
+              lines[yi + ry][xi + rx][0] = ( borderAttr & ~0x1ff ) | lbg
             }
             else {
-              lines[yi + ry][xi + rx][0] = battr
+              lines[yi + ry][xi + rx][0] = borderAttr
             }
             lines[yi + ry][xi + rx].ch = '\u2500' // '─'
             lines[yi + ry].dirty = true

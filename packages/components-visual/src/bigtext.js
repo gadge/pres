@@ -88,11 +88,11 @@ export class BigText extends Box {
           top    = coords.yi + this.itop,
           right  = coords.xl - this.iright,
           bottom = coords.yl - this.ibottom
-    const dattr = this.sattr(this.style),
-          bg    = dattr & 0x1ff,
-          fg    = (dattr >> 9) & 0x1ff,
-          flags = (dattr >> 18) & 0x1ff,
-          attr  = (flags << 18) | (bg << 9) | fg
+    const normAttr = this.sattr(this.style),
+          back     = normAttr & 0x1ff,
+          fore     = ( normAttr >> 9 ) & 0x1ff,
+          mode     = ( normAttr >> 18 ) & 0x1ff,
+          currAttr = ( mode << 18 ) | ( back << 9 ) | fore
     let x = left, i = 0
     for (; x < right; x += this.ratio.width, i++) {
       const ch = this.text[i]
@@ -107,11 +107,11 @@ export class BigText extends Box {
           const mcell = mline[mx]
           if (mcell == null) break
           if (this.fch && this.fch !== ' ') {
-            lines[y][x + mx][0] = dattr
+            lines[y][x + mx][0] = normAttr
             lines[y][x + mx].ch = mcell === 1 ? this.fch : this.ch
           }
           else {
-            lines[y][x + mx][0] = mcell === 1 ? attr : dattr
+            lines[y][x + mx][0] = mcell === 1 ? currAttr : normAttr
             lines[y][x + mx].ch = mcell === 1 ? ' ' : this.ch
           }
         }

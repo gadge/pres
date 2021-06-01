@@ -498,63 +498,28 @@ export class Element extends Node {
         xl = coords.xl,
         yi = coords.yi,
         yl = coords.yl,
-        attr,
+        currAttr,
         ch
     const content = this._pcontent
     let ci = this._clines.ci[coords.base],
-        battr,
-        dattr,
+        borderAttr,
+        normAttr,
         c,
         visible,
         i
     const bch = this.ch
-    // Clip content if it's off the edge of the screen
-    // if (xi + this.ileft < 0 || yi + this.itop < 0) {
-    //   var clines = this._clines.slice();
-    //   if (xi + this.ileft < 0) {
-    //     for (var i = 0; i < clines.length; i++) {
-    //       var t = 0;
-    //       var csi = '';
-    //       var csis = '';
-    //       for (var j = 0; j < clines[i].length; j++) {
-    //         while (clines[i][j] === ESC) {
-    //           csi = ESC;
-    //           while (clines[i][j++] !== 'm') csi += clines[i][j];
-    //           csis += csi;
-    //         }
-    //         if (++t === -(xi + this.ileft) + 1) break;
-    //       }
-    //       clines[i] = csis + clines[i].slice(j);
-    //     }
-    //   }
-    //   if (yi + this.itop < 0) {
-    //     clines = clines.slice(-(yi + this.itop));
-    //   }
-    //   content = clines.join(LF);
-    // }
     if (coords.base >= this._clines.ci.length) ci = this._pcontent.length
     this.lpos = coords
     if (this.border?.type === 'line') {
       this.screen._borderStops[coords.yi] = true
       this.screen._borderStops[coords.yl - 1] = true
-      // if (!this.screen._borderStops[coords.yi]) {
-      //   this.screen._borderStops[coords.yi] = { xi: coords.xi, xl: coords.xl };
-      // } else {
-      //   if (this.screen._borderStops[coords.yi].xi > coords.xi) {
-      //     this.screen._borderStops[coords.yi].xi = coords.xi;
-      //   }
-      //   if (this.screen._borderStops[coords.yi].xl < coords.xl) {
-      //     this.screen._borderStops[coords.yi].xl = coords.xl;
-      //   }
-      // }
-      // this.screen._borderStops[coords.yl - 1] = this.screen._borderStops[coords.yi];
     }
-    dattr = this.sattr(this.style)
+    normAttr = this.sattr(this.style)
     // console.log('>> [element.render] interim', dattr)
-    attr = dattr
+    currAttr = normAttr
     // If we're in a scrollable text box, check to
     // see which attributes this line starts with.
-    if (ci > 0) attr = this._clines.attr[Math.min(coords.base, this._clines.length - 1)]
+    if (ci > 0) currAttr = this._clines.attr[Math.min(coords.base, this._clines.length - 1)]
     if (this.border) xi++, xl--, yi++, yl--
     // If we have padding/valign, that means the
     // content-drawing loop will skip a few cells/lines.
@@ -566,13 +531,13 @@ export class Element extends Node {
           if (!( line = lines[y] )) break
           for (let x = Math.max(xi, 0); x < xl; x++) {
             if (!( cell = line[x] )) break
-            cell[0] = colors.blend(attr, cell[0])
+            cell[0] = colors.blend(currAttr, cell[0])
             line.dirty = true // lines[y][x][1] = bch;
           }
         }
       }
       else {
-        this.screen.fillRegion(dattr, bch, xi, xl, yi, yl)
+        this.screen.fillRegion(normAttr, bch, xi, xl, yi, yl)
       }
     }
     if (this.tpadding) { xi += this.padding.left, xl -= this.padding.right, yi += this.padding.top, yl -= this.padding.bottom }
@@ -591,12 +556,12 @@ export class Element extends Node {
       }
     }
     // Draw the content and background.
-    for (let y = yi, line, cell; y < yl; y++) {
+    for (let y = yi, line; y < yl; y++) {
       if (!( line = lines[y] )) {
         if (y >= this.screen.height || yl < this.ibottom) { break }
         else { continue }
       }
-      for (let x = xi; x < xl; x++) {
+      for (let x = xi, cell; x < xl; x++) {
         if (!( cell = line[x] )) {
           if (x >= this.screen.width || xl < this.iright) { break }
           else { continue }
@@ -609,10 +574,10 @@ export class Element extends Node {
         while (ch === ESC) {
           if (( c = /^\x1b\[[\d;]*m/.exec(content.slice(ci - 1)) )) {
             ci += c[0].length - 1
-            attr = this.screen.attrCode(c[0], attr, dattr)
+            currAttr = this.screen.attrCode(c[0], currAttr, normAttr)
             // Ignore foreground changes for selected items.
             if (this.sup._isList && this.sup.interactive && this.sup.items[this.sup.selected] === this && this.sup.options.invertSelected !== false) {
-              attr = ( attr & ~( 0x1ff << 9 ) ) | ( dattr & ( 0x1ff << 9 ) )
+              currAttr = ( currAttr & ~( 0x1ff << 9 ) ) | ( normAttr & ( 0x1ff << 9 ) )
             }
             ch = content[ci] || bch
             ci++
@@ -637,13 +602,13 @@ export class Element extends Node {
           for (; x < xl; x++) {
             if (!( cell = line[x] )) break
             if (this.style.transparent) {
-              cell[0] = colors.blend(attr, cell[0])
+              cell[0] = colors.blend(currAttr, cell[0])
               if (content[ci]) cell.ch = ch
               line.dirty = true
             }
             else {
-              if (attr !== cell[0] || ch !== cell.ch) {
-                cell[0] = attr
+              if (currAttr !== cell[0] || ch !== cell.ch) {
+                cell[0] = currAttr
                 cell.ch = ch
                 line.dirty = true
               }
@@ -675,13 +640,13 @@ export class Element extends Node {
         if (this._noFill) continue
         const _cell = line[x]
         if (this.style.transparent) {
-          _cell[0] = colors.blend(attr, _cell[0])
+          _cell[0] = colors.blend(currAttr, _cell[0])
           if (content[ci]) _cell.ch = ch
           line.dirty = true
         }
         else {
-          if (attr !== cell[0] || ch !== cell.ch) {
-            _cell[0] = attr
+          if (currAttr !== cell[0] || ch !== cell.ch) {
+            _cell[0] = currAttr
             _cell.ch = ch
             line.dirty = true
           }
@@ -706,12 +671,12 @@ export class Element extends Node {
       if (cell) {
         if (this.track) {
           ch = this.track.ch || ' '
-          attr = this.sattr(this.style.track, this.style.track.fg || this.style.fg, this.style.track.bg || this.style.bg)
-          this.screen.fillRegion(attr, ch, x, x + 1, yi, yl)
+          currAttr = this.sattr(this.style.track, this.style.track.fg || this.style.fg, this.style.track.bg || this.style.bg)
+          this.screen.fillRegion(currAttr, ch, x, x + 1, yi, yl)
         }
         ch = this.scrollbar.ch || ' '
-        attr = this.sattr(this.style.scrollbar, this.style.scrollbar.fg || this.style.fg, this.style.scrollbar.bg || this.style.bg)
-        if (attr !== cell[0] || ch !== cell.ch) { cell[0] = attr, cell.ch = ch, lines[y].dirty = true }
+        currAttr = this.sattr(this.style.scrollbar, this.style.scrollbar.fg || this.style.fg, this.style.scrollbar.bg || this.style.bg)
+        if (currAttr !== cell[0] || ch !== cell.ch) { cell[0] = currAttr, cell.ch = ch, lines[y].dirty = true }
       }
     }
     if (this.border) xi--, xl++, yi--, yl++
@@ -720,7 +685,7 @@ export class Element extends Node {
     }
     // Draw the border.
     if (this.border) {
-      battr = this.sattr(this.style.border)
+      borderAttr = this.sattr(this.style.border)
       let y = yi
       if (coords.notop) y = -1
       let line = lines[y]
@@ -755,15 +720,15 @@ export class Element extends Node {
         else if (this.border.type === 'bg') { ch = this.border.ch }
         if (!this.border.top && x !== xi && x !== xl - 1) {
           ch = ' '
-          if (dattr !== cell[0] || ch !== cell.ch) {
-            cell[0] = dattr
+          if (normAttr !== cell[0] || ch !== cell.ch) {
+            cell[0] = normAttr
             cell.ch = ch
             lines[y].dirty = true
             continue
           }
         }
-        if (battr !== cell[0] || ch !== cell.ch) {
-          cell[0] = battr
+        if (borderAttr !== cell[0] || ch !== cell.ch) {
+          cell[0] = borderAttr
           cell.ch = ch
           line.dirty = true
         }
@@ -775,16 +740,16 @@ export class Element extends Node {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
             if (!coords.noleft)
-              if (battr !== cell[0] || ch !== cell.ch) {
-                cell[0] = battr
+              if (borderAttr !== cell[0] || ch !== cell.ch) {
+                cell[0] = borderAttr
                 cell.ch = ch
                 line.dirty = true
               }
           }
           else {
             ch = ' '
-            if (dattr !== cell[0] || ch !== cell.ch) {
-              cell[0] = dattr
+            if (normAttr !== cell[0] || ch !== cell.ch) {
+              cell[0] = normAttr
               cell.ch = ch
               line.dirty = true
             }
@@ -795,16 +760,16 @@ export class Element extends Node {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
             if (!coords.noright)
-              if (battr !== cell[0] || ch !== cell.ch) {
-                cell[0] = battr
+              if (borderAttr !== cell[0] || ch !== cell.ch) {
+                cell[0] = borderAttr
                 cell.ch = ch
                 line.dirty = true
               }
           }
           else {
             ch = ' '
-            if (dattr !== cell[0] || ch !== cell.ch) {
-              cell[0] = dattr
+            if (normAttr !== cell[0] || ch !== cell.ch) {
+              cell[0] = normAttr
               cell.ch = ch
               line.dirty = true
             }
@@ -844,15 +809,15 @@ export class Element extends Node {
         else if (this.border.type === 'bg') { ch = this.border.ch }
         if (!this.border.bottom && x !== xi && x !== xl - 1) {
           ch = ' '
-          if (dattr !== cell[0] || ch !== cell.ch) {
-            cell[0] = dattr
+          if (normAttr !== cell[0] || ch !== cell.ch) {
+            cell[0] = normAttr
             cell.ch = ch
             line.dirty = true
           }
           continue
         }
-        if (battr !== cell[0] || ch !== cell.ch) {
-          cell[0] = battr
+        if (borderAttr !== cell[0] || ch !== cell.ch) {
+          cell[0] = borderAttr
           cell.ch = ch
           line.dirty = true
         }

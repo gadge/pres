@@ -242,56 +242,37 @@ export class Screen extends Node {
     if (yl == null) yl = this.rows
     if (xi < 0) xi = 0
     if (yi < 0) yi = 0
-    let x,
-        y,
-        line,
-        out,
-        ch,
-        data,
-        attr
-    const sdattr = this.dattr
+    const tempAttr = this.dattr
     if (term) { this.dattr = term.defAttr }
     let main = ''
-
-    for (y = yi; y < yl; y++) {
-      line = term ? term.lines[y] : this.lines[y]
-      if (!line) break
-
-      out = ''
-      attr = this.dattr
-
-      for (x = xi; x < xl; x++) {
-        if (!line[x]) break
-
-        data = line[x][0]
-        ch = line[x].ch
-        if (data !== attr) {
-          if (attr !== this.dattr) {
-            out += CSI + SGR
-          }
-          if (data !== this.dattr) {
-            let _data = data
+    const normAttr = this.dattr
+    for (let y = yi, line; y < yl; y++) {
+      if (!( line = term?.lines[y] ?? this.lines[y] )) break
+      let out      = '',
+          currAttr = this.dattr
+      for (let x = xi, cell; x < xl; x++) {
+        if (!( cell = line[x] )) break
+        let at = cell[0], ch = cell.ch
+        if (at !== currAttr) {
+          if (currAttr !== normAttr) { out += CSI + SGR }
+          if (at !== normAttr) {
+            let nextAttr = at
             if (term) {
-              if (( ( _data >> 9 ) & 0x1ff ) === 257) _data |= 0x1ff << 9
-              if (( _data & 0x1ff ) === 256) _data |= 0x1ff
+              if (( ( nextAttr >> 9 ) & 0x1ff ) === 257) nextAttr |= 0x1ff << 9
+              if (( ( nextAttr ) & 0x1ff ) === 256) nextAttr |= 0x1ff
             }
-            out += this.codeAttr(_data)
+            out += this.codeAttr(nextAttr)
           }
         }
-        if (this.fullUnicode) {
-          if (unicode.charWidth(line[x].ch) === 2) {
-            if (x === xl - 1) { ch = ' ' }
-            else { x++ }
-          }
-        }
+        if (this.fullUnicode && unicode.charWidth(cell.ch) === 2) { x === xl - 1 ? ( ch = ' ' ) : x++ }
         out += ch
-        attr = data
+        currAttr = at
       }
-      if (attr !== this.dattr) { out += CSI + SGR }
+      if (currAttr !== normAttr) { out += CSI + SGR }
       if (out) { main += ( y > 0 ? LF : '' ) + out }
     }
     main = main.replace(/(?:\s*\x1b\[40m\s*\x1b\[m\s*)*$/, '') + LF
-    if (term) { this.dattr = sdattr }
+    if (term) { this.dattr = tempAttr }
     return main
   }
   // Convert an SGR string to our own attribute format.
@@ -387,12 +368,8 @@ export class Screen extends Node {
     this.emit(RENDER)
   }
   draw(start, end) {
-    let out,
-        ch,
-        data,
-        attr,
-        fg, bg,
-        flags
+    let fore, back,
+        mode
     let main = ''
     let clr,
         neq
@@ -402,22 +379,23 @@ export class Screen extends Node {
     if (this._buf) { main += this._buf, this._buf = '' }
     const { cursor, program, tput, options } = this
     for (let y = start; y <= end; y++) {
-      let line = this.lines[y], oline = this.olines[y]
+      let line  = this.lines[y],
+          oline = this.olines[y]
       if (!line.dirty && !( cursor.artificial && y === program.y )) continue
       line.dirty = false
 
-      out = ''
-      attr = this.dattr
+      let out = ''
+      let currAttr = this.dattr
 
       for (let x = 0, cell, ocell; ( x < line.length ) && ( cell = line[x] ); x++) {
-        [ data ] = cell;
-        ( { ch } = cell )
+        let at = cell[0]
+        let ch = cell.ch
         // Render the artificial cursor.
         if (
           cursor.artificial && !cursor._hidden && cursor._state && x === program.x && y === program.y) {
-          const cursorAttr = this.#cursorAttr(this.cursor, data)
+          const cursorAttr = this.#cursorAttr(this.cursor, at)
           if (cursorAttr.ch) ch = cursorAttr.ch
-          data = cursorAttr.attr
+          at = cursorAttr.attr
         }
         // Take advantage of xterm's back_color_erase feature by using a
         // lookahead. Stop spitting out so many damn spaces. NOTE: Is checking
@@ -425,13 +403,13 @@ export class Screen extends Node {
         if (
           options.useBCE &&
           ch === ' ' &&
-          ( tput.bools.back_color_erase || ( data & 0x1ff ) === ( this.dattr & 0x1ff ) ) &&
-          ( ( data >> 18 ) & 8 ) === ( ( this.dattr >> 18 ) & 8 )
+          ( tput.bools.back_color_erase || ( at & 0x1ff ) === ( this.dattr & 0x1ff ) ) &&
+          ( ( at >> 18 ) & 8 ) === ( ( this.dattr >> 18 ) & 8 )
         ) {
           clr = true
           neq = false
           for (let i = x, cell, ocell; ( i < line.length ) && ( cell = line[i] ); i++) {
-            if (cell[0] !== data || cell.ch !== ' ') {
+            if (cell[0] !== at || cell.ch !== ' ') {
               clr = false
               break
             }
@@ -439,59 +417,16 @@ export class Screen extends Node {
           }
           if (clr && neq) {
             lx = -1, ly = -1
-            if (data !== attr) { out += this.codeAttr(data), attr = data }
+            if (at !== currAttr) { out += this.codeAttr(at), currAttr = at }
             out += this.tput.cup(y, x), out += this.tput.el()
-            for (let i = x, ocell; ( i < line.length ) && ( ocell = oline[i] ); i++) { ocell[0] = data, ocell.ch = ' ' }
+            for (let i = x, ocell; ( i < line.length ) && ( ocell = oline[i] ); i++) { ocell[0] = at, ocell.ch = ' ' }
             break
           }
-          // If there's more than 10 spaces, use EL regardless
-          // and start over drawing the rest of line. Might
-          // not be worth it. Try to use ECH if the terminal
-          // supports it. Maybe only try to use ECH here.
-          // //if (this.tput.strings.erase_chars)
-          // if (!clr && neq && (xx - x) > 10) {
-          //   lx = -1, ly = -1;
-          //   if (data !== attr) {
-          //     out += this.codeAttr(data);
-          //     attr = data;
-          //   }
-          //   out += this.tput.cup(y, x);
-          //   if (this.tput.strings.erase_chars) {
-          //     // Use erase_chars to avoid erasing the whole line.
-          //     out += this.tput.ech(xx - x);
-          //   } else {
-          //     out += this.tput.el();
-          //   }
-          //   if (this.tput.strings.parm_right_cursor) {
-          //     out += this.tput.cuf(xx - x);
-          //   } else {
-          //     out += this.tput.cup(y, xx);
-          //   }
-          //   this.fillRegion(data, ' ',
-          //     x, this.tput.strings.erase_chars ? xx : line.length,
-          //     y, y + 1);
-          //   x = xx - 1;
-          //   continue;
-          // }
-          // Skip to the next line if the
-          // rest of the line is already drawn.
-          // if (!neq) {
-          //   for (; xx < line.length; xx++) {
-          //     if (line[xx][0] !== o[xx][0] || line[xx].ch !== o[xx].ch) {
-          //       neq = true;
-          //       break;
-          //     }
-          //   }
-          //   if (!neq) {
-          //     attr = data;
-          //     break;
-          //   }
-          // }
         }
         // Optimize by comparing the real output
         // buffer to the pending output buffer.
         ocell = oline[x]
-        if (data === ocell[0] && ch === ocell.ch) {
+        if (at === ocell[0] && ch === ocell.ch) {
           if (lx === -1) { lx = x, ly = y }
           continue
         }
@@ -500,39 +435,39 @@ export class Screen extends Node {
           else { out += this.tput.cup(y, x) }
           lx = -1, ly = -1
         }
-        ocell[0] = data
+        ocell[0] = at
         ocell.ch = ch
-        if (data !== attr) {
-          if (attr !== this.dattr) { out += CSI + SGR }
-          if (data !== this.dattr) {
+        if (at !== currAttr) {
+          if (currAttr !== this.dattr) { out += CSI + SGR }
+          if (at !== this.dattr) {
             out += CSI + ''
-            bg = data & 0x1ff
-            fg = ( data >> 9 ) & 0x1ff
-            flags = data >> 18
-            if (flags & 1) { out += '1;' } // bold
-            if (flags & 2) { out += '4;' } // underline
-            if (flags & 4) { out += '5;' } // blink
-            if (flags & 8) { out += '7;' } // inverse
-            if (flags & 16) { out += '8;' } // invisible
-            if (bg !== 0x1ff) {
-              bg = this.#reduceColor(bg)
-              if (bg < 16) {
-                if (bg < 8) { bg += 40 }
-                else if (bg < 16) { bg -= 8, bg += 100 }
-                out += bg + ';'
+            back = at & 0x1ff
+            fore = ( at >> 9 ) & 0x1ff
+            mode = at >> 18
+            if (mode & 1) { out += '1;' } // bold
+            if (mode & 2) { out += '4;' } // underline
+            if (mode & 4) { out += '5;' } // blink
+            if (mode & 8) { out += '7;' } // inverse
+            if (mode & 16) { out += '8;' } // invisible
+            if (back !== 0x1ff) {
+              back = this.#reduceColor(back)
+              if (back < 16) {
+                if (back < 8) { back += 40 }
+                else if (back < 16) { back -= 8, back += 100 }
+                out += back + ';'
               }
-              else { out += '48;5;' + bg + ';' }
+              else { out += '48;5;' + back + ';' }
             }
-            if (fg !== 0x1ff) {
-              fg = this.#reduceColor(fg)
-              if (fg < 16) {
-                if (fg < 8) { fg += 30 }
-                else if (fg < 16) { fg -= 8, fg += 90 }
-                out += fg + ';'
+            if (fore !== 0x1ff) {
+              fore = this.#reduceColor(fore)
+              if (fore < 16) {
+                if (fore < 8) { fore += 30 }
+                else if (fore < 16) { fore -= 8, fore += 90 }
+                out += fore + ';'
               }
-              else { out += '38;5;' + fg + ';' }
+              else { out += '38;5;' + fore + ';' }
             }
-            if (out[out.length - 1] === ';') out = out.slice(0, -1)
+            if (last(out) === ';') out = out.slice(0, -1)
             out += SGR
           }
         }
@@ -607,9 +542,9 @@ export class Screen extends Node {
           if (!this.tput.unicode && this.tput.numbers.U8 !== 1 && ch > '~') ch = this.tput.utoa[ch] || '?'
         }
         out += ch
-        attr = data
+        currAttr = at
       }
-      if (attr !== this.dattr) { out += CSI + SGR }
+      if (currAttr !== this.dattr) { out += CSI + SGR }
       if (out) { main += this.tput.cup(y, 0) + out }
     }
     if (acs) {
