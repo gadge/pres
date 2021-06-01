@@ -75,17 +75,17 @@ export class Screen extends Node {
     this._buf = ''
     this._ci = -1
     if (options.title) this.title = options.title
-    options.cursor = options.cursor || {
+    const cursor = options.cursor ?? ( options.cursor = {
       artificial: options.artificialCursor,
       shape: options.cursorShape,
       blink: options.cursorBlink,
       color: options.cursorColor
-    }
+    } )
     this.cursor = {
-      artificial: options.cursor.artificial || false,
-      shape: options.cursor.shape || 'block',
-      blink: options.cursor.blink || false,
-      color: options.cursor.color || null,
+      artificial: cursor.artificial || false,
+      shape: cursor.shape || 'block',
+      blink: cursor.blink || false,
+      color: cursor.color || null,
       _set: false,
       _state: 1,
       _hidden: true
@@ -168,15 +168,15 @@ export class Screen extends Node {
   alloc(dirty) {
     let x, y
     this.lines = []
-    for (y = 0; y < this.rows; y++) {
-      const line = this.lines[y] = []
-      for (x = 0; x < this.cols; x++) { line[x] = [ this.dattr, ' ' ] }
-      line.dirty = !!dirty
-    }
     this.olines = []
     for (y = 0; y < this.rows; y++) {
-      const line = this.olines[y] = []
-      for (x = 0; x < this.cols; x++) { line[x] = [ this.dattr, ' ' ] }
+      const line = this.lines[y] = []
+      const oline = this.olines[y] = []
+      line.dirty = !!dirty
+      for (x = 0; x < this.cols; x++) {
+        line[x] = [ this.dattr, ' ' ]
+        oline[x] = [ this.dattr, ' ' ]
+      }
     }
     this.program.clear()
   }
