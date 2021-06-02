@@ -19,7 +19,7 @@ export const indexToHex = (i) => coordToHex.apply(null, indexToCoord(i))
 zipper(WEB_SAFE_COLOR_INDEXES, WEB_SAFE_COLOR_HEXES, (indexRow, hexRow, i) => {
   let row = ''
   // zipper(indexRow, hexRow, (index, hex, j) => {
-  //   row += Fluo.hex(`[${index}](${hex})(${coordToHex(i, j)})`, hex) + SP // ${hex |> hexToHsl |> hslToStr}
+  //   row += Fluo.hex(`[${index}](${hex})(${coordToWeb(i, j)})`, hex) + SP // ${hex |> hexToHsl |> hslToStr}
   // })
   zipper(indexRow, hexRow, (index, hex, j) => {
     row += Fluo.hex(`[${ index }](${ hex })(${ 16 + i },${ 36 * j })(${ indexToHex(index) })`, hex) + SP // ${hex |> hexToHsl |> hslToStr}

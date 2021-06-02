@@ -2,7 +2,6 @@ import { hexToInt }   from '@palett/convert'
 import { logger, xr } from '@spare/logger'
 
 export const COLORS = {
-
   black: '#000000', // black
   red: '#ff0000', // red
   green: '#00ff00', // green

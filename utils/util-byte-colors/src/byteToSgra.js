@@ -1,6 +1,6 @@
 export const indexValid = (index) => index !== 0x1ff
 
-export const indexToSgra = (index, isFore, total) => {
+export const byteToSgra = (index, isFore, total) => {
   let out = ''
   if (indexValid(index)) {
     f = this.#reduceColor(f)

@@ -1,4 +1,4 @@
-export const WEB_SAFE_COLOR_INDEXES = [
+export const WEB_SAFE_MATRIX_INDEX = [
   [ 16, 52, 88, 124, 160, 196, ],
   [ 17, 53, 89, 125, 161, 197, ],
   [ 18, 54, 90, 126, 162, 198, ],

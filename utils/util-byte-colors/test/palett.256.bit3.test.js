@@ -3,6 +3,7 @@ import { Fluo }               from '@palett/fluo'
 import { hslToStr }           from '@palett/stringify'
 import { SPARSE_NAMES }       from '@pres/util-colors'
 import { decoMatrix, logger } from '@spare/logger'
+import { DOT, SP }            from '@texting/enum-chars'
 import { iso }                from '@vect/matrix'
 import { BIT3_COLOR_NAMES }   from '../assets'
 import { hslToBit3 }    from '../src/hslToBit3'
@@ -19,14 +20,14 @@ for (const [ index, sparseName ] of Object.entries(SPARSE_NAMES)) {
   const bit3Name = BIT3_COLOR_NAMES[hslToBit3(hsl)]
   if (x < 0) {
     Fluo.hex(
-      NAME_MAPPING[sparseName] + '.' + index + '.' + NAME_MAPPING[bit3Name] + '.' + hslToStr(hsl),
+      NAME_MAPPING[bit3Name] + DOT + index + DOT + hslToStr(hsl),
       hex
     ) |> logger
   }
   if (0 <= x && 0 <= y) {
     matrix[x][y] = hex
       ? Fluo.hex(
-        NAME_MAPPING[sparseName] + '.' + index + '.' + NAME_MAPPING[bit3Name] + '.' + hslToStr(hsl),
+        NAME_MAPPING[bit3Name] + DOT + index + DOT + hslToStr(hsl),
         hex
       )
       : sparseName

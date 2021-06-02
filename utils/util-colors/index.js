@@ -5,7 +5,7 @@
  */
 
 export {
-  colors, vcolors, ncolors, HEX_COLORS, RGB_COLORS, SPARSE_NAMES, COLOR_MAPPING, COLOR_NAMES, XTERM_COLORS
+  ccolors, colors, vcolors, ncolors, HEX_COLORS, RGB_COLORS, SPARSE_NAMES, COLOR_MAPPING, COLOR_NAMES, XTERM_COLORS
 }                                      from './assets'
 export { blend, BLEND_CACHE }          from './src/blend'
 export { RGBToHex, hexToRGB, convert } from './src/convert'
