@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-byte-colors",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "256 color space for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
