@@ -1,7 +1,7 @@
 {
-  "name": "@pres/enum-csi-codes",
+  "name": "@pres/util-byte-colors",
   "version": "0.2.7",
-  "description": "Enum for csi codes",
+  "description": "256 color space for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "files": [
@@ -14,15 +14,19 @@
     "pub": "npm publish",
     "test": "node -r @babel/register test/test.index.js"
   },
+  "dependencies": {
+    "@typen/enum-data-types": "^0.1.16",
+    "@typen/nullish": "^0.1.16"
+  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hoyeungw/pres/alias.git"
+    "url": "git+https://github.com/hoyeungw/pres/colors.git"
   },
   "keywords": [
     "pres",
     "process",
     "signal-handler",
-    "alias"
+    "colors"
   ],
   "author": {
     "name": "Hoyeung Wong",
@@ -34,5 +38,5 @@
     "url": "https://github.com/hoyeungw/pres/cluster"
   },
   "homepage": "https://github.com/hoyeungw/pres/cluster#readme",
-  "gitHead": "00d9828078a04b0a62edcafd4d041a99e23dc41f"
+  "gitHead": "cd08e08c747c79718f67108b82bd666cff637740"
 }
