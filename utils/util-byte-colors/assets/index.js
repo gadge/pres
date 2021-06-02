@@ -1,0 +1,6 @@
+export { BLA, BLU, CYA, GRE, MAG, RED, WHI, YEL } from './bit3ColorCodes'
+export { BIT3_COLOR_NAMES }                       from './bit3ColorNames'
+export { GREYS }                                  from './greys'
+export { WEB_SAFE_COLOR_HEXES }                   from './webSafeColorHexes'
+export { WEB_SAFE_COLOR_INDEXES }                 from './webSafeColorIndexes'
+export { XTERM_COLORS }                           from './xtermColors'
