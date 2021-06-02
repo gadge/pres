@@ -357,6 +357,7 @@ export class Element extends Node {
       }
       if (!noTags) { content = this.#parseTags(content) }
       this.contLines = this.#wrapContent(content, width)
+      // console.log(`>> [{${ this.codename }}.contLines]`, this.contLines)
       this.contLines.width = width
       this.contLines.content = this.content
       this.contLines.attr = this.#parseAttr(this.contLines)
@@ -639,6 +640,7 @@ export class Element extends Node {
     if (coords.xl - coords.xi <= 0) return void ( coords.xl = Math.max(coords.xl, coords.xi) )
     if (coords.yl - coords.yi <= 0) return void ( coords.yl = Math.max(coords.yl, coords.yi) )
     const lines = this.screen.lines
+    // console.log(`>> [{${ this.codename }}.render]`, lines[0][0],lines[0][0].modeSign)
     let xi = coords.xi,
         xl = coords.xl,
         yi = coords.yi,

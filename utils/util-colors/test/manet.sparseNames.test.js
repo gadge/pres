@@ -1,7 +1,7 @@
 import { decoMatrix, logger, xr } from '@spare/logger'
-import { iso }          from '@vect/matrix'
-import { SPARSE_NAMES } from '../assets/manet'
-import { indexToCoord } from './web-colors/webSafeColor.test'
+import { iso }                    from '@vect/matrix'
+import { SPARSE_NAMES }           from '../assets'
+import { indexToCoord }           from './web-colors/webSafeColor.test'
 import { WEB_SAFE_COLOR_HEXES }   from './web-colors/webSafeColor.tables'
 import { Fluo }                   from '@palett/fluo'
 
