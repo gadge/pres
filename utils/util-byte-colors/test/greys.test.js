@@ -1,6 +1,7 @@
-import { GREYS } from '../assets'
+import { hexToStr } from '@palett/stringify'
+import { GREYS }    from '../assets'
 
 let i = 0
-for (const [ v, h ] of Object.entries(GREYS)) {
-  console.log(i++, v, h)
+for (const [ value, hex ] of Object.entries(GREYS)) {
+  console.log(i++, value, hexToStr(hex))
 }

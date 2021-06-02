@@ -3,7 +3,6 @@ import { COLOR_MAPPING } from './colorMapping'
 import { COLOR_NAMES }   from './colorNames'
 import { XTERM_COLORS }  from './xtermColors'
 
-
 class Manet {
   static HEX_COLORS = []
   static RGB_COLORS = []
@@ -11,8 +10,8 @@ class Manet {
   // Seed all 256 HEX_COLORS. Assume xterm defaults.
   // Ported from the xterm color generation script.
   static initHexAndRgbColors() {
-    const _hexColors = Manet.HEX_COLORS,
-          _rgbColors = Manet.RGB_COLORS
+    const hexList = Manet.HEX_COLORS,
+          rgbList = Manet.RGB_COLORS
     let r, g, b, i, l
     function hex(n) {
       n = n.toString(16)
@@ -20,8 +19,8 @@ class Manet {
       return n
     }
     function push(i, r, g, b) {
-      _hexColors[i] = '#' + hex(r) + hex(g) + hex(b)
-      _rgbColors[i] = [ r, g, b ]
+      hexList[i] = '#' + hex(r) + hex(g) + hex(b)
+      rgbList[i] = [ r, g, b ]
     }
     // 0 - 15
     XTERM_COLORS.forEach((c, i) => {
@@ -43,7 +42,7 @@ class Manet {
       i = 232 + g
       push(i, l, l, l)
     }
-    return _hexColors
+    return hexList
   }
   static initSparseNames() {
     Object.keys(COLOR_MAPPING).forEach(name => {
@@ -71,7 +70,7 @@ Manet.initSparseNames()
 export const HEX_COLORS   = Manet.HEX_COLORS,
              RGB_COLORS   = Manet.RGB_COLORS,
              SPARSE_NAMES = Manet.SPARSE_NAMES,
-             colors       = HEX_COLORS,
-             vcolors      = RGB_COLORS,
-             ncolors      = SPARSE_NAMES
+             colors       = Manet.HEX_COLORS,
+             vcolors      = Manet.RGB_COLORS,
+             ncolors      = Manet.SPARSE_NAMES
 

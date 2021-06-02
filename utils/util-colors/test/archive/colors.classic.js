@@ -3,17 +3,21 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
+import { deco, DecoEntries, decoVector } from '@spare/logger'
+import { zipper }                        from '@vect/vector'
 
+const { logger } = require('@spare/logger')
 exports.match = function (r1, g1, b1) {
   if (typeof r1 === 'string') {
     let hex = r1
     if (hex[0] !== '#') { return -1 }
     hex = exports.hexToRGB(hex)
     r1 = hex[0], g1 = hex[1], b1 = hex[2]
-  } else if (Array.isArray(r1)) {
+  }
+  else if (Array.isArray(r1)) {
     b1 = r1[2], g1 = r1[1], r1 = r1[0]
   }
-  const hash = (r1 << 16) | (g1 << 8) | b1
+  const hash = ( r1 << 16 ) | ( g1 << 8 ) | b1
   if (exports._cache[hash] != null) {
     return exports._cache[hash]
   }
@@ -62,8 +66,8 @@ exports.hexToRGB = function (hex) {
       + hex[3] + hex[3]
   }
   const col = parseInt(hex.substring(1), 16),
-        r   = (col >> 16) & 0xff,
-        g   = (col >> 8) & 0xff,
+        r   = ( col >> 16 ) & 0xff,
+        g   = ( col >> 8 ) & 0xff,
         b   = col & 0xff
   return [ r, g, b ]
 }
@@ -75,9 +79,9 @@ exports.hexToRGB = function (hex) {
 // [1] http://stackoverflow.com/questions/1633828
 
 function colorDistance(r1, g1, b1, r2, g2, b2) {
-  return Math.pow(30 * (r1 - r2), 2)
-    + Math.pow(59 * (g1 - g2), 2)
-    + Math.pow(11 * (b1 - b2), 2)
+  return Math.pow(30 * ( r1 - r2 ), 2)
+    + Math.pow(59 * ( g1 - g2 ), 2)
+    + Math.pow(11 * ( b1 - b2 ), 2)
 }
 
 // This might work well enough for a terminal's colors: treat RGB as XYZ in a
@@ -96,9 +100,9 @@ exports.mixColors = function (c1, c2, alpha) {
   const r2 = c2[0]
   const g2 = c2[1]
   const b2 = c2[2]
-  r1 += (r2 - r1) * alpha | 0
-  g1 += (g2 - g1) * alpha | 0
-  b1 += (b2 - b1) * alpha | 0
+  r1 += ( r2 - r1 ) * alpha | 0
+  g1 += ( g2 - g1 ) * alpha | 0
+  b1 += ( b2 - b1 ) * alpha | 0
   return exports.match([ r1, g1, b1 ])
 }
 
@@ -110,14 +114,17 @@ exports.blend = function blend(attr, attr2, alpha) {
     if (bg === 0x1ff) bg = 0
     if (bg2 === 0x1ff) bg2 = 0
     bg = exports.mixColors(bg, bg2, alpha)
-  } else {
+  }
+  else {
     if (blend._cache[bg] != null) {
       bg = blend._cache[bg]
       // } else if (bg < 8) {
       //   bg += 8;
-    } else if (bg >= 8 && bg <= 15) {
+    }
+    else if (bg >= 8 && bg <= 15) {
       bg -= 8
-    } else {
+    }
+    else {
       name = exports.ncolors[bg]
       if (name) {
         for (i = 0; i < exports.ncolors.length; i++) {
@@ -136,26 +143,30 @@ exports.blend = function blend(attr, attr2, alpha) {
   }
   attr &= ~0x1ff
   attr |= bg
-  let fg = (attr >> 9) & 0x1ff
+  let fg = ( attr >> 9 ) & 0x1ff
   if (attr2 != null) {
-    let fg2 = (attr2 >> 9) & 0x1ff
+    let fg2 = ( attr2 >> 9 ) & 0x1ff
     // 0, 7, 188, 231, 251
     if (fg === 0x1ff) {
       // XXX workaround
       fg = 248
-    } else {
+    }
+    else {
       if (fg === 0x1ff) fg = 7
       if (fg2 === 0x1ff) fg2 = 7
       fg = exports.mixColors(fg, fg2, alpha)
     }
-  } else {
+  }
+  else {
     if (blend._cache[fg] != null) {
       fg = blend._cache[fg]
       // } else if (fg < 8) {
       //   fg += 8;
-    } else if (fg >= 8 && fg <= 15) {
+    }
+    else if (fg >= 8 && fg <= 15) {
       fg -= 8
-    } else {
+    }
+    else {
       name = exports.ncolors[fg]
       if (name) {
         for (i = 0; i < exports.ncolors.length; i++) {
@@ -172,7 +183,7 @@ exports.blend = function blend(attr, attr2, alpha) {
       }
     }
   }
-  attr &= ~(0x1ff << 9)
+  attr &= ~( 0x1ff << 9 )
   attr |= fg << 9
   return attr
 }
@@ -183,9 +194,11 @@ exports._cache = {}
 exports.reduce = function (color, total) {
   if (color >= 16 && total <= 16) {
     color = exports.ccolors[color]
-  } else if (color >= 8 && total <= 8) {
+  }
+  else if (color >= 8 && total <= 8) {
     color -= 8
-  } else if (color >= 2 && total <= 2) {
+  }
+  else if (color >= 2 && total <= 2) {
     color %= 2
   }
   return color
@@ -216,7 +229,7 @@ exports.xterm = [
 
 // Seed all 256 colors. Assume xterm defaults.
 // Ported from the xterm color generation script.
-exports.colors = (() => {
+exports.colors = ( () => {
   const cols  = exports.colors = [],
         _cols = exports.vcolors = []
   let r, g, b, i, l
@@ -232,34 +245,35 @@ exports.colors = (() => {
   // 0 - 15
   exports.xterm.forEach(function (c, i) {
     c = parseInt(c.substring(1), 16)
-    push(i, (c >> 16) & 0xff, (c >> 8) & 0xff, c & 0xff)
+    push(i, ( c >> 16 ) & 0xff, ( c >> 8 ) & 0xff, c & 0xff)
   })
 
   // 16 - 231
   for (r = 0; r < 6; r++) {
     for (g = 0; g < 6; g++) {
       for (b = 0; b < 6; b++) {
-        i = 16 + (r * 36) + (g * 6) + b
+        i = 16 + ( r * 36 ) + ( g * 6 ) + b
         push(i,
-          r ? (r * 40 + 55) : 0,
-          g ? (g * 40 + 55) : 0,
-          b ? (b * 40 + 55) : 0)
+          r ? ( r * 40 + 55 ) : 0,
+          g ? ( g * 40 + 55 ) : 0,
+          b ? ( b * 40 + 55 ) : 0)
       }
     }
   }
 
   // 232 - 255 are grey.
   for (g = 0; g < 24; g++) {
-    l = (g * 10) + 8
+    l = ( g * 10 ) + 8
     i = 232 + g
     push(i, l, l, l)
   }
 
-  return cols})()
+  return cols
+} )()
 
 // Map higher colors to the first 8 colors.
 // This allows translation of high colors to low colors on 8-color terminals.
-exports.ccolors = (function () {
+exports.ccolors = ( function () {
   const _cols = exports.vcolors.slice(),
         cols  = exports.colors.slice()
   let out
@@ -273,7 +287,8 @@ exports.ccolors = (function () {
   exports.vcolors = _cols
   exports.ccolors = out
 
-  return out})()
+  return out
+} )()
 
 const colorNames = exports.colorNames = {
   // special
@@ -320,16 +335,20 @@ const colorNames = exports.colorNames = {
 exports.convert = function (color) {
   if (typeof color === 'number') {
 
-  } else if (typeof color === 'string') {
+  }
+  else if (typeof color === 'string') {
     color = color.replace(/[\- ]/g, '')
     if (colorNames[color] != null) {
       color = colorNames[color]
-    } else {
+    }
+    else {
       color = exports.match(color)
     }
-  } else if (Array.isArray(color)) {
+  }
+  else if (Array.isArray(color)) {
     color = exports.match(color)
-  } else {
+  }
+  else {
     color = -1
   }
   return color !== -1 ? color : 0x1ff
@@ -467,7 +486,6 @@ exports.ccolors = {
     102,
     [ 232, 243 ]
   ],
-
   white: [
     7,
     15,
@@ -480,18 +498,18 @@ exports.ccolors = {
 
 exports.ncolors = []
 
-Object.keys(exports.ccolors).forEach(function (name) {
-  exports.ccolors[name].forEach(function (offset) {
+Object.keys(exports.ccolors).forEach(name => {
+  exports.ccolors[name].forEach(offset => {
     if (typeof offset === 'number') {
       exports.ncolors[offset] = name
       exports.ccolors[offset] = exports.colorNames[name]
       return
     }
-    let i = offset[0]
-    const l = offset[1]
-    for (; i <= l; i++) {
-      exports.ncolors[i] = name
-      exports.ccolors[i] = exports.colorNames[name]
+    for (let [ lo, hi ] = offset; lo <= hi; lo++) {
+      exports.ncolors[lo] = name
+      exports.ccolors[lo] = exports.colorNames[name]
     }
   })
-  delete exports.ccolors[name]})
+  delete exports.ccolors[name]
+})
+

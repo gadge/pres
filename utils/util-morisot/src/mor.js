@@ -1,3 +1,7 @@
+import { CSI }  from '@pres/enum-control-chars'
+import { SGR }  from '@pres/enum-csi-codes'
+import { last } from '@vect/vector'
+
 export class Mor extends Array {
   constructor(at, ch) { super(at, ch) }
 
@@ -19,6 +23,9 @@ export class Mor extends Array {
   set mode(value) { return this.at &= ~( 0x1ff << 18 ) , this.at |= ( value & 0x1ff ) << 18 }
   set fore(value) { return this.at &= ~( 0x1ff << 9 ) , this.at |= ( value & 0x1ff ) << 9 }
   set back(value) { return this.at &= ~( 0x1ff << 0 ) , this.at |= ( value & 0x1ff ) }
+
+  get foreValid() { return this.fore !== 0x1ff }
+  get backValid() { return this.back !== 0x1ff }
 
   clearMode() { return this.mode = 0, this }
   clearFore() { return this.fore = 0, this }
@@ -60,7 +67,43 @@ export class Mor extends Array {
   atEq(mor) { return this.at === mor.at }
   chEq(mor) { return this.ch === mor.ch }
   eq(mor) { return this.at === mor.at && this.ch === mor.ch }
+  modeSgrAttr() {
+    let out = ''
+    let m = this.mode, f = this.fore, b = this.back
+    if (m & 1) { out += '1;' } // bold
+    if (m & 2) { out += '4;' } // underline
+    if (m & 4) { out += '5;' } // blink
+    if (m & 8) { out += '7;' } // inverse
+    if (m & 16) { out += '8;' } // invisible
+    return last(out) === ';' ? out.slice(0, -1) : out
+  }
+  toSgr() {
+    let out = ''
+    let m = this.mode, f = this.fore, b = this.back
+    if (m & 1) { out += '1;' } // bold
+    if (m & 2) { out += '4;' } // underline
+    if (m & 4) { out += '5;' } // blink
+    if (m & 8) { out += '7;' } // inverse
+    if (m & 16) { out += '8;' } // invisible
+    if (f !== 0x1ff) {
+      if (f < 16) {
+        f += f < 8 ? 30 : f < 16 ? ( f -= 8, 90 ) : 0
+        out += f + ';'
+      }
+      else { out += '38;5;' + f + ';' }
+    }
+    if (b !== 0x1ff) {
+      if (b < 16) {
+        b += b < 8 ? 40 : b < 16 ? ( b -= 8, 100 ) : 0
+        out += b + ';'
+      }
+      else { out += '48;5;' + b + ';' }
+    }
+    return CSI + ( last(out) === ';' ? out.slice(0, -1) : out ) + SGR
+  }
+  render(text) {
 
+  }
   copy() { return Mor.by(this) }
   toArray() { return [ this.at, this.ch ] }
 }
