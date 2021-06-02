@@ -1,6 +1,6 @@
 {
   "name": "@pres/enum-angle-table",
-  "version": "0.2.4",
+  "version": "0.2.6",
   "description": "Angle table for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
