@@ -1,23 +1,21 @@
 import { hexToHsl }           from '@palett/convert'
 import { Fluo }               from '@palett/fluo'
 import { hslToStr }           from '@palett/stringify'
-import { SPARSE_NAMES }       from '@pres/util-colors'
 import { decoMatrix, logger } from '@spare/logger'
 import { DOT }                from '@texting/enum-chars'
-import { iso }              from '@vect/matrix'
-import { COLOR_NAMES_BIT4 } from '../assets'
-import { byteToHex }        from '../src/byteToHex'
+import { iso }                from '@vect/matrix'
+import { COLOR_NAMES_BIT4 }   from '../assets'
 import { byteToCoord }        from '../src/byteToWeb'
-import { hslToBit4 }    from '../src/hslToBit4'
-import { NAME_MAPPING } from './resources/NAME_MAPPING'
+import { hslToBit4 }          from '../src/hslToBit4'
+import { COLOR_HEXES_BYTE }   from './resources/COLOR_HEXES_BYTE'
+import { NAME_MAPPING }       from './resources/NAME_MAPPING'
 
 const matrix = iso(36, 7, null)
 
-for (const [ index, sparseName ] of Object.entries(SPARSE_NAMES)) {
-  const [ x, y ] = byteToCoord(index)
-  const hex = byteToHex(index)
+for (const [ index, hex ] of Object.entries(COLOR_HEXES_BYTE)) {
   const hsl = hexToHsl(hex)
   const bit3Name = COLOR_NAMES_BIT4[hslToBit4(hsl)]
+  const [ x, y ] = byteToCoord(index)
   if (x < 0) {
     Fluo.hex(
       NAME_MAPPING[bit3Name] + DOT + index + DOT + hslToStr(hsl),
@@ -30,7 +28,7 @@ for (const [ index, sparseName ] of Object.entries(SPARSE_NAMES)) {
         NAME_MAPPING[bit3Name] + DOT + index + DOT + hslToStr(hsl),
         hex
       )
-      : sparseName
+      : null
   }
 }
 

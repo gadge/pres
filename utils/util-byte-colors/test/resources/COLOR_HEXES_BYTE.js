@@ -1,6 +1,10 @@
-import { COLOR_HEXES_BIT4, GREY_HEXES_BYTE } from '../../assets'
+import { range }            from '@vect/vector'
+import { COLOR_HEXES_BIT4 } from '../../assets'
+import { byteToGrey }       from '../../src/byteToGrey'
+import { byteToWeb }        from '../../src/byteToWeb'
 
-export const COLOR_HEXES_BYTE=[].concat(
+export const COLOR_HEXES_BYTE = [].concat(
   COLOR_HEXES_BIT4,
-  GREY_HEXES_BYTE
+  range(16, 231).map(byteToWeb),
+  range(232, 255).map(byteToGrey)
 )
