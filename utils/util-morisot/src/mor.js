@@ -1,6 +1,9 @@
 export class Mor extends Array {
   constructor(at, ch) { super(at, ch) }
 
+  assign(mor) { return this.at = mor.at, this.ch = mor.ch, this}
+  inject(at, ch) { return this.at = at, ch ? ( this.ch = ch ) : void 0, this }
+
   static by(mor) { return new Mor(mor[0], mor[1]) }
   static build(at, ch) { return new Mor(at, ch) }
   static init(mode, fore, back, ch) { return new Mor(( mode & 0x1ff ) << 18 | ( fore & 0x1ff ) << 9 | ( back & 0x1ff ), ch) }
@@ -16,9 +19,12 @@ export class Mor extends Array {
   set mode(value) { return this.at &= ~( 0x1ff << 18 ) , this.at |= ( value & 0x1ff ) << 18 }
   set fore(value) { return this.at &= ~( 0x1ff << 9 ) , this.at |= ( value & 0x1ff ) << 9 }
   set back(value) { return this.at &= ~( 0x1ff << 0 ) , this.at |= ( value & 0x1ff ) }
+
   clearMode() { return this.mode = 0, this }
   clearFore() { return this.fore = 0, this }
   clearBack() { return this.back = 0, this }
+  clearChar() { delete this.ch, this }
+  clear() { return this.at = 0, this }
 
   get bold() { return !!( this.mode & 1 ) }
   get underline() { return !!( this.mode & 2 ) }
