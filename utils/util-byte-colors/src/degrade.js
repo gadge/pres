@@ -1,7 +1,14 @@
-import { COLOR_MAPPING } from '@pres/util-colors'
+import { hexToHsl }  from '@palett/convert'
+import { byteToHex } from './byteToHex'
+import { hslToBit3 } from './hslToBit3'
+import { hslToBit4 } from './hslToBit4'
 
-export const degrade = (index, total) =>
-  total <= 16 && 16 <= index ? COLOR_MAPPING[index]
-    : total <= 8 && 8 <= index ? index - 8
-    : total <= 2 && 2 <= index ? index % 2
-      : index
+export const degrade = (index, total) => {
+  if (total <= 16 && 16 <= index) return index |> byteToHex |> hexToHsl |> hslToBit4
+  if (total <= 8) {
+    if (16 <= index) return index |> byteToHex |> hexToHsl |> hslToBit3
+    if (8 <= index) return index - 8
+  }
+  if (total <= 2 && 2 <= index) return index % 2
+  return index
+}
