@@ -323,10 +323,11 @@ export class Element extends Node {
     ) // return (this.uid << 24) | ((this.dockBorders ? 32 : 0) << 18)
   }
   // Convert `{red-fg}foo{/red-fg}` to `\x1b[31mfoo\x1b[39m`.
+  get _clines() { return this.contLines }
   parseContent(noTags) {
     if (this.detached) return false
     const width = this.width - this.iwidth
-    if (this._clines == null || this._clines.width !== width || this._clines.content !== this.content) {
+    if (this.contLines == null || this.contLines.width !== width || this.contLines.content !== this.content) {
       let content = this.content
       content = content
         .replace(/[\x00-\x08\x0b-\x0c\x0e-\x1a\x1c-\x1f\x7f]/g, '')
@@ -355,22 +356,166 @@ export class Element extends Node {
         // content = helpers.dropUnicode(content);
       }
       if (!noTags) { content = this.#parseTags(content) }
-      this._clines = this._wrapContent(content, width)
-      this._clines.width = width
-      this._clines.content = this.content
-      this._clines.attr = this.#parseAttr(this._clines)
-      this._clines.ci = []
-      this._clines.reduce(function (total, line) {
-        this._clines.ci.push(total)
+      this.contLines = this.#wrapContent(content, width)
+      this.contLines.width = width
+      this.contLines.content = this.content
+      this.contLines.attr = this.#parseAttr(this.contLines)
+      this.contLines.ci = []
+      this.contLines.reduce(function (total, line) {
+        this.contLines.ci.push(total)
         return total + line.length + 1
       }.bind(this), 0)
-      this._pcontent = this._clines.join(LF)
+      this._pcontent = this.contLines.join(LF)
       this.emit(PARSED_CONTENT)
       return true
     }
     // Need to calculate this every time because the default fg/bg may change.
-    this._clines.attr = this.#parseAttr(this._clines) || this._clines.attr
+    this.contLines.attr = this.#parseAttr(this.contLines) || this.contLines.attr
     return false
+  }
+  #wrapContent(content, width) {
+    const tags = this.parseTags
+    let state = this.align
+    const wrap = this.wrap
+    let margin = 0
+    const rtof = [],
+          ftor = [],
+          out  = []
+    let no = 0,
+        line,
+        align,
+        cap,
+        total,
+        i,
+        part,
+        j,
+        lines,
+        rest
+
+    lines = content.split(LF)
+    if (!content) {
+      out.push(content)
+      out.rtof = [ 0 ]
+      out.ftor = [ [ 0 ] ]
+      out.fake = lines
+      out.real = out
+      out.mwidth = 0
+      return out
+    }
+    if (this.scrollbar) margin++
+    if (this.type === 'textarea') margin++
+    if (width > margin) width -= margin
+
+    main:
+      for (; no < lines.length; no++) {
+        line = lines[no]
+        align = state
+
+        ftor.push([])
+        // Handle alignment tags.
+        if (tags) {
+          if (( cap = /^{(left|center|right)}/.exec(line) )) {
+            line = line.slice(cap[0].length)
+            align = state = cap[1] !== 'left'
+              ? cap[1]
+              : null
+          }
+          if (( cap = /{\/(left|center|right)}$/.exec(line) )) {
+            line = line.slice(0, -cap[0].length)
+            //state = null;
+            state = this.align
+          }
+        }
+        // If the string is apparently too long, wrap it.
+        while (line.length > width) {
+          // Measure the real width of the string.
+          for (i = 0, total = 0; i < line.length; i++) {
+            while (line[i] === ESC) while (line[i] && line[i++] !== 'm') { }
+            if (!line[i]) break
+            if (++total === width) {
+              // If we're not wrapping the text, we have to finish up the rest of
+              // the control sequences before cutting off the line.
+              i++
+              if (!wrap) {
+                rest = line.slice(i).match(/\x1b\[[^m]*m/g)
+                rest = rest ? rest.join('') : ''
+                out.push(this._align(line.slice(0, i) + rest, width, align))
+                ftor[no].push(out.length - 1)
+                rtof.push(no)
+                continue main
+              }
+              if (!this.screen.fullUnicode) {
+                // Try to find a space to break on.
+                if (i !== line.length) {
+                  j = i
+                  while (j > i - 10 && j > 0 && line[--j] !== ' ')
+                    if (line[j] === ' ') i = j + 1
+                }
+              }
+              else {
+                // Try to find a character to break on.
+                if (i !== line.length) {
+                  // <XXX>
+                  // Compensate for surrogate length counts on wrapping (experimental):
+                  // NOTE: Could optimize this by putting it in the sup for loop.
+                  if (unicode.isSurrogate(line, i)) i--
+                  let s = 0, n = 0
+                  for (; n < i; n++) {
+                    if (unicode.isSurrogate(line, n)) s++, n++
+                  }
+                  i += s
+                  // </XXX>
+                  j = i
+                  // Break _past_ space.
+                  // Break _past_ double-width chars.
+                  // Break _past_ surrogate pairs.
+                  // Break _past_ combining chars.
+                  while (j > i - 10 && j > 0) {
+                    j--
+                    if (line[j] === ' ' ||
+                      line[j] === '\x03' ||
+                      ( unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03' ) || unicode.isCombining(line, j)) {
+                      break
+                    }
+                  }
+                  if (line[j] === ' ' ||
+                    line[j] === '\x03' ||
+                    ( unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03' ) || unicode.isCombining(line, j)) {
+                    i = j + 1
+                  }
+                }
+              }
+              break
+            }
+          }
+          part = line.slice(0, i)
+          line = line.slice(i)
+          out.push(this._align(part, width, align))
+          ftor[no].push(out.length - 1)
+          rtof.push(no)
+          // Make sure we didn't wrap the line to the very end, otherwise
+          // we get a pointless empty line after a newline.
+          if (line === '') continue main
+          // If only an escape code got cut off, at it to `part`.
+          if (/^(?:\x1b[\[\d;]*m)+$/.test(line)) {
+            out[out.length - 1] += line
+            continue main
+          }
+        }
+        out.push(this._align(line, width, align))
+        ftor[no].push(out.length - 1)
+        rtof.push(no)
+      }
+    out.rtof = rtof
+    out.ftor = ftor
+    out.fake = lines
+    out.real = out
+
+    out.mwidth = out.reduce((current, line) => {
+      line = line.replace(/\x1b\[[\d;]*m/g, '')
+      return line.length > current ? line.length : current
+    }, 0)
+    return out
   }
   #parseTags(text) {
     if (!this.parseTags) return text
@@ -501,14 +646,14 @@ export class Element extends Node {
         currAttr,
         ch
     const content = this._pcontent
-    let ci = this._clines.ci[coords.base],
+    let ci = this.contLines.ci[coords.base],
         borderAttr,
         normAttr,
         c,
         visible,
         i
     const bch = this.ch
-    if (coords.base >= this._clines.ci.length) ci = this._pcontent.length
+    if (coords.base >= this.contLines.ci.length) ci = this._pcontent.length
     this.lpos = coords
     if (this.border?.type === 'line') {
       this.screen._borderStops[coords.yi] = true
@@ -519,7 +664,7 @@ export class Element extends Node {
     currAttr = normAttr
     // If we're in a scrollable text box, check to
     // see which attributes this line starts with.
-    if (ci > 0) currAttr = this._clines.attr[Math.min(coords.base, this._clines.length - 1)]
+    if (ci > 0) currAttr = this.contLines.attr[Math.min(coords.base, this.contLines.length - 1)]
     if (this.border) xi++, xl--, yi++, yl--
     // If we have padding/valign, that means the
     // content-drawing loop will skip a few cells/lines.
@@ -544,13 +689,13 @@ export class Element extends Node {
     // Determine where to place the text if it's vertically aligned.
     if (this.valign === 'middle' || this.valign === 'bottom') {
       visible = yl - yi
-      if (this._clines.length < visible) {
+      if (this.contLines.length < visible) {
         if (this.valign === 'middle') {
           visible = visible / 2 | 0
-          visible -= this._clines.length / 2 | 0
+          visible -= this.contLines.length / 2 | 0
         }
         else if (this.valign === 'bottom') {
-          visible -= this._clines.length
+          visible -= this.contLines.length
         }
         ci -= visible * ( xl - xi )
       }
@@ -657,7 +802,7 @@ export class Element extends Node {
     // Could possibly draw this after all child elements.
     if (this.scrollbar) {
       // i = this.getScrollHeight();
-      i = Math.max(this._clines.length, this._scrollBottom())
+      i = Math.max(this.contLines.length, this._scrollBottom())
     }
     if (coords.notop || coords.nobot) i = -Infinity
     if (this.scrollbar && ( yl - yi ) < i) {
@@ -917,7 +1062,7 @@ export class Element extends Node {
     this.parseContent(noTags)
     this.emit(SET_CONTENT)
   }
-  getContent() { return this._clines?.fake.join(LF) ?? '' }
+  getContent() { return this.contLines?.fake.join(LF) ?? '' }
   setText(content, noClear) {
     content = content || ''
     content = content.replace(/\x1b\[[\d;]*m/g, '')
@@ -944,150 +1089,6 @@ export class Element extends Node {
       return parts[0] + s + parts[1]
     }
     return line
-  }
-  _wrapContent(content, width) {
-    const tags = this.parseTags
-    let state = this.align
-    const wrap = this.wrap
-    let margin = 0
-    const rtof = [],
-          ftor = [],
-          out  = []
-    let no = 0,
-        line,
-        align,
-        cap,
-        total,
-        i,
-        part,
-        j,
-        lines,
-        rest
-
-    lines = content.split(LF)
-    if (!content) {
-      out.push(content)
-      out.rtof = [ 0 ]
-      out.ftor = [ [ 0 ] ]
-      out.fake = lines
-      out.real = out
-      out.mwidth = 0
-      return out
-    }
-    if (this.scrollbar) margin++
-    if (this.type === 'textarea') margin++
-    if (width > margin) width -= margin
-
-    main:
-      for (; no < lines.length; no++) {
-        line = lines[no]
-        align = state
-
-        ftor.push([])
-        // Handle alignment tags.
-        if (tags) {
-          if (( cap = /^{(left|center|right)}/.exec(line) )) {
-            line = line.slice(cap[0].length)
-            align = state = cap[1] !== 'left'
-              ? cap[1]
-              : null
-          }
-          if (( cap = /{\/(left|center|right)}$/.exec(line) )) {
-            line = line.slice(0, -cap[0].length)
-            //state = null;
-            state = this.align
-          }
-        }
-        // If the string is apparently too long, wrap it.
-        while (line.length > width) {
-          // Measure the real width of the string.
-          for (i = 0, total = 0; i < line.length; i++) {
-            while (line[i] === ESC) while (line[i] && line[i++] !== 'm') { }
-            if (!line[i]) break
-            if (++total === width) {
-              // If we're not wrapping the text, we have to finish up the rest of
-              // the control sequences before cutting off the line.
-              i++
-              if (!wrap) {
-                rest = line.slice(i).match(/\x1b\[[^m]*m/g)
-                rest = rest ? rest.join('') : ''
-                out.push(this._align(line.slice(0, i) + rest, width, align))
-                ftor[no].push(out.length - 1)
-                rtof.push(no)
-                continue main
-              }
-              if (!this.screen.fullUnicode) {
-                // Try to find a space to break on.
-                if (i !== line.length) {
-                  j = i
-                  while (j > i - 10 && j > 0 && line[--j] !== ' ')
-                    if (line[j] === ' ') i = j + 1
-                }
-              }
-              else {
-                // Try to find a character to break on.
-                if (i !== line.length) {
-                  // <XXX>
-                  // Compensate for surrogate length counts on wrapping (experimental):
-                  // NOTE: Could optimize this by putting it in the sup for loop.
-                  if (unicode.isSurrogate(line, i)) i--
-                  let s = 0, n = 0
-                  for (; n < i; n++) {
-                    if (unicode.isSurrogate(line, n)) s++, n++
-                  }
-                  i += s
-                  // </XXX>
-                  j = i
-                  // Break _past_ space.
-                  // Break _past_ double-width chars.
-                  // Break _past_ surrogate pairs.
-                  // Break _past_ combining chars.
-                  while (j > i - 10 && j > 0) {
-                    j--
-                    if (line[j] === ' ' ||
-                      line[j] === '\x03' ||
-                      ( unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03' ) || unicode.isCombining(line, j)) {
-                      break
-                    }
-                  }
-                  if (line[j] === ' ' ||
-                    line[j] === '\x03' ||
-                    ( unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03' ) || unicode.isCombining(line, j)) {
-                    i = j + 1
-                  }
-                }
-              }
-              break
-            }
-          }
-          part = line.slice(0, i)
-          line = line.slice(i)
-          out.push(this._align(part, width, align))
-          ftor[no].push(out.length - 1)
-          rtof.push(no)
-          // Make sure we didn't wrap the line to the very end, otherwise
-          // we get a pointless empty line after a newline.
-          if (line === '') continue main
-          // If only an escape code got cut off, at it to `part`.
-          if (/^(?:\x1b[\[\d;]*m)+$/.test(line)) {
-            out[out.length - 1] += line
-            continue main
-          }
-        }
-        out.push(this._align(line, width, align))
-        ftor[no].push(out.length - 1)
-        rtof.push(no)
-      }
-    out.rtof = rtof
-    out.ftor = ftor
-    out.fake = lines
-    out.real = out
-
-    out.mwidth = out.reduce((current, line) => {
-      line = line.replace(/\x1b\[[\d;]*m/g, '')
-      return line.length > current ? line.length : current
-    }, 0)
-    return out
   }
   enableMouse() { this.screen._listenMouse(this) }
   enableKeys() { this.screen._listenKeys(this) }
@@ -1538,8 +1539,8 @@ export class Element extends Node {
     return { xi: xi, xl: xl, yi: yi, yl: yl }
   }
   _getShrinkContent(xi, xl, yi, yl) {
-    const h = this._clines.length,
-          w = this._clines.mwidth || 1
+    const h = this.contLines.length,
+          w = this.contLines.mwidth || 1
     if (
       ( this.position.width == null ) &&
       ( this.position.left == null || this.position.right == null )
@@ -1726,29 +1727,29 @@ export class Element extends Node {
    */
   insertLine(i, line) {
     if (typeof line === STR) line = line.split(LF)
-    if (i !== i || i == null) i = this._clines.ftor.length
+    if (i !== i || i == null) i = this.contLines.ftor.length
     i = Math.max(i, 0)
-    while (this._clines.fake.length < i) {
-      this._clines.fake.push('')
-      this._clines.ftor.push([ this._clines.push('') - 1 ])
-      this._clines.rtof(this._clines.fake.length - 1)
+    while (this.contLines.fake.length < i) {
+      this.contLines.fake.push('')
+      this.contLines.ftor.push([ this.contLines.push('') - 1 ])
+      this.contLines.rtof(this.contLines.fake.length - 1)
     }
     // NOTE: Could possibly compare the first and last ftor line numbers to see
     // if they're the same, or if they fit in the visible region entirely.
-    const start = this._clines.length
+    const start = this.contLines.length
     let diff,
         real
-    if (i >= this._clines.ftor.length) {
-      real = this._clines.ftor[this._clines.ftor.length - 1]
+    if (i >= this.contLines.ftor.length) {
+      real = this.contLines.ftor[this.contLines.ftor.length - 1]
       real = real[real.length - 1] + 1
     }
     else {
-      real = this._clines.ftor[i][0]
+      real = this.contLines.ftor[i][0]
     }
     for (let j = 0; j < line.length; j++)
-      this._clines.fake.splice(i + j, 0, line[j])
-    this.setContent(this._clines.fake.join(LF), true)
-    diff = this._clines.length - start
+      this.contLines.fake.splice(i + j, 0, line[j])
+    this.setContent(this.contLines.fake.join(LF), true)
+    diff = this.contLines.length - start
     if (diff > 0) {
       const pos = this._getCoords()
       if (!pos) return
@@ -1764,17 +1765,17 @@ export class Element extends Node {
     }
   }
   deleteLine(i, n = 1) {
-    if (i !== i || i == null) i = this._clines.ftor.length - 1
+    if (i !== i || i == null) i = this.contLines.ftor.length - 1
     i = Math.max(i, 0)
-    i = Math.min(i, this._clines.ftor.length - 1)
+    i = Math.min(i, this.contLines.ftor.length - 1)
     // NOTE: Could possibly compare the first and last ftor line numbers to see
     // if they're the same, or if they fit in the visible region entirely.
-    const start = this._clines.length
+    const start = this.contLines.length
     let diff
-    const real = this._clines.ftor[i][0]
-    while (n--) this._clines.fake.splice(i, 1)
-    this.setContent(this._clines.fake.join(LF), true)
-    diff = start - this._clines.length
+    const real = this.contLines.ftor[i][0]
+    while (n--) this.contLines.fake.splice(i, 1)
+    this.setContent(this.contLines.fake.join(LF), true)
+    diff = start - this.contLines.length
     // XXX clearPos() without diff statement?
     let height = 0
     if (diff > 0) {
@@ -1791,61 +1792,61 @@ export class Element extends Node {
           pos.yl - this.ibottom - 1)
       }
     }
-    if (this._clines.length < height) this.clearPos()
+    if (this.contLines.length < height) this.clearPos()
   }
   insertTop(line) {
-    const fake = this._clines.rtof[this.childBase || 0]
+    const fake = this.contLines.rtof[this.childBase || 0]
     return this.insertLine(fake, line)
   }
   insertBottom(line) {
     const h    = ( this.childBase || 0 ) + this.height - this.iheight,
-          i    = Math.min(h, this._clines.length),
-          fake = this._clines.rtof[i - 1] + 1
+          i    = Math.min(h, this.contLines.length),
+          fake = this.contLines.rtof[i - 1] + 1
     return this.insertLine(fake, line)
   }
   deleteTop(n) {
-    const fake = this._clines.rtof[this.childBase || 0]
+    const fake = this.contLines.rtof[this.childBase || 0]
     return this.deleteLine(fake, n)
   }
   deleteBottom(n = 1) {
     const h    = ( this.childBase || 0 ) + this.height - 1 - this.iheight,
-          i    = Math.min(h, this._clines.length - 1),
-          fake = this._clines.rtof[i]
+          i    = Math.min(h, this.contLines.length - 1),
+          fake = this.contLines.rtof[i]
     return this.deleteLine(fake - ( n - 1 ), n)
   }
   setLine(i, line) {
     i = Math.max(i, 0)
-    while (this._clines.fake.length < i) { this._clines.fake.push('') }
-    this._clines.fake[i] = line
-    return this.setContent(this._clines.fake.join(LF), true)
+    while (this.contLines.fake.length < i) { this.contLines.fake.push('') }
+    this.contLines.fake[i] = line
+    return this.setContent(this.contLines.fake.join(LF), true)
   }
   setBaseLine(i, line) {
-    const fake = this._clines.rtof[this.childBase || 0]
+    const fake = this.contLines.rtof[this.childBase || 0]
     return this.setLine(fake + i, line)
   }
   getLine(i) {
     i = Math.max(i, 0)
-    i = Math.min(i, this._clines.fake.length - 1)
-    return this._clines.fake[i]
+    i = Math.min(i, this.contLines.fake.length - 1)
+    return this.contLines.fake[i]
   }
   getBaseLine(i) {
-    const fake = this._clines.rtof[this.childBase || 0]
+    const fake = this.contLines.rtof[this.childBase || 0]
     return this.getLine(fake + i)
   }
   clearLine(i) {
-    i = Math.min(i, this._clines.fake.length - 1)
+    i = Math.min(i, this.contLines.fake.length - 1)
     return this.setLine(i, '')
   }
   clearBaseLine(i) {
-    const fake = this._clines.rtof[this.childBase || 0]
+    const fake = this.contLines.rtof[this.childBase || 0]
     return this.clearLine(fake + i)
   }
   unshiftLine(line) { return this.insertLine(0, line) }
   shiftLine(n) { return this.deleteLine(0, n) }
-  pushLine(line) { return !this.content ? this.setLine(0, line) : this.insertLine(this._clines.fake.length, line) }
-  popLine(n) { return this.deleteLine(this._clines.fake.length - 1, n) }
-  getLines() { return this._clines.fake.slice() }
-  getScreenLines() { return this._clines.slice() }
+  pushLine(line) { return !this.content ? this.setLine(0, line) : this.insertLine(this.contLines.fake.length, line) }
+  popLine(n) { return this.deleteLine(this.contLines.fake.length - 1, n) }
+  getLines() { return this.contLines.fake.slice() }
+  getScreenLines() { return this.contLines.slice() }
   strWidth(text) {
     text = this.parseTags ? helpers.stripTags(text) : text
     return this.screen.fullUnicode ? unicode.strWidth(text) : helpers.dropUnicode(text).length

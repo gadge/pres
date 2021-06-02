@@ -17,6 +17,7 @@
   "dependencies": {
     "@ject/mixin": "^0.0.12",
     "@pres/components-node": "^0.2.6",
+    "@pres/util-morisot": "^0.2.6",
     "@pres/enum-angle-table": "^0.2.6",
     "@pres/enum-control-chars": "^0.2.6",
     "@pres/enum-csi-codes": "^0.2.6",

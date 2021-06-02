@@ -16,7 +16,9 @@ import {
 import { Program }                                                     from '@pres/program'
 import * as colors                                                     from '@pres/util-colors'
 import * as helpers                                                    from '@pres/util-helpers'
+import { Mor }                                                         from '@pres/util-morisot'
 import * as unicode                                                    from '@pres/util-unicode'
+import { SP }                                                          from '@texting/enum-chars'
 import { FUN, OBJ, STR }                                               from '@typen/enum-data-types'
 import { last }                                                        from '@vect/vector'
 import cp, { spawn }                                                   from 'child_process'
@@ -161,17 +163,18 @@ export class Screen extends Node {
   get focused() { return this.history[this.history.length - 1] }
   set focused(el) {return this.focusPush(el) }
 
+  get lines() { return this.currLines }
+  get olines() { return this.prevLines }
   alloc(dirty) {
-    let x, y
-    this.lines = []
-    this.olines = []
-    for (y = 0; y < this.rows; y++) {
-      const line  = this.lines[y] = [],
-            oline = this.olines[y] = []
-      line.dirty = !!dirty
-      for (x = 0; x < this.cols; x++) {
-        line[x] = [ this.dattr, ' ' ]
-        oline[x] = [ this.dattr, ' ' ]
+    this.currLines = []
+    this.prevLines = []
+    for (let y = 0, normCell = Mor.build(this.dattr, SP); y < this.rows; y++) {
+      const currLine = this.currLines[y] = [],
+            prevLine = this.prevLines[y] = []
+      currLine.dirty = !!dirty
+      for (let x = 0; x < this.cols; x++) {
+        currLine[x] = normCell.copy() // [ this.dattr, ' ' ]
+        prevLine[x] = normCell.copy()
       }
     }
     this.program.clear()
@@ -179,7 +182,7 @@ export class Screen extends Node {
   realloc() { return this.alloc(true) }
   clearRegion(xi, xl, yi, yl, override) { return this.fillRegion(this.dattr, ' ', xi, xl, yi, yl, override) }
   fillRegion(at, ch, xi, xl, yi, yl, override) {
-    const { lines } = this
+    const lines = this.currLines
     if (xi < 0) xi = 0
     if (yi < 0) yi = 0
     for (let line; yi < yl; yi++) {
@@ -247,7 +250,7 @@ export class Screen extends Node {
     let main = ''
     const normAttr = this.dattr
     for (let y = yi, line; y < yl; y++) {
-      if (!( line = term?.lines[y] ?? this.lines[y] )) break
+      if (!( line = term?.lines[y] ?? this.currLines[y] )) break
       let out      = '',
           currAttr = this.dattr
       for (let x = xi, cell; x < xl; x++) {
@@ -342,8 +345,8 @@ export class Screen extends Node {
     return CSI + ( last(out) === ';' ? out.slice(0, -1) : out ) + SGR
   }
   render() {
-    // const [ h, w ] = size(this.lines)
-    // console.log('>> [screen.render]', this.lines)
+    // const [ h, w ] = size(this.currLines)
+    // console.log('>> [screen.render]', this.currLines)
     // console.log('>> [screen.render]', h, w)
     const self = this
     if (this.destroyed) return
@@ -360,7 +363,7 @@ export class Screen extends Node {
     this.sub.forEach(el => { ( el.index = self._ci++ ), el.render() })
     this._ci = -1
     if (this.screen.dockBorders) { this._dockBorders() }
-    this.draw(0, this.lines.length - 1)
+    this.draw(0, this.currLines.length - 1)
     // XXX Workaround to deal with cursor pos before the screen has rendered and
     // lpos is not reliable (stale).
     if (this.focused && this.focused._updateCursor) { this.focused._updateCursor(true) }
@@ -379,17 +382,17 @@ export class Screen extends Node {
     if (this._buf) { main += this._buf, this._buf = '' }
     const { cursor, program, tput, options } = this
     for (let y = start; y <= end; y++) {
-      let line  = this.lines[y],
-          oline = this.olines[y]
-      if (!line.dirty && !( cursor.artificial && y === program.y )) continue
-      line.dirty = false
+      let currLine = this.currLines[y],
+          prevLine = this.prevLines[y]
+      if (!currLine.dirty && !( cursor.artificial && y === program.y )) continue
+      currLine.dirty = false
 
       let out = ''
       let currAttr = this.dattr
 
-      for (let x = 0, cell, ocell; ( x < line.length ) && ( cell = line[x] ); x++) {
-        let at = cell[0]
-        let ch = cell.ch
+      for (let x = 0, currCell, prevCell; ( x < currLine.length ) && ( currCell = currLine[x] ); x++) {
+        let at = currCell[0]
+        let ch = currCell.ch
         // Render the artificial cursor.
         if (
           cursor.artificial && !cursor._hidden && cursor._state && x === program.x && y === program.y) {
@@ -408,25 +411,25 @@ export class Screen extends Node {
         ) {
           clr = true
           neq = false
-          for (let i = x, cell, ocell; ( i < line.length ) && ( cell = line[i] ); i++) {
-            if (cell[0] !== at || cell.ch !== ' ') {
+          for (let i = x, currCell, prevCell; ( i < currLine.length ) && ( currCell = currLine[i] ); i++) {
+            if (currCell[0] !== at || currCell.ch !== ' ') {
               clr = false
               break
             }
-            if (( ocell = oline[i] ) && cell[0] !== ocell[0] || cell.ch !== ocell.ch) { neq = true }
+            if (( prevCell = prevLine[i] ) && currCell[0] !== prevCell[0] || currCell.ch !== prevCell.ch) { neq = true }
           }
           if (clr && neq) {
             lx = -1, ly = -1
             if (at !== currAttr) { out += this.codeAttr(at), currAttr = at }
             out += this.tput.cup(y, x), out += this.tput.el()
-            for (let i = x, ocell; ( i < line.length ) && ( ocell = oline[i] ); i++) { ocell[0] = at, ocell.ch = ' ' }
+            for (let i = x, prevCell; ( i < currLine.length ) && ( prevCell = prevLine[i] ); i++) { prevCell[0] = at, prevCell.ch = ' ' }
             break
           }
         }
         // Optimize by comparing the real output
         // buffer to the pending output buffer.
-        ocell = oline[x]
-        if (at === ocell[0] && ch === ocell.ch) {
+        prevCell = prevLine[x]
+        if (at === prevCell[0] && ch === prevCell.ch) {
           if (lx === -1) { lx = x, ly = y }
           continue
         }
@@ -435,8 +438,8 @@ export class Screen extends Node {
           else { out += this.tput.cup(y, x) }
           lx = -1, ly = -1
         }
-        ocell[0] = at
-        ocell.ch = ch
+        prevCell[0] = at
+        prevCell.ch = ch
         if (at !== currAttr) {
           if (currAttr !== this.dattr) { out += CSI + SGR }
           if (at !== this.dattr) {
@@ -476,25 +479,25 @@ export class Screen extends Node {
         if (this.fullUnicode) {
           // If this is a surrogate pair double-width char, we can ignore it
           // because parseContent already counted it as length=2.
-          if (unicode.charWidth(line[x].ch) === 2) {
+          if (unicode.charWidth(currLine[x].ch) === 2) {
             // NOTE: At cols=44, the bug that is avoided
             // by the angles check occurs in widget-unicode:
             // Might also need: `line[x + 1][0] !== line[x][0]`
             // for borderless boxes?
-            if (x === line.length - 1 || ANGLES[line[x + 1].ch]) {
+            if (x === currLine.length - 1 || ANGLES[currLine[x + 1].ch]) {
               // If we're at the end, we don't have enough space for a
               // double-width. Overwrite it with a space and ignore.
               ch = ' '
-              ocell.ch = '\0'
+              prevCell.ch = '\0'
             }
             else {
               // ALWAYS refresh double-width chars because this special cursor
               // behavior is needed. There may be a more efficient way of doing
               // this. See above.
-              ocell.ch = '\0'
+              prevCell.ch = '\0'
               // Eat the next character by moving forward and marking as a
               // space (which it is).
-              oline[++x].ch = '\0'
+              prevLine[++x].ch = '\0'
             }
           }
         }
@@ -560,6 +563,91 @@ export class Screen extends Node {
       this.program._write(pre + main + post)
     }
     // this.emit('draw');
+  }
+  // boxes with clean sides?
+  cleanSides(el) {
+    const pos = el.lpos
+    if (!pos) { return false }
+    if (pos._cleanSides != null) { return pos._cleanSides }
+    if (pos.xi <= 0 && pos.xl >= this.width) { return pos._cleanSides = true }
+    if (this.options.fastCSR) {
+      // Maybe just do this instead of parsing.
+      if (pos.yi < 0) return pos._cleanSides = false
+      if (pos.yl > this.height) return pos._cleanSides = false
+      return this.width - ( pos.xl - pos.xi ) < 40 ? ( pos._cleanSides = true ) : ( pos._cleanSides = false )
+    }
+    if (!this.options.smartCSR) { return false }
+    // The scrollbar can't update properly, and there's also a
+    // chance that the scrollbar may get moved around senselessly.
+    // NOTE: In pratice, this doesn't seem to be the case.
+    // if (this.scrollbar) {
+    //   return pos._cleanSides = false;
+    // }
+    // Doesn't matter if we're only a height of 1.
+    // if ((pos.yl - el.ibottom) - (pos.yi + el.itop) <= 1) {
+    //   return pos._cleanSides = false;
+    // }
+    const yi = pos.yi + el.itop,
+          yl = pos.yl - el.ibottom
+    if (pos.yi < 0) return pos._cleanSides = false
+    if (pos.yl > this.height) return pos._cleanSides = false
+    if (pos.xi - 1 < 0) return pos._cleanSides = true
+    if (pos.xl > this.width) return pos._cleanSides = true
+    for (let x = pos.xi - 1, line, cell; x >= 0; x--) {
+      if (!( line = this.prevLines[yi] )) break
+      const initCell = line[x]
+      for (let y = yi; y < yl; y++) {
+        if (!( line = this.prevLines[y] ) || !( cell = line[x] )) break
+        cell = line[x]
+        if (cell[0] !== initCell[0] || cell.ch !== initCell.ch) {
+          return pos._cleanSides = false
+        }
+      }
+    }
+    for (let x = pos.xl, line, cell; x < this.width; x++) {
+      if (!( line = this.prevLines[yi] )) break
+      const initCell = line[x]
+      for (let y = yi; y < yl; y++) {
+        if (!( line = this.prevLines[y] ) || !( cell = line[x] )) break
+        if (cell[0] !== initCell[0] || cell.ch !== initCell.ch) {
+          return pos._cleanSides = false
+        }
+      }
+    }
+    return pos._cleanSides = true
+  }
+  _dockBorders() {
+    const lines = this.currLines
+    let stops = this._borderStops,
+        y,
+        ch
+    // var keys, stop;
+    //
+    // keys = Object.keys(this._borderStops)
+    //   .map(function(k) { return +k; })
+    //   .sort(function(a, b) { return a - b; });
+    //
+    // for (i = 0; i < keys.length; i++) {
+    //   y = keys[i];
+    //   if (!lines[y]) continue;
+    //   stop = this._borderStops[y];
+    //   for (x = stop.xi; x < stop.xl; x++) {
+    stops = Object
+      .keys(stops)
+      .map(k => +k)
+      .sort((a, b) => a - b)
+    for (let i = 0, line, cell; i < stops.length; i++) {
+      y = stops[i]
+      if (!( line = lines[y] )) continue
+      for (let x = 0; x < this.width; x++) {
+        cell = line[x]
+        ch = cell.ch
+        if (ANGLES[ch]) {
+          cell.ch = this._getAngle(lines, x, y)
+          line.dirty = true
+        }
+      }
+    }
   }
 
   setTerminal(terminal) {
@@ -875,10 +963,10 @@ export class Screen extends Node {
     this._buf += this.tput.csr(0, this.height - 1)
     const j = bottom + 1
     while (n--) {
-      this.lines.splice(y, 0, this.blankLine())
-      this.lines.splice(j, 1)
-      this.olines.splice(y, 0, this.blankLine())
-      this.olines.splice(j, 1)
+      this.currLines.splice(y, 0, this.blankLine())
+      this.currLines.splice(j, 1)
+      this.prevLines.splice(y, 0, this.blankLine())
+      this.prevLines.splice(j, 1)
     }
   }
   deleteLine(n, y, top, bottom) {
@@ -890,10 +978,10 @@ export class Screen extends Node {
     this._buf += this.tput.csr(0, this.height - 1)
     const j = bottom + 1
     while (n--) {
-      this.lines.splice(j, 0, this.blankLine())
-      this.lines.splice(y, 1)
-      this.olines.splice(j, 0, this.blankLine())
-      this.olines.splice(y, 1)
+      this.currLines.splice(j, 0, this.blankLine())
+      this.currLines.splice(y, 1)
+      this.prevLines.splice(j, 0, this.blankLine())
+      this.prevLines.splice(y, 1)
     }
   }
 // This will only work for top line deletion as opposed to arbitrary lines.
@@ -905,10 +993,10 @@ export class Screen extends Node {
     this._buf += this.tput.csr(0, this.height - 1)
     const j = bottom + 1
     while (n--) {
-      this.lines.splice(j, 0, this.blankLine())
-      this.lines.splice(y, 1)
-      this.olines.splice(j, 0, this.blankLine())
-      this.olines.splice(y, 1)
+      this.currLines.splice(j, 0, this.blankLine())
+      this.currLines.splice(y, 1)
+      this.prevLines.splice(j, 0, this.blankLine())
+      this.prevLines.splice(y, 1)
     }
   }
 // This will only work for bottom line deletion as opposed to arbitrary lines.
@@ -920,10 +1008,10 @@ export class Screen extends Node {
     this._buf += this.tput.csr(0, this.height - 1)
     const j = bottom + 1
     while (n--) {
-      this.lines.splice(j, 0, this.blankLine())
-      this.lines.splice(y, 1)
-      this.olines.splice(j, 0, this.blankLine())
-      this.olines.splice(y, 1)
+      this.currLines.splice(j, 0, this.blankLine())
+      this.currLines.splice(y, 1)
+      this.prevLines.splice(j, 0, this.blankLine())
+      this.prevLines.splice(y, 1)
     }
   }
   insertBottom(top, bottom) { return this.deleteLine(1, top, top, bottom) }
@@ -939,91 +1027,6 @@ export class Screen extends Node {
   deleteBottom(top, bottom) { return this.clearRegion(0, this.width, bottom, bottom) }
   // Same as: return this.insertBottom(top, bottom);
   deleteTop(top, bottom) { return this.deleteLine(1, top, top, bottom) }
-  // boxes with clean sides?
-  cleanSides(el) {
-    const pos = el.lpos
-    if (!pos) { return false }
-    if (pos._cleanSides != null) { return pos._cleanSides }
-    if (pos.xi <= 0 && pos.xl >= this.width) { return pos._cleanSides = true }
-    if (this.options.fastCSR) {
-      // Maybe just do this instead of parsing.
-      if (pos.yi < 0) return pos._cleanSides = false
-      if (pos.yl > this.height) return pos._cleanSides = false
-      return this.width - ( pos.xl - pos.xi ) < 40 ? ( pos._cleanSides = true ) : ( pos._cleanSides = false )
-    }
-    if (!this.options.smartCSR) { return false }
-    // The scrollbar can't update properly, and there's also a
-    // chance that the scrollbar may get moved around senselessly.
-    // NOTE: In pratice, this doesn't seem to be the case.
-    // if (this.scrollbar) {
-    //   return pos._cleanSides = false;
-    // }
-    // Doesn't matter if we're only a height of 1.
-    // if ((pos.yl - el.ibottom) - (pos.yi + el.itop) <= 1) {
-    //   return pos._cleanSides = false;
-    // }
-    const yi = pos.yi + el.itop,
-          yl = pos.yl - el.ibottom
-    if (pos.yi < 0) return pos._cleanSides = false
-    if (pos.yl > this.height) return pos._cleanSides = false
-    if (pos.xi - 1 < 0) return pos._cleanSides = true
-    if (pos.xl > this.width) return pos._cleanSides = true
-    for (let x = pos.xi - 1, line, cell; x >= 0; x--) {
-      if (!( line = this.olines[yi] )) break
-      const first = line[x]
-      for (let y = yi; y < yl; y++) {
-        if (!( line = this.olines[y] ) || !( cell = line[x] )) break
-        cell = line[x]
-        if (cell[0] !== first[0] || cell.ch !== first.ch) {
-          return pos._cleanSides = false
-        }
-      }
-    }
-    for (let x = pos.xl, line, cell; x < this.width; x++) {
-      if (!( line = this.olines[yi] )) break
-      const first = line[x]
-      for (let y = yi; y < yl; y++) {
-        if (!( line = this.olines[y] ) || !( cell = line[x] )) break
-        if (cell[0] !== first[0] || cell.ch !== first.ch) {
-          return pos._cleanSides = false
-        }
-      }
-    }
-    return pos._cleanSides = true
-  }
-  _dockBorders() {
-    const lines = this.lines
-    let stops = this._borderStops,
-        y,
-        ch
-    // var keys, stop;
-    //
-    // keys = Object.keys(this._borderStops)
-    //   .map(function(k) { return +k; })
-    //   .sort(function(a, b) { return a - b; });
-    //
-    // for (i = 0; i < keys.length; i++) {
-    //   y = keys[i];
-    //   if (!lines[y]) continue;
-    //   stop = this._borderStops[y];
-    //   for (x = stop.xi; x < stop.xl; x++) {
-    stops = Object
-      .keys(stops)
-      .map(function (k) { return +k })
-      .sort(function (a, b) { return a - b })
-    for (let i = 0, line, cell; i < stops.length; i++) {
-      y = stops[i]
-      if (!( line = lines[y] )) continue
-      for (let x = 0; x < this.width; x++) {
-        cell = line[x]
-        ch = cell.ch
-        if (ANGLES[ch]) {
-          cell.ch = this._getAngle(lines, x, y)
-          line.dirty = true
-        }
-      }
-    }
-  }
   _getAngle(lines, x, y) {
     let angle = 0
     const attr = lines[y][x][0],
@@ -1273,7 +1276,7 @@ export class Screen extends Node {
     }
     fel.on(over, function () {
       const element = el()
-      Object.keys(effects).forEach(function (key) {
+      Object.keys(effects).forEach(key => {
         const val = effects[key]
         if (val !== null && typeof val === OBJ) {
           tmp[key] = tmp[key] || {}
