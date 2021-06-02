@@ -1,4 +1,4 @@
-export const BIT4_COLOR_NAMES = [
+export const COLOR_NAMES_BIT4 = [
   'black',
   'red',
   'green',

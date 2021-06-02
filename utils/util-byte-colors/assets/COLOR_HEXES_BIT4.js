@@ -1,4 +1,5 @@
-export const XTERM_COLORS = [
+// XTERM_COLORS
+export const COLOR_HEXES_BIT4 = [
   '#000000', // black
   '#cd0000', // red3
   '#00cd00', // green3

@@ -1,4 +1,4 @@
-export const BIT3_COLOR_NAMES = [
+export const COLOR_NAMES_BIT3 = [
   'black',
   'red',
   'green',

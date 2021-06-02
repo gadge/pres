@@ -1,4 +1,4 @@
-export const GREYS = {
+export const GREY_HEXES_BYTE = {
   232: '#080808',
   233: '#121212',
   234: '#1c1c1c',
