@@ -1,6 +1,11 @@
-import { CSI }  from '@pres/enum-control-chars'
-import { SGR }  from '@pres/enum-csi-codes'
-import { last } from '@vect/vector'
+import { CSI }                            from '@pres/enum-control-chars'
+import { SGR }                            from '@pres/enum-csi-codes'
+import { byteToBackSgra, byteToForeSgra } from '@pres/util-byte-colors'
+import * as colors                        from '@pres/util-colors'
+import { DOT }                            from '@texting/enum-chars'
+import { DEF, NUM, STR }                  from '@typen/enum-data-types'
+import { concatSgr }                      from '../util'
+import { modeToSgra }                     from './modeToSgra'
 
 export class Mor extends Array {
   constructor(at, ch) { super(at, ch) }
@@ -67,42 +72,21 @@ export class Mor extends Array {
   atEq(mor) { return this.at === mor.at }
   chEq(mor) { return this.ch === mor.ch }
   eq(mor) { return this.at === mor.at && this.ch === mor.ch }
-  modeSgra() {
-    let out = ''
-    let mode = this.mode
-    if (mode & 1) { out += '1;' } // bold
-    if (mode & 2) { out += '4;' } // underline
-    if (mode & 4) { out += '5;' } // blink
-    if (mode & 8) { out += '7;' } // inverse
-    if (mode & 16) { out += '8;' } // invisible
-    return last(out) === ';' ? out.slice(0, -1) : out
+  toSgr(total = 256) {
+    let fore = this.fore,
+        back = this.back
+    let out = modeToSgra(this.mode)
+    out = concatSgr(out, byteToForeSgra(fore !== 0x1ff ? colors.reduce(fore, total) : fore))
+    out = concatSgr(out, byteToBackSgra(back !== 0x1ff ? colors.reduce(back, total) : back))
+    return CSI + out + SGR
   }
-  toSgr() {
-    let out = ''
-    let m = this.mode, f = this.fore, b = this.back
-    if (m & 1) { out += '1;' } // bold
-    if (m & 2) { out += '4;' } // underline
-    if (m & 4) { out += '5;' } // blink
-    if (m & 8) { out += '7;' } // inverse
-    if (m & 16) { out += '8;' } // invisible
-    if (f !== 0x1ff) {
-      if (f < 16) {
-        f += f < 8 ? 30 : f < 16 ? ( f -= 8, 90 ) : 0
-        out += f + ';'
-      }
-      else { out += '38;5;' + f + ';' }
-    }
-    if (b !== 0x1ff) {
-      if (b < 16) {
-        b += b < 8 ? 40 : b < 16 ? ( b -= 8, 100 ) : 0
-        out += b + ';'
-      }
-      else { out += '48;5;' + b + ';' }
-    }
-    return CSI + ( last(out) === ';' ? out.slice(0, -1) : out ) + SGR
-  }
-  render(text) {
-
+  render(text) { return this.toSgr() + text + CSI + SGR }
+  toString() { return this.modeSign + String(this.fore).padStart(3, '0') + DOT + String(this.back).padStart(3, '0') }
+  [Symbol.toPrimitive](hint) {
+    if (hint === NUM) { return ( this.mode & 0x1FF ) << 18 | ( this.fore & 0X1FF ) << 9 | this.back & 0x1FF }
+    if (hint === STR) { return this.render(this.toString()) }
+    if (hint === DEF) { return this.render(this.toString()) }
+    return this.render(this.toString())
   }
   copy() { return Mor.by(this) }
   toArray() { return [ this.at, this.ch ] }

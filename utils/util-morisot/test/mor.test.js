@@ -32,3 +32,5 @@ mor.inverse = mor.inverse
 mor.hide = !mor.hide
 
 mor.modeSign |> logger
+
+mor.render('shakespeare') |> logger

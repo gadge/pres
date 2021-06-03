@@ -391,13 +391,15 @@ export class Screen extends Node {
       let currAttr = this.dattr
 
       for (let x = 0, currCell, prevCell; ( x < currLine.length ) && ( currCell = currLine[x] ); x++) {
-        // let nextCell = currCell.copy()
-        let at = currCell[0]
-        let ch = currCell.ch
+        /** @type {Mor} */
+        let nextCell = currCell.copy()
+        let at = nextCell.at // let at = currCell.at
+        let ch = nextCell.ch // let ch = currCell.ch
         // Render the artificial cursor.
         if (
           cursor.artificial && !cursor._hidden && cursor._state && x === program.x && y === program.y) {
-          const cursorAttr = this.#cursorAttr(this.cursor, at)
+          const cursorAttr = this.#cursorAttr(this.cursor, nextCell.at)
+          nextCell.assign(cursorAttr)
           if (cursorAttr.ch) ch = cursorAttr.ch
           at = cursorAttr.at
         }
