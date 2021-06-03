@@ -6,6 +6,7 @@ import { DOT }                            from '@texting/enum-chars'
 import { DEF, NUM, STR }                  from '@typen/enum-data-types'
 import { concatSgr }                      from '../util'
 import { modeToSgra }                     from './modeToSgra'
+import { modeToSign }                     from './modeToSign'
 
 export class Mor extends Array {
   constructor(at, ch) { super(at, ch) }
@@ -49,16 +50,7 @@ export class Mor extends Array {
   set inverse(value) { return value ? ( this.mode |= 8 ) : ( this.mode &= ~8 ) }
   set hide(value) { return value ? ( this.mode |= 16 ) : ( this.mode &= ~16 ) }
 
-  get modeSign() {
-    const mode = this.mode
-    let tx = ''
-    tx += mode & 1 ? 'B' : '-' // bold
-    tx += mode & 2 ? 'U' : '-' // underline
-    tx += mode & 4 ? 'B' : '-' // blink
-    tx += mode & 8 ? 'I' : '-' // inverse
-    tx += mode & 16 ? 'H' : '-' // hide
-    return tx
-  }
+  get modeSign() { return modeToSign(this.mode) }
 
   clearBold() {
     let at = this.at
