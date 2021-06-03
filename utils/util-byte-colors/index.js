@@ -3,5 +3,6 @@ export {
 }                                                    from './assets'
 export { byteToGrey }                                from './src/byteToGrey'
 export { byteToWeb, byteToCoord, coordToWeb }        from './src/byteToWeb'
+export { hexToByte, hexToCoord, coordToByte, }       from './src/hexToByte'
 export { byteToHex }                                 from './src/byteToHex'
 export { byteToBackSgra, byteToForeSgra, validByte } from './src/byteToSgra'
