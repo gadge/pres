@@ -10,7 +10,7 @@ import { decoCrostab, says } from '@spare/logger'
 import { NUM }               from '@typen/enum-data-types'
 import { strategies }        from '@valjoux/strategies'
 import { byteToWeb }         from '../../dist/index.esm'
-import { hexToByte }         from '../../src/byteToWeb'
+import { hexToByte }         from '../../src/hexToByte'
 
 
 const { lapse, result } = strategies({
