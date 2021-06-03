@@ -182,21 +182,21 @@ class Manet {
     return hexList
   }
   static initializeBit3NamesMapping() {
-    Object.keys(COLOR_MAPPING).forEach(name => {
-      COLOR_MAPPING[name].forEach(offset => {
+    Object.keys(Manet.COLOR_MAPPING).forEach(name => {
+      Manet.COLOR_MAPPING[name].forEach(offset => {
         if (typeof offset === NUM) {
           Manet.SPARSE_NAMES[offset] = name
-          COLOR_MAPPING[offset] = COLOR_NAMES[name]
+          Manet.COLOR_MAPPING[offset] = COLOR_NAMES[name]
           return
         }
         let i = offset[0]
         const l = offset[1]
         for (; i <= l; i++) {
           Manet.SPARSE_NAMES[i] = name
-          COLOR_MAPPING[i] = COLOR_NAMES[name]
+          Manet.COLOR_MAPPING[i] = COLOR_NAMES[name]
         }
       })
-      delete COLOR_MAPPING[name]
+      delete Manet.COLOR_MAPPING[name]
     })
   }
 }

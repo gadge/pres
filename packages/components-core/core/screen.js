@@ -185,12 +185,12 @@ export class Screen extends Node {
     const lines = this.currLines
     if (xi < 0) xi = 0
     if (yi < 0) yi = 0
-    for (let line; yi < yl; yi++) {
+    for (let line, temp = Mor.build(at, ch); yi < yl; yi++) {
       if (!( line = lines[yi] )) break
       for (let i = xi, cell; i < xl; i++) {
         if (!( cell = line[i] )) break
-        if (override || at !== cell[0] || ch !== cell.ch) {
-          cell[0] = at, cell.ch = ch, line.dirty = true
+        if (override || !cell.eq(temp)) {
+          cell.assign(temp), line.dirty = true
         }
       }
     }
@@ -198,45 +198,45 @@ export class Screen extends Node {
   #reduceColor(color) { return colors.reduce(color, this.tput.colors) }
   #cursorAttr(cursor, normAttr) {
     const { shape } = cursor
-    let attr = normAttr || this.dattr,
+    let at = normAttr || this.dattr,
         cursorAttr,
         ch
     if (shape === 'line') {
-      attr &= ~( 0x1ff << 9 )
-      attr |= 7 << 9
+      at &= ~( 0x1ff << 9 )
+      at |= 7 << 9
       ch = '\u2502'
     }
     else if (shape === 'underline') {
-      attr &= ~( 0x1ff << 9 )
-      attr |= 7 << 9
-      attr |= 2 << 18
+      at &= ~( 0x1ff << 9 )
+      at |= 7 << 9
+      at |= 2 << 18
     }
     else if (shape === 'block') {
-      attr &= ~( 0x1ff << 9 )
-      attr |= 7 << 9
-      attr |= 8 << 18
+      at &= ~( 0x1ff << 9 )
+      at |= 7 << 9
+      at |= 8 << 18
     }
     else if (typeof shape === OBJ && shape) {
       cursorAttr = Element.prototype.sattr.call(cursor, shape)
       if (shape.bold || shape.underline || shape.blink || shape.inverse || shape.invisible) {
-        attr &= ~( 0x1ff << 18 )
-        attr |= ( ( cursorAttr >> 18 ) & 0x1ff ) << 18
+        at &= ~( 0x1ff << 18 )
+        at |= ( ( cursorAttr >> 18 ) & 0x1ff ) << 18
       }
       if (shape.fg) {
-        attr &= ~( 0x1ff << 9 )
-        attr |= ( ( cursorAttr >> 9 ) & 0x1ff ) << 9
+        at &= ~( 0x1ff << 9 )
+        at |= ( ( cursorAttr >> 9 ) & 0x1ff ) << 9 // paste cursorAttr's
       }
       if (shape.bg) {
-        attr &= ~( 0x1ff << 0 )
-        attr |= cursorAttr & 0x1ff
+        at &= ~( 0x1ff << 0 )
+        at |= cursorAttr & 0x1ff
       }
       if (shape.ch) { ch = shape.ch }
     }
     if (cursor.color != null) {
-      attr &= ~( 0x1ff << 9 )
-      attr |= cursor.color << 9
+      at &= ~( 0x1ff << 9 )
+      at |= cursor.color << 9
     }
-    return { ch, attr }
+    return Mor.build(at, ch)
   }
   screenshot(xi, xl, yi, yl, term) {
     if (xi == null) xi = 0
@@ -371,7 +371,8 @@ export class Screen extends Node {
     this.emit(RENDER)
   }
   draw(start, end) {
-    let fore, back,
+    let fore,
+        back,
         mode
     let main = ''
     let clr,
@@ -386,11 +387,11 @@ export class Screen extends Node {
           prevLine = this.prevLines[y]
       if (!currLine.dirty && !( cursor.artificial && y === program.y )) continue
       currLine.dirty = false
-
       let out = ''
       let currAttr = this.dattr
 
       for (let x = 0, currCell, prevCell; ( x < currLine.length ) && ( currCell = currLine[x] ); x++) {
+        // let nextCell = currCell.copy()
         let at = currCell[0]
         let ch = currCell.ch
         // Render the artificial cursor.
@@ -398,7 +399,7 @@ export class Screen extends Node {
           cursor.artificial && !cursor._hidden && cursor._state && x === program.x && y === program.y) {
           const cursorAttr = this.#cursorAttr(this.cursor, at)
           if (cursorAttr.ch) ch = cursorAttr.ch
-          at = cursorAttr.attr
+          at = cursorAttr.at
         }
         // Take advantage of xterm's back_color_erase feature by using a
         // lookahead. Stop spitting out so many damn spaces. NOTE: Is checking
@@ -563,6 +564,17 @@ export class Screen extends Node {
       this.program._write(pre + main + post)
     }
     // this.emit('draw');
+  }
+  // This is how ncurses does it.
+  // Scroll down (up cursor-wise).
+  blankLine(ch, dirty) {
+    const out = []
+    const tempCell = Mor.build(this.dattr, ch || ' ')
+    for (let x = 0; x < this.cols; x++) {
+      out[x] = tempCell.copy() // out[x] = [ this.dattr, ch || ' ' ]
+    }
+    out.dirty = dirty
+    return out
   }
   // boxes with clean sides?
   cleanSides(el) {
@@ -944,14 +956,6 @@ export class Screen extends Node {
     })
   }
 
-// This is how ncurses does it.
-// Scroll down (up cursor-wise).
-  blankLine(ch, dirty) {
-    const out = []
-    for (let x = 0; x < this.cols; x++) { out[x] = [ this.dattr, ch || ' ' ] }
-    out.dirty = dirty
-    return out
-  }
 // This is how ncurses does it.
 // Scroll up (down cursor-wise).
   insertLine(n, y, top, bottom) {

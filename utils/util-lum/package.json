@@ -15,11 +15,11 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@palett/cards": "^0.8.5",
-    "@palett/convert": "^0.8.5",
-    "@palett/fluo": "^0.8.5",
-    "@palett/presets": "^0.8.5",
-    "@palett/projector-factory": "^0.8.5",
+    "@palett/cards": "^0.8.8",
+    "@palett/convert": "^0.8.8",
+    "@palett/fluo": "^0.8.8",
+    "@palett/presets": "^0.8.8",
+    "@palett/projector-factory": "^0.8.8",
     "@pres/enum-control-chars": "^0.2.8",
     "@pres/enum-csi-codes": "^0.2.8",
     "@pres/util-colors": "^0.2.8",
