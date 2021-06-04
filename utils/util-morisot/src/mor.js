@@ -4,9 +4,9 @@ import { byteToBackSgra, byteToForeSgra } from '@pres/util-byte-colors'
 import * as colors                        from '@pres/util-colors'
 import { DOT }                            from '@texting/enum-chars'
 import { DEF, NUM, STR }                  from '@typen/enum-data-types'
-import { concatSgr }                      from '../util'
-import { modeToSgra }                     from './modeToSgra'
-import { modeToSign }                     from './modeToSign'
+import { concatSgr }  from '../util'
+import { modeToSgra } from './mode/modeToSgra'
+import { modeToSign } from './mode/modeToSign'
 
 export class Mor extends Array {
   constructor(at, ch) { super(at, ch) }

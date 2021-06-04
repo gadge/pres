@@ -1,4 +1,4 @@
-import { concatSgr } from '../util'
+import { concatSgr } from '../../util'
 
 export const modeToSgra = mode => {
   let out = ''
