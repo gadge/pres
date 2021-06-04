@@ -1,1 +1,0 @@
-export const concatSgr = (tx, el) => tx.length ? tx + ';' + el : el

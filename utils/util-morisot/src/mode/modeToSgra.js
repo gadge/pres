@@ -1,4 +1,4 @@
-import { concatSgr } from '../../util'
+import { concatSgr } from '@palett/convert'
 
 export const modeToSgra = mode => {
   let out = ''
