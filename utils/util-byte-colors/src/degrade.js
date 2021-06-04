@@ -1,7 +1,7 @@
 import { hexToHsl }  from '@palett/convert'
 import { byteToHex } from './byteToHex'
-import { hslToBit3 } from './hslToBit3'
-import { hslToBit4 } from './hslToBit4'
+import { hslToBit3 } from './convert/hslToBit3'
+import { hslToBit4 } from './convert/hslToBit4'
 
 export const degrade = (index, total) => {
   if (total <= 16 && 16 <= index) return index |> byteToHex |> hexToHsl |> hslToBit4

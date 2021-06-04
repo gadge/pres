@@ -5,10 +5,10 @@ import { SPARSE_NAMES }       from '@pres/util-colors'
 import { decoMatrix, logger } from '@spare/logger'
 import { iso }              from '@vect/matrix'
 import { COLOR_NAMES_BIT3 } from '../assets'
-import { hslToBit3 }        from '../src/hslToBit3'
-import { byteToHex }    from '../src/byteToHex'
-import { byteToCoord }  from '../src/byteToWeb'
-import { NAME_MAPPING } from './resources/NAME_MAPPING'
+import { hslToBit3 }        from '../src/convert/hslToBit3'
+import { byteToHex }        from '../src/byteToHex'
+import { byteToCoord }      from '../src/convert/byteToWeb'
+import { NAME_MAPPING }     from './resources/NAME_MAPPING'
 
 const matrix = iso(36, 7, null)
 

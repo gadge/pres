@@ -1,4 +1,4 @@
-import { BLA, BLU, CYA, GRE, MAG, RED, WHI, YEL } from '../assets/index'
+import { BLA, BLU, CYA, GRE, MAG, RED, WHI, YEL } from '../../assets'
 
 const SLOPE = 5 / 3
 

@@ -2,7 +2,7 @@ import { rand }                 from '@aryth/rand'
 import { rgbToHex }             from '@palett/convert'
 import { hexToStr, rgbToStr }   from '@palett/stringify'
 import { logger, xr }           from '@spare/logger'
-import { byteToWeb, hexToByte } from '../src/byteToWeb'
+import { byteToWeb, hexToByte } from '../src/convert/byteToWeb'
 
 for (let i = 0; i < 32; i++) {
   const rgb = [ rand(255), rand(255), rand(255) ]

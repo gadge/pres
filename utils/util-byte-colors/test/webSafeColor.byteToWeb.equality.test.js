@@ -5,7 +5,7 @@ import { logger }                                     from '@spare/logger'
 import { SP }                                         from '@texting/enum-chars'
 import { zipper }                                     from '@vect/vector'
 import { WEB_SAFE_MATRIX_HEX, WEB_SAFE_MATRIX_INDEX } from '../assets'
-import { byteToWeb, hexToByte }                       from '../src/byteToWeb'
+import { byteToWeb, hexToByte }                       from '../src/convert/byteToWeb'
 
 zipper(WEB_SAFE_MATRIX_INDEX, WEB_SAFE_MATRIX_HEX, (indexRow, hexRow, i) => {
   let row = ''

@@ -1,7 +1,7 @@
 import { range }            from '@vect/vector'
 import { COLOR_HEXES_BIT4 } from '../../assets'
-import { byteToGrey }       from '../../src/byteToGrey'
-import { byteToWeb }        from '../../src/byteToWeb'
+import { byteToGrey }       from '../../src/convert/byteToGrey'
+import { byteToWeb }        from '../../src/convert/byteToWeb'
 
 export const COLOR_HEXES_BYTE = [].concat(
   COLOR_HEXES_BIT4,

@@ -1,6 +1,6 @@
 import {
   BLA, BLA_LITE, BLU, BLU_LITE, CYA, CYA_LITE, GRE, GRE_LITE, MAG, MAG_LITE, RED, RED_LITE, WHI, WHI_LITE, YEL, YEL_LITE
-} from '../assets/index'
+} from '../../assets'
 
 const SLOPE = 5 / 3
 

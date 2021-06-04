@@ -1,21 +1,12 @@
-import { hexToInt } from '@palett/convert'
+import { hexToShort } from '@palett/convert'
+import { hexToBit4 }  from './convert/hexToBit4'
+import { srgbToGrey } from './convert/srgbToGrey'
+import { srgbToWeb }  from './convert/srgbToWeb'
 
-export function hexToByte(hex) {
-  const n = hexToInt(hex)
-  const r = Math.round(( n >> 20 & 0xf ) / 3) // get R from RrGgBb
-  const g = Math.round(( n >> 12 & 0xf ) / 3) // get G from RrGgBb
-  const b = Math.round(( n >> 4 & 0xf ) / 3) // get B from RrGgBb
-  return ( r * 36 ) + ( g * 6 + b ) + 16 //  x = g * 6 + b, y = r
-}
+const CACHE = {}
 
-export function hexToCoord(hex) {
-  const n = hexToInt(hex)
-  const r = Math.round(( n >> 20 & 0xf ) / 3) // get R from RrGgBb
-  const g = Math.round(( n >> 12 & 0xf ) / 3) // get G from RrGgBb
-  const b = Math.round(( n >> 4 & 0xf ) / 3) // get B from RrGgBb
-  return [ g * 6 + b, r ] //  x = g * 6 + b, y = r
-}
-
-export function coordToByte(x, y) {
-  return ( y * 36 ) + x + 16
+export const hexToByte = hex => {
+  const s = hexToShort(hex)
+  const r = s >> 8 & 0xf, g = s >> 4 & 0xf, b = s & 0xf
+  return CACHE[hex] ?? ( CACHE[hex] = hexToBit4(hex) ?? srgbToGrey(r, g, b) ?? srgbToWeb(r, g, b) )
 }

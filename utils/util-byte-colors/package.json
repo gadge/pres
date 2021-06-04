@@ -16,7 +16,9 @@
   },
   "dependencies": {
     "@typen/enum-data-types": "^0.1.16",
-    "@typen/nullish": "^0.1.16"
+    "@typen/nullish": "^0.1.16",
+    "@palett/convert": "^0.8.10",
+    "@vect/vector": "^0.3.10"
   },
   "repository": {
     "type": "git",
