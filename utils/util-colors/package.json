@@ -16,7 +16,10 @@
   },
   "dependencies": {
     "@typen/enum-data-types": "^0.1.16",
-    "@typen/nullish": "^0.1.16"
+    "@typen/nullish": "^0.1.16",
+    "@pres/enum-control-chars": "^0.2.11",
+    "@pres/enum-csi-codes": "^0.2.11",
+    "@vect/vector": "^0.3.10"
   },
   "repository": {
     "type": "git",

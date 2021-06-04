@@ -318,9 +318,10 @@ export class Screen extends Node {
     return ( m << 18 ) | ( f << 9 ) | b
   }
   // Convert our own attribute format to an SGR string.
-  codeAttr(code) {
+  codeAttr(attr) {return this.attrToSgra(attr) }
+  attrToSgra(attr) {
     let out = ''
-    let m = ( code >> 18 ) & 0x1ff, f = ( code >> 9 ) & 0x1ff, b = code & 0x1ff
+    let m = ( attr >> 18 ) & 0x1ff, f = ( attr >> 9 ) & 0x1ff, b = attr & 0x1ff
     if (m & 1) { out += '1;' } // bold
     if (m & 2) { out += '4;' } // underline
     if (m & 4) { out += '5;' } // blink
@@ -613,9 +614,7 @@ export class Screen extends Node {
       for (let y = yi; y < yl; y++) {
         if (!( line = this.prevLines[y] ) || !( cell = line[x] )) break
         cell = line[x]
-        if (cell[0] !== initCell[0] || cell.ch !== initCell.ch) {
-          return pos._cleanSides = false
-        }
+        if (!cell.eq(initCell)) return pos._cleanSides = false
       }
     }
     for (let x = pos.xl, line, cell; x < this.width; x++) {
@@ -623,9 +622,7 @@ export class Screen extends Node {
       const initCell = line[x]
       for (let y = yi; y < yl; y++) {
         if (!( line = this.prevLines[y] ) || !( cell = line[x] )) break
-        if (cell[0] !== initCell[0] || cell.ch !== initCell.ch) {
-          return pos._cleanSides = false
-        }
+        if (!cell.eq(initCell)) return pos._cleanSides = false
       }
     }
     return pos._cleanSides = true

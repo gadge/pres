@@ -19,7 +19,10 @@
     "@pres/enum-csi-codes": "^0.2.11",
     "@pres/util-colors": "^0.2.11",
     "@typen/enum-data-types": "^0.1.16",
-    "@typen/nullish": "^0.1.16"
+    "@typen/nullish": "^0.1.16",
+    "@pres/util-byte-colors": "^0.2.11",
+    "@texting/enum-chars": "^0.0.10",
+    "@pres/util-cezanne": "^0.2.11"
   },
   "repository": {
     "type": "git",
