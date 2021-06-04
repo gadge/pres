@@ -1,8 +1,8 @@
 import { makeEmbedded }      from '@foba/util'
+import { concatSgr }         from '@palett/util-ansi'
 import { decoCrostab, says } from '@spare/logger'
 import { strategies }        from '@valjoux/strategies'
 import { last }              from '@vect/vector'
-import { concatSgr }         from '../../util'
 
 
 const { lapse, result } = strategies({
