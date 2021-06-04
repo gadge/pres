@@ -1,6 +1,6 @@
 {
   "name": "@pres/terminfo-parser",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "description": "Terminfo parser for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -16,8 +16,8 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/enum-terminfo-alias": "^0.2.13",
-    "@pres/util-helpers": "^0.2.13",
+    "@pres/enum-terminfo-alias": "^0.2.14",
+    "@pres/util-helpers": "^0.2.14",
     "@typen/enum-data-types": "^0.1.16"
   },
   "repository": {
@@ -40,5 +40,5 @@
     "url": "https://github.com/hoyeungw/pres/cluster"
   },
   "homepage": "https://github.com/hoyeungw/pres/cluster#readme",
-  "gitHead": "00d9828078a04b0a62edcafd4d041a99e23dc41f"
+  "gitHead": "4e0a6a0d819185caa8d129e991bb986b6cb0b365"
 }

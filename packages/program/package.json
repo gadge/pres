@@ -1,6 +1,6 @@
 {
   "name": "@pres/program",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "description": "Curses like basic functionality for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -17,15 +17,15 @@
   "dependencies": {
     "@geia/enum-signals": "^0.0.19",
     "@ject/noop": "^0.0.12",
-    "@pres/enum-control-chars": "^0.2.13",
-    "@pres/enum-csi-codes": "^0.2.13",
-    "@pres/enum-events": "^0.2.13",
-    "@pres/enum-key-names": "^0.2.13",
-    "@pres/events": "^0.2.13",
-    "@pres/gpm-client": "^0.2.13",
-    "@pres/terminfo-parser": "^0.2.13",
-    "@pres/util-colors": "^0.2.13",
-    "@pres/util-helpers": "^0.2.13",
+    "@pres/enum-control-chars": "^0.2.14",
+    "@pres/enum-csi-codes": "^0.2.14",
+    "@pres/enum-events": "^0.2.14",
+    "@pres/enum-key-names": "^0.2.14",
+    "@pres/events": "^0.2.14",
+    "@pres/gpm-client": "^0.2.14",
+    "@pres/terminfo-parser": "^0.2.14",
+    "@pres/util-colors": "^0.2.14",
+    "@pres/util-helpers": "^0.2.14",
     "@spare/logger": "^0.11.16",
     "@texting/enum-chars": "^0.0.10",
     "@typen/enum-data-types": "^0.1.16"
@@ -50,5 +50,5 @@
     "url": "https://github.com/hoyeungw/pres/cluster"
   },
   "homepage": "https://github.com/hoyeungw/pres/cluster#readme",
-  "gitHead": "00d9828078a04b0a62edcafd4d041a99e23dc41f"
+  "gitHead": "4e0a6a0d819185caa8d129e991bb986b6cb0b365"
 }

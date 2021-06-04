@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-morisot",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "description": "Morisot color scheme for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -17,11 +17,11 @@
   "dependencies": {
     "@palett/convert": "^0.8.12",
     "@palett/util-ansi": "^0.8.12",
-    "@pres/enum-control-chars": "^0.2.13",
-    "@pres/enum-csi-codes": "^0.2.13",
-    "@pres/util-byte-colors": "^0.2.13",
-    "@pres/util-cezanne": "^0.2.13",
-    "@pres/util-colors": "^0.2.13",
+    "@pres/enum-control-chars": "^0.2.14",
+    "@pres/enum-csi-codes": "^0.2.14",
+    "@pres/util-byte-colors": "^0.2.14",
+    "@pres/util-cezanne": "^0.2.14",
+    "@pres/util-colors": "^0.2.14",
     "@texting/enum-chars": "^0.0.10",
     "@typen/enum-data-types": "^0.1.16",
     "@typen/nullish": "^0.1.16"
@@ -46,5 +46,5 @@
     "url": "https://github.com/hoyeungw/pres/cluster"
   },
   "homepage": "https://github.com/hoyeungw/pres/cluster#readme",
-  "gitHead": "cd08e08c747c79718f67108b82bd666cff637740"
+  "gitHead": "4e0a6a0d819185caa8d129e991bb986b6cb0b365"
 }

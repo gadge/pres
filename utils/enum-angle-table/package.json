@@ -1,6 +1,6 @@
 {
   "name": "@pres/enum-angle-table",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "description": "Angle table for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -34,5 +34,5 @@
     "url": "https://github.com/hoyeungw/pres/cluster"
   },
   "homepage": "https://github.com/hoyeungw/pres/cluster#readme",
-  "gitHead": "cd08e08c747c79718f67108b82bd666cff637740"
+  "gitHead": "4e0a6a0d819185caa8d129e991bb986b6cb0b365"
 }

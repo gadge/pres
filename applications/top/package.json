@@ -1,6 +1,6 @@
 {
   "name": "@pres/top",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "description": "pres graphic top",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -18,8 +18,8 @@
     "lint": "prettier --single-quote --trailing-comma es5 --write 'src/**/*.js'"
   },
   "dependencies": {
-    "@pres/enum-events": "^0.2.13",
-    "@pres/terminal-interface": "^0.2.13",
+    "@pres/enum-events": "^0.2.14",
+    "@pres/terminal-interface": "^0.2.14",
     "@valjoux/linger": "^0.2.11",
     "systeminformation": "^5.7.4"
   },
@@ -49,5 +49,5 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "gitHead": "00d9828078a04b0a62edcafd4d041a99e23dc41f"
+  "gitHead": "4e0a6a0d819185caa8d129e991bb986b6cb0b365"
 }
