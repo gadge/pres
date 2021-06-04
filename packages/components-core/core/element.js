@@ -11,6 +11,7 @@ import {
   MOVE,
   NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
 }                        from '@pres/enum-events'
+import { sgraToAttr }    from '@pres/util-colors'
 import * as colors       from '@pres/util-colors'
 import * as helpers      from '@pres/util-helpers'
 import * as unicode      from '@pres/util-unicode'
@@ -609,27 +610,23 @@ export class Element extends Node {
     return out
   }
   #parseAttr(lines) {
-    const dattr = this.sattr(this.style)
-    let attr = dattr
-    const attrs = []
-    let line,
-        i,
-        j,
-        c
-    if (lines[0].attr === attr) return void 0
-    for (j = 0; j < lines.length; j++) {
+    const normAttr = this.sattr(this.style)
+    let baseAttr = normAttr
+    const attrList = []
+    if (lines[0].attr === baseAttr) return void 0
+    for (let j = 0, line; j < lines.length; j++) {
       line = lines[j]
-      attrs[j] = attr
-      for (i = 0; i < line.length; i++) {
+      attrList[j] = baseAttr
+      for (let i = 0, matches, sgra; i < line.length; i++) {
         if (line[i] === ESC) {
-          if (( c = /^\x1b\[[\d;]*m/.exec(line.slice(i)) )) {
-            attr = this.screen.attrCode(c[0], attr, dattr)
-            i += c[0].length - 1
+          if (( matches = /^\x1b\[[\d;]*m/.exec(line.slice(i)) ) && ( [ sgra ] = matches )) {
+            baseAttr = sgraToAttr(sgra, baseAttr, normAttr)
+            i += sgra.length - 1
           }
         }
       }
     }
-    return attrs
+    return attrList
   }
   _render = Element.prototype.render
   render() {
@@ -651,9 +648,9 @@ export class Element extends Node {
     let ci = this.contLines.ci[coords.base],
         borderAttr,
         normAttr,
-        c,
         visible,
         i
+
     const bch = this.ch
     if (coords.base >= this.contLines.ci.length) ci = this._pcontent.length
     this.lpos = coords
@@ -678,7 +675,7 @@ export class Element extends Node {
           if (!( line = lines[y] )) break
           for (let x = Math.max(xi, 0); x < xl; x++) {
             if (!( cell = line[x] )) break
-            cell[0] = colors.blend(currAttr, cell[0])
+            cell.at = colors.blend(currAttr, cell.at)
             line.dirty = true // lines[y][x][1] = bch;
           }
         }
@@ -718,10 +715,11 @@ export class Element extends Node {
         //   coords._contentEnd = { x: x - xi, y: y - yi };
         // }
         // Handle escape codes.
+        let matches, sgra
         while (ch === ESC) {
-          if (( c = /^\x1b\[[\d;]*m/.exec(content.slice(ci - 1)) )) {
-            ci += c[0].length - 1
-            currAttr = this.screen.attrCode(c[0], currAttr, normAttr)
+          if (( matches = /^\x1b\[[\d;]*m/.exec(content.slice(ci - 1)) ) && ( [ sgra ] = matches )) {
+            ci += sgra.length - 1
+            currAttr = sgraToAttr(sgra, currAttr, normAttr)
             // Ignore foreground changes for selected items.
             if (this.sup._isList && this.sup.interactive && this.sup.items[this.sup.selected] === this && this.sup.options.invertSelected !== false) {
               currAttr = ( currAttr & ~( 0x1ff << 9 ) ) | ( normAttr & ( 0x1ff << 9 ) )
@@ -749,16 +747,15 @@ export class Element extends Node {
           for (; x < xl; x++) {
             if (!( cell = line[x] )) break
             if (this.style.transparent) {
-              cell[0] = colors.blend(currAttr, cell[0])
-              if (content[ci]) cell.ch = ch
+              cell.inject(
+                colors.blend(currAttr, cell.at),
+                content[ci] ? ch : null
+              )
               line.dirty = true
             }
-            else {
-              if (currAttr !== cell[0] || ch !== cell.ch) {
-                cell[0] = currAttr
-                cell.ch = ch
-                line.dirty = true
-              }
+            else if (cell.at !== currAttr || cell.ch !== ch) {
+              cell.inject(currAttr, ch)
+              line.dirty = true
             }
           }
           continue
@@ -785,16 +782,17 @@ export class Element extends Node {
           }
         }
         if (this._noFill) continue
-        const _cell = line[x]
+        const nextCell = line[x]
         if (this.style.transparent) {
-          _cell[0] = colors.blend(currAttr, _cell[0])
-          if (content[ci]) _cell.ch = ch
+          nextCell.inject(
+            colors.blend(currAttr, nextCell.at),
+            content[ci] ? ch : null
+          )
           line.dirty = true
         }
         else {
-          if (currAttr !== cell[0] || ch !== cell.ch) {
-            _cell[0] = currAttr
-            _cell.ch = ch
+          if (currAttr !== cell.at || ch !== cell.ch) {
+            nextCell.inject(currAttr, ch)
             line.dirty = true
           }
         }
@@ -823,7 +821,10 @@ export class Element extends Node {
         }
         ch = this.scrollbar.ch || ' '
         currAttr = this.sattr(this.style.scrollbar, this.style.scrollbar.fg || this.style.fg, this.style.scrollbar.bg || this.style.bg)
-        if (currAttr !== cell[0] || ch !== cell.ch) { cell[0] = currAttr, cell.ch = ch, lines[y].dirty = true }
+        if (currAttr !== cell.at || ch !== cell.ch) {
+          cell.inject(currAttr, ch)
+          lines[y].dirty = true
+        }
       }
     }
     if (this.border) xi--, xl++, yi--, yl++
@@ -867,16 +868,14 @@ export class Element extends Node {
         else if (this.border.type === 'bg') { ch = this.border.ch }
         if (!this.border.top && x !== xi && x !== xl - 1) {
           ch = ' '
-          if (normAttr !== cell[0] || ch !== cell.ch) {
-            cell[0] = normAttr
-            cell.ch = ch
+          if (cell.at !== normAttr || cell.ch !== ch) {
+            cell.inject(normAttr, ch)
             lines[y].dirty = true
             continue
           }
         }
-        if (borderAttr !== cell[0] || ch !== cell.ch) {
-          cell[0] = borderAttr
-          cell.ch = ch
+        if (cell.at !== borderAttr || cell.ch !== ch) {
+          cell.inject(borderAttr, ch)
           line.dirty = true
         }
       }
@@ -887,17 +886,15 @@ export class Element extends Node {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
             if (!coords.noleft)
-              if (borderAttr !== cell[0] || ch !== cell.ch) {
-                cell[0] = borderAttr
-                cell.ch = ch
+              if (cell.at !== borderAttr || cell.ch !== ch) {
+                cell.inject(borderAttr, ch)
                 line.dirty = true
               }
           }
           else {
             ch = ' '
-            if (normAttr !== cell[0] || ch !== cell.ch) {
-              cell[0] = normAttr
-              cell.ch = ch
+            if (cell.at !== normAttr || cell.ch !== ch) {
+              cell.inject(normAttr, ch)
               line.dirty = true
             }
           }
@@ -907,17 +904,15 @@ export class Element extends Node {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
             if (!coords.noright)
-              if (borderAttr !== cell[0] || ch !== cell.ch) {
-                cell[0] = borderAttr
-                cell.ch = ch
+              if (cell.at !== borderAttr || cell.ch !== ch) {
+                cell.inject(borderAttr, ch)
                 line.dirty = true
               }
           }
           else {
             ch = ' '
-            if (normAttr !== cell[0] || ch !== cell.ch) {
-              cell[0] = normAttr
-              cell.ch = ch
+            if (cell.at !== normAttr || cell.ch !== ch) {
+              cell.inject(normAttr, ch)
               line.dirty = true
             }
           }
@@ -956,16 +951,14 @@ export class Element extends Node {
         else if (this.border.type === 'bg') { ch = this.border.ch }
         if (!this.border.bottom && x !== xi && x !== xl - 1) {
           ch = ' '
-          if (normAttr !== cell[0] || ch !== cell.ch) {
-            cell[0] = normAttr
-            cell.ch = ch
+          if (cell.at !== normAttr || cell.ch !== ch) {
+            cell.inject(normAttr, ch)
             line.dirty = true
           }
           continue
         }
-        if (borderAttr !== cell[0] || ch !== cell.ch) {
-          cell[0] = borderAttr
-          cell.ch = ch
+        if (cell.at !== borderAttr || cell.ch !== ch) {
+          cell.inject(borderAttr, ch)
           line.dirty = true
         }
       }
@@ -977,7 +970,7 @@ export class Element extends Node {
         for (let x = xl, cell; x < xl + 2; x++) {
           if (!( cell = line[x] )) break
           // lines[y][x][0] = colors.blend(this.dattr, lines[y][x][0]);
-          cell[0] = colors.blend(cell[0])
+          cell.at = colors.blend(cell.at)
           line.dirty = true
         }
       }
@@ -987,7 +980,7 @@ export class Element extends Node {
         for (let x = Math.max(xi + 1, 0), cell; x < xl; x++) {
           if (!( cell = line[x] )) break
           // lines[y][x][0] = colors.blend(this.dattr, lines[y][x][0]);
-          cell[0] = colors.blend(cell[0])
+          cell.at = colors.blend(cell.at)
           line.dirty = true
         }
       }

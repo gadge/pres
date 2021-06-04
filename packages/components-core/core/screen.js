@@ -14,6 +14,7 @@ import {
   RESIZE, WARNING, WHEELDOWN, WHEELUP,
 }                                                                      from '@pres/enum-events'
 import { Program }                                                     from '@pres/program'
+import { attrToSgra, sgraToAttr }                                      from '@pres/util-colors'
 import * as colors                                                     from '@pres/util-colors'
 import * as helpers                                                    from '@pres/util-helpers'
 import { Mor }                                                         from '@pres/util-morisot'
@@ -264,7 +265,7 @@ export class Screen extends Node {
               if (( ( nextAttr >> 9 ) & 0x1ff ) === 257) nextAttr |= 0x1ff << 9
               if (( ( nextAttr ) & 0x1ff ) === 256) nextAttr |= 0x1ff
             }
-            out += this.codeAttr(nextAttr)
+            out += attrToSgra(nextAttr, this.tput.colors)
           }
         }
         if (this.fullUnicode && unicode.charWidth(cell.ch) === 2) { x === xl - 1 ? ( ch = ' ' ) : x++ }
@@ -278,73 +279,8 @@ export class Screen extends Node {
     if (term) { this.dattr = tempAttr }
     return main
   }
-  // Convert an SGR string to our own attribute format.
-  attrCode(sgr, cur, def) {
-    const ve = sgr.slice(2, -1).split(';')
-    let m = ( cur >> 18 ) & 0x1ff, f = ( cur >> 9 ) & 0x1ff, b = ( cur ) & 0x1ff
-    if (!ve[0]) ve[0] = '0'
-    for (let i = 0, hi = ve.length, c; i < hi; i++) {
-      c = +ve[i] || 0
-      c === 0 ? ( m = def >> 18 & 0x1ff, f = def >> 9 & 0x1ff, b = def & 0x1ff )
-        : c === 1 ? ( m |= 1 ) // bold
-        : c === 4 ? ( m |= 2 ) // underline
-          : c === 5 ? ( m |= 4 ) // blink
-            : c === 7 ? ( m |= 8 ) // inverse
-              : c === 8 ? ( m |= 16 ) // invisible
-                : c === 22 ? ( m = def >> 18 & 0x1ff )
-                  : c === 24 ? ( m = def >> 18 & 0x1ff )
-                    : c === 25 ? ( m = def >> 18 & 0x1ff )
-                      : c === 27 ? ( m = def >> 18 & 0x1ff )
-                        : c === 28 ? ( m = def >> 18 & 0x1ff )
-                          : c >= 30 && c <= 37 ? ( f = c - 30 )
-                            : c === 38 && ( c = +ve[++i] ) ? (
-                                f = c === 5 ? +ve[++i]
-                                  : c === 2 ? ( ( f = colors.match(+ve[++i], +ve[++i], +ve[++i]) ) === -1 ? def >> 9 & 0x1ff : f )
-                                    : f
-                              )
-                              : c === 39 ? ( f = def >> 9 & 0x1ff )
-                                : c >= 90 && c <= 97 ? ( f = c - 90, f += 8 )
-                                  : c >= 40 && c <= 47 ? ( b = c - 40 )
-                                    : c === 48 && ( c = +ve[++i] ) ? (
-                                        b = c === 5 ? +ve[++i]
-                                          : c === 2 ? ( ( b = colors.match(+ve[++i], +ve[++i], +ve[++i]) ) === -1 ? def & 0x1ff : b )
-                                            : b
-                                      )
-                                      : c === 49 ? ( b = def & 0x1ff )
-                                        : c === 100 ? ( f = def >> 9 & 0x1ff, b = def & 0x1ff )
-                                          : c >= 100 && c <= 107 ? ( b = c - 100, b += 8 )
-                                            : void 0
-    }
-    return ( m << 18 ) | ( f << 9 ) | b
-  }
-  // Convert our own attribute format to an SGR string.
-  codeAttr(attr) {return this.attrToSgra(attr) }
-  attrToSgra(attr) {
-    let out = ''
-    let m = ( attr >> 18 ) & 0x1ff, f = ( attr >> 9 ) & 0x1ff, b = attr & 0x1ff
-    if (m & 1) { out += '1;' } // bold
-    if (m & 2) { out += '4;' } // underline
-    if (m & 4) { out += '5;' } // blink
-    if (m & 8) { out += '7;' } // inverse
-    if (m & 16) { out += '8;' } // invisible
-    if (f !== 0x1ff) {
-      f = this.#reduceColor(f)
-      if (f < 16) {
-        f += f < 8 ? 30 : f < 16 ? ( f -= 8, 90 ) : 0
-        out += f + ';'
-      }
-      else { out += '38;5;' + f + ';' }
-    }
-    if (b !== 0x1ff) {
-      b = this.#reduceColor(b)
-      if (b < 16) {
-        b += b < 8 ? 40 : b < 16 ? ( b -= 8, 100 ) : 0
-        out += b + ';'
-      }
-      else { out += '48;5;' + b + ';' }
-    }
-    return CSI + ( last(out) === ';' ? out.slice(0, -1) : out ) + SGR
-  }
+  attrCode(sgra, baseAttr, normAttr) { return sgraToAttr(sgra, baseAttr, normAttr) } // sgra to blessed attr
+  codeAttr(attr) { return attrToSgra(attr, this.tput.colors) } // blessed attr to sgra
   render() {
     // const [ h, w ] = size(this.currLines)
     // console.log('>> [screen.render]', this.currLines)
@@ -424,7 +360,7 @@ export class Screen extends Node {
           }
           if (clr && neq) {
             lx = -1, ly = -1
-            if (at !== currAttr) { out += this.codeAttr(at), currAttr = at }
+            if (at !== currAttr) { out += attrToSgra(at, this.tput.colors), currAttr = at }
             out += this.tput.cup(y, x), out += this.tput.el()
             for (let i = x, prevCell; ( i < currLine.length ) && ( prevCell = prevLine[i] ); i++) { prevCell[0] = at, prevCell.ch = ' ' }
             break
