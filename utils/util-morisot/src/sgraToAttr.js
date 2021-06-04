@@ -1,4 +1,4 @@
-import { match } from '@pres/util-colors/src/match'
+import { toByte } from '@pres/util-byte-colors'
 
 export function sgraToAttr(sgra, baseAttr, normAttr) {
   const ve = sgra.slice(2, -1).split(';')
@@ -20,7 +20,7 @@ export function sgraToAttr(sgra, baseAttr, normAttr) {
                         : c >= 30 && c <= 37 ? ( f = c - 30 )
                           : c === 38 && ( c = +ve[++i] ) ? (
                               f = c === 5 ? +ve[++i]
-                                : c === 2 ? ( ( f = match(+ve[++i], +ve[++i], +ve[++i]) ) === -1 ? normAttr >> 9 & 0x1ff : f )
+                                : c === 2 ? ( ( f = toByte(+ve[++i], +ve[++i], +ve[++i]) ) === -1 ? normAttr >> 9 & 0x1ff : f )
                                   : f
                             )
                             : c === 39 ? ( f = normAttr >> 9 & 0x1ff )
@@ -28,7 +28,7 @@ export function sgraToAttr(sgra, baseAttr, normAttr) {
                                 : c >= 40 && c <= 47 ? ( b = c - 40 )
                                   : c === 48 && ( c = +ve[++i] ) ? (
                                       b = c === 5 ? +ve[++i]
-                                        : c === 2 ? ( ( b = match(+ve[++i], +ve[++i], +ve[++i]) ) === -1 ? normAttr & 0x1ff : b )
+                                        : c === 2 ? ( ( b = toByte(+ve[++i], +ve[++i], +ve[++i]) ) === -1 ? normAttr & 0x1ff : b )
                                           : b
                                     )
                                     : c === 49 ? ( b = normAttr & 0x1ff )

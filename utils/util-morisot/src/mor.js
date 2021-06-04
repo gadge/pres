@@ -1,12 +1,13 @@
+import { concatSgr }                      from '@palett/util-ansi'
 import { CSI }                            from '@pres/enum-control-chars'
 import { SGR }                            from '@pres/enum-csi-codes'
 import { byteToBackSgra, byteToForeSgra } from '@pres/util-byte-colors'
 import * as colors                        from '@pres/util-colors'
 import { DOT }                            from '@texting/enum-chars'
 import { DEF, NUM, STR }                  from '@typen/enum-data-types'
-import { concatSgr }  from '../util'
-import { modeToSgra } from './mode/modeToSgra'
-import { modeToSign } from './mode/modeToSign'
+import { attrToSgra }                     from './attrToSgra'
+import { modeToSgra }                     from './mode/modeToSgra'
+import { modeToSign }                     from './mode/modeToSign'
 
 export class Mor extends Array {
   constructor(at, ch) { super(at, ch) }
@@ -64,14 +65,7 @@ export class Mor extends Array {
   atEq(mor) { return this.at === mor.at }
   chEq(mor) { return this.ch === mor.ch }
   eq(mor) { return this.at === mor.at && this.ch === mor.ch }
-  toSgr(total = 256) {
-    let fore = this.fore,
-        back = this.back
-    let out = modeToSgra(this.mode)
-    out = concatSgr(out, byteToForeSgra(fore !== 0x1ff ? colors.reduce(fore, total) : fore))
-    out = concatSgr(out, byteToBackSgra(back !== 0x1ff ? colors.reduce(back, total) : back))
-    return CSI + out + SGR
-  }
+  toSgr(total) { return attrToSgra(this.at, total) }
   render(text) { return this.toSgr() + text + CSI + SGR }
   toString() { return this.modeSign + String(this.fore).padStart(3, '0') + DOT + String(this.back).padStart(3, '0') }
   [Symbol.toPrimitive](hint) {

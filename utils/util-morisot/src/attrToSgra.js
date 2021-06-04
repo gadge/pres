@@ -1,7 +1,7 @@
+import { concatSgr }                               from '@palett/util-ansi'
 import { CSI }                                     from '@pres/enum-control-chars'
 import { SGR }                                     from '@pres/enum-csi-codes'
 import { byteToBackSgra, byteToForeSgra, degrade } from '@pres/util-byte-colors'
-import { concatSgr }                               from '../util'
 import { modeToSgra }                              from './mode/modeToSgra'
 
 export function attrToSgra(attr, total) {
@@ -11,11 +11,6 @@ export function attrToSgra(attr, total) {
   out = concatSgr(out, byteToBackSgra(back !== 0x1ff ? degrade(back, total) : back))
   return CSI + out + SGR
 }
-
-export function sgraToAttr(sgra, baseAttr, normAttr) {
-
-}
-
 
 
 

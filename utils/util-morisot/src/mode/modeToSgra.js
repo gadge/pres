@@ -1,4 +1,4 @@
-import { concatSgr } from '@palett/convert'
+import { concatSgr } from '@palett/util-ansi'
 
 export const modeToSgra = mode => {
   let out = ''
