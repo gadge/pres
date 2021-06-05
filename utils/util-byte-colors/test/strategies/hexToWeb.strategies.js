@@ -52,6 +52,6 @@ lapse |> decoCrostab |> says['lapse']
 result
   .map(x => typeof x === NUM
     ? x|> byteToHex |> _hexToStr
-    : x|> _hexToStr
+    : x |> _hexToStr
   )
   |> decoCrostab |> says['result']

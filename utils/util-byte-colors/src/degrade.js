@@ -7,6 +7,7 @@ const CACHE8 = {}
 const CACHE16 = {}
 
 export const degrade = (byte, total) => {
+  // console.log('>> [degrade]', byte, total)
   if (!total) return byte
   if (total <= 16 && 16 <= byte) return CACHE16[byte] ?? ( CACHE16[byte] = byte |> byteToHex |> hexToHsl |> hslToBit4 )
   if (total <= 8) {
