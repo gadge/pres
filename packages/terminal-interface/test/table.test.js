@@ -1,5 +1,5 @@
-import { Red }           from '@palett/cards'
-import { TI as blessed } from '../index'
+import { Blue, Lime, Red, Teal } from '@palett/cards'
+import { TI as blessed }         from '../index'
 
 const screen = blessed.screen({
   dump: __dirname + '/logs/table.log',
@@ -22,16 +22,9 @@ const table = blessed.table({
   //width: '80%',
   width: 'shrink',
   style: {
-    border: {
-      fg: Red.lighten_3
-    },
-    header: {
-      fg: 'blue',
-      bold: true
-    },
-    cell: {
-      fg: 'magenta'
-    }
+    border: { fg: Teal.lighten_3 },
+    header: { fg: 'magenta', bold: true },
+    cell: { fg: Teal.accent_2 }
   }
 })
 
@@ -57,15 +50,13 @@ const data2 = [
 data2[1][0] = '{red-fg}' + data2[1][0] + '{/red-fg}'
 data2[2][0] += ' (' + DU + JUAN + ')'
 
-screen.key('q', function () {
-  return screen.destroy()
-})
+screen.key('q', () => screen.destroy())
 
 table.setData(data2)
 screen.append(table)
 screen.render()
 
-setTimeout(function () {
+setTimeout(() => {
   table.setData(data1)
   screen.render()
 }, 3000)
