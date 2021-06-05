@@ -256,7 +256,7 @@ export class Screen extends Node {
           currAttr = this.dattr
       for (let x = xi, cell; x < xl; x++) {
         if (!( cell = line[x] )) break
-        let at = cell[0], ch = cell.ch
+        let at = cell.at, ch = cell.ch
         if (at !== currAttr) {
           if (currAttr !== normAttr) { out += CSI + SGR }
           if (at !== normAttr) {
@@ -352,24 +352,26 @@ export class Screen extends Node {
           clr = true
           neq = false
           for (let i = x, currCell, prevCell; ( i < currLine.length ) && ( currCell = currLine[i] ); i++) {
-            if (currCell[0] !== at || currCell.ch !== ' ') {
+            if (currCell.at !== at || currCell.ch !== ' ') {
               clr = false
               break
             }
-            if (( prevCell = prevLine[i] ) && currCell[0] !== prevCell[0] || currCell.ch !== prevCell.ch) { neq = true }
+            if (( prevCell = prevLine[i] ) && !( currCell.eq(prevCell) )) { neq = true }
           }
           if (clr && neq) {
             lx = -1, ly = -1
             if (at !== currAttr) { out += attrToSgra(at, this.tput.colors), currAttr = at }
             out += this.tput.cup(y, x), out += this.tput.el()
-            for (let i = x, prevCell; ( i < currLine.length ) && ( prevCell = prevLine[i] ); i++) { prevCell[0] = at, prevCell.ch = ' ' }
+            for (let i = x, prevCell; ( i < currLine.length ) && ( prevCell = prevLine[i] ); i++) {
+              prevCell.inject(at, ' ')
+            }
             break
           }
         }
         // Optimize by comparing the real output
         // buffer to the pending output buffer.
         prevCell = prevLine[x]
-        if (at === prevCell[0] && ch === prevCell.ch) {
+        if (at === prevCell.at && ch === prevCell.ch) {
           if (lx === -1) { lx = x, ly = y }
           continue
         }
@@ -378,40 +380,12 @@ export class Screen extends Node {
           else { out += this.tput.cup(y, x) }
           lx = -1, ly = -1
         }
-        prevCell[0] = at
-        prevCell.ch = ch
+        prevCell.inject(at, ch)
         if (at !== currAttr) {
           if (currAttr !== this.dattr) { out += CSI + SGR }
           if (at !== this.dattr) {
-            out += CSI + ''
-            back = at & 0x1ff
-            fore = ( at >> 9 ) & 0x1ff
-            mode = at >> 18
-            if (mode & 1) { out += '1;' } // bold
-            if (mode & 2) { out += '4;' } // underline
-            if (mode & 4) { out += '5;' } // blink
-            if (mode & 8) { out += '7;' } // inverse
-            if (mode & 16) { out += '8;' } // invisible
-            if (back !== 0x1ff) {
-              back = this.#reduceColor(back)
-              if (back < 16) {
-                if (back < 8) { back += 40 }
-                else if (back < 16) { back -= 8, back += 100 }
-                out += back + ';'
-              }
-              else { out += '48;5;' + back + ';' }
-            }
-            if (fore !== 0x1ff) {
-              fore = this.#reduceColor(fore)
-              if (fore < 16) {
-                if (fore < 8) { fore += 30 }
-                else if (fore < 16) { fore -= 8, fore += 90 }
-                out += fore + ';'
-              }
-              else { out += '38;5;' + fore + ';' }
-            }
-            if (last(out) === ';') out = out.slice(0, -1)
-            out += SGR
+            // console.log(`>> [{${ this.codename }}.draw()]`, `out += attrToSgra(${ at }, ${ this.tput.colors })`)
+            out += attrToSgra(at, this.tput.colors)
           }
         }
         // If we find a double-width char, eat the next character which should be

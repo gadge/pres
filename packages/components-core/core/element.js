@@ -8,11 +8,10 @@ import { Node }          from '@pres/components-node'
 import { ESC, LF, TAB }  from '@pres/enum-control-chars'
 import {
   ATTACH, CLICK, DETACH, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL,
-  MOVE,
-  NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
+  MOVE, NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
 }                        from '@pres/enum-events'
-import { sgraToAttr }    from '@pres/util-colors'
 import * as colors       from '@pres/util-colors'
+import { sgraToAttr }    from '@pres/util-colors'
 import * as helpers      from '@pres/util-helpers'
 import * as unicode      from '@pres/util-unicode'
 import { SP }            from '@texting/enum-chars'
@@ -386,7 +385,6 @@ export class Element extends Node {
     let no = 0,
         line,
         align,
-        cap,
         total,
         i,
         part,
@@ -408,6 +406,7 @@ export class Element extends Node {
     if (this.type === 'textarea') margin++
     if (width > margin) width -= margin
 
+    let matches, phrase, word
     main:
       for (; no < lines.length; no++) {
         line = lines[no]
@@ -416,15 +415,12 @@ export class Element extends Node {
         ftor.push([])
         // Handle alignment tags.
         if (tags) {
-          if (( cap = /^{(left|center|right)}/.exec(line) )) {
-            line = line.slice(cap[0].length)
-            align = state = cap[1] !== 'left'
-              ? cap[1]
-              : null
+          if (( matches = /^{(left|center|right)}/.exec(line) ) && ( [ phrase, word ] = matches )) {
+            line = line.slice(phrase.length)
+            align = state = word !== 'left' ? word : null
           }
-          if (( cap = /{\/(left|center|right)}$/.exec(line) )) {
-            line = line.slice(0, -cap[0].length)
-            //state = null;
+          if (( matches = /{\/(left|center|right)}$/.exec(line) ) && ( [ phrase ] = matches )) {
+            line = line.slice(0, -phrase.length) //state = null;
             state = this.align
           }
         }
@@ -495,8 +491,7 @@ export class Element extends Node {
           out.push(this._align(part, width, align))
           ftor[no].push(out.length - 1)
           rtof.push(no)
-          // Make sure we didn't wrap the line to the very end, otherwise
-          // we get a pointless empty line after a newline.
+          // Make sure we didn't wrap the line to the very end, otherwise we get a pointless empty line after a newline.
           if (line === '') continue main
           // If only an escape code got cut off, at it to `part`.
           if (/^(?:\x1b[\[\d;]*m)+$/.test(line)) {

@@ -29,10 +29,10 @@ export class ScreenCollection {
     ScreenCollection._bound = true
     for (const signal of SIGNAL_COLLECTION) {
       const name = ScreenCollection.handlers[signal] = '_' + signal.toLowerCase() + 'Handler'
-      const onSignal = ScreenCollection[name] ?? (ScreenCollection[name] = signalHandler.bind({ signal }))
+      const onSignal = ScreenCollection[name] ?? ( ScreenCollection[name] = signalHandler.bind({ signal }) )
       process.on(signal, onSignal)
     }
-    console.log('>> [ScreenCollection.initialize]', ScreenCollection.total, `[ ${Object.keys(ScreenCollection.handlers)} ]`)
+    console.log('>> [ScreenCollection.initialize]', ScreenCollection.total, `[ ${ Object.keys(ScreenCollection.handlers) } ]`)
   }
   static _uncaughtExceptionHandler(err) {
     if (process.listeners(UNCAUGHT_EXCEPTION).length > 1) return
@@ -46,7 +46,8 @@ export class ScreenCollection {
   }
 }
 
-function signalHandler() {
+function signalHandler(err) {
+  console.error(err) // .stack ? err.stack + '' : err + ''
   const signal = this?.signal
   if (process.listeners(signal).length > 1) return
   nextTick(() => process.exit(0))
