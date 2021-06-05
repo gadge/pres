@@ -1,5 +1,6 @@
 import { FUN }     from '@typen/enum-data-types'
-import * as colors from '../dist/index.esm'
+import { convert } from './convert'
+
 
 export function sattr(style, fg, bg) {
   let { bold, underline, blink, inverse, invisible } = style
@@ -18,7 +19,7 @@ export function sattr(style, fg, bg) {
     ( ( blink ? 4 : 0 ) << 18 ) |
     ( ( underline ? 2 : 0 ) << 18 ) |
     ( ( bold ? 1 : 0 ) << 18 ) |
-    ( colors.convert(fg) << 9 ) |
-    ( colors.convert(bg) )
+    ( convert(fg) << 9 ) |
+    ( convert(bg) )
   ) // return (this.uid << 24) | ((this.dockBorders ? 32 : 0) << 18)
 }
