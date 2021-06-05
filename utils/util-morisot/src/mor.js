@@ -53,15 +53,6 @@ export class Mor extends Array {
 
   get modeSign() { return modeToSign(this.mode) }
 
-  clearBold() {
-    let at = this.at
-    let mode = at >> 18 & 0x1ff // get mode part
-    mode &= ~1 // set bold of mode part to false
-    at &= ~( 0x1ff << 18 ) // clear mode part of attr
-    at |= ( mode & 0x1ff ) << 18 //  paste mode back to attr
-    return Mor.build(at, this.ch)
-  }
-
   atEq(mor) { return this.at === mor.at }
   chEq(mor) { return this.ch === mor.ch }
   eq(mor) { return this.at === mor.at && this.ch === mor.ch }
@@ -77,3 +68,5 @@ export class Mor extends Array {
   copy() { return Mor.by(this) }
   toArray() { return [ this.at, this.ch ] }
 }
+
+// clearBold() { return Mor.build(( this.at & ~( 0x1ff << 18 ) ) | ( ( this.mode & ~1 ) << 18 ), this.ch) }

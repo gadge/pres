@@ -20,7 +20,7 @@ export function assignMode(mode, scope, value) {
  *
  * @param {number} mode
  * @param {string} scope
- * @param {number} base
+ * @param {(number|boolean)?} base
  * @returns {number}
  */
 export function assignModeFrom(mode, scope, base) {
