@@ -14,9 +14,9 @@ import { styleToAttr }                                 from '../../src/styleToAt
 const { lapse, result } = strategies({
   repeat: 1, // 1E+6,
   candidates: {
-    alpha: { bold: true, fg: Amber.accent_3, bg: Purple.lighten_3 },
+    alpha: { bold: true, fg: Amber.base, bg: Purple.lighten_2 },
     beta: { underline: true, fg: Cyan.lighten_2, bg: LightGreen.darken_3 },
-    gamma: { inverse: true, fg: Amber.accent_1, bg: Purple.lighten_3 },
+    gamma: { inverse: true, fg: Amber.base, bg: Purple.lighten_2 },
     delta: { bold: true, underline: true, fg: Lime.accent_3, bg: '' },
     epsilon: { bold: true, underline: true, fg: '', bg: Teal.darken_2 },
   }|> makeEmbedded,
