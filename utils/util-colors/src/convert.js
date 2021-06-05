@@ -27,6 +27,7 @@ export function convert(color) {
       : Array.isArray(color)
         ? match(color)
         : -1
+
   return color !== -1 ? color : 0x1ff
 }
 
