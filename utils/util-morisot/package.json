@@ -15,8 +15,8 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@palett/convert": "^0.8.13",
-    "@palett/util-ansi": "^0.8.13",
+    "@palett/convert": "^0.8.14",
+    "@palett/util-ansi": "^0.8.14",
     "@pres/enum-control-chars": "^0.2.16",
     "@pres/enum-csi-codes": "^0.2.16",
     "@pres/util-byte-colors": "^0.2.16",

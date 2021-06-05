@@ -1,6 +1,7 @@
-import { BLINK, BOLD, INVERSE, INVISIBLE, UNDERLINE } from '@palett/enum-font-effects'
-import { toByte }                                     from '@pres/util-byte-colors'
-import { assignMode, assignModeFrom }                 from '@pres/util-sgr-mode'
+import { BLINK, BOLD, INVERSE, UNDERLINE } from '@palett/enum-font-effects'
+import { HIDE }                            from '@pres/enum-events'
+import { toByte }                          from '@pres/util-byte-colors'
+import { assignMode, assignModeFrom }      from '@pres/util-sgr-mode'
 
 // attrCode
 export function sgraToAttr(sgra, baseAttr, normAttr) {
@@ -14,12 +15,12 @@ export function sgraToAttr(sgra, baseAttr, normAttr) {
       : ch === 4 ? assignMode(mode, UNDERLINE, true) // ( m |= 2 ) // underline
         : ch === 5 ? assignMode(mode, BLINK, true) // ( m |= 4 ) // blink
           : ch === 7 ? assignMode(mode, INVERSE, true) // ( m |= 8 ) // inverse
-            : ch === 8 ? assignMode(mode, INVISIBLE, true) // ( m |= 16 ) // invisible
-              : ch === 22 ? assignModeFrom(mode, BOLD, normAttr) // ( m = normAttr >> 18 & 0x1ff )
-                : ch === 24 ? assignModeFrom(mode, UNDERLINE, normAttr) // ( m = normAttr >> 18 & 0x1ff )
-                  : ch === 25 ? assignModeFrom(mode, BLINK, normAttr) // ( m = normAttr >> 18 & 0x1ff )
-                    : ch === 27 ? assignModeFrom(mode, INVERSE, normAttr) // ( m = normAttr >> 18 & 0x1ff )
-                      : ch === 28 ? assignModeFrom(mode, INVISIBLE, normAttr) // ( m = normAttr >> 18 & 0x1ff )
+            : ch === 8 ? assignMode(mode, HIDE, true) // ( m |= 16 ) // invisible
+              : ch === 22 ? assignModeFrom(mode, BOLD, normAttr >> 18 & 0x1ff) // ( m = normAttr >> 18 & 0x1ff )
+                : ch === 24 ? assignModeFrom(mode, UNDERLINE, normAttr >> 18 & 0x1ff) // ( m = normAttr >> 18 & 0x1ff )
+                  : ch === 25 ? assignModeFrom(mode, BLINK, normAttr >> 18 & 0x1ff) // ( m = normAttr >> 18 & 0x1ff )
+                    : ch === 27 ? assignModeFrom(mode, INVERSE, normAttr >> 18 & 0x1ff) // ( m = normAttr >> 18 & 0x1ff )
+                      : ch === 28 ? assignModeFrom(mode, HIDE, normAttr >> 18 & 0x1ff) // ( m = normAttr >> 18 & 0x1ff )
                         : mode
     fore = 30 <= ch && ch <= 37 ? ch - 30
       : ch === 38 && ( nx = +ve[++i] ) ? ( nx === 5 ? +ve[++i] : nx === 2 ? toByte(+ve[++i], +ve[++i], +ve[++i]) ?? normAttr >> 9 & 0x1ff : fore )

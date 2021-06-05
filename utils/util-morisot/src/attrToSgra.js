@@ -8,8 +8,8 @@ import { modeToSgra }                              from '@pres/util-sgr-mode'
 export function attrToSgra(attr, total) {
   const mode = attr >> 18 & 0x1ff, fore = attr >> 9 & 0x1ff, back = attr & 0x1ff
   let out = modeToSgra(mode)
-  out = concatSgr(out, byteToForeSgra(fore !== 0x1ff ? degrade(fore, total) : fore))
-  out = concatSgr(out, byteToBackSgra(back !== 0x1ff ? degrade(back, total) : back))
+  out = concatSgr(out, fore === 0x1ff ? '39' : byteToForeSgra(degrade(fore, total)))
+  out = concatSgr(out, back === 0x1ff ? '49' : byteToBackSgra(degrade(back, total)))
   return CSI + out + SGR
 }
 
