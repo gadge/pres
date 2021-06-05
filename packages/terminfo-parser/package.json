@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@pres/enum-terminfo-alias": "^0.2.16",
+    "@typen/nullish": "^0.1.16",
     "@pres/util-helpers": "^0.2.16",
     "@typen/enum-data-types": "^0.1.16"
   },
