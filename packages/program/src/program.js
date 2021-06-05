@@ -64,7 +64,7 @@ export class Program extends IO {
     this.rows = this.output.rows || 1
     this.scrollTop = 0
     this.scrollBottom = this.rows - 1
-    console.log(`>> [program.configGrid] (${this.rows},${this.cols})`)
+    console.log(`>> [program.configGrid] (${this.rows},${this.cols}) [tput.colors] (${ this.tput.colors })`)
   }
 
   get title() { return this._title }
