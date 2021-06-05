@@ -4,22 +4,22 @@
  * https://github.com/chjj/blessed
  */
 
-import { Node }          from '@pres/components-node'
-import { ESC, LF, TAB }  from '@pres/enum-control-chars'
+import { Node }                    from '@pres/components-node'
+import { ESC, LF, TAB }            from '@pres/enum-control-chars'
 import {
   ATTACH, CLICK, DETACH, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL,
   MOVE, NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
-}                        from '@pres/enum-events'
-import * as colors       from '@pres/util-colors'
-import { sgraToAttr }    from '@pres/util-colors'
-import * as helpers      from '@pres/util-helpers'
-import * as unicode      from '@pres/util-unicode'
-import { SP }            from '@texting/enum-chars'
-import { FUN, NUM, STR } from '@typen/enum-data-types'
-import { nullish }       from '@typen/nullish'
-import { last }          from '@vect/vector-index'
-import assert            from 'assert'
-import { Box }           from './box'
+}                                  from '@pres/enum-events'
+import * as colors                 from '@pres/util-colors'
+import * as helpers                from '@pres/util-helpers'
+import { sgraToAttr, styleToAttr } from '@pres/util-morisot'
+import * as unicode                from '@pres/util-unicode'
+import { SP }                      from '@texting/enum-chars'
+import { FUN, NUM, STR }           from '@typen/enum-data-types'
+import { nullish }                 from '@typen/nullish'
+import { last }                    from '@vect/vector-index'
+import assert                      from 'assert'
+import { Box }                     from './box'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 export class Element extends Node {
@@ -301,27 +301,7 @@ export class Element extends Node {
   get bottom() { return this.rbottom }
   set bottom(val) { return this.rbottom = val }
 
-  sattr(style, fg, bg) {
-    let { bold, underline, blink, inverse, invisible } = style
-    if (fg == null && bg == null) { ( fg = style.fg ), ( bg = style.bg ) }
-    if (typeof bold === FUN) bold = bold(this)
-    if (typeof underline === FUN) underline = underline(this)
-    if (typeof blink === FUN) blink = blink(this)
-    if (typeof inverse === FUN) inverse = inverse(this)
-    if (typeof invisible === FUN) invisible = invisible(this)
-    if (typeof fg === FUN) fg = fg(this)
-    if (typeof bg === FUN) bg = bg(this)
-    // console.log('>> [element.sattr]', this.codename, fg ?? AEU, 'to', colors.convert(fg), bg ?? AEU, 'to', colors.convert(bg))
-    return (
-      ( ( invisible ? 16 : 0 ) << 18 ) |
-      ( ( inverse ? 8 : 0 ) << 18 ) |
-      ( ( blink ? 4 : 0 ) << 18 ) |
-      ( ( underline ? 2 : 0 ) << 18 ) |
-      ( ( bold ? 1 : 0 ) << 18 ) |
-      ( colors.convert(fg) << 9 ) |
-      ( colors.convert(bg) )
-    ) // return (this.uid << 24) | ((this.dockBorders ? 32 : 0) << 18)
-  }
+  sattr(style, fg, bg) { return styleToAttr(style, fg, bg) }
   // Convert `{red-fg}foo{/red-fg}` to `\x1b[31mfoo\x1b[39m`.
   get _clines() { return this.contLines }
   parseContent(noTags) {
@@ -605,7 +585,7 @@ export class Element extends Node {
     return out
   }
   #parseAttr(lines) {
-    const normAttr = this.sattr(this.style)
+    const normAttr = styleToAttr(this.style)
     let baseAttr = normAttr
     const attrList = []
     if (lines[0].attr === baseAttr) return void 0
@@ -653,7 +633,7 @@ export class Element extends Node {
       this.screen._borderStops[coords.yi] = true
       this.screen._borderStops[coords.yl - 1] = true
     }
-    normAttr = this.sattr(this.style)
+    normAttr = styleToAttr(this.style)
     // console.log('>> [element.render] interim', dattr)
     currAttr = normAttr
     // If we're in a scrollable text box, check to
@@ -811,11 +791,11 @@ export class Element extends Node {
       if (cell) {
         if (this.track) {
           ch = this.track.ch || ' '
-          currAttr = this.sattr(this.style.track, this.style.track.fg || this.style.fg, this.style.track.bg || this.style.bg)
+          currAttr = styleToAttr(this.style.track, this.style.track.fg || this.style.fg, this.style.track.bg || this.style.bg)
           this.screen.fillRegion(currAttr, ch, x, x + 1, yi, yl)
         }
         ch = this.scrollbar.ch || ' '
-        currAttr = this.sattr(this.style.scrollbar, this.style.scrollbar.fg || this.style.fg, this.style.scrollbar.bg || this.style.bg)
+        currAttr = styleToAttr(this.style.scrollbar, this.style.scrollbar.fg || this.style.fg, this.style.scrollbar.bg || this.style.bg)
         if (currAttr !== cell.at || ch !== cell.ch) {
           cell.inject(currAttr, ch)
           lines[y].dirty = true
@@ -828,7 +808,7 @@ export class Element extends Node {
     }
     // Draw the border.
     if (this.border) {
-      borderAttr = this.sattr(this.style.border)
+      borderAttr = styleToAttr(this.style.border)
       let y = yi
       if (coords.notop) y = -1
       let line = lines[y]

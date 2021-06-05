@@ -24,6 +24,7 @@
     "@pres/events": "^0.2.16",
     "@pres/program": "^0.2.16",
     "@pres/util-colors": "^0.2.16",
+    "@pres/util-byte-colors": "^0.2.16",
     "@pres/util-helpers": "^0.2.16",
     "@pres/util-morisot": "^0.2.16",
     "@pres/util-unicode": "^0.2.16",

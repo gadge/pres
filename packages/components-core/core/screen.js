@@ -14,14 +14,13 @@ import {
   RESIZE, WARNING, WHEELDOWN, WHEELUP,
 }                                                                      from '@pres/enum-events'
 import { Program }                                                     from '@pres/program'
-import { attrToSgra, sgraToAttr }                                      from '@pres/util-colors'
 import * as colors                                                     from '@pres/util-colors'
 import * as helpers                                                    from '@pres/util-helpers'
-import { Mor }                                                         from '@pres/util-morisot'
+import { attrToSgra, Mor, sgraToAttr, styleToAttr }                    from '@pres/util-morisot'
+import { degrade }                                                     from '@pres/util-byte-colors'
 import * as unicode                                                    from '@pres/util-unicode'
 import { SP }                                                          from '@texting/enum-chars'
 import { FUN, OBJ, STR }                                               from '@typen/enum-data-types'
-import { last }                                                        from '@vect/vector'
 import cp, { spawn }                                                   from 'child_process'
 import { Log }                                                         from '../src/log'
 import { Box }                                                         from './box'
@@ -47,7 +46,7 @@ export class Screen extends Node {
     this.ignoreLocked = options.ignoreLocked || []
     this._unicode = this.tput.unicode || this.tput.numbers.U8 === 1
     this.fullUnicode = this.options.fullUnicode && this._unicode
-    this.dattr = ( ( 0 << 18 ) | ( 0x1ff << 9 ) ) | 0x1ff
+    this.dattr = ( 0 << 18 ) | ( 0x1ff << 9 ) | 0x1ff
     this.renders = 0
     this.position = {
       left: this.left = this.aleft = this.rleft = 0,
@@ -196,7 +195,7 @@ export class Screen extends Node {
       }
     }
   }
-  #reduceColor(color) { return colors.reduce(color, this.tput.colors) }
+  #reduceColor(color) { return degrade(color, this.tput.colors) }
   #cursorAttr(cursor, normAttr) {
     const { shape } = cursor
     let at = normAttr || this.dattr,
@@ -218,7 +217,7 @@ export class Screen extends Node {
       at |= 8 << 18
     }
     else if (typeof shape === OBJ && shape) {
-      cursorAttr = Element.prototype.sattr.call(cursor, shape)
+      cursorAttr = styleToAttr(cursor, shape)
       if (shape.bold || shape.underline || shape.blink || shape.inverse || shape.invisible) {
         at &= ~( 0x1ff << 18 )
         at |= ( ( cursorAttr >> 18 ) & 0x1ff ) << 18
