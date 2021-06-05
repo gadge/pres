@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-sgr-mode",
-  "version": "0.2.14",
+  "version": "0.2.15",
   "description": "Parse from/to sgr effects",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,8 +15,8 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@palett/util-ansi": "^0.8.13",
     "@palett/enum-font-effects": "^0.8.13",
+    "@palett/util-ansi": "^0.8.13",
     "@typen/enum-data-types": "^0.1.16"
   },
   "repository": {
