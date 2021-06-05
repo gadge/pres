@@ -1,5 +1,5 @@
 import { logger } from '@spare/logger'
-import { Mor }    from '../src/mor'
+import { Mor }    from '../src/Mor'
 
 const mor = Mor.init(0, 127, 11, ' ')
 mor |> logger

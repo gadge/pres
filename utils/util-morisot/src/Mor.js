@@ -1,13 +1,9 @@
-import { concatSgr }                      from '@palett/util-ansi'
-import { CSI }                            from '@pres/enum-control-chars'
-import { SGR }                            from '@pres/enum-csi-codes'
-import { byteToBackSgra, byteToForeSgra } from '@pres/util-byte-colors'
-import * as colors                        from '@pres/util-colors'
-import { DOT }                            from '@texting/enum-chars'
-import { DEF, NUM, STR }                  from '@typen/enum-data-types'
-import { attrToSgra }                     from './attrToSgra'
-import { modeToSgra }                     from './mode/modeToSgra'
-import { modeToSign }                     from './mode/modeToSign'
+import { CSI }           from '@pres/enum-control-chars'
+import { SGR }           from '@pres/enum-csi-codes'
+import { modeToSign }    from '@pres/util-sgr-mode'
+import { DOT }           from '@texting/enum-chars'
+import { DEF, NUM, STR } from '@typen/enum-data-types'
+import { attrToSgra }    from './attrToSgra'
 
 export class Mor extends Array {
   constructor(at, ch) { super(at, ch) }

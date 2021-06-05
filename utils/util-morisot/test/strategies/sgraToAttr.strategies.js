@@ -3,9 +3,9 @@ import { CSI }               from '@pres/enum-control-chars'
 import { SGR }               from '@pres/enum-csi-codes'
 import Screen                from '../../../../vendor/blessed-classic/lib/widgets/screen'
 import { decoCrostab, says } from '@spare/logger'
-import { strategies }        from '@valjoux/strategies'
-import { Mor }               from '../../src/mor'
-import { sgraToAttr }        from '../../src/sgraToAttr'
+import { strategies } from '@valjoux/strategies'
+import { Mor }        from '../../src/Mor'
+import { sgraToAttr } from '../../src/sgraToAttr'
 import * as colors           from '@pres/util-colors'
 
 const normAttr = +Mor.init(0, 0, 0)
