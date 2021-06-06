@@ -8,8 +8,8 @@ import { modeToSgra, styleToMode }                     from '@pres/util-sgr-mode
 import { decoCrostab, says }                           from '@spare/logger'
 import { NUM }                                         from '@typen/enum-data-types'
 import { strategies }                                  from '@valjoux/strategies'
-import { Mor }                                         from '../../src/Mor'
-import { styleToAttr }                                 from '../../src/styleToAttr'
+import { Mor }         from '../../src/Mor'
+import { styleToAttr } from '@pres/util-sgr-attr/src/styleToAttr'
 
 const { lapse, result } = strategies({
   repeat: 1, // 1E+6,

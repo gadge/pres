@@ -1,9 +1,8 @@
-import { CSI }           from '@pres/enum-control-chars'
-import { SGR }           from '@pres/enum-csi-codes'
+import { CSI }           from '@palett/enum-ansi-codes'
 import { modeToSign }    from '@pres/util-sgr-mode'
+import { attrToSgra }    from '@pres/util-sgr-attr'
 import { DOT }           from '@texting/enum-chars'
 import { DEF, NUM, STR } from '@typen/enum-data-types'
-import { attrToSgra }    from './attrToSgra'
 
 export class Mor extends Array {
   constructor(at, ch) { super(at, ch) }

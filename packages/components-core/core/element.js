@@ -12,7 +12,7 @@ import {
 }                                  from '@pres/enum-events'
 import * as colors                 from '@pres/util-colors'
 import * as helpers                from '@pres/util-helpers'
-import { sgraToAttr, styleToAttr } from '@pres/util-morisot'
+import { sgraToAttr, styleToAttr } from '@pres/util-sgr-attr'
 import * as unicode                from '@pres/util-unicode'
 import { SP }                      from '@texting/enum-chars'
 import { FUN, NUM, STR }           from '@typen/enum-data-types'

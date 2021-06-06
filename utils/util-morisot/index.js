@@ -1,5 +1,1 @@
-export { attrToSgra }  from './src/attrToSgra'
-export { attrToVec }   from './src/attrToVec'
-export { Mor }         from './src/Mor'
-export { sgraToAttr }  from './src/sgraToAttr'
-export { styleToAttr } from './src/styleToAttr'
+export { Mor } from './src/Mor'

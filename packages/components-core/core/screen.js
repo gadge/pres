@@ -14,10 +14,11 @@ import {
   RESIZE, WARNING, WHEELDOWN, WHEELUP,
 }                                                                      from '@pres/enum-events'
 import { Program }                                                     from '@pres/program'
+import { degrade }                                                     from '@pres/util-byte-colors'
 import * as colors                                                     from '@pres/util-colors'
 import * as helpers                                                    from '@pres/util-helpers'
-import { attrToSgra, Mor, sgraToAttr, styleToAttr }                    from '@pres/util-morisot'
-import { degrade }                                                     from '@pres/util-byte-colors'
+import { Mor }                                                         from '@pres/util-morisot'
+import { attrToSgra, sgraToAttr, styleToAttr }                         from '@pres/util-sgr-attr'
 import * as unicode                                                    from '@pres/util-unicode'
 import { SP }                                                          from '@texting/enum-chars'
 import { FUN, OBJ, STR }                                               from '@typen/enum-data-types'

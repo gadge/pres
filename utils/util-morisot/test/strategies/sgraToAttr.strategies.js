@@ -5,8 +5,8 @@ import * as colors           from '@pres/util-colors'
 import { decoCrostab, says } from '@spare/logger'
 import { strategies }        from '@valjoux/strategies'
 import Screen                from '../../../../vendor/blessed-classic/lib/widgets/screen'
-import { Mor }               from '../../src/Mor'
-import { sgraToAttr }        from '../../src/sgraToAttr'
+import { Mor }        from '../../src/Mor'
+import { sgraToAttr } from '@pres/util-sgr-attr/src/sgraToAttr'
 
 const normAttr = +Mor.init(0, 0, 0)
 const { lapse, result } = strategies({

@@ -1,5 +1,4 @@
-import { BLINK, BOLD, INVERSE, UNDERLINE } from '@palett/enum-font-effects'
-import { HIDE }                            from '@pres/enum-events'
+import { BLINK, BOLD, INVERSE, UNDERLINE,HIDE } from '@palett/enum-font-effects'
 import { toByte }                          from '@pres/util-byte-colors'
 import { assignMode, assignModeFrom }      from '@pres/util-sgr-mode'
 
