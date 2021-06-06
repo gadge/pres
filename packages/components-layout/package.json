@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@pres/components-core": "^0.2.20",
+    "@pres/util-drawille-canvas": "^0.2.20",
     "@pres/enum-events": "^0.2.20",
     "@pres/util-helpers": "^0.2.20",
     "drawille-canvas-blessed-contrib": "^0.1.3"

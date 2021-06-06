@@ -47,7 +47,8 @@ $ npm install @pres/components-chart
 
 ```js
 import { Signaler } from '@pres/components-chart'
-Signaler.register(instance,process,)
+
+Signaler.register(instance, process,)
 ```
 
 #### Meta

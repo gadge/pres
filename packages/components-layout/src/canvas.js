@@ -1,6 +1,6 @@
 import { Box }                   from '@pres/components-core'
 import { ATTACH }                from '@pres/enum-events'
-import { Canvas as InnerCanvas } from 'drawille-canvas-blessed-contrib'
+import { Canvas as InnerCanvas } from '@pres/util-drawille-canvas'
 
 export class Canvas extends Box {
   _h

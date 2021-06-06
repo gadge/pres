@@ -18,6 +18,7 @@
     "lint": "prettier --single-quote --trailing-comma es5 --write 'src/**/*.js'"
   },
   "dependencies": {
+    "@palett/cards": "^0.8.14",
     "@pres/enum-events": "^0.2.20",
     "@pres/terminal-interface": "^0.2.20",
     "@valjoux/linger": "^0.2.11",

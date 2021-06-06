@@ -23,6 +23,7 @@ import {
 }                            from '@pres/enum-key-names'
 import { gpmClient }         from '@pres/gpm-client'
 import * as colors           from '@pres/util-blessed-colors'
+import { toByte }            from '@pres/util-byte-colors'
 import { slice }             from '@pres/util-helpers'
 import {
   SC, SP, VO
@@ -64,7 +65,7 @@ export class Program extends IO {
     this.rows = this.output.rows || 1
     this.scrollTop = 0
     this.scrollBottom = this.rows - 1
-    console.log(`>> [program.configGrid] (${this.rows},${this.cols}) [tput.colors] (${ this.tput.colors })`)
+    console.log(`>> [program.configGrid] (${ this.rows },${ this.cols }) [tput.colors] (${ this.tput.colors })`)
   }
 
   get title() { return this._title }
@@ -209,10 +210,10 @@ export class Program extends IO {
       (
         this.isVTE ||
         bx >= 65533 || by >= 65533 ||
-        (bx > 0x00 && bx < 0x20) ||
-        (by > 0x00 && by < 0x20) ||
-        (buf[4] > 223 && buf[4] < 248 && buf.length === 6) ||
-        (buf[5] > 223 && buf[5] < 248 && buf.length === 6)
+        ( bx > 0x00 && bx < 0x20 ) ||
+        ( by > 0x00 && by < 0x20 ) ||
+        ( buf[4] > 223 && buf[4] < 248 && buf.length === 6 ) ||
+        ( buf[5] > 223 && buf[5] < 248 && buf.length === 6 )
       )
     ) {
       b = buf[3]
@@ -223,10 +224,10 @@ export class Program extends IO {
       if (y < 0x20) y += 0xff
       // Convert the coordinates into a
       // properly formatted x10 utf8 sequence.
-      s = CSI + `M${String.fromCharCode(b)}${String.fromCharCode(x)}${String.fromCharCode(y)}`
+      s = CSI + `M${ String.fromCharCode(b) }${ String.fromCharCode(x) }${ String.fromCharCode(y) }`
     }
     // XTerm / X10
-    if ((parts = /^\x1b\[M([\x00\u0020-\uffff]{3})/.exec(s))) {
+    if (( parts = /^\x1b\[M([\x00\u0020-\uffff]{3})/.exec(s) )) {
       b = parts[1].charCodeAt(0)
       x = parts[1].charCodeAt(1)
       y = parts[1].charCodeAt(2)
@@ -241,11 +242,11 @@ export class Program extends IO {
       if (y === 0) key.y = 255
 
       mod = b >> 2
-      key.shift = !!(mod & 1)
-      key.meta = !!((mod >> 1) & 1)
-      key.ctrl = !!((mod >> 2) & 1)
+      key.shift = !!( mod & 1 )
+      key.meta = !!( ( mod >> 1 ) & 1 )
+      key.ctrl = !!( ( mod >> 2 ) & 1 )
       b -= 32
-      if ((b >> 6) & 1) {
+      if (( b >> 6 ) & 1) {
         key.action = b & 1 ? WHEELDOWN : WHEELUP
         key.button = MIDDLE
       }
@@ -272,7 +273,7 @@ export class Program extends IO {
       // xterm: 35, _, 51, _
       // urxvt: 35, _, _, _
       // if (key.action === MOUSEDOWN && key.button === UNKNOWN) {
-      if (b === 35 || b === 39 || b === 51 || b === 43 || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
+      if (b === 35 || b === 39 || b === 51 || b === 43 || ( this.isVTE && ( b === 32 || b === 36 || b === 48 || b === 40 ) )) {
         delete key.button
         key.action = MOUSEMOVE
       }
@@ -280,7 +281,7 @@ export class Program extends IO {
       return
     }
     // URxvt
-    if ((parts = /^\x1b\[(\d+;\d+;\d+)M/.exec(s))) {
+    if (( parts = /^\x1b\[(\d+;\d+;\d+)M/.exec(s) )) {
       params = parts[1].split(SC)
       b = +params[0]
       x = +params[1]
@@ -294,15 +295,15 @@ export class Program extends IO {
       if (this.zero) key.x--, key.y--
 
       mod = b >> 2
-      key.shift = !!(mod & 1)
-      key.meta = !!((mod >> 1) & 1)
-      key.ctrl = !!((mod >> 2) & 1)
+      key.shift = !!( mod & 1 )
+      key.meta = !!( ( mod >> 1 ) & 1 )
+      key.ctrl = !!( ( mod >> 2 ) & 1 )
       // XXX Bug in urxvt after wheelup/down on mousemove
       // NOTE: This may be different than 128/129 depending
       // on mod keys.
       if (b === 128 || b === 129) b = 67
       b -= 32
-      if ((b >> 6) & 1) {
+      if (( b >> 6 ) & 1) {
         key.action = b & 1 ? WHEELDOWN : WHEELUP
         key.button = MIDDLE
       }
@@ -330,7 +331,7 @@ export class Program extends IO {
       // urxvt: 35, _, _, _
       // gnome: 32, 36, 48, 40
       // if (key.action === MOUSEDOWN && key.button === UNKNOWN) {
-      if (b === 35 || b === 39 || b === 51 || b === 43 || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
+      if (b === 35 || b === 39 || b === 51 || b === 43 || ( this.isVTE && ( b === 32 || b === 36 || b === 48 || b === 40 ) )) {
         delete key.button
         key.action = MOUSEMOVE
       }
@@ -338,7 +339,7 @@ export class Program extends IO {
       return
     }
     // SGR
-    if ((parts = /^\x1b\[<(\d+;\d+;\d+)([mM])/.exec(s))) {
+    if (( parts = /^\x1b\[<(\d+;\d+;\d+)([mM])/.exec(s) )) {
       down = parts[2] === 'M'
       params = parts[1].split(SC)
       b = +params[0]
@@ -352,10 +353,10 @@ export class Program extends IO {
       key.y = y
       if (this.zero) key.x--, key.y--
       mod = b >> 2
-      key.shift = !!(mod & 1)
-      key.meta = !!((mod >> 1) & 1)
-      key.ctrl = !!((mod >> 2) & 1)
-      if ((b >> 6) & 1) {
+      key.shift = !!( mod & 1 )
+      key.meta = !!( ( mod >> 1 ) & 1 )
+      key.ctrl = !!( ( mod >> 2 ) & 1 )
+      if (( b >> 6 ) & 1) {
         key.action = b & 1 ? WHEELDOWN : WHEELUP
         key.button = MIDDLE
       }
@@ -373,7 +374,7 @@ export class Program extends IO {
       // xterm: 35, _, 51, _
       // gnome: 32, 36, 48, 40
       // if (key.action === MOUSEDOWN && key.button === UNKNOWN) {
-      if (b === 35 || b === 39 || b === 51 || b === 43 || (this.isVTE && (b === 32 || b === 36 || b === 48 || b === 40))) {
+      if (b === 35 || b === 39 || b === 51 || b === 43 || ( this.isVTE && ( b === 32 || b === 36 || b === 48 || b === 40 ) )) {
         delete key.button
         key.action = MOUSEMOVE
       }
@@ -383,7 +384,7 @@ export class Program extends IO {
     // DEC
     // The xterm mouse documentation says there is a
     // `<` prefix, the DECRQLP says there is no prefix.
-    if ((parts = /^\x1b\[<(\d+;\d+;\d+;\d+)&w/.exec(s))) {
+    if (( parts = /^\x1b\[<(\d+;\d+;\d+;\d+)&w/.exec(s) )) {
       params = parts[1].split(SC)
       b = +params[0]
       x = +params[1]
@@ -403,7 +404,7 @@ export class Program extends IO {
       return
     }
     // vt300
-    if ((parts = /^\x1b\[24([0135])~\[(\d+),(\d+)\]\r/.exec(s))) {
+    if (( parts = /^\x1b\[24([0135])~\[(\d+),(\d+)\]\r/.exec(s) )) {
       b = +parts[1]
       x = +parts[2]
       y = +parts[3]
@@ -419,7 +420,7 @@ export class Program extends IO {
       self.emit(MOUSE, key)
       return
     }
-    if ((parts = /^\x1b\[(O|I)/.exec(s))) {
+    if (( parts = /^\x1b\[(O|I)/.exec(s) )) {
       key.action = parts[1] === 'I' ? FOCUS : BLUR
       self.emit(MOUSE, key)
       self.emit(key.action)
@@ -451,7 +452,7 @@ export class Program extends IO {
       self.emit(MOUSE, gpm.createKey(dy > 0 ? WHEELUP : WHEELDOWN, button, modifier, x, y, dx, dy))
     })
   }
-  disableGpm() { if (this.gpm) { this.gpm.stop(), (delete this.gpm) } }
+  disableGpm() { if (this.gpm) { this.gpm.stop(), ( delete this.gpm ) } }
 
   // All possible responses from the terminal
   bindResponse() {
@@ -459,20 +460,20 @@ export class Program extends IO {
     this.#boundResponse = true
     const decoder = new StringDecoder('utf8'),
           self    = this
-    this.on(DATA, data => { if ((data = decoder.write(data))) { self.#bindResponse(data) } })
+    this.on(DATA, data => { if (( data = decoder.write(data) )) { self.#bindResponse(data) } })
   }
   #bindResponse(s) {
     const out = {}
     let parts
     if (Buffer.isBuffer(s)) {
-      if (s[0] > 127 && nullish(s[1])) { (s[0] -= 128), (s = ESC + s.toString('utf-8')) }
+      if (s[0] > 127 && nullish(s[1])) { ( s[0] -= 128 ), ( s = ESC + s.toString('utf-8') ) }
       else { s = s.toString('utf-8') }
     }
     // CSI P s c
     // Send Device Attributes (Primary DA).
     // CSI > P s c
     // Send Device Attributes (Secondary DA).
-    if ((parts = /^\x1b\[(\?|>)(\d*(?:;\d*)*)c/.exec(s))) {
+    if (( parts = /^\x1b\[(\?|>)(\d*(?:;\d*)*)c/.exec(s) )) {
       parts = parts[2].split(SC).map(ch => +ch || 0)
       out.event = 'device-attributes'
       out.code = 'DA'
@@ -486,16 +487,16 @@ export class Program extends IO {
         else {
           // VT200-style params:
           parts.forEach(
-            attr => attr === 1 ? (out.cols132 = true)
-              : attr === 2 ? (out.printer = true)
-                : attr === 6 ? (out.selectiveErase = true)
-                  : attr === 8 ? (out.userDefinedKeys = true)
-                    : attr === 9 ? (out.nationalReplacementCharsets = true)
-                      : attr === 15 ? (out.technicalCharacters = true)
-                        : attr === 18 ? (out.userWindows = true)
-                          : attr === 21 ? (out.horizontalScrolling = true)
-                            : attr === 22 ? (out.ansiColor = true)
-                              : attr === 29 ? (out.ansiTextLocator = true)
+            attr => attr === 1 ? ( out.cols132 = true )
+              : attr === 2 ? ( out.printer = true )
+                : attr === 6 ? ( out.selectiveErase = true )
+                  : attr === 8 ? ( out.userDefinedKeys = true )
+                    : attr === 9 ? ( out.nationalReplacementCharsets = true )
+                      : attr === 15 ? ( out.technicalCharacters = true )
+                        : attr === 18 ? ( out.userWindows = true )
+                          : attr === 21 ? ( out.horizontalScrolling = true )
+                            : attr === 22 ? ( out.ansiColor = true )
+                              : attr === 29 ? ( out.ansiTextLocator = true )
                                 : void 0
           )
         }
@@ -538,7 +539,7 @@ export class Program extends IO {
     //     Ps = 5 3  -> Report Locator status as
     //   CSI ? 5 3  n  Locator available, if compiled-in, or
     //   CSI ? 5 0  n  No Locator, if not.
-    if ((parts = /^\x1b\[(\?)?(\d+)(?:;(\d+);(\d+);(\d+))?n/.exec(s))) {
+    if (( parts = /^\x1b\[(\?)?(\d+)(?:;(\d+);(\d+);(\d+))?n/.exec(s) )) {
       out.event = 'device-status'
       out.code = 'DSR'
       if (!parts[1] && parts[2] === '0' && !parts[3]) {
@@ -550,7 +551,7 @@ export class Program extends IO {
         this.emit(RESPONSE + SP + out.event, out)
         return
       }
-      if (parts[1] && (parts[2] === '10' || parts[2] === '11') && !parts[3]) {
+      if (parts[1] && ( parts[2] === '10' || parts[2] === '11' ) && !parts[3]) {
         out.type = 'printer-status'
         out.status = parts[2] === '10' ? 'ready' : 'not ready'
         // LEGACY
@@ -559,7 +560,7 @@ export class Program extends IO {
         this.emit(RESPONSE + SP + out.event, out)
         return
       }
-      if (parts[1] && (parts[2] === '20' || parts[2] === '21') && !parts[3]) {
+      if (parts[1] && ( parts[2] === '20' || parts[2] === '21' ) && !parts[3]) {
         out.type = 'udk-status'
         out.status = parts[2] === '20' ? 'unlocked' : 'locked'
         // LEGACY
@@ -577,7 +578,7 @@ export class Program extends IO {
         this.emit(RESPONSE + SP + out.event, out)
         return
       }
-      if (parts[1] && (parts[2] === '53' || parts[2] === '50') && !parts[3]) {
+      if (parts[1] && ( parts[2] === '53' || parts[2] === '50' ) && !parts[3]) {
         out.type = 'locator-status'
         out.status = parts[2] === '53'
           ? 'available'
@@ -589,7 +590,7 @@ export class Program extends IO {
         return
       }
       out.type = 'error'
-      out.text = `Unhandled: ${JSON.stringify(parts)}`
+      out.text = `Unhandled: ${ JSON.stringify(parts) }`
       // LEGACY
       out.error = out.text
       this.emit(RESPONSE, out)
@@ -604,7 +605,7 @@ export class Program extends IO {
     //   Device Status Report (DSR, DEC-specific).
     //     Ps = 6  -> Report Cursor Position (CPR) [row;column] as CSI
     //     ? r ; c R (assumes page is zero).
-    if ((parts = /^\x1b\[(\?)?(\d+);(\d+)R/.exec(s))) {
+    if (( parts = /^\x1b\[(\?)?(\d+);(\d+)R/.exec(s) )) {
       out.event = 'device-status'
       out.code = 'DSR'
       out.type = 'cursor-status'
@@ -638,10 +639,10 @@ export class Program extends IO {
     //     Result is CSI  8  ;  height ;  width t
     //     Ps = 1 9  -> Report the size of the screen in characters.
     //     Result is CSI  9  ;  height ;  width t
-    if ((parts = /^\x1b\[(\d+)(?:;(\d+);(\d+))?t/.exec(s))) {
+    if (( parts = /^\x1b\[(\d+)(?:;(\d+);(\d+))?t/.exec(s) )) {
       out.event = 'window-manipulation'
       out.code = VO
-      if ((parts[1] === '1' || parts[1] === '2') && !parts[2]) {
+      if (( parts[1] === '1' || parts[1] === '2' ) && !parts[2]) {
         out.type = 'window-state'
         out.state = parts[1] === '1'
           ? 'non-iconified'
@@ -703,7 +704,7 @@ export class Program extends IO {
         return
       }
       out.type = 'error'
-      out.text = `Unhandled: ${JSON.stringify(parts)}`
+      out.text = `Unhandled: ${ JSON.stringify(parts) }`
       // LEGACY
       out.error = out.text
       this.emit(RESPONSE, out)
@@ -720,7 +721,7 @@ export class Program extends IO {
     //   -
     //   echo -ne '\e[>3t'
     //   sleep 2 && echo -ne '\e[21t' & cat -v
-    if ((parts = /^\x1b\](l|L)([^\x07\x1b]*)$/.exec(s))) {
+    if (( parts = /^\x1b\](l|L)([^\x07\x1b]*)$/.exec(s) )) {
       parts[2] = 'rxvt'
       s = OSC + parts[1] + parts[2] + ST
     }
@@ -733,7 +734,7 @@ export class Program extends IO {
     //     OSC  L  label ST
     //     Ps = 2 1  -> Report xterm window's title.  Result is OSC  l
     //     label ST
-    if ((parts = /^\x1b\](l|L)([^\x07\x1b]*)(?:\x07|\x1b\\)/.exec(s))) {
+    if (( parts = /^\x1b\](l|L)([^\x07\x1b]*)(?:\x07|\x1b\\)/.exec(s) )) {
       out.event = 'window-manipulation'
       out.code = VO
       if (parts[1] === 'L') {
@@ -755,14 +756,14 @@ export class Program extends IO {
         return
       }
       out.type = 'error'
-      out.text = `Unhandled: ${JSON.stringify(parts)}`
+      out.text = `Unhandled: ${ JSON.stringify(parts) }`
       // LEGACY
       out.error = out.text
       this.emit(RESPONSE, out)
       this.emit(RESPONSE + SP + out.event, out)
       return
     }
-    if ((parts = /^\x1b\[(\d+(?:;\d+){4})&w/.exec(s))) {
+    if (( parts = /^\x1b\[(\d+(?:;\d+){4})&w/.exec(s) )) {
       parts = parts[1].split(SC).map(ch => +ch)
       out.event = 'locator-position'
       out.code = 'DECRQLP'
@@ -791,7 +792,7 @@ export class Program extends IO {
     // OSC Ps ; Pt BEL
     // OSC Ps ; Pt ST
     // Set Text Parameters
-    if ((parts = /^\x1b\](\d+);([^\x07\x1b]+)(?:\x07|\x1b\\)/.exec(s))) {
+    if (( parts = /^\x1b\](\d+);([^\x07\x1b]+)(?:\x07|\x1b\\)/.exec(s) )) {
       out.event = 'text-params'
       out.code = 'Set Text Parameters'
       out.ps = +s[1]
@@ -813,7 +814,7 @@ export class Program extends IO {
     let responseHandler
     this.once(name, responseHandler = event => {
       if (timeout) clearTimeout(timeout)
-      if (event.type === ERROR) { return callback(new Error(`${event.event}: ${event.text}`)) }
+      if (event.type === ERROR) { return callback(new Error(`${ event.event }: ${ event.text }`)) }
       return callback(null, event)
     })
     const timeout = setTimeout(() => {
@@ -825,16 +826,16 @@ export class Program extends IO {
 
   recoords = this.auto
   auto() {
-    this.x < 0 ? (this.x = 0) : this.x >= this.cols ? (this.x = this.cols - 1) : void 0
-    this.y < 0 ? (this.y = 0) : this.y >= this.rows ? (this.y = this.rows - 1) : void 0
+    this.x < 0 ? ( this.x = 0 ) : this.x >= this.cols ? ( this.x = this.cols - 1 ) : void 0
+    this.y < 0 ? ( this.y = 0 ) : this.y >= this.rows ? ( this.y = this.rows - 1 ) : void 0
   }
   setx(x) { return this.cha(x) }
   sety(y) { return this.vpa(y) }
   move(x, y) { return this.cup(y, x) }
   omove(x, y) {
     const { zero } = this
-    x = !zero ? (x || 1) - 1 : x || 0
-    y = !zero ? (y || 1) - 1 : y || 0
+    x = !zero ? ( x || 1 ) - 1 : x || 0
+    y = !zero ? ( y || 1 ) - 1 : y || 0
     if (y === this.y && x === this.x) { return }
     if (y === this.y) { x > this.x ? this.cuf(x - this.x) : x < this.x ? this.cub(this.x - x) : void 0 }
     else if (x === this.x) { y > this.y ? this.cud(y - this.y) : y < this.y ? this.cuu(this.y - y) : void 0 }
@@ -858,7 +859,7 @@ export class Program extends IO {
 //    execClipboardProgram(text);
 //  }
   copyToClipboard(text) {
-    return this.isiTerm2 ? (this.tw(OSC + `50;CopyToCliboard=${text}` + BEL), true) : false
+    return this.isiTerm2 ? ( this.tw(OSC + `50;CopyToCliboard=${ text }` + BEL), true ) : false
   }
 
   // Only XTerm and iTerm2. If you know of any others, post them.
@@ -896,7 +897,7 @@ export class Program extends IO {
   }
   cursorColor(color) {
     return this.term('xterm') || this.term('rxvt') || this.term('screen')
-      ? (this.tw(OSC + `12;${color}` + BEL), true)
+      ? ( this.tw(OSC + `12;${ color }` + BEL), true )
       : false
   }
   cursorReset = this.resetCursor
@@ -1143,13 +1144,13 @@ export class Program extends IO {
     //   // }
     //   return this.wr('\x1bk' + title + '\x1b\\');
     // }
-    return this.tw(OSC + `0;${title}` + BEL)
+    return this.tw(OSC + `0;${ title }` + BEL)
   }
   resetColors(arg) { return this.has('Cr') ? this.put.Cr(arg) : this.tw(OSC + '112' + BEL) }
   // Change dynamic colors
-  dynamicColors(arg) { return this.has('Cs') ? this.put.Cs(arg) : this.tw(OSC + `12;${arg}` + BEL) }
+  dynamicColors(arg) { return this.has('Cs') ? this.put.Cs(arg) : this.tw(OSC + `12;${ arg }` + BEL) }
   // Sel data
-  selData(a, b) { return this.has('Ms') ? this.put.Ms(a, b) : this.tw(OSC + `52;${a};${b}` + BEL) }
+  selData(a, b) { return this.has('Ms') ? this.put.Ms(a, b) : this.tw(OSC + `52;${ a };${ b }` + BEL) }
 
   /**
    * CSI
@@ -1160,7 +1161,7 @@ export class Program extends IO {
     this.y -= n || 1
     this.auto()
     return !this.tput
-      ? this.wr(CSI + (n || VO) + CUU)
+      ? this.wr(CSI + ( n || VO ) + CUU)
       : !this.tput.strings.parm_up_cursor
         ? this.wr(this.repeat(this.tput.cuu1(), n))
         : this.put.cuu(n)
@@ -1171,7 +1172,7 @@ export class Program extends IO {
     this.y += n || 1
     this.auto()
     return !this.tput
-      ? this.wr(CSI + (n || VO) + CUD)
+      ? this.wr(CSI + ( n || VO ) + CUD)
       : !this.tput.strings.parm_down_cursor
         ? this.wr(this.repeat(this.tput.cud1(), n))
         : this.put.cud(n)
@@ -1183,7 +1184,7 @@ export class Program extends IO {
     this.x += n || 1
     this.auto()
     return !this.tput
-      ? this.wr(CSI + (n || VO) + CUF)
+      ? this.wr(CSI + ( n || VO ) + CUF)
       : !this.tput.strings.parm_right_cursor
         ? this.wr(this.repeat(this.tput.cuf1(), n))
         : this.put.cuf(n)
@@ -1195,7 +1196,7 @@ export class Program extends IO {
     this.x -= n || 1
     this.auto()
     return !this.tput
-      ? this.wr(CSI + (n || VO) + CUB)
+      ? this.wr(CSI + ( n || VO ) + CUB)
       : !this.tput.strings.parm_left_cursor
         ? this.wr(this.repeat(this.tput.cub1(), n))
         : this.put.cub(n)
@@ -1224,19 +1225,19 @@ export class Program extends IO {
   pos = this.cup
   cup(r, c) {
     const { zero } = this
-    this.x = c = !zero ? (c || 1) - 1 : c || 0
-    this.y = r = !zero ? (r || 1) - 1 : r || 0
+    this.x = c = !zero ? ( c || 1 ) - 1 : c || 0
+    this.y = r = !zero ? ( r || 1 ) - 1 : r || 0
     this.auto()
     return this.tput
       ? this.put.cup(r, c)
-      : this.wr(CSI + `${r + 1};${c + 1}` + CUP)
+      : this.wr(CSI + `${ r + 1 };${ c + 1 }` + CUP)
   }
 
   eraseInDisplay = this.ed
   ed(p) {
     return this.tput
       ? this.put.ed(p === 'above' ? 1 : p === 'all' ? 2 : p === 'saved' ? 3 : p === 'below' ? 0 : 0)
-      : this.wr(CSI + (p === 'above' ? 1 : p === 'all' ? 2 : p === 'saved' ? 3 : p === 'below' ? VO : VO) + ED)
+      : this.wr(CSI + ( p === 'above' ? 1 : p === 'all' ? 2 : p === 'saved' ? 3 : p === 'below' ? VO : VO ) + ED)
   }
 
   clear() {
@@ -1249,7 +1250,7 @@ export class Program extends IO {
   el(p) {
     return this.tput
       ? this.put.el(p === LEFT ? 1 : p === ALL ? 2 : p === RIGHT ? 0 : 0)
-      : this.wr(CSI + (p === LEFT ? 1 : p === ALL ? 2 : p === RIGHT ? VO : VO) + EL)
+      : this.wr(CSI + ( p === LEFT ? 1 : p === ALL ? 2 : p === RIGHT ? VO : VO ) + EL)
   }
 
   charAttr = this.sgr
@@ -1263,74 +1264,74 @@ export class Program extends IO {
     const self = this
     let arg,
         parts = Array.isArray(params)
-          ? (arg = params[0] || 'normal', params)
-          : (arg = params || 'normal').split(/\s*[,;]\s*/)
+          ? ( arg = params[0] || 'normal', params )
+          : ( arg = params || 'normal' ).split(/\s*[,;]\s*/)
     if (parts.length > 1) {
       const used = {}, accum = []
-      parts.forEach(el => { if ((el = self.#sgr(el, grain).slice(2, -1)) && el !== VO && !used[el]) { used[el] = true, accum.push(el) } })
+      parts.forEach(el => { if (( el = self.#sgr(el, grain).slice(2, -1) ) && el !== VO && !used[el]) { used[el] = true, accum.push(el) } })
       return CSI + accum.join(SC) + SGR
     }
-    grain = arg.startsWith('no ') && (arg = arg.slice(3)) ? false
-      : arg.startsWith('!') && (arg = arg.slice(1)) ? false
+    grain = arg.startsWith('no ') && ( arg = arg.slice(3) ) ? false
+      : arg.startsWith('!') && ( arg = arg.slice(1) ) ? false
         : grain
     if (arg === 'normal') { return grain ? CSI + SGR : VO }
-    if (arg === 'bold') { return CSI + (grain ? '1' : '22') + SGR }
-    if (arg === 'ul' || arg === 'underline' || arg === 'underlined') { return CSI + (grain ? '4' : '24') + SGR }
-    if (arg === 'blink') { return CSI + (grain ? '5' : '25') + SGR }
-    if (arg === 'inverse') { return CSI + (grain ? '7' : '27') + SGR }
-    if (arg === 'invisible') { return CSI + (grain ? '8' : '28') + SGR }
+    if (arg === 'bold') { return CSI + ( grain ? '1' : '22' ) + SGR }
+    if (arg === 'ul' || arg === 'underline' || arg === 'underlined') { return CSI + ( grain ? '4' : '24' ) + SGR }
+    if (arg === 'blink') { return CSI + ( grain ? '5' : '25' ) + SGR }
+    if (arg === 'inverse') { return CSI + ( grain ? '7' : '27' ) + SGR }
+    if (arg === 'invisible') { return CSI + ( grain ? '8' : '28' ) + SGR }
     if (arg.startsWith('default')) {
-      if (arg.endsWith('fg bg')) { return grain ? CSI + (this.term('rxvt') ? '100' : '39;49') + SGR : VO }
+      if (arg.endsWith('fg bg')) { return grain ? CSI + ( this.term('rxvt') ? '100' : '39;49' ) + SGR : VO }
       if (arg.endsWith('fg')) { return grain ? CSI + '39' + SGR : VO }
       if (arg.endsWith('bg')) { return grain ? CSI + '49' + SGR : VO }
       return grain ? CSI + SGR : VO
     }
     if (arg.endsWith('fg')) {
       // 8-color foreground
-      if (arg.startsWith('black')) { return CSI + (grain ? '30' : '39') + SGR }
-      if (arg.startsWith('red')) { return CSI + (grain ? '31' : '39') + SGR }
-      if (arg.startsWith('green')) { return CSI + (grain ? '32' : '39') + SGR }
-      if (arg.startsWith('yellow')) { return CSI + (grain ? '33' : '39') + SGR }
-      if (arg.startsWith('blue')) { return CSI + (grain ? '34' : '39') + SGR }
-      if (arg.startsWith('magenta')) { return CSI + (grain ? '35' : '39') + SGR }
-      if (arg.startsWith('cyan')) { return CSI + (grain ? '36' : '39') + SGR }
-      if (arg.startsWith('white')) { return CSI + (grain ? '37' : '39') + SGR }
-      if (arg.startsWith('grey') || arg.startsWith('gray')) { return CSI + (grain ? '90' : '39') + SGR}
+      if (arg.startsWith('black')) { return CSI + ( grain ? '30' : '39' ) + SGR }
+      if (arg.startsWith('red')) { return CSI + ( grain ? '31' : '39' ) + SGR }
+      if (arg.startsWith('green')) { return CSI + ( grain ? '32' : '39' ) + SGR }
+      if (arg.startsWith('yellow')) { return CSI + ( grain ? '33' : '39' ) + SGR }
+      if (arg.startsWith('blue')) { return CSI + ( grain ? '34' : '39' ) + SGR }
+      if (arg.startsWith('magenta')) { return CSI + ( grain ? '35' : '39' ) + SGR }
+      if (arg.startsWith('cyan')) { return CSI + ( grain ? '36' : '39' ) + SGR }
+      if (arg.startsWith('white')) { return CSI + ( grain ? '37' : '39' ) + SGR }
+      if (arg.startsWith('grey') || arg.startsWith('gray')) { return CSI + ( grain ? '90' : '39' ) + SGR}
       // 16-color foreground
       if (arg.startsWith('light') || arg.startsWith('bright')) {
-        if (arg.includes('black')) { return CSI + (grain ? '90' : '39') + SGR }
-        if (arg.includes('red')) { return CSI + (grain ? '91' : '39') + SGR }
-        if (arg.includes('green')) { return CSI + (grain ? '92' : '39') + SGR }
-        if (arg.includes('yellow')) { return CSI + (grain ? '93' : '39') + SGR }
-        if (arg.includes('blue')) { return CSI + (grain ? '94' : '39') + SGR }
-        if (arg.includes('magenta')) { return CSI + (grain ? '95' : '39') + SGR }
-        if (arg.includes('cyan')) { return CSI + (grain ? '96' : '39') + SGR }
-        if (arg.includes('white')) { return CSI + (grain ? '97' : '39') + SGR }
-        if (arg.includes('grey') || arg.includes('gray')) { return CSI + (grain ? '37' : '39') + SGR }
+        if (arg.includes('black')) { return CSI + ( grain ? '90' : '39' ) + SGR }
+        if (arg.includes('red')) { return CSI + ( grain ? '91' : '39' ) + SGR }
+        if (arg.includes('green')) { return CSI + ( grain ? '92' : '39' ) + SGR }
+        if (arg.includes('yellow')) { return CSI + ( grain ? '93' : '39' ) + SGR }
+        if (arg.includes('blue')) { return CSI + ( grain ? '94' : '39' ) + SGR }
+        if (arg.includes('magenta')) { return CSI + ( grain ? '95' : '39' ) + SGR }
+        if (arg.includes('cyan')) { return CSI + ( grain ? '96' : '39' ) + SGR }
+        if (arg.includes('white')) { return CSI + ( grain ? '97' : '39' ) + SGR }
+        if (arg.includes('grey') || arg.includes('gray')) { return CSI + ( grain ? '37' : '39' ) + SGR }
       }
     }
     if (arg.endsWith('bg')) {
       // 8-color background
-      if (arg.startsWith('black')) { return CSI + (grain ? '40' : '49') + SGR }
-      if (arg.startsWith('red')) { return CSI + (grain ? '41' : '49') + SGR }
-      if (arg.startsWith('green')) { return CSI + (grain ? '42' : '49') + SGR }
-      if (arg.startsWith('yellow')) { return CSI + (grain ? '43' : '49') + SGR }
-      if (arg.startsWith('blue')) { return CSI + (grain ? '44' : '49') + SGR }
-      if (arg.startsWith('magenta')) { return CSI + (grain ? '45' : '49') + SGR }
-      if (arg.startsWith('cyan')) { return CSI + (grain ? '46' : '49') + SGR }
-      if (arg.startsWith('white')) { return CSI + (grain ? '47' : '49') + SGR }
-      if (arg.startsWith('grey') || arg.startsWith('gray')) { return CSI + (grain ? '100' : '49') + SGR }
+      if (arg.startsWith('black')) { return CSI + ( grain ? '40' : '49' ) + SGR }
+      if (arg.startsWith('red')) { return CSI + ( grain ? '41' : '49' ) + SGR }
+      if (arg.startsWith('green')) { return CSI + ( grain ? '42' : '49' ) + SGR }
+      if (arg.startsWith('yellow')) { return CSI + ( grain ? '43' : '49' ) + SGR }
+      if (arg.startsWith('blue')) { return CSI + ( grain ? '44' : '49' ) + SGR }
+      if (arg.startsWith('magenta')) { return CSI + ( grain ? '45' : '49' ) + SGR }
+      if (arg.startsWith('cyan')) { return CSI + ( grain ? '46' : '49' ) + SGR }
+      if (arg.startsWith('white')) { return CSI + ( grain ? '47' : '49' ) + SGR }
+      if (arg.startsWith('grey') || arg.startsWith('gray')) { return CSI + ( grain ? '100' : '49' ) + SGR }
       // 16-color background
       if (arg.startsWith('light') || arg.startsWith('bright')) {
-        if (arg.includes('black')) { return CSI + (grain ? '100' : '49') + SGR }
-        if (arg.includes('red')) { return CSI + (grain ? '101' : '49') + SGR }
-        if (arg.includes('green')) { return CSI + (grain ? '102' : '49') + SGR }
-        if (arg.includes('yellow')) { return CSI + (grain ? '103' : '49') + SGR }
-        if (arg.includes('blue')) { return CSI + (grain ? '104' : '49') + SGR }
-        if (arg.includes('magenta')) { return CSI + (grain ? '105' : '49') + SGR }
-        if (arg.includes('cyan')) { return CSI + (grain ? '106' : '49') + SGR }
-        if (arg.includes('white')) { return CSI + (grain ? '107' : '49') + SGR }
-        if (arg.includes('grey') || arg.includes('gray')) { return CSI + (grain ? '47' : '49') + SGR }
+        if (arg.includes('black')) { return CSI + ( grain ? '100' : '49' ) + SGR }
+        if (arg.includes('red')) { return CSI + ( grain ? '101' : '49' ) + SGR }
+        if (arg.includes('green')) { return CSI + ( grain ? '102' : '49' ) + SGR }
+        if (arg.includes('yellow')) { return CSI + ( grain ? '103' : '49' ) + SGR }
+        if (arg.includes('blue')) { return CSI + ( grain ? '104' : '49' ) + SGR }
+        if (arg.includes('magenta')) { return CSI + ( grain ? '105' : '49' ) + SGR }
+        if (arg.includes('cyan')) { return CSI + ( grain ? '106' : '49' ) + SGR }
+        if (arg.includes('white')) { return CSI + ( grain ? '107' : '49' ) + SGR }
+        if (arg.includes('grey') || arg.includes('gray')) { return CSI + ( grain ? '47' : '49' ) + SGR }
       }
     }
     // 256-color fg and bg
@@ -1338,19 +1339,19 @@ export class Program extends IO {
   }
   #sgr256(arg, grain) {
     const temp = arg
-    if (arg[0] === '#') arg = arg.replace(/#(?:[0-9a-f]{3}){1,2}/i, colors.match)
-    console.log('program.#sgr256', temp, 'to', arg)
+    if (arg[0] === '#') arg = arg.replace(/#(?:[0-9a-f]{3}){1,2}/i, toByte)
+    // console.log('program.#sgr256', temp, 'to', arg)
     let ms, c, scope
-    if ((ms = /^(-?\d+) (fg|bg)$/.exec(arg)) && ([ , c, scope ] = ms)) {
-      if (!grain || (c = +c) === -1) { return this.#sgr(`default ${scope}`) }
+    if (( ms = /^(-?\d+) (fg|bg)$/.exec(arg) ) && ( [ , c, scope ] = ms )) {
+      if (!grain || ( c = +c ) === -1) { return this.#sgr(`default ${ scope }`) }
       c = colors.reduce(c, this.tput.colors)
-      if (c < 16 || (this.tput?.colors <= 16)) {
-        if (scope === 'fg') { c < 8 ? (c += 30) : c < 16 ? (c -= 8, c += 90) : void 0 }
-        else if (scope === 'bg') { c < 8 ? (c += 40) : c < 16 ? (c -= 8, c += 100) : void 0 }
+      if (c < 16 || ( this.tput?.colors <= 16 )) {
+        if (scope === 'fg') { c < 8 ? ( c += 30 ) : c < 16 ? ( c -= 8, c += 90 ) : void 0 }
+        else if (scope === 'bg') { c < 8 ? ( c += 40 ) : c < 16 ? ( c -= 8, c += 100 ) : void 0 }
         return CSI + c + SGR
       }
-      if (scope === 'fg') { return CSI + `38;5;${c}` + SGR }
-      if (scope === 'bg') { return CSI + `48;5;${c}` + SGR }
+      if (scope === 'fg') { return CSI + `38;5;${ c }` + SGR }
+      if (scope === 'bg') { return CSI + `48;5;${ c }` + SGR }
     }
     if (/^[\d;]*$/.test(arg)) { return CSI + arg + SGR }
     return null
@@ -1365,15 +1366,15 @@ export class Program extends IO {
   deviceStatus = this.dsr
   dsr(arg, callback, dec, noBypass) {
     return dec
-      ? this.response('device-status', CSI + '?' + (arg || '0') + DSR, callback, noBypass)
-      : this.response('device-status', CSI + (arg || '0') + DSR, callback, noBypass)
+      ? this.response('device-status', CSI + '?' + ( arg || '0' ) + DSR, callback, noBypass)
+      : this.response('device-status', CSI + ( arg || '0' ) + DSR, callback, noBypass)
   }
   getCursor(callback) { return this.deviceStatus(6, callback, false, true) }
   saveReportedCursor(callback) {
     const self = this
     return this.tput.strings.user7 === CSI + '6n' || this.term('screen')
       ? this.getCursor((err, data) => {
-        if (data) { (self._rx = data.status.x), (self._ry = data.status.y) }
+        if (data) { ( self._rx = data.status.x ), ( self._ry = data.status.y ) }
         return callback ? callback(err) : void 0
       })
       : callback ? callback() : void 0
@@ -1389,44 +1390,44 @@ export class Program extends IO {
     this.x += arg || 1
     this.auto()
     if (this.tput) return this.put.ich(arg)
-    return this.wr(CSI + (arg || 1) + ICH)
+    return this.wr(CSI + ( arg || 1 ) + ICH)
   }
 
   cursorNextLine = this.cnl
   cnl(arg) {
     this.y += arg || 1
     this.auto()
-    return this.wr(CSI + (arg || VO) + CNL)
+    return this.wr(CSI + ( arg || VO ) + CNL)
   }
 
   cursorPrecedingLine = this.cpl
   cpl(arg) {
     this.y -= arg || 1
     this.auto()
-    return this.wr(CSI + (arg || VO) + CPL)
+    return this.wr(CSI + ( arg || VO ) + CPL)
   }
 
   cursorCharAbsolute = this.cha
   cha(arg) {
-    arg = !this.zero ? (arg || 1) - 1 : arg || 0
+    arg = !this.zero ? ( arg || 1 ) - 1 : arg || 0
     this.x = arg
     this.y = 0
     this.auto()
     if (this.tput) return this.put.hpa(arg)
-    return this.wr(CSI + (arg + 1) + CHA)
+    return this.wr(CSI + ( arg + 1 ) + CHA)
   }
 
   insertLines = this.il
-  il(arg) { return this.tput ? this.put.il(arg) : this.wr(CSI + (arg || VO) + IL) }
+  il(arg) { return this.tput ? this.put.il(arg) : this.wr(CSI + ( arg || VO ) + IL) }
 
   deleteLines = this.dl
-  dl(arg) { return this.tput ? this.put.dl(arg) : this.wr(CSI + (arg || VO) + DL) }
+  dl(arg) { return this.tput ? this.put.dl(arg) : this.wr(CSI + ( arg || VO ) + DL) }
 
   deleteChars = this.dch
-  dch(arg) { return this.tput ? this.put.dch(arg) : this.wr(CSI + (arg || VO) + DCH) }
+  dch(arg) { return this.tput ? this.put.dch(arg) : this.wr(CSI + ( arg || VO ) + DCH) }
 
   eraseChars = this.ech
-  ech(arg) { return this.tput ? this.put.ech(arg) : this.wr(CSI + (arg || VO) + ECH) }
+  ech(arg) { return this.tput ? this.put.ech(arg) : this.wr(CSI + ( arg || VO ) + ECH) }
 
   charPosAbsolute = this.hpa // Character Position Absolute [column] (default = [row,1]) (HPA).
   hpa(arg) {
@@ -1434,7 +1435,7 @@ export class Program extends IO {
     this.auto()
     if (this.tput) { return this.put.hpa.apply(this.put, arguments) }
     arg = slice(arguments).join(SC)
-    return this.wr(CSI + (arg || VO) + HPA)
+    return this.wr(CSI + ( arg || VO ) + HPA)
   }
 
   HPositionRelative = this.hpr // Character Position Relative [columns] (default = [row,col+1]) (HPR).
@@ -1444,11 +1445,11 @@ export class Program extends IO {
     this.auto()
     // Does not exist:
     // if (this.tput) return this.put.hpr(arg);
-    return this.wr(CSI + (arg || VO) + HPR)
+    return this.wr(CSI + ( arg || VO ) + HPR)
   }
 
   sendDeviceAttributes = this.da
-  da(arg, callback) { return this.response('device-attributes', CSI + (arg || VO) + DA, callback) }
+  da(arg, callback) { return this.response('device-attributes', CSI + ( arg || VO ) + DA, callback) }
 
   linePosAbsolute = this.vpa
   vpa(arg) {
@@ -1456,7 +1457,7 @@ export class Program extends IO {
     this.auto()
     if (this.tput) return this.put.vpa.apply(this.put, arguments)
     arg = slice(arguments).join(SC)
-    return this.wr(CSI + (arg || VO) + VPA)
+    return this.wr(CSI + ( arg || VO ) + VPA)
   }
 
   VPositionRelative = this.vpr
@@ -1466,14 +1467,14 @@ export class Program extends IO {
     this.auto()
     // Does not exist:
     // if (this.tput) return this.put.vpr(arg);
-    return this.wr(CSI + (arg || VO) + VPR)
+    return this.wr(CSI + ( arg || VO ) + VPR)
   }
 
   HVPosition = this.hvp
   hvp(row, col) {
     if (!this.zero) {
-      row = (row || 1) - 1
-      col = (col || 1) - 1
+      row = ( row || 1 ) - 1
+      col = ( col || 1 ) - 1
     }
     else {
       row = row || 0
@@ -1485,7 +1486,7 @@ export class Program extends IO {
     // Does not exist (?):
     // if (this.tput) return this.put.hvp(row, col);
     if (this.tput) return this.put.cup(row, col)
-    return this.wr(CSI + `${row + 1};${col + 1}` + HVP)
+    return this.wr(CSI + `${ row + 1 };${ col + 1 }` + HVP)
   }
 
   setMode = this.sm
@@ -1550,19 +1551,19 @@ export class Program extends IO {
         const pair = modes[n].split('=')
         const v = pair[1] !== '0'
         const k = pair[0].toUpperCase()
-        k === 'SGRMOUSE' ? (options.sgrMouse = v)
-          : k === 'UTFMOUSE' ? (options.utfMouse = v)
-          : k === 'VT200MOUSE' ? (options.vt200Mouse = v)
-            : k === 'URXVTMOUSE' ? (options.urxvtMouse = v)
-              : k === 'X10MOUSE' ? (options.x10Mouse = v)
-                : k === 'DECMOUSE' ? (options.decMouse = v)
-                  : k === 'PTERMMOUSE' ? (options.ptermMouse = v)
-                    : k === 'JSBTERMMOUSE' ? (options.jsbtermMouse = v)
-                      : k === 'VT200HILITE' ? (options.vt200Hilite = v)
-                        : k === 'GPMMOUSE' ? (options.gpmMouse = v)
-                          : k === 'CELLMOTION' ? (options.cellMotion = v)
-                            : k === 'ALLMOTION' ? (options.allMotion = v)
-                              : k === 'SENDFOCUS' ? (options.sendFocus = v)
+        k === 'SGRMOUSE' ? ( options.sgrMouse = v )
+          : k === 'UTFMOUSE' ? ( options.utfMouse = v )
+          : k === 'VT200MOUSE' ? ( options.vt200Mouse = v )
+            : k === 'URXVTMOUSE' ? ( options.urxvtMouse = v )
+              : k === 'X10MOUSE' ? ( options.x10Mouse = v )
+                : k === 'DECMOUSE' ? ( options.decMouse = v )
+                  : k === 'PTERMMOUSE' ? ( options.ptermMouse = v )
+                    : k === 'JSBTERMMOUSE' ? ( options.jsbtermMouse = v )
+                      : k === 'VT200HILITE' ? ( options.vt200Hilite = v )
+                        : k === 'GPMMOUSE' ? ( options.gpmMouse = v )
+                          : k === 'CELLMOTION' ? ( options.cellMotion = v )
+                            : k === 'ALLMOTION' ? ( options.allMotion = v )
+                              : k === 'SENDFOCUS' ? ( options.sendFocus = v )
                                 : void 0
       }
       return this.setMouse(options, true)
@@ -1587,7 +1588,7 @@ export class Program extends IO {
     if (
       this.term('xterm') ||
       this.term('screen') ||
-      (this.tput && this.tput.strings.key_mouse)
+      ( this.tput && this.tput.strings.key_mouse )
     ) return this.setMouse({ vt200Mouse: true, utfMouse: true, cellMotion: true, allMotion: true }, true)
   }
   // CSI ? Ps$ p
@@ -1602,7 +1603,7 @@ export class Program extends IO {
   }
   // Set Mouse
   setMouse(opt, enable) {
-    if (opt.normalMouse != null) { (opt.vt200Mouse = opt.normalMouse), (opt.allMotion = opt.normalMouse) }
+    if (opt.normalMouse != null) { ( opt.vt200Mouse = opt.normalMouse ), ( opt.allMotion = opt.normalMouse ) }
     if (opt.hiliteTracking != null) { opt.vt200Hilite = opt.hiliteTracking }
     if (enable === true) {
       if (this._currentMouse) {
@@ -1613,7 +1614,7 @@ export class Program extends IO {
       this._currentMouse = opt
       this.mouseEnabled = true
     }
-    else if (enable === false) { (delete this._currentMouse), (this.mouseEnabled = false) }
+    else if (enable === false) { ( delete this._currentMouse ), ( this.mouseEnabled = false ) }
     //     Ps = 9  -> Send Mouse X & Y on button press.  See the section Mouse Tracking.
     //     Ps = 9  -> Don't send Mouse X & Y on button press.
     // x10 mouse
@@ -1665,12 +1666,12 @@ export class Program extends IO {
   csr = this.decstbm
   decstbm(top, bottom) {
     if (!this.zero) {
-      top = (top || 1) - 1
-      bottom = (bottom || this.rows) - 1
+      top = ( top || 1 ) - 1
+      bottom = ( bottom || this.rows ) - 1
     }
     else {
       top = top || 0
-      bottom = bottom || (this.rows - 1)
+      bottom = bottom || ( this.rows - 1 )
     }
     this.scrollTop = top
     this.scrollBottom = bottom
@@ -1678,7 +1679,7 @@ export class Program extends IO {
     this.y = 0
     this.auto()
     if (this.tput) return this.put.csr(top, bottom)
-    return this.wr(CSI + `${top + 1};${bottom + 1}` + DECSTBM)
+    return this.wr(CSI + `${ top + 1 };${ bottom + 1 }` + DECSTBM)
   }
 
   scA = this.scosc
@@ -1704,7 +1705,7 @@ export class Program extends IO {
     this.x += 8
     this.auto()
     if (this.tput) return this.put.tab(arg)
-    return this.wr(CSI + (arg || 1) + CHT)
+    return this.wr(CSI + ( arg || 1 ) + CHT)
   }
 
   scrollUp = this.su
@@ -1712,7 +1713,7 @@ export class Program extends IO {
     this.y -= arg || 1
     this.auto()
     if (this.tput) return this.put.parm_index(arg)
-    return this.wr(CSI + (arg || 1) + SU)
+    return this.wr(CSI + ( arg || 1 ) + SU)
   }
 
   scrollDown = this.sd
@@ -1720,7 +1721,7 @@ export class Program extends IO {
     this.y += arg || 1
     this.auto()
     if (this.tput) return this.put.parm_rindex(arg)
-    return this.wr(CSI + (arg || 1) + SD)
+    return this.wr(CSI + ( arg || 1 ) + SD)
   }
 
   initMouseTracking = this.xthimouse
@@ -1734,7 +1735,7 @@ export class Program extends IO {
     this.x -= 8
     this.auto()
     if (this.tput) return this.put.cbt(arg)
-    return this.wr(CSI + (arg || 1) + CBT)
+    return this.wr(CSI + ( arg || 1 ) + CBT)
   }
 
   repeatPrecedingCharacter = this.rep
@@ -1742,11 +1743,11 @@ export class Program extends IO {
     this.x += arg || 1
     this.auto()
     if (this.tput) return this.put.rep(arg)
-    return this.wr(CSI + (arg || 1) + REP)
+    return this.wr(CSI + ( arg || 1 ) + REP)
   }
 
   tabClear = this.tbc
-  tbc(arg) { return this.tput ? this.put.tbc(arg) : this.wr(CSI + (arg || 0) + TBC) }
+  tbc(arg) { return this.tput ? this.put.tbc(arg) : this.wr(CSI + ( arg || 0 ) + TBC) }
 
   mediaCopy = this.mc
   mc(...args) { return this.wr(CSI + args.join(SC) + MC) }
@@ -1771,10 +1772,10 @@ export class Program extends IO {
   xtmodkeys(...args) { return this.wr(CSI + '>' + args.join(SC) + XTMODKEYS) }
 
   disableModifiers = this.xtunmodkeys // Disable key modifier options, xterm.
-  xtunmodkeys(arg) { return this.wr(CSI + '>' + (arg || VO) + XTUNMODKEYS) }
+  xtunmodkeys(arg) { return this.wr(CSI + '>' + ( arg || VO ) + XTUNMODKEYS) }
 
   setPointerMode = this.xtsmpointer // Set resource value pointerMode (XTSMPOINTER), xterm.
-  xtsmpointer(arg) { return this.wr(CSI + '>' + (arg || VO) + XTSMPOINTER) }
+  xtsmpointer(arg) { return this.wr(CSI + '>' + ( arg || VO ) + XTSMPOINTER) }
 
   decstr = this.softReset
   rs2 = this.softReset
@@ -1788,7 +1789,7 @@ export class Program extends IO {
   }
 
   requestAnsiMode = this.decrqm
-  decrqm(arg) { return this.wr(CSI + (arg || VO) + DECRQM) }
+  decrqm(arg) { return this.wr(CSI + ( arg || VO ) + DECRQM) }
 
   requestPrivateMode = this.decrqmp
   decrqmp(arg = '') { return this.wr(CSI + '?' + arg + DECRQM) }
@@ -1810,11 +1811,11 @@ export class Program extends IO {
                 : p
     if (p === 2 && this.has('Se')) return this.put.Se()
     if (this.has('Ss')) return this.put.Ss(p)
-    return this.wr(CSI + (p || 1) + DECSCUSR)
+    return this.wr(CSI + ( p || 1 ) + DECSCUSR)
   }
 
   setCharProtectionAttr = this.decsca // Select character protection attribute (DECSCA), VT220.
-  decsca(arg) { return this.wr(CSI + (arg || 0) + DECSCA) }
+  decsca(arg) { return this.wr(CSI + ( arg || 0 ) + DECSCA) }
 
   restorePrivateValues = this.xtrestore
   xtrestore(...args) { return this.wr(CSI + '?' + args.join(SC) + XTRESTORE) }
@@ -1839,10 +1840,10 @@ export class Program extends IO {
   xtsmtitle(...args) { return this.tw(CSI + '>' + args.join(SC) + XTSMTITLE) }
 
   setWarningBellVolume = this.decswbv
-  decswbv(arg) { return this.wr(CSI + (arg || VO) + DECSWBV) }
+  decswbv(arg) { return this.wr(CSI + ( arg || VO ) + DECSWBV) }
 
   setMarginBellVolume = this.decsmbv
-  decsmbv(arg) { return this.wr(CSI + (arg || VO) + DECSMBV) }
+  decsmbv(arg) { return this.wr(CSI + ( arg || VO ) + DECSMBV) }
 
   copyRectangle = this.deccra
   deccra(...args) { return this.wr(CSI + args.join(SC) + DECCRA) }
@@ -1897,7 +1898,7 @@ export class Program extends IO {
 
   sigtstp(callback) {
     const resume = this.pause()
-    process.once(SIGCONT, () => { resume(), (callback ? callback() : undefined) })
+    process.once(SIGCONT, () => { resume(), ( callback ? callback() : undefined ) })
     process.kill(process.pid, SIGTSTP)
   }
 

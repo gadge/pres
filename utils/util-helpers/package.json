@@ -15,6 +15,7 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
+    "@pres/util-byte-colors": "^0.2.20",
     "@pres/util-colors": "^0.2.19",
     "@pres/util-unicode": "^0.2.20",
     "@texting/enum-chars": "^0.0.10",
@@ -39,8 +40,8 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hoyeungw/pres/cluster"
+    "url": "https://github.com/hoyeungw/pres"
   },
-  "homepage": "https://github.com/hoyeungw/pres/cluster#readme",
+  "homepage": "https://github.com/hoyeungw/pres#readme",
   "gitHead": "4e0a6a0d819185caa8d129e991bb986b6cb0b365"
 }

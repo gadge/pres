@@ -1,3 +1,5 @@
+import { toByte } from '@pres/util-byte-colors'
+
 export function MergeRecursive(target, source) {
   if (target == null) return source
   if (source == null) return target
@@ -14,18 +16,20 @@ export function abbrNumber(value) {
   let v = value
   if (value >= 1000) {
     const SCALES = [ '', 'k', 'm', 'b', 't' ]
-    const index = ~~(('' + value).length / 3)
+    const index = ~~( ( '' + value ).length / 3 )
     let abbr = ''
     for (let precision = 2; precision >= 1; precision--) {
-      abbr = parseFloat((index !== 0 ? (value / (1000 ** index)) : value).toPrecision(precision))
-      const dotLessShortValue = (abbr + '').replace(/[^a-zA-Z 0-9]+/g, '')
+      abbr = parseFloat(( index !== 0 ? ( value / ( 1000 ** index ) ) : value ).toPrecision(precision))
+      const dotLessShortValue = ( abbr + '' ).replace(/[^a-zA-Z 0-9]+/g, '')
       if (dotLessShortValue.length <= 2) break
     }
     v = abbr + SCALES[index]
   }
   return v
 }
-export const getColorCode = color =>
-  Array.isArray(color) && color.length === 3
-    ? x256.apply(null, color)
-    : color
+
+export const getColorCode = color => toByte(color)
+// export const getColorCode = color =>
+//   Array.isArray(color) && color.length === 3
+//     ? x256.apply(null, color)
+//     : color

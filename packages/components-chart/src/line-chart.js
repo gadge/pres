@@ -1,6 +1,6 @@
 import { Box }                  from '@pres/components-core'
 import { Canvas }               from '@pres/components-layout'
-import * as utils               from '@pres/util-helpers'
+import { toByte }               from '@pres/util-byte-colors'
 import { nullish }              from '@typen/nullish'
 import { maxBy }                from '@vect/vector-indicator'
 import { Labels, Padds, Ticks } from '../utils'
@@ -9,7 +9,7 @@ import { Labels, Padds, Ticks } from '../utils'
 export class LineChart extends Canvas {
   constructor(options = {}) {
     if (nullish(options.labelStep)) options.labelStep = options.showNthLabel ?? 1
-    const style = options.style ?? (options.style = {})
+    const style = options.style ?? ( options.style = {} )
     if (nullish(style.line)) style.line = 'yellow'
     if (nullish(style.text)) style.text = 'green'
     if (nullish(style.baseline)) style.baseline = 'black'
@@ -30,9 +30,9 @@ export class LineChart extends Canvas {
   static build(options) { return new LineChart(options) }
   get originY() { return this._h - this.padds.y }
   get originX() { return this._w - this.padds.x }
-  coordX(val) { return (this.originX / this.labels.length) * val + (this.padds.x * 1.0) + 2 }
+  coordX(val) { return ( this.originX / this.labels.length ) * val + ( this.padds.x * 1.0 ) + 2 }
   coordY(val) {
-    let res = this.originY - (this.originY / this.ticks.dif) * (val - this.ticks.min)
+    let res = this.originY - ( this.originY / this.ticks.dif ) * ( val - this.ticks.min )
     res -= 2 //to separate the baseline and the data line to separate chars so canvas will show separate colors
     return res
   }
@@ -58,7 +58,7 @@ export class LineChart extends Canvas {
     const maxChars = legendWidth - 2
     for (const series of seriesCollection) {
       const style = series.style || {}
-      const color = utils.getColorCode(style.line || this.options.style.line)
+      const color = toByte(style.line || this.options.style.line)
       legendText += '{' + color + '-fg}' + series.title.substring(0, maxChars) + '{/' + color + '-fg}\r\n'
     }
     this.legend.setContent(legendText)
@@ -105,7 +105,7 @@ export class LineChart extends Canvas {
     // Draw x-value labels
     const charsLimit = this.originX / 2
     for (let i = 0, step = labels.labelStep(charsLimit); i < labels.length; i += step) {
-      if ((this.coordX(i) + (labels.list[i].length * 2)) <= this._w) {
+      if (( this.coordX(i) + ( labels.list[i].length * 2 ) ) <= this._w) {
         context.fillText(labels.list[i], this.coordX(i), this.originY + padds.labelY)
       }
     }

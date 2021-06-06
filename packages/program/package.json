@@ -25,6 +25,7 @@
     "@pres/gpm-client": "^0.2.20",
     "@pres/terminfo-parser": "^0.2.20",
     "@pres/util-blessed-colors": "^0.2.20",
+    "@pres/util-byte-colors": "^0.2.20",
     "@pres/util-helpers": "^0.2.20",
     "@spare/logger": "^0.11.16",
     "@texting/enum-chars": "^0.0.10",
