@@ -3,8 +3,8 @@ import { CSI }                from '@pres/enum-control-chars'
 import { SGR }                from '@pres/enum-csi-codes'
 import { SC }                 from '@texting/enum-chars'
 import { FUN, NUM, STR }      from '@typen/enum-data-types'
-import { nullish }            from '@typen/nullish'
-import { Presa }              from './presa'
+import { nullish } from '@typen/nullish'
+import { Presa }   from './presa'
 
 // export const NAC = 1 << 24 // 16777216 = 256 * 256 * 256
 export const NAC = null

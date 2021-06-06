@@ -4,8 +4,8 @@ import { ATLAS }            from '@palett/presets'
 import { ProjectorFactory } from '@palett/projector-factory'
 import { CSI }              from '@pres/enum-control-chars'
 import { SGR }              from '@pres/enum-csi-codes'
-import { DEF, NUM, STR }    from '@typen/enum-data-types'
-import { presaToSgra }      from './cezanne'
+import { DEF, NUM, STR } from '@typen/enum-data-types'
+import { presaToSgra }   from './cezanne'
 
 const proj  = ProjectorFactory.fromHEX({ min: 0, max: 32 }, ATLAS)
 const DASH2 = Fluo.hex('--', Grey.darken_3)
