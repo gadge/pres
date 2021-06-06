@@ -1,6 +1,6 @@
 import { Cards }    from '@palett/cards'
 import { Pres }     from '@pres/terminal-interface'
-import { hexToRGB } from '@pres/util-colors'
+import { hexToRGB } from '@pres/util-blessed-colors'
 import { barChart } from '../index'
 
 const screen = Pres.screen(),

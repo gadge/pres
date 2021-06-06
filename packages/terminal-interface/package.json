@@ -1,7 +1,7 @@
 {
   "name": "@pres/terminal-interface",
   "version": "0.2.19",
-  "description": "Terminfo parser for pres",
+  "description": "Terminal-interface for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "files": [
@@ -19,7 +19,7 @@
     "@pres/components": "^0.2.19",
     "@pres/program": "^0.2.19",
     "@pres/terminfo-parser": "^0.2.19",
-    "@pres/util-colors": "^0.2.19",
+    "@pres/util-blessed-colors": "^0.2.19",
     "@pres/util-helpers": "^0.2.19",
     "@pres/util-unicode": "^0.2.19",
     "url": "^0.11.0"

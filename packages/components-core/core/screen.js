@@ -15,7 +15,7 @@ import {
 }                                                                      from '@pres/enum-events'
 import { Program }                                                     from '@pres/program'
 import { degrade }                                                     from '@pres/util-byte-colors'
-import * as colors                                                     from '@pres/util-colors'
+import * as colors                                                     from '@pres/util-blessed-colors'
 import * as helpers                                                    from '@pres/util-helpers'
 import { Mor }                                                         from '@pres/util-morisot'
 import { attrToSgra, sgraToAttr, styleToAttr }                         from '@pres/util-sgr-attr'

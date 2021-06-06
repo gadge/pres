@@ -3,7 +3,7 @@
  * Copyright (c) 2015, Christopher Jeffrey (MIT License).
  * https://github.com/chjj/tng
  */
-import * as colors from '@pres/util-colors'
+import * as colors from '@pres/util-blessed-colors'
 import assert      from 'assert'
 import cp          from 'child_process'
 import fs          from 'fs'

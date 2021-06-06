@@ -22,7 +22,7 @@ import {
   LEFT, MIDDLE, RIGHT, UNKNOWN
 }                            from '@pres/enum-key-names'
 import { gpmClient }         from '@pres/gpm-client'
-import * as colors           from '@pres/util-colors'
+import * as colors           from '@pres/util-blessed-colors'
 import { slice }             from '@pres/util-helpers'
 import {
   SC, SP, VO

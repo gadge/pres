@@ -6,7 +6,7 @@
 
 import { Box }                 from '@pres/components-core'
 import { DESTROY, PRERENDER, } from '@pres/enum-events'
-import * as colors             from '@pres/util-colors'
+import * as colors             from '@pres/util-blessed-colors'
 import cp                      from 'child_process'
 import { png }                 from '../vendor/tng'
 

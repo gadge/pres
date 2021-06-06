@@ -46,7 +46,7 @@ $ npm install @pres/cluster-fork
 #### Usage
 
 ```js
-import { Signaler } from '@pres/util-colors'
+import { Signaler } from '@pres/util-blessed-colors'
 Signaler.register(instance,process,)
 ```
 

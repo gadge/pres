@@ -1,7 +1,7 @@
 import { Cards }            from '@palett/cards'
 import { toner }            from '@palett/toner-hex'
 import { blessed, contrib } from '@pres/terminal-interface'
-import { hexToRGB }         from '@pres/util-colors'
+import { hexToRGB }         from '@pres/util-blessed-colors'
 
 const screen = blessed.screen()
 /**

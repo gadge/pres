@@ -11,17 +11,17 @@
 
 [//]: <> (Shields)
 
-[badge-npm-version]: https://flat.badgen.net/npm/v/@pres/cluster-fork
+[badge-npm-version]: https://flat.badgen.net/npm/v/@pres/components-form
 
-[badge-npm-download-monthly]: https://flat.badgen.net/npm/dm/@pres/cluster-fork
+[badge-npm-download-monthly]: https://flat.badgen.net/npm/dm/@pres/components-form
 
-[badge-npm-download-total]:https://flat.badgen.net/npm/dt/@pres/cluster-fork
+[badge-npm-download-total]:https://flat.badgen.net/npm/dt/@pres/components-form
 
-[badge-npm-dependents]: https://flat.badgen.net/npm/dependents/@pres/cluster-fork
+[badge-npm-dependents]: https://flat.badgen.net/npm/dependents/@pres/components-form
 
-[badge-npm-license]: https://flat.badgen.net/npm/license/@pres/cluster-fork
+[badge-npm-license]: https://flat.badgen.net/npm/license/@pres/components-form
 
-[badge-pp-install-size]: https://flat.badgen.net/packagephobia/install/@pres/cluster-fork
+[badge-pp-install-size]: https://flat.badgen.net/packagephobia/install/@pres/components-form
 
 [badge-github-last-commit]: https://flat.badgen.net/github/last-commit/hoyeungw/pres
 
@@ -29,9 +29,9 @@
 
 [//]: <> (Link)
 
-[url-npm]: https://npmjs.org/package/@pres/cluster-fork
+[url-npm]: https://npmjs.org/package/@pres/components-form
 
-[url-pp]: https://packagephobia.now.sh/result?p=@pres/cluster-fork
+[url-pp]: https://packagephobia.now.sh/result?p=@pres/components-form
 
 [url-github]: https://github.com/hoyeungw/pres
 
@@ -40,7 +40,7 @@
 #### Install
 
 ```console
-$ npm install @pres/cluster-fork
+$ npm install @pres/components-form
 ```
 
 #### Usage

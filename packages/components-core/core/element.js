@@ -10,7 +10,7 @@ import {
   ATTACH, CLICK, DETACH, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL,
   MOVE, NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
 }                                  from '@pres/enum-events'
-import * as colors                 from '@pres/util-colors'
+import * as colors                 from '@pres/util-blessed-colors'
 import * as helpers                from '@pres/util-helpers'
 import { sgraToAttr, styleToAttr } from '@pres/util-sgr-attr'
 import * as unicode                from '@pres/util-unicode'

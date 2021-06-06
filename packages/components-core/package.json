@@ -24,7 +24,7 @@
     "@pres/events": "^0.2.19",
     "@pres/program": "^0.2.19",
     "@pres/util-byte-colors": "^0.2.19",
-    "@pres/util-colors": "^0.2.19",
+    "@pres/util-blessed-colors": "^0.2.19",
     "@pres/util-helpers": "^0.2.19",
     "@pres/util-morisot": "^0.2.19",
     "@pres/util-sgr-attr": "^0.2.19",

@@ -19,7 +19,7 @@
     "@ject/mixin": "^0.0.12",
     "@pres/components-core": "^0.2.19",
     "@pres/enum-events": "^0.2.19",
-    "@pres/util-colors": "^0.2.19",
+    "@pres/util-blessed-colors": "^0.2.19",
     "@pres/util-helpers": "^0.2.19",
     "memory-streams": "^0.1.3",
     "memorystream": "^0.3.1",
