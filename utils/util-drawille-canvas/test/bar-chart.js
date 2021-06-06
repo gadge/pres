@@ -1,8 +1,8 @@
-import Canvas    from '../'
-import ansi_term from 'ansi-term'
+import { Context } from '../src/Context'
+import ansi_term   from 'ansi-term'
 
 const size = { height: 40, width: 80 }
-const c = new Canvas(size.width, size.height, ansi_term)
+const c = new Context(size.width, size.height, ansi_term)
 
 
 const data = [ 5, 2, 7, 3, 2 ]
