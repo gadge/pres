@@ -1,5 +1,5 @@
 {
-  "name": "@pres/util-colors",
+  "name": "@pres/util-blessed-colors",
   "version": "0.2.19",
   "description": "EventEmitter for pres",
   "main": "dist/index.cjs.js",
