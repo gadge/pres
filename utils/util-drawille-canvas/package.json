@@ -1,0 +1,46 @@
+{
+  "name": "@pres/util-drawille-canvas",
+  "version": "0.2.20",
+  "description": "HTML5 Canvas API for drawille",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "pub": "npm publish",
+    "test": "node -r @babel/register test/test.index.js"
+  },
+  "dependencies": {
+    "@palett/enum-ansi-codes": "^0.8.14",
+    "drawille-blessed-contrib": "^1.0.0",
+    "@pres/util-byte-colors": "^0.2.20",
+    "ansi-term": "^0.0.2",
+    "bresenham": "0.0.4",
+    "drawille": "^1.1.1",
+    "gl-matrix": "^3.3.0",
+    "x256": "^0.0.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoyeungw/pres.git"
+  },
+  "keywords": [
+    "pres",
+    "drawille",
+    "canvas"
+  ],
+  "author": {
+    "name": "Hoyeung Wong",
+    "email": "hoyeungw@outlook.com",
+    "url": "https://github.com/hoyeungw"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hoyeungw/pres"
+  },
+  "homepage": "https://github.com/hoyeungw/pres#readme"
+}
