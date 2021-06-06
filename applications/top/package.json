@@ -1,6 +1,6 @@
 {
   "name": "@pres/top",
-  "version": "0.2.18",
+  "version": "0.2.19",
   "description": "pres graphic top",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -18,8 +18,8 @@
     "lint": "prettier --single-quote --trailing-comma es5 --write 'src/**/*.js'"
   },
   "dependencies": {
-    "@pres/enum-events": "^0.2.18",
-    "@pres/terminal-interface": "^0.2.18",
+    "@pres/enum-events": "^0.2.19",
+    "@pres/terminal-interface": "^0.2.19",
     "@valjoux/linger": "^0.2.11",
     "systeminformation": "^5.7.4"
   },
