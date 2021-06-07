@@ -32,7 +32,7 @@ export function Canvas(width, height) {
   if (height % 4 !== 0) throw new Error('Height must be multiple of 4!')
   this.width = width
   this.height = height
-  this.content = new Buffer(width * height / 8)
+  this.content = Buffer.alloc(width * height / 8)
   this.colors = new Array(width * height / 8)
   this.chars = new Array(width * height / 8)
   this.content.fill(0)

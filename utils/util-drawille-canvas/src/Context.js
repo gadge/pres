@@ -3,20 +3,67 @@ import { mat2d, vec2 } from 'gl-matrix'
 import { Canvas }      from './Canvas'
 
 
-export function Context(width, height, context = Canvas) {
-  this._canvas = new context(width, height)
-  this.canvas = this._canvas //compatability
-  this._matrix = mat2d.create()
-  this._stack = []
-  this._currentPath = []
+export class Context {
+  constructor(width, height, CanvasClass = Canvas) {
+    this._canvas = new CanvasClass(width, height)
+    this.canvas = this._canvas //compatability
+    this._matrix = mat2d.create()
+    this._stack = []
+    this._currentPath = []
+  }
+  clearRect(x, y, w, h) {
+    quad(this._matrix, x, y, w, h, this._canvas.unset.bind(this._canvas))
+  }
+  fillRect(x, y, w, h) {
+    quad(this._matrix, x, y, w, h, this._canvas.set.bind(this._canvas))
+  }
+  save() {
+    this._stack.push(mat2d.clone(mat2d.create(), this._matrix))
+  }
+  restore() {
+    const top = this._stack.pop()
+    if (!top) return
+    this._matrix = top
+  }
+  translate(x, y) {mat2d.translate(this._matrix, this._matrix, vec2.fromValues(x, y))}
+  rotate(a) {mat2d.rotate(this._matrix, this._matrix, a / 180 * Math.PI)}
+  scale(x, y) {mat2d.scale(this._matrix, this._matrix, vec2.fromValues(x, y))}
+  beginPath() {this._currentPath = []}
+  closePath() {
+    // this._currentPath.push({ point: this._currentPath[0].point, stroke: false })
+  }
+  stroke() {
+
+    if (this.lineWidth == 0) return
+
+    const set = this._canvas.set.bind(this._canvas)
+    for (let i = 0; i < this._currentPath.length - 1; i++) {
+      const cur = this._currentPath[i]
+      const nex = this._currentPath[i + 1]
+      if (nex.stroke) {
+        bresenham(cur.point[0], cur.point[1], nex.point[0], nex.point[1], set)
+      }
+    }
+  }
+  moveTo(x, y) {
+    addPoint(this._matrix, this._currentPath, x, y, false)
+  }
+  lineTo(x, y) {
+    addPoint(this._matrix, this._currentPath, x, y, true)
+  }
+  fillText(str, x, y) {
+    const v = vec2.transformMat2d(vec2.create(), vec2.fromValues(x, y), this._matrix)
+    this._canvas.writeText(str, ~~(v[0]), ~~(v[1]))
+  }
+  measureText(str) {return this._canvas.measureText(str)}
 }
 
 function br(p1, p2) {
   return bresenham(
-    Math.floor(p1[0]),
-    Math.floor(p1[1]),
-    Math.floor(p2[0]),
-    Math.floor(p2[1])
+    ~~(p1[0]),
+    ~~(p1[1]),
+    ~~(p2[0]),
+    ~~(p2[1])
   )
 }
 
@@ -25,7 +72,7 @@ function triangle(pa, pb, pc, f) {
   const b = br(pa, pc)
   const c = br(pa, pb)
   const s = a.concat(b).concat(c).sort(function (a, b) {
-    if (a.y == b.y) {
+    if (a.y === b.y) {
       return a.x - b.x
     }
     return a.y - b.y
@@ -33,7 +80,7 @@ function triangle(pa, pb, pc, f) {
   for (let i = 0; i < s.length - 1; i++) {
     const cur = s[i]
     const nex = s[i + 1]
-    if (cur.y == nex.y) {
+    if (cur.y === nex.y) {
       for (let j = cur.x; j <= nex.x; j++) {
         f(j, cur.y)
       }
@@ -62,83 +109,11 @@ Context.prototype.__defineSetter__('strokeStyle', function (val) {
   //this._canvas.fontBg = val
 })
 
-Context.prototype.clearRect = function (x, y, w, h) {
-  quad(this._matrix, x, y, w, h, this._canvas.unset.bind(this._canvas))
-}
-
-Context.prototype.fillRect = function (x, y, w, h) {
-  quad(this._matrix, x, y, w, h, this._canvas.set.bind(this._canvas))
-}
-
-Context.prototype.save = function save() {
-  this._stack.push(mat2d.clone(mat2d.create(), this._matrix))
-}
-
-Context.prototype.restore = function restore() {
-  const top = this._stack.pop()
-  if (!top) return
-  this._matrix = top
-}
-
-Context.prototype.translate = function translate(x, y) {
-  mat2d.translate(this._matrix, this._matrix, vec2.fromValues(x, y))
-}
-
-Context.prototype.rotate = function rotate(a) {
-  mat2d.rotate(this._matrix, this._matrix, a / 180 * Math.PI)
-}
-
-Context.prototype.scale = function scale(x, y) {
-  mat2d.scale(this._matrix, this._matrix, vec2.fromValues(x, y))
-}
-
-Context.prototype.beginPath = function beginPath() {
-  this._currentPath = []
-}
-
-Context.prototype.closePath = function closePath() {
-  /*
-  this._currentPath.push({
-    point: this._currentPath[0].point,
-    stroke: false
-  });*/
-}
-
-Context.prototype.stroke = function stroke() {
-
-  if (this.lineWidth == 0) return
-
-  const set = this._canvas.set.bind(this._canvas)
-  for (let i = 0; i < this._currentPath.length - 1; i++) {
-    const cur = this._currentPath[i]
-    const nex = this._currentPath[i + 1]
-    if (nex.stroke) {
-      bresenham(cur.point[0], cur.point[1], nex.point[0], nex.point[1], set)
-    }
-  }
-}
-
 function addPoint(m, p, x, y, s) {
   const v = vec2.transformMat2d(vec2.create(), vec2.fromValues(x, y), m)
   p.push({
-    point: [ Math.floor(v[0]), Math.floor(v[1]) ],
+    point: [ ~~(v[0]), ~~(v[1]) ],
     stroke: s
   })
 }
 
-Context.prototype.moveTo = function moveTo(x, y) {
-  addPoint(this._matrix, this._currentPath, x, y, false)
-}
-
-Context.prototype.lineTo = function lineTo(x, y) {
-  addPoint(this._matrix, this._currentPath, x, y, true)
-}
-
-Context.prototype.fillText = function lineTo(str, x, y) {
-  const v = vec2.transformMat2d(vec2.create(), vec2.fromValues(x, y), this._matrix)
-  this._canvas.writeText(str, Math.floor(v[0]), Math.floor(v[1]))
-}
-
-Context.prototype.measureText = function measureText(str) {
-  return this._canvas.measureText(str)
-}
