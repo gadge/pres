@@ -14,11 +14,7 @@ import * as helpers                      from '@pres/util-helpers'
 import { FUN, NUM, OBJ, STR }            from '@typen/enum-data-types'
 import { EFFECT_COLLECTION }             from '../assets'
 
-
 export class List extends Box {
-  add = this.appendItem
-  addItem = this.appendItem
-  find = this.fuzzyFind
   /**
    * List
    */
@@ -89,36 +85,36 @@ export class List extends Box {
     }
     if (options.keys) {
       this.on(KEYPRESS, (ch, key) => {
-        if (key.name === UP || (options.vi && key.name === 'k')) {
+        if (key.name === UP || ( options.vi && key.name === 'k' )) {
           self.up()
           self.screen.render()
           return
         }
-        if (key.name === DOWN || (options.vi && key.name === 'j')) {
+        if (key.name === DOWN || ( options.vi && key.name === 'j' )) {
           self.down()
           self.screen.render()
           return
         }
-        if (key.name === ENTER || (options.vi && key.name === 'l' && !key.shift)) {
+        if (key.name === ENTER || ( options.vi && key.name === 'l' && !key.shift )) {
           self.enterSelected()
           return
         }
-        if (key.name === ESCAPE || (options.vi && key.name === 'q')) {
+        if (key.name === ESCAPE || ( options.vi && key.name === 'q' )) {
           self.cancelSelected()
           return
         }
         if (options.vi && key.name === 'u' && key.ctrl) {
-          self.move(-((self.height - self.iheight) / 2) | 0)
+          self.move(-( ( self.height - self.iheight ) / 2 ) | 0)
           self.screen.render()
           return
         }
         if (options.vi && key.name === 'd' && key.ctrl) {
-          self.move((self.height - self.iheight) / 2 | 0)
+          self.move(( self.height - self.iheight ) / 2 | 0)
           self.screen.render()
           return
         }
         if (options.vi && key.name === 'b' && key.ctrl) {
-          self.move(-(self.height - self.iheight))
+          self.move(-( self.height - self.iheight ))
           self.screen.render()
           return
         }
@@ -160,10 +156,10 @@ export class List extends Box {
           self.screen.render()
           return
         }
-        if (options.vi && (key.ch === '/' || key.ch === '?')) {
+        if (options.vi && ( key.ch === '/' || key.ch === '?' )) {
           if (typeof self.options.search !== FUN) return
           return self.options.search((err, value) => {
-            if (typeof err === STR || typeof err === FUN || typeof err === NUM || (err?.test)) {
+            if (typeof err === STR || typeof err === FUN || typeof err === NUM || ( err?.test )) {
               value = err
               err = null
             }
@@ -187,16 +183,10 @@ export class List extends Box {
         self.childOffset = visible - 1
       }
     })
-    this.on(ADOPT, el => {
-      if (!~self.items.indexOf(el)) {
-        el.fixed = true
-      }
-    })
+    this.on(ADOPT, el => { if (!~self.items.indexOf(el)) el.fixed = true })
     // Ensure sub are removed from the
     // item list if they are items.
-    this.on(REMOVE, el => {
-      self.removeItem(el)
-    })
+    this.on(REMOVE, el => self.removeItem(el))
     this.type = 'list'
   }
   static build(options) { return new List(options) }
@@ -209,7 +199,7 @@ export class List extends Box {
       align: this.align || LEFT,
       top: 0,
       left: 0,
-      right: (this.scrollbar ? 1 : 0),
+      right: ( this.scrollbar ? 1 : 0 ),
       tags: this.parseTags,
       height: 1,
       hoverEffects: this.mouse ? this.style.item.hover : null,
@@ -220,7 +210,7 @@ export class List extends Box {
     if (!this.screen.autoPadding) {
       options.top = 1
       options.left = this.ileft
-      options.right = this.iright + (this.scrollbar ? 1 : 0)
+      options.right = this.iright + ( this.scrollbar ? 1 : 0 )
     }
     // if (this.shrink) {
     // XXX NOTE: Maybe just do this on all shrinkage once autoPadding is default?
@@ -254,6 +244,8 @@ export class List extends Box {
     this.emit(CREATE_ITEM)
     return item
   }
+  add = this.appendItem
+  addItem = this.appendItem
   appendItem(content) {
     content = typeof content === STR ? content : content.getContent()
     const item = this.createItem(content)
@@ -287,7 +279,7 @@ export class List extends Box {
     const item = this.createItem(content)
     for (let j = i; j < this.items.length; j++)
       this.items[j].position.top++
-    item.position.top = i + (!this.screen.autoPadding ? 1 : 0)
+    item.position.top = i + ( !this.screen.autoPadding ? 1 : 0 )
     this.ritems.splice(i, 0, content)
     this.items.splice(i, 0, item)
     this.append(item)
@@ -335,15 +327,16 @@ export class List extends Box {
     items.forEach(item => self.insertItem(i++, item))
     return removed
   }
+  find = this.fuzzyFind
   fuzzyFind(search, back) {
-    const start = this.selected + (back ? -1 : 1)
+    const start = this.selected + ( back ? -1 : 1 )
     let i
     if (typeof search === NUM) search += ''
     if (search && search[0] === '/' && search[search.length - 1] === '/')
       try { search = new RegExp(search.slice(1, -1)) } catch (e) { }
     const test = typeof search === STR
       ? item => !!~item.indexOf(search)
-      : (search.test ? search.test.bind(search) : search)
+      : ( search.test ? search.test.bind(search) : search )
     if (typeof test !== FUN) {
       if (this.screen.options.debug) { throw new Error('fuzzyFind(): `test` is not a function.') }
       return this.selected
@@ -399,7 +392,7 @@ export class List extends Box {
     this.emit(SELECT_ITEM, this.items[this.selected], this.selected)
   }
   move(offset) { this.select(this.selected + offset) }
-  up(offset) { this.move(-(offset || 1)) }
+  up(offset) { this.move(-( offset || 1 )) }
   down(offset) { this.move(offset || 1) }
   pick(label, callback) {
     if (!callback) {

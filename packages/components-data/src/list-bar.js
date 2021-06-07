@@ -37,8 +37,8 @@ export class ListBar extends Box {
     if (options.keys) {
       this.on(KEYPRESS, (ch, key) => {
         if (key.name === LEFT ||
-          (options.vi && key.name === 'h') ||
-          (key.shift && key.name === TAB)) {
+          ( options.vi && key.name === 'h' ) ||
+          ( key.shift && key.name === TAB )) {
           self.moveLeft()
           self.screen.render()
           // Stop propagation if we're in a form.
@@ -46,7 +46,7 @@ export class ListBar extends Box {
           return void 0
         }
         if (key.name === RIGHT ||
-          (options.vi && key.name === 'l') ||
+          ( options.vi && key.name === 'l' ) ||
           key.name === TAB) {
           self.moveRight()
           self.screen.render()
@@ -54,8 +54,10 @@ export class ListBar extends Box {
           if (key.name === TAB) return false
           return void 0
         }
-        if (key.name === ENTER ||
-          (options.vi && key.name === 'k' && !key.shift)) {
+        if (
+          key.name === ENTER ||
+          ( options.vi && key.name === 'k' && !key.shift )
+        ) {
           self.emit(ACTION, self.items[self.selected], self.selected)
           self.emit(SELECT, self.items[self.selected], self.selected)
           const item = self.items[self.selected]
@@ -63,7 +65,7 @@ export class ListBar extends Box {
           self.screen.render()
           return void 0
         }
-        if (key.name === ESCAPE || (options.vi && key.name === 'q')) {
+        if (key.name === ESCAPE || ( options.vi && key.name === 'q' )) {
           self.emit(ACTION)
           self.emit(CANCEL)
           return void 0
@@ -80,7 +82,7 @@ export class ListBar extends Box {
       })
     }
     this.on(FOCUS, () => self.select(self.selected))
-    this.type = 'listbar'
+    this.type = 'list-bar'
   }
   static build(options) { return new ListBar(options) }
   get selected() { return this.leftBase + this.leftOffset }
@@ -122,18 +124,18 @@ export class ListBar extends Box {
     }
     if (typeof item === OBJ) {
       cmd = item
-      if (cmd.prefix == null) cmd.prefix = (this.items.length + 1) + ''
+      if (cmd.prefix == null) cmd.prefix = ( this.items.length + 1 ) + ''
     }
     if (typeof item === STR) {
       cmd = {
-        prefix: (this.items.length + 1) + '',
+        prefix: ( this.items.length + 1 ) + '',
         text: item,
         callback: callback
       }
     }
     if (typeof item === FUN) {
       cmd = {
-        prefix: (this.items.length + 1) + '',
+        prefix: ( this.items.length + 1 ) + '',
         text: item.name,
         callback: item
       }
@@ -142,9 +144,9 @@ export class ListBar extends Box {
       cmd.prefix = cmd.keys[0]
     }
     const t = helpers.generateTags(this.style.prefix || { fg: 'lightblack' })
-    title = (cmd.prefix != null ? t.open + cmd.prefix + t.close + ':' : '') + cmd.text
+    title = ( cmd.prefix != null ? t.open + cmd.prefix + t.close + ':' : '' ) + cmd.text
 
-    len = ((cmd.prefix != null ? cmd.prefix + ':' : '') + cmd.text).length
+    len = ( ( cmd.prefix != null ? cmd.prefix + ':' : '' ) + cmd.text ).length
     const options = {
       screen: this.screen,
       top: 0,
@@ -228,7 +230,7 @@ export class ListBar extends Box {
     const lpos = this._getCoords()
     if (!lpos) return
     const self  = this,
-          width = (lpos.xl - lpos.xi) - this.iwidth
+          width = ( lpos.xl - lpos.xi ) - this.iwidth
     let drawn   = 0,
         visible = 0,
         el
@@ -239,10 +241,10 @@ export class ListBar extends Box {
       const lpos = el._getCoords()
       if (!lpos) return
       if (lpos.xl - lpos.xi <= 0) return
-      drawn += (lpos.xl - lpos.xi) + 2
+      drawn += ( lpos.xl - lpos.xi ) + 2
       if (drawn <= width) visible++
     })
-    let diff = offset - (this.leftBase + this.leftOffset)
+    let diff = offset - ( this.leftBase + this.leftOffset )
     if (offset > this.leftBase + this.leftOffset) {
       if (offset > this.leftBase + visible - 1) {
         this.leftOffset = 0
@@ -279,7 +281,7 @@ export class ListBar extends Box {
     this.emit(REMOVE_ITEM)
   }
   move(offset) { this.select(this.selected + offset) }
-  moveLeft(offset) { this.move(-(offset || 1)) }
+  moveLeft(offset) { this.move(-( offset || 1 )) }
   moveRight(offset) { this.move(offset || 1) }
   selectTab(index) {
     const item = this.items[index]

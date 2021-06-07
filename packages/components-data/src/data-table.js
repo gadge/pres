@@ -20,7 +20,7 @@ export class DataTable extends Box {
     options.selectedBg = options.selectedBg || 'blue'
     options.fg = options.fg || 'green'
     options.bg = options.bg || ''
-    options.interactive = (typeof options.interactive === UND) ? true : options.interactive
+    options.interactive = ( typeof options.interactive === UND ) ? true : options.interactive
     if (!options.sku) options.sku = 'data-table'
     // this.options = options
     super(options) // Mixin.assign(this, new Box(options)) // Box.call(this, options)

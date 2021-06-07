@@ -4,15 +4,14 @@
  * https://github.com/chjj/blessed
  */
 
-import { Box, Node }               from '@pres/components-core'
+import { Box }                     from '@pres/components-core'
 import { ATTACH, RESIZE, SCROLL, } from '@pres/enum-events'
 import { LEFT, RIGHT }             from '@pres/enum-key-names'
+import { styleToAttr }             from '@pres/util-sgr-attr'
 import { List }                    from './list'
 import { Table }                   from './table'
 
 export class ListTable extends List {
-  setRows = this.setData
-  _select = this.select
   /**
    * ListTable
    */
@@ -28,17 +27,17 @@ export class ListTable extends List {
     options.style.selected = options.style.cell.selected
     options.style.item = options.style.cell
     const __border = options.border
-    if (__border &&
+    if (
+      __border &&
       __border.top === false &&
       __border.bottom === false &&
       __border.left === false &&
-      __border.right === false) {
-      delete options.border
-    }
+      __border.right === false
+    ) { delete options.border }
     if (!options.sku) options.sku = 'list-table'
     super(options)
     const self = this
-    if (!(this instanceof Node)) { return new ListTable(options) }
+    // if (!( this instanceof Node )) { return new ListTable(options) }
     this.__align = __align
     options.border = __border
     this._header = new Box({
@@ -54,7 +53,7 @@ export class ListTable extends List {
       self._header.setFront()
       self._header.rtop = self.childBase
       if (!self.screen.autoPadding) {
-        self._header.rtop = self.childBase + (self.border ? 1 : 0)
+        self._header.rtop = self.childBase + ( self.border ? 1 : 0 )
       }
     })
     this.pad = options.pad != null
@@ -72,6 +71,7 @@ export class ListTable extends List {
   }
   static build(options) { return new ListTable(options) }
   _calculateMaxes() { return Table.prototype._calculateMaxes.call(this) }
+  setRows(rows) { return this.setData(rows) }
   setData(rows) {
     const self     = this,
           align    = this.__align,
@@ -133,16 +133,11 @@ export class ListTable extends List {
     this._header.setFront()
     // Try to find our old item if it still exists.
     sel = this.ritems.indexOf(sel)
-    if (~sel) {
-      this.select(sel)
-    }
-    else if (this.items.length === original.length) {
-      this.select(selected)
-    }
-    else {
-      this.select(Math.min(selected, this.items.length - 1))
-    }
+    if (~sel) { this.select(sel) }
+    else if (this.items.length === original.length) { this.select(selected) }
+    else { this.select(Math.min(selected, this.items.length - 1)) }
   }
+  _select(i) { return List.prototype.select.call(this, i) }
   select(i) {
     if (i === 0) i = 1
     if (i <= this.childBase) this.setScroll(this.childBase - 1)
@@ -158,45 +153,36 @@ export class ListTable extends List {
           xi    = coords.xi,
           yi    = coords.yi
     let rx,
-        ry,
-        i
-    const battr = this.sattr(this.style.border)
+        ry
+    const borderAttr = styleToAttr(this.style.border)
     const height = coords.yl - coords.yi - this.ibottom
     let border = this.border
-    if (!this.border && this.options.border) {
-      border = this.options.border
-    }
+    if (!this.border && this.options.border) border = this.options.border
     if (!border || this.options.noCellBorders) return coords
     // Draw border with correct angles.
     ry = 0
-    for (i = 0; i < height + 1; i++) {
-      if (!lines[yi + ry]) break
+    for (let i = 0, line; i < height + 1; i++) {
+      if (!( line = lines[yi + ry] )) break
       rx = 0
       self._maxes.slice(0, -1).forEach(max => {
         rx += max
-        if (!lines[yi + ry][xi + rx + 1]) return
+        if (!line[xi + rx + 1]) return
         // center
         if (ry === 0) {
           // top
           rx++
-          lines[yi + ry][xi + rx][0] = battr
-          lines[yi + ry][xi + rx].ch = '\u252c' // '┬'
+          line[xi + rx].inject(borderAttr, '\u252c') // '┬'
           // XXX If we alter iheight and itop for no borders - nothing should be written here
-          if (!border.top) {
-            lines[yi + ry][xi + rx].ch = '\u2502' // '│'
-          }
-          lines[yi + ry].dirty = true
+          if (!border.top) line[xi + rx].ch = '\u2502' // '│'
+          line.dirty = true
         }
         else if (ry === height) {
           // bottom
           rx++
-          lines[yi + ry][xi + rx][0] = battr
-          lines[yi + ry][xi + rx].ch = '\u2534' // '┴'
+          line[xi + rx].inject(borderAttr, '\u2534') // '┴'
           // XXX If we alter iheight and ibottom for no borders - nothing should be written here
-          if (!border.bottom) {
-            lines[yi + ry][xi + rx].ch = '\u2502' // '│'
-          }
-          lines[yi + ry].dirty = true
+          if (!border.bottom) line[xi + rx].ch = '\u2502' // '│'
+          line.dirty = true
         }
         else {
           // middle
@@ -206,23 +192,23 @@ export class ListTable extends List {
       ry += 1
     }
     // Draw internal borders.
-    for (ry = 1; ry < height; ry++) {
-      if (!lines[yi + ry]) break
+    for (let ry = 1, line; ry < height; ry++) {
+      if (!( line = lines[yi + ry] )) break
       rx = 0
       self._maxes.slice(0, -1).forEach(max => {
         rx += max
-        if (!lines[yi + ry][xi + rx + 1]) return
+        if (!line[xi + rx + 1]) return
         if (self.options.fillCellBorders !== false) {
-          const lbg = lines[yi + ry][xi + rx][0] & 0x1ff
+          const lbg = line[xi + rx].at & 0x1ff
           rx++
-          lines[yi + ry][xi + rx][0] = (battr & ~0x1ff) | lbg
+          line[xi + rx].at = ( borderAttr & ~0x1ff ) | lbg
         }
         else {
           rx++
-          lines[yi + ry][xi + rx][0] = battr
+          line[xi + rx].at = borderAttr
         }
-        lines[yi + ry][xi + rx].ch = '\u2502' // '│'
-        lines[yi + ry].dirty = true
+        line[xi + rx].ch = '\u2502' // '│'
+        line.dirty = true
       })
     }
     return coords
