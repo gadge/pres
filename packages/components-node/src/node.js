@@ -70,8 +70,8 @@ export class Node extends EventEmitter {
     }
   }
   get codename() {
-    const _name = `${this.sku ?? this.type ?? ''}.${this.uid ?? 'NA'}`
-    return this.name ? `${this.name}(${_name})` : _name
+    const des = `${ this.sku ?? this.type ?? '' }.${ this.uid ?? 'NA' }`
+    return this.name ? `${ this.name }(${ des })` : des
   }
 
   get parent() { return this.sup }
@@ -120,12 +120,12 @@ export class Node extends EventEmitter {
     if (~i) this.screen.keyable.splice(i, 1)
     element.emit(REPARENT, null)
     this.emit(REMOVE, element);
-    (function emit(el) {
+    ( function emit(el) {
       const n = el.detached !== true
       el.detached = true
       if (n) el.emit(DETACH)
       el.sub.forEach(emit)
-    })(element)
+    } )(element)
     if (this.screen.focused === element) this.screen.rewindFocus()
   }
   detach() { if (this.sup) this.sup.remove(this) }
@@ -148,7 +148,7 @@ export class Node extends EventEmitter {
   forAncestors(iter, s) {
     let el = this
     if (s) iter(this)
-    while ((el = el.sup)) { iter(el) }
+    while (( el = el.sup )) { iter(el) }
   }
   collectDescendants(s) {
     const out = []
@@ -189,7 +189,7 @@ export class Node extends EventEmitter {
   }
   hasAncestor(target) {
     let el = this
-    while ((el = el.sup)) if (el === target) return true
+    while (( el = el.sup )) if (el === target) return true
     return false
   }
   get(name, value) { return this.data.hasOwnProperty(name) ? this.data[name] : value }
