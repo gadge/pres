@@ -1,9 +1,9 @@
-import { blessed }  from '@pres/terminal-interface'
-import * as contrib from '../../../vendor/blessed-contrib/index'
+import { blessed } from '@pres/terminal-interface'
+// import * as contrib from '../../../vendor/blessed-contrib/index'
 
 const screen    = blessed.screen(),
-      grid      = contrib.grid({ rows: 2, cols: 2, hideBorder: true, screen: screen }),
-      gaugeList = grid.set(0, 0, 1, 2, contrib.gaugeList, {
+      grid      = blessed.grid({ rows: 2, cols: 2, hideBorder: true, screen: screen }),
+      gaugeList = grid.set(0, 0, 1, 2, blessed.gaugeList, {
           gaugeSpacing: 0,
           gaugeHeight: 1,
           gauges: [ {

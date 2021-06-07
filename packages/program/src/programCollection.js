@@ -15,7 +15,7 @@ export class ProgramCollection {
     if (ProgramCollection._bound) return
     ProgramCollection._bound = true
     ProgramCollection.unshiftEvent(process, EXIT, ProgramCollection._exitHandler)
-    console.log('>> [ProgramCollection.initialize]', ProgramCollection.total, `[ ${process.eventNames()} ]`)
+    console.log('>> [ProgramCollection.initialize]', ProgramCollection.total, `[ ${ process.eventNames() } ]`)
   }
   // We could do this easier by just manipulating the _events object, or for
   // older versions of node, manipulating the array returned by listeners(), but
@@ -27,7 +27,8 @@ export class ProgramCollection {
     listeners.forEach(listener => target.on(event, listener))
   }
 
-  static _exitHandler() {
+  static _exitHandler(err) {
+    // console.error(err)
     ProgramCollection.instances.forEach(program => {
       // Potentially reset window title on exit:
       // if (program._originalTitle) program.setTitle(program._originalTitle)

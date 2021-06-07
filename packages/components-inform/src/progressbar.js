@@ -3,7 +3,6 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
 import { Input }                             from '@pres/components-form'
 import { CLICK, COMPLETE, KEYPRESS, RESET, } from '@pres/enum-events'
 
@@ -17,9 +16,7 @@ export class ProgressBar extends Input {
     const self = this
     // if (!(this instanceof Node)) return new ProgressBar(options)
     this.filled = options.filled || 0
-    if (typeof this.filled === 'string') {
-      this.filled = +this.filled.slice(0, -1)
-    }
+    if (typeof this.filled === 'string') this.filled = +this.filled.slice(0, -1)
     this.value = this.filled
     this.pch = options.pch || ' '
     // XXX Workaround that predates the usage of `el.ch`.
@@ -47,12 +44,12 @@ export class ProgressBar extends Input {
           back = [ 'down', 'j' ]
           forward = [ 'up', 'k' ]
         }
-        if (key.name === back[0] || (options.vi && key.name === back[1])) {
+        if (key.name === back[0] || ( options.vi && key.name === back[1] )) {
           self.progress(-5)
           self.screen.render()
           return
         }
-        if (key.name === forward[0] || (options.vi && key.name === forward[1])) {
+        if (key.name === forward[0] || ( options.vi && key.name === forward[1] )) {
           self.progress(5)
           self.screen.render()
         }
@@ -64,12 +61,12 @@ export class ProgressBar extends Input {
         if (!self.lpos) return
         if (self.orientation === 'horizontal') {
           x = data.x - self.lpos.xi
-          m = (self.lpos.xl - self.lpos.xi) - self.iwidth
+          m = ( self.lpos.xl - self.lpos.xi ) - self.iwidth
           p = x / m * 100 | 0
         }
         else if (self.orientation === 'vertical') {
           y = data.y - self.lpos.yi
-          m = (self.lpos.yl - self.lpos.yi) - self.iheight
+          m = ( self.lpos.yl - self.lpos.yi ) - self.iheight
           p = y / m * 100 | 0
         }
         self.setProgress(p)
@@ -89,10 +86,10 @@ export class ProgressBar extends Input {
       dattr
     if (this.border) xi++, yi++, xl--, yl--
     if (this.orientation === 'horizontal') {
-      xl = xi + ((xl - xi) * (this.filled / 100)) | 0
+      xl = xi + ( ( xl - xi ) * ( this.filled / 100 ) ) | 0
     }
     else if (this.orientation === 'vertical') {
-      yi = yi + ((yl - yi) - (((yl - yi) * (this.filled / 100)) | 0))
+      yi = yi + ( ( yl - yi ) - ( ( ( yl - yi ) * ( this.filled / 100 ) ) | 0 ) )
     }
     dattr = this.sattr(this.style.bar)
     this.screen.fillRegion(dattr, this.pch, xi, xl, yi, yl)
