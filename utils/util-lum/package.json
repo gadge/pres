@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-lum",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "lum color scheme for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -20,13 +20,13 @@
     "@palett/fluo": "^0.8.14",
     "@palett/presets": "^0.8.14",
     "@palett/projector-factory": "^0.8.14",
-    "@pres/enum-control-chars": "^0.3.1",
-    "@pres/enum-csi-codes": "^0.3.1",
+    "@pres/enum-control-chars": "^0.3.2",
+    "@pres/enum-csi-codes": "^0.3.2",
     "@pres/util-colors": "^0.2.19",
+    "@pres/util-sgr-mode": "^0.3.2",
     "@texting/enum-chars": "^0.0.10",
     "@typen/enum-data-types": "^0.1.16",
-    "@typen/nullish": "^0.1.16",
-    "@pres/util-sgr-mode": "^0.3.1"
+    "@typen/nullish": "^0.1.16"
   },
   "repository": {
     "type": "git",
