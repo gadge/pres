@@ -34,14 +34,14 @@ export class ScreenCollection {
     }
     console.log('>> [ScreenCollection.initialize]', ScreenCollection.total, `[ ${ Object.keys(ScreenCollection.handlers) } ]`)
   }
-  static _uncaughtExceptionHandler(err) {
+  static _uncaughtExceptionHandler(err = new Error('Uncaught Exception.')) {
     if (process.listeners(UNCAUGHT_EXCEPTION).length > 1) return
     ScreenCollection.instances.slice()?.forEach(screen => screen?.destroy())
-    err = err || new Error('Uncaught Exception.')
-    console.error(err.stack ? err.stack + '' : err + '')
+    console.error(err) // console.error(err.stack ? err.stack + '' : err + '')
     nextTick(() => process.exit(1))
   }
-  static _exitHandler() {
+  static _exitHandler(err) {
+    console.error(err)
     ScreenCollection.instances.slice()?.forEach(screen => screen?.destroy())
   }
 }
