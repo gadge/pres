@@ -20,7 +20,8 @@
     "@pres/enum-key-names": "^0.3.2",
     "@pres/util-helpers": "^0.3.2",
     "@texting/charset-ansi": "^0.0.10",
-    "@typen/enum-data-types": "^0.1.16"
+    "@typen/enum-data-types": "^0.1.16",
+    "@pres/util-sgr-attr": "^0.3.2"
   },
   "repository": {
     "type": "git",

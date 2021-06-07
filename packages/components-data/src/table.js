@@ -7,6 +7,7 @@
 import { Box }             from '@pres/components-core'
 import { ATTACH, RESIZE, } from '@pres/enum-events'
 import { LEFT, RIGHT }     from '@pres/enum-key-names'
+import { styleToAttr }     from '@pres/util-sgr-attr'
 
 export class Table extends Box {
   setRows = this.setData
@@ -135,149 +136,134 @@ export class Table extends Box {
           xi    = coords.xi,
           yi    = coords.yi
     let rx,
-        ry,
-        i
-    const normAttr   = this.sattr(this.style),
-          headAttr   = this.sattr(this.style.header),
-          cellAttr   = this.sattr(this.style.cell),
-          borderAttr = this.sattr(this.style.border)
+        ry
+    const normAttr   = styleToAttr(this.style),
+          headAttr   = styleToAttr(this.style.header),
+          cellAttr   = styleToAttr(this.style.cell),
+          borderAttr = styleToAttr(this.style.border)
     const width  = coords.xl - coords.xi - this.iright,
           height = coords.yl - coords.yi - this.ibottom
     // Apply attributes to header cells and cells.
-    for (let y = this.itop; y < height; y++) {
-      if (!lines[yi + y]) break
-      for (let x = this.ileft; x < width; x++) {
-        if (!lines[yi + y][xi + x]) break
+    for (let y = this.itop, line; y < height; y++) {
+      if (!( line = lines[yi + y] )) break
+      for (let x = this.ileft, cell; x < width; x++) {
+        if (!( cell = line[xi + x] )) break
         // Check to see if it's not the default attr. Allows for tags:
-        if (lines[yi + y][xi + x][0] !== normAttr) continue
-        if (y === this.itop) {
-          lines[yi + y][xi + x][0] = headAttr
-        }
-        else {
-          lines[yi + y][xi + x][0] = cellAttr
-        }
-        lines[yi + y].dirty = true
+        if (cell.at !== normAttr) continue
+        cell.at = y === this.itop ? headAttr : cellAttr
+        line.dirty = true
       }
     }
     if (!this.border || this.options.noCellBorders) return coords
     // Draw border with correct angles.
     ry = 0
-    for (i = 0; i < self.rows.length + 1; i++) {
-      if (!lines[yi + ry]) break
+    for (let i = 0, line; i < self.rows.length + 1; i++) {
+      if (!( line = lines[yi + ry] )) break
       rx = 0
       self._maxes.forEach((max, i) => {
         rx += max
         if (i === 0) {
-          if (!lines[yi + ry][xi + 0]) return
+          if (!line[xi + 0]) return
           // left side
           if (ry === 0) {
             // top
-            lines[yi + ry][xi + 0][0] = borderAttr
-            // lines[yi + ry][xi + 0].ch = '\u250c'; // '┌'
+            line[xi + 0].at = borderAttr
+            // line[xi + 0].ch = '\u250c'; // '┌'
           }
           else if (ry / 2 === self.rows.length) {
             // bottom
-            lines[yi + ry][xi + 0][0] = borderAttr
-            // lines[yi + ry][xi + 0].ch = '\u2514'; // '└'
+            line[xi + 0].at = borderAttr
+            // line[xi + 0].ch = '\u2514'; // '└'
           }
           else {
             // middle
-            lines[yi + ry][xi + 0][0] = borderAttr
-            lines[yi + ry][xi + 0].ch = '\u251c' // '├'
+            line[xi + 0].inject(borderAttr, '\u251c') // '├'
             // XXX If we alter iwidth and ileft for no borders - nothing should be written here
-            if (!self.border.left) {
-              lines[yi + ry][xi + 0].ch = '\u2500' // '─'
-            }
+            if (!self.border.left) line[xi + 0].ch = '\u2500' // '─'
+
           }
-          lines[yi + ry].dirty = true
+          line.dirty = true
         }
         else if (i === self._maxes.length - 1) {
-          if (!lines[yi + ry][xi + rx + 1]) return
+          if (!line[xi + rx + 1]) return
           // right side
           if (ry === 0) {
             // top
             rx++
-            lines[yi + ry][xi + rx][0] = borderAttr
-            // lines[yi + ry][xi + rx].ch = '\u2510'; // '┐'
+            line[xi + rx].at = borderAttr
+            // line[xi + rx].ch = '\u2510'; // '┐'
           }
           else if (ry / 2 === self.rows.length) {
             // bottom
             rx++
-            lines[yi + ry][xi + rx][0] = borderAttr
-            // lines[yi + ry][xi + rx].ch = '\u2518'; // '┘'
+            line[xi + rx].at = borderAttr
+            // line[xi + rx].ch = '\u2518'; // '┘'
           }
           else {
             // middle
             rx++
-            lines[yi + ry][xi + rx][0] = borderAttr
-            lines[yi + ry][xi + rx].ch = '\u2524' // '┤'
+            line[xi + rx].inject(borderAttr, '\u2524') // '┤'
             // XXX If we alter iwidth and iright for no borders - nothing should be written here
-            if (!self.border.right) {
-              lines[yi + ry][xi + rx].ch = '\u2500' // '─'
-            }
+            if (!self.border.right) line[xi + rx].ch = '\u2500' // '─'
           }
-          lines[yi + ry].dirty = true
+          line.dirty = true
           return
         }
-        if (!lines[yi + ry][xi + rx + 1]) return
+        if (!line[xi + rx + 1]) return
         // center
         if (ry === 0) {
           // top
           rx++
-          lines[yi + ry][xi + rx][0] = borderAttr
-          lines[yi + ry][xi + rx].ch = '\u252c' // '┬'
+          line[xi + rx].inject(borderAttr, '\u252c') // '┬'
           // XXX If we alter iheight and itop for no borders - nothing should be written here
-          if (!self.border.top) {
-            lines[yi + ry][xi + rx].ch = '\u2502' // '│'
-          }
+          if (!self.border.top) line[xi + rx].ch = '\u2502' // '│'
+
         }
         else if (ry / 2 === self.rows.length) {
           // bottom
           rx++
-          lines[yi + ry][xi + rx][0] = borderAttr
-          lines[yi + ry][xi + rx].ch = '\u2534' // '┴'
+          line[xi + rx].inject(borderAttr, '\u2534') // '┴'
           // XXX If we alter iheight and ibottom for no borders - nothing should be written here
-          if (!self.border.bottom) {
-            lines[yi + ry][xi + rx].ch = '\u2502' // '│'
-          }
+          if (!self.border.bottom) line[xi + rx].ch = '\u2502' // '│'
+
         }
         else {
           // middle
           if (self.options.fillCellBorders) {
-            const lbg = ( ry <= 2 ? headAttr : cellAttr ) & 0x1ff
+            const lineBackColor = ( ry <= 2 ? headAttr : cellAttr ) & 0x1ff
             rx++
-            lines[yi + ry][xi + rx][0] = ( borderAttr & ~0x1ff ) | lbg
+            line[xi + rx].at = ( borderAttr & ~0x1ff ) | lineBackColor
           }
           else {
             rx++
-            lines[yi + ry][xi + rx][0] = borderAttr
+            line[xi + rx].at = borderAttr
           }
-          lines[yi + ry][xi + rx].ch = '\u253c' // '┼'
+          line[xi + rx].ch = '\u253c' // '┼'
           // rx++;
         }
-        lines[yi + ry].dirty = true
+        line.dirty = true
       })
       ry += 2
     }
     // Draw internal borders.
-    for (ry = 1; ry < self.rows.length * 2; ry++) {
-      if (!lines[yi + ry]) break
+    for (let ry = 1, line; ry < self.rows.length * 2; ry++) {
+      if (!( line = lines[yi + ry] )) break
       rx = 0
       self._maxes.slice(0, -1).forEach(max => {
         rx += max
-        if (!lines[yi + ry][xi + rx + 1]) return
+        if (!line[xi + rx + 1]) return
         if (ry % 2 !== 0) {
           if (self.options.fillCellBorders) {
-            const lbg = ( ry <= 2 ? headAttr : cellAttr ) & 0x1ff
+            const lineBackColor = ( ry <= 2 ? headAttr : cellAttr ) & 0x1ff
             rx++
-            lines[yi + ry][xi + rx][0] = ( borderAttr & ~0x1ff ) | lbg
+            line[xi + rx].at = ( borderAttr & ~0x1ff ) | lineBackColor
           }
           else {
             rx++
-            lines[yi + ry][xi + rx][0] = borderAttr
+            line[xi + rx].at = borderAttr
           }
-          lines[yi + ry][xi + rx].ch = '\u2502' // '│'
-          lines[yi + ry].dirty = true
+          line[xi + rx].ch = '\u2502' // '│'
+          line.dirty = true
         }
         else {
           rx++
@@ -287,17 +273,17 @@ export class Table extends Box {
       self._maxes.forEach(max => {
         while (max--) {
           if (ry % 2 === 0) {
-            if (!lines[yi + ry]) break
-            if (!lines[yi + ry][xi + rx + 1]) break
+            if (!line) break
+            if (!line[xi + rx + 1]) break
             if (self.options.fillCellBorders) {
-              const lbg = ( ry <= 2 ? headAttr : cellAttr ) & 0x1ff
-              lines[yi + ry][xi + rx][0] = ( borderAttr & ~0x1ff ) | lbg
+              const lineBackColor = ( ry <= 2 ? headAttr : cellAttr ) & 0x1ff
+              line[xi + rx].at = ( borderAttr & ~0x1ff ) | lineBackColor
             }
             else {
-              lines[yi + ry][xi + rx][0] = borderAttr
+              line[xi + rx].at = borderAttr
             }
-            lines[yi + ry][xi + rx].ch = '\u2500' // '─'
-            lines[yi + ry].dirty = true
+            line[xi + rx].ch = '\u2500' // '─'
+            line.dirty = true
           }
           rx++
         }
