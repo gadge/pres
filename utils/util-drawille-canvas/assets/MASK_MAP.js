@@ -1,4 +1,3 @@
-
 export const MASK_MAP = [
   [ 0x1, 0x8 ],
   [ 0x2, 0x10 ],

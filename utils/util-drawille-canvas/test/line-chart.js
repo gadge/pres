@@ -1,4 +1,3 @@
-import Canvas from '../'
 //brayle canvas:
 /*
 var size = {height: 80, width: 160}
@@ -9,10 +8,11 @@ var yLabelPadding = 7
 
 //ansi canvas:
 
-import ansi_term from 'ansi-term'
+import ansi_term   from 'ansi-term'
+import { Context } from '../index'
 
 const size = { height: 40, width: 80 }
-const c = new Canvas(size.width, size.height, ansi_term)
+const c = new Context(size.width, size.height, ansi_term)
 const xLabelPadding = 4
 const yLabelPadding = 2
 

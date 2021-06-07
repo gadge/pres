@@ -17,12 +17,12 @@
   "dependencies": {
     "@palett/enum-ansi-codes": "^0.8.14",
     "@pres/util-byte-colors": "^0.3.1",
-    "ansi-term": "^0.0.2",
-    "bresenham": "0.0.4",
+    "bresenham": "^0.0.4",
+    "gl-matrix": "^3.3.0"
+  },
+  "devDependencies": {
     "drawille": "^1.1.1",
-    "drawille-blessed-contrib": "^1.0.0",
-    "gl-matrix": "^3.3.0",
-    "x256": "^0.0.2"
+    "ansi-term": "^0.0.2"
   },
   "repository": {
     "type": "git",
