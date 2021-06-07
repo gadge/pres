@@ -1,12 +1,8 @@
 import { CSI, SGR }                               from '@palett/enum-ansi-codes'
 import { byteToBackSgra, byteToForeSgra, toByte } from '@pres/util-byte-colors'
+import { MASK_MAP }                               from '../assets/MASK_MAP'
 
-const map = [
-  [ 0x1, 0x8 ],
-  [ 0x2, 0x10 ],
-  [ 0x4, 0x20 ],
-  [ 0x40, 0x80 ]
-]
+
 // String Value
 // RGB Value
 // Number
@@ -81,7 +77,7 @@ Object.keys(methods).forEach(function (method) {
       return
     }
     const coord = this.getCoord(x, y)
-    const mask = map[y % 4][x % 2]
+    const mask = MASK_MAP[y % 4][x % 2]
     methods[method].call(this, coord, mask)
   }
 })
@@ -164,7 +160,7 @@ Canvas.prototype.set = function (x, y) {
   if (!( x >= 0 && x < this.width && y >= 0 && y < this.height )) return
 
   const coord = this.getCoord(x, y)
-  const mask = map[y % 4][x % 2]
+  const mask = MASK_MAP[y % 4][x % 2]
 
   this.content[coord] |= mask
   this.colors[coord] = getFgCode(this.color)
