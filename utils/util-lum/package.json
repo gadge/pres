@@ -25,7 +25,8 @@
     "@pres/util-colors": "^0.2.19",
     "@texting/enum-chars": "^0.0.10",
     "@typen/enum-data-types": "^0.1.16",
-    "@typen/nullish": "^0.1.16"
+    "@typen/nullish": "^0.1.16",
+    "@pres/util-sgr-mode": "^0.3.1"
   },
   "repository": {
     "type": "git",

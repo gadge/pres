@@ -1,13 +1,11 @@
-import { hexToInt, rgbToInt } from '@palett/convert'
-import { CSI }                from '@pres/enum-control-chars'
-import { SGR }                from '@pres/enum-csi-codes'
-import { FUN, NUM, STR }      from '@typen/enum-data-types'
-import { nullish }            from '@typen/nullish'
-import { COLOR_CODES }        from '../assets/colorCodes'
-import { COLORS_4BITS }       from '../assets/colors4bits'
-import { LIGHT, PUNC }        from '../assets/regex'
-import { NAC }                from '../index'
-import { Lum }                from './lum'
+import { hexToInt, rgbToInt }                          from '@palett/convert'
+import { CSI }                                         from '@pres/enum-control-chars'
+import { SGR }                                         from '@pres/enum-csi-codes'
+import { styleToMode }                                 from '@pres/util-sgr-mode'
+import { FUN, NUM, STR }                               from '@typen/enum-data-types'
+import { nullish }                                     from '@typen/nullish'
+import { COLOR_CODES, COLORS_4BITS, LIGHT, NAC, PUNC } from '../assets'
+import { Lum }                                         from './lum'
 
 
 /**
@@ -27,7 +25,7 @@ export const nameToColor = (name) => {
 
 export const convHex = hex => hex[0] === '#' ? hexToInt(hex) : null
 
-export const convColor = color => {
+export const toInt = color => {
   const t = typeof color
   color = t === NUM ? color
     : t === STR ? convHex(color) ?? nameToColor(color) ?? NAC
@@ -36,23 +34,11 @@ export const convColor = color => {
   return color
 }
 
-export const convMode = style => {
-  if (!style) return 0
-  const { bold, underline, blink, inverse, invisible } = style
-  return (
-    ( invisible ? 16 : 0 ) |
-    ( inverse ? 8 : 0 ) |
-    ( blink ? 4 : 0 ) |
-    ( underline ? 2 : 0 ) |
-    ( bold ? 1 : 0 )
-  )
-}
-
 export function styleToLum(style = {}, fore, back) {
   if (nullish(fore) && nullish(back)) { ( fore = style.fore || style.fg ), ( back = style.back || style.bg ) }
   if (typeof fore === FUN) fore = fore(this)
   if (typeof back === FUN) back = back(this)
-  return new Lum(convMode(style), convColor(fore), convColor(back))
+  return new Lum(styleToMode(style), toInt(fore), toInt(back))
 }
 
 /**

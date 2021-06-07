@@ -1,5 +1,4 @@
 // export const NAC = 1 << 24 // 16777216 = 256 * 256 * 256
-import { nullish } from '@typen/nullish'
 
 export const NORMAL_COLOR_CODES = {
   black: 0,
