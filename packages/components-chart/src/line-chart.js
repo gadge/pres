@@ -25,6 +25,7 @@ export class LineChart extends Canvas {
     this.padds = padds
     this.ticks = ticks
     this.labels = labels
+    console.log(`>> [{${ this.codename }.ticks]`, ticks)
     this.type = 'line-chart'
   }
   static build(options) { return new LineChart(options) }
@@ -90,7 +91,7 @@ export class LineChart extends Canvas {
     if (!Array.isArray(seriesCollection)) seriesCollection = [ seriesCollection ] //compatible with prev api
     const { padds, ticks, labels, context } = this
     labels.loadLabels(seriesCollection)
-    this.ticks.adaptTicks(seriesCollection)
+    this.ticks.setTicks(seriesCollection)
     this.padds.adjustPadding(this.ticks.tickWidth)
     this.drawLegend(seriesCollection)
     context.fillStyle = this.options.style.text
