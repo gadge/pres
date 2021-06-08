@@ -1,6 +1,6 @@
 {
   "name": "@pres/terminal-interface",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Terminal-interface for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -16,12 +16,12 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/components": "^0.3.4",
-    "@pres/program": "^0.3.4",
-    "@pres/terminfo-parser": "^0.3.4",
-    "@pres/util-blessed-colors": "^0.3.4",
-    "@pres/util-helpers": "^0.3.4",
-    "@pres/util-unicode": "^0.3.4",
+    "@pres/components": "^0.3.5",
+    "@pres/program": "^0.3.5",
+    "@pres/terminfo-parser": "^0.3.5",
+    "@pres/util-blessed-colors": "^0.3.5",
+    "@pres/util-helpers": "^0.3.5",
+    "@pres/util-unicode": "^0.3.5",
     "url": "^0.11.0"
   },
   "repository": {
