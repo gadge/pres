@@ -1,7 +1,5 @@
-import si    from 'systeminformation'
+import si        from 'systeminformation'
 import { utils } from '../utils'
-
-const colors = utils.colors
 
 export function Net(sparkline) {
   this.sparkline = sparkline

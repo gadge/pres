@@ -1,8 +1,6 @@
 import { AsyncLooper } from '@valjoux/linger'
 import si              from 'systeminformation'
-import { utils }       from '../utils'
 
-const colors = utils.colors
 const pars = {
   p: 'pid',
   c: 'cpu',

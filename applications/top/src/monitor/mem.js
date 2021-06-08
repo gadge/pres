@@ -38,8 +38,8 @@ export function Mem(line, memDonut, swapDonut) {
 }
 
 Mem.prototype.updateData = function (data) {
-  const memPer = (100 * (1 - data.available / data.total)).toFixed()
-  let swapPer = (100 * (1 - data.swapfree / data.swaptotal)).toFixed()
+  const memPer = ( 100 * ( 1 - data.available / data.total ) ).toFixed()
+  let swapPer = ( 100 * ( 1 - data.swapfree / data.swaptotal ) ).toFixed()
 
   swapPer = isNaN(swapPer) ? 0 : swapPer
 
