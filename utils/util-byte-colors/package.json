@@ -15,7 +15,7 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@aryth/math": "^0.3.19",
+    "@aryth/math": "^0.3.21",
     "@palett/convert": "^0.8.14",
     "@typen/enum-data-types": "^0.1.16",
     "@typen/nullish": "^0.1.16",
