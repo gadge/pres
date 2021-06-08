@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-node",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Node component for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,8 +15,8 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/enum-events": "^0.3.3",
-    "@pres/events": "^0.3.3",
+    "@pres/enum-events": "^0.3.4",
+    "@pres/events": "^0.3.4",
     "@typen/enum-data-types": "^0.1.16",
     "@vect/vector-index": "^0.3.10"
   },
