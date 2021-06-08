@@ -6,7 +6,6 @@ export {
   findFile,
   escape,
   generateTags,
-  attrToBinary,
   stripTags,
   cleanTags,
   dropUnicode

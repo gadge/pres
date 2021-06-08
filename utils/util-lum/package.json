@@ -22,7 +22,7 @@
     "@palett/projector-factory": "^0.8.14",
     "@pres/enum-control-chars": "^0.3.3",
     "@pres/enum-csi-codes": "^0.3.3",
-    "@pres/util-colors": "^0.2.19",
+    "@pres/util-blessed-colors": "^0.3.3",
     "@pres/util-sgr-mode": "^0.3.3",
     "@texting/enum-chars": "^0.0.10",
     "@typen/enum-data-types": "^0.1.16",

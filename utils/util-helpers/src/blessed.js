@@ -5,7 +5,6 @@
  */
 import * as unicode from '@pres/util-unicode'
 import fs           from 'fs'
-import { sattr }    from './sattr'
 
 // /**
 //  * Helpers
@@ -73,7 +72,6 @@ export const generateTags = (style = {}, text) => {
     ? open + text + close
     : { open: open, close: close }
 }
-export const attrToBinary = (style, element) => sattr.call(element || {}, style)
 export const stripTags = text => !text ? '' : text.replace(/{(\/?)([\w\-,;!#]*)}/g, '').replace(/\x1b\[[\d;]*m/g, '')
 export const cleanTags = text => stripTags(text).trim()
 export const dropUnicode = text =>
