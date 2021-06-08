@@ -1,0 +1,45 @@
+{
+  "name": "@pres/util-chart-ticks",
+  "version": "0.3.3",
+  "description": "Tick class for pres charting",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "pub": "npm publish",
+    "test": "node -r @babel/register test/test.index.js"
+  },
+  "dependencies": {
+    "@aryth/bound-matrix": "^0.3.20",
+    "@aryth/math": "^0.3.21",
+    "@aryth/nice-scale": "^0.3.21",
+    "@typen/enum-object-types": "^0.1.16",
+    "@typen/nullish": "^0.1.16"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoyeungw/pres.git"
+  },
+  "keywords": [
+    "pres",
+    "process",
+    "signal-handler",
+    "colors"
+  ],
+  "author": {
+    "name": "Hoyeung Wong",
+    "email": "hoyeungw@outlook.com",
+    "url": "https://github.com/hoyeungw"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hoyeungw/pres"
+  },
+  "homepage": "https://github.com/hoyeungw/pres#readme",
+  "gitHead": "4e0a6a0d819185caa8d129e991bb986b6cb0b365"
+}
