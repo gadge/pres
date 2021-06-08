@@ -1,4 +1,5 @@
-import { TI as blessed } from '../src/terminal-interface'
+import { Indigo, LightBlue, Pink, Red } from '@palett/cards'
+import { TI as blessed }                from '../src/terminal-interface'
 
 const auto = true
 
@@ -22,91 +23,33 @@ const bar = blessed.listBar({
   bottom: 0,
   left: 3,
   right: 3,
-  height: auto ? 'shrink' : 3,
+  height: auto ? 'shrink' : 5,
   mouse: true,
   keys: true,
   autoCommandKeys: true,
   border: 'line',
   vi: true,
   style: {
-    bg: 'green',
-    item: {
-      bg: 'red',
-      hover: {
-        bg: 'blue'
-      },
-      //focus: {
-      //  bg: 'blue'
-      //}
-    },
-    selected: {
-      bg: 'blue'
-    }
+    bg: Pink.lighten_4,
+    item: { bg: Red.lighten_1, hover: { bg: LightBlue.accent_4 } }, // focus: { bg: 'blue' }
+    selected: { bg: Indigo.darken_4 }
   },
   commands: {
-    'one': {
-      keys: [ 'a' ],
-      callback: function () {
-        box.setContent('Pressed one.')
-        screen.render()
-      }
-    },
-    'two': function () {
-      box.setContent('Pressed two.')
-      screen.render()
-    },
-    'three': function () {
-      box.setContent('Pressed three.')
-      screen.render()
-    },
-    'four': function () {
-      box.setContent('Pressed four.')
-      screen.render()
-    },
-    'five': function () {
-      box.setContent('Pressed five.')
-      screen.render()
-    },
-    'six': function () {
-      box.setContent('Pressed six.')
-      screen.render()
-    },
-    'seven': function () {
-      box.setContent('Pressed seven.')
-      screen.render()
-    },
-    'eight': function () {
-      box.setContent('Pressed eight.')
-      screen.render()
-    },
-    'nine': function () {
-      box.setContent('Pressed nine.')
-      screen.render()
-    },
-    'ten': function () {
-      box.setContent('Pressed ten.')
-      screen.render()
-    },
-    'eleven': function () {
-      box.setContent('Pressed eleven.')
-      screen.render()
-    },
-    'twelve': function () {
-      box.setContent('Pressed twelve.')
-      screen.render()
-    },
-    'thirteen': function () {
-      box.setContent('Pressed thirteen.')
-      screen.render()
-    },
-    'fourteen': function () {
-      box.setContent('Pressed fourteen.')
-      screen.render()
-    },
-    'fifteen': function () {
-      box.setContent('Pressed fifteen.')
-      screen.render()
-    }
+    one: { keys: [ 'a' ], callback() { box.setContent('Pressed one.'), screen.render() } },
+    two: { keys: [ 'b' ], callback() { box.setContent('Pressed two.'), screen.render() } },
+    three: { keys: [ 'c' ], callback() { box.setContent('Pressed three.'), screen.render() } },
+    four: { keys: [ 'd' ], callback() { box.setContent('Pressed four.'), screen.render() } },
+    five: { keys: [ 'e' ], callback() { box.setContent('Pressed five.'), screen.render() } },
+    six: { keys: [ 'f' ], callback() { box.setContent('Pressed six.'), screen.render() } },
+    seven: { keys: [ 'g' ], callback() { box.setContent('Pressed seven.'), screen.render() } },
+    eight: { keys: [ 'h' ], callback() { box.setContent('Pressed eight.'), screen.render() } },
+    nine: { keys: [ 'i' ], callback() { box.setContent('Pressed nine.'), screen.render() } },
+    ten: { keys: [ 'j' ], callback() { box.setContent('Pressed ten.'), screen.render() } },
+    eleven: { keys: [ 'k' ], callback() { box.setContent('Pressed eleven.'), screen.render() } },
+    twelve: { keys: [ 'l' ], callback() { box.setContent('Pressed twelve.'), screen.render() } },
+    thirteen: { keys: [ 'm' ], callback() { box.setContent('Pressed thirteen.'), screen.render() } },
+    fourteen: { keys: [ 'n' ], callback() { box.setContent('Pressed fourteen.'), screen.render() } },
+    fifteen: { keys: [ 'o' ], callback() { box.setContent('Pressed fifteen.'), screen.render() } },
   }
 })
 

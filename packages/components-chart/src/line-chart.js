@@ -20,13 +20,10 @@ export class LineChart extends Canvas {
     const labels = options.labels = Labels.build(options.labels ?? options)
     if (!options.sku) options.sku = 'line-chart'
     super(options)
-    // console.log('>>> LineChart this.options')
-    // console.log(this.options)
     this.style = style
     this.padds = padds
     this.ticks = ticks
     this.labels = labels
-    console.log(`>> [{${ this.codename }.ticks]`, ticks)
     this.type = 'line-chart'
   }
   static build(options) { return new LineChart(options) }
@@ -98,9 +95,9 @@ export class LineChart extends Canvas {
     context.fillStyle = this.options.style.text
     context.clearRect(0, 0, this._w, this._h)
     // Draw tick labels (y-axis values)
-    for (let i = ticks.min; i < ticks.max; i += ticks.incre)
+    for (let i = ticks.min; i < ticks.max; i += ticks.step)
       context.fillText(ticks.formatTick(i), padds.relativeX, this.coordY(i))
-    // Draw line bodies
+    // Draw y-value series collection
     for (const series of seriesCollection) this.drawLine(series.y, series.style)
     // Draw x and y axes
     this.drawAxes()

@@ -1,23 +1,20 @@
 import { bound }           from '@aryth/bound-matrix'
+import { abbr as abbrNum } from '@aryth/math'
 import { niceScale }       from '@aryth/nice-scale'
 import { OBJECT }          from '@typen/enum-object-types'
-import { nullish }         from '@typen/nullish'
-import { abbr as abbrNum } from '@aryth/math'
 
 const boundMatrix = bound.bind({ dif: false })
 
 export class Ticks {
+  mode = OBJECT // to fit niceScale api
+  max = 100
+  min = 0
+  step = 10
   constructor(options) {
-    this.ticks = options.ticks ?? options.tickCount ?? 5
-    this.mode = OBJECT // to fit niceScale api
-    this.max = options.maxY
-    this.min = options.minY ?? 0
-    this.step = 1
+    this.ticks = options.tickCount ?? 6
+    this.prev = { max: options.maxY, min: options.minY }
     this.abbr = options.abbr
-    // this.intOnly = p.intOnly ?? false
-    this.pilot = nullish(this.max)
   }
-
   static build(options) { return new Ticks(options) }
 
   get incre() { return this.step }
@@ -27,13 +24,14 @@ export class Ticks {
   formatTick(v) { return this.abbr ? abbrNum(v) : String(v) }
 
   setTicks(seriesCollection) {
-    const bound = this.pilot ? boundMatrix(seriesCollection.map(({ y }) => y)) : this
-    const { max, min, step } = niceScale.call(this, bound)
-    // console.log('bound', bound, 'niceScale', { max, min, step }, 'tickWidth', this.tickWidth)
-    if (this.pilot) {
-      this.max = max
-      if (nullish(this.min)) this.min = min
-    }
+    const prev = this.prev,
+          next = boundMatrix(seriesCollection.map(({ y }) => y))
+    const { max, min, step } = niceScale.call(this, {
+      max: prev.max ?? next.max,
+      min: prev.min ?? next.min
+    })
+    this.max = this.prev.max ?? max
+    this.min = this.prev.min ?? min
     this.step = step
     return this
   }

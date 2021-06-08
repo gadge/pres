@@ -23,7 +23,7 @@ import {
 }                            from '@pres/enum-key-names'
 import { gpmClient }         from '@pres/gpm-client'
 import * as colors           from '@pres/util-blessed-colors'
-import { toByte }            from '@pres/util-byte-colors'
+import { degrade, toByte }   from '@pres/util-byte-colors'
 import { slice }             from '@pres/util-helpers'
 import {
   SC, SP, VO
@@ -1338,23 +1338,21 @@ export class Program extends IO {
     return this.#sgr256(arg, grain)
   }
   #sgr256(arg, grain) {
-    const temp = arg
     if (arg[0] === '#') arg = arg.replace(/#(?:[0-9a-f]{3}){1,2}/i, toByte)
     // console.log('program.#sgr256', temp, 'to', arg)
-    let ms, c, scope
-    if (( ms = /^(-?\d+) (fg|bg)$/.exec(arg) ) && ( [ , c, scope ] = ms )) {
-      if (!grain || ( c = +c ) === -1) { return this.#sgr(`default ${ scope }`) }
-      c = colors.reduce(c, this.tput.colors)
-      if (c < 16 || ( this.tput?.colors <= 16 )) {
-        if (scope === 'fg') { c < 8 ? ( c += 30 ) : c < 16 ? ( c -= 8, c += 90 ) : void 0 }
-        else if (scope === 'bg') { c < 8 ? ( c += 40 ) : c < 16 ? ( c -= 8, c += 100 ) : void 0 }
-        return CSI + c + SGR
+    let matches, byte, scope
+    if (( matches = /^(-?\d+) (fg|bg)$/.exec(arg) ) && ( [ , byte, scope ] = matches )) {
+      if (!grain || ( byte = +byte ) === 0x1ff) { return this.#sgr(`default ${ scope }`) }
+      byte = degrade(byte, this.tput.colors)
+      if (byte < 16 || ( this.tput?.colors <= 16 )) {
+        if (scope === 'fg') { byte < 8 ? ( byte += 30 ) : byte < 16 ? ( byte -= 8, byte += 90 ) : void 0 }
+        else if (scope === 'bg') { byte < 8 ? ( byte += 40 ) : byte < 16 ? ( byte -= 8, byte += 100 ) : void 0 }
+        return CSI + byte + SGR
       }
-      if (scope === 'fg') { return CSI + `38;5;${ c }` + SGR }
-      if (scope === 'bg') { return CSI + `48;5;${ c }` + SGR }
+      if (scope === 'fg') return CSI + `38;5;${ byte }` + SGR
+      if (scope === 'bg') return CSI + `48;5;${ byte }` + SGR
     }
-    if (/^[\d;]*$/.test(arg)) { return CSI + arg + SGR }
-    return null
+    return /^[\d;]*$/.test(arg) ? CSI + arg + SGR : null
   }
 
   setForeground = this.fg

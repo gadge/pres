@@ -149,12 +149,13 @@ export class ListBar extends Box {
     len = ( ( cmd.prefix != null ? cmd.prefix + ':' : '' ) + cmd.text ).length
     const options = {
       screen: this.screen,
-      top: 0,
+      top: 'center',
       left: drawn + 1,
-      height: 1,
+      height: 1,//'50%',
       content: title,
       width: len + 2,
       align: 'center',
+      valign: 'middle',
       autoFocus: false,
       tags: true,
       mouse: true,
