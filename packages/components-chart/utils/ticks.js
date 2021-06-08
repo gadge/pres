@@ -33,7 +33,7 @@ export class Ticks {
       this.max = max + ( max - this.min ) * 0.2
     }
 
-    let step = this.dif / this.count // let tickIncre = (self.tickMax(seriesCollection) - this.min) / this.count
+    let step = this.dif / this.ticks // let tickIncre = (self.tickMax(seriesCollection) - this.min) / this.count
     if (this.intOnly) step = ~~step
     // if (tickMax()>=10) { tickIncre = tickIncre + (10 - tickIncre % 10) }
     // tickIncre = Math.max(tickIncre, 1) // should not be zero

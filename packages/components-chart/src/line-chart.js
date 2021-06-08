@@ -1,9 +1,10 @@
-import { Box }                  from '@pres/components-core'
-import { Canvas }               from '@pres/components-layout'
-import { toByte }               from '@pres/util-byte-colors'
-import { nullish }              from '@typen/nullish'
-import { maxBy }                from '@vect/vector-indicator'
-import { Labels, Padds, Ticks } from '../utils'
+import { Box }           from '@pres/components-core'
+import { Canvas }        from '@pres/components-layout'
+import { toByte }        from '@pres/util-byte-colors'
+import { nullish }       from '@typen/nullish'
+import { maxBy }         from '@vect/vector-indicator'
+import { Labels, Padds } from '../utils'
+import { Ticks }         from '@pres/util-chart-ticks'
 
 
 export class LineChart extends Canvas {

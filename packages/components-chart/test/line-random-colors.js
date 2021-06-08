@@ -1,4 +1,5 @@
 import * as components from '@pres/components'
+
 const randomColor = () => [ Math.random() * 255, Math.random() * 255, Math.random() * 255 ]
 const screen = components.screen(),
       line   = components.lineChart(
@@ -8,8 +9,8 @@ const screen = components.screen(),
           left: 15,
           top: 12,
           xPadding: 5,
-          minY: 30,
-          maxY: 90,
+          minY: 0,
+          // maxY: 90,
           label: 'Title',
           style: { line: randomColor(), text: randomColor(), baseline: randomColor() }
         }),

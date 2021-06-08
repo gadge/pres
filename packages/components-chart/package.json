@@ -15,6 +15,7 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
+    "@pres/util-chart-ticks": "^0.3.4",
     "@aryth/math": "^0.3.21",
     "@pres/components-core": "^0.3.4",
     "@pres/components-layout": "^0.3.4",
