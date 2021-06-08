@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-geo",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "description": "Core components for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,8 +15,8 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/components-layout": "^0.3.6",
-    "@pres/enum-events": "^0.3.6",
+    "@pres/components-layout": "^0.3.7",
+    "@pres/enum-events": "^0.3.7",
     "map-canvas": "^0.1.5"
   },
   "repository": {
