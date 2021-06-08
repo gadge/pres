@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-morisot",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "Morisot color scheme for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -16,8 +16,8 @@
   },
   "dependencies": {
     "@palett/enum-ansi-codes": "^0.8.14",
-    "@pres/util-sgr-attr": "^0.3.5",
-    "@pres/util-sgr-mode": "^0.3.5",
+    "@pres/util-sgr-attr": "^0.3.6",
+    "@pres/util-sgr-mode": "^0.3.6",
     "@texting/enum-chars": "^0.0.10",
     "@typen/enum-data-types": "^0.1.16"
   },
