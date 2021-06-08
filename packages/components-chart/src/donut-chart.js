@@ -35,7 +35,7 @@ export class DonutChart extends Canvas {
     this._w = Math.round(this.width * 2 - 5)
     this._h = this.height * 4 - 12
     if (this._w % 2 === 1) this._w--
-    if (this._h % 4 !== 1) this._h += (this._h % 4)
+    if (this._h % 4 !== 1) this._h += ( this._h % 4 )
   }
   setData(data) { this.update(data) }
   update(data) {
@@ -53,7 +53,7 @@ export class DonutChart extends Canvas {
       const points = 370
       c.strokeStyle = color || 'green'
       while (s < radius) {
-        if (s < (radius - width)) {
+        if (s < ( radius - width )) {
           s++
           continue
         }
@@ -76,16 +76,16 @@ export class DonutChart extends Canvas {
     const width = this.options.arcWidth
     const remainColor = this.options.remainColor
     const middle = cheight / 2
-    const spacing = (cwidth - (donuts * radius * 2)) / (donuts + 1)
+    const spacing = ( cwidth - ( donuts * radius * 2 ) ) / ( donuts + 1 )
     function drawDonut(label, percent, radius, width, cxx, middle, color) {
       makeRound(100, radius, width, cxx, middle, remainColor)
       makeRound(percent, radius, width, cxx, middle, color)
       const ptext = parseFloat(percent * 100).toFixed(0) + '%'
-      c.fillText(ptext, cxx - Math.round(parseFloat((c.measureText(ptext).width) / 2)) + 3, middle)
-      c.fillText(label, cxx - Math.round(parseFloat((c.measureText(label).width) / 2)) + 3, (middle + radius) + 5)
+      c.fillText(ptext, cxx - Math.round(parseFloat(( c.measureText(ptext).width ) / 2)) + 3, middle)
+      c.fillText(label, cxx - Math.round(parseFloat(( c.measureText(label).width ) / 2)) + 3, ( middle + radius ) + 5)
     }
     function makeDonut(stat, which) {
-      const left = radius + (spacing * which) + (radius * 2 * (which - 1))
+      const left = radius + ( spacing * which ) + ( radius * 2 * ( which - 1 ) )
       let percent = stat.percent
       if (percent > 1.001) percent = parseFloat(percent / 100).toFixed(2)
       const label = stat.label
@@ -94,13 +94,10 @@ export class DonutChart extends Canvas {
       drawDonut(label, percent, radius, width, cxx, middle, color)
     }
     function makeDonuts(stats) {
-      for (let l = 0; l <= stats.length - 1; l++) {
+      for (let l = 0; l <= stats.length - 1; l++)
         makeDonut(stats[l], l + 1)
-      }
     }
-    if (data.length) {
-      makeDonuts(data)
-    }
+    if (data.length) makeDonuts(data)
     this.currentData = data
     c.strokeStyle = 'magenta'
     c.restore()

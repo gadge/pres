@@ -10,7 +10,7 @@ export class StackedBarChart extends Canvas {
     const self = this
     this.options.barWidth = this.options.barWidth || 6
     this.options.barSpacing = this.options.barSpacing || 9
-    if ((this.options.barSpacing - this.options.barWidth) < 3) this.options.barSpacing = this.options.barWidth + 3
+    if (( this.options.barSpacing - this.options.barWidth ) < 3) this.options.barSpacing = this.options.barWidth + 3
     this.options.xOffset = this.options.xOffset == null ? 5 : this.options.xOffset
     this.options.showText = this.options.showText !== false
     this.options.legend = this.options.legend || {}
@@ -54,7 +54,7 @@ export class StackedBarChart extends Canvas {
     */
     //first line is for label
     const BUFFER_FROM_TOP = 2
-    const BUFFER_FROM_BOTTOM = (this.options.border ? 2 : 0) + (this.options.showText ? 1 : 0)
+    const BUFFER_FROM_BOTTOM = ( this.options.border ? 2 : 0 ) + ( this.options.showText ? 1 : 0 )
     const c = this.context
     c.strokeStyle = 'normal'
     c.fillStyle = 'white'
@@ -65,7 +65,7 @@ export class StackedBarChart extends Canvas {
     }
     if (curBarSummedValue < 0) return
     const maxBarHeight = this._h - BUFFER_FROM_TOP - BUFFER_FROM_BOTTOM
-    const currentBarHeight = Math.round(maxBarHeight * (curBarSummedValue / maxBarValue))
+    const currentBarHeight = Math.round(maxBarHeight * ( curBarSummedValue / maxBarValue ))
     //start painting from bottom of bar, section by section
     let y = maxBarHeight + BUFFER_FROM_TOP
     let availableBarHeight = currentBarHeight
@@ -95,7 +95,7 @@ export class StackedBarChart extends Canvas {
       0 :
       Math.min(
         availableBarHeight, //round() can make total stacks excceed curr bar height so we limit it
-        Math.round(currentBarHeight * (data / curBarSummedValue))
+        Math.round(currentBarHeight * ( data / curBarSummedValue ))
       )
     c.strokeStyle = bg
     if (currStackHeight > 0) {

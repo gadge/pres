@@ -42,7 +42,7 @@ export class BarChart extends Canvas {
       }
       else {
         context.strokeStyle = bars.preset?.back
-        const height = round(barY * (values[i] / max))
+        const height = round(barY * ( values[i] / max ))
         context.fillRect(x, barY - height + 1, bars.width, height)
       }
       // draw values
