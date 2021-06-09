@@ -1,31 +1,33 @@
 {
-  "name": "@pres/top",
+  "name": "@pres/fin",
   "version": "0.3.8",
-  "description": "pres graphic top",
+  "description": "pres graphic financial dashboard",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "files": [
     "dist",
     "bin"
   ],
-  "bin": "./bin/top",
+  "bin": "./bin/fin",
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
     "test": "echo \"Test will be implemented.\" && exit 0",
-    "start": "./bin/top",
+    "start": "./bin/fin",
     "lint": "prettier --single-quote --trailing-comma es5 --write 'src/**/*.js'"
   },
   "dependencies": {
-    "@aryth/math": "^0.3.21",
+    "@analys/table": "^0.5.0",
+    "@aryth/rand": "^0.3.21",
+    "@morpont/market-indexes-fmp": "^0.0.5",
     "@palett/cards": "^0.8.14",
     "@pres/enum-events": "^0.3.8",
     "@pres/terminal-interface": "^0.3.8",
+    "@valjoux/convert": "^0.2.11",
+    "@valjoux/date-shift": "^0.2.11",
     "@valjoux/linger": "^0.2.11",
-    "@vect/vector-init": "^0.3.10",
-    "@vect/vector-mapper": "^0.3.10",
-    "@vect/vector-zipper": "^0.3.10",
+    "@valjoux/timestamp": "^0.2.11",
     "systeminformation": "^5.7.6"
   },
   "repository": {
