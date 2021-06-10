@@ -7,7 +7,7 @@ const normDist = ziggurat(0, 5, 0)
 
 const screen = TI.screen()
 //create layout and widgets
-const grid = TI.grid({ rows: 12, cols: 12, screen: screen })
+const grid = TI.grid({ rows: 12, cols: 12, dashboardMargin: 3, screen: screen })
 
 /**
  * DonutChart Options
