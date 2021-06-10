@@ -8,6 +8,7 @@ export class Context {
   #matrix
   #stack = []
   #currPath = []
+  lineWidth
   constructor(width, height, CanvasClass = Canvas) {
     this.#canvas = new CanvasClass(width, height)
     this.#matrix = mat2d.create()
@@ -29,9 +30,8 @@ export class Context {
   rotate(a) { mat2d.rotate(this.#matrix, this.#matrix, a / 180 * Math.PI) }
   scale(x, y) { mat2d.scale(this.#matrix, this.#matrix, vec2.fromValues(x, y)) }
   beginPath() { this.#currPath = [] }
-  closePath() {
-    // this._currentPath.push({ point: this._currentPath[0].point, stroke: false })
-  }
+  closePath() { } // this._currentPath.push({ point: this._currentPath[0].point, stroke: false })
+  fill() { }
   stroke() {
     if (this.lineWidth == 0) return
     const set = this.#canvas.set.bind(this.#canvas)
