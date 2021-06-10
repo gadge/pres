@@ -1,12 +1,18 @@
+import { intExpon, roundD2 } from '@aryth/math'
 import {
-  Amber, Blue, Cyan, DeepOrange, DeepPurple, Green, Indigo, LightBlue, LightGreen, Lime, Orange, Pink, Purple, Red,
-  Teal, Yellow,
-}                      from '@palett/cards'
-import { AsyncLooper } from '@valjoux/linger'
-import { mapper }      from '@vect/vector-mapper'
-import { mutazip }     from '@vect/vector-zipper'
-import { iso, init }   from '@vect/vector-init'
-import si              from 'systeminformation'
+  Amber, Blue, Cyan, DeepOrange, DeepPurple, Green, Grey, Indigo, LightBlue, LightGreen, Lime, Orange, Pink, Purple,
+  Red, Teal, Yellow,
+}                            from '@palett/cards'
+
+
+import { flopGenerator } from '@aryth/rand'
+import { MarketIndexes } from '@morpont/market-indexes-fmp'
+import { Table }         from '@analys/table'
+import { dateToYmd }     from '@valjoux/convert'
+import { shiftDay }      from '@valjoux/date-shift'
+import { AsyncLooper }   from '@valjoux/linger'
+import { unwind }        from '@vect/entries-unwind'
+import APIKEY            from '../../../../local/fmp.apikey.json'
 
 const COLOR_COLLECTION = [
   Red.base,
@@ -26,39 +32,56 @@ const COLOR_COLLECTION = [
   Orange.base,
   DeepOrange.base,
 ]
-const COLOR_NO = COLOR_COLLECTION.length
 
-export class Cpu extends AsyncLooper {
-  constructor(lineChart) {
-    super(si.currentLoad)
+const TODAY = new Date() |> dateToYmd
+const BEFORE = shiftDay(TODAY.slice(), -60)
+let colorGenerator = flopGenerator(COLOR_COLLECTION, Grey.base)
+
+MarketIndexes.login(APIKEY)
+export class MarketWatch extends AsyncLooper {
+  constructor(lineChart, indicator) {
+    super(MarketIndexes.prices.bind(null, { indicator, start: BEFORE }))
     this.chart = lineChart
     this.seriesCollection = []
+    this.indicator = indicator
   }
   async run() {
-    const updateData = this.updateData.bind(this)
-    await si.currentLoad().then(data => {
-      this.seriesCollection = mapper(
-        data.cpus,
-        (cpu, i) => ( {
-          title: 'CPU' + ( i + 1 ),
-          style: { line: COLOR_COLLECTION[i % COLOR_NO] },
-          x: init(61, i => 60 - i),
-          y: iso(61, 0),
-        } )
-      )
-      this.updateData(data)
-    })
-    await this.setInterval(1000, updateData)
+    // const updateData = this.updateData.bind(this)
+    await MarketIndexes
+      .prices({ indicator: this.indicator, start: BEFORE })
+      .then(table => this.updateData(table))
+    // await this.setInterval(1000, updateData)
   }
-  updateData({ cpus }) {
-    mutazip(this.seriesCollection, cpus, (series, cpu, i) => {
-      let loadInfo = cpu.load.toFixed(1).toString()
-      while (loadInfo.length < 6) loadInfo = ' ' + loadInfo
-      series.title = 'CPU' + ( ++i ) + loadInfo + '%'
-      series.y.shift(), series.y.push(cpu.load)
-      return series
-    })
-    this.chart.setData(this.seriesCollection)
+
+  /**
+   *
+   * @param {Table} table
+   */
+  updateData(table) {
+    const entries = table.select([ 'date', 'adj.c' ]).rows
+    const [ x, y ] = entries |> unwind
+
+    const min = Math.min.apply(null, y)
+    const exponMin = intExpon(min)
+    let prevMin = min / ( 10 ** exponMin )
+    prevMin = Math.floor(prevMin * 10) * ( 10 ** ( exponMin - 1 ) )
+
+    const max = Math.max.apply(null, y)
+    const exponMax = intExpon(max)
+    let prevMax = max / ( 10 ** exponMax )
+    prevMax = Math.ceil(prevMax * 10) * ( 10 ** ( exponMax - 1 ) )
+
+    const series = {
+      title: this.indicator,
+      style: { line: colorGenerator.next().value },
+      x: x.reverse().slice(-45),
+      y: y.reverse().slice(-45),
+    }
+    const seriesCollection = [ series ]
+    this.chart.ticks.prev.min = prevMin
+    this.chart.ticks.prev.max = prevMax
+    this.chart.setData(seriesCollection)
+
     this.chart.screen.render()
   }
 }

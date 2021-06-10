@@ -1,114 +1,55 @@
-import { BlueGrey, Indigo, LightBlue, Pink, Red } from '@palett/cards'
-import { ATTACH, RESIZE, UNCAUGHT_EXCEPTION }     from '@pres/enum-events'
-import { Pres }                                   from '@pres/terminal-interface'
-import * as monitor                               from './monitor'
+import { ATTACH, RESIZE, UNCAUGHT_EXCEPTION } from '@pres/enum-events'
+import { Pres }                               from '@pres/terminal-interface'
+import { MarketWatch }                        from './monitor'
 
 const screen = Pres.screen()
-const grid = Pres.grid({
-  rows: 12,
-  cols: 12,
-  screen: screen,
-})
+const grid = Pres.grid({ rows: 12, cols: 12, screen: screen })
 
-const lineChartCPU = grid.set(0, 0, 5, 12, Pres.lineChart, {
-  name: 'lineChart',
-  showNthLabel: 5,
-  maxY: 100,
-  label: 'CPU History',
-  showLegend: true,
-})
+const lineChartCollection = {
+  A1: grid.set(0, 0, 4, 4, Pres.lineChart, { name: 'lineChart', label: 'S&P 500', showLegend: true }),
+  B1: grid.set(0, 4, 4, 4, Pres.lineChart, { name: 'lineChart', label: 'Dow Jones', showLegend: true }),
+  C1: grid.set(0, 8, 4, 4, Pres.lineChart, { name: 'lineChart', label: 'Nasdaq', showLegend: true }),
+  A2: grid.set(4, 0, 4, 4, Pres.lineChart, { name: 'lineChart', label: 'Shanghai', showLegend: true }),
+  B2: grid.set(4, 4, 4, 4, Pres.lineChart, { name: 'lineChart', label: 'FTSE', showLegend: true }),
+  C2: grid.set(4, 8, 4, 4, Pres.lineChart, { name: 'lineChart', label: 'Hang Seng', showLegend: true }),
+  A3: grid.set(8, 0, 4, 4, Pres.lineChart, { name: 'lineChart', label: 'Nikkei', showLegend: true }),
+  B3: grid.set(8, 4, 4, 4, Pres.lineChart, { name: 'lineChart', label: 'Euronext', showLegend: true }),
+  C3: grid.set(8, 8, 4, 4, Pres.lineChart, { name: 'lineChart', label: 'Seoul', showLegend: true }),
+}
 
-const lineChartMem = grid.set(5, 0, 2, 6, Pres.lineChart, {
-  showNthLabel: 5,
-  maxY: 100,
-  label: 'Memory and Swap History',
-  showLegend: true,
-  legend: { width: 10, },
-})
-const sparklineNetwork = grid.set(7, 0, 2, 6, Pres.sparkline, {
-  label: 'Network History',
-  tags: true,
-  style: { fg: 'blue' },
-})
-const tableProcesses = grid.set(5, 6, 4, 6, Pres.dataTable, {
-  keys: true,
-  label: 'Processes',
-  columnSpacing: 1,
-  columnWidth: [ 7, 24, 7, 7 ],
-})
-
-const donutChartDisk = grid.set(9, 0, 2, 4, Pres.donutChart, {
-  radius: 8,
-  arcWidth: 3,
-  yPadding: 2,
-  remainColor: 'black',
-  label: 'Disk usage',
-})
-const donutChartMem = grid.set(9, 4, 2, 4, Pres.donutChart, {
-  radius: 8,
-  arcWidth: 3,
-  yPadding: 2,
-  remainColor: 'black',
-  label: 'Memory',
-})
-const donutChartSwap = grid.set(9, 8, 2, 4, Pres.donutChart, {
-  radius: 8,
-  arcWidth: 3,
-  yPadding: 2,
-  remainColor: 'black',
-  label: 'Swap',
-})
-const box = grid.set(11, 8, 1, 4, Pres.box, {
-  align: 'center',
-  valign: 'middle',
-  content: '...'
-})
-const listBar = grid.set(11, 0, 1, 8, Pres.listBar, {
-  top: 'center',
-  left: 'center',
-  mouse: true,
-  keys: true,
-  autoCommandKeys: true,
-  border: 'line',
-  vi: true,
-  style: {
-    // bg: Pink.lighten_4,
-    item: { bg: BlueGrey.darken_4, hover: { bg: LightBlue.base } }, // focus: { bg: 'blue' }
-    selected: { bg: Indigo.accent_4 }
-  },
-  commands: {
-    home: { keys: [ 'a' ], callback() { box.setContent('Pressed home.'), screen.render() } },
-    favorite: { keys: [ 'b' ], callback() { box.setContent('Pressed favorite.'), screen.render() } },
-    search: { keys: [ 'c' ], callback() { box.setContent('Pressed search.'), screen.render() } },
-    refresh: { keys: [ 'd' ], callback() { box.setContent('Pressed refresh.'), screen.render() } },
-    about: { keys: [ 'e' ], callback() { box.setContent('Pressed about.'), screen.render() } },
-  }
-})
-
-tableProcesses.focus()
+lineChartCollection.A1.focus()
 screen.render()
 screen.on(RESIZE, () => {
-  lineChartCPU.emit(ATTACH)
-  lineChartMem.emit(ATTACH)
-  donutChartMem.emit(ATTACH)
-  donutChartSwap.emit(ATTACH)
-  sparklineNetwork.emit(ATTACH)
-  donutChartDisk.emit(ATTACH)
-  tableProcesses.emit(ATTACH)
-  listBar.emit(ATTACH)
-  box.emit(ATTACH)
+  for (let key in lineChartCollection)
+    lineChartCollection[key].emit(ATTACH)
+  // listBar.emit(ATTACH)
+  // box.emit(ATTACH)
 })
 
 screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
 
 export async function init() {
-  const cpu = new monitor.Cpu(lineChartCPU) //no Windows support
-  new monitor.Mem(lineChartMem, donutChartMem, donutChartSwap)
-  new monitor.Net(sparklineNetwork)
-  new monitor.Disk(donutChartDisk)
-  const proc = new monitor.Proc(tableProcesses) // no Windows support
+  const A1 = new MarketWatch(lineChartCollection.A1, 'sp500')
+  const B1 = new MarketWatch(lineChartCollection.B1, 'dowJones')
+  const C1 = new MarketWatch(lineChartCollection.C1, 'nasdaq')
+  const A2 = new MarketWatch(lineChartCollection.A2, 'shanghai')
+  const B2 = new MarketWatch(lineChartCollection.B2, 'ftse')
+  const C2 = new MarketWatch(lineChartCollection.C2, 'hangSeng')
+  const A3 = new MarketWatch(lineChartCollection.A3, 'nikkei')
+  const B3 = new MarketWatch(lineChartCollection.B3, 'euronext')
+  const C3 = new MarketWatch(lineChartCollection.C3, 'seoul')
   screen.emit('adjourn')
-  await Promise.all([ cpu.run(), proc.run() ])
+  await Promise.allSettled([
+    A1.run(),
+    B1.run(),
+    C1.run(),
+    A2.run(),
+    B2.run(),
+    C2.run(),
+    A3.run(),
+    B3.run(),
+    C3.run(),
+  ])
 }
 
 process.on(UNCAUGHT_EXCEPTION, err => {

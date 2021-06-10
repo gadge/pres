@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@analys/table": "^0.5.0",
+    "@aryth/math": "^0.3.21",
     "@aryth/rand": "^0.3.21",
     "@morpont/market-indexes-fmp": "^0.0.5",
     "@palett/cards": "^0.8.14",
@@ -28,6 +29,7 @@
     "@valjoux/date-shift": "^0.2.11",
     "@valjoux/linger": "^0.2.11",
     "@valjoux/timestamp": "^0.2.11",
+    "@vect/entries-unwind": "^0.3.10",
     "systeminformation": "^5.7.6"
   },
   "repository": {
