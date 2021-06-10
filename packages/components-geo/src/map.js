@@ -4,27 +4,26 @@ import InnerMap   from 'map-canvas'
 
 export class Map extends Canvas {
   constructor(options = {}) {
-    // if (!(this instanceof Node)) { return new Map(options) }
     super(options)
     const self = this
     this.on(ATTACH, function () {
       options.style = options.style || {}
       const opts = {
-        excludeAntartica: (options.excludeAntarctica === undefined) ? true : options.excludeAntarctica,
-        disableBackground: (options.disableBackground === undefined) ? true : options.disableBackground,
-        disableMapBackground: (options.disableMapBackground === undefined) ? true : options.disableMapBackground,
-        disableGraticule: (options.disableGraticule === undefined) ? true : options.disableGraticule,
-        disableFill: (options.disableFill === undefined) ? true : options.disableFill,
+        excludeAntartica: options.excludeAntarctica ?? true,
+        disableBackground: options.disableBackground ?? true,
+        disableMapBackground: options.disableMapBackground ?? true,
+        disableGraticule: options.disableGraticule ?? true,
+        disableFill: options.disableFill ?? true,
         width: self.context._canvas.width,
         height: self.context._canvas.height,
-        shapeColor: options.style.shapeColor || 'green'
+        shapeColor: options.style.shapeColor || 'green',
+        startLon: options.startLon || undefined,
+        endLon: options.endLon || undefined,
+        startLat: options.startLat || undefined,
+        endLat: options.endLat || undefined,
+        region: options.region || undefined,
+        labelSpace: options.labelSpace || 5,
       }
-      opts.startLon = options.startLon || undefined
-      opts.endLon = options.endLon || undefined
-      opts.startLat = options.startLat || undefined
-      opts.endLat = options.endLat || undefined
-      opts.region = options.region || undefined
-      opts.labelSpace = options.labelSpace || 5
       this.context.strokeStyle = options.style.stroke || 'green'
       this.context.fillStyle = options.style.fill || 'green'
       self.innerMap = new InnerMap(opts, this._canvas)
@@ -41,6 +40,7 @@ export class Map extends Canvas {
     if (!this.innerMap) throw 'error: canvas context does not exist. addMarker() for maps must be called after the map has been added to the screen via screen.append()'
     this.innerMap.addMarker(options)
   }
+  clearMarkers() { this.innerMap.draw() }
   getOptionsPrototype() {
     return {
       startLon: 10,
@@ -54,6 +54,5 @@ export class Map extends Canvas {
       ]
     }
   }
-  clearMarkers() { this.innerMap.draw() }
 }
 
