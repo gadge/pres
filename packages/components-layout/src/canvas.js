@@ -20,10 +20,10 @@ export class Canvas extends Box {
     this.type = 'canvas'
   }
   static build(options) { return new Canvas(options) }
-  get size() { return [ this._w, this._w ] }
+  get size() { return [ this._h, this._w ] }
   calcSize() {
-    this._w = this.width * 2 - 12
     this._h = this.height * 4
+    this._w = this.width * 2 - 12
   }
   clear() { this.context.clearRect(0, 0, this._w, this._h) }
   render() {
