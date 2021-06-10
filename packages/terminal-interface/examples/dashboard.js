@@ -1,7 +1,6 @@
 import { flop, rand, ziggurat } from '@aryth/rand'
 import { ATTACH, RESIZE }       from '@pres/enum-events'
 import { last }                 from '@vect/vector-index'
-import * as contrib             from '../index'
 import { TI }                   from '../src/terminal-interface'
 
 const normDist = ziggurat(0, 5, 0)

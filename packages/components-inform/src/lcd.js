@@ -26,7 +26,7 @@ export class LCD extends Canvas {
     this.type = 'lcd'
   }
   static build(options) { return new LCD(options) }
-  calcSize() { this._w = this.width * 2 - 8, this._h = (this.height * 4) - 12 }
+  calcSize() { this._w = this.width * 2 - 8, this._h = ( this.height * 4 ) - 12 }
   increaseWidth() { if (this.segment16) { this.segment16.SegmentWidth += 0.01 } }
   decreaseWidth() { if (this.segment16) { this.segment16.SegmentWidth -= 0.01 } }
   increaseInterval() { if (this.segment16) { this.segment16.SegmentInterval += 0.01 } }
@@ -98,8 +98,8 @@ class SixteenSegment {
     this.StrokeWidth = options.strokeWidth               // Width of segment outline
     this.Padding = options.elementPadding                   // Padding around the display
     this.Spacing = options.elementSpacing                   // Spacing between elements
-    this.ElementWidth = (width - (this.Spacing * count)) / count
-    this.ElementHeight = height - (this.Padding * 2)
+    this.ElementWidth = ( width - ( this.Spacing * count ) ) / count
+    this.ElementHeight = height - ( this.Padding * 2 )
     // console.error("w %s h %s", this.ElementWidth, this.ElementHeight);
     this.FillLight = 'red'           // Color of an on segment
     this.FillDark = 'cyan'             // Color of an off segment
@@ -131,8 +131,8 @@ class SixteenSegment {
     this.StrokeWidth = options.strokeWidth || this.StrokeWidth
     this.Padding = options.elementPadding || this.Padding
     this.Spacing = options.elementSpacing || this.Spacing
-    this.ElementWidth = (this.Width - (this.Spacing * this.count)) / this.count
-    this.ElementHeight = this.Height - (this.Padding * 2)
+    this.ElementWidth = ( this.Width - ( this.Spacing * this.count ) ) / this.count
+    this.ElementHeight = this.Height - ( this.Padding * 2 )
   }
   DisplayText(value) {
     // Recalculate points in case any settings changed
@@ -148,7 +148,7 @@ class SixteenSegment {
     let h = this.ElementHeight
     h -= this.Padding * 2
     let w = this.Width
-    w -= this.Spacing * (n - 1)
+    w -= this.Spacing * ( n - 1 )
     w -= this.Padding * 2
     w /= n
     // console.error(output);
@@ -187,8 +187,8 @@ class SixteenSegment {
       const element = elements[i]
       for (let s = 0; s < this.Points.length; s++) {
         // Pick the on or off color based on the bitmask
-        const color = (element & 1 << s) ? this.FillLight : this.FillDark
-        const stroke = (element & 1 << s) ? this.StrokeLight : this.StrokeDark
+        const color = ( element & 1 << s ) ? this.FillLight : this.FillDark
+        const stroke = ( element & 1 << s ) ? this.StrokeLight : this.StrokeDark
         if (stroke === this.StrokeDark) continue
         // console.error("c: %s, s: %s", color, stroke);
         context.lineWidth = this.StrokeWidth
@@ -219,7 +219,7 @@ class SixteenSegment {
           sw    = this.SegmentWidth * w,
           si    = this.SegmentInterval * w,
           bw    = this.BevelWidth * sw,
-          ib    = (this.SideBevelEnabled) ? 1 : 0,
+          ib    = ( this.SideBevelEnabled ) ? 1 : 0,
           sf    = sw * 0.8,
           slope = h / w,
           sqrt2 = Math.SQRT2,
@@ -228,11 +228,11 @@ class SixteenSegment {
     const w0                      = w / 2 - sw / 2, h0 = 0,
           w1                      = w / 2, h1 = sw / 2,
           w2 = w / 2 + sw / 2, h2 = sw,
-          w3                      = w - sw, h3 = h / 2 - sw / 2,
+          w3                      = w - sw, h3         = h / 2 - sw / 2,
           w4                      = w - sw / 2, h4 = h / 2,
           w5                      = w, h5              = h / 2 + sw / 2
     // Order of segments stored in Points[][]
-    const A1                                                        = 0, A2 = 1, B = 2, C                                  = 3, D1 = 4, D2 = 5, E = 6, F = 7,
+    const A1                                                        = 0, A2 = 1, B = 2, C = 3, D1                          = 4, D2 = 5, E = 6, F = 7,
           G1 = 8, G2 = 9, H = 10, I = 11, J = 12, K = 13, L = 14, M = 15
     // Create the points array for all segments
     const points = []
@@ -269,10 +269,10 @@ class SixteenSegment {
       { x: w1, y: h1 + si / 2 * sqrt3 }
     ]
     points[H] = [
-      { x: (sw + sf) / slope + si, y: h2 + si },
+      { x: ( sw + sf ) / slope + si, y: h2 + si },
       { x: w0 - si, y: w0 * slope - sf - si },
       { x: w0 - si, y: h3 - si },
-      { x: (h3 - sf) / slope - si, y: h3 - si },
+      { x: ( h3 - sf ) / slope - si, y: h3 - si },
       { x: sw + si, y: h2 * slope + sf + si },
       { x: sw + si, y: h2 + si }
     ]
@@ -290,14 +290,26 @@ class SixteenSegment {
     this.Points = points
   }
 }
-const CharacterMasks = (function () {
+const CharacterMasks = ( function () {
   // Segment Bitmasks for individual segments.
   // Binary Or them together to create bitmasks
   // a1|a2|b|c|d1|d2|e|f|g1|g2|h|i|j|k|l|m
-  const a1                                       = 1 << 0, a2                          = 1 << 1, b              = 1 << 2, c = 1 << 3,
-        d1                                       = 1 << 4, d2 = 1 << 5, e = 1 << 6, f = 1 << 7,
-        g1                                       = 1 << 8, g2 = 1 << 9, h = 1 << 10, i = 1 << 11,
-        j = 1 << 12, k = 1 << 13, l = 1 << 14, m = 1 << 15
+  const a1 = 1 << 0,
+        a2 = 1 << 1,
+        b  = 1 << 2,
+        c  = 1 << 3,
+        d1 = 1 << 4,
+        d2 = 1 << 5,
+        e  = 1 << 6,
+        f  = 1 << 7,
+        g1 = 1 << 8,
+        g2 = 1 << 9,
+        h  = 1 << 10,
+        i  = 1 << 11,
+        j  = 1 << 12,
+        k  = 1 << 13,
+        l  = 1 << 14,
+        m  = 1 << 15
   // Character map associates characters with a bit pattern
   return {
     ' ': 0,
@@ -343,4 +355,4 @@ const CharacterMasks = (function () {
     '+': g1 | g2 | i | l,
     '*': g1 | g2 | h | i | j | k | l | m
   }
-}())
+}() )

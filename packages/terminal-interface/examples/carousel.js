@@ -1,10 +1,9 @@
-import { blessed }  from '@pres/terminal-interface'
-import * as contrib from '../index'
+import { blessed } from '@pres/terminal-interface'
 
 const screen = blessed.screen()
 function page1(screen) {
-  const grid = contrib.grid({ rows: 4, cols: 4, screen: screen })
-  const line = grid.set(1, 0, 2, 2, contrib.lineChart, {
+  const grid = blessed.grid({ rows: 4, cols: 4, screen: screen })
+  const line = grid.set(1, 0, 2, 2, blessed.lineChart, {
     style:
       {
         line: "yellow",
@@ -15,7 +14,7 @@ function page1(screen) {
     xPadding: 5,
     label: 'Stocks'
   })
-  const map = grid.set(1, 2, 2, 2, contrib.map, { label: 'Servers Location' })
+  const map = grid.set(1, 2, 2, 2, blessed.map, { label: 'Servers Location' })
   const box = blessed.box({
     content: 'click right-left arrows or wait 3 seconds for the next layout in the carousel', top: '80%', left: '10%'
   })
@@ -27,7 +26,7 @@ function page1(screen) {
   line.setData([ lineData ])
 }
 function page2(screen) {
-  const line = contrib.lineChart(
+  const line = blessed.lineChart(
     {
       width: 80,
       height: 30,
@@ -54,9 +53,10 @@ function page2(screen) {
   screen.append(box)
 }
 screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
-const carousel = contrib.carousel([ page1, page2 ], {
+const carousel = blessed.carousel([ page1, page2 ], {
   screen: screen,
-  interval: 3000,
+  // interval: 3000,
   controlKeys: true
 })
+screen.emit('adjourn')
 carousel.start()
