@@ -1,9 +1,11 @@
-import { BlueGrey, Indigo, LightBlue, Pink, Red } from '@palett/cards'
-import { ATTACH, RESIZE, UNCAUGHT_EXCEPTION }     from '@pres/enum-events'
-import { Pres }                                   from '@pres/terminal-interface'
-import * as monitor                               from './monitor'
+import { BlueGrey, Indigo, LightBlue }        from '@palett/cards'
+import { ATTACH, RESIZE, UNCAUGHT_EXCEPTION } from '@pres/enum-events'
+import { Pres }                               from '@pres/terminal-interface'
+import * as monitor                           from './monitor'
 
-const screen = Pres.screen()
+const screen = Pres.screen({
+  padding: 1,
+})
 const grid = Pres.grid({
   rows: 12,
   cols: 12,
