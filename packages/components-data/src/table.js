@@ -60,8 +60,8 @@ export class Table extends Box {
     // XXX There might be an issue with resizing where on the first resize event
     // width appears to be less than total if it's a percentage or left/right
     // combination.
-    if (this.width < total) delete this.position.width
-    if (this.position.width != null) {
+    if (this.width < total) delete this.pos.width
+    if (this.pos.width != null) {
       const missing = this.width - total
       const w = missing / maxes.length | 0
       const wr = missing % maxes.length

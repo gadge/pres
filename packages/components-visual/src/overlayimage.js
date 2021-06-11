@@ -181,8 +181,8 @@ export class OverlayImage extends Box {
               absL: self.absL,
               absT: self.absT
             }
-            self.position.width = size.width / ratio.tw | 0
-            self.position.height = size.height / ratio.th | 0
+            self.pos.width = size.width / ratio.tw | 0
+            self.pos.height = size.height / ratio.th | 0
             self._noImage = true
             self.screen.render()
             self._noImage = false

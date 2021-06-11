@@ -18,9 +18,11 @@ import * as unicode                                 from '@pres/util-unicode'
 import { SP }                                       from '@texting/enum-chars'
 import { FUN, STR }                                 from '@typen/enum-data-types'
 import { nullish }                                  from '@typen/nullish'
+import { selectObject }                             from '@vect/object-select'
 import { last }                                     from '@vect/vector-index'
 import assert                                       from 'assert'
 import { Cadre }                                    from '../utils/Cadre'
+import { Detic }                                    from '../utils/Detic'
 import { parsePercent }                             from '../utils/parsePercent'
 import { Box }                                      from './box'
 
@@ -45,16 +47,8 @@ export class Element extends Node {
     this.noOverflow = options.noOverflow
     this.dockBorders = options.dockBorders
     this.shadow = options.shadow
-    this.style = options.style ?? {
-      fg: options.fg,
-      bg: options.bg,
-      bold: options.bold,
-      underline: options.underline,
-      blink: options.blink,
-      inverse: options.inverse,
-      invisible: options.invisible,
-      transparent: options.transparent,
-    }
+    this.style = options.style ??
+      selectObject(options, [ 'fg', 'bg', 'bold', 'underline', 'blink', 'inverse', 'invisible', 'transparent' ])
     this.hidden = options.hidden || false
     this.fixed = options.fixed || false
     this.align = options.align || LEFT
@@ -63,21 +57,16 @@ export class Element extends Node {
     this.shrink = options.shrink
     this.fixed = options.fixed
     this.ch = options.ch || ' '
-
-    const position = this.position = ( options.position ?? ( options.position = {
-      left: options.left,
-      right: options.right,
-      top: options.top,
-      bottom: options.bottom,
-      width: options.width,
-      height: options.height
-    } ) )
+    const position = this.pos = Detic.build(
+      options.position ??
+      ( options.position = selectObject(options, [ 'left', 'right', 'top', 'bottom', 'width', 'height' ]) )
+    )
     if (position.width === 'shrink' || position.height === 'shrink') {
       if (position.width === 'shrink') delete position.width
       if (position.height === 'shrink') delete position.height
       options.shrink = true
     }
-    // this.position = position
+    // this.pos = position
     this.padding = Cadre.build(options.padding)
     this.border = options.border
     if (this.border) {
@@ -145,7 +134,7 @@ export class Element extends Node {
       if (el.detached) return false
       if (el.hidden) return false
       // if (!el.lpos) return false;
-      // if (el.position.width === 0 || el.position.height === 0) return false;
+      // if (el.pos.width === 0 || el.pos.height === 0) return false;
     } while (( el = el.sup ))
     return true
   }
@@ -172,6 +161,7 @@ export class Element extends Node {
   // But it wouldn't replicate bottom behavior appropriately if
   // the sup was resized, etc.
 
+  get position() { return this.pos }
 
   /**
    * Relative coordinates as default properties
@@ -188,18 +178,18 @@ export class Element extends Node {
   set top(val) { return this.relT = val }
   set bottom(val) { return this.relB = val }
   set width(val) {
-    if (this.position.width === val) return
+    if (this.pos.width === val) return
     if (/^\d+$/.test(val)) val = +val
     this.emit(RESIZE)
     this.clearPos()
-    return this.position.width = val
+    return this.pos.width = val
   }
   set height(val) {
-    if (this.position.height === val) return
+    if (this.pos.height === val) return
     if (/^\d+$/.test(val)) val = +val
     this.emit(RESIZE)
     this.clearPos()
-    return this.position.height = val
+    return this.pos.height = val
   }
 
   get absT() { return this.calcT(false) }
@@ -237,17 +227,17 @@ export class Element extends Node {
       }
     }
     val -= this.sup.absT
-    if (this.position.top === val) return
+    if (this.pos.top === val) return
     this.emit(MOVE)
     this.clearPos()
-    return this.position.top = val
+    return this.pos.top = val
   }
   set absB(val) {
     val -= this.sup.absB
-    if (this.position.bottom === val) return
+    if (this.pos.bottom === val) return
     this.emit(MOVE)
     this.clearPos()
-    return this.position.bottom = val
+    return this.pos.bottom = val
   }
   set absL(val) {
     if (typeof val === STR) {
@@ -260,44 +250,44 @@ export class Element extends Node {
       }
     }
     val -= this.sup.absL
-    if (this.position.left === val) return
+    if (this.pos.left === val) return
     this.emit(MOVE)
     this.clearPos()
-    return this.position.left = val
+    return this.pos.left = val
   }
   set absR(val) {
     val -= this.sup.absR
-    if (this.position.right === val) return
+    if (this.pos.right === val) return
     this.emit(MOVE)
     this.clearPos()
-    return this.position.right = val
+    return this.pos.right = val
   }
 
   set relT(val) {
-    if (this.position.top === val) return
+    if (this.pos.top === val) return
     if (/^\d+$/.test(val)) val = +val
     this.emit(MOVE)
     this.clearPos()
-    return this.position.top = val
+    return this.pos.top = val
   }
   set relB(val) {
-    if (this.position.bottom === val) return
+    if (this.pos.bottom === val) return
     this.emit(MOVE)
     this.clearPos()
-    return this.position.bottom = val
+    return this.pos.bottom = val
   }
   set relL(val) {
-    if (this.position.left === val) return
+    if (this.pos.left === val) return
     if (/^\d+$/.test(val)) val = +val
     this.emit(MOVE)
     this.clearPos()
-    return this.position.left = val
+    return this.pos.left = val
   }
   set relR(val) {
-    if (this.position.right === val) return
+    if (this.pos.right === val) return
     this.emit(MOVE)
     this.clearPos()
-    return this.position.right = val
+    return this.pos.right = val
   }
 
   get paddingSum() { return this.padding.t + this.padding.b + this.padding.l + this.padding.r }
@@ -320,17 +310,17 @@ export class Element extends Node {
 
   calcT(get) {
     const sup = get ? this.sup.calcPos() : this.sup
-    /** @type {string|number} */ let top = this.position.top || 0
+    /** @type {string|number} */ let top = this.pos.top || 0
     if (typeof top === STR) {
       if (top === CENTER) top = '50%'
       top = parsePercent(top, sup.height)
-      if (this.position.top === CENTER) top -= this.calcH(get) / 2 | 0
+      if (this.pos.top === CENTER) top -= this.calcH(get) / 2 | 0
     }
-    if (this.position.top == null && this.position.bottom != null) {
+    if (this.pos.top == null && this.pos.bottom != null) {
       return this.screen.rows - this.calcH(get) - this.calcB(get)
     }
     if (this.screen.autoPadding) {
-      if (( this.position.top != null || this.position.bottom == null ) && this.position.top !== CENTER) {
+      if (( this.pos.top != null || this.pos.bottom == null ) && this.pos.top !== CENTER) {
         top += this.sup.intT
       }
     }
@@ -339,32 +329,32 @@ export class Element extends Node {
   calcB(get) {
     const sup = get ? this.sup.calcPos() : this.sup
     let bottom
-    if (this.position.bottom == null && this.position.top != null) {
+    if (this.pos.bottom == null && this.pos.top != null) {
       bottom = this.screen.rows - ( this.calcT(get) + this.calcH(get) )
       if (this.screen.autoPadding) bottom += this.sup.intB
       return bottom
     }
-    bottom = ( sup.absB || 0 ) + ( this.position.bottom || 0 )
+    bottom = ( sup.absB || 0 ) + ( this.pos.bottom || 0 )
     if (this.screen.autoPadding) bottom += this.sup.intB
     return bottom
   }
   calcL(get) {
     const sup = get ? this.sup.calcPos() : this.sup
-    let left = this.position.left || 0
+    let left = this.pos.left || 0
     if (typeof left === STR) {
       if (left === CENTER) left = '50%'
       left = parsePercent(left, sup.width)
-      if (this.position.left === CENTER) {
+      if (this.pos.left === CENTER) {
         left -= this.calcW(get) / 2 | 0
       }
     }
-    if (this.position.left == null && this.position.right != null) {
+    if (this.pos.left == null && this.pos.right != null) {
       return this.screen.cols - this.calcW(get) - this.calcR(get)
     }
     if (this.screen.autoPadding) {
-      if (( this.position.left != null ||
-        this.position.right == null ) &&
-        this.position.left !== CENTER) {
+      if (( this.pos.left != null ||
+        this.pos.right == null ) &&
+        this.pos.left !== CENTER) {
         left += this.sup.intL
       }
     }
@@ -373,18 +363,18 @@ export class Element extends Node {
   calcR(get) {
     const sup = get ? this.sup.calcPos() : this.sup
     let right
-    if (this.position.right == null && this.position.left != null) {
+    if (this.pos.right == null && this.pos.left != null) {
       right = this.screen.cols - ( this.calcL(get) + this.calcW(get) )
       if (this.screen.autoPadding) right += this.sup.intR
       return right
     }
-    right = ( sup.absR || 0 ) + ( this.position.right || 0 )
+    right = ( sup.absR || 0 ) + ( this.pos.right || 0 )
     if (this.screen.autoPadding) right += this.sup.intR
     return right
   }
   calcW(get) {
     const sup = get ? this.sup.calcPos() : this.sup
-    let width = this.position.width,
+    let width = this.pos.width,
         left,
         expr
     if (typeof width === STR) {
@@ -399,15 +389,15 @@ export class Element extends Node {
     // decided by the width the element, so it needs to be
     // calculated here.
     if (width == null) {
-      left = this.position.left || 0
+      left = this.pos.left || 0
       if (typeof left === STR) {
         if (left === CENTER) left = '50%'
         left = parsePercent(left, sup.width)
       }
-      width = sup.width - ( this.position.right || 0 ) - left
+      width = sup.width - ( this.pos.right || 0 ) - left
       if (this.screen.autoPadding) {
-        if (( this.position.left != null || this.position.right == null ) &&
-          this.position.left !== CENTER) {
+        if (( this.pos.left != null || this.pos.right == null ) &&
+          this.pos.left !== CENTER) {
           width -= this.sup.intL
         }
         width -= this.sup.intR
@@ -417,7 +407,7 @@ export class Element extends Node {
   }
   calcH(get) {
     const sup = get ? this.sup.calcPos() : this.sup
-    let height = this.position.height,
+    let height = this.pos.height,
         top,
         expr
     if (typeof height === STR) {
@@ -432,16 +422,16 @@ export class Element extends Node {
     // decided by the width the element, so it needs to be
     // calculated here.
     if (height == null) {
-      top = this.position.top || 0
+      top = this.pos.top || 0
       if (typeof top === STR) {
         if (top === CENTER) top = '50%'
         top = parsePercent(top, sup.height)
       }
-      height = sup.height - ( this.position.bottom || 0 ) - top
+      height = sup.height - ( this.pos.bottom || 0 ) - top
       if (this.screen.autoPadding) {
-        if (( this.position.top != null ||
-          this.position.bottom == null ) &&
-          this.position.top !== CENTER) {
+        if (( this.pos.top != null ||
+          this.pos.bottom == null ) &&
+          this.pos.top !== CENTER) {
           height -= this.sup.intT
         }
         height -= this.sup.intB
@@ -477,7 +467,7 @@ export class Element extends Node {
       // large as possible. So, we can just use the height and/or width the of
       // element.
       // if (get) {
-      if (el.position.left == null && el.position.right != null) {
+      if (el.pos.left == null && el.pos.right != null) {
         ret.xHi = xLo + ( ret.xHi - ret.xLo )
         ret.xLo = xLo
         if (this.screen.autoPadding) {
@@ -486,7 +476,7 @@ export class Element extends Node {
           ret.xLo += this.intL
         }
       }
-      if (el.position.top == null && el.position.bottom != null) {
+      if (el.pos.top == null && el.pos.bottom != null) {
         ret.yHi = yLo + ( ret.yHi - ret.yLo )
         ret.yLo = yLo
         if (this.screen.autoPadding) {
@@ -505,10 +495,10 @@ export class Element extends Node {
       //this.shrink = true;
     }
     if (
-      ( this.position.width == null ) &&
-      ( this.position.left == null || this.position.right == null )
+      ( this.pos.width == null ) &&
+      ( this.pos.left == null || this.pos.right == null )
     ) {
-      if (this.position.left == null && this.position.right != null) {
+      if (this.pos.left == null && this.pos.right != null) {
         xLo = xHi - ( mxl - mxi )
         xLo -= !this.screen.autoPadding ? this.padding.hori : this.intL
       }
@@ -533,8 +523,8 @@ export class Element extends Node {
       }
     }
     if (
-      ( this.position.height == null ) &&
-      ( this.position.top == null || this.position.bottom == null ) &&
+      ( this.pos.height == null ) &&
+      ( this.pos.top == null || this.pos.bottom == null ) &&
       ( !this.scrollable || this._isList )
     ) {
       // NOTE: Lists get special treatment if they are shrunken - assume they
@@ -544,7 +534,7 @@ export class Element extends Node {
         myi = 0 - this.intT
         myl = this.items.length + this.intB
       }
-      if (this.position.top == null && this.position.bottom != null) {
+      if (this.pos.top == null && this.pos.bottom != null) {
         yLo = yHi - ( myl - myi )
         yLo -= !this.screen.autoPadding ? this.padding.vert : this.intT
       }
@@ -559,18 +549,18 @@ export class Element extends Node {
     const h = this.contLines.length,
           w = this.contLines.mwidth || 1
     if (
-      ( this.position.width == null ) &&
-      ( this.position.left == null || this.position.right == null )
+      ( this.pos.width == null ) &&
+      ( this.pos.left == null || this.pos.right == null )
     ) {
-      if (this.position.left == null && this.position.right != null) { xLo = xHi - w - this.intW }
+      if (this.pos.left == null && this.pos.right != null) { xLo = xHi - w - this.intW }
       else { xHi = xLo + w + this.intW }
     }
     if (
-      ( this.position.height == null ) &&
-      ( this.position.top == null || this.position.bottom == null ) &&
+      ( this.pos.height == null ) &&
+      ( this.pos.top == null || this.pos.bottom == null ) &&
       ( !this.scrollable || this._isList )
     ) {
-      if (this.position.top == null && this.position.bottom != null) { yLo = yHi - h - this.intH }
+      if (this.pos.top == null && this.pos.bottom != null) { yLo = yHi - h - this.intH }
       else { yHi = yLo + h + this.intH }
     }
     return { xLo: xLo, xHi: xHi, yLo: yLo, yHi: yHi }
@@ -585,12 +575,12 @@ export class Element extends Node {
     if (shrinkBox.yHi - shrinkBox.yLo > shrinkContent.yHi - shrinkContent.yLo) { yLo = shrinkBox.yLo, yHi = shrinkBox.yHi }
     else { yLo = shrinkContent.yLo, yHi = shrinkContent.yHi }
     // Recenter shrunken elements.
-    if (xHi < xll && this.position.left === CENTER) {
+    if (xHi < xll && this.pos.left === CENTER) {
       xll = ( xll - xHi ) / 2 | 0
       xLo += xll
       xHi += xll
     }
-    if (yHi < yll && this.position.top === CENTER) {
+    if (yHi < yll && this.pos.top === CENTER) {
       yll = ( yll - yHi ) / 2 | 0
       yLo += yll
       yHi += yll
@@ -659,10 +649,10 @@ export class Element extends Node {
       b = thisparent.border ? 1 : 0
       // XXX
       // Fixes non-`fixed` labels to work with scrolling (they're ON the border):
-      // if (this.position.left < 0
-      //     || this.position.right < 0
-      //     || this.position.top < 0
-      //     || this.position.bottom < 0) {
+      // if (this.pos.left < 0
+      //     || this.pos.right < 0
+      //     || this.pos.top < 0
+      //     || this.pos.bottom < 0) {
       if (this._isLabel) {
         b = 0
       }
@@ -743,10 +733,8 @@ export class Element extends Node {
     if (this.detached) return
     const coord = this.calcCoords(get)
     if (!coord) return
-    this.screen.clearRegion(
-      coord.xLo, coord.xHi,
-      coord.yLo, coord.yHi,
-      override)
+    const { xLo, xHi, yLo, yHi } = coord
+    this.screen.clearRegion(xLo, xHi, yLo, yHi, override)
   }
 
   sattr(style, fg, bg) { return styleToAttr(style, fg, bg) }
@@ -1545,13 +1533,13 @@ export class Element extends Node {
             py = self.sup.absT,
             x  = data.x - px - ox,
             y  = data.y - py - oy
-      if (self.position.right != null) {
-        if (self.position.left != null) self.width = '100%-' + ( self.sup.width - self.width )
-        self.position.right = null
+      if (self.pos.right != null) {
+        if (self.pos.left != null) self.width = '100%-' + ( self.sup.width - self.width )
+        self.pos.right = null
       }
-      if (self.position.bottom != null) {
-        if (self.position.top != null) self.height = '100%-' + ( self.sup.height - self.height )
-        self.position.bottom = null
+      if (self.pos.bottom != null) {
+        if (self.pos.top != null) self.height = '100%-' + ( self.sup.height - self.height )
+        self.pos.bottom = null
       }
       self.relL = x
       self.relT = y
@@ -1591,12 +1579,12 @@ export class Element extends Node {
       this._label.setContent(options.text)
       if (options.side !== RIGHT) {
         this._label.relL = 2 + ( this.border ? -1 : 0 )
-        this._label.position.right = undefined
+        this._label.pos.right = undefined
         if (!this.screen.autoPadding) this._label.relL = 2
       }
       else {
         this._label.relR = 2 + ( this.border ? -1 : 0 )
-        this._label.position.left = undefined
+        this._label.pos.left = undefined
         if (!this.screen.autoPadding) this._label.relR = 2
       }
       return

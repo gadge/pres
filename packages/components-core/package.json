@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@ject/mixin": "^0.0.12",
+    "@vect/object-select": "^0.3.10",
     "@pres/components-node": "^0.3.9",
     "@pres/enum-angle-table": "^0.3.9",
     "@pres/enum-control-chars": "^0.3.9",

@@ -59,8 +59,8 @@ export class ANSIImage extends Box {
     if (/^https?:/.test(file)) {
       file = ANSIImage.curl(file)
     }
-    let width = this.position.width
-    let height = this.position.height
+    let width = this.pos.width
+    let height = this.pos.height
     if (width != null) {
       width = this.width
     }

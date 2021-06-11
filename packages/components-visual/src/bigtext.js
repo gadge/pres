@@ -69,15 +69,15 @@ export class BigText extends Box {
     this.text = content || ''
   }
   render() {
-    if (this.position.width == null || this._shrinkWidth) {
+    if (this.pos.width == null || this._shrinkWidth) {
       // if (this.width - this.intW < this.ratio.width * this.text.length + 1) {
-      this.position.width = this.ratio.width * this.text.length + 1
+      this.pos.width = this.ratio.width * this.text.length + 1
       this._shrinkWidth = true
       // }
     }
-    if (this.position.height == null || this._shrinkHeight) {
+    if (this.pos.height == null || this._shrinkHeight) {
       // if (this.height - this.intH < this.ratio.height + 0) {
-      this.position.height = this.ratio.height + 0
+      this.pos.height = this.ratio.height + 0
       this._shrinkHeight = true
       // }
     }

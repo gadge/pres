@@ -22,7 +22,7 @@
     "@aryth/bound-vector": "^0.3.21",
     "@aryth/math": "^0.3.21",
     "@aryth/rand": "^0.3.21",
-    "@morpont/market-indexes-fmp": "^0.0.5",
+    "@morpont/market-indexes-fmp": "^0.0.6",
     "@palett/cards": "^0.8.14",
     "@pres/enum-events": "^0.3.9",
     "@pres/terminal-interface": "^0.3.9",

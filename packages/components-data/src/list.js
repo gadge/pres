@@ -249,8 +249,8 @@ export class List extends Box {
   appendItem(content) {
     content = typeof content === STR ? content : content.getContent()
     const item = this.createItem(content)
-    item.position.top = this.items.length
-    if (!this.screen.autoPadding) item.position.top = this.intT + this.items.length
+    item.pos.top = this.items.length
+    if (!this.screen.autoPadding) item.pos.top = this.intT + this.items.length
     this.ritems.push(content)
     this.items.push(item)
     this.append(item)
@@ -265,7 +265,7 @@ export class List extends Box {
       this.ritems.splice(i, 1)
       this.remove(child)
       for (let j = i; j < this.items.length; j++)
-        this.items[j].position.top--
+        this.items[j].pos.top--
       if (i === this.selected) this.select(i - 1)
     }
     this.emit(REMOVE_ITEM)
@@ -278,8 +278,8 @@ export class List extends Box {
     if (i >= this.items.length) return this.appendItem(content)
     const item = this.createItem(content)
     for (let j = i; j < this.items.length; j++)
-      this.items[j].position.top++
-    item.position.top = i + ( !this.screen.autoPadding ? 1 : 0 )
+      this.items[j].pos.top++
+    item.pos.top = i + ( !this.screen.autoPadding ? 1 : 0 )
     this.ritems.splice(i, 0, content)
     this.items.splice(i, 0, item)
     this.append(item)

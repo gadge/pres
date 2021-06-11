@@ -73,12 +73,12 @@ export class Tree extends Box {
           node.subContent[unit].name = unit
         unit = node.subContent[unit]
         unit.sup = node
-        unit.position = i++
+        unit.pos = i++
         if (typeof unit.extended === 'undefined') unit.extended = this.options.extended
         if (typeof unit.sub === FUN) unit.subContent = unit.sub(unit)
         else
           unit.subContent = unit.sub
-        const isLastChild = unit.position === Object.keys(unit.sup.subContent).length - 1
+        const isLastChild = unit.pos === Object.keys(unit.sup.subContent).length - 1
         let treePrefix
         let suffix = ''
         treePrefix = isLastChild ? '└' : '├'

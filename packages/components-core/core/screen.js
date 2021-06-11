@@ -14,8 +14,8 @@ import {
   RESIZE, WARNING, WHEELDOWN, WHEELUP,
 }                                                                      from '@pres/enum-events'
 import { Program }                                                     from '@pres/program'
-import { degrade }                                                     from '@pres/util-byte-colors'
 import * as colors                                                     from '@pres/util-blessed-colors'
+import { degrade }                                                     from '@pres/util-byte-colors'
 import * as helpers                                                    from '@pres/util-helpers'
 import { Mor }                                                         from '@pres/util-morisot'
 import { attrToSgra, sgraToAttr, styleToAttr }                         from '@pres/util-sgr-attr'
@@ -49,7 +49,7 @@ export class Screen extends Node {
     this.fullUnicode = this.options.fullUnicode && this._unicode
     this.dattr = ( 0 << 18 ) | ( 0x1ff << 9 ) | 0x1ff
     this.renders = 0
-    this.position = {
+    this.pos = {
       left: this.left = this.absL = this.relL = 0,
       right: this.right = this.absR = this.relR = 0,
       top: this.top = this.absT = this.relT = 0,
@@ -166,6 +166,10 @@ export class Screen extends Node {
 
   get lines() { return this.currLines }
   get olines() { return this.prevLines }
+
+  get position() { return this.pos }
+  set position(val) { this.pos = val }
+
   alloc(dirty) {
     this.currLines = []
     this.prevLines = []
