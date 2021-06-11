@@ -23,7 +23,7 @@ export class Layout extends Element {
     this.type = 'layout'
   }
   static build(options) { return new Layout(options) }
-  isRendered(el) { return !el.lpos ? false : (el.lpos.xl - el.lpos.xi) > 0 && (el.lpos.yl - el.lpos.yi) > 0 }
+  isRendered(el) { return !el.lpos ? false : (el.lpos.xHi - el.lpos.xLo) > 0 && (el.lpos.yHi - el.lpos.yLo) > 0 }
   getLast(i) {
     while (this.sub[--i]) {
       const el = this.sub[i]
@@ -45,10 +45,10 @@ export class Layout extends Element {
   renderer(coords) {
     const self = this
     // The coordinates of the layout element
-    const width  = coords.xl - coords.xi,
-          height = coords.yl - coords.yi,
-          xi     = coords.xi,
-          yi     = coords.yi
+    const width  = coords.xHi - coords.xLo,
+          height = coords.yHi - coords.yLo,
+          xLo     = coords.xLo,
+          yLo     = coords.yLo
     // The current row offset in cells (which row are we on?)
     let rowOffset = 0
     // The index of the first child in the row
@@ -75,13 +75,13 @@ export class Layout extends Element {
         // Otherwise, figure out where to place this child. We'll start by
         // setting it's `left`/`x` coordinate to right after the previous
         // rendered element. This child will end up directly to the right of it.
-        el.position.left = last.lpos.xl - xi
+        el.position.left = last.lpos.xHi - xLo
         // Make sure the position matches the highest width element
         if (self.options.layout === 'grid') {
           // Compensate with width:
           // el.position.width = el.width + (highWidth - el.width);
           // Compensate with position:
-          el.position.left += highWidth - (last.lpos.xl - last.lpos.xi)
+          el.position.left += highWidth - (last.lpos.xHi - last.lpos.xLo)
         }
         // If our child does not overlap the right side of the Layout, set it's
         // `top`/`y` to the current `rowOffset` (the coordinate for the current
@@ -95,7 +95,7 @@ export class Layout extends Element {
           // row).
           rowOffset += self.sub.slice(rowIndex, i).reduce(function (out, el) {
             if (!self.isRendered(el)) return out
-            out = Math.max(out, el.lpos.yl - el.lpos.yi)
+            out = Math.max(out, el.lpos.yHi - el.lpos.yLo)
             return out
           }, 0)
           lastRowIndex = rowIndex
@@ -111,14 +111,14 @@ export class Layout extends Element {
         for (let j = lastRowIndex; j < rowIndex; j++) {
           const l = self.sub[j]
           if (!self.isRendered(l)) continue
-          const abs = Math.abs(el.position.left - (l.lpos.xi - xi))
-          // if (abs < abovea && (l.lpos.xl - l.lpos.xi) <= el.width) {
+          const abs = Math.abs(el.position.left - (l.lpos.xLo - xLo))
+          // if (abs < abovea && (l.lpos.xHi - l.lpos.xLo) <= el.width) {
           if (abs < abovea) {
             above = l
             abovea = abs
           }
         }
-        if (above) el.position.top = above.lpos.yl - yi
+        if (above) el.position.top = above.lpos.yHi - yLo
       }
       // If our child overflows the Layout, do not render it!
       // Disable this feature for now.
@@ -135,19 +135,19 @@ export class Layout extends Element {
       delete this.lpos
       return
     }
-    if (coords.xl - coords.xi <= 0) return void (coords.xl = Math.max(coords.xl, coords.xi))
-    if (coords.yl - coords.yi <= 0) return void (coords.yl = Math.max(coords.yl, coords.yi))
+    if (coords.xHi - coords.xLo <= 0) return void (coords.xHi = Math.max(coords.xHi, coords.xLo))
+    if (coords.yHi - coords.yLo <= 0) return void (coords.yHi = Math.max(coords.yHi, coords.yLo))
     this.lpos = coords
-    if (this.border) coords.xi++, coords.xl--, coords.yi++, coords.yl--
+    if (this.border) coords.xLo++, coords.xHi--, coords.yLo++, coords.yHi--
     if (this.paddingSum) {
-      coords.xi += this.padding.left, coords.xl -= this.padding.right
-      coords.yi += this.padding.top, coords.yl -= this.padding.bottom
+      coords.xLo += this.padding.left, coords.xHi -= this.padding.right
+      coords.yLo += this.padding.top, coords.yHi -= this.padding.bottom
     }
     const iterator = this.renderer(coords)
-    if (this.border) coords.xi--, coords.xl++, coords.yi--, coords.yl++
+    if (this.border) coords.xLo--, coords.xHi++, coords.yLo--, coords.yHi++
     if (this.paddingSum) {
-      coords.xi -= this.padding.left, coords.xl += this.padding.right
-      coords.yi -= this.padding.top, coords.yl += this.padding.bottom
+      coords.xLo -= this.padding.left, coords.xHi += this.padding.right
+      coords.yLo -= this.padding.top, coords.yHi += this.padding.bottom
     }
     this.sub.forEach((el, i) => {
       if (el.screen._ci !== -1) el.index = el.screen._ci++

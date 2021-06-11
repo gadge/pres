@@ -24,7 +24,7 @@ export class Checkbox extends Input {
       const lpos = self.lpos
       if (!lpos) return
       self.screen.program.lsaveCursor('checkbox')
-      self.screen.program.cup(lpos.yi, lpos.xi + 1)
+      self.screen.program.cup(lpos.yLo, lpos.xLo + 1)
       self.screen.program.showCursor()
     })
     this.on(BLUR, () => self.screen.program.lrestoreCursor('checkbox', true))

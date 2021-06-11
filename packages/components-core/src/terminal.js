@@ -194,33 +194,33 @@ export class Terminal extends Box {
     const ret = this._render()
     if (!ret) return
     this.dattr = this.sattr(this.style)
-    const xi = ret.xi + this.intL,
-          xl = ret.xl - this.intR,
-          yi = ret.yi + this.intT,
-          yl = ret.yl - this.intB
+    const xLo = ret.xLo + this.intL,
+          xHi = ret.xHi - this.intR,
+          yLo = ret.yLo + this.intT,
+          yHi = ret.yHi - this.intB
     let cursor
-    const scrollBack = this.term.lines.length - ( yl - yi )
+    const scrollBack = this.term.lines.length - ( yHi - yLo )
     for (
-      let y = Math.max(yi, 0), currLine, backLine;
-      y < yl;
+      let y = Math.max(yLo, 0), currLine, backLine;
+      y < yHi;
       y++
     ) {
       if (
         !( currLine = this.screen.lines[y] ) ||
-        !( backLine = this.term.lines[scrollBack + y - yi] )
+        !( backLine = this.term.lines[scrollBack + y - yLo] )
       ) { break }
       if (
-        y === yi + this.term.y &&
+        y === yLo + this.term.y &&
         this.term.cursorState &&
         this.screen.focused === this &&
         ( this.term.ydisp === this.term.ybase || this.term.selectMode ) &&
         !this.term.cursorHidden
-      ) { cursor = xi + this.term.x }
+      ) { cursor = xLo + this.term.x }
       else { cursor = -1 }
-      for (let x = Math.max(xi, 0), currCell, backCell; x < xl; x++) {
+      for (let x = Math.max(xLo, 0), currCell, backCell; x < xHi; x++) {
         if (
           !( currCell = currLine[x] ) ||
-          !( backCell = backLine[x - xi] )
+          !( backCell = backLine[x - xLo] )
         ) { break }
         currCell[0] = backCell[0]
         if (x === cursor) {
@@ -281,14 +281,14 @@ export class Terminal extends Box {
   getScrollHeight() { return this.term.rows - 1 }
   getScrollPerc() { return ( this.term.ydisp / this.term.ybase ) * 100 }
   setScrollPerc(i) { return this.setScroll(( i / 100 ) * this.term.ybase | 0) }
-  screenshot(xi, xl, yi, yl) {
-    xi = 0 + ( xi || 0 )
-    if (xl != null) { xl = 0 + ( xl || 0 ) }
-    else { xl = this.term.lines[0].length }
-    yi = 0 + ( yi || 0 )
-    if (yl != null) { yl = 0 + ( yl || 0 ) }
-    else { yl = this.term.lines.length }
-    return this.screen.screenshot(xi, xl, yi, yl, this.term)
+  screenshot(xLo, xHi, yLo, yHi) {
+    xLo = 0 + ( xLo || 0 )
+    if (xHi != null) { xHi = 0 + ( xHi || 0 ) }
+    else { xHi = this.term.lines[0].length }
+    yLo = 0 + ( yLo || 0 )
+    if (yHi != null) { yHi = 0 + ( yHi || 0 ) }
+    else { yHi = this.term.lines.length }
+    return this.screen.screenshot(xLo, xHi, yLo, yHi, this.term)
   }
   kill() {
     if (this.pty) {

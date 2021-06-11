@@ -172,9 +172,21 @@ export class Element extends Node {
   // But it wouldn't replicate bottom behavior appropriately if
   // the sup was resized, etc.
 
+
+  /**
+   * Relative coordinates as default properties
+   */
+  get left() { return this.relL }
+  get right() { return this.relR }
+  get top() { return this.relT }
+  get bottom() { return this.relB }
   get width() { return this.calcW(false) }
   get height() { return this.calcH(false) }
 
+  set left(val) { return this.relL = val }
+  set right(val) { return this.relR = val }
+  set top(val) { return this.relT = val }
+  set bottom(val) { return this.relB = val }
   set width(val) {
     if (this.position.width === val) return
     if (/^\d+$/.test(val)) val = +val
@@ -200,13 +212,13 @@ export class Element extends Node {
   get relL() { return this.absL - this.sup.absL }
   get relR() { return this.absR - this.sup.absR }
 
-  get intT() { return ( this.border ? 1 : 0 ) + this.padding.top }
-  get intB() { return ( this.border ? 1 : 0 ) + this.padding.bottom }
-  get intL() { return ( this.border ? 1 : 0 ) + this.padding.left }
-  get intR() { return ( this.border ? 1 : 0 ) + this.padding.right }
+  get intT() { return ( this.border ? 1 : 0 ) + this.padding.t }
+  get intB() { return ( this.border ? 1 : 0 ) + this.padding.b }
+  get intL() { return ( this.border ? 1 : 0 ) + this.padding.l }
+  get intR() { return ( this.border ? 1 : 0 ) + this.padding.r }
 
-  get intH() { return ( this.border ? 2 : 0 ) + this.padding.top + this.padding.bottom }
-  get intW() { return ( this.border ? 2 : 0 ) + this.padding.left + this.padding.right }
+  get intH() { return ( this.border ? 2 : 0 ) + this.padding.vert }
+  get intW() { return ( this.border ? 2 : 0 ) + this.padding.hori }
 
   set absT(val) {
     let expr
@@ -216,11 +228,12 @@ export class Element extends Node {
         val -= this.height / 2 | 0
       }
       else {
-        expr = val.split(/(?=\+|-)/)
-        val = expr[0]
-        val = +val.slice(0, -1) / 100
-        val = this.screen.height * val | 0
-        val += +( expr[1] || 0 )
+        // expr = val.split(/(?=[+\-])/)
+        // val = expr[0]
+        // val = +val.slice(0, -1) / 100
+        // val = this.screen.height * val | 0
+        // val += +( expr[1] || 0 )
+        val = parsePercent(val, this.screen.height)
       }
     }
     val -= this.sup.absT
@@ -237,18 +250,13 @@ export class Element extends Node {
     return this.position.bottom = val
   }
   set absL(val) {
-    let expr
     if (typeof val === STR) {
       if (val === CENTER) {
         val = this.screen.width / 2 | 0
         val -= this.width / 2 | 0
       }
       else {
-        expr = val.split(/(?=\+|-)/)
-        val = expr[0]
-        val = +val.slice(0, -1) / 100
-        val = this.screen.width * val | 0
-        val += +( expr[1] || 0 )
+        val = parsePercent(val, this.screen.width)
       }
     }
     val -= this.sup.absL
@@ -292,7 +300,7 @@ export class Element extends Node {
     return this.position.right = val
   }
 
-  get paddingSum() { return this.padding.left + this.padding.top + this.padding.right + this.padding.bottom }
+  get paddingSum() { return this.padding.t + this.padding.b + this.padding.l + this.padding.r }
 
   /**
    * Position Getters
@@ -301,12 +309,12 @@ export class Element extends Node {
     const pos = this.lpos
     assert.ok(pos)
     if (pos.absL != null) return pos
-    pos.absL = pos.xi
-    pos.absT = pos.yi
-    pos.absR = this.screen.cols - pos.xl
-    pos.absB = this.screen.rows - pos.yl
-    pos.width = pos.xl - pos.xi
-    pos.height = pos.yl - pos.yi
+    pos.absL = pos.xLo
+    pos.absT = pos.yLo
+    pos.absR = this.screen.cols - pos.xHi
+    pos.absB = this.screen.rows - pos.yHi
+    pos.width = pos.xHi - pos.xLo
+    pos.height = pos.yHi - pos.yLo
     return pos
   }
 
@@ -342,15 +350,10 @@ export class Element extends Node {
   }
   calcL(get) {
     const sup = get ? this.sup.calcPos() : this.sup
-    let left = this.position.left || 0,
-        expr
+    let left = this.position.left || 0
     if (typeof left === STR) {
       if (left === CENTER) left = '50%'
-      expr = left.split(/(?=\+|-)/)
-      left = expr[0]
-      left = +left.slice(0, -1) / 100
-      left = sup.width * left | 0
-      left += +( expr[1] || 0 )
+      left = parsePercent(left, sup.width)
       if (this.position.left === CENTER) {
         left -= this.calcW(get) / 2 | 0
       }
@@ -386,11 +389,7 @@ export class Element extends Node {
         expr
     if (typeof width === STR) {
       if (width === 'half') width = '50%'
-      expr = width.split(/(?=\+|-)/)
-      width = expr[0]
-      width = +width.slice(0, -1) / 100
-      width = sup.width * width | 0
-      width += +( expr[1] || 0 )
+      width = parsePercent(width, sup.width)
       return width
     }
     // This is for if the element is being streched or shrunken.
@@ -403,11 +402,7 @@ export class Element extends Node {
       left = this.position.left || 0
       if (typeof left === STR) {
         if (left === CENTER) left = '50%'
-        expr = left.split(/(?=\+|-)/)
-        left = expr[0]
-        left = +left.slice(0, -1) / 100
-        left = sup.width * left | 0
-        left += +( expr[1] || 0 )
+        left = parsePercent(left, sup.width)
       }
       width = sup.width - ( this.position.right || 0 ) - left
       if (this.screen.autoPadding) {
@@ -427,11 +422,7 @@ export class Element extends Node {
         expr
     if (typeof height === STR) {
       if (height === 'half') height = '50%'
-      expr = height.split(/(?=\+|-)/)
-      height = expr[0]
-      height = +height.slice(0, -1) / 100
-      height = sup.height * height | 0
-      height += +( expr[1] || 0 )
+      height = parsePercent(height, sup.height)
       return height
     }
     // This is for if the element is being streched or shrunken.
@@ -444,11 +435,7 @@ export class Element extends Node {
       top = this.position.top || 0
       if (typeof top === STR) {
         if (top === CENTER) top = '50%'
-        expr = top.split(/(?=\+|-)/)
-        top = expr[0]
-        top = +top.slice(0, -1) / 100
-        top = sup.height * top | 0
-        top += +( expr[1] || 0 )
+        top = parsePercent(top, sup.height)
       }
       height = sup.height - ( this.position.bottom || 0 ) - top
       if (this.screen.autoPadding) {
@@ -463,9 +450,9 @@ export class Element extends Node {
     return height
   }
 
-  calcShrinkBox(xi, xl, yi, yl, get) {
-    if (!this.sub.length) return { xi: xi, xl: xi + 1, yi: yi, yl: yi + 1 }
-    let i, el, ret, mxi = xi, mxl = xi + 1, myi = yi, myl = yi + 1
+  calcShrinkBox(xLo, xHi, yLo, yHi, get) {
+    if (!this.sub.length) return { xLo: xLo, xHi: xLo + 1, yLo: yLo, yHi: yLo + 1 }
+    let i, el, ret, mxi = xLo, mxl = xLo + 1, myi = yLo, myl = yLo + 1
     // This is a chicken and egg problem. We need to determine how the sub
     // will render in order to determine how this element renders, but it in
     // order to figure out how the sub will render, they need to know
@@ -474,7 +461,7 @@ export class Element extends Node {
     let _lpos
     if (get) {
       _lpos = this.lpos
-      this.lpos = { xi: xi, xl: xl, yi: yi, yl: yl }
+      this.lpos = { xLo: xLo, xHi: xHi, yLo: yLo, yHi: yHi }
       //this.shrink = false;
     }
     for (i = 0; i < this.sub.length; i++) {
@@ -491,27 +478,27 @@ export class Element extends Node {
       // element.
       // if (get) {
       if (el.position.left == null && el.position.right != null) {
-        ret.xl = xi + ( ret.xl - ret.xi )
-        ret.xi = xi
+        ret.xHi = xLo + ( ret.xHi - ret.xLo )
+        ret.xLo = xLo
         if (this.screen.autoPadding) {
           // Maybe just do this no matter what.
-          ret.xl += this.intL
-          ret.xi += this.intL
+          ret.xHi += this.intL
+          ret.xLo += this.intL
         }
       }
       if (el.position.top == null && el.position.bottom != null) {
-        ret.yl = yi + ( ret.yl - ret.yi )
-        ret.yi = yi
+        ret.yHi = yLo + ( ret.yHi - ret.yLo )
+        ret.yLo = yLo
         if (this.screen.autoPadding) {
           // Maybe just do this no matter what.
-          ret.yl += this.intT
-          ret.yi += this.intT
+          ret.yHi += this.intT
+          ret.yLo += this.intT
         }
       }
-      if (ret.xi < mxi) mxi = ret.xi
-      if (ret.xl > mxl) mxl = ret.xl
-      if (ret.yi < myi) myi = ret.yi
-      if (ret.yl > myl) myl = ret.yl
+      if (ret.xLo < mxi) mxi = ret.xLo
+      if (ret.xHi > mxl) mxl = ret.xHi
+      if (ret.yLo < myi) myi = ret.yLo
+      if (ret.yHi > myl) myl = ret.yHi
     }
     if (get) {
       this.lpos = _lpos
@@ -522,26 +509,26 @@ export class Element extends Node {
       ( this.position.left == null || this.position.right == null )
     ) {
       if (this.position.left == null && this.position.right != null) {
-        xi = xl - ( mxl - mxi )
-        xi -= !this.screen.autoPadding ? this.padding.left + this.padding.right : this.intL
+        xLo = xHi - ( mxl - mxi )
+        xLo -= !this.screen.autoPadding ? this.padding.hori : this.intL
       }
       else {
-        xl = mxl
+        xHi = mxl
         if (!this.screen.autoPadding) {
-          xl += this.padding.left + this.padding.right
+          xHi += this.padding.hori
           // XXX Temporary workaround until we decide to make autoPadding default.
           // See widget-listtable.js for an example of why this is necessary.
           // XXX Maybe just to this for all this being that this would affect
           // width shrunken normal shrunken lists as well.
           // if (this._isList) {
           if (this.type === 'list-table') {
-            xl -= this.padding.left + this.padding.right
-            xl += this.intR
+            xHi -= this.padding.hori
+            xHi += this.intR
           }
         }
         else {
-          //xl += this.padding.right;
-          xl += this.intR
+          //xHi += this.padding.right;
+          xHi += this.intR
         }
       }
     }
@@ -558,84 +545,83 @@ export class Element extends Node {
         myl = this.items.length + this.intB
       }
       if (this.position.top == null && this.position.bottom != null) {
-        yi = yl - ( myl - myi )
-        yi -= !this.screen.autoPadding ? this.padding.top + this.padding.bottom : this.intT
+        yLo = yHi - ( myl - myi )
+        yLo -= !this.screen.autoPadding ? this.padding.vert : this.intT
       }
       else {
-        yl = myl
-        yl += !this.screen.autoPadding ? this.padding.top + this.padding.bottom : this.intB
+        yHi = myl
+        yHi += !this.screen.autoPadding ? this.padding.vert : this.intB
       }
     }
-    return { xi: xi, xl: xl, yi: yi, yl: yl }
+    return { xLo: xLo, xHi: xHi, yLo: yLo, yHi: yHi }
   }
-  calcShrinkContent(xi, xl, yi, yl) {
+  calcShrinkContent(xLo, xHi, yLo, yHi) {
     const h = this.contLines.length,
           w = this.contLines.mwidth || 1
     if (
       ( this.position.width == null ) &&
       ( this.position.left == null || this.position.right == null )
     ) {
-      if (this.position.left == null && this.position.right != null) { xi = xl - w - this.intW }
-      else { xl = xi + w + this.intW }
+      if (this.position.left == null && this.position.right != null) { xLo = xHi - w - this.intW }
+      else { xHi = xLo + w + this.intW }
     }
     if (
       ( this.position.height == null ) &&
       ( this.position.top == null || this.position.bottom == null ) &&
       ( !this.scrollable || this._isList )
     ) {
-      if (this.position.top == null && this.position.bottom != null) { yi = yl - h - this.intH }
-      else { yl = yi + h + this.intH }
+      if (this.position.top == null && this.position.bottom != null) { yLo = yHi - h - this.intH }
+      else { yHi = yLo + h + this.intH }
     }
-    return { xi: xi, xl: xl, yi: yi, yl: yl }
+    return { xLo: xLo, xHi: xHi, yLo: yLo, yHi: yHi }
   }
-  calcShrink(xi, xl, yi, yl, get) {
-    const shrinkBox     = this.calcShrinkBox(xi, xl, yi, yl, get),
-          shrinkContent = this.calcShrinkContent(xi, xl, yi, yl, get)
-    let xll = xl, yll = yl
+  calcShrink(xLo, xHi, yLo, yHi, get) {
+    const shrinkBox     = this.calcShrinkBox(xLo, xHi, yLo, yHi, get),
+          shrinkContent = this.calcShrinkContent(xLo, xHi, yLo, yHi, get)
+    let xll = xHi, yll = yHi
     // Figure out which one is bigger and use it.
-    if (shrinkBox.xl - shrinkBox.xi > shrinkContent.xl - shrinkContent.xi) { xi = shrinkBox.xi, xl = shrinkBox.xl }
-    else { xi = shrinkContent.xi, xl = shrinkContent.xl }
-    if (shrinkBox.yl - shrinkBox.yi > shrinkContent.yl - shrinkContent.yi) { yi = shrinkBox.yi, yl = shrinkBox.yl }
-    else { yi = shrinkContent.yi, yl = shrinkContent.yl }
+    if (shrinkBox.xHi - shrinkBox.xLo > shrinkContent.xHi - shrinkContent.xLo) { xLo = shrinkBox.xLo, xHi = shrinkBox.xHi }
+    else { xLo = shrinkContent.xLo, xHi = shrinkContent.xHi }
+    if (shrinkBox.yHi - shrinkBox.yLo > shrinkContent.yHi - shrinkContent.yLo) { yLo = shrinkBox.yLo, yHi = shrinkBox.yHi }
+    else { yLo = shrinkContent.yLo, yHi = shrinkContent.yHi }
     // Recenter shrunken elements.
-    if (xl < xll && this.position.left === CENTER) {
-      xll = ( xll - xl ) / 2 | 0
-      xi += xll
-      xl += xll
+    if (xHi < xll && this.position.left === CENTER) {
+      xll = ( xll - xHi ) / 2 | 0
+      xLo += xll
+      xHi += xll
     }
-    if (yl < yll && this.position.top === CENTER) {
-      yll = ( yll - yl ) / 2 | 0
-      yi += yll
-      yl += yll
+    if (yHi < yll && this.position.top === CENTER) {
+      yll = ( yll - yHi ) / 2 | 0
+      yLo += yll
+      yHi += yll
     }
-    return { xi: xi, xl: xl, yi: yi, yl: yl }
+    return { xLo: xLo, xHi: xHi, yLo: yLo, yHi: yHi }
   }
-  calcCoords(get, noscroll) {
+  calcCoords(get, noScroll) {
     if (this.hidden) return
     // if (this.sup._rendering) {
     //   get = true;
     // }
-    let xi    = this.calcL(get),
-        xl    = xi + this.calcW(get),
-        yi    = this.calcT(get),
-        yl    = yi + this.calcH(get),
+    let xLo   = this.calcL(get),
+        xHi   = xLo + this.calcW(get),
+        yLo   = this.calcT(get),
+        yHi   = yLo + this.calcH(get),
         base  = this.childBase || 0,
         el    = this,
         fixed = this.fixed,
         coords,
         v,
-        noleft,
-        noright,
-        notop,
-        nobot,
-        ppos,
+        negL,
+        negR,
+        negT,
+        negB,
+        supPos,
         b
     // Attempt to shrink the element base on the
     // size of the content and child elements.
     if (this.shrink) {
-      coords = this.calcShrink(xi, xl, yi, yl, get)
-      xi = coords.xi, xl = coords.xl
-      yi = coords.yi, yl = coords.yl
+      coords = this.calcShrink(xLo, xHi, yLo, yHi, get);
+      ( { xLo, xHi, yLo, yHi } = coords )
     }
     // Find a scrollable ancestor if we have one.
     while (( el = el.sup )) {
@@ -656,19 +642,19 @@ export class Element extends Node {
     // See: $ node test/widget-shrink-fail.js
     // var thisparent = this.sup;
     const thisparent = el
-    if (el && !noscroll) {
-      ppos = thisparent.lpos
+    if (el && !noScroll) {
+      supPos = thisparent.lpos
       // The shrink option can cause a stack overflow
       // by calling calcCoords on the child again.
       // if (!get && !thisparent.shrink) {
-      //   ppos = thisparent.calcCoords();
+      //   supPos = thisparent.calcCoords();
       // }
-      if (!ppos) return
+      if (!supPos) return
       // TODO: Figure out how to fix base (and cbase to only
       // take into account the *sup's* padding.
 
-      yi -= ppos.base
-      yl -= ppos.base
+      yLo -= supPos.base
+      yHi -= supPos.base
 
       b = thisparent.border ? 1 : 0
       // XXX
@@ -680,75 +666,75 @@ export class Element extends Node {
       if (this._isLabel) {
         b = 0
       }
-      if (yi < ppos.yi + b) {
-        if (yl - 1 < ppos.yi + b) {
+      if (yLo < supPos.yLo + b) {
+        if (yHi - 1 < supPos.yLo + b) {
           // Is above.
           return
         }
         else {
           // Is partially covered above.
-          notop = true
-          v = ppos.yi - yi
+          negT = true
+          v = supPos.yLo - yLo
           if (this.border) v--
           if (thisparent.border) v++
           base += v
-          yi += v
+          yLo += v
         }
       }
-      else if (yl > ppos.yl - b) {
-        if (yi > ppos.yl - 1 - b) {
+      else if (yHi > supPos.yHi - b) {
+        if (yLo > supPos.yHi - 1 - b) {
           // Is below.
           return
         }
         else {
           // Is partially covered below.
-          nobot = true
-          v = yl - ppos.yl
+          negB = true
+          v = yHi - supPos.yHi
           if (this.border) v--
           if (thisparent.border) v++
-          yl -= v
+          yHi -= v
         }
       }
       // Shouldn't be necessary.
-      // assert.ok(yi < yl);
-      if (yi >= yl) return
+      // assert.ok(yLo < yHi);
+      if (yLo >= yHi) return
       // Could allow overlapping stuff in scrolling elements
       // if we cleared the pending buffer before every draw.
-      if (xi < el.lpos.xi) {
-        xi = el.lpos.xi
-        noleft = true
-        if (this.border) xi--
-        if (thisparent.border) xi++
+      if (xLo < el.lpos.xLo) {
+        xLo = el.lpos.xLo
+        negL = true
+        if (this.border) xLo--
+        if (thisparent.border) xLo++
       }
-      if (xl > el.lpos.xl) {
-        xl = el.lpos.xl
-        noright = true
-        if (this.border) xl++
-        if (thisparent.border) xl--
+      if (xHi > el.lpos.xHi) {
+        xHi = el.lpos.xHi
+        negR = true
+        if (this.border) xHi++
+        if (thisparent.border) xHi--
       }
-      //if (xi > xl) return;
-      if (xi >= xl) return
+      //if (xLo > xHi) return;
+      if (xLo >= xHi) return
     }
     if (this.noOverflow && this.sup.lpos) {
-      if (xi < this.sup.lpos.xi + this.sup.intL) { xi = this.sup.lpos.xi + this.sup.intL }
-      if (xl > this.sup.lpos.xl - this.sup.intR) { xl = this.sup.lpos.xl - this.sup.intR }
-      if (yi < this.sup.lpos.yi + this.sup.intT) { yi = this.sup.lpos.yi + this.sup.intT }
-      if (yl > this.sup.lpos.yl - this.sup.intB) { yl = this.sup.lpos.yl - this.sup.intB }
+      if (xLo < this.sup.lpos.xLo + this.sup.intL) { xLo = this.sup.lpos.xLo + this.sup.intL }
+      if (xHi > this.sup.lpos.xHi - this.sup.intR) { xHi = this.sup.lpos.xHi - this.sup.intR }
+      if (yLo < this.sup.lpos.yLo + this.sup.intT) { yLo = this.sup.lpos.yLo + this.sup.intT }
+      if (yHi > this.sup.lpos.yHi - this.sup.intB) { yHi = this.sup.lpos.yHi - this.sup.intB }
     }
     // if (this.sup.lpos) {
     //   this.sup.lpos._scrollBottom = Math.max(
-    //     this.sup.lpos._scrollBottom, yl);
+    //     this.sup.lpos._scrollBottom, yHi);
     // }
     return {
-      xi: xi,
-      xl: xl,
-      yi: yi,
-      yl: yl,
-      base: base,
-      noleft: noleft,
-      noright: noright,
-      notop: notop,
-      nobot: nobot,
+      xLo,
+      xHi,
+      yLo,
+      yHi,
+      base,
+      negL,
+      negR,
+      negT,
+      negB,
       renders: this.screen.renders
     }
   }
@@ -758,22 +744,10 @@ export class Element extends Node {
     const coord = this.calcCoords(get)
     if (!coord) return
     this.screen.clearRegion(
-      coord.xi, coord.xl,
-      coord.yi, coord.yl,
+      coord.xLo, coord.xHi,
+      coord.yLo, coord.yHi,
       override)
   }
-
-  /**
-   * Relative coordinates as default properties
-   */
-  get left() { return this.relL }
-  set left(val) { return this.relL = val }
-  get right() { return this.relR }
-  set right(val) { return this.relR = val }
-  get top() { return this.relT }
-  set top(val) { return this.relT = val }
-  get bottom() { return this.relB }
-  set bottom(val) { return this.relB = val }
 
   sattr(style, fg, bg) { return styleToAttr(style, fg, bg) }
   // Convert `{red-fg}foo{/red-fg}` to `\x1b[31mfoo\x1b[39m`.
@@ -1083,14 +1057,14 @@ export class Element extends Node {
     this.parseContent()
     const coords = this.calcCoords(true)
     if (!coords) return void ( delete this.lpos )
-    if (coords.xl - coords.xi <= 0) return void ( coords.xl = Math.max(coords.xl, coords.xi) )
-    if (coords.yl - coords.yi <= 0) return void ( coords.yl = Math.max(coords.yl, coords.yi) )
+    if (coords.xHi - coords.xLo <= 0) return void ( coords.xHi = Math.max(coords.xHi, coords.xLo) )
+    if (coords.yHi - coords.yLo <= 0) return void ( coords.yHi = Math.max(coords.yHi, coords.yLo) )
     const lines = this.screen.lines
     // console.log(`>> [{${ this.codename }}.render]`, lines[0][0],lines[0][0].modeSign)
-    let xi = coords.xi,
-        xl = coords.xl,
-        yi = coords.yi,
-        yl = coords.yl,
+    let xLo = coords.xLo,
+        xHi = coords.xHi,
+        yLo = coords.yLo,
+        yHi = coords.yHi,
         currAttr,
         ch
     const content = this._pcontent
@@ -1104,8 +1078,8 @@ export class Element extends Node {
     if (coords.base >= this.contLines.ci.length) ci = this._pcontent.length
     this.lpos = coords
     if (this.border?.type === 'line') {
-      this.screen._borderStops[coords.yi] = true
-      this.screen._borderStops[coords.yl - 1] = true
+      this.screen._borderStops[coords.yLo] = true
+      this.screen._borderStops[coords.yHi - 1] = true
     }
     normAttr = styleToAttr(this.style)
     // console.log('>> [element.render] interim', dattr)
@@ -1113,16 +1087,16 @@ export class Element extends Node {
     // If we're in a scrollable text box, check to
     // see which attributes this line starts with.
     if (ci > 0) currAttr = this.contLines.attr[Math.min(coords.base, this.contLines.length - 1)]
-    if (this.border) xi++, xl--, yi++, yl--
+    if (this.border) xLo++, xHi--, yLo++, yHi--
     // If we have padding/valign, that means the
     // content-drawing loop will skip a few cells/lines.
     // To deal with this, we can just fill the whole thing
     // ahead of time. This could be optimized.
     if (this.paddingSum || ( this.valign && this.valign !== TOP )) {
       if (this.style.transparent) {
-        for (let y = Math.max(yi, 0), line, cell; ( y < yl ); y++) {
+        for (let y = Math.max(yLo, 0), line, cell; ( y < yHi ); y++) {
           if (!( line = lines[y] )) break
-          for (let x = Math.max(xi, 0); x < xl; x++) {
+          for (let x = Math.max(xLo, 0); x < xHi; x++) {
             if (!( cell = line[x] )) break
             cell.at = colors.blend(currAttr, cell.at)
             line.dirty = true // lines[y][x][1] = bch;
@@ -1130,13 +1104,13 @@ export class Element extends Node {
         }
       }
       else {
-        this.screen.fillRegion(normAttr, bch, xi, xl, yi, yl)
+        this.screen.fillRegion(normAttr, bch, xLo, xHi, yLo, yHi)
       }
     }
-    if (this.paddingSum) { xi += this.padding.left, xl -= this.padding.right, yi += this.padding.top, yl -= this.padding.bottom }
+    if (this.paddingSum) { xLo += this.padding.l, xHi -= this.padding.r, yLo += this.padding.t, yHi -= this.padding.b }
     // Determine where to place the text if it's vertically aligned.
     if (this.valign === MIDDLE || this.valign === BOTTOM) {
-      visible = yl - yi
+      visible = yHi - yLo
       if (this.contLines.length < visible) {
         if (this.valign === MIDDLE) {
           visible = visible / 2 | 0
@@ -1145,23 +1119,23 @@ export class Element extends Node {
         else if (this.valign === BOTTOM) {
           visible -= this.contLines.length
         }
-        ci -= visible * ( xl - xi )
+        ci -= visible * ( xHi - xLo )
       }
     }
     // Draw the content and background.
-    for (let y = yi, line; y < yl; y++) {
+    for (let y = yLo, line; y < yHi; y++) {
       if (!( line = lines[y] )) {
-        if (y >= this.screen.height || yl < this.intB) { break }
+        if (y >= this.screen.height || yHi < this.intB) { break }
         else { continue }
       }
-      for (let x = xi, cell; x < xl; x++) {
+      for (let x = xLo, cell; x < xHi; x++) {
         if (!( cell = line[x] )) {
-          if (x >= this.screen.width || xl < this.intR) { break }
+          if (x >= this.screen.width || xHi < this.intR) { break }
           else { continue }
         }
         ch = content[ci++] || bch
         // if (!content[ci] && !coords._contentEnd) {
-        //   coords._contentEnd = { x: x - xi, y: y - yi };
+        //   coords._contentEnd = { x: x - xLo, y: y - yLo };
         // }
         // Handle escape codes.
         let matches, sgra
@@ -1186,14 +1160,14 @@ export class Element extends Node {
           // If we're on the first cell and we find a newline and the last cell
           // of the last line was not a newline, let's just treat this like the
           // newline was already "counted".
-          if (x === xi && y !== yi && content[ci - 2] !== LF) {
+          if (x === xLo && y !== yLo && content[ci - 2] !== LF) {
             x--
             continue
           }
           // We could use fillRegion here, name the
           // outer loop, and continue to it instead.
           ch = bch
-          for (; x < xl; x++) {
+          for (; x < xHi; x++) {
             if (!( cell = line[x] )) break
             if (this.style.transparent) {
               cell.inject(
@@ -1218,8 +1192,8 @@ export class Element extends Node {
               ch = content[ci - 1] + content[ci]
               ci++
             }
-            if (x - 1 >= xi) { line[x - 1].ch += ch }
-            else if (y - 1 >= yi) { lines[y - 1][xl - 1].ch += ch }
+            if (x - 1 >= xLo) { line[x - 1].ch += ch }
+            else if (y - 1 >= yLo) { lines[y - 1][xHi - 1].ch += ch }
             x--
             continue
           }
@@ -1253,20 +1227,20 @@ export class Element extends Node {
       // i = this.getScrollHeight();
       i = Math.max(this.contLines.length, this._scrollBottom())
     }
-    if (coords.notop || coords.nobot) i = -Infinity
-    if (this.scrollbar && ( yl - yi ) < i) {
-      let x = xl - 1
+    if (coords.negT || coords.negB) i = -Infinity
+    if (this.scrollbar && ( yHi - yLo ) < i) {
+      let x = xHi - 1
       if (this.scrollbar.ignoreBorder && this.border) x++
-      let y = this.alwaysScroll ? this.childBase / ( i - ( yl - yi ) ) : ( this.childBase + this.childOffset ) / ( i - 1 )
-      y = yi + ( ( yl - yi ) * y | 0 )
-      if (y >= yl) y = yl - 1
+      let y = this.alwaysScroll ? this.childBase / ( i - ( yHi - yLo ) ) : ( this.childBase + this.childOffset ) / ( i - 1 )
+      y = yLo + ( ( yHi - yLo ) * y | 0 )
+      if (y >= yHi) y = yHi - 1
       let line = lines[y],
           cell = line && line[x]
       if (cell) {
         if (this.track) {
           ch = this.track.ch || ' '
           currAttr = styleToAttr(this.style.track, this.style.track.fg || this.style.fg, this.style.track.bg || this.style.bg)
-          this.screen.fillRegion(currAttr, ch, x, x + 1, yi, yl)
+          this.screen.fillRegion(currAttr, ch, x, x + 1, yLo, yHi)
         }
         ch = this.scrollbar.ch || ' '
         currAttr = styleToAttr(this.style.scrollbar, this.style.scrollbar.fg || this.style.fg, this.style.scrollbar.bg || this.style.bg)
@@ -1276,23 +1250,23 @@ export class Element extends Node {
         }
       }
     }
-    if (this.border) xi--, xl++, yi--, yl++
+    if (this.border) xLo--, xHi++, yLo--, yHi++
     if (this.paddingSum) {
-      xi -= this.padding.left, xl += this.padding.right, yi -= this.padding.top, yl += this.padding.bottom
+      xLo -= this.padding.l, xHi += this.padding.r, yLo -= this.padding.t, yHi += this.padding.b
     }
     // Draw the border.
     if (this.border) {
       borderAttr = styleToAttr(this.style.border)
-      let y = yi
-      if (coords.notop) y = -1
+      let y = yLo
+      if (coords.negT) y = -1
       let line = lines[y]
-      for (let x = xi, cell; x < xl; x++) {
+      for (let x = xLo, cell; x < xHi; x++) {
         if (!line) break
-        if (coords.noleft && x === xi) continue
-        if (coords.noright && x === xl - 1) continue
+        if (coords.negL && x === xLo) continue
+        if (coords.negR && x === xHi - 1) continue
         if (!( cell = line[x] )) continue
         if (this.border.type === 'line') {
-          if (x === xi) {
+          if (x === xLo) {
             ch = '\u250c' // '┌'
             if (!this.border.left) {
               if (this.border.top) { ch = '\u2500' } // '─'
@@ -1302,7 +1276,7 @@ export class Element extends Node {
               if (!this.border.top) { ch = '\u2502' } // '│'
             }
           }
-          else if (x === xl - 1) {
+          else if (x === xHi - 1) {
             ch = '\u2510' // '┐'
             if (!this.border.right) {
               if (this.border.top) { ch = '\u2500' } // '─'
@@ -1315,7 +1289,7 @@ export class Element extends Node {
           else { ch = '\u2500' } // '─'
         }
         else if (this.border.type === 'bg') { ch = this.border.ch }
-        if (!this.border.top && x !== xi && x !== xl - 1) {
+        if (!this.border.top && x !== xLo && x !== xHi - 1) {
           ch = ' '
           if (cell.at !== normAttr || cell.ch !== ch) {
             cell.inject(normAttr, ch)
@@ -1328,13 +1302,13 @@ export class Element extends Node {
           line.dirty = true
         }
       }
-      for (let y = yi + 1, line, cell; y < yl - 1; y++) {
+      for (let y = yLo + 1, line, cell; y < yHi - 1; y++) {
         if (!( line = lines[y] )) continue
-        if (( cell = line[xi] )) {
+        if (( cell = line[xLo] )) {
           if (this.border.left) {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
-            if (!coords.noleft)
+            if (!coords.negL)
               if (cell.at !== borderAttr || cell.ch !== ch) {
                 cell.inject(borderAttr, ch)
                 line.dirty = true
@@ -1348,11 +1322,11 @@ export class Element extends Node {
             }
           }
         }
-        if (( cell = line[xl - 1] )) {
+        if (( cell = line[xHi - 1] )) {
           if (this.border.right) {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
-            if (!coords.noright)
+            if (!coords.negR)
               if (cell.at !== borderAttr || cell.ch !== ch) {
                 cell.inject(borderAttr, ch)
                 line.dirty = true
@@ -1367,15 +1341,15 @@ export class Element extends Node {
           }
         }
       }
-      y = yl - 1
-      if (coords.nobot) y = -1
-      for (let x = xi, cell; x < xl; x++) {
+      y = yHi - 1
+      if (coords.negB) y = -1
+      for (let x = xLo, cell; x < xHi; x++) {
         if (!( line = lines[y] )) break
-        if (coords.noleft && x === xi) continue
-        if (coords.noright && x === xl - 1) continue
+        if (coords.negL && x === xLo) continue
+        if (coords.negR && x === xHi - 1) continue
         if (!( cell = line[x] )) continue
         if (this.border.type === 'line') {
-          if (x === xi) {
+          if (x === xLo) {
             ch = '\u2514' // '└'
             if (!this.border.left) {
               if (this.border.bottom) { ch = '\u2500' } // '─'
@@ -1385,7 +1359,7 @@ export class Element extends Node {
               if (!this.border.bottom) { ch = '\u2502' } // '│'
             }
           }
-          else if (x === xl - 1) {
+          else if (x === xHi - 1) {
             ch = '\u2518' // '┘'
             if (!this.border.right) {
               if (this.border.bottom) { ch = '\u2500' } // '─'
@@ -1398,7 +1372,7 @@ export class Element extends Node {
           else { ch = '\u2500' } // '─'
         }
         else if (this.border.type === 'bg') { ch = this.border.ch }
-        if (!this.border.bottom && x !== xi && x !== xl - 1) {
+        if (!this.border.bottom && x !== xLo && x !== xHi - 1) {
           ch = ' '
           if (cell.at !== normAttr || cell.ch !== ch) {
             cell.inject(normAttr, ch)
@@ -1414,9 +1388,9 @@ export class Element extends Node {
     }
     if (this.shadow) {
       // right
-      for (let y = Math.max(yi + 1, 0), line; y < yl + 1; y++) {
+      for (let y = Math.max(yLo + 1, 0), line; y < yHi + 1; y++) {
         if (!( line = lines[y] )) break
-        for (let x = xl, cell; x < xl + 2; x++) {
+        for (let x = xHi, cell; x < xHi + 2; x++) {
           if (!( cell = line[x] )) break
           // lines[y][x][0] = colors.blend(this.dattr, lines[y][x][0]);
           cell.at = colors.blend(cell.at)
@@ -1424,9 +1398,9 @@ export class Element extends Node {
         }
       }
       // bottom
-      for (let y = yl, line; y < yl + 1; y++) {
+      for (let y = yHi, line; y < yHi + 1; y++) {
         if (!( line = lines[y] )) break
-        for (let x = Math.max(xi + 1, 0), cell; x < xl; x++) {
+        for (let x = Math.max(xLo + 1, 0), cell; x < xHi; x++) {
           if (!( cell = line[x] )) break
           // lines[y][x][0] = colors.blend(this.dattr, lines[y][x][0]);
           cell.at = colors.blend(cell.at)
@@ -1443,12 +1417,12 @@ export class Element extends Node {
     this._emit(RENDER, [ coords ])
     return coords
   }
-  screenshot(xi, xl, yi, yl) {
-    xi = this.lpos.xi + this.intL + ( xi || 0 )
-    xl = xl != null ? this.lpos.xi + this.intL + ( xl || 0 ) : this.lpos.xl - this.intR
-    yi = this.lpos.yi + this.intT + ( yi || 0 )
-    yl = yl != null ? this.lpos.yi + this.intT + ( yl || 0 ) : this.lpos.yl - this.intB
-    return this.screen.screenshot(xi, xl, yi, yl)
+  screenshot(xLo, xHi, yLo, yHi) {
+    xLo = this.lpos.xLo + this.intL + ( xLo || 0 )
+    xHi = xHi != null ? this.lpos.xLo + this.intL + ( xHi || 0 ) : this.lpos.xHi - this.intR
+    yLo = this.lpos.yLo + this.intT + ( yLo || 0 )
+    yHi = yHi != null ? this.lpos.yLo + this.intT + ( yHi || 0 ) : this.lpos.yHi - this.intB
+    return this.screen.screenshot(xLo, xHi, yLo, yHi)
   }
 
   onScreenEvent(type, handler) {
@@ -1705,8 +1679,8 @@ export class Element extends Node {
     let diff,
         real
     if (i >= this.contLines.ftor.length) {
-      real = this.contLines.ftor[this.contLines.ftor.length - 1]
-      real = real[real.length - 1] + 1
+      real = last(this.contLines.ftor)
+      real = last(real) + 1
     }
     else {
       real = this.contLines.ftor[i][0]
@@ -1718,14 +1692,14 @@ export class Element extends Node {
     if (diff > 0) {
       const pos = this.calcCoords()
       if (!pos) return
-      const ht   = pos.yl - pos.yi - this.intH,
+      const ht   = pos.yHi - pos.yLo - this.intH,
             base = this.childBase || 0,
             vis  = real >= base && real - base < ht // visible
       if (pos && vis && this.screen.cleanSides(this)) {
         this.screen.insertLine(diff,
-          pos.yi + this.intT + real - base,
-          pos.yi,
-          pos.yl - this.intB - 1)
+          pos.yLo + this.intT + real - base,
+          pos.yLo,
+          pos.yHi - this.intB - 1)
       }
     }
   }
@@ -1747,14 +1721,14 @@ export class Element extends Node {
       const pos = this.calcCoords()
       if (!pos) return
 
-      height = pos.yl - pos.yi - this.intH
+      height = pos.yHi - pos.yLo - this.intH
       const base    = this.childBase || 0,
             visible = real >= base && real - base < height
       if (pos && visible && this.screen.cleanSides(this)) {
         this.screen.deleteLine(diff,
-          pos.yi + this.intT + real - base,
-          pos.yi,
-          pos.yl - this.intB - 1)
+          pos.yLo + this.intT + real - base,
+          pos.yLo,
+          pos.yHi - this.intB - 1)
       }
     }
     if (this.contLines.length < height) this.clearPos()

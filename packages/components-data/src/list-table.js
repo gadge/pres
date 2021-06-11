@@ -150,38 +150,38 @@ export class ListTable extends List {
     this._calculateMaxes()
     if (!this._maxes) return coords
     const lines = this.screen.lines,
-          xi    = coords.xi,
-          yi    = coords.yi
+          xLo    = coords.xLo,
+          yLo    = coords.yLo
     let rx,
         ry
     const borderAttr = styleToAttr(this.style.border)
-    const height = coords.yl - coords.yi - this.intB
+    const height = coords.yHi - coords.yLo - this.intB
     let border = this.border
     if (!this.border && this.options.border) border = this.options.border
     if (!border || this.options.noCellBorders) return coords
     // Draw border with correct angles.
     ry = 0
     for (let i = 0, line; i < height + 1; i++) {
-      if (!( line = lines[yi + ry] )) break
+      if (!( line = lines[yLo + ry] )) break
       rx = 0
       self._maxes.slice(0, -1).forEach(max => {
         rx += max
-        if (!line[xi + rx + 1]) return
+        if (!line[xLo + rx + 1]) return
         // center
         if (ry === 0) {
           // top
           rx++
-          line[xi + rx].inject(borderAttr, '\u252c') // '┬'
+          line[xLo + rx].inject(borderAttr, '\u252c') // '┬'
           // XXX If we alter intH and intT for no borders - nothing should be written here
-          if (!border.top) line[xi + rx].ch = '\u2502' // '│'
+          if (!border.top) line[xLo + rx].ch = '\u2502' // '│'
           line.dirty = true
         }
         else if (ry === height) {
           // bottom
           rx++
-          line[xi + rx].inject(borderAttr, '\u2534') // '┴'
+          line[xLo + rx].inject(borderAttr, '\u2534') // '┴'
           // XXX If we alter intH and intB for no borders - nothing should be written here
-          if (!border.bottom) line[xi + rx].ch = '\u2502' // '│'
+          if (!border.bottom) line[xLo + rx].ch = '\u2502' // '│'
           line.dirty = true
         }
         else {
@@ -193,21 +193,21 @@ export class ListTable extends List {
     }
     // Draw internal borders.
     for (let ry = 1, line; ry < height; ry++) {
-      if (!( line = lines[yi + ry] )) break
+      if (!( line = lines[yLo + ry] )) break
       rx = 0
       self._maxes.slice(0, -1).forEach(max => {
         rx += max
-        if (!line[xi + rx + 1]) return
+        if (!line[xLo + rx + 1]) return
         if (self.options.fillCellBorders !== false) {
-          const lbg = line[xi + rx].at & 0x1ff
+          const lbg = line[xLo + rx].at & 0x1ff
           rx++
-          line[xi + rx].at = ( borderAttr & ~0x1ff ) | lbg
+          line[xLo + rx].at = ( borderAttr & ~0x1ff ) | lbg
         }
         else {
           rx++
-          line[xi + rx].at = borderAttr
+          line[xLo + rx].at = borderAttr
         }
-        line[xi + rx].ch = '\u2502' // '│'
+        line[xLo + rx].ch = '\u2502' // '│'
         line.dirty = true
       })
     }

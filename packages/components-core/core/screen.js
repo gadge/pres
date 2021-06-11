@@ -181,14 +181,14 @@ export class Screen extends Node {
     this.program.clear()
   }
   realloc() { return this.alloc(true) }
-  clearRegion(xi, xl, yi, yl, override) { return this.fillRegion(this.dattr, ' ', xi, xl, yi, yl, override) }
-  fillRegion(at, ch, xi, xl, yi, yl, override) {
+  clearRegion(xLo, xHi, yLo, yHi, override) { return this.fillRegion(this.dattr, ' ', xLo, xHi, yLo, yHi, override) }
+  fillRegion(at, ch, xLo, xHi, yLo, yHi, override) {
     const lines = this.currLines
-    if (xi < 0) xi = 0
-    if (yi < 0) yi = 0
-    for (let line, temp = Mor.build(at, ch); yi < yl; yi++) {
-      if (!( line = lines[yi] )) break
-      for (let i = xi, cell; i < xl; i++) {
+    if (xLo < 0) xLo = 0
+    if (yLo < 0) yLo = 0
+    for (let line, temp = Mor.build(at, ch); yLo < yHi; yLo++) {
+      if (!( line = lines[yLo] )) break
+      for (let i = xLo, cell; i < xHi; i++) {
         if (!( cell = line[i] )) break
         if (override || !cell.eq(temp)) {
           cell.assign(temp), line.dirty = true
@@ -239,22 +239,22 @@ export class Screen extends Node {
     }
     return Mor.build(at, ch)
   }
-  screenshot(xi, xl, yi, yl, term) {
-    if (xi == null) xi = 0
-    if (xl == null) xl = this.cols
-    if (yi == null) yi = 0
-    if (yl == null) yl = this.rows
-    if (xi < 0) xi = 0
-    if (yi < 0) yi = 0
+  screenshot(xLo, xHi, yLo, yHi, term) {
+    if (xLo == null) xLo = 0
+    if (xHi == null) xHi = this.cols
+    if (yLo == null) yLo = 0
+    if (yHi == null) yHi = this.rows
+    if (xLo < 0) xLo = 0
+    if (yLo < 0) yLo = 0
     const tempAttr = this.dattr
     if (term) { this.dattr = term.defAttr }
     let main = ''
     const normAttr = this.dattr
-    for (let y = yi, line; y < yl; y++) {
+    for (let y = yLo, line; y < yHi; y++) {
       if (!( line = term?.lines[y] ?? this.currLines[y] )) break
       let out      = '',
           currAttr = this.dattr
-      for (let x = xi, cell; x < xl; x++) {
+      for (let x = xLo, cell; x < xHi; x++) {
         if (!( cell = line[x] )) break
         let at = cell.at, ch = cell.ch
         if (at !== currAttr) {
@@ -268,7 +268,7 @@ export class Screen extends Node {
             out += attrToSgra(nextAttr, this.tput.colors)
           }
         }
-        if (this.fullUnicode && unicode.charWidth(cell.ch) === 2) { x === xl - 1 ? ( ch = ' ' ) : x++ }
+        if (this.fullUnicode && unicode.charWidth(cell.ch) === 2) { x === xHi - 1 ? ( ch = ' ' ) : x++ }
         out += ch
         currAttr = at
       }
@@ -494,12 +494,12 @@ export class Screen extends Node {
     const pos = el.lpos
     if (!pos) { return false }
     if (pos._cleanSides != null) { return pos._cleanSides }
-    if (pos.xi <= 0 && pos.xl >= this.width) { return pos._cleanSides = true }
+    if (pos.xLo <= 0 && pos.xHi >= this.width) { return pos._cleanSides = true }
     if (this.options.fastCSR) {
       // Maybe just do this instead of parsing.
-      if (pos.yi < 0) return pos._cleanSides = false
-      if (pos.yl > this.height) return pos._cleanSides = false
-      return this.width - ( pos.xl - pos.xi ) < 40 ? ( pos._cleanSides = true ) : ( pos._cleanSides = false )
+      if (pos.yLo < 0) return pos._cleanSides = false
+      if (pos.yHi > this.height) return pos._cleanSides = false
+      return this.width - ( pos.xHi - pos.xLo ) < 40 ? ( pos._cleanSides = true ) : ( pos._cleanSides = false )
     }
     if (!this.options.smartCSR) { return false }
     // The scrollbar can't update properly, and there's also a
@@ -509,28 +509,28 @@ export class Screen extends Node {
     //   return pos._cleanSides = false;
     // }
     // Doesn't matter if we're only a height of 1.
-    // if ((pos.yl - el.intB) - (pos.yi + el.intT) <= 1) {
+    // if ((pos.yHi - el.intB) - (pos.yLo + el.intT) <= 1) {
     //   return pos._cleanSides = false;
     // }
-    const yi = pos.yi + el.intT,
-          yl = pos.yl - el.intB
-    if (pos.yi < 0) return pos._cleanSides = false
-    if (pos.yl > this.height) return pos._cleanSides = false
-    if (pos.xi - 1 < 0) return pos._cleanSides = true
-    if (pos.xl > this.width) return pos._cleanSides = true
-    for (let x = pos.xi - 1, line, cell; x >= 0; x--) {
-      if (!( line = this.prevLines[yi] )) break
+    const yLo = pos.yLo + el.intT,
+          yHi = pos.yHi - el.intB
+    if (pos.yLo < 0) return pos._cleanSides = false
+    if (pos.yHi > this.height) return pos._cleanSides = false
+    if (pos.xLo - 1 < 0) return pos._cleanSides = true
+    if (pos.xHi > this.width) return pos._cleanSides = true
+    for (let x = pos.xLo - 1, line, cell; x >= 0; x--) {
+      if (!( line = this.prevLines[yLo] )) break
       const initCell = line[x]
-      for (let y = yi; y < yl; y++) {
+      for (let y = yLo; y < yHi; y++) {
         if (!( line = this.prevLines[y] ) || !( cell = line[x] )) break
         cell = line[x]
         if (!cell.eq(initCell)) return pos._cleanSides = false
       }
     }
-    for (let x = pos.xl, line, cell; x < this.width; x++) {
-      if (!( line = this.prevLines[yi] )) break
+    for (let x = pos.xHi, line, cell; x < this.width; x++) {
+      if (!( line = this.prevLines[yLo] )) break
       const initCell = line[x]
-      for (let y = yi; y < yl; y++) {
+      for (let y = yLo; y < yHi; y++) {
         if (!( line = this.prevLines[y] ) || !( cell = line[x] )) break
         if (!cell.eq(initCell)) return pos._cleanSides = false
       }
@@ -552,7 +552,7 @@ export class Screen extends Node {
     //   y = keys[i];
     //   if (!lines[y]) continue;
     //   stop = this._borderStops[y];
-    //   for (x = stop.xi; x < stop.xl; x++) {
+    //   for (x = stop.xLo; x < stop.xHi; x++) {
     stops = Object
       .keys(stops)
       .map(k => +k)
@@ -736,8 +736,8 @@ export class Screen extends Node {
         //     && !el.hasAncestor(self.focused)) continue;
         pos = el.lpos
         if (!pos) continue
-        if (data.x >= pos.xi && data.x < pos.xl &&
-          data.y >= pos.yi && data.y < pos.yl) {
+        if (data.x >= pos.xLo && data.x < pos.xHi &&
+          data.y >= pos.yLo && data.y < pos.yHi) {
           el.emit(MOUSE, data)
           if (data.action === MOUSEDOWN) { self.mouseDown = el }
           else if (data.action === MOUSEUP) {

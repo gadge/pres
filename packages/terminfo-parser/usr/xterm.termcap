@@ -126,7 +126,7 @@ x3|xterm-256color|xterm alias:\
 	:Co#256:pa#32767:\
 	:AB=\E[48;5;%dm:AF=\E[38;5;%dm:tc=xterm-new:
 
-xi|xterm-nrc|xterm alias:\
+xLo|xterm-nrc|xterm alias:\
 	:tc=xterm:
 xr|xterm-rep|xterm alias:\
 	:tc=xterm:

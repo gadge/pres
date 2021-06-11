@@ -660,7 +660,7 @@ PNG.prototype.renderContent = function (bmp, el) {
   el.setContent(out)
   return out
 }
-PNG.prototype.renderScreen = function (bmp, screen, xi, xl, yi, yl) {
+PNG.prototype.renderScreen = function (bmp, screen, xLo, xHi, yLo, yHi) {
   const self = this
     , lines  = screen.lines
   let cellLines
@@ -682,10 +682,10 @@ PNG.prototype.renderScreen = function (bmp, screen, xi, xl, yi, yl) {
     cellLines.push(cellLine)
     return cellLines
   }, [])
-  for (y = yi; y < yl; y++) {
-    yy = y - yi
-    for (x = xi; x < xl; x++) {
-      xx = x - xi
+  for (y = yLo; y < yHi; y++) {
+    yy = y - yLo
+    for (x = xLo; x < xHi; x++) {
+      xx = x - xLo
       if (lines[y] && lines[y][x] && cellLines[yy] && cellLines[yy][xx]) {
         alpha = cellLines[yy][xx].pop()
         // completely transparent
@@ -709,11 +709,11 @@ PNG.prototype.renderScreen = function (bmp, screen, xi, xl, yi, yl) {
   }
 }
 PNG.prototype.renderElement = function (bmp, el) {
-  const xi = el.absL + el.intL
-    , xl   = el.absL + el.width - el.intR
-    , yi   = el.absT + el.intT
-    , yl   = el.absT + el.height - el.intB
-  return this.renderScreen(bmp, el.screen, xi, xl, yi, yl)
+  const xLo = el.absL + el.intL
+    , xHi   = el.absL + el.width - el.intR
+    , yLo   = el.absT + el.intT
+    , yHi   = el.absT + el.height - el.intB
+  return this.renderScreen(bmp, el.screen, xLo, xHi, yLo, yHi)
 }
 PNG.prototype.pixelToSGR = function (pixel, ch) {
   const bga = 1.0

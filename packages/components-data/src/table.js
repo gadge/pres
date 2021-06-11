@@ -133,21 +133,21 @@ export class Table extends Box {
     this._calculateMaxes()
     if (!this._maxes) return coords
     const lines = this.screen.lines,
-          xi    = coords.xi,
-          yi    = coords.yi
+          xLo    = coords.xLo,
+          yLo    = coords.yLo
     let rx,
         ry
     const normAttr   = styleToAttr(this.style),
           headAttr   = styleToAttr(this.style.header),
           cellAttr   = styleToAttr(this.style.cell),
           borderAttr = styleToAttr(this.style.border)
-    const width  = coords.xl - coords.xi - this.intR,
-          height = coords.yl - coords.yi - this.intB
+    const width  = coords.xHi - coords.xLo - this.intR,
+          height = coords.yHi - coords.yLo - this.intB
     // Apply attributes to header cells and cells.
     for (let y = this.intT, line; y < height; y++) {
-      if (!( line = lines[yi + y] )) break
+      if (!( line = lines[yLo + y] )) break
       for (let x = this.intL, cell; x < width; x++) {
-        if (!( cell = line[xi + x] )) break
+        if (!( cell = line[xLo + x] )) break
         // Check to see if it's not the default attr. Allows for tags:
         if (cell.at !== normAttr) continue
         cell.at = y === this.intT ? headAttr : cellAttr
@@ -158,73 +158,73 @@ export class Table extends Box {
     // Draw border with correct angles.
     ry = 0
     for (let i = 0, line; i < self.rows.length + 1; i++) {
-      if (!( line = lines[yi + ry] )) break
+      if (!( line = lines[yLo + ry] )) break
       rx = 0
       self._maxes.forEach((max, i) => {
         rx += max
         if (i === 0) {
-          if (!line[xi + 0]) return
+          if (!line[xLo + 0]) return
           // left side
           if (ry === 0) {
             // top
-            line[xi + 0].at = borderAttr
-            // line[xi + 0].ch = '\u250c'; // '┌'
+            line[xLo + 0].at = borderAttr
+            // line[xLo + 0].ch = '\u250c'; // '┌'
           }
           else if (ry / 2 === self.rows.length) {
             // bottom
-            line[xi + 0].at = borderAttr
-            // line[xi + 0].ch = '\u2514'; // '└'
+            line[xLo + 0].at = borderAttr
+            // line[xLo + 0].ch = '\u2514'; // '└'
           }
           else {
             // middle
-            line[xi + 0].inject(borderAttr, '\u251c') // '├'
+            line[xLo + 0].inject(borderAttr, '\u251c') // '├'
             // XXX If we alter intW and intL for no borders - nothing should be written here
-            if (!self.border.left) line[xi + 0].ch = '\u2500' // '─'
+            if (!self.border.left) line[xLo + 0].ch = '\u2500' // '─'
 
           }
           line.dirty = true
         }
         else if (i === self._maxes.length - 1) {
-          if (!line[xi + rx + 1]) return
+          if (!line[xLo + rx + 1]) return
           // right side
           if (ry === 0) {
             // top
             rx++
-            line[xi + rx].at = borderAttr
-            // line[xi + rx].ch = '\u2510'; // '┐'
+            line[xLo + rx].at = borderAttr
+            // line[xLo + rx].ch = '\u2510'; // '┐'
           }
           else if (ry / 2 === self.rows.length) {
             // bottom
             rx++
-            line[xi + rx].at = borderAttr
-            // line[xi + rx].ch = '\u2518'; // '┘'
+            line[xLo + rx].at = borderAttr
+            // line[xLo + rx].ch = '\u2518'; // '┘'
           }
           else {
             // middle
             rx++
-            line[xi + rx].inject(borderAttr, '\u2524') // '┤'
+            line[xLo + rx].inject(borderAttr, '\u2524') // '┤'
             // XXX If we alter intW and intR for no borders - nothing should be written here
-            if (!self.border.right) line[xi + rx].ch = '\u2500' // '─'
+            if (!self.border.right) line[xLo + rx].ch = '\u2500' // '─'
           }
           line.dirty = true
           return
         }
-        if (!line[xi + rx + 1]) return
+        if (!line[xLo + rx + 1]) return
         // center
         if (ry === 0) {
           // top
           rx++
-          line[xi + rx].inject(borderAttr, '\u252c') // '┬'
+          line[xLo + rx].inject(borderAttr, '\u252c') // '┬'
           // XXX If we alter intH and intT for no borders - nothing should be written here
-          if (!self.border.top) line[xi + rx].ch = '\u2502' // '│'
+          if (!self.border.top) line[xLo + rx].ch = '\u2502' // '│'
 
         }
         else if (ry / 2 === self.rows.length) {
           // bottom
           rx++
-          line[xi + rx].inject(borderAttr, '\u2534') // '┴'
+          line[xLo + rx].inject(borderAttr, '\u2534') // '┴'
           // XXX If we alter intH and intB for no borders - nothing should be written here
-          if (!self.border.bottom) line[xi + rx].ch = '\u2502' // '│'
+          if (!self.border.bottom) line[xLo + rx].ch = '\u2502' // '│'
 
         }
         else {
@@ -232,13 +232,13 @@ export class Table extends Box {
           if (self.options.fillCellBorders) {
             const lineBackColor = ( ry <= 2 ? headAttr : cellAttr ) & 0x1ff
             rx++
-            line[xi + rx].at = ( borderAttr & ~0x1ff ) | lineBackColor
+            line[xLo + rx].at = ( borderAttr & ~0x1ff ) | lineBackColor
           }
           else {
             rx++
-            line[xi + rx].at = borderAttr
+            line[xLo + rx].at = borderAttr
           }
-          line[xi + rx].ch = '\u253c' // '┼'
+          line[xLo + rx].ch = '\u253c' // '┼'
           // rx++;
         }
         line.dirty = true
@@ -247,22 +247,22 @@ export class Table extends Box {
     }
     // Draw internal borders.
     for (let ry = 1, line; ry < self.rows.length * 2; ry++) {
-      if (!( line = lines[yi + ry] )) break
+      if (!( line = lines[yLo + ry] )) break
       rx = 0
       self._maxes.slice(0, -1).forEach(max => {
         rx += max
-        if (!line[xi + rx + 1]) return
+        if (!line[xLo + rx + 1]) return
         if (ry % 2 !== 0) {
           if (self.options.fillCellBorders) {
             const lineBackColor = ( ry <= 2 ? headAttr : cellAttr ) & 0x1ff
             rx++
-            line[xi + rx].at = ( borderAttr & ~0x1ff ) | lineBackColor
+            line[xLo + rx].at = ( borderAttr & ~0x1ff ) | lineBackColor
           }
           else {
             rx++
-            line[xi + rx].at = borderAttr
+            line[xLo + rx].at = borderAttr
           }
-          line[xi + rx].ch = '\u2502' // '│'
+          line[xLo + rx].ch = '\u2502' // '│'
           line.dirty = true
         }
         else {
@@ -274,15 +274,15 @@ export class Table extends Box {
         while (max--) {
           if (ry % 2 === 0) {
             if (!line) break
-            if (!line[xi + rx + 1]) break
+            if (!line[xLo + rx + 1]) break
             if (self.options.fillCellBorders) {
               const lineBackColor = ( ry <= 2 ? headAttr : cellAttr ) & 0x1ff
-              line[xi + rx].at = ( borderAttr & ~0x1ff ) | lineBackColor
+              line[xLo + rx].at = ( borderAttr & ~0x1ff ) | lineBackColor
             }
             else {
-              line[xi + rx].at = borderAttr
+              line[xLo + rx].at = borderAttr
             }
-            line[xi + rx].ch = '\u2500' // '─'
+            line[xLo + rx].ch = '\u2500' // '─'
             line.dirty = true
           }
           rx++

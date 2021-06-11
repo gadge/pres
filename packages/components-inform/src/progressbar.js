@@ -60,13 +60,13 @@ export class ProgressBar extends Input {
         let x, y, m, p
         if (!self.lpos) return
         if (self.orientation === 'horizontal') {
-          x = data.x - self.lpos.xi
-          m = ( self.lpos.xl - self.lpos.xi ) - self.intW
+          x = data.x - self.lpos.xLo
+          m = ( self.lpos.xHi - self.lpos.xLo ) - self.intW
           p = x / m * 100 | 0
         }
         else if (self.orientation === 'vertical') {
-          y = data.y - self.lpos.yi
-          m = ( self.lpos.yl - self.lpos.yi ) - self.intH
+          y = data.y - self.lpos.yLo
+          m = ( self.lpos.yHi - self.lpos.yLo ) - self.intH
           p = y / m * 100 | 0
         }
         self.setProgress(p)
@@ -79,24 +79,24 @@ export class ProgressBar extends Input {
     const ret = this._render()
     if (!ret) return
     let
-      xi = ret.xi,
-      xl = ret.xl,
-      yi = ret.yi,
-      yl = ret.yl,
+      xLo = ret.xLo,
+      xHi = ret.xHi,
+      yLo = ret.yLo,
+      yHi = ret.yHi,
       dattr
-    if (this.border) xi++, yi++, xl--, yl--
+    if (this.border) xLo++, yLo++, xHi--, yHi--
     if (this.orientation === 'horizontal') {
-      xl = xi + ( ( xl - xi ) * ( this.filled / 100 ) ) | 0
+      xHi = xLo + ( ( xHi - xLo ) * ( this.filled / 100 ) ) | 0
     }
     else if (this.orientation === 'vertical') {
-      yi = yi + ( ( yl - yi ) - ( ( ( yl - yi ) * ( this.filled / 100 ) ) | 0 ) )
+      yLo = yLo + ( ( yHi - yLo ) - ( ( ( yHi - yLo ) * ( this.filled / 100 ) ) | 0 ) )
     }
     dattr = this.sattr(this.style.bar)
-    this.screen.fillRegion(dattr, this.pch, xi, xl, yi, yl)
+    this.screen.fillRegion(dattr, this.pch, xLo, xHi, yLo, yHi)
     if (this.content) {
-      const line = this.screen.lines[yi]
+      const line = this.screen.lines[yLo]
       for (let i = 0; i < this.content.length; i++) {
-        line[xi + i].ch = this.content[i]
+        line[xLo + i].ch = this.content[i]
       }
       line.dirty = true
     }

@@ -164,7 +164,7 @@ export class ScrollableBox extends Box {
   //     // See: $ node test/widget-shrink-fail-2.js
   //     if (!el.detached) {
   //       const lpos = el.calcCoords(false, true)
-  //       if (lpos) { return Math.max(current, el.relT + (lpos.yl - lpos.yi)) }
+  //       if (lpos) { return Math.max(current, el.relT + (lpos.yHi - lpos.yLo)) }
   //     }
   //     return Math.max(current, el.relT + el.height)
   //   }, 0)
@@ -248,8 +248,8 @@ export class ScrollableBox extends Box {
   //   // scrolling elements.
   //   // p = this.calcCoords();
   //   if (p && this.childBase !== base && this.screen.cleanSides(this)) {
-  //     t = p.yi + this.intT
-  //     b = p.yl - this.intB - 1
+  //     t = p.yLo + this.intT
+  //     b = p.yHi - this.intB - 1
   //     d = this.childBase - base
   //     // scrolled down
   //     if (d > 0 && d < visible) {
@@ -287,7 +287,7 @@ export class ScrollableBox extends Box {
   // getScrollPerc(s) {
   //   const pos = this.lpos || this.calcCoords()
   //   if (!pos) return s ? -1 : 0
-  //   const height = (pos.yl - pos.yi) - this.intH,
+  //   const height = (pos.yHi - pos.yLo) - this.intH,
   //         i      = this.getScrollHeight()
   //   let p
   //   if (height < i) {
