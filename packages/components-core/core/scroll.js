@@ -151,7 +151,7 @@ export class Scroll {
     // We could just calculate the sub, but we can
     // optimize for lists by just returning the items.length.
     if (this._isList) return this.items ? this.items.length : 0
-    if (this.lpos && this.lpos._scrollBottom) return this.lpos._scrollBottom
+    if (this.prevPos && this.prevPos._scrollBottom) return this.prevPos._scrollBottom
     const bottom = this.sub.reduce((current, el) => {
       // el.height alone does not calculate the shrunken height, we need to use
       // getCoords. A shrunken box inside a scrollable element will not grow any
@@ -160,14 +160,14 @@ export class Scroll {
       // without the scrollable calculation):
       // See: $ node test/widget-shrink-fail-2.js
       if (!el.detached) {
-        const lpos = el.calcCoords(false, true)
-        if (lpos) return Math.max(current, el.relT + ( lpos.yHi - lpos.yLo ))
+        const prevPos = el.calcCoords(false, true)
+        if (prevPos) return Math.max(current, el.relT + ( prevPos.yHi - prevPos.yLo ))
       }
       return Math.max(current, el.relT + el.height)
     }, 0)
     // XXX Use this? Makes .getScrollHeight() useless!
     // if (bottom < this._clines.length) bottom = this._clines.length;
-    if (this.lpos) this.lpos._scrollBottom = bottom
+    if (this.prevPos) this.prevPos._scrollBottom = bottom
     return bottom
   }
   setScroll(offset, always) { return this.scrollTo(offset, always) }
@@ -227,7 +227,7 @@ export class Scroll {
     this.childBase = Math.min(this.childBase, Math.max(emax, max))
     this.childBase = this.childBase < 0 ? 0 : this.childBase > this.baseLimit ? this.baseLimit : this.childBase
     // Optimize scrolling with CSR + IL/DL.
-    p = this.lpos
+    p = this.prevPos
     // Only really need calcCoords() if we want
     // to allow nestable scrolling elements...
     // or if we **really** want shrinkable
@@ -269,7 +269,7 @@ export class Scroll {
     return Math.max(this._clines.length, this._scrollBottom())
   }
   getScrollPerc(s) {
-    const pos = this.lpos || this.calcCoords()
+    const pos = this.prevPos || this.calcCoords()
     if (!pos) return s ? -1 : 0
     const height = ( pos.yHi - pos.yLo ) - this.intH,
           i      = this.getScrollHeight()

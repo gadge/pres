@@ -105,7 +105,7 @@ export class Element extends Node {
     })
     this.on(RESIZE, () => self.parseContent())
     this.on(ATTACH, () => self.parseContent())
-    this.on(DETACH, () => delete self.lpos)
+    this.on(DETACH, () => delete self.prevPos)
     if (options.hoverBg != null) {
       options.hoverEffects = options.hoverEffects || {}
       options.hoverEffects.bg = options.hoverBg
@@ -133,7 +133,7 @@ export class Element extends Node {
     do {
       if (el.detached) return false
       if (el.hidden) return false
-      // if (!el.lpos) return false;
+      // if (!el.prevPos) return false;
       // if (el.pos.width === 0 || el.pos.height === 0) return false;
     } while (( el = el.sup ))
     return true
@@ -178,17 +178,15 @@ export class Element extends Node {
   set top(val) { return this.relT = val }
   set bottom(val) { return this.relB = val }
   set width(val) {
-    if (this.pos.width === val) return
+    if (this.pos.width === val) return val
     if (/^\d+$/.test(val)) val = +val
-    this.emit(RESIZE)
-    this.clearPos()
+    this.emit(RESIZE), this.clearPos()
     return this.pos.width = val
   }
   set height(val) {
-    if (this.pos.height === val) return
+    if (this.pos.height === val) return val
     if (/^\d+$/.test(val)) val = +val
-    this.emit(RESIZE)
-    this.clearPos()
+    this.emit(RESIZE), this.clearPos()
     return this.pos.height = val
   }
 
@@ -212,61 +210,53 @@ export class Element extends Node {
 
   set absT(val) {
     if (typeof val === STR)
-      val = val === CENTER ? ( this.screen.height / 2 | 0 ) - ( this.height / 2 | 0 ) : parsePercent(val, this.screen.height)
+      val = val === CENTER ? ( this.screen.height / 2 | 0 ) - ( this.height / 2 | 0 ) : this.screen.gridScale.scaleT(val, this.screen.height)
     val -= this.sup.absT
     if (this.pos.top === val) return val
-    this.emit(MOVE)
-    this.clearPos()
+    this.emit(MOVE), this.clearPos()
     return this.pos.top = val
   }
   set absB(val) {
     val -= this.sup.absB
     if (this.pos.bottom === val) return val
-    this.emit(MOVE)
-    this.clearPos()
+    this.emit(MOVE), this.clearPos()
     return this.pos.bottom = val
   }
   set absL(val) {
     if (typeof val === STR)
-      val = val === CENTER ? ( this.screen.width / 2 | 0 ) - ( this.width / 2 | 0 ) : parsePercent(val, this.screen.width)
+      val = val === CENTER ? ( this.screen.width / 2 | 0 ) - ( this.width / 2 | 0 ) : this.screen.gridScale.scaleL(val, this.screen.width)
     val -= this.sup.absL
     if (this.pos.left === val) return val
-    this.emit(MOVE)
-    this.clearPos()
+    this.emit(MOVE), this.clearPos()
     return this.pos.left = val
   }
   set absR(val) {
     val -= this.sup.absR
     if (this.pos.right === val) return val
-    this.emit(MOVE)
-    this.clearPos()
+    this.emit(MOVE), this.clearPos()
     return this.pos.right = val
   }
 
   set relT(val) {
     if (this.pos.top === val) return val
     if (/^\d+$/.test(val)) val = +val
-    this.emit(MOVE)
-    this.clearPos()
+    this.emit(MOVE), this.clearPos()
     return this.pos.top = val
   }
   set relB(val) {
     if (this.pos.bottom === val) return val
-    this.emit(MOVE)
-    this.clearPos()
+    this.emit(MOVE), this.clearPos()
     return this.pos.bottom = val
   }
   set relL(val) {
     if (this.pos.left === val) return val
     if (/^\d+$/.test(val)) val = +val
-    this.emit(MOVE)
-    this.clearPos()
+    this.emit(MOVE), this.clearPos()
     return this.pos.left = val
   }
   set relR(val) {
     if (this.pos.right === val) return val
-    this.emit(MOVE)
-    this.clearPos()
+    this.emit(MOVE), this.clearPos()
     return this.pos.right = val
   }
 
@@ -276,7 +266,7 @@ export class Element extends Node {
    * Position Getters
    */
   calcPos() {
-    const pos = this.lpos
+    const pos = this.prevPos
     assert.ok(pos)
     if (!nullish(pos.absL)) return pos
     const t = pos.yLo
@@ -292,16 +282,14 @@ export class Element extends Node {
     const supPos = get ? this.sup.calcPos() : this.sup
     /** @type {string|number} */ let top = this.pos.top || 0
     if (typeof top === STR) {
-      top = parsePercent(top === CENTER ? '50%' : top, supPos.height)
+      top = this.screen.gridScale.scaleT(top === CENTER ? '50%' : top, supPos.height)
       if (this.pos.top === CENTER) top -= this.calcH(get) / 2 | 0
     }
     if (this.pos.top == null && this.pos.bottom != null) {
       return this.screen.rows - this.calcH(get) - this.calcB(get)
     }
-    if (this.screen.autoPadding) {
-      if (( this.pos.top != null || this.pos.bottom == null ) && this.pos.top !== CENTER) {
-        top += this.sup.intT
-      }
+    if (this.screen.autoPadding && ( this.pos.top != null || this.pos.bottom == null ) && this.pos.top !== CENTER) {
+      top += this.sup.intT
     }
     return ( supPos.t || 0 ) + top
   }
@@ -316,7 +304,7 @@ export class Element extends Node {
     const supPos = get ? this.sup.calcPos() : this.sup
     let left = this.pos.left || 0
     if (typeof left === STR) {
-      left = parsePercent(left === CENTER ? '50%' : left, supPos.width)
+      left = this.screen.gridScale.scaleL(left === CENTER ? '50%' : left, supPos.width)
       if (this.pos.left === CENTER) { left -= this.calcW(get) / 2 | 0 }
     }
     if (this.pos.left == null && this.pos.right != null) {
@@ -338,7 +326,7 @@ export class Element extends Node {
     const supPos = get ? this.sup.calcPos() : this.sup
     let width = this.pos.width,
         left
-    if (typeof width === STR) { return parsePercent(width === 'half' ? '50%' : width, supPos.width) }
+    if (typeof width === STR) { return this.screen.gridScale.scaleW(width === 'half' ? '50%' : width, supPos.width) }
     // This is for if the element is being streched or shrunken.
     // Although the width for shrunken elements is calculated
     // in the render function, it may be calculated based on
@@ -347,12 +335,10 @@ export class Element extends Node {
     // calculated here.
     if (width == null) {
       left = this.pos.left || 0
-      if (typeof left === STR) { left = parsePercent(left === CENTER ? '50%' : left, supPos.width) }
+      if (typeof left === STR) { left = this.screen.gridScale.scaleL(left === CENTER ? '50%' : left, supPos.width) }
       width = supPos.width - ( this.pos.right || 0 ) - left
       if (this.screen.autoPadding) {
-        if (( this.pos.left != null || this.pos.right == null ) && this.pos.left !== CENTER) {
-          width -= this.sup.intL
-        }
+        if (( this.pos.left != null || this.pos.right == null ) && this.pos.left !== CENTER) width -= this.sup.intL
         width -= this.sup.intR
       }
     }
@@ -362,7 +348,7 @@ export class Element extends Node {
     const supPos = get ? this.sup.calcPos() : this.sup
     let height = this.pos.height,
         top
-    if (typeof height === STR) { return parsePercent(height === 'half' ? '50%' : height, supPos.height) }
+    if (typeof height === STR) { return this.screen.gridScale.scaleH(height === 'half' ? '50%' : height, supPos.height) }
     // This is for if the element is being streched or shrunken.
     // Although the width for shrunken elements is calculated
     // in the render function, it may be calculated based on
@@ -371,12 +357,10 @@ export class Element extends Node {
     // calculated here.
     if (height == null) {
       top = this.pos.top || 0
-      if (typeof top === STR) { top = parsePercent(top === CENTER ? '50%' : top, supPos.height) }
+      if (typeof top === STR) { top = this.screen.gridScale.scaleT(top === CENTER ? '50%' : top, supPos.height) }
       height = supPos.height - ( this.pos.bottom || 0 ) - top
       if (this.screen.autoPadding) {
-        if (( this.pos.top != null || this.pos.bottom == null ) && this.pos.top !== CENTER) {
-          height -= this.sup.intT
-        }
+        if (( this.pos.top != null || this.pos.bottom == null ) && this.pos.top !== CENTER) height -= this.sup.intT
         height -= this.sup.intB
       }
     }
@@ -391,17 +375,17 @@ export class Element extends Node {
     // order to figure out how the sub will render, they need to know
     // exactly how their sup renders, so, we can give them what we have so
     // far.
-    let prevLpos
+    let prevPos
     if (get) {
-      prevLpos = this.lpos
-      this.lpos = { xLo, xHi, yLo, yHi }
+      prevPos = this.prevPos
+      this.prevPos = { xLo, xHi, yLo, yHi }
       //this.shrink = false;
     }
     for (i = 0; i < this.sub.length; i++) {
       el = this.sub[i]
       ret = el.calcCoords(get)
       // Or just (seemed to work, but probably not good):
-      // ret = el.lpos || this.lpos;
+      // ret = el.prevPos || this.prevPos;
       if (!ret) continue
       // Since the sup element is shrunk, and the child elements think it's
       // going to take up as much space as possible, an element anchored to the
@@ -433,7 +417,7 @@ export class Element extends Node {
       if (ret.yHi > myl) myl = ret.yHi
     }
     if (get) {
-      this.lpos = prevLpos
+      this.prevPos = prevPos
       //this.shrink = true;
     }
     if (
@@ -573,7 +557,7 @@ export class Element extends Node {
     // var thisparent = this.sup;
     const sup = node
     if (node && !noScroll) {
-      supPos = sup.lpos
+      supPos = sup.prevPos
       // The shrink option can cause a stack overflow
       // by calling calcCoords on the child again.
       // if (!get && !thisparent.shrink) {
@@ -628,14 +612,14 @@ export class Element extends Node {
       if (yLo >= yHi) return
       // Could allow overlapping stuff in scrolling elements
       // if we cleared the pending buffer before every draw.
-      if (xLo < node.lpos.xLo) {
-        xLo = node.lpos.xLo
+      if (xLo < node.prevPos.xLo) {
+        xLo = node.prevPos.xLo
         negL = true
         if (this.border) xLo--
         if (sup.border) xLo++
       }
-      if (xHi > node.lpos.xHi) {
-        xHi = node.lpos.xHi
+      if (xHi > node.prevPos.xHi) {
+        xHi = node.prevPos.xHi
         negR = true
         if (this.border) xHi++
         if (sup.border) xHi--
@@ -643,15 +627,15 @@ export class Element extends Node {
       //if (xLo > xHi) return;
       if (xLo >= xHi) return
     }
-    if (this.noOverflow && this.sup.lpos) {
-      if (xLo < this.sup.lpos.xLo + this.sup.intL) { xLo = this.sup.lpos.xLo + this.sup.intL }
-      if (xHi > this.sup.lpos.xHi - this.sup.intR) { xHi = this.sup.lpos.xHi - this.sup.intR }
-      if (yLo < this.sup.lpos.yLo + this.sup.intT) { yLo = this.sup.lpos.yLo + this.sup.intT }
-      if (yHi > this.sup.lpos.yHi - this.sup.intB) { yHi = this.sup.lpos.yHi - this.sup.intB }
+    if (this.noOverflow && this.sup.prevPos) {
+      if (xLo < this.sup.prevPos.xLo + this.sup.intL) { xLo = this.sup.prevPos.xLo + this.sup.intL }
+      if (xHi > this.sup.prevPos.xHi - this.sup.intR) { xHi = this.sup.prevPos.xHi - this.sup.intR }
+      if (yLo < this.sup.prevPos.yLo + this.sup.intT) { yLo = this.sup.prevPos.yLo + this.sup.intT }
+      if (yHi > this.sup.prevPos.yHi - this.sup.intB) { yHi = this.sup.prevPos.yHi - this.sup.intB }
     }
-    // if (this.sup.lpos) {
-    //   this.sup.lpos._scrollBottom = Math.max(
-    //     this.sup.lpos._scrollBottom, yHi);
+    // if (this.sup.prevPos) {
+    //   this.sup.prevPos._scrollBottom = Math.max(
+    //     this.sup.prevPos._scrollBottom, yHi);
     // }
     return {
       xLo,
@@ -982,7 +966,7 @@ export class Element extends Node {
     this._emit(PRERENDER)
     this.parseContent()
     const coords = this.calcCoords(true)
-    if (!coords) return void ( delete this.lpos )
+    if (!coords) return void ( delete this.prevPos )
     if (coords.xHi - coords.xLo <= 0) return void ( coords.xHi = Math.max(coords.xHi, coords.xLo) )
     if (coords.yHi - coords.yLo <= 0) return void ( coords.yHi = Math.max(coords.yHi, coords.yLo) )
     const lines = this.screen.lines
@@ -1002,7 +986,7 @@ export class Element extends Node {
 
     const bch = this.ch
     if (coords.base >= this.contLines.ci.length) ci = this._pcontent.length
-    this.lpos = coords
+    this.prevPos = coords
     if (this.border?.type === 'line') {
       this.screen._borderStops[coords.yLo] = true
       this.screen._borderStops[coords.yHi - 1] = true
@@ -1177,9 +1161,7 @@ export class Element extends Node {
       }
     }
     if (this.border) xLo--, xHi++, yLo--, yHi++
-    if (this.paddingSum) {
-      xLo -= this.padding.l, xHi += this.padding.r, yLo -= this.padding.t, yHi += this.padding.b
-    }
+    if (this.paddingSum) { xLo -= this.padding.l, xHi += this.padding.r, yLo -= this.padding.t, yHi += this.padding.b }
     // Draw the border.
     if (this.border) {
       borderAttr = styleToAttr(this.style.border)
@@ -1344,10 +1326,10 @@ export class Element extends Node {
     return coords
   }
   screenshot(xLo, xHi, yLo, yHi) {
-    xLo = this.lpos.xLo + this.intL + ( xLo || 0 )
-    xHi = xHi != null ? this.lpos.xLo + this.intL + ( xHi || 0 ) : this.lpos.xHi - this.intR
-    yLo = this.lpos.yLo + this.intT + ( yLo || 0 )
-    yHi = yHi != null ? this.lpos.yLo + this.intT + ( yHi || 0 ) : this.lpos.yHi - this.intB
+    xLo = this.prevPos.xLo + this.intL + ( xLo || 0 )
+    xHi = xHi != null ? this.prevPos.xLo + this.intL + ( xHi || 0 ) : this.prevPos.xHi - this.intR
+    yLo = this.prevPos.yLo + this.intT + ( yLo || 0 )
+    yHi = yHi != null ? this.prevPos.yLo + this.intT + ( yHi || 0 ) : this.prevPos.yHi - this.intB
     return this.screen.screenshot(xLo, xHi, yLo, yHi)
   }
 

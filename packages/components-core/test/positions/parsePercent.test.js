@@ -1,4 +1,5 @@
 import { logger, xr }   from '@spare/logger'
+import { Cadre }        from '../../utils/Cadre'
 import { parsePercent } from '../../utils/parsePercent'
 
 const candidates = [
@@ -11,3 +12,4 @@ const SUP_HEIGHT = 40
 for (let n of candidates) {
   xr().input(n).output(parsePercent(n, SUP_HEIGHT)) |> logger
 }
+

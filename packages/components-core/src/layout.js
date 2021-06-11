@@ -23,7 +23,7 @@ export class Layout extends Element {
     this.type = 'layout'
   }
   static build(options) { return new Layout(options) }
-  isRendered(el) { return !el.lpos ? false : (el.lpos.xHi - el.lpos.xLo) > 0 && (el.lpos.yHi - el.lpos.yLo) > 0 }
+  isRendered(el) { return !el.prevPos ? false : (el.prevPos.xHi - el.prevPos.xLo) > 0 && (el.prevPos.yHi - el.prevPos.yLo) > 0 }
   getLast(i) {
     while (this.sub[--i]) {
       const el = this.sub[i]
@@ -32,7 +32,7 @@ export class Layout extends Element {
   }
   getLastCoords(i) {
     const last = this.getLast(i)
-    if (last) return last.lpos
+    if (last) return last.prevPos
   }
   _renderCoords() {
     const coords = this.calcCoords(true)
@@ -75,13 +75,13 @@ export class Layout extends Element {
         // Otherwise, figure out where to place this child. We'll start by
         // setting it's `left`/`x` coordinate to right after the previous
         // rendered element. This child will end up directly to the right of it.
-        el.pos.left = last.lpos.xHi - xLo
+        el.pos.left = last.prevPos.xHi - xLo
         // Make sure the position matches the highest width element
         if (self.options.layout === 'grid') {
           // Compensate with width:
           // el.pos.width = el.width + (highWidth - el.width);
           // Compensate with position:
-          el.pos.left += highWidth - (last.lpos.xHi - last.lpos.xLo)
+          el.pos.left += highWidth - (last.prevPos.xHi - last.prevPos.xLo)
         }
         // If our child does not overlap the right side of the Layout, set it's
         // `top`/`y` to the current `rowOffset` (the coordinate for the current
@@ -95,7 +95,7 @@ export class Layout extends Element {
           // row).
           rowOffset += self.sub.slice(rowIndex, i).reduce(function (out, el) {
             if (!self.isRendered(el)) return out
-            out = Math.max(out, el.lpos.yHi - el.lpos.yLo)
+            out = Math.max(out, el.prevPos.yHi - el.prevPos.yLo)
             return out
           }, 0)
           lastRowIndex = rowIndex
@@ -111,14 +111,14 @@ export class Layout extends Element {
         for (let j = lastRowIndex; j < rowIndex; j++) {
           const l = self.sub[j]
           if (!self.isRendered(l)) continue
-          const abs = Math.abs(el.pos.left - (l.lpos.xLo - xLo))
-          // if (abs < abovea && (l.lpos.xHi - l.lpos.xLo) <= el.width) {
+          const abs = Math.abs(el.pos.left - (l.prevPos.xLo - xLo))
+          // if (abs < abovea && (l.prevPos.xHi - l.prevPos.xLo) <= el.width) {
           if (abs < abovea) {
             above = l
             abovea = abs
           }
         }
-        if (above) el.pos.top = above.lpos.yHi - yLo
+        if (above) el.pos.top = above.prevPos.yHi - yLo
       }
       // If our child overflows the Layout, do not render it!
       // Disable this feature for now.
@@ -132,12 +132,12 @@ export class Layout extends Element {
     this._emit(PRERENDER)
     const coords = this._renderCoords()
     if (!coords) {
-      delete this.lpos
+      delete this.prevPos
       return
     }
     if (coords.xHi - coords.xLo <= 0) return void (coords.xHi = Math.max(coords.xHi, coords.xLo))
     if (coords.yHi - coords.yLo <= 0) return void (coords.yHi = Math.max(coords.yHi, coords.yLo))
-    this.lpos = coords
+    this.prevPos = coords
     if (this.border) coords.xLo++, coords.xHi--, coords.yLo++, coords.yHi--
     if (this.paddingSum) {
       coords.xLo += this.padding.left, coords.xHi -= this.padding.right
@@ -153,7 +153,7 @@ export class Layout extends Element {
       if (el.screen._ci !== -1) el.index = el.screen._ci++
       const rendered = iterator(el, i)
       if (rendered === false) {
-        delete el.lpos
+        delete el.prevPos
         return
       }
       // if (el.screen._rendering) {

@@ -24,7 +24,9 @@ import { SP }                                                          from '@te
 import { FUN, OBJ, STR }                                               from '@typen/enum-data-types'
 import cp, { spawn }                                                   from 'child_process'
 import { Log }                                                         from '../src/log'
+import { Cadre }                                                       from '../utils/Cadre'
 import { Detic }                                                       from '../utils/Detic'
+import { GridScale }                                                   from '../utils/GridScale'
 import { Box }                                                         from './box'
 
 export class Screen extends Node {
@@ -51,7 +53,8 @@ export class Screen extends Node {
     this.dattr = ( 0 << 18 ) | ( 0x1ff << 9 ) | 0x1ff
     this.renders = 0
     this.setupPos()
-    this.padding = { left: 0, top: 0, right: 0, bottom: 0 }
+    this.padding = Cadre.build(options.padding) // { left: 0, top: 0, right: 0, bottom: 0 }
+    this.gridScale = new GridScale(this.padding)
     this.hover = null
     this.history = []
     this.clickable = []
@@ -89,9 +92,11 @@ export class Screen extends Node {
     this.program.on(BLUR, () => self.emit(BLUR))
     this.program.on(WARNING, text => self.emit(WARNING, text))
     this.on(NEW_LISTENER, type => {
-      if (type === KEYPRESS || type.indexOf('key ') === 0 || type === MOUSE) {
-        if (type === KEYPRESS || type.indexOf('key ') === 0) self._listenKeys()
-        if (type === MOUSE) self._listenMouse()
+      const pressListen = type === KEYPRESS || type.indexOf('key ') === 0
+      const mouseListen = type === MOUSE
+      if (pressListen || mouseListen) {
+        if (pressListen) self._listenKeys()
+        if (mouseListen) self._listenMouse()
       }
       if (
         type === MOUSE ||
@@ -305,15 +310,12 @@ export class Screen extends Node {
     if (this.screen.dockBorders) { this._dockBorders() }
     this.draw(0, this.currLines.length - 1)
     // XXX Workaround to deal with cursor pos before the screen has rendered and
-    // lpos is not reliable (stale).
-    if (this.focused && this.focused._updateCursor) { this.focused._updateCursor(true) }
+    // prevPos is not reliable (stale).
+    if (this.focused?._updateCursor) { this.focused._updateCursor(true) }
     this.renders++
     this.emit(RENDER)
   }
   draw(start, end) {
-    let fore,
-        back,
-        mode
     let main = ''
     let clr,
         neq
@@ -494,7 +496,7 @@ export class Screen extends Node {
   }
   // boxes with clean sides?
   cleanSides(el) {
-    const pos = el.lpos
+    const pos = el.prevPos
     if (!pos) { return false }
     if (pos._cleanSides != null) { return pos._cleanSides }
     if (pos.xLo <= 0 && pos.xHi >= this.width) { return pos._cleanSides = true }
@@ -737,7 +739,7 @@ export class Screen extends Node {
         if (el.detached || !el.visible) continue
         // if (self.grabMouse && self.focused !== el
         //     && !el.hasAncestor(self.focused)) continue;
-        pos = el.lpos
+        pos = el.prevPos
         if (!pos) continue
         if (data.x >= pos.xLo && data.x < pos.xHi &&
           data.y >= pos.yLo && data.y < pos.yHi) {
