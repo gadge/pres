@@ -5,16 +5,6 @@ const { cos, sin, PI } = Math // 3.141592635
 
 export class DonutChart extends Canvas {
   constructor(options = {}) {
-    // if (!(this instanceof Node)) { return new DonutChart(options) }
-    // this.options = options
-    // this.options.stroke = options.stroke || 'magenta'
-    // this.options.fill = options.fill || 'white'
-    // this.options.radius = options.radius || 14
-    // this.options.arcWidth = options.arcWidth || 4
-    // this.options.spacing = options.spacing || 2
-    // this.options.yPadding = options.yPadding || 2
-    // this.options.remainColor = options.remainColor || 'black'
-    // this.options.data = options.data || []
     if (!options.stroke) options.stroke = 'magenta'
     if (!options.fill) options.fill = 'white'
     if (!options.radius) options.radius = 14
@@ -26,7 +16,7 @@ export class DonutChart extends Canvas {
     if (!options.sku) options.sku = 'donut-chart'
     super(options)
     const self = this
-    this.on(ATTACH, function () { this.setData(self.options.data) })
+    this.on(ATTACH, () => { self.setData(self.options.data) })
     this.type = 'donut'
   }
   static build(options) { return new DonutChart(options) }

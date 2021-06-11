@@ -709,10 +709,10 @@ PNG.prototype.renderScreen = function (bmp, screen, xi, xl, yi, yl) {
   }
 }
 PNG.prototype.renderElement = function (bmp, el) {
-  const xi = el.aleft + el.ileft
-    , xl   = el.aleft + el.width - el.iright
-    , yi   = el.atop + el.itop
-    , yl   = el.atop + el.height - el.ibottom
+  const xi = el.aleft + el.intL
+    , xl   = el.aleft + el.width - el.intR
+    , yi   = el.atop + el.intT
+    , yl   = el.atop + el.height - el.intB
   return this.renderScreen(bmp, el.screen, xi, xl, yi, yl)
 }
 PNG.prototype.pixelToSGR = function (pixel, ch) {

@@ -57,10 +57,10 @@ export class Screen extends Node {
       get height() { return self.height },
       get width() { return self.width }
     }
-    this.ileft = 0
-    this.itop = 0
-    this.iright = 0
-    this.ibottom = 0
+    this.intL = 0
+    this.intT = 0
+    this.intR = 0
+    this.intB = 0
     this.iheight = 0
     this.iwidth = 0
     this.padding = { left: 0, top: 0, right: 0, bottom: 0 }
@@ -509,11 +509,11 @@ export class Screen extends Node {
     //   return pos._cleanSides = false;
     // }
     // Doesn't matter if we're only a height of 1.
-    // if ((pos.yl - el.ibottom) - (pos.yi + el.itop) <= 1) {
+    // if ((pos.yl - el.intB) - (pos.yi + el.intT) <= 1) {
     //   return pos._cleanSides = false;
     // }
-    const yi = pos.yi + el.itop,
-          yl = pos.yl - el.ibottom
+    const yi = pos.yi + el.intT,
+          yl = pos.yl - el.intB
     if (pos.yi < 0) return pos._cleanSides = false
     if (pos.yl > this.height) return pos._cleanSides = false
     if (pos.xi - 1 < 0) return pos._cleanSides = true
@@ -1050,15 +1050,15 @@ export class Screen extends Node {
       // NOTE: This is different from the other "visible" values - it needs the
       // visible height of the scrolling element itself, not the element within
       // it.
-      const visible = self.screen.height - el.atop - el.itop - el.abottom - el.ibottom
+      const visible = self.screen.height - el.atop - el.intT - el.abottom - el.intB
       if (self.rtop < el.childBase) {
         el.scrollTo(self.rtop)
         self.screen.render()
       }
-      else if (self.rtop + self.height - self.ibottom > el.childBase + visible) {
-        // Explanation for el.itop here: takes into account scrollable elements
+      else if (self.rtop + self.height - self.intB > el.childBase + visible) {
+        // Explanation for el.intT here: takes into account scrollable elements
         // with borders otherwise the element gets covered by the bottom border:
-        el.scrollTo(self.rtop - ( el.height - self.height ) + el.itop, true)
+        el.scrollTo(self.rtop - ( el.height - self.height ) + el.intT, true)
         self.screen.render()
       }
     }

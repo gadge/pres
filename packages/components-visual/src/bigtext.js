@@ -84,10 +84,10 @@ export class BigText extends Box {
     const coords = this._render()
     if (!coords) return
     const lines  = this.screen.lines,
-          left   = coords.xi + this.ileft,
-          top    = coords.yi + this.itop,
-          right  = coords.xl - this.iright,
-          bottom = coords.yl - this.ibottom
+          left   = coords.xi + this.intL,
+          top    = coords.yi + this.intT,
+          right  = coords.xl - this.intR,
+          bottom = coords.yl - this.intB
     const normAttr = this.sattr(this.style),
           back     = normAttr & 0x1ff,
           fore     = ( normAttr >> 9 ) & 0x1ff,

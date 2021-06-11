@@ -25,8 +25,6 @@ export class Node extends EventEmitter {
   static build(options) { return new Node(options) }
   setup(options) {
     // console.log(`>>> called setup on Node by ${this.type}`)
-    const self = this
-    // this.type = this.type ?? 'node'
     this.options = options
     this.name = options.name
     this.sku = options.sku
@@ -42,7 +40,7 @@ export class Node extends EventEmitter {
     if (this.sup) this.sup.append(this)
     sub?.forEach(this.append.bind(this))
     if (ScreenCollection.journal) console.log('>> [new node]', this.codename, '∈',
-      this.parent?.codename ?? this.screen?.codename ?? AEU)
+      this.sup?.codename ?? this.screen?.codename ?? AEU)
   }
   configScreen(options) {
     this.screen = this.screen || options.screen
@@ -79,23 +77,26 @@ export class Node extends EventEmitter {
   get children() { return this.sub }
   set children(value) { this.sub = value }
 
-  insert(el, i) {
+  get(name, value) { return this.data.hasOwnProperty(name) ? this.data[name] : value }
+  set(name, value) { return this.data[name] = value }
+
+  insert(sub, pos) {
     const self = this
-    if (el.screen && el.screen !== this.screen) throw new Error('Cannot switch a node\'s screen.')
-    el.detach()
-    el.sup = this
-    el.screen = this.screen
-    i <= 0 ? this.sub.unshift(el) : i >= this.sub.length ? this.sub.push(el) : this.sub.splice(i, 0, el)
-    el.emit(REPARENT, this)
-    this.emit(ADOPT, el)
+    if (sub.screen && sub.screen !== this.screen) throw new Error('Cannot switch a node\'s screen.')
+    sub.detach()
+    sub.sup = this
+    sub.screen = this.screen
+    pos <= 0 ? this.sub.unshift(sub) : pos >= this.sub.length ? this.sub.push(sub) : this.sub.splice(pos, 0, sub)
+    sub.emit(REPARENT, this)
+    this.emit(ADOPT, sub)
     function subEmitter(el) {
       const detachDiff = el.detached !== self.detached
       el.detached = self.detached
       if (detachDiff) el.emit(ATTACH)
       el.sub.forEach(subEmitter)
     }
-    subEmitter(el)
-    if (!this.screen.focused) this.screen.focused = el
+    subEmitter(sub)
+    if (!this.screen.focused) this.screen.focused = sub
   }
   prepend(element) { this.insert(element, 0) }
   append(element) { this.insert(element, this.sub.length) }
@@ -160,19 +161,17 @@ export class Node extends EventEmitter {
     this.forAncestors(el => out.push(el), s)
     return out
   }
-  emitDescendants() {
-    const args = Array.prototype.slice(arguments)
+  emitDescendants(...args) {
     let iter
-    if (typeof args[args.length - 1] === FUN) iter = args.pop()
+    if (typeof last(args) === FUN) iter = args.pop()
     return this.forDescendants(el => {
       if (iter) iter(el)
       el.emit.apply(el, args)
     }, true)
   }
-  emitAncestors() {
-    const args = Array.prototype.slice(arguments)
+  emitAncestors(...args) {
     let iter
-    if (typeof args[args.length - 1] === FUN) iter = args.pop()
+    if (typeof last(args) === FUN) iter = args.pop()
     return this.forAncestors(el => {
       if (iter) iter(el)
       el.emit.apply(el, args)
@@ -192,6 +191,4 @@ export class Node extends EventEmitter {
     while (( el = el.sup )) if (el === target) return true
     return false
   }
-  get(name, value) { return this.data.hasOwnProperty(name) ? this.data[name] : value }
-  set(name, value) { return this.data[name] = value }
 }

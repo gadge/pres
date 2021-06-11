@@ -58,11 +58,11 @@ export class Scroll {
           }
           const x = data.x - self.aleft
           const y = data.y - self.atop
-          if (x === self.width - self.iright - 1) {
+          if (x === self.width - self.intR - 1) {
             // Do not allow dragging on the scrollbar:
             delete self.screen._dragging
             delete self._drag
-            const perc = ( y - self.itop ) / ( self.height - self.iheight )
+            const perc = ( y - self.intT ) / ( self.height - self.iheight )
             self.setScrollPerc(perc * 100 | 0)
             self.screen.render()
             let smd, smu
@@ -234,8 +234,8 @@ export class Scroll {
     // scrolling elements.
     // p = this._getCoords();
     if (p && this.childBase !== base && this.screen.cleanSides(this)) {
-      t = p.yi + this.itop
-      b = p.yl - this.ibottom - 1
+      t = p.yi + this.intT
+      b = p.yl - this.intB - 1
       d = this.childBase - base
       if (d > 0 && d < visible) {
         this.screen.deleteLine(d, t, t, b)  // scrolled down

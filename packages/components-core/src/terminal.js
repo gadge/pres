@@ -106,10 +106,10 @@ export class Terminal extends Box {
     })
     this.onScreenEvent(MOUSE, function (data) {
       if (self.screen.focused !== self) return
-      if (data.x < self.aleft + self.ileft) return
-      if (data.y < self.atop + self.itop) return
-      if (data.x > self.aleft - self.ileft + self.width) return
-      if (data.y > self.atop - self.itop + self.height) return
+      if (data.x < self.aleft + self.intL) return
+      if (data.y < self.atop + self.intT) return
+      if (data.x > self.aleft - self.intL + self.width) return
+      if (data.y > self.atop - self.intT + self.height) return
       if (self.term.x10Mouse ||
         self.term.vt200Mouse ||
         self.term.normalMouse ||
@@ -194,10 +194,10 @@ export class Terminal extends Box {
     const ret = this._render()
     if (!ret) return
     this.dattr = this.sattr(this.style)
-    const xi = ret.xi + this.ileft,
-          xl = ret.xl - this.iright,
-          yi = ret.yi + this.itop,
-          yl = ret.yl - this.ibottom
+    const xi = ret.xi + this.intL,
+          xl = ret.xl - this.intR,
+          yi = ret.yi + this.intT,
+          yl = ret.yl - this.intB
     let cursor
     const scrollBack = this.term.lines.length - ( yl - yi )
     for (

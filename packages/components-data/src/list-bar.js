@@ -120,7 +120,7 @@ export class ListBar extends Box {
     if (!this.sup) { drawn = 0 }
     else {
       drawn = prev ? prev.aleft + prev.width : 0
-      if (!this.screen.autoPadding) { drawn += this.ileft }
+      if (!this.screen.autoPadding) { drawn += this.intL }
     }
     if (typeof item === OBJ) {
       cmd = item
@@ -163,8 +163,8 @@ export class ListBar extends Box {
       noOverflow: true
     }
     if (!this.screen.autoPadding) {
-      options.top += this.itop
-      options.left += this.ileft
+      options.top += this.intT
+      options.left += this.intL
     }
     EFFECT_COLLECTION.forEach(name => {
       options.style[name] = () => {
@@ -209,7 +209,7 @@ export class ListBar extends Box {
     const self = this
     let drawn = 0
     if (!this.screen.autoPadding) {
-      drawn += this.ileft
+      drawn += this.intL
     }
     this.items.forEach((el, i) => {
       if (i < self.leftBase) { el.hide() }

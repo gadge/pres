@@ -4,24 +4,28 @@
  * https://github.com/chjj/blessed
  */
 
-import { Node }                    from '@pres/components-node'
-import { ESC, LF, TAB }            from '@pres/enum-control-chars'
+import { Node }                                     from '@pres/components-node'
+import { ESC, LF, TAB }                             from '@pres/enum-control-chars'
 import {
   ATTACH, CLICK, DETACH, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL,
   MOVE, NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
-}                                  from '@pres/enum-events'
-import * as colors                 from '@pres/util-blessed-colors'
-import * as helpers                from '@pres/util-helpers'
-import { sgraToAttr, styleToAttr } from '@pres/util-sgr-attr'
-import * as unicode                from '@pres/util-unicode'
-import { SP }                      from '@texting/enum-chars'
-import { FUN, NUM, STR }           from '@typen/enum-data-types'
-import { nullish }                 from '@typen/nullish'
-import { last }                    from '@vect/vector-index'
-import assert                      from 'assert'
-import { Box }                     from './box'
+}                                                   from '@pres/enum-events'
+import { BOTTOM, CENTER, LEFT, MIDDLE, RIGHT, TOP } from '@pres/enum-key-names'
+import * as colors                                  from '@pres/util-blessed-colors'
+import * as helpers                                 from '@pres/util-helpers'
+import { sgraToAttr, styleToAttr }                  from '@pres/util-sgr-attr'
+import * as unicode                                 from '@pres/util-unicode'
+import { SP }                                       from '@texting/enum-chars'
+import { FUN, STR }                                 from '@typen/enum-data-types'
+import { nullish }                                  from '@typen/nullish'
+import { last }                                     from '@vect/vector-index'
+import assert                                       from 'assert'
+import { Cadre }                                    from '../utils/Cadre'
+import { parsePercent }                             from '../utils/parsePercent'
+import { Box }                                      from './box'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
+
 export class Element extends Node {
   type = 'element'
   /**
@@ -38,20 +42,6 @@ export class Element extends Node {
     const self = this
     this.type = this.type ?? 'element'
     // console.log('>> [Element.prototype.config]', this.codename)
-    const position = this.position = ( options.position ?? ( options.position = {
-      left: options.left,
-      right: options.right,
-      top: options.top,
-      bottom: options.bottom,
-      width: options.width,
-      height: options.height
-    } ) )
-    if (position.width === 'shrink' || position.height === 'shrink') {
-      if (position.width === 'shrink') delete position.width
-      if (position.height === 'shrink') delete position.height
-      options.shrink = true
-    }
-    // this.position = position
     this.noOverflow = options.noOverflow
     this.dockBorders = options.dockBorders
     this.shadow = options.shadow
@@ -67,24 +57,28 @@ export class Element extends Node {
     }
     this.hidden = options.hidden || false
     this.fixed = options.fixed || false
-    this.align = options.align || 'left'
-    this.valign = options.valign || 'top'
+    this.align = options.align || LEFT
+    this.valign = options.valign || TOP
     this.wrap = options.wrap !== false
     this.shrink = options.shrink
     this.fixed = options.fixed
     this.ch = options.ch || ' '
-    if (typeof options.padding === NUM || !options.padding) options.padding = {
-      left: options.padding,
-      top: options.padding,
-      right: options.padding,
-      bottom: options.padding
+
+    const position = this.position = ( options.position ?? ( options.position = {
+      left: options.left,
+      right: options.right,
+      top: options.top,
+      bottom: options.bottom,
+      width: options.width,
+      height: options.height
+    } ) )
+    if (position.width === 'shrink' || position.height === 'shrink') {
+      if (position.width === 'shrink') delete position.width
+      if (position.height === 'shrink') delete position.height
+      options.shrink = true
     }
-    this.padding = {
-      left: options.padding.left || 0,
-      top: options.padding.top || 0,
-      right: options.padding.right || 0,
-      bottom: options.padding.bottom || 0
-    }
+    // this.position = position
+    this.padding = Cadre.build(options.padding)
     this.border = options.border
     if (this.border) {
       if (typeof this.border === STR) this.border = { type: this.border }
@@ -165,18 +159,22 @@ export class Element extends Node {
   }
   get draggable() { return this._draggable === true }
   set draggable(draggable) { return draggable ? this.enableDrag(draggable) : this.disableDrag() }
+
   /**
    * Positioning
    */
-  get width() { return this._getWidth(false) }
   /**
-   * Position Setters
+   * Position Getters and Setters
    */
-// NOTE:
-// For aright, abottom, right, and bottom:
-// If position.bottom is null, we could simply set top instead.
-// But it wouldn't replicate bottom behavior appropriately if
-// the sup was resized, etc.
+  // NOTE:
+  // For aright, abottom, right, and bottom:
+  // If position.bottom is null, we could simply set top instead.
+  // But it wouldn't replicate bottom behavior appropriately if
+  // the sup was resized, etc.
+
+  get width() { return this._getWidth(false) }
+  get height() { return this._getHeight(false) }
+
   set width(val) {
     if (this.position.width === val) return
     if (/^\d+$/.test(val)) val = +val
@@ -184,7 +182,6 @@ export class Element extends Node {
     this.clearPos()
     return this.position.width = val
   }
-  get height() { return this._getHeight(false) }
   set height(val) {
     if (this.position.height === val) return
     if (/^\d+$/.test(val)) val = +val
@@ -192,41 +189,29 @@ export class Element extends Node {
     this.clearPos()
     return this.position.height = val
   }
-  get aleft() { return this._getLeft(false) }
-  set aleft(val) {
-    let expr
-    if (typeof val === STR) {
-      if (val === 'center') {
-        val = this.screen.width / 2 | 0
-        val -= this.width / 2 | 0
-      }
-      else {
-        expr = val.split(/(?=\+|-)/)
-        val = expr[0]
-        val = +val.slice(0, -1) / 100
-        val = this.screen.width * val | 0
-        val += +( expr[1] || 0 )
-      }
-    }
-    val -= this.sup.aleft
-    if (this.position.left === val) return
-    this.emit(MOVE)
-    this.clearPos()
-    return this.position.left = val
-  }
-  get aright() { return this._getRight(false) }
-  set aright(val) {
-    val -= this.sup.aright
-    if (this.position.right === val) return
-    this.emit(MOVE)
-    this.clearPos()
-    return this.position.right = val
-  }
+
   get atop() { return this._getTop(false) }
+  get abottom() { return this._getBottom(false) }
+  get aleft() { return this._getLeft(false) }
+  get aright() { return this._getRight(false) }
+
+  get rtop() { return this.atop - this.sup.atop }
+  get rbottom() { return this.abottom - this.sup.abottom }
+  get rleft() { return this.aleft - this.sup.aleft }
+  get rright() { return this.aright - this.sup.aright }
+
+  get intT() { return ( this.border ? 1 : 0 ) + this.padding.top }
+  get intB() { return ( this.border ? 1 : 0 ) + this.padding.bottom }
+  get intL() { return ( this.border ? 1 : 0 ) + this.padding.left }
+  get intR() { return ( this.border ? 1 : 0 ) + this.padding.right }
+
+  get iheight() { return ( this.border ? 2 : 0 ) + this.padding.top + this.padding.bottom }
+  get iwidth() { return ( this.border ? 2 : 0 ) + this.padding.left + this.padding.right }
+
   set atop(val) {
     let expr
     if (typeof val === STR) {
-      if (val === 'center') {
+      if (val === CENTER) {
         val = this.screen.height / 2 | 0
         val -= this.height / 2 | 0
       }
@@ -244,7 +229,6 @@ export class Element extends Node {
     this.clearPos()
     return this.position.top = val
   }
-  get abottom() { return this._getBottom(false) }
   set abottom(val) {
     val -= this.sup.abottom
     if (this.position.bottom === val) return
@@ -252,22 +236,35 @@ export class Element extends Node {
     this.clearPos()
     return this.position.bottom = val
   }
-  get rleft() { return this.aleft - this.sup.aleft }
-  set rleft(val) {
+  set aleft(val) {
+    let expr
+    if (typeof val === STR) {
+      if (val === CENTER) {
+        val = this.screen.width / 2 | 0
+        val -= this.width / 2 | 0
+      }
+      else {
+        expr = val.split(/(?=\+|-)/)
+        val = expr[0]
+        val = +val.slice(0, -1) / 100
+        val = this.screen.width * val | 0
+        val += +( expr[1] || 0 )
+      }
+    }
+    val -= this.sup.aleft
     if (this.position.left === val) return
-    if (/^\d+$/.test(val)) val = +val
     this.emit(MOVE)
     this.clearPos()
     return this.position.left = val
   }
-  get rright() { return this.aright - this.sup.aright }
-  set rright(val) {
+  set aright(val) {
+    val -= this.sup.aright
     if (this.position.right === val) return
     this.emit(MOVE)
     this.clearPos()
     return this.position.right = val
   }
-  get rtop() { return this.atop - this.sup.atop }
+
   set rtop(val) {
     if (this.position.top === val) return
     if (/^\d+$/.test(val)) val = +val
@@ -275,20 +272,497 @@ export class Element extends Node {
     this.clearPos()
     return this.position.top = val
   }
-  get rbottom() { return this.abottom - this.sup.abottom }
   set rbottom(val) {
     if (this.position.bottom === val) return
     this.emit(MOVE)
     this.clearPos()
     return this.position.bottom = val
   }
-  get ileft() { return ( this.border ? 1 : 0 ) + this.padding.left }
-  get itop() { return ( this.border ? 1 : 0 ) + this.padding.top }
-  get iright() { return ( this.border ? 1 : 0 ) + this.padding.right }
-  get ibottom() { return ( this.border ? 1 : 0 ) + this.padding.bottom }
-  get iwidth() { return ( this.border ? 2 : 0 ) + this.padding.left + this.padding.right }
-  get iheight() { return ( this.border ? 2 : 0 ) + this.padding.top + this.padding.bottom }
+  set rleft(val) {
+    if (this.position.left === val) return
+    if (/^\d+$/.test(val)) val = +val
+    this.emit(MOVE)
+    this.clearPos()
+    return this.position.left = val
+  }
+  set rright(val) {
+    if (this.position.right === val) return
+    this.emit(MOVE)
+    this.clearPos()
+    return this.position.right = val
+  }
+
   get tpadding() { return this.padding.left + this.padding.top + this.padding.right + this.padding.bottom }
+
+  /**
+   * Position Getters
+   */
+  _getPos() {
+    const pos = this.lpos
+    assert.ok(pos)
+    if (pos.aleft != null) return pos
+    pos.aleft = pos.xi
+    pos.atop = pos.yi
+    pos.aright = this.screen.cols - pos.xl
+    pos.abottom = this.screen.rows - pos.yl
+    pos.width = pos.xl - pos.xi
+    pos.height = pos.yl - pos.yi
+    return pos
+  }
+
+  _getTop(get) {
+    const sup = get ? this.sup._getPos() : this.sup
+    /** @type {string|number} */ let top = this.position.top || 0
+    if (typeof top === STR) {
+      if (top === CENTER) top = '50%'
+      top = parsePercent(top, sup.height)
+      if (this.position.top === CENTER) top -= this._getHeight(get) / 2 | 0
+    }
+    if (this.position.top == null && this.position.bottom != null) {
+      return this.screen.rows - this._getHeight(get) - this._getBottom(get)
+    }
+    if (this.screen.autoPadding) {
+      if (( this.position.top != null || this.position.bottom == null ) && this.position.top !== CENTER) {
+        top += this.sup.intT
+      }
+    }
+    return ( sup.atop || 0 ) + top
+  }
+  _getBottom(get) {
+    const sup = get ? this.sup._getPos() : this.sup
+    let bottom
+    if (this.position.bottom == null && this.position.top != null) {
+      bottom = this.screen.rows - ( this._getTop(get) + this._getHeight(get) )
+      if (this.screen.autoPadding) bottom += this.sup.intB
+      return bottom
+    }
+    bottom = ( sup.abottom || 0 ) + ( this.position.bottom || 0 )
+    if (this.screen.autoPadding) bottom += this.sup.intB
+    return bottom
+  }
+  _getLeft(get) {
+    const sup = get ? this.sup._getPos() : this.sup
+    let left = this.position.left || 0,
+        expr
+    if (typeof left === STR) {
+      if (left === CENTER) left = '50%'
+      expr = left.split(/(?=\+|-)/)
+      left = expr[0]
+      left = +left.slice(0, -1) / 100
+      left = sup.width * left | 0
+      left += +( expr[1] || 0 )
+      if (this.position.left === CENTER) {
+        left -= this._getWidth(get) / 2 | 0
+      }
+    }
+    if (this.position.left == null && this.position.right != null) {
+      return this.screen.cols - this._getWidth(get) - this._getRight(get)
+    }
+    if (this.screen.autoPadding) {
+      if (( this.position.left != null ||
+        this.position.right == null ) &&
+        this.position.left !== CENTER) {
+        left += this.sup.intL
+      }
+    }
+    return ( sup.aleft || 0 ) + left
+  }
+  _getRight(get) {
+    const sup = get ? this.sup._getPos() : this.sup
+    let right
+    if (this.position.right == null && this.position.left != null) {
+      right = this.screen.cols - ( this._getLeft(get) + this._getWidth(get) )
+      if (this.screen.autoPadding) right += this.sup.intR
+      return right
+    }
+    right = ( sup.aright || 0 ) + ( this.position.right || 0 )
+    if (this.screen.autoPadding) right += this.sup.intR
+    return right
+  }
+  _getWidth(get) {
+    const sup = get ? this.sup._getPos() : this.sup
+    let width = this.position.width,
+        left,
+        expr
+    if (typeof width === STR) {
+      if (width === 'half') width = '50%'
+      expr = width.split(/(?=\+|-)/)
+      width = expr[0]
+      width = +width.slice(0, -1) / 100
+      width = sup.width * width | 0
+      width += +( expr[1] || 0 )
+      return width
+    }
+    // This is for if the element is being streched or shrunken.
+    // Although the width for shrunken elements is calculated
+    // in the render function, it may be calculated based on
+    // the content width, and the content width is initially
+    // decided by the width the element, so it needs to be
+    // calculated here.
+    if (width == null) {
+      left = this.position.left || 0
+      if (typeof left === STR) {
+        if (left === CENTER) left = '50%'
+        expr = left.split(/(?=\+|-)/)
+        left = expr[0]
+        left = +left.slice(0, -1) / 100
+        left = sup.width * left | 0
+        left += +( expr[1] || 0 )
+      }
+      width = sup.width - ( this.position.right || 0 ) - left
+      if (this.screen.autoPadding) {
+        if (( this.position.left != null || this.position.right == null ) &&
+          this.position.left !== CENTER) {
+          width -= this.sup.intL
+        }
+        width -= this.sup.intR
+      }
+    }
+    return width
+  }
+  _getHeight(get) {
+    const sup = get ? this.sup._getPos() : this.sup
+    let height = this.position.height,
+        top,
+        expr
+    if (typeof height === STR) {
+      if (height === 'half') height = '50%'
+      expr = height.split(/(?=\+|-)/)
+      height = expr[0]
+      height = +height.slice(0, -1) / 100
+      height = sup.height * height | 0
+      height += +( expr[1] || 0 )
+      return height
+    }
+    // This is for if the element is being streched or shrunken.
+    // Although the width for shrunken elements is calculated
+    // in the render function, it may be calculated based on
+    // the content width, and the content width is initially
+    // decided by the width the element, so it needs to be
+    // calculated here.
+    if (height == null) {
+      top = this.position.top || 0
+      if (typeof top === STR) {
+        if (top === CENTER) top = '50%'
+        expr = top.split(/(?=\+|-)/)
+        top = expr[0]
+        top = +top.slice(0, -1) / 100
+        top = sup.height * top | 0
+        top += +( expr[1] || 0 )
+      }
+      height = sup.height - ( this.position.bottom || 0 ) - top
+      if (this.screen.autoPadding) {
+        if (( this.position.top != null ||
+          this.position.bottom == null ) &&
+          this.position.top !== CENTER) {
+          height -= this.sup.intT
+        }
+        height -= this.sup.intB
+      }
+    }
+    return height
+  }
+
+  _getShrinkBox(xi, xl, yi, yl, get) {
+    if (!this.sub.length) return { xi: xi, xl: xi + 1, yi: yi, yl: yi + 1 }
+    let i, el, ret, mxi = xi, mxl = xi + 1, myi = yi, myl = yi + 1
+    // This is a chicken and egg problem. We need to determine how the sub
+    // will render in order to determine how this element renders, but it in
+    // order to figure out how the sub will render, they need to know
+    // exactly how their sup renders, so, we can give them what we have so
+    // far.
+    let _lpos
+    if (get) {
+      _lpos = this.lpos
+      this.lpos = { xi: xi, xl: xl, yi: yi, yl: yl }
+      //this.shrink = false;
+    }
+    for (i = 0; i < this.sub.length; i++) {
+      el = this.sub[i]
+
+      ret = el._getCoords(get)
+      // Or just (seemed to work, but probably not good):
+      // ret = el.lpos || this.lpos;
+      if (!ret) continue
+      // Since the sup element is shrunk, and the child elements think it's
+      // going to take up as much space as possible, an element anchored to the
+      // right or bottom will inadvertantly make the sup's shrunken size as
+      // large as possible. So, we can just use the height and/or width the of
+      // element.
+      // if (get) {
+      if (el.position.left == null && el.position.right != null) {
+        ret.xl = xi + ( ret.xl - ret.xi )
+        ret.xi = xi
+        if (this.screen.autoPadding) {
+          // Maybe just do this no matter what.
+          ret.xl += this.intL
+          ret.xi += this.intL
+        }
+      }
+      if (el.position.top == null && el.position.bottom != null) {
+        ret.yl = yi + ( ret.yl - ret.yi )
+        ret.yi = yi
+        if (this.screen.autoPadding) {
+          // Maybe just do this no matter what.
+          ret.yl += this.intT
+          ret.yi += this.intT
+        }
+      }
+      if (ret.xi < mxi) mxi = ret.xi
+      if (ret.xl > mxl) mxl = ret.xl
+      if (ret.yi < myi) myi = ret.yi
+      if (ret.yl > myl) myl = ret.yl
+    }
+    if (get) {
+      this.lpos = _lpos
+      //this.shrink = true;
+    }
+    if (
+      ( this.position.width == null ) &&
+      ( this.position.left == null || this.position.right == null )
+    ) {
+      if (this.position.left == null && this.position.right != null) {
+        xi = xl - ( mxl - mxi )
+        xi -= !this.screen.autoPadding ? this.padding.left + this.padding.right : this.intL
+      }
+      else {
+        xl = mxl
+        if (!this.screen.autoPadding) {
+          xl += this.padding.left + this.padding.right
+          // XXX Temporary workaround until we decide to make autoPadding default.
+          // See widget-listtable.js for an example of why this is necessary.
+          // XXX Maybe just to this for all this being that this would affect
+          // width shrunken normal shrunken lists as well.
+          // if (this._isList) {
+          if (this.type === 'list-table') {
+            xl -= this.padding.left + this.padding.right
+            xl += this.intR
+          }
+        }
+        else {
+          //xl += this.padding.right;
+          xl += this.intR
+        }
+      }
+    }
+    if (
+      ( this.position.height == null ) &&
+      ( this.position.top == null || this.position.bottom == null ) &&
+      ( !this.scrollable || this._isList )
+    ) {
+      // NOTE: Lists get special treatment if they are shrunken - assume they
+      // want all list items showing. This is one case we can calculate the
+      // height based on items/boxes.
+      if (this._isList) {
+        myi = 0 - this.intT
+        myl = this.items.length + this.intB
+      }
+      if (this.position.top == null && this.position.bottom != null) {
+        yi = yl - ( myl - myi )
+        yi -= !this.screen.autoPadding ? this.padding.top + this.padding.bottom : this.intT
+      }
+      else {
+        yl = myl
+        yl += !this.screen.autoPadding ? this.padding.top + this.padding.bottom : this.intB
+      }
+    }
+    return { xi: xi, xl: xl, yi: yi, yl: yl }
+  }
+  _getShrinkContent(xi, xl, yi, yl) {
+    const h = this.contLines.length,
+          w = this.contLines.mwidth || 1
+    if (
+      ( this.position.width == null ) &&
+      ( this.position.left == null || this.position.right == null )
+    ) {
+      if (this.position.left == null && this.position.right != null) { xi = xl - w - this.iwidth }
+      else { xl = xi + w + this.iwidth }
+    }
+    if (
+      ( this.position.height == null ) &&
+      ( this.position.top == null || this.position.bottom == null ) &&
+      ( !this.scrollable || this._isList )
+    ) {
+      if (this.position.top == null && this.position.bottom != null) { yi = yl - h - this.iheight }
+      else { yl = yi + h + this.iheight }
+    }
+    return { xi: xi, xl: xl, yi: yi, yl: yl }
+  }
+  _getShrink(xi, xl, yi, yl, get) {
+    const shrinkBox     = this._getShrinkBox(xi, xl, yi, yl, get),
+          shrinkContent = this._getShrinkContent(xi, xl, yi, yl, get)
+    let xll = xl, yll = yl
+    // Figure out which one is bigger and use it.
+    if (shrinkBox.xl - shrinkBox.xi > shrinkContent.xl - shrinkContent.xi) { xi = shrinkBox.xi, xl = shrinkBox.xl }
+    else { xi = shrinkContent.xi, xl = shrinkContent.xl }
+    if (shrinkBox.yl - shrinkBox.yi > shrinkContent.yl - shrinkContent.yi) { yi = shrinkBox.yi, yl = shrinkBox.yl }
+    else { yi = shrinkContent.yi, yl = shrinkContent.yl }
+    // Recenter shrunken elements.
+    if (xl < xll && this.position.left === CENTER) {
+      xll = ( xll - xl ) / 2 | 0
+      xi += xll
+      xl += xll
+    }
+    if (yl < yll && this.position.top === CENTER) {
+      yll = ( yll - yl ) / 2 | 0
+      yi += yll
+      yl += yll
+    }
+    return { xi: xi, xl: xl, yi: yi, yl: yl }
+  }
+  _getCoords(get, noscroll) {
+    if (this.hidden) return
+    // if (this.sup._rendering) {
+    //   get = true;
+    // }
+    let xi    = this._getLeft(get),
+        xl    = xi + this._getWidth(get),
+        yi    = this._getTop(get),
+        yl    = yi + this._getHeight(get),
+        base  = this.childBase || 0,
+        el    = this,
+        fixed = this.fixed,
+        coords,
+        v,
+        noleft,
+        noright,
+        notop,
+        nobot,
+        ppos,
+        b
+    // Attempt to shrink the element base on the
+    // size of the content and child elements.
+    if (this.shrink) {
+      coords = this._getShrink(xi, xl, yi, yl, get)
+      xi = coords.xi, xl = coords.xl
+      yi = coords.yi, yl = coords.yl
+    }
+    // Find a scrollable ancestor if we have one.
+    while (( el = el.sup )) {
+      if (el.scrollable) {
+        if (fixed) {
+          fixed = false
+          continue
+        }
+        break
+      }
+    }
+    // Check to make sure we're visible and
+    // inside of the visible scroll area.
+    // NOTE: Lists have a property where only
+    // the list items are obfuscated.
+    // Old way of doing things, this would not render right if a shrunken element
+    // with lots of boxes in it was within a scrollable element.
+    // See: $ node test/widget-shrink-fail.js
+    // var thisparent = this.sup;
+    const thisparent = el
+    if (el && !noscroll) {
+      ppos = thisparent.lpos
+      // The shrink option can cause a stack overflow
+      // by calling _getCoords on the child again.
+      // if (!get && !thisparent.shrink) {
+      //   ppos = thisparent._getCoords();
+      // }
+      if (!ppos) return
+      // TODO: Figure out how to fix base (and cbase to only
+      // take into account the *sup's* padding.
+
+      yi -= ppos.base
+      yl -= ppos.base
+
+      b = thisparent.border ? 1 : 0
+      // XXX
+      // Fixes non-`fixed` labels to work with scrolling (they're ON the border):
+      // if (this.position.left < 0
+      //     || this.position.right < 0
+      //     || this.position.top < 0
+      //     || this.position.bottom < 0) {
+      if (this._isLabel) {
+        b = 0
+      }
+      if (yi < ppos.yi + b) {
+        if (yl - 1 < ppos.yi + b) {
+          // Is above.
+          return
+        }
+        else {
+          // Is partially covered above.
+          notop = true
+          v = ppos.yi - yi
+          if (this.border) v--
+          if (thisparent.border) v++
+          base += v
+          yi += v
+        }
+      }
+      else if (yl > ppos.yl - b) {
+        if (yi > ppos.yl - 1 - b) {
+          // Is below.
+          return
+        }
+        else {
+          // Is partially covered below.
+          nobot = true
+          v = yl - ppos.yl
+          if (this.border) v--
+          if (thisparent.border) v++
+          yl -= v
+        }
+      }
+      // Shouldn't be necessary.
+      // assert.ok(yi < yl);
+      if (yi >= yl) return
+      // Could allow overlapping stuff in scrolling elements
+      // if we cleared the pending buffer before every draw.
+      if (xi < el.lpos.xi) {
+        xi = el.lpos.xi
+        noleft = true
+        if (this.border) xi--
+        if (thisparent.border) xi++
+      }
+      if (xl > el.lpos.xl) {
+        xl = el.lpos.xl
+        noright = true
+        if (this.border) xl++
+        if (thisparent.border) xl--
+      }
+      //if (xi > xl) return;
+      if (xi >= xl) return
+    }
+    if (this.noOverflow && this.sup.lpos) {
+      if (xi < this.sup.lpos.xi + this.sup.intL) { xi = this.sup.lpos.xi + this.sup.intL }
+      if (xl > this.sup.lpos.xl - this.sup.intR) { xl = this.sup.lpos.xl - this.sup.intR }
+      if (yi < this.sup.lpos.yi + this.sup.intT) { yi = this.sup.lpos.yi + this.sup.intT }
+      if (yl > this.sup.lpos.yl - this.sup.intB) { yl = this.sup.lpos.yl - this.sup.intB }
+    }
+    // if (this.sup.lpos) {
+    //   this.sup.lpos._scrollBottom = Math.max(
+    //     this.sup.lpos._scrollBottom, yl);
+    // }
+    return {
+      xi: xi,
+      xl: xl,
+      yi: yi,
+      yl: yl,
+      base: base,
+      noleft: noleft,
+      noright: noright,
+      notop: notop,
+      nobot: nobot,
+      renders: this.screen.renders
+    }
+  }
+
+  clearPos(get, override) {
+    if (this.detached) return
+    const lpos = this._getCoords(get)
+    if (!lpos) return
+    this.screen.clearRegion(
+      lpos.xi, lpos.xl,
+      lpos.yi, lpos.yl,
+      override)
+  }
+
   /**
    * Relative coordinates as default properties
    */
@@ -397,7 +871,7 @@ export class Element extends Node {
         if (tags) {
           if (( matches = /^{(left|center|right)}/.exec(line) ) && ( [ phrase, word ] = matches )) {
             line = line.slice(phrase.length)
-            align = state = word !== 'left' ? word : null
+            align = state = word !== LEFT ? word : null
           }
           if (( matches = /{\/(left|center|right)}$/.exec(line) ) && ( [ phrase ] = matches )) {
             line = line.slice(0, -phrase.length) //state = null;
@@ -644,7 +1118,7 @@ export class Element extends Node {
     // content-drawing loop will skip a few cells/lines.
     // To deal with this, we can just fill the whole thing
     // ahead of time. This could be optimized.
-    if (this.tpadding || ( this.valign && this.valign !== 'top' )) {
+    if (this.tpadding || ( this.valign && this.valign !== TOP )) {
       if (this.style.transparent) {
         for (let y = Math.max(yi, 0), line, cell; ( y < yl ); y++) {
           if (!( line = lines[y] )) break
@@ -661,14 +1135,14 @@ export class Element extends Node {
     }
     if (this.tpadding) { xi += this.padding.left, xl -= this.padding.right, yi += this.padding.top, yl -= this.padding.bottom }
     // Determine where to place the text if it's vertically aligned.
-    if (this.valign === 'middle' || this.valign === 'bottom') {
+    if (this.valign === MIDDLE || this.valign === BOTTOM) {
       visible = yl - yi
       if (this.contLines.length < visible) {
-        if (this.valign === 'middle') {
+        if (this.valign === MIDDLE) {
           visible = visible / 2 | 0
           visible -= this.contLines.length / 2 | 0
         }
-        else if (this.valign === 'bottom') {
+        else if (this.valign === BOTTOM) {
           visible -= this.contLines.length
         }
         ci -= visible * ( xl - xi )
@@ -677,12 +1151,12 @@ export class Element extends Node {
     // Draw the content and background.
     for (let y = yi, line; y < yl; y++) {
       if (!( line = lines[y] )) {
-        if (y >= this.screen.height || yl < this.ibottom) { break }
+        if (y >= this.screen.height || yl < this.intB) { break }
         else { continue }
       }
       for (let x = xi, cell; x < xl; x++) {
         if (!( cell = line[x] )) {
-          if (x >= this.screen.width || xl < this.iright) { break }
+          if (x >= this.screen.width || xl < this.intR) { break }
           else { continue }
         }
         ch = content[ci++] || bch
@@ -970,10 +1444,10 @@ export class Element extends Node {
     return coords
   }
   screenshot(xi, xl, yi, yl) {
-    xi = this.lpos.xi + this.ileft + ( xi || 0 )
-    xl = xl != null ? this.lpos.xi + this.ileft + ( xl || 0 ) : this.lpos.xl - this.iright
-    yi = this.lpos.yi + this.itop + ( yi || 0 )
-    yl = yl != null ? this.lpos.yi + this.itop + ( yl || 0 ) : this.lpos.yl - this.ibottom
+    xi = this.lpos.xi + this.intL + ( xi || 0 )
+    xl = xl != null ? this.lpos.xi + this.intL + ( xl || 0 ) : this.lpos.xl - this.intR
+    yi = this.lpos.yi + this.intT + ( yi || 0 )
+    yl = yl != null ? this.lpos.yi + this.intT + ( yl || 0 ) : this.lpos.yl - this.intB
     return this.screen.screenshot(xi, xl, yi, yl)
   }
 
@@ -1049,8 +1523,8 @@ export class Element extends Node {
     if (this.shrink) { s = 0 }
     if (len === 0) return line
     if (s < 0) return line
-    if (align === 'center' && ( s = Array(( ( s / 2 ) | 0 ) + 1).join(' ') )) return s + line + s
-    else if (align === 'right' && ( s = Array(s + 1).join(' ') )) return s + line
+    if (align === CENTER && ( s = Array(( ( s / 2 ) | 0 ) + 1).join(' ') )) return s + line + s
+    else if (align === RIGHT && ( s = Array(s + 1).join(' ') )) return s + line
     else if (this.parseTags && ~line.indexOf('{|}')) {
       const parts = line.split('{|}')
       const cparts = cline.split('{|}')
@@ -1133,28 +1607,15 @@ export class Element extends Node {
     const item = this.sup.sub.splice(i, 1)[0]
     this.sup.sub.splice(index, 0, item)
   }
-  setFront() {
-    return this.setIndex(-1)
-  }
-  setBack() {
-    return this.setIndex(0)
-  }
-  clearPos(get, override) {
-    if (this.detached) return
-    const lpos = this._getCoords(get)
-    if (!lpos) return
-    this.screen.clearRegion(
-      lpos.xi, lpos.xl,
-      lpos.yi, lpos.yl,
-      override)
-  }
+  setFront() { return this.setIndex(-1) }
+  setBack() { return this.setIndex(0) }
   setLabel(options) {
     const self = this
     // const Box = require('./box')
     if (typeof options === STR) options = { text: options }
     if (this._label) {
       this._label.setContent(options.text)
-      if (options.side !== 'right') {
+      if (options.side !== RIGHT) {
         this._label.rleft = 2 + ( this.border ? -1 : 0 )
         this._label.position.right = undefined
         if (!this.screen.autoPadding) this._label.rleft = 2
@@ -1170,21 +1631,21 @@ export class Element extends Node {
       screen: this.screen,
       sup: this,
       content: options.text,
-      top: -this.itop,
+      top: -this.intT,
       tags: this.parseTags,
       shrink: true,
       style: this.style.label
     })
-    if (options.side !== 'right') { this._label.rleft = 2 - this.ileft }
-    else { this._label.rright = 2 - this.iright }
+    if (options.side !== RIGHT) { this._label.rleft = 2 - this.intL }
+    else { this._label.rright = 2 - this.intR }
     this._label._isLabel = true
     if (!this.screen.autoPadding) {
-      if (options.side !== 'right') { this._label.rleft = 2 }
+      if (options.side !== RIGHT) { this._label.rleft = 2 }
       else { this._label.rright = 2 }
       this._label.rtop = 0
     }
     const reposition = () => {
-      self._label.rtop = ( self.childBase || 0 ) - self.itop
+      self._label.rtop = ( self.childBase || 0 ) - self.intT
       if (!self.screen.autoPadding) { self._label.rtop = ( self.childBase || 0 ) }
       self.screen.render()
     }
@@ -1226,472 +1687,6 @@ export class Element extends Node {
     this.screen.render()
   }
   // it doesn't handle content shrinkage).
-  _getPos() {
-    const pos = this.lpos
-    assert.ok(pos)
-    if (pos.aleft != null) return pos
-    pos.aleft = pos.xi
-    pos.atop = pos.yi
-    pos.aright = this.screen.cols - pos.xl
-    pos.abottom = this.screen.rows - pos.yl
-    pos.width = pos.xl - pos.xi
-    pos.height = pos.yl - pos.yi
-    return pos
-  }
-  /**
-   * Position Getters
-   */
-  _getWidth(get) {
-    const sup = get ? this.sup._getPos() : this.sup
-    let width = this.position.width,
-        left,
-        expr
-    if (typeof width === STR) {
-      if (width === 'half') width = '50%'
-      expr = width.split(/(?=\+|-)/)
-      width = expr[0]
-      width = +width.slice(0, -1) / 100
-      width = sup.width * width | 0
-      width += +( expr[1] || 0 )
-      return width
-    }
-    // This is for if the element is being streched or shrunken.
-    // Although the width for shrunken elements is calculated
-    // in the render function, it may be calculated based on
-    // the content width, and the content width is initially
-    // decided by the width the element, so it needs to be
-    // calculated here.
-    if (width == null) {
-      left = this.position.left || 0
-      if (typeof left === STR) {
-        if (left === 'center') left = '50%'
-        expr = left.split(/(?=\+|-)/)
-        left = expr[0]
-        left = +left.slice(0, -1) / 100
-        left = sup.width * left | 0
-        left += +( expr[1] || 0 )
-      }
-      width = sup.width - ( this.position.right || 0 ) - left
-      if (this.screen.autoPadding) {
-        if (( this.position.left != null || this.position.right == null ) &&
-          this.position.left !== 'center') {
-          width -= this.sup.ileft
-        }
-        width -= this.sup.iright
-      }
-    }
-    return width
-  }
-  _getHeight(get) {
-    const sup = get ? this.sup._getPos() : this.sup
-    let height = this.position.height,
-        top,
-        expr
-    if (typeof height === STR) {
-      if (height === 'half') height = '50%'
-      expr = height.split(/(?=\+|-)/)
-      height = expr[0]
-      height = +height.slice(0, -1) / 100
-      height = sup.height * height | 0
-      height += +( expr[1] || 0 )
-      return height
-    }
-    // This is for if the element is being streched or shrunken.
-    // Although the width for shrunken elements is calculated
-    // in the render function, it may be calculated based on
-    // the content width, and the content width is initially
-    // decided by the width the element, so it needs to be
-    // calculated here.
-    if (height == null) {
-      top = this.position.top || 0
-      if (typeof top === STR) {
-        if (top === 'center') top = '50%'
-        expr = top.split(/(?=\+|-)/)
-        top = expr[0]
-        top = +top.slice(0, -1) / 100
-        top = sup.height * top | 0
-        top += +( expr[1] || 0 )
-      }
-      height = sup.height - ( this.position.bottom || 0 ) - top
-      if (this.screen.autoPadding) {
-        if (( this.position.top != null ||
-          this.position.bottom == null ) &&
-          this.position.top !== 'center') {
-          height -= this.sup.itop
-        }
-        height -= this.sup.ibottom
-      }
-    }
-    return height
-  }
-  _getLeft(get) {
-    const sup = get ? this.sup._getPos() : this.sup
-    let left = this.position.left || 0,
-        expr
-    if (typeof left === STR) {
-      if (left === 'center') left = '50%'
-      expr = left.split(/(?=\+|-)/)
-      left = expr[0]
-      left = +left.slice(0, -1) / 100
-      left = sup.width * left | 0
-      left += +( expr[1] || 0 )
-      if (this.position.left === 'center') {
-        left -= this._getWidth(get) / 2 | 0
-      }
-    }
-    if (this.position.left == null && this.position.right != null) {
-      return this.screen.cols - this._getWidth(get) - this._getRight(get)
-    }
-    if (this.screen.autoPadding) {
-      if (( this.position.left != null ||
-        this.position.right == null ) &&
-        this.position.left !== 'center') {
-        left += this.sup.ileft
-      }
-    }
-    return ( sup.aleft || 0 ) + left
-  }
-  _getRight(get) {
-    const sup = get ? this.sup._getPos() : this.sup
-    let right
-    if (this.position.right == null && this.position.left != null) {
-      right = this.screen.cols - ( this._getLeft(get) + this._getWidth(get) )
-      if (this.screen.autoPadding) right += this.sup.iright
-      return right
-    }
-    right = ( sup.aright || 0 ) + ( this.position.right || 0 )
-    if (this.screen.autoPadding) right += this.sup.iright
-    return right
-  }
-  _getTop(get) {
-    const sup = get ? this.sup._getPos() : this.sup
-    let top = this.position.top || 0,
-        expr
-    if (typeof top === STR) {
-      if (top === 'center') top = '50%'
-      expr = top.split(/(?=\+|-)/)
-      top = expr[0]
-      top = +top.slice(0, -1) / 100
-      top = sup.height * top | 0
-      top += +( expr[1] || 0 )
-      if (this.position.top === 'center') top -= this._getHeight(get) / 2 | 0
-    }
-    if (this.position.top == null && this.position.bottom != null) {
-      return this.screen.rows - this._getHeight(get) - this._getBottom(get)
-    }
-    if (this.screen.autoPadding) {
-      if (( this.position.top != null ||
-        this.position.bottom == null ) &&
-        this.position.top !== 'center') {
-        top += this.sup.itop
-      }
-    }
-    return ( sup.atop || 0 ) + top
-  }
-  _getBottom(get) {
-    const sup = get ? this.sup._getPos() : this.sup
-    let bottom
-    if (this.position.bottom == null && this.position.top != null) {
-      bottom = this.screen.rows - ( this._getTop(get) + this._getHeight(get) )
-      if (this.screen.autoPadding) bottom += this.sup.ibottom
-      return bottom
-    }
-    bottom = ( sup.abottom || 0 ) + ( this.position.bottom || 0 )
-    if (this.screen.autoPadding) bottom += this.sup.ibottom
-    return bottom
-  }
-  /**
-   * Rendering - here be dragons
-   */
-  _getShrinkBox(xi, xl, yi, yl, get) {
-    if (!this.sub.length) return { xi: xi, xl: xi + 1, yi: yi, yl: yi + 1 }
-    let i, el, ret, mxi = xi, mxl = xi + 1, myi = yi, myl = yi + 1
-    // This is a chicken and egg problem. We need to determine how the sub
-    // will render in order to determine how this element renders, but it in
-    // order to figure out how the sub will render, they need to know
-    // exactly how their sup renders, so, we can give them what we have so
-    // far.
-    let _lpos
-    if (get) {
-      _lpos = this.lpos
-      this.lpos = { xi: xi, xl: xl, yi: yi, yl: yl }
-      //this.shrink = false;
-    }
-    for (i = 0; i < this.sub.length; i++) {
-      el = this.sub[i]
-
-      ret = el._getCoords(get)
-      // Or just (seemed to work, but probably not good):
-      // ret = el.lpos || this.lpos;
-      if (!ret) continue
-      // Since the sup element is shrunk, and the child elements think it's
-      // going to take up as much space as possible, an element anchored to the
-      // right or bottom will inadvertantly make the sup's shrunken size as
-      // large as possible. So, we can just use the height and/or width the of
-      // element.
-      // if (get) {
-      if (el.position.left == null && el.position.right != null) {
-        ret.xl = xi + ( ret.xl - ret.xi )
-        ret.xi = xi
-        if (this.screen.autoPadding) {
-          // Maybe just do this no matter what.
-          ret.xl += this.ileft
-          ret.xi += this.ileft
-        }
-      }
-      if (el.position.top == null && el.position.bottom != null) {
-        ret.yl = yi + ( ret.yl - ret.yi )
-        ret.yi = yi
-        if (this.screen.autoPadding) {
-          // Maybe just do this no matter what.
-          ret.yl += this.itop
-          ret.yi += this.itop
-        }
-      }
-      if (ret.xi < mxi) mxi = ret.xi
-      if (ret.xl > mxl) mxl = ret.xl
-      if (ret.yi < myi) myi = ret.yi
-      if (ret.yl > myl) myl = ret.yl
-    }
-    if (get) {
-      this.lpos = _lpos
-      //this.shrink = true;
-    }
-    if (
-      ( this.position.width == null ) &&
-      ( this.position.left == null || this.position.right == null )
-    ) {
-      if (this.position.left == null && this.position.right != null) {
-        xi = xl - ( mxl - mxi )
-        xi -= !this.screen.autoPadding ? this.padding.left + this.padding.right : this.ileft
-      }
-      else {
-        xl = mxl
-        if (!this.screen.autoPadding) {
-          xl += this.padding.left + this.padding.right
-          // XXX Temporary workaround until we decide to make autoPadding default.
-          // See widget-listtable.js for an example of why this is necessary.
-          // XXX Maybe just to this for all this being that this would affect
-          // width shrunken normal shrunken lists as well.
-          // if (this._isList) {
-          if (this.type === 'list-table') {
-            xl -= this.padding.left + this.padding.right
-            xl += this.iright
-          }
-        }
-        else {
-          //xl += this.padding.right;
-          xl += this.iright
-        }
-      }
-    }
-    if (
-      ( this.position.height == null ) &&
-      ( this.position.top == null || this.position.bottom == null ) &&
-      ( !this.scrollable || this._isList )
-    ) {
-      // NOTE: Lists get special treatment if they are shrunken - assume they
-      // want all list items showing. This is one case we can calculate the
-      // height based on items/boxes.
-      if (this._isList) {
-        myi = 0 - this.itop
-        myl = this.items.length + this.ibottom
-      }
-      if (this.position.top == null && this.position.bottom != null) {
-        yi = yl - ( myl - myi )
-        yi -= !this.screen.autoPadding ? this.padding.top + this.padding.bottom : this.itop
-      }
-      else {
-        yl = myl
-        yl += !this.screen.autoPadding ? this.padding.top + this.padding.bottom : this.ibottom
-      }
-    }
-    return { xi: xi, xl: xl, yi: yi, yl: yl }
-  }
-  _getShrinkContent(xi, xl, yi, yl) {
-    const h = this.contLines.length,
-          w = this.contLines.mwidth || 1
-    if (
-      ( this.position.width == null ) &&
-      ( this.position.left == null || this.position.right == null )
-    ) {
-      if (this.position.left == null && this.position.right != null) { xi = xl - w - this.iwidth }
-      else { xl = xi + w + this.iwidth }
-    }
-    if (
-      ( this.position.height == null ) &&
-      ( this.position.top == null || this.position.bottom == null ) &&
-      ( !this.scrollable || this._isList )
-    ) {
-      if (this.position.top == null && this.position.bottom != null) { yi = yl - h - this.iheight }
-      else { yl = yi + h + this.iheight }
-    }
-    return { xi: xi, xl: xl, yi: yi, yl: yl }
-  }
-  _getShrink(xi, xl, yi, yl, get) {
-    const shrinkBox     = this._getShrinkBox(xi, xl, yi, yl, get),
-          shrinkContent = this._getShrinkContent(xi, xl, yi, yl, get)
-    let xll = xl, yll = yl
-    // Figure out which one is bigger and use it.
-    if (shrinkBox.xl - shrinkBox.xi > shrinkContent.xl - shrinkContent.xi) { xi = shrinkBox.xi, xl = shrinkBox.xl }
-    else { xi = shrinkContent.xi, xl = shrinkContent.xl }
-    if (shrinkBox.yl - shrinkBox.yi > shrinkContent.yl - shrinkContent.yi) { yi = shrinkBox.yi, yl = shrinkBox.yl }
-    else { yi = shrinkContent.yi, yl = shrinkContent.yl }
-    // Recenter shrunken elements.
-    if (xl < xll && this.position.left === 'center') {
-      xll = ( xll - xl ) / 2 | 0
-      xi += xll
-      xl += xll
-    }
-    if (yl < yll && this.position.top === 'center') {
-      yll = ( yll - yl ) / 2 | 0
-      yi += yll
-      yl += yll
-    }
-    return { xi: xi, xl: xl, yi: yi, yl: yl }
-  }
-  _getCoords(get, noscroll) {
-    if (this.hidden) return
-    // if (this.sup._rendering) {
-    //   get = true;
-    // }
-    let xi    = this._getLeft(get),
-        xl    = xi + this._getWidth(get),
-        yi    = this._getTop(get),
-        yl    = yi + this._getHeight(get),
-        base  = this.childBase || 0,
-        el    = this,
-        fixed = this.fixed,
-        coords,
-        v,
-        noleft,
-        noright,
-        notop,
-        nobot,
-        ppos,
-        b
-    // Attempt to shrink the element base on the
-    // size of the content and child elements.
-    if (this.shrink) {
-      coords = this._getShrink(xi, xl, yi, yl, get)
-      xi = coords.xi, xl = coords.xl
-      yi = coords.yi, yl = coords.yl
-    }
-    // Find a scrollable ancestor if we have one.
-    while (( el = el.sup )) {
-      if (el.scrollable) {
-        if (fixed) {
-          fixed = false
-          continue
-        }
-        break
-      }
-    }
-    // Check to make sure we're visible and
-    // inside of the visible scroll area.
-    // NOTE: Lists have a property where only
-    // the list items are obfuscated.
-    // Old way of doing things, this would not render right if a shrunken element
-    // with lots of boxes in it was within a scrollable element.
-    // See: $ node test/widget-shrink-fail.js
-    // var thisparent = this.sup;
-    const thisparent = el
-    if (el && !noscroll) {
-      ppos = thisparent.lpos
-      // The shrink option can cause a stack overflow
-      // by calling _getCoords on the child again.
-      // if (!get && !thisparent.shrink) {
-      //   ppos = thisparent._getCoords();
-      // }
-      if (!ppos) return
-      // TODO: Figure out how to fix base (and cbase to only
-      // take into account the *sup's* padding.
-
-      yi -= ppos.base
-      yl -= ppos.base
-
-      b = thisparent.border ? 1 : 0
-      // XXX
-      // Fixes non-`fixed` labels to work with scrolling (they're ON the border):
-      // if (this.position.left < 0
-      //     || this.position.right < 0
-      //     || this.position.top < 0
-      //     || this.position.bottom < 0) {
-      if (this._isLabel) {
-        b = 0
-      }
-      if (yi < ppos.yi + b) {
-        if (yl - 1 < ppos.yi + b) {
-          // Is above.
-          return
-        }
-        else {
-          // Is partially covered above.
-          notop = true
-          v = ppos.yi - yi
-          if (this.border) v--
-          if (thisparent.border) v++
-          base += v
-          yi += v
-        }
-      }
-      else if (yl > ppos.yl - b) {
-        if (yi > ppos.yl - 1 - b) {
-          // Is below.
-          return
-        }
-        else {
-          // Is partially covered below.
-          nobot = true
-          v = yl - ppos.yl
-          if (this.border) v--
-          if (thisparent.border) v++
-          yl -= v
-        }
-      }
-      // Shouldn't be necessary.
-      // assert.ok(yi < yl);
-      if (yi >= yl) return
-      // Could allow overlapping stuff in scrolling elements
-      // if we cleared the pending buffer before every draw.
-      if (xi < el.lpos.xi) {
-        xi = el.lpos.xi
-        noleft = true
-        if (this.border) xi--
-        if (thisparent.border) xi++
-      }
-      if (xl > el.lpos.xl) {
-        xl = el.lpos.xl
-        noright = true
-        if (this.border) xl++
-        if (thisparent.border) xl--
-      }
-      //if (xi > xl) return;
-      if (xi >= xl) return
-    }
-    if (this.noOverflow && this.sup.lpos) {
-      if (xi < this.sup.lpos.xi + this.sup.ileft) { xi = this.sup.lpos.xi + this.sup.ileft }
-      if (xl > this.sup.lpos.xl - this.sup.iright) { xl = this.sup.lpos.xl - this.sup.iright }
-      if (yi < this.sup.lpos.yi + this.sup.itop) { yi = this.sup.lpos.yi + this.sup.itop }
-      if (yl > this.sup.lpos.yl - this.sup.ibottom) { yl = this.sup.lpos.yl - this.sup.ibottom }
-    }
-    // if (this.sup.lpos) {
-    //   this.sup.lpos._scrollBottom = Math.max(
-    //     this.sup.lpos._scrollBottom, yl);
-    // }
-    return {
-      xi: xi,
-      xl: xl,
-      yi: yi,
-      yl: yl,
-      base: base,
-      noleft: noleft,
-      noright: noright,
-      notop: notop,
-      nobot: nobot,
-      renders: this.screen.renders
-    }
-  }
   /**
    * Content Methods
    */
@@ -1728,9 +1723,9 @@ export class Element extends Node {
             vis  = real >= base && real - base < ht // visible
       if (pos && vis && this.screen.cleanSides(this)) {
         this.screen.insertLine(diff,
-          pos.yi + this.itop + real - base,
+          pos.yi + this.intT + real - base,
           pos.yi,
-          pos.yl - this.ibottom - 1)
+          pos.yl - this.intB - 1)
       }
     }
   }
@@ -1757,9 +1752,9 @@ export class Element extends Node {
             visible = real >= base && real - base < height
       if (pos && visible && this.screen.cleanSides(this)) {
         this.screen.deleteLine(diff,
-          pos.yi + this.itop + real - base,
+          pos.yi + this.intT + real - base,
           pos.yi,
-          pos.yl - this.ibottom - 1)
+          pos.yl - this.intB - 1)
       }
     }
     if (this.contLines.length < height) this.clearPos()
@@ -1821,5 +1816,4 @@ export class Element extends Node {
     text = this.parseTags ? helpers.stripTags(text) : text
     return this.screen.fullUnicode ? unicode.strWidth(text) : helpers.dropUnicode(text).length
   }
-
 }

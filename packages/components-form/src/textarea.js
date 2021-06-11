@@ -72,8 +72,8 @@ export class Textarea extends Input {
     // argument in the above Math.min call ends up being -2. Make sure we stay
     // positive.
     line = Math.max(0, line)
-    cy = lpos.yi + this.itop + line
-    cx = lpos.xi + this.ileft + this.strWidth(last)
+    cy = lpos.yi + this.intT + line
+    cx = lpos.xi + this.intL + this.strWidth(last)
     // XXX Not sure, but this may still sometimes
     // cause problems when leaving editor.
     if (cy === program.y && cx === program.x) return

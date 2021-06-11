@@ -141,16 +141,16 @@ export class Table extends Box {
           headAttr   = styleToAttr(this.style.header),
           cellAttr   = styleToAttr(this.style.cell),
           borderAttr = styleToAttr(this.style.border)
-    const width  = coords.xl - coords.xi - this.iright,
-          height = coords.yl - coords.yi - this.ibottom
+    const width  = coords.xl - coords.xi - this.intR,
+          height = coords.yl - coords.yi - this.intB
     // Apply attributes to header cells and cells.
-    for (let y = this.itop, line; y < height; y++) {
+    for (let y = this.intT, line; y < height; y++) {
       if (!( line = lines[yi + y] )) break
-      for (let x = this.ileft, cell; x < width; x++) {
+      for (let x = this.intL, cell; x < width; x++) {
         if (!( cell = line[xi + x] )) break
         // Check to see if it's not the default attr. Allows for tags:
         if (cell.at !== normAttr) continue
-        cell.at = y === this.itop ? headAttr : cellAttr
+        cell.at = y === this.intT ? headAttr : cellAttr
         line.dirty = true
       }
     }
@@ -178,7 +178,7 @@ export class Table extends Box {
           else {
             // middle
             line[xi + 0].inject(borderAttr, '\u251c') // '├'
-            // XXX If we alter iwidth and ileft for no borders - nothing should be written here
+            // XXX If we alter iwidth and intL for no borders - nothing should be written here
             if (!self.border.left) line[xi + 0].ch = '\u2500' // '─'
 
           }
@@ -203,7 +203,7 @@ export class Table extends Box {
             // middle
             rx++
             line[xi + rx].inject(borderAttr, '\u2524') // '┤'
-            // XXX If we alter iwidth and iright for no borders - nothing should be written here
+            // XXX If we alter iwidth and intR for no borders - nothing should be written here
             if (!self.border.right) line[xi + rx].ch = '\u2500' // '─'
           }
           line.dirty = true
@@ -215,7 +215,7 @@ export class Table extends Box {
           // top
           rx++
           line[xi + rx].inject(borderAttr, '\u252c') // '┬'
-          // XXX If we alter iheight and itop for no borders - nothing should be written here
+          // XXX If we alter iheight and intT for no borders - nothing should be written here
           if (!self.border.top) line[xi + rx].ch = '\u2502' // '│'
 
         }
@@ -223,7 +223,7 @@ export class Table extends Box {
           // bottom
           rx++
           line[xi + rx].inject(borderAttr, '\u2534') // '┴'
-          // XXX If we alter iheight and ibottom for no borders - nothing should be written here
+          // XXX If we alter iheight and intB for no borders - nothing should be written here
           if (!self.border.bottom) line[xi + rx].ch = '\u2502' // '│'
 
         }

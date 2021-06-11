@@ -21,6 +21,7 @@
     "@pres/enum-control-chars": "^0.3.8",
     "@pres/enum-csi-codes": "^0.3.8",
     "@pres/enum-events": "^0.3.8",
+    "@pres/enum-key-names": "^0.3.8",
     "@pres/events": "^0.3.8",
     "@pres/program": "^0.3.8",
     "@pres/util-blessed-colors": "^0.3.8",

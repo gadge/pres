@@ -209,8 +209,8 @@ export class List extends Box {
     }
     if (!this.screen.autoPadding) {
       options.top = 1
-      options.left = this.ileft
-      options.right = this.iright + ( this.scrollbar ? 1 : 0 )
+      options.left = this.intL
+      options.right = this.intR + ( this.scrollbar ? 1 : 0 )
     }
     // if (this.shrink) {
     // XXX NOTE: Maybe just do this on all shrinkage once autoPadding is default?
@@ -250,7 +250,7 @@ export class List extends Box {
     content = typeof content === STR ? content : content.getContent()
     const item = this.createItem(content)
     item.position.top = this.items.length
-    if (!this.screen.autoPadding) item.position.top = this.itop + this.items.length
+    if (!this.screen.autoPadding) item.position.top = this.intT + this.items.length
     this.ritems.push(content)
     this.items.push(item)
     this.append(item)

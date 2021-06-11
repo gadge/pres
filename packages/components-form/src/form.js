@@ -10,6 +10,7 @@ import { BACKSPACE, DOWN, ENTER, ESCAPE, TAB, UP, }           from '@pres/enum-k
 
 export class Form extends Box {
   constructor(options = {}) {
+    if (!options.sku) options.sku = 'form'
     options.ignoreKeys = true
     super(options)
     const self = this

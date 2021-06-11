@@ -1,10 +1,11 @@
 import { Box }           from '@pres/components-core'
 import { Canvas }        from '@pres/components-layout'
+import { ATTACH }        from '@pres/enum-events/index'
 import { toByte }        from '@pres/util-byte-colors'
+import { Ticks }         from '@pres/util-chart-ticks'
 import { nullish }       from '@typen/nullish'
 import { maxBy }         from '@vect/vector-indicator'
 import { Labels, Padds } from '../utils'
-import { Ticks }         from '@pres/util-chart-ticks'
 
 
 export class LineChart extends Canvas {
@@ -24,6 +25,8 @@ export class LineChart extends Canvas {
     this.padds = padds
     this.ticks = ticks
     this.labels = labels
+    this.seriesCollection = null
+    this.on(ATTACH, () => { if (this.seriesCollection) { this.setData(this.seriesCollection) } })
     this.type = 'line-chart'
   }
   static build(options) { return new LineChart(options) }
@@ -86,7 +89,7 @@ export class LineChart extends Canvas {
   }
   setData(seriesCollection) {
     if (!this.context) throw 'error: canvas context does not exist. setData() for line charts must be called after the chart has been added to the screen via screen.append()'
-    if (!Array.isArray(seriesCollection)) seriesCollection = [ seriesCollection ] //compatible with prev api
+    seriesCollection = this.seriesCollection = Array.isArray(seriesCollection) ? seriesCollection : [ seriesCollection ]
     const { padds, ticks, labels, context } = this
     labels.loadLabels(seriesCollection)
     this.ticks.setTicks(seriesCollection)

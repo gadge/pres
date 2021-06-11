@@ -42,7 +42,7 @@ export class ListTable extends List {
     options.border = __border
     this._header = new Box({
       sup: this,
-      left: this.screen.autoPadding ? 0 : this.ileft,
+      left: this.screen.autoPadding ? 0 : this.intL,
       top: 0,
       width: 'shrink',
       height: 1,
@@ -155,7 +155,7 @@ export class ListTable extends List {
     let rx,
         ry
     const borderAttr = styleToAttr(this.style.border)
-    const height = coords.yl - coords.yi - this.ibottom
+    const height = coords.yl - coords.yi - this.intB
     let border = this.border
     if (!this.border && this.options.border) border = this.options.border
     if (!border || this.options.noCellBorders) return coords
@@ -172,7 +172,7 @@ export class ListTable extends List {
           // top
           rx++
           line[xi + rx].inject(borderAttr, '\u252c') // '┬'
-          // XXX If we alter iheight and itop for no borders - nothing should be written here
+          // XXX If we alter iheight and intT for no borders - nothing should be written here
           if (!border.top) line[xi + rx].ch = '\u2502' // '│'
           line.dirty = true
         }
@@ -180,7 +180,7 @@ export class ListTable extends List {
           // bottom
           rx++
           line[xi + rx].inject(borderAttr, '\u2534') // '┴'
-          // XXX If we alter iheight and ibottom for no borders - nothing should be written here
+          // XXX If we alter iheight and intB for no borders - nothing should be written here
           if (!border.bottom) line[xi + rx].ch = '\u2502' // '│'
           line.dirty = true
         }

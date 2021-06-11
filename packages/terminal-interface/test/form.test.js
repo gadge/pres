@@ -207,7 +207,7 @@ const table = TI.table({
 // Event management
 submit.on('press', () => form.submit())
 reset.on('press', () => form.reset())
-form.on('submit', function (data) {
+form.on('submit', data => {
   const editors = [ 'Vim', 'Emacs', 'Atom', 'Brackets' ].filter(function (item, index) {
     return data.editors[index]
   })
