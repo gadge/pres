@@ -1,2 +1,2 @@
-export { init }        from './src/top'
+export { init }        from './src/fin'
 export { MarketWatch } from './src/monitor'
