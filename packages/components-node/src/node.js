@@ -29,8 +29,8 @@ export class Node extends EventEmitter {
     this.name = options.name
     this.sku = options.sku
     this.configScreen(options)
-    const sup = options.sup || options.parent,
-          sub = options.sub || options.children
+    const sup = options.sup ?? options.parent,
+          sub = options.sub ?? options.children
     this.sup = sup ?? null
     this.sub = []
     this.$ = this._ = this.data = {}
@@ -48,9 +48,9 @@ export class Node extends EventEmitter {
       // console.log(`>>> this.type = ${this.type}`)
       if (this.type === 'screen') { this.screen = this }
       else if (ScreenCollection.total === 1) { this.screen = ScreenCollection.global }
-      else if (options.sup) {
-        this.screen = options.sup
-        while (this.screen && this.screen.type !== 'screen') this.screen = this.screen.sup
+      else if (options.sup ?? options.parent) {
+        this.screen = options.sup ?? options.parent
+        while (this.screen?.type !== 'screen') this.screen = this.screen.sup
       }
       else if (ScreenCollection.total) {
         // This _should_ work in most cases as long as the element is appended
