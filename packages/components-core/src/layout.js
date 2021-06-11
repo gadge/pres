@@ -68,26 +68,26 @@ export class Layout extends Element {
       const last = self.getLast(i)
       // If there is no previously rendered element, we are on the first child.
       if (!last) {
-        el.position.left = 0
-        el.position.top = 0
+        el.pos.left = 0
+        el.pos.top = 0
       }
       else {
         // Otherwise, figure out where to place this child. We'll start by
         // setting it's `left`/`x` coordinate to right after the previous
         // rendered element. This child will end up directly to the right of it.
-        el.position.left = last.lpos.xHi - xLo
+        el.pos.left = last.lpos.xHi - xLo
         // Make sure the position matches the highest width element
         if (self.options.layout === 'grid') {
           // Compensate with width:
           // el.position.width = el.width + (highWidth - el.width);
           // Compensate with position:
-          el.position.left += highWidth - (last.lpos.xHi - last.lpos.xLo)
+          el.pos.left += highWidth - (last.lpos.xHi - last.lpos.xLo)
         }
         // If our child does not overlap the right side of the Layout, set it's
         // `top`/`y` to the current `rowOffset` (the coordinate for the current
         // row).
-        if (el.position.left + el.width <= width) {
-          el.position.top = rowOffset
+        if (el.pos.left + el.width <= width) {
+          el.pos.top = rowOffset
         }
         else {
           // Otherwise we need to start a new row and calculate a new
@@ -100,8 +100,8 @@ export class Layout extends Element {
           }, 0)
           lastRowIndex = rowIndex
           rowIndex = i
-          el.position.left = 0
-          el.position.top = rowOffset
+          el.pos.left = 0
+          el.pos.top = rowOffset
         }
       }
       // Make sure the elements on lower rows graviatate up as much as possible
@@ -111,18 +111,18 @@ export class Layout extends Element {
         for (let j = lastRowIndex; j < rowIndex; j++) {
           const l = self.sub[j]
           if (!self.isRendered(l)) continue
-          const abs = Math.abs(el.position.left - (l.lpos.xLo - xLo))
+          const abs = Math.abs(el.pos.left - (l.lpos.xLo - xLo))
           // if (abs < abovea && (l.lpos.xHi - l.lpos.xLo) <= el.width) {
           if (abs < abovea) {
             above = l
             abovea = abs
           }
         }
-        if (above) el.position.top = above.lpos.yHi - yLo
+        if (above) el.pos.top = above.lpos.yHi - yLo
       }
       // If our child overflows the Layout, do not render it!
       // Disable this feature for now.
-      if (el.position.top + el.height > height) {
+      if (el.pos.top + el.height > height) {
         // Returning false tells blessed to ignore this child.
         // return false;
       }

@@ -66,7 +66,7 @@ export class Element extends Node {
       if (position.height === 'shrink') delete position.height
       options.shrink = true
     }
-    // this.pos = position
+    // this.pos = pos
     this.padding = Cadre.build(options.padding)
     this.border = options.border
     if (this.border) {
