@@ -2030,7 +2030,7 @@ Tput.prototype.detectFeatures = function (info) {
     brokenACS: this.detectBrokenACS(info),
     PCRomSet: this.detectPCRomSet(info),
     magicCookie: this.detectMagicCookie(info),
-    padding: this.detectPadding(info),
+    padding: this.detecpaddingSum(info),
     setbuf: this.detectSetbuf(info),
     acsc: data.acsc,
     acscr: data.acscr
@@ -2124,7 +2124,7 @@ Tput.prototype.detectMagicCookie = function () {
   return process.env.NCURSES_NO_MAGIC_COOKIE == null
 }
 
-Tput.prototype.detectPadding = function () {
+Tput.prototype.detecpaddingSum = function () {
   return process.env.NCURSES_NO_PADDING == null
 }
 

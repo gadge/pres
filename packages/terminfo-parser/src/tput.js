@@ -1294,7 +1294,7 @@ export class Tput {
       brokenACS: this.detectBrokenACS(info),
       PCRomSet: this.detectPCRomSet(info),
       magicCookie: this.detectMagicCookie(info),
-      padding: this.detectPadding(info),
+      padding: this.detecpaddingSum(info),
       setbuf: this.detectSetbuf(info),
       acsc: data.acsc,
       acscr: data.acscr
@@ -1337,7 +1337,7 @@ export class Tput {
     )
   }
   detectMagicCookie() { return process.env.NCURSES_NO_MAGIC_COOKIE == null }
-  detectPadding() { return process.env.NCURSES_NO_PADDING == null }
+  detecpaddingSum() { return process.env.NCURSES_NO_PADDING == null }
   detectSetbuf() { return process.env.NCURSES_NO_SETBUF == null }
   parseACS(info) {
     const data = {}

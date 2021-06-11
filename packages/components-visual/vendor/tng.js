@@ -709,10 +709,10 @@ PNG.prototype.renderScreen = function (bmp, screen, xi, xl, yi, yl) {
   }
 }
 PNG.prototype.renderElement = function (bmp, el) {
-  const xi = el.aleft + el.intL
-    , xl   = el.aleft + el.width - el.intR
-    , yi   = el.atop + el.intT
-    , yl   = el.atop + el.height - el.intB
+  const xi = el.absL + el.intL
+    , xl   = el.absL + el.width - el.intR
+    , yi   = el.absT + el.intT
+    , yl   = el.absT + el.height - el.intB
   return this.renderScreen(bmp, el.screen, xi, xl, yi, yl)
 }
 PNG.prototype.pixelToSGR = function (pixel, ch) {
@@ -1063,7 +1063,7 @@ PNG.prototype.gifMagick = function (input) {
     , frame
     , width
     , height
-    , iwidth
+    , intW
     , twidth
     , i
     , lines
@@ -1085,7 +1085,7 @@ PNG.prototype.gifMagick = function (input) {
   }, this)
   width = frames[0].W
   height = frames[0].H
-  iwidth = 0
+  intW = 0
   twidth = 0
   this.width = width
   this.height = height
@@ -1096,13 +1096,13 @@ PNG.prototype.gifMagick = function (input) {
     frame.x = +frame.x
     frame.y = +frame.y
 
-    iwidth = twidth
+    intW = twidth
     twidth += width
 
     lines = []
     for (y = frame.y; y < height; y++) {
       line = []
-      for (x = iwidth + frame.x; x < twidth; x++) {
+      for (x = intW + frame.x; x < twidth; x++) {
         line.push(img.bmp[y][x])
       }
       lines.push(line)

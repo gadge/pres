@@ -167,8 +167,8 @@ export class OverlayImage extends Box {
               ratio.th === self._lastSize.th &&
               size.width === self._lastSize.width &&
               size.height === self._lastSize.height &&
-              self.aleft === self._lastSize.aleft &&
-              self.atop === self._lastSize.atop) {
+              self.absL === self._lastSize.absL &&
+              self.absT === self._lastSize.absT) {
               reset()
               if (!callback) return
               return callback(null, success)
@@ -178,8 +178,8 @@ export class OverlayImage extends Box {
               th: ratio.th,
               width: size.width,
               height: size.height,
-              aleft: self.aleft,
-              atop: self.atop
+              absL: self.absL,
+              absT: self.absT
             }
             self.position.width = size.width / ratio.tw | 0
             self.position.height = size.height / ratio.th | 0
@@ -235,18 +235,18 @@ export class OverlayImage extends Box {
       })
       const width  = self.width * ratio.tw | 0,
             height = self.height * ratio.th | 0,
-            aleft  = self.aleft * ratio.tw | 0,
-            atop   = self.atop * ratio.th | 0
+            absL  = self.absL * ratio.tw | 0,
+            absT   = self.absT * ratio.th | 0
       const input = '0;1;'
-        + aleft + ';'
-        + atop + ';'
+        + absL + ';'
+        + absT + ';'
         + width + ';'
         + height + ';;;;;'
         + img
         + '\n4;\n3;\n'
       self._props = {
-        aleft: aleft,
-        atop: atop,
+        absL: absL,
+        absT: absT,
         width: width,
         height: height
       }
@@ -284,17 +284,17 @@ export class OverlayImage extends Box {
     })
     let width  = this._props.width + 2,
         height = this._props.height + 2,
-        aleft  = this._props.aleft,
-        atop   = this._props.atop
+        absL  = this._props.absL,
+        absT   = this._props.absT
     if (this._drag) {
-      aleft -= 10
-      atop -= 10
+      absL -= 10
+      absT -= 10
       width += 10
       height += 10
     }
     const input = '6;'
-      + aleft + ';'
-      + atop + ';'
+      + absL + ';'
+      + absT + ';'
       + width + ';'
       + height
       + '\n4;\n3;\n'
@@ -440,18 +440,18 @@ export class OverlayImage extends Box {
     this._lastSize = _lastSize
     const width  = this.width * ratio.tw | 0,
           height = this.height * ratio.th | 0,
-          aleft  = this.aleft * ratio.tw | 0,
-          atop   = this.atop * ratio.th | 0
+          absL  = this.absL * ratio.tw | 0,
+          absT   = this.absT * ratio.th | 0
     const input = '0;1;'
-      + aleft + ';'
-      + atop + ';'
+      + absL + ';'
+      + absT + ';'
       + width + ';'
       + height + ';;;;;'
       + img
       + '\n4;\n3;\n'
     this._props = {
-      aleft: aleft,
-      atop: atop,
+      absL: absL,
+      absT: absT,
       width: width,
       height: height
     }
@@ -476,17 +476,17 @@ export class OverlayImage extends Box {
     }
     let width  = this._props.width + 2,
         height = this._props.height + 2,
-        aleft  = this._props.aleft,
-        atop   = this._props.atop
+        absL  = this._props.absL,
+        absT   = this._props.absT
     if (this._drag) {
-      aleft -= 10
-      atop -= 10
+      absL -= 10
+      absT -= 10
       width += 10
       height += 10
     }
     const input = '6;'
-      + aleft + ';'
-      + atop + ';'
+      + absL + ';'
+      + absT + ';'
       + width + ';'
       + height
       + '\n4;\n3;\n'

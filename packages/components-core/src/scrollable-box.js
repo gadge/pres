@@ -58,19 +58,19 @@ export class ScrollableBox extends Box {
     //         delete self._drag
     //         return
     //       }
-    //       const x = data.x - self.aleft
-    //       const y = data.y - self.atop
+    //       const x = data.x - self.absL
+    //       const y = data.y - self.absT
     //       if (x === self.width - self.intR - 1) {
     //         // Do not allow dragging on the scrollbar:
     //         delete self.screen._dragging
     //         delete self._drag
-    //         const perc = (y - self.intT) / (self.height - self.iheight)
+    //         const perc = (y - self.intT) / (self.height - self.intH)
     //         self.setScrollPerc(perc * 100 | 0)
     //         self.screen.render()
     //         let smd, smu
     //         self._scrollingBar = true
     //         self.onScreenEvent(MOUSEDOWN, smd = function (data) {
-    //           const y = data.y - self.atop
+    //           const y = data.y - self.absT
     //           const perc = y / self.height
     //           self.setScrollPerc(perc * 100 | 0)
     //           self.screen.render()
@@ -163,10 +163,10 @@ export class ScrollableBox extends Box {
   //     // without the scrollable calculation):
   //     // See: $ node test/widget-shrink-fail-2.js
   //     if (!el.detached) {
-  //       const lpos = el._getCoords(false, true)
-  //       if (lpos) { return Math.max(current, el.rtop + (lpos.yl - lpos.yi)) }
+  //       const lpos = el.calcCoords(false, true)
+  //       if (lpos) { return Math.max(current, el.relT + (lpos.yl - lpos.yi)) }
   //     }
-  //     return Math.max(current, el.rtop + el.height)
+  //     return Math.max(current, el.relT + el.height)
   //   }, 0)
   //   // XXX Use this? Makes .getScrollHeight() useless!
   //   // if (bottom < this._clines.length) bottom = this._clines.length;
@@ -190,7 +190,7 @@ export class ScrollableBox extends Box {
   //   if (!this.scrollable) return
   //   if (this.detached) return
   //   // Handle scrolling.
-  //   const visible = this.height - this.iheight,
+  //   const visible = this.height - this.intH,
   //         base    = this.childBase
   //   let d,
   //       p,
@@ -232,21 +232,21 @@ export class ScrollableBox extends Box {
   //   // and put it in a scrollable text box.
   //   this.parseContent()
   //   // XXX
-  //   // max = this.getScrollHeight() - (this.height - this.iheight);
-  //   max = this._clines.length - (this.height - this.iheight)
+  //   // max = this.getScrollHeight() - (this.height - this.intH);
+  //   max = this._clines.length - (this.height - this.intH)
   //   if (max < 0) max = 0
-  //   emax = this._scrollBottom() - (this.height - this.iheight)
+  //   emax = this._scrollBottom() - (this.height - this.intH)
   //   if (emax < 0) emax = 0
   //   this.childBase = Math.min(this.childBase, Math.max(emax, max))
   //   if (this.childBase < 0) { this.childBase = 0 }
   //   else if (this.childBase > this.baseLimit) { this.childBase = this.baseLimit }
   //   // Optimize scrolling with CSR + IL/DL.
   //   p = this.lpos
-  //   // Only really need _getCoords() if we want
+  //   // Only really need calcCoords() if we want
   //   // to allow nestable scrolling elements...
   //   // or if we **really** want shrinkable
   //   // scrolling elements.
-  //   // p = this._getCoords();
+  //   // p = this.calcCoords();
   //   if (p && this.childBase !== base && this.screen.cleanSides(this)) {
   //     t = p.yi + this.intT
   //     b = p.yl - this.intB - 1
@@ -267,11 +267,11 @@ export class ScrollableBox extends Box {
   //   let max, emax
   //   if (this.detached || !this.scrollable) { return 0 }
   //   // XXX
-  //   // max = this.getScrollHeight() - (this.height - this.iheight);
+  //   // max = this.getScrollHeight() - (this.height - this.intH);
   //
-  //   max = this._clines.length - (this.height - this.iheight)
+  //   max = this._clines.length - (this.height - this.intH)
   //   if (max < 0) max = 0
-  //   emax = this._scrollBottom() - (this.height - this.iheight)
+  //   emax = this._scrollBottom() - (this.height - this.intH)
   //   if (emax < 0) emax = 0
   //   this.childBase = Math.min(this.childBase, Math.max(emax, max))
   //   if (this.childBase < 0) { this.childBase = 0 }
@@ -285,9 +285,9 @@ export class ScrollableBox extends Box {
   // }
   // getScrollHeight() { return Math.max(this._clines.length, this._scrollBottom()) }
   // getScrollPerc(s) {
-  //   const pos = this.lpos || this._getCoords()
+  //   const pos = this.lpos || this.calcCoords()
   //   if (!pos) return s ? -1 : 0
-  //   const height = (pos.yl - pos.yi) - this.iheight,
+  //   const height = (pos.yl - pos.yi) - this.intH,
   //         i      = this.getScrollHeight()
   //   let p
   //   if (height < i) {

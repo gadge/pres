@@ -75,8 +75,8 @@ export class Terminal extends Box {
     element.offsetParent = element
     this.term = require('term.js')({
       termName: this.termName,
-      cols: this.width - this.iwidth,
-      rows: this.height - this.iheight,
+      cols: this.width - this.intW,
+      rows: this.height - this.intH,
       context: element,
       document: element,
       body: element,
@@ -106,10 +106,10 @@ export class Terminal extends Box {
     })
     this.onScreenEvent(MOUSE, function (data) {
       if (self.screen.focused !== self) return
-      if (data.x < self.aleft + self.intL) return
-      if (data.y < self.atop + self.intT) return
-      if (data.x > self.aleft - self.intL + self.width) return
-      if (data.y > self.atop - self.intT + self.height) return
+      if (data.x < self.absL + self.intL) return
+      if (data.y < self.absT + self.intT) return
+      if (data.x > self.absL - self.intL + self.width) return
+      if (data.y > self.absT - self.intT + self.height) return
       if (self.term.x10Mouse ||
         self.term.vt200Mouse ||
         self.term.normalMouse ||
@@ -123,8 +123,8 @@ export class Terminal extends Box {
         return
       }
       let b = data.raw[0]
-      const x = data.x - self.aleft,
-            y = data.y - self.atop
+      const x = data.x - self.absL,
+            y = data.y - self.absT
       let s
       if (self.term.urxvtMouse) {
         if (self.screen.program.sgrMouse) { b += 32 }
@@ -154,8 +154,8 @@ export class Terminal extends Box {
       self.screen.program.flush()
       self.screen.program.write(data)
     })
-    this.on(RESIZE, () => nextTick(() => self.term.resize(self.width - self.iwidth, self.height - self.iheight)))
-    this.once(RENDER, () => self.term.resize(self.width - self.iwidth, self.height - self.iheight))
+    this.on(RESIZE, () => nextTick(() => self.term.resize(self.width - self.intW, self.height - self.intH)))
+    this.once(RENDER, () => self.term.resize(self.width - self.intW, self.height - self.intH))
     this.on(DESTROY, () => {
       self.kill()
       self.screen.program.input.removeListener(DATA, self._onData)
@@ -163,15 +163,15 @@ export class Terminal extends Box {
     if (this.handler) { return }
     this.pty = require('pty.js').fork(this.shell, this.args, {
       name: this.termName,
-      cols: this.width - this.iwidth,
-      rows: this.height - this.iheight,
+      cols: this.width - this.intW,
+      rows: this.height - this.intH,
       cwd: process.env.HOME,
       env: this.options.env || process.env
     })
     this.on(RESIZE, function () {
       nextTick(function () {
         try {
-          self.pty.resize(self.width - self.iwidth, self.height - self.iheight)
+          self.pty.resize(self.width - self.intW, self.height - self.intH)
         } catch (e) { }
       })
     })

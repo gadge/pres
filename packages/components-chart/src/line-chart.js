@@ -93,7 +93,7 @@ export class LineChart extends Canvas {
     const { padds, ticks, labels, context } = this
     labels.loadLabels(seriesCollection)
     this.ticks.setTicks(seriesCollection)
-    this.padds.adjustPadding(this.ticks.tickWidth)
+    this.padds.adjuspaddingSum(this.ticks.tickWidth)
     this.drawLegend(seriesCollection)
     context.fillStyle = this.options.style.text
     context.clearRect(0, 0, this._w, this._h)

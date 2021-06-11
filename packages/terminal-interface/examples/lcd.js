@@ -11,7 +11,7 @@ const screen = blessed.screen()
   options.elements = options.elements || 3; // how many elements in the display. or how many characters can be displayed.
   options.display = options.display || 321; // what should be displayed before anything is set
   options.elementSpacing = options.spacing || 4; // spacing between each element
-  options.elementPadding = options.padding || 2; // how far away from the edges to put the elements
+  options.elemenpaddingSum = options.padding || 2; // how far away from the edges to put the elements
 //coloring
   options.color = options.color || "white";
 */
@@ -27,7 +27,7 @@ setInterval(function () {
   lcd.setDisplay(value + text[value % 12])
   lcd.setOptions({
     color: colors[value % 5],
-    elementPadding: 5
+    elemenpaddingSum: 5
   })
   screen.render()
 }, 1000)

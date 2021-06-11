@@ -35,7 +35,7 @@ export class Layout extends Element {
     if (last) return last.lpos
   }
   _renderCoords() {
-    const coords = this._getCoords(true)
+    const coords = this.calcCoords(true)
     const sub = this.sub
     this.sub = []
     this._render()
@@ -139,13 +139,13 @@ export class Layout extends Element {
     if (coords.yl - coords.yi <= 0) return void (coords.yl = Math.max(coords.yl, coords.yi))
     this.lpos = coords
     if (this.border) coords.xi++, coords.xl--, coords.yi++, coords.yl--
-    if (this.tpadding) {
+    if (this.paddingSum) {
       coords.xi += this.padding.left, coords.xl -= this.padding.right
       coords.yi += this.padding.top, coords.yl -= this.padding.bottom
     }
     const iterator = this.renderer(coords)
     if (this.border) coords.xi--, coords.xl++, coords.yi--, coords.yl++
-    if (this.tpadding) {
+    if (this.paddingSum) {
       coords.xi -= this.padding.left, coords.xl += this.padding.right
       coords.yi -= this.padding.top, coords.yl += this.padding.bottom
     }

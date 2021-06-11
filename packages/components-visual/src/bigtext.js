@@ -70,13 +70,13 @@ export class BigText extends Box {
   }
   render() {
     if (this.position.width == null || this._shrinkWidth) {
-      // if (this.width - this.iwidth < this.ratio.width * this.text.length + 1) {
+      // if (this.width - this.intW < this.ratio.width * this.text.length + 1) {
       this.position.width = this.ratio.width * this.text.length + 1
       this._shrinkWidth = true
       // }
     }
     if (this.position.height == null || this._shrinkHeight) {
-      // if (this.height - this.iheight < this.ratio.height + 0) {
+      // if (this.height - this.intH < this.ratio.height + 0) {
       this.position.height = this.ratio.height + 0
       this._shrinkHeight = true
       // }

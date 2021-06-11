@@ -37,8 +37,8 @@ export class Video extends Box {
       sup: this,
       left: 0,
       top: 0,
-      width: this.width - this.iwidth,
-      height: this.height - this.iheight,
+      width: this.width - this.intW,
+      height: this.height - this.intH,
       shell: shell,
       args: args.slice()
     }
@@ -67,8 +67,8 @@ export class Video extends Box {
         sup: self,
         left: 0,
         top: 0,
-        width: self.width - self.iwidth,
-        height: self.height - self.iheight,
+        width: self.width - self.intW,
+        height: self.height - self.intH,
         shell: shell,
         args: args.slice()
       }

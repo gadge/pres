@@ -119,7 +119,7 @@ export class ListBar extends Box {
         len
     if (!this.sup) { drawn = 0 }
     else {
-      drawn = prev ? prev.aleft + prev.width : 0
+      drawn = prev ? prev.absL + prev.width : 0
       if (!this.screen.autoPadding) { drawn += this.intL }
     }
     if (typeof item === OBJ) {
@@ -214,7 +214,7 @@ export class ListBar extends Box {
     this.items.forEach((el, i) => {
       if (i < self.leftBase) { el.hide() }
       else {
-        el.rleft = drawn + 1
+        el.relL = drawn + 1
         drawn += el.width + 2
         el.show()
       }
@@ -228,10 +228,10 @@ export class ListBar extends Box {
       this.emit(SELECT_ITEM, this.items[offset], offset)
       return
     }
-    const lpos = this._getCoords()
+    const lpos = this.calcCoords()
     if (!lpos) return
     const self  = this,
-          width = ( lpos.xl - lpos.xi ) - this.iwidth
+          width = ( lpos.xl - lpos.xi ) - this.intW
     let drawn   = 0,
         visible = 0,
         el
@@ -239,7 +239,7 @@ export class ListBar extends Box {
     if (!el) return
     this.items.forEach((el, i) => {
       if (i < self.leftBase) return
-      const lpos = el._getCoords()
+      const lpos = el.calcCoords()
       if (!lpos) return
       if (lpos.xl - lpos.xi <= 0) return
       drawn += ( lpos.xl - lpos.xi ) + 2

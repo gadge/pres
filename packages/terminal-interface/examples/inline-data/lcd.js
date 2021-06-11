@@ -11,7 +11,7 @@ var blessed = require('blessed'),
       elements: 5,
       display: 3210,
       elementSpacing: 4,
-      elementPadding: 2
+      elemenpaddingSum: 2
     })
 screen.render()
   

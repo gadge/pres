@@ -178,7 +178,7 @@ export class Table extends Box {
           else {
             // middle
             line[xi + 0].inject(borderAttr, '\u251c') // '├'
-            // XXX If we alter iwidth and intL for no borders - nothing should be written here
+            // XXX If we alter intW and intL for no borders - nothing should be written here
             if (!self.border.left) line[xi + 0].ch = '\u2500' // '─'
 
           }
@@ -203,7 +203,7 @@ export class Table extends Box {
             // middle
             rx++
             line[xi + rx].inject(borderAttr, '\u2524') // '┤'
-            // XXX If we alter iwidth and intR for no borders - nothing should be written here
+            // XXX If we alter intW and intR for no borders - nothing should be written here
             if (!self.border.right) line[xi + rx].ch = '\u2500' // '─'
           }
           line.dirty = true
@@ -215,7 +215,7 @@ export class Table extends Box {
           // top
           rx++
           line[xi + rx].inject(borderAttr, '\u252c') // '┬'
-          // XXX If we alter iheight and intT for no borders - nothing should be written here
+          // XXX If we alter intH and intT for no borders - nothing should be written here
           if (!self.border.top) line[xi + rx].ch = '\u2502' // '│'
 
         }
@@ -223,7 +223,7 @@ export class Table extends Box {
           // bottom
           rx++
           line[xi + rx].inject(borderAttr, '\u2534') // '┴'
-          // XXX If we alter iheight and intB for no borders - nothing should be written here
+          // XXX If we alter intH and intB for no borders - nothing should be written here
           if (!self.border.bottom) line[xi + rx].ch = '\u2502' // '│'
 
         }

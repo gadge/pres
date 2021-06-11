@@ -104,22 +104,22 @@ export class List extends Box {
           return
         }
         if (options.vi && key.name === 'u' && key.ctrl) {
-          self.move(-( ( self.height - self.iheight ) / 2 ) | 0)
+          self.move(-( ( self.height - self.intH ) / 2 ) | 0)
           self.screen.render()
           return
         }
         if (options.vi && key.name === 'd' && key.ctrl) {
-          self.move(( self.height - self.iheight ) / 2 | 0)
+          self.move(( self.height - self.intH ) / 2 | 0)
           self.screen.render()
           return
         }
         if (options.vi && key.name === 'b' && key.ctrl) {
-          self.move(-( self.height - self.iheight ))
+          self.move(-( self.height - self.intH ))
           self.screen.render()
           return
         }
         if (options.vi && key.name === 'f' && key.ctrl) {
-          self.move(self.height - self.iheight)
+          self.move(self.height - self.intH)
           self.screen.render()
           return
         }
@@ -132,7 +132,7 @@ export class List extends Box {
           // TODO: Maybe use Math.min(this.items.length,
           // ... for calculating visible items elsewhere.
           const visible = Math.min(
-            self.height - self.iheight,
+            self.height - self.intH,
             self.items.length) / 2 | 0
           self.move(self.childBase + visible - self.selected)
           self.screen.render()
@@ -141,7 +141,7 @@ export class List extends Box {
         if (options.vi && key.name === 'l' && key.shift) {
           // XXX This goes one too far on lists with an odd number of items.
           self.down(self.childBase
-            + Math.min(self.height - self.iheight, self.items.length)
+            + Math.min(self.height - self.intH, self.items.length)
             - self.selected)
           self.screen.render()
           return
@@ -171,7 +171,7 @@ export class List extends Box {
       })
     }
     this.on(RESIZE, () => {
-      const visible = self.height - self.iheight
+      const visible = self.height - self.intH
       // if (self.selected < visible - 1) {
       if (visible >= self.selected + 1) {
         self.childBase = 0

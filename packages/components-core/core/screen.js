@@ -50,10 +50,10 @@ export class Screen extends Node {
     this.dattr = ( 0 << 18 ) | ( 0x1ff << 9 ) | 0x1ff
     this.renders = 0
     this.position = {
-      left: this.left = this.aleft = this.rleft = 0,
-      right: this.right = this.aright = this.rright = 0,
-      top: this.top = this.atop = this.rtop = 0,
-      bottom: this.bottom = this.abottom = this.rbottom = 0,
+      left: this.left = this.absL = this.relL = 0,
+      right: this.right = this.absR = this.relR = 0,
+      top: this.top = this.absT = this.relT = 0,
+      bottom: this.bottom = this.absB = this.relB = 0,
       get height() { return self.height },
       get width() { return self.width }
     }
@@ -61,8 +61,8 @@ export class Screen extends Node {
     this.intT = 0
     this.intR = 0
     this.intB = 0
-    this.iheight = 0
-    this.iwidth = 0
+    this.intH = 0
+    this.intW = 0
     this.padding = { left: 0, top: 0, right: 0, bottom: 0 }
     this.hover = null
     this.history = []
@@ -836,8 +836,8 @@ export class Screen extends Node {
     })
     this.on(MOUSEMOVE, function (data) {
       if (self._hoverText.detached) return
-      self._hoverText.rleft = data.x + 1
-      self._hoverText.rtop = data.y
+      self._hoverText.relL = data.x + 1
+      self._hoverText.relT = data.y
       self.render()
     })
     this.on(ELEMENT_MOUSEOVER, function (el, data) {
@@ -845,8 +845,8 @@ export class Screen extends Node {
       self._hoverText.parseTags = el.parseTags
       self._hoverText.setContent(el._hoverOptions.text)
       self.append(self._hoverText)
-      self._hoverText.rleft = data.x + 1
-      self._hoverText.rtop = data.y
+      self._hoverText.relL = data.x + 1
+      self._hoverText.relT = data.y
       self.render()
     })
     this.on(ELEMENT_MOUSEOUT, function () {
@@ -1050,15 +1050,15 @@ export class Screen extends Node {
       // NOTE: This is different from the other "visible" values - it needs the
       // visible height of the scrolling element itself, not the element within
       // it.
-      const visible = self.screen.height - el.atop - el.intT - el.abottom - el.intB
-      if (self.rtop < el.childBase) {
-        el.scrollTo(self.rtop)
+      const visible = self.screen.height - el.absT - el.intT - el.absB - el.intB
+      if (self.relT < el.childBase) {
+        el.scrollTo(self.relT)
         self.screen.render()
       }
-      else if (self.rtop + self.height - self.intB > el.childBase + visible) {
+      else if (self.relT + self.height - self.intB > el.childBase + visible) {
         // Explanation for el.intT here: takes into account scrollable elements
         // with borders otherwise the element gets covered by the bottom border:
-        el.scrollTo(self.rtop - ( el.height - self.height ) + el.intT, true)
+        el.scrollTo(self.relT - ( el.height - self.height ) + el.intT, true)
         self.screen.render()
       }
     }
@@ -1300,5 +1300,5 @@ export class Screen extends Node {
   /**
    * Positioning
    */
-  _getPos() { return this }
+  calcPos() { return this }
 }

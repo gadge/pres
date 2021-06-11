@@ -61,12 +61,12 @@ export class ProgressBar extends Input {
         if (!self.lpos) return
         if (self.orientation === 'horizontal') {
           x = data.x - self.lpos.xi
-          m = ( self.lpos.xl - self.lpos.xi ) - self.iwidth
+          m = ( self.lpos.xl - self.lpos.xi ) - self.intW
           p = x / m * 100 | 0
         }
         else if (self.orientation === 'vertical') {
           y = data.y - self.lpos.yi
-          m = ( self.lpos.yl - self.lpos.yi ) - self.iheight
+          m = ( self.lpos.yl - self.lpos.yi ) - self.intH
           p = y / m * 100 | 0
         }
         self.setProgress(p)

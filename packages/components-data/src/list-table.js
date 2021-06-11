@@ -51,9 +51,9 @@ export class ListTable extends List {
     })
     this.on(SCROLL, () => {
       self._header.setFront()
-      self._header.rtop = self.childBase
+      self._header.relT = self.childBase
       if (!self.screen.autoPadding) {
-        self._header.rtop = self.childBase + ( self.border ? 1 : 0 )
+        self._header.relT = self.childBase + ( self.border ? 1 : 0 )
       }
     })
     this.pad = options.pad != null
@@ -172,7 +172,7 @@ export class ListTable extends List {
           // top
           rx++
           line[xi + rx].inject(borderAttr, '\u252c') // '┬'
-          // XXX If we alter iheight and intT for no borders - nothing should be written here
+          // XXX If we alter intH and intT for no borders - nothing should be written here
           if (!border.top) line[xi + rx].ch = '\u2502' // '│'
           line.dirty = true
         }
@@ -180,7 +180,7 @@ export class ListTable extends List {
           // bottom
           rx++
           line[xi + rx].inject(borderAttr, '\u2534') // '┴'
-          // XXX If we alter iheight and intB for no borders - nothing should be written here
+          // XXX If we alter intH and intB for no borders - nothing should be written here
           if (!border.bottom) line[xi + rx].ch = '\u2502' // '│'
           line.dirty = true
         }

@@ -39,7 +39,7 @@ export class Textbox extends Textarea {
         this.setContent(Array(this.value.length + 1).join('*'))
       }
       else {
-        visible = -(this.width - this.iwidth - 1)
+        visible = -(this.width - this.intW - 1)
         val = this.value.replace(/\t/g, this.screen.tabc)
         this.setContent(val.slice(visible))
       }

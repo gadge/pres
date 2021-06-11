@@ -59,7 +59,7 @@ const table = grid.set(4, 9, 4, 3, contrib.table, {
   options.elements = options.elements || 3; // how many elements in the display. or how many characters can be displayed.
   options.display = options.display || 321; // what should be displayed before anything is set
   options.elementSpacing = options.spacing || 4; // spacing between each element
-  options.elementPadding = options.padding || 2; // how far away from the edges to put the elements
+  options.elemenpaddingSum = options.padding || 2; // how far away from the edges to put the elements
 //coloring
   options.color = options.color || "white";
 */
@@ -71,7 +71,7 @@ const lcdLineOne = grid.set(0, 9, 2, 3, contrib.lcd, {
     elements: 5,
     display: 3210,
     elementSpacing: 4,
-    elementPadding: 2
+    elemenpaddingSum: 2
   }
 )
 const errorsLine = grid.set(0, 6, 4, 3, contrib.lineChart, {
@@ -211,7 +211,7 @@ setInterval(function () {
   lcdLineOne.setDisplay(value + text[value % 12])
   lcdLineOne.setOptions({
     color: colors[value % 5],
-    elementPadding: 4
+    elemenpaddingSum: 4
   })
   screen.render()
 }, 1500)

@@ -12,7 +12,7 @@ export class LCD extends Canvas {
     options.elements = options.elements || 3 // how many elements in the display. or how many characters can be displayed.
     options.display = options.display || 321 // what should be displayed before anything is set
     options.elementSpacing = options.spacing || 4 // spacing between each element
-    options.elementPadding = options.padding || 2 // how far away from the edges to put the elements
+    options.elemenpaddingSum = options.padding || 2 // how far away from the edges to put the elements
     //coloring
     options.color = options.color || 'white'
     super(options)
@@ -44,7 +44,7 @@ export class LCD extends Canvas {
       elements: 5,
       display: 3210,
       elementSpacing: 4,
-      elementPadding: 2
+      elemenpaddingSum: 2
     }
   }
   setDisplay(display) {
@@ -96,7 +96,7 @@ class SixteenSegment {
     this.SideBevelEnabled = true      // Should the sides be beveled
     this.StrokeLight = options.color       // Color of an on segment outline
     this.StrokeWidth = options.strokeWidth               // Width of segment outline
-    this.Padding = options.elementPadding                   // Padding around the display
+    this.Padding = options.elemenpaddingSum                   // Padding around the display
     this.Spacing = options.elementSpacing                   // Spacing between elements
     this.ElementWidth = ( width - ( this.Spacing * count ) ) / count
     this.ElementHeight = height - ( this.Padding * 2 )
@@ -129,7 +129,7 @@ class SixteenSegment {
     this.SideBevelEnabled = true
     this.StrokeLight = options.color || this.StrokeLight
     this.StrokeWidth = options.strokeWidth || this.StrokeWidth
-    this.Padding = options.elementPadding || this.Padding
+    this.Padding = options.elemenpaddingSum || this.Padding
     this.Spacing = options.elementSpacing || this.Spacing
     this.ElementWidth = ( this.Width - ( this.Spacing * this.count ) ) / this.count
     this.ElementHeight = this.Height - ( this.Padding * 2 )
