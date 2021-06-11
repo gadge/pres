@@ -78,7 +78,7 @@ export class ListTable extends List {
           selected = this.selected,
           original = this.items.slice()
     let sel = this.ritems[this.selected]
-    if (this.visible && this.lpos) this.clearPos()
+    if (this.visible && this.prevPos) this.clearPos()
     this.clearItems()
     this.rows = rows || []
     this._calculateMaxes()

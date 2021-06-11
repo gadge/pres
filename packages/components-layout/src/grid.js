@@ -1,4 +1,5 @@
 import { roundD2, roundD4 } from '@aryth/math'
+import { Cadre }            from '@pres/components-core/utils/Cadre'
 import { assignDeep }       from '@pres/util-helpers'
 import { NUM, OBJ, STR }    from '@typen/enum-data-types'
 import { nullish }          from '@typen/nullish'
@@ -22,17 +23,15 @@ export class Grid {
     this.screen = options.screen
     this.colNo = options.cols ?? 12
     this.rowNo = options.rows ?? 12
-    this.margin = parseMargin(options.margin)
+    this.margin = Cadre.build(options.margin)
     this.unit = {
-      h: roundD4(( 100 - this.marginVert ) / this.rowNo), // roundD2(( 100 - this.margin * 2 ) / this.rowNo),
-      w: roundD4(( 100 - this.marginHori ) / this.colNo), // roundD2(( 100 - this.margin * 2 ) / this.colNo),
+      h: roundD4(( 100 - this.margin.vert ) / this.rowNo), // roundD2(( 100 - this.margin * 2 ) / this.rowNo),
+      w: roundD4(( 100 - this.margin.hori ) / this.colNo), // roundD2(( 100 - this.margin * 2 ) / this.colNo),
       border: { type: 'line', fg: options.color ?? 'cyan' }
     }
     this.hideBorder = options.hideBorder
   }
   static build(options) { return new Grid(options) }
-  get marginVert() { return this.margin.t + this.margin.b }
-  get marginHori() { return this.margin.l + this.margin.r }
   set(t, l, h, w, component, options) {
     if (component instanceof Grid) {
       throw 'Error: A Grid is not allowed to be nested inside another grid.\r\n' +
@@ -41,14 +40,15 @@ export class Grid {
     //var options = JSON.parse(JSON.stringify(opts));
     let p = {}
     p = assignDeep(p, options)
-    p.top = roundD2(t * this.unit.h) + '%' + '+' + this.margin.t // ( t * this.unit.h + this.margin ) + '%'
-    p.left = roundD2(l * this.unit.w) + '%' + '+' + this.margin.l // ( l * this.unit.w + this.margin ) + '%'
-    p.height = roundD2(this.unit.h * h - SPACING) + '%' // + '-' + this.margin.t
-    p.width = roundD2(this.unit.w * w - SPACING) + '%'
+    p.top = options.t ?? ( roundD2(t * this.unit.h) + '%' + ( this.margin.t ? '+' + this.margin.t : '' ) ) // ( t * this.unit.h + this.margin ) + '%'
+    p.left = options.l ?? ( roundD2(l * this.unit.w) + '%' + ( this.margin.l ? '+' + this.margin.l : '' ) )// ( l * this.unit.w + this.margin ) + '%'
+    p.height = options.h ?? ( roundD2(this.unit.h * h - SPACING) + '%' ) // + '-' + this.margin.t
+    p.width = options.w ?? ( roundD2(this.unit.w * w - SPACING) + '%' )
     console.log('[coord]', `(${ p.top },${ p.left })`, '[size]', `(${ p.height },${ p.width })`)
     p.border = options.hideBorder ?? this.hideBorder ? null : p.border ?? this.unit.border
     const instance = component(p)
     if (!options.sup) this.screen.append(instance)
     return instance
   }
+
 }

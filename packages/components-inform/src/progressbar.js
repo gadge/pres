@@ -58,15 +58,15 @@ export class ProgressBar extends Input {
     if (options.mouse) {
       this.on(CLICK, function (data) {
         let x, y, m, p
-        if (!self.lpos) return
+        if (!self.prevPos) return
         if (self.orientation === 'horizontal') {
-          x = data.x - self.lpos.xLo
-          m = ( self.lpos.xHi - self.lpos.xLo ) - self.intW
+          x = data.x - self.prevPos.xLo
+          m = ( self.prevPos.xHi - self.prevPos.xLo ) - self.intW
           p = x / m * 100 | 0
         }
         else if (self.orientation === 'vertical') {
-          y = data.y - self.lpos.yLo
-          m = ( self.lpos.yHi - self.lpos.yLo ) - self.intH
+          y = data.y - self.prevPos.yLo
+          m = ( self.prevPos.yHi - self.prevPos.yLo ) - self.intH
           p = y / m * 100 | 0
         }
         self.setProgress(p)

@@ -51,8 +51,8 @@ export class Textarea extends Input {
   static build(options) { return new Textarea(options) }
   _updateCursor(get) {
     if (this.screen.focused !== this) return
-    const lpos = get ? this.lpos : this.calcCoords()
-    if (!lpos) return
+    const prevPos = get ? this.prevPos : this.calcCoords()
+    if (!prevPos) return
     let last = this._clines[this._clines.length - 1]
     const program = this.screen.program
     let line,
@@ -67,13 +67,13 @@ export class Textarea extends Input {
     }
     line = Math.min(
       this._clines.length - 1 - (this.childBase || 0),
-      (lpos.yHi - lpos.yLo) - this.intH - 1)
+      (prevPos.yHi - prevPos.yLo) - this.intH - 1)
     // When calling clearValue() on a full textarea with a border, the first
     // argument in the above Math.min call ends up being -2. Make sure we stay
     // positive.
     line = Math.max(0, line)
-    cy = lpos.yLo + this.intT + line
-    cx = lpos.xLo + this.intL + this.strWidth(last)
+    cy = prevPos.yLo + this.intT + line
+    cx = prevPos.xLo + this.intL + this.strWidth(last)
     // XXX Not sure, but this may still sometimes
     // cause problems when leaving editor.
     if (cy === program.y && cx === program.x) return

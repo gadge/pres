@@ -26,10 +26,10 @@ export class ANSIImage extends Box {
       this.setImage(this.options.file)
     }
     this.screen.on(PRERENDER, function () {
-      const lpos = self.lpos
-      if (!lpos) return
+      const prevPos = self.prevPos
+      if (!prevPos) return
       // prevent image from blending with itself if there are alpha channels
-      self.screen.clearRegion(lpos.xLo, lpos.xHi, lpos.yLo, lpos.yHi)
+      self.screen.clearRegion(prevPos.xLo, prevPos.xHi, prevPos.yLo, prevPos.yHi)
     })
     this.on(DESTROY, function () {
       self.stop()
