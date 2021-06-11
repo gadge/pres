@@ -79,7 +79,7 @@ export class Layout extends Element {
         // Make sure the position matches the highest width element
         if (self.options.layout === 'grid') {
           // Compensate with width:
-          // el.position.width = el.width + (highWidth - el.width);
+          // el.pos.width = el.width + (highWidth - el.width);
           // Compensate with position:
           el.pos.left += highWidth - (last.lpos.xHi - last.lpos.xLo)
         }

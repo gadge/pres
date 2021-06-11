@@ -24,6 +24,7 @@ import { SP }                                                          from '@te
 import { FUN, OBJ, STR }                                               from '@typen/enum-data-types'
 import cp, { spawn }                                                   from 'child_process'
 import { Log }                                                         from '../src/log'
+import { Detic }                                                       from '../utils/Detic'
 import { Box }                                                         from './box'
 
 export class Screen extends Node {
@@ -49,20 +50,7 @@ export class Screen extends Node {
     this.fullUnicode = this.options.fullUnicode && this._unicode
     this.dattr = ( 0 << 18 ) | ( 0x1ff << 9 ) | 0x1ff
     this.renders = 0
-    this.pos = {
-      left: this.left = this.absL = this.relL = 0,
-      right: this.right = this.absR = this.relR = 0,
-      top: this.top = this.absT = this.relT = 0,
-      bottom: this.bottom = this.absB = this.relB = 0,
-      get height() { return self.height },
-      get width() { return self.width }
-    }
-    this.intL = 0
-    this.intT = 0
-    this.intR = 0
-    this.intB = 0
-    this.intH = 0
-    this.intW = 0
+    this.setupPos()
     this.padding = { left: 0, top: 0, right: 0, bottom: 0 }
     this.hover = null
     this.history = []
@@ -122,6 +110,17 @@ export class Screen extends Node {
     this.enter()
     this.postEnter()
     this.on('adjourn', () => ScreenCollection.journal = false)
+  }
+  setupPos() {
+    const t = this.t = this.top = this.absT = this.relT = this.intT = 0
+    const b = this.b = this.bottom = this.absB = this.relB = this.intB = 0
+    const l = this.l = this.left = this.absL = this.relL = this.intL = 0
+    const r = this.r = this.right = this.absR = this.relR = this.intR = 0
+    const h = this.h = this.height
+    const w = this.w = this.width
+    this.intH = 0
+    this.intW = 0
+    this.pos = new Detic(t, b, l, r, w, h)
   }
   setupProgram(options) {
     if (options.rsety && options.listen) options = { program: options }

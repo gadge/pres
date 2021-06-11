@@ -10,7 +10,7 @@ OUT: >> [program.configIO] [terminal] alacritty [tmux] false\n
 -
 OUT: >> [ProgramCollection.initialize] ^[[33m1^[[39m [ newListener,removeListener,warning,SIGWINCH,SIGTERM,SIGINT,SIGQUIT,uncaughtException,exit ]\n
 -
-OUT: >> [program.configGrid] (62,108) [tput.colors] (256)\n
+OUT: >> [program.configGrid] (48,158) [tput.colors] (256)\n
 -
 OUT: >> [program.#listenInput] [ end,pause,data,keypress ]\n
 -
@@ -48,7 +48,251 @@ OUT: >> [new node] box.8 ∈ screen.0\n
 -
 OUT: >> [new node] box.9 ∈ box.8\n
 -
-OUT: ^[[?1049h^[[?1h^[=^[[1;62r^[[?25l^[[1;1H^[[H^[[2J^[[?1000h^[[?1002h^[[?1003h^[[?1005h^[7^[[8;1H^[[11C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[9;1H^[[9;12Hx^[[48;5;159m^[(Bfoobar                                                                             ^[[m^[[7;48;5;159m ^[[m^[(0x^[[10;1H^[[10;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[11;1H^[[11;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[12;1H^[[12;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[13;1H^[[13;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[14;1H^[[14;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[15;1H^[[15;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[16;1H^[[16;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[17;1H^[[17;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[18;1H^[[18;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[19;1H^[[19;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[20;1H^[[20;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[21;1H^[[21;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[22;1H^[[22;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[23;1H^[[23;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[24;1H^[[24;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[25;1H^[[25;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[26;1H^[[26;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[27;1H^[[27;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[28;1H^[[28;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[29;1H^[[29;12Hx^[[48;5;159m^[(B        ^[[m^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[48;5;159m^[(B        ^[[m^[(0x^[[30;1H^[[30;12Hx^[[48;5;159m^[(B        ^[[m^[(0x^[[45m^[(B                                                                  ^[[m^[(0x^[[48;5;159m^[(B        ^[[m^[(0x^[[31;1H^[[31;12Hx^[[48;5;159m^[(B        ^[[m^[(0x^[[45m^[(B                                                                  ^[[m^[(0x^[[48;5;159m^[(B        ^[[m^[(0x^[[32;1H^[[32;12Hx^[[48;5;159m^[(B        ^[[m^[(0x^[[45m^[(B  foo-one                                                         ^[[m^[(0x^[[48;5;159m^[(B        ^[[m^[(0x^[[33;1H^[[33;12Hx^[[48;5;159m^[(B        ^[[m^[(0x^[[45m^[(B  foo-two                                                         ^[[m^[(0x^[[48;5;159m^[(B        ^[[m^[(0x^[[34;1H^[[34;12Hx^[[48;5;159m^[(B        ^[[m^[(0x^[[45m^[(B  foo-three                                                       ^[[m^[(0x^[[48;5;159m^[(B        ^[[m^[(0x^[[35;1H^[[35;12Hx^[[48;5;159m^[(B        ^[[m^[(0x^[[45m^[(B     ^[[m^[(0lqqqk^[[45m^[(B                                                        ^[[m^[(0x^[[48;5;159m^[(B        ^[[m^[(0x^[[36;1H^[[36;12Hx^[[48;5;159m^[(B        ^[[m^[(0x^[[45m^[(B     ^[[m^[(0x^[[43m^[(Bfoo^[[m^[(0x^[[45m^[(B                                                        ^[[m^[(0x^[[48;5;159m^[(B        ^[[m^[(0x^[[37;1H^[[37;12Hx^[[48;5;159m^[(B        ^[[m^[(0mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[[48;5;159m^[(B        ^[[m^[(0x^[[38;1H^[[38;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[39;1H^[[39;12Hx^[[48;5;159m^[(B  ^[[m^[[48;5;167m                                           ^[[m^[[48;5;159m                                       ^[[m^[(0x^[[40;1H^[[40;12Hx^[[48;5;159m^[(B  ^[[m^[[48;5;167m                                           ^[[m^[[48;5;159m                                       ^[[m^[(0x^[[41;1H^[[41;12Hx^[[48;5;159m^[(B  ^[[m^[[48;5;167m  hello1                                   ^[[m^[[48;5;159m                                       ^[[m^[(0x^[[42;1H^[[42;12Hx^[[48;5;159m^[(B  ^[[m^[[48;5;167m  hello2                                   ^[[m^[[48;5;159m                                       ^[[m^[(0x^[[43;1H^[[43;12Hx^[[48;5;159m^[(B  ^[[m^[[48;5;167m                                           ^[[m^[[48;5;159m                                       ^[[m^[(0x^[[44;1H^[[44;12Hx^[[48;5;159m^[(B  ^[[m^[[48;5;167m                                           ^[[m^[[48;5;159m                                       ^[[m^[(0x^[[45;1H^[[45;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[46;1H^[[46;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[47;1H^[[47;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[48;1H^[[48;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[49;1H^[[49;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[50;1H^[[50;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[51;1H^[[51;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[52;1H^[[52;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[53;1H^[[53;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[54;1H^[[54;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[55;1H^[[55;12Hx^[[48;5;159m^[(B                                                                                    ^[[m^[(0x^[[56;1H^[[56;12Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+OUT: ^[[?1049h^[[?1h^[=^[[1;48r^[[?25l^[[1;1H^[[H^[[2J^[[?1000h^[[?1002h^[[?1003h^[[?1005h^[7^[[6;1H^[[16C^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[7;1H^[[7;17Hx^[[48;5;159m^[(Bfoobar                                                                                                                     ^[[m^[[7;48;5;159m ^[[m^[(0x^[[8;1H^[[8;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[9;1H^[[9;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[10;1H^[[10;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[11;1H^[[11;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[12;1H^[[12;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[13;1H^[[13;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[14;1H^[[14;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[15;1H^[[15;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[16;1H^[[16;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[17;1H^[[17;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[18;1H^[[18;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[19;1H^[[19;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[20;1H^[[20;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[21;1H^[[21;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[22;1H^[[22;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[23;1H^[[23;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[24;1H^[[24;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[25;1H^[[25;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[26;1H^[[26;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[27;1H^[[27;17Hx^[[48;5;159m^[(B            ^[[m^[(0lqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqk^[[48;5;159m^[(B            ^[[m^[(0x^[[28;1H^[[28;17Hx^[[48;5;159m^[(B            ^[[m^[(0x^[[45m^[(B                                                                                                  ^[[m^[(0x^[[48;5;159m^[(B            ^[[m^[(0x^[[29;1H^[[29;17Hx^[[48;5;159m^[(B            ^[[m^[(0x^[[45m^[(B                                                                                                  ^[[m^[(0x^[[48;5;159m^[(B            ^[[m^[(0x^[[30;1H^[[30;17Hx^[[48;5;159m^[(B            ^[[m^[(0x^[[45m^[(B  foo-one                                                                                         ^[[m^[(0x^[[48;5;159m^[(B            ^[[m^[(0x^[[31;1H^[[31;17Hx^[[48;5;159m^[(B            ^[[m^[(0x^[[45m^[(B  foo-two                                                                                         ^[[m^[(0x^[[48;5;159m^[(B            ^[[m^[(0x^[[32;1H^[[32;17Hx^[[48;5;159m^[(B            ^[[m^[(0x^[[45m^[(B  foo-three                                                                                       ^[[m^[(0x^[[48;5;159m^[(B            ^[[m^[(0x^[[33;1H^[[33;17Hx^[[48;5;159m^[(B            ^[[m^[(0x^[[45m^[(B     ^[[m^[(0lqqqk^[[45m^[(B                                                                                        ^[[m^[(0x^[[48;5;159m^[(B            ^[[m^[(0x^[[34;1H^[[34;17Hx^[[48;5;159m^[(B            ^[[m^[(0x^[[45m^[(B     ^[[m^[(0x^[[43m^[(Bfoo^[[m^[(0x^[[45m^[(B                                                                                        ^[[m^[(0x^[[48;5;159m^[(B            ^[[m^[(0x^[[35;1H^[[35;17Hx^[[48;5;159m^[(B            ^[[m^[(0mqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[[48;5;159m^[(B            ^[[m^[(0x^[[36;1H^[[36;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[37;1H^[[37;17Hx^[[48;5;159m^[(B  ^[[m^[[48;5;167m                                                               ^[[m^[[48;5;159m                                                           ^[[m^[(0x^[[38;1H^[[38;17Hx^[[48;5;159m^[(B  ^[[m^[[48;5;167m                                                               ^[[m^[[48;5;159m                                                           ^[[m^[(0x^[[39;1H^[[39;17Hx^[[48;5;159m^[(B  ^[[m^[[48;5;167m  hello1                                                       ^[[m^[[48;5;159m                                                           ^[[m^[(0x^[[40;1H^[[40;17Hx^[[48;5;159m^[(B  ^[[m^[[48;5;167m  hello2                                                       ^[[m^[[48;5;159m                                                           ^[[m^[(0x^[[41;1H^[[41;17Hx^[[48;5;159m^[(B  ^[[m^[[48;5;167m                                                               ^[[m^[[48;5;159m                                                           ^[[m^[(0x^[[42;1H^[[42;17Hx^[[48;5;159m^[(B  ^[[m^[[48;5;167m                                                               ^[[m^[[48;5;159m                                                           ^[[m^[(0x^[[43;1H^[[43;17Hmqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqj^[(B^[8
+-
+IN: ^[[MC[B
+-
+OUT: ^[7^[[28;1H^[[28;31H^[[41m                                                                                                  ^[[m^[[29;1H^[[29;31H^[[41m                                                                                                  ^[[m^[[30;1H^[[30;31H^[[41m  foo-one                                                                                         ^[[m^[[31;1H^[[31;31H^[[41m  foo-two                                                                                         ^[[m^[[32;1H^[[32;31H^[[41m  foo-three                                                                                       ^[[m^[[33;1H^[[33;31H^[[41m     ^[[5C                                                                                        ^[[m^[[34;1H^[[34;31H^[[41m     ^[[5C                                                                                        ^[[m^[8
+-
+IN: ^[[MC\B
+-
+IN: ^[[MC]B
+-
+IN: ^[[MC^B
+-
+IN: ^[[MC_B
+-
+IN: ^[[MC`B
+-
+IN: ^[[MCaB
+-
+IN: ^[[MCbB
+-
+IN: ^[[MCcB
+-
+IN: ^[[MCdB
+-
+IN: ^[[MCeB
+-
+IN: ^[[MCfB
+-
+IN: ^[[MCgB
+-
+IN: ^[[MChB
+-
+IN: ^[[MCiB
+-
+IN: ^[[MCjB
+-
+IN: ^[[MCkB
+-
+IN: ^[[MClB
+-
+IN: ^[[MCmB
+-
+IN: ^[[MCnB
+-
+IN: ^[[MCoB
+-
+IN: ^[[MCpB
+-
+IN: ^[[MCqB
+-
+IN: ^[[MCrB
+-
+IN: ^[[MCsB
+-
+IN: ^[[MCtB
+-
+IN: ^[[MCuB
+-
+IN: ^[[MCvB
+-
+IN: ^[[MCwB
+-
+IN: ^[[MCxB
+-
+IN: ^[[MCyB
+-
+IN: ^[[MCzB
+-
+IN: ^[[MC{B
+-
+IN: ^[[MC|B
+-
+IN: ^[[MC}B
+-
+IN: ^[[MC~B
+-
+IN: ^[[MC^?B
+-
+IN: ^[[MC^@B
+-
+IN: ^[[MC\x81B
+-
+IN: ^[[MC\x82B
+-
+IN: ^[[MC\x83B
+-
+IN: ^[[MC\x84B
+-
+IN: ^[[MC\x85B
+-
+IN: ^[[MC\x86B
+-
+IN: ^[[MC\x87B
+-
+IN: ^[[MC\x88B
+-
+IN: ^[[MC\x89B
+-
+IN: ^[[MC\x8aB
+-
+IN: ^[[MC\x8bB
+-
+IN: ^[[MC\x8cB
+-
+IN: ^[[MC\x8dB
+-
+IN: ^[[MC\x8eB
+-
+IN: ^[[MC\x8fB
+-
+IN: ^[[MC\x90B
+-
+IN: ^[[MC\x91B
+-
+IN: ^[[MC\x92B
+-
+IN: ^[[MC\x93B
+-
+IN: ^[[MC\x94B
+-
+IN: ^[[MC\x95B
+-
+IN: ^[[MC\x96B
+-
+IN: ^[[MC\x97B
+-
+IN: ^[[MC\x98B
+-
+IN: ^[[MC\x99B
+-
+IN: ^[[MC\x9aB
+-
+IN: ^[[MC\x9bB
+-
+IN: ^[[MC\x9cB
+-
+IN: ^[[MC\x9dB
+-
+IN: ^[[MC\x9eB
+-
+IN: ^[[MC\x9eA
+-
+IN: ^[[MC\x9fA
+-
+IN: ^[[MC\xa0A
+-
+IN: ^[[MC\xa1A
+-
+IN: ^[[MC\xa2A
+-
+OUT: ^[7^[[28;1H^[[28;31H^[[45m                                                                                                  ^[[m^[[29;1H^[[29;31H^[[45m                                                                                                  ^[[m^[[30;1H^[[30;31H^[[45m  foo-one                                                                                         ^[[m^[[31;1H^[[31;31H^[[45m  foo-two                                                                                         ^[[m^[[32;1H^[[32;31H^[[45m  foo-three                                                                                       ^[[m^[[33;1H^[[33;31H^[[45m     ^[[5C                                                                                        ^[[m^[[34;1H^[[34;31H^[[45m     ^[[5C                                                                                        ^[[m^[8
+-
+IN: ^[[MC\xa2@
+-
+IN: ^[[MC\xa3@
+-
+IN: ^[[MC\xa4?
+-
+IN: ^[[MC\xa5?
+-
+IN: ^[[MC\xa5>
+-
+IN: ^[[MC\xa6>
+-
+IN: ^[[MC\xa7>
+-
+IN: ^[[MC\xa7=
+-
+IN: ^[[MC\xa8=
+-
+IN: ^[[MC\xa9=
+-
+IN: ^[[MC\xaa=
+-
+IN: ^[[MC\xaa<
+-
+IN: ^[[MC\xab<
+-
+IN: ^[[MC\xac<
+-
+IN: ^[[MC\xad<
+-
+IN: ^[[MC\xad;
+-
+IN: ^[[MC\xae;
+-
+IN: ^[[MC\xaf;
+-
+IN: ^[[MC\xb0;
+-
+IN: ^[[MC\xaf;
+-
+IN: ^[[MC\xaf:
+-
+IN: ^[[MC\xae:
+-
+IN: ^[[MC\xad:
+-
+IN: ^[[MC\xac:
+-
+IN: ^[[MC\xab:
+-
+IN: ^[[MC\xaa:
+-
+IN: ^[[MC\xa9:
+-
+IN: ^[[Ma\xa9:
+-
+OUT: ^[7^[[7;42r^[[7;1H^[[13M^[[1;48r^[[30;1H^[[30;17H^[(0x^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[31;1H^[[31;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[32;1H^[[32;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[33;1H^[[33;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[34;1H^[[34;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[35;1H^[[35;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[36;1H^[[36;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[37;1H^[[37;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[38;1H^[[38;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[39;1H^[[39;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[40;1H^[[40;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[41;1H^[[41;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[42;1H^[[42;17Hx^[[48;5;159m^[(B                                                                                                                           ^[[m^[[7;48;5;159m ^[[m^[(0x^[(B^[8
+-
+IN: ^[[Ma\xa9:^[[Ma\xa9:
+-
+IN: ^[[Ma\xa9:^[[Ma\xa9:^[[Ma\xa9:
+-
+IN: ^[[Ma\xa9:
+-
+IN: ^[[Ma\xa9:^[[Ma\xa9:
+-
+IN: ^[[Ma\xa9:
+-
+IN: ^[[Ma\xa9:^[[Ma\xa9:
+-
+IN: ^[[M`\xa9:
+-
+OUT: ^[7^[[7;42r^[[7;1H^[[13L^[[1;48r^[[7;1H^[[16C^[(0x^[[48;5;159m^[(Bfoobar                                                                                                                     ^[[m^[[7;48;5;159m ^[[m^[(0x^[[8;1H^[[8;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[9;1H^[[9;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[10;1H^[[10;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[11;1H^[[11;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[12;1H^[[12;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[13;1H^[[13;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[14;1H^[[14;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[15;1H^[[15;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[16;1H^[[16;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[17;1H^[[17;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[18;1H^[[18;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[[19;1H^[[19;17Hx^[[48;5;159m^[(B                                                                                                                            ^[[m^[(0x^[(B^[8
+-
+IN: ^[[M`\xa9:^[[M`\xa9:
+-
+IN: ^[[M`\xa9:
+-
+IN: ^[[M`\xa9:
+-
+IN: ^[[M`\xa9:
+-
+IN: ^[[M`\xa9:
+-
+IN: ^[[M`\xa9:
+-
+IN: ^[[M`\xa9:
+-
+IN: ^[[M`\xa9:
+-
+IN: ^[[M`\xa9:
+-
+IN: ^[[M`\xa9:
 -
 IN: q
 -
