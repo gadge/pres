@@ -1,9 +1,17 @@
-import { Box }       from '@pres/components-core'
-import { ATTACH }    from '@pres/enum-events'
-import { clearAnsi } from '@texting/charset-ansi'
-import { UND }       from '@typen/enum-data-types'
-import { List }      from './list'
-// import stripAnsi   from 'strip-ansi'
+import { MUTATE_PIGMENT }         from '@palett/enum-colorant-modes'
+import { COLUMNWISE }             from '@palett/fluo'
+import { fluoMatrix }             from '@palett/fluo-matrix'
+import { fluoVector }             from '@palett/fluo-vector'
+import { FRESH, METRO, SUBTLE }   from '@palett/presets'
+import { Box }                    from '@pres/components-core'
+import { ATTACH }                 from '@pres/enum-events'
+import { tablePadder }            from '@spare/table-padder'
+import { clearAnsi }              from '@texting/charset-ansi'
+import { SP }                     from '@texting/enum-chars'
+import { UND }                    from '@typen/enum-data-types'
+import { mapper as mapperMatrix } from '@vect/matrix-mapper'
+import { mapper as mapperVector } from '@vect/vector-mapper'
+import { List }                   from './list'
 
 export class DataTable extends Box {
   constructor(options) {
@@ -30,14 +38,8 @@ export class DataTable extends Box {
       width: 0,
       left: 1,
       style: {
-        selected: {
-          fg: options.selectedFg,
-          bg: options.selectedBg
-        },
-        item: {
-          fg: options.fg,
-          bg: options.bg
-        }
+        selected: { fg: options.selectedFg, bg: options.selectedBg },
+        item: { fg: options.fg, bg: options.bg }
       },
       keys: options.keys,
       vi: options.vi,
@@ -61,6 +63,30 @@ export class DataTable extends Box {
   }
   setData(table) {
     const self = this
+    let head = mapperVector(table.head ?? table.headers, String),
+        rows = mapperMatrix(table.rows ?? table.data, String)
+    const presets = [ FRESH, METRO, SUBTLE ]
+    const padTable = tablePadder({ head, rows }, { ansi: true, full: true })  // use: ansi, fullAngle
+    if (presets) {
+      const [ alpha, beta, gamma ] = presets
+      head = fluoVector.call(MUTATE_PIGMENT, padTable.head, [ alpha, gamma ?? beta ])
+      rows = fluoMatrix.call(MUTATE_PIGMENT, padTable.rows, COLUMNWISE, [ alpha, beta ])
+    }
+    const space = self.options.columnSpacing ? SP.repeat(self.options.columnSpacing) : SP
+    this.setContent(head.join(space))
+    this.rows.setItems(rows.map(row => row.join(space)))
+  }
+  setDataAutoFlat(table) {
+    const self = this
+    let head = mapperVector(table.head ?? table.headers, String),
+        rows = mapperMatrix(table.rows ?? table.data, String)
+    const padTable = tablePadder({ head, rows }, { ansi: true, full: true })
+    const space = self.options.columnSpacing ? SP.repeat(self.options.columnSpacing) : SP
+    this.setContent(padTable.head.join(space))
+    this.rows.setItems(padTable.rows.map(row => row.join(space)))
+  }
+  setDataManual(table) {
+    const self = this
     const dataToString = row => {
       let str = ''
       row.forEach((cell, i) => {
@@ -76,9 +102,9 @@ export class DataTable extends Box {
       })
       return str
     }
-    const formatted = []
-    table.data.forEach(row => formatted.push(dataToString(row)))
-    this.setContent(dataToString(table.headers))
+    const formatted = [];
+    ( table.rows ?? table.data ).forEach(row => formatted.push(dataToString(row)))
+    this.setContent(dataToString(table.head ?? table.headers))
     this.rows.setItems(formatted)
   }
   getOptionsPrototype() {
