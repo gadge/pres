@@ -1,5 +1,5 @@
-import { CSI }           from '@palett/enum-ansi-codes'
-import { modeToSign }    from '@pres/util-sgr-mode'
+import { CSI, SGR }   from '@palett/enum-ansi-codes'
+import { modeToSign } from '@pres/util-sgr-mode'
 import { attrToSgra }    from '@pres/util-sgr-attr'
 import { DOT }           from '@texting/enum-chars'
 import { DEF, NUM, STR } from '@typen/enum-data-types'
