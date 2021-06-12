@@ -13,6 +13,7 @@ export class Cadre {
     if (t === OBJ) return new Cadre(o.t ?? o.top, o.b ?? o.bottom, o.l ?? o.left, o.r ?? o.right)
     return new Cadre(0, 0, 0, 0)
   }
+  get any() { return this.t || this.b || this.l || this.r }
   get top() { return this.t }
   get bottom() { return this.b }
   get left() { return this.l }
