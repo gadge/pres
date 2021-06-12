@@ -23,12 +23,12 @@ import { last }                                     from '@vect/vector-index'
 import assert                                       from 'assert'
 import { Cadre }                                    from '../utils/Cadre'
 import { Detic }                                    from '../utils/Detic'
-import { parsePercent }                             from '../utils/parsePercent'
 import { Box }                                      from './box'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
 export class Element extends Node {
+  #parsedContent
   type = 'element'
   /**
    * Element
@@ -667,7 +667,6 @@ export class Element extends Node {
     const width = this.width - this.intW
     if (this.contLines == null || this.contLines.width !== width || this.contLines.content !== this.content) {
       let content = this.content
-      content = content
         .replace(/[\x00-\x08\x0b-\x0c\x0e-\x1a\x1c-\x1f\x7f]/g, '')
         .replace(/\x1b(?!\[[\d;]*m)/g, '')
         .replace(/\r\n|\r/g, LF)
@@ -700,11 +699,11 @@ export class Element extends Node {
       this.contLines.content = this.content
       this.contLines.attr = this.#parseAttr(this.contLines)
       this.contLines.ci = []
-      this.contLines.reduce(function (total, line) {
+      this.contLines.reduce((total, line) => {
         this.contLines.ci.push(total)
         return total + line.length + 1
-      }.bind(this), 0)
-      this._pcontent = this.contLines.join(LF)
+      }, 0)
+      this.#parsedContent = this.contLines.join(LF)
       this.emit(PARSED_CONTENT)
       return true
     }
@@ -977,7 +976,11 @@ export class Element extends Node {
         yHi = coords.yHi,
         currAttr,
         ch
-    const content = this._pcontent
+    const content = this.#parsedContent
+    // if (this.codename === 'box.24') console.log('box.24', 'this.content', `[ ${ this.content } ]`)
+    // if (this.codename === 'box.24') console.log('box.24', 'content', `[ ${ content } ]`)
+    // if (this.codename === 'box.24') console.log('box.24', 'this.contLines', `[ ${ this.contLines } ]`)
+    // if (this.codename === 'box.24') console.log('box.24', 'this.#parsedContent', `[ ${ this.#parsedContent } ]`)
     let ci = this.contLines.ci[coords.base],
         borderAttr,
         normAttr,
@@ -985,7 +988,7 @@ export class Element extends Node {
         i
 
     const bch = this.ch
-    if (coords.base >= this.contLines.ci.length) ci = this._pcontent.length
+    if (coords.base >= this.contLines.ci.length) ci = this.#parsedContent.length
     this.prevPos = coords
     if (this.border?.type === 'line') {
       this.screen._borderStops[coords.yLo] = true
@@ -1002,7 +1005,7 @@ export class Element extends Node {
     // content-drawing loop will skip a few cells/lines.
     // To deal with this, we can just fill the whole thing
     // ahead of time. This could be optimized.
-    if (this.paddingSum || ( this.valign && this.valign !== TOP )) {
+    if (this.padding.any || ( this.valign && this.valign !== TOP )) {
       if (this.style.transparent) {
         for (let y = Math.max(yLo, 0), line, cell; ( y < yHi ); y++) {
           if (!( line = lines[y] )) break
@@ -1017,7 +1020,7 @@ export class Element extends Node {
         this.screen.fillRegion(normAttr, bch, xLo, xHi, yLo, yHi)
       }
     }
-    if (this.paddingSum) { xLo += this.padding.l, xHi -= this.padding.r, yLo += this.padding.t, yHi -= this.padding.b }
+    if (this.padding.any) { xLo += this.padding.l, xHi -= this.padding.r, yLo += this.padding.t, yHi -= this.padding.b }
     // Determine where to place the text if it's vertically aligned.
     if (this.valign === MIDDLE || this.valign === BOTTOM) {
       visible = yHi - yLo
@@ -1053,6 +1056,12 @@ export class Element extends Node {
           if (( matches = /^\x1b\[[\d;]*m/.exec(content.slice(ci - 1)) ) && ( [ sgra ] = matches )) {
             ci += sgra.length - 1
             currAttr = sgraToAttr(sgra, currAttr, normAttr)
+            // if (this.codename === 'box.25') console.log(
+            //   '[box.25]', content, content.replace(/\s/g, '_').replace(/\x1b/g, '^'), tempCi,
+            //   '[sgra]', '' + Mor.build(sgra |> sgraToAttr),
+            //   '[currAttr]', '' + Mor.build(currAttr),
+            // )
+            
             // Ignore foreground changes for selected items.
             if (this.sup._isList && this.sup.interactive && this.sup.items[this.sup.selected] === this && this.sup.options.invertSelected !== false) {
               currAttr = ( currAttr & ~( 0x1ff << 9 ) ) | ( normAttr & ( 0x1ff << 9 ) )
@@ -1161,7 +1170,7 @@ export class Element extends Node {
       }
     }
     if (this.border) xLo--, xHi++, yLo--, yHi++
-    if (this.paddingSum) { xLo -= this.padding.l, xHi += this.padding.r, yLo -= this.padding.t, yHi += this.padding.b }
+    if (this.padding.any) { xLo -= this.padding.l, xHi += this.padding.r, yLo -= this.padding.t, yHi += this.padding.b }
     // Draw the border.
     if (this.border) {
       borderAttr = styleToAttr(this.style.border)
