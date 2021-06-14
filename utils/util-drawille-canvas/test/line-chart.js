@@ -88,4 +88,4 @@ for (var i = 0; i < data.values.length; i++) {
   c.fillText(data.values[i].X, getXPixel(i), size.height - yPadding + yLabelPadding)
 }
 
-console.log(c._canvas.frame())
+console.log(c.drawille.frame())

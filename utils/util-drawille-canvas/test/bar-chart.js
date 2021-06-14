@@ -44,4 +44,4 @@ data.forEach(function (n) {
 })
 
 
-console.log(c._canvas.frame())
+console.log(c.drawille.frame())

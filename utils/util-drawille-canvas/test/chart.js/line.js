@@ -8,7 +8,7 @@ const c = new Canvas(width, height)
 //var c = new Canvas(width, height, require('../../../ansi-term'));  
 
 
-c.canvas = c._canvas
+c.canvas = c.drawille
 
 
 c.clearRect(0, 0, c.width, c.height)
@@ -47,4 +47,4 @@ const myLine = new Chart(c).Line(lineChartData, {
   XLineOffset: 1,
 })
 
-console.log(c._canvas.frame())
+console.log(c.drawille.frame())

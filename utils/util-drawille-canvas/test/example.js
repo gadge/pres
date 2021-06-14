@@ -18,7 +18,7 @@ if(typeof document == 'undefined') {
   c.strokeStyle=[200,100,100];
 
   flush = function() {
-    console.log(c._canvas.frame());
+    console.log(c.drawille.frame());
   };
 } else {
   c = document.getElementById('canvas').getContext('2d');

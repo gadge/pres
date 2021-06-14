@@ -2,7 +2,6 @@ import bresenham       from 'bresenham'
 import { mat2d, vec2 } from 'gl-matrix'
 import { Canvas }      from './Canvas'
 
-
 export class Context {
   #canvas
   #matrix
@@ -13,10 +12,10 @@ export class Context {
     this.#canvas = new CanvasClass(width, height)
     this.#matrix = mat2d.create()
   }
+  get drawille() { return this.#canvas }
+  set drawille(value) { return this.#canvas = value }
   get canvas() { return this.#canvas } //compatability
   set canvas(value) { this.#canvas = value }
-  get _canvas() { return this.#canvas }
-  set _canvas(value) { this.#canvas = value }
   set fillStyle(value) { this.#canvas.fontFg = value }
   set strokeStyle(value) { this.#canvas.color = value }
   clearRect(x, y, w, h) { quad(this.#matrix, x, y, w, h, this.#canvas.unset.bind(this.#canvas)) }
@@ -48,6 +47,7 @@ export class Context {
     this.#canvas.writeText(str, ~~v[0], ~~v[1])
   }
   measureText(str) {return this.#canvas.measureText(str)}
+  getContext() { return this }
 }
 
 function br([ x_, Y_ ], [ _x, _y ]) { return bresenham(~~x_, ~~Y_, ~~_x, ~~_y) }
