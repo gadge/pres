@@ -23,6 +23,7 @@ import { last }                                     from '@vect/vector-index'
 import assert                                       from 'assert'
 import { Cadre }                                    from '../utils/Cadre'
 import { Detic }                                    from '../utils/Detic'
+import { scaler }                                   from '../utils/scaler'
 import { Box }                                      from './box'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
@@ -55,6 +56,7 @@ export class Element extends Node {
     this.valign = options.valign || TOP
     this.wrap = options.wrap !== false
     this.shrink = options.shrink
+    this.inGrid = options.inGrid
     this.fixed = options.fixed
     this.ch = options.ch || ' '
     const pos = this.pos = Detic.build(
@@ -62,8 +64,8 @@ export class Element extends Node {
       ( options.pos = selectObject(options, [ 'left', 'right', 'top', 'bottom', 'width', 'height' ]) )
     )
     if (pos.width === 'shrink' || pos.height === 'shrink') {
-      if (pos.width === 'shrink') delete pos.width
-      if (pos.height === 'shrink') delete pos.height
+      if (pos.width === 'shrink') pos.width = null // delete pos.width
+      if (pos.height === 'shrink') pos.height = null // delete pos.height
       options.shrink = true
     }
     // this.pos = pos
@@ -162,7 +164,7 @@ export class Element extends Node {
   // the sup was resized, etc.
 
   get position() { return this.pos }
-
+  get scaler() {return this.screen.gridScale }
   /**
    * Relative coordinates as default properties
    */
@@ -210,7 +212,12 @@ export class Element extends Node {
 
   set absT(val) {
     if (typeof val === STR)
-      val = val === CENTER ? ( this.screen.height / 2 | 0 ) - ( this.height / 2 | 0 ) : this.screen.gridScale.scaleT(val, this.screen.height)
+      if (val === CENTER) {
+        val = ( this.screen.height / 2 | 0 ) - ( this.height / 2 | 0 )
+      }
+      else {
+        val = this.inGrid ? this.scaler.scaleT(val, this.screen.height) : scaler(val, this.screen.height)
+      }
     val -= this.sup.absT
     if (this.pos.top === val) return val
     this.emit(MOVE), this.clearPos()
@@ -224,7 +231,12 @@ export class Element extends Node {
   }
   set absL(val) {
     if (typeof val === STR)
-      val = val === CENTER ? ( this.screen.width / 2 | 0 ) - ( this.width / 2 | 0 ) : this.screen.gridScale.scaleL(val, this.screen.width)
+      if (val === CENTER) {
+        val = ( this.screen.width / 2 | 0 ) - ( this.width / 2 | 0 )
+      }
+      else {
+        val = this.inGrid ? this.scaler.scaleL(val, this.screen.width) : scaler(val, this.screen.width)
+      }
     val -= this.sup.absL
     if (this.pos.left === val) return val
     this.emit(MOVE), this.clearPos()
@@ -282,7 +294,8 @@ export class Element extends Node {
     const supPos = get ? this.sup.calcPos() : this.sup
     /** @type {string|number} */ let top = this.pos.top || 0
     if (typeof top === STR) {
-      top = this.screen.gridScale.scaleT(top === CENTER ? '50%' : top, supPos.height)
+      if (top === CENTER) { top = '50%' }
+      top = this.inGrid ? this.scaler.scaleT(top, supPos.height) : scaler(top, supPos.height)
       if (this.pos.top === CENTER) top -= this.calcH(get) / 2 | 0
     }
     if (this.pos.top == null && this.pos.bottom != null) {
@@ -304,7 +317,8 @@ export class Element extends Node {
     const supPos = get ? this.sup.calcPos() : this.sup
     let left = this.pos.left || 0
     if (typeof left === STR) {
-      left = this.screen.gridScale.scaleL(left === CENTER ? '50%' : left, supPos.width)
+      if (left === CENTER) { left = '50%' }
+      left = this.inGrid ? this.scaler.scaleL(left, supPos.width) : scaler(left, supPos.width)
       if (this.pos.left === CENTER) { left -= this.calcW(get) / 2 | 0 }
     }
     if (this.pos.left == null && this.pos.right != null) {
@@ -326,7 +340,11 @@ export class Element extends Node {
     const supPos = get ? this.sup.calcPos() : this.sup
     let width = this.pos.width,
         left
-    if (typeof width === STR) { return this.screen.gridScale.scaleW(width === 'half' ? '50%' : width, supPos.width) }
+    if (typeof width === STR) {
+      if (width === 'half') {width = '50%'}
+      width = this.inGrid ? this.scaler.scaleW(width, supPos.width) : scaler(width, supPos.width)
+      return width
+    }
     // This is for if the element is being streched or shrunken.
     // Although the width for shrunken elements is calculated
     // in the render function, it may be calculated based on
@@ -335,7 +353,10 @@ export class Element extends Node {
     // calculated here.
     if (width == null) {
       left = this.pos.left || 0
-      if (typeof left === STR) { left = this.screen.gridScale.scaleL(left === CENTER ? '50%' : left, supPos.width) }
+      if (typeof left === STR) {
+        if (left === CENTER) { left = '50%' }
+        left = this.inGrid ? this.scaler.scaleL(left, supPos.width) : scaler(left, supPos.width)
+      }
       width = supPos.width - ( this.pos.right || 0 ) - left
       if (this.screen.autoPadding) {
         if (( this.pos.left != null || this.pos.right == null ) && this.pos.left !== CENTER) width -= this.sup.intL
@@ -348,7 +369,11 @@ export class Element extends Node {
     const supPos = get ? this.sup.calcPos() : this.sup
     let height = this.pos.height,
         top
-    if (typeof height === STR) { return this.screen.gridScale.scaleH(height === 'half' ? '50%' : height, supPos.height) }
+    if (typeof height === STR) {
+      if (height === 'half') { height = '50%' }
+      height = this.inGrid ? this.scaler.scaleH(height, supPos.height) : scaler(height, supPos.height)
+      return height
+    }
     // This is for if the element is being streched or shrunken.
     // Although the width for shrunken elements is calculated
     // in the render function, it may be calculated based on
@@ -357,7 +382,10 @@ export class Element extends Node {
     // calculated here.
     if (height == null) {
       top = this.pos.top || 0
-      if (typeof top === STR) { top = this.screen.gridScale.scaleT(top === CENTER ? '50%' : top, supPos.height) }
+      if (typeof top === STR) {
+        if (top === CENTER) { top = '50%' }
+        top = this.inGrid ? this.scaler.scaleT(top, supPos.height) : scaler(top, supPos.height)
+      }
       height = supPos.height - ( this.pos.bottom || 0 ) - top
       if (this.screen.autoPadding) {
         if (( this.pos.top != null || this.pos.bottom == null ) && this.pos.top !== CENTER) height -= this.sup.intT
@@ -1061,7 +1089,7 @@ export class Element extends Node {
             //   '[sgra]', '' + Mor.build(sgra |> sgraToAttr),
             //   '[currAttr]', '' + Mor.build(currAttr),
             // )
-            
+
             // Ignore foreground changes for selected items.
             if (this.sup._isList && this.sup.interactive && this.sup.items[this.sup.selected] === this && this.sup.options.invertSelected !== false) {
               currAttr = ( currAttr & ~( 0x1ff << 9 ) ) | ( normAttr & ( 0x1ff << 9 ) )
