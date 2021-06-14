@@ -1,5 +1,6 @@
 import { Canvas } from '@pres/components-layout'
 import { ATTACH } from '@pres/enum-events'
+import { NUM }    from '@typen/enum-data-types'
 
 export class Gauge extends Canvas {
   constructor(options = {}) {
@@ -24,19 +25,21 @@ export class Gauge extends Canvas {
     this.type = 'gauge'
   }
   static build(options) { return new Gauge(options) }
-  calcSize() { this._w = this.width - 2, this._h = this.height }
+  get canvH() { return this.height }
+  get canvW() { return this.width - 2 }
   setData(data) {
-    if (typeof ( data ) === typeof ( [] ) && data.length > 0) this.setStack(data)
-    else if (typeof ( data ) === typeof ( 1 )) this.setPercent(data)
+    return data?.length ? this.setStack(data)
+      : typeof data === NUM ? this.setPercent(data)
+        : void 0
   }
   setPercent(percent) {
     if (!this.context) throw 'error: canvas context does not exist. setData() for gauges must be called after the gauge has been added to the screen via screen.append()'
     const c = this.context
     c.strokeStyle = this.options.stroke//'magenta'
     c.fillStyle = this.options.fill//'white'
-    c.clearRect(0, 0, this._w, this._h)
+    c.clearRect(0, 0, this.canvW, this.canvH)
     if (percent < 1.001) percent = percent * 100
-    const width = percent / 100 * ( this._w - 3 )
+    const width = percent / 100 * ( this.canvW - 3 )
     c.fillRect(1, 2, width, 2)
     const textX = 7
     if (width < textX) c.strokeStyle = 'normal'
@@ -48,7 +51,7 @@ export class Gauge extends Canvas {
     const c = this.context
     let leftStart = 1
     let textLeft = 5
-    c.clearRect(0, 0, this._w, this._h)
+    c.clearRect(0, 0, this.canvW, this.canvH)
     for (let i = 0; i < stack.length; i++) {
       const currentStack = stack[i]
       let percent = typeof ( currentStack ) === typeof ( {} ) ? currentStack.percent : currentStack
@@ -56,7 +59,7 @@ export class Gauge extends Canvas {
       c.fillStyle = this.options.fill //'white'
       textLeft = 5
       if (percent < 1.001) percent = percent * 100
-      const width = percent / 100 * ( this._w - 3 )
+      const width = percent / 100 * ( this.canvW - 3 )
       c.fillRect(leftStart, 2, width, 2)
       textLeft = ( width / 2 ) - 1
       // if (textLeft)

@@ -19,10 +19,11 @@ export class BarChart extends Canvas {
     // console.log(this.options)
   }
   static build(options) { return new BarChart(options) }
-  calcSize() { this._w = this.width - 2, this._h = this.height }
-  get labelY() { return this._h - 3 }
-  get valueY() { return this._h - 4 }
-  get barY() { return this._h - 5 }
+  get canvH() { return this.height }
+  get canvW() { return this.width - 2 }
+  get labelY() { return this.canvH - 3 }
+  get valueY() { return this.canvH - 4 }
+  get barY() { return this.canvH - 5 }
   setData(series) {
     if (!this.context) throw 'error: canvas context does not exist. setData() for bar charts must be called after the chart has been added to the screen via screen.append()'
     this.clear()

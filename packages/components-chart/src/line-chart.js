@@ -30,15 +30,16 @@ export class LineChart extends Canvas {
     this.type = 'line-chart'
   }
   static build(options) { return new LineChart(options) }
-  get originY() { return this._h - this.padds.y }
-  get originX() { return this._w - this.padds.x }
+  get originY() { return this.canvH - this.padds.y }
+  get originX() { return this.canvW - this.padds.x }
   coordX(val) { return ( this.originX / this.labels.length ) * val + ( this.padds.x * 1.0 ) + 2 }
   coordY(val) {
     let res = this.originY - ( this.originY / this.ticks.dif ) * ( val - this.ticks.min )
     res -= 2 //to separate the baseline and the data line to separate chars so canvas will show separate colors
     return res
   }
-  calcSize() { this._w = this.width * 2 - 12, this._h = this.height * 4 - 8 }
+  get canvH() { return ( this.height << 2 ) - 8}
+  get canvW() { return ( this.width << 1 ) - 12 }
   labelWidth(labels) { return maxBy(labels, x => x?.length) ?? 0 }
   drawLegend(seriesCollection) {
     if (!this.options.showLegend) return
@@ -84,7 +85,7 @@ export class LineChart extends Canvas {
     context.beginPath()
     context.lineTo(this.padds.x, 0)
     context.lineTo(this.padds.x, this.originY)
-    context.lineTo(this._w, this.originY)
+    context.lineTo(this.canvW, this.originY)
     context.stroke()
   }
   setData(seriesCollection) {
@@ -96,7 +97,7 @@ export class LineChart extends Canvas {
     this.padds.adjuspaddingSum(this.ticks.tickWidth)
     this.drawLegend(seriesCollection)
     context.fillStyle = this.options.style.text
-    context.clearRect(0, 0, this._w, this._h)
+    context.clearRect(0, 0, this.canvW, this.canvH)
     // Draw tick labels (y-axis values)
     for (let i = ticks.min; i < ticks.max; i += ticks.step)
       context.fillText(ticks.formatTick(i), padds.relativeX, this.coordY(i))
@@ -107,7 +108,7 @@ export class LineChart extends Canvas {
     // Draw x-value labels
     const charsLimit = this.originX / 2
     for (let i = 0, step = labels.labelStep(charsLimit); i < labels.length; i += step) {
-      if (( this.coordX(i) + ( labels.list[i].length * 2 ) ) <= this._w) {
+      if (( this.coordX(i) + ( labels.list[i].length * 2 ) ) <= this.canvW) {
         context.fillText(labels.list[i], this.coordX(i), this.originY + padds.labelY)
       }
     }

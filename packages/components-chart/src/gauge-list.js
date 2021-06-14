@@ -20,14 +20,15 @@ export class GaugeList extends Canvas {
     this.type = 'gauge'
   }
   static build(options) { return new GaugeList(options) }
-  calcSize() { this._w = this.width - 2, this._h = this.height }
+  get canvH() { return this.height }
+  get canvW() { return this.width - 2 }
   setData() { }
   setGauges(gauges) {
     if (!this.context) {
       throw 'error: canvas context does not exist. setData() for gauges must be called after the gauge has been added to the screen via screen.append()'
     }
     const c = this.context
-    c.clearRect(0, 0, this._w, this._h)
+    c.clearRect(0, 0, this.canvW, this.canvH)
     for (let i = 0; i < gauges.length; i++) { this.setSingleGauge(gauges[i], i) }
   }
   setSingleGauge(gauge, offset) {
@@ -51,7 +52,7 @@ export class GaugeList extends Canvas {
       c.strokeStyle = currentStack.stroke || colors[( i % colors.length )] // use specified or choose from the array of colors
       c.fillStyle = this.options.fill//'white'
       textLeft = 5
-      const width = percent / 100 * ( this._w - 5 )
+      const width = percent / 100 * ( this.canvW - 5 )
       c.fillRect(leftStart, offset * ( this.options.gaugeHeight + this.options.gaugeSpacing ), width, this.options.gaugeHeight - 1)
       textLeft = ( width / 2 ) - 1
       // if (textLeft)

@@ -19,7 +19,8 @@ export class StackedBarChart extends Canvas {
     this.type = 'bar-chart'
   }
   static build(options) { return new StackedBarChart(options) }
-  calcSize() { this._w = this.width - 2, this._h = this.height }
+  get canvH() { return this.height }
+  get canvW() { return this.width - 2 }
   getSummedBars(bars) {
     const res = []
     bars.forEach(function (stackedValues) {
@@ -61,10 +62,10 @@ export class StackedBarChart extends Canvas {
     if (this.options.labelColor)
       c.fillStyle = this.options.labelColor
     if (this.options.showText) {
-      c.fillText(category, x + 1, this._h - BUFFER_FROM_BOTTOM)
+      c.fillText(category, x + 1, this.canvH - BUFFER_FROM_BOTTOM)
     }
     if (curBarSummedValue < 0) return
-    const maxBarHeight = this._h - BUFFER_FROM_TOP - BUFFER_FROM_BOTTOM
+    const maxBarHeight = this.canvH - BUFFER_FROM_TOP - BUFFER_FROM_BOTTOM
     const currentBarHeight = Math.round(maxBarHeight * ( curBarSummedValue / maxBarValue ))
     //start painting from bottom of bar, section by section
     let y = maxBarHeight + BUFFER_FROM_TOP

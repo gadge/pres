@@ -20,12 +20,15 @@ export class DonutChart extends Canvas {
     this.type = 'donut'
   }
   static build(options) { return new DonutChart(options) }
-  calcSize() {
-    // this.canvas = { width: Math.round(this.width * 2 - 5), height: this.height * 4 - 12 }
-    this._w = Math.round(this.width * 2 - 5)
-    this._h = this.height * 4 - 12
-    if (this._w % 2 === 1) this._w--
-    if (this._h % 4 !== 1) this._h += ( this._h % 4 )
+  get canvH() {
+    let canvH = ( this.height << 2 ) - 12
+    if (canvH % 4 !== 1) canvH += ( canvH % 4 )
+    return canvH
+  }
+  get canvW() {
+    let canvW = Math.round(( this.width << 1 ) - 5)
+    if (canvW % 2 === 1) canvW--
+    return canvW
   }
   setData(data) { this.update(data) }
   update(data) {
@@ -35,9 +38,9 @@ export class DonutChart extends Canvas {
     c.translate(0, -this.options.yPadding)
     c.strokeStyle = this.options.stroke
     c.fillStyle = this.options.fill
-    c.clearRect(0, 0, this._w, this._h)
-    const cheight = this._h
-    const cwidth = this._w
+    c.clearRect(0, 0, this.canvW, this.canvH)
+    const cheight = this.canvH
+    const cwidth = this.canvW
     function makeRound(percent, radius, width, cx, cy, color) {
       let s = 0
       const points = 370
