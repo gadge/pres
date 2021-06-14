@@ -126,26 +126,11 @@ export class ListBar extends Box {
       cmd = item
       if (cmd.prefix == null) cmd.prefix = ( this.items.length + 1 ) + ''
     }
-    if (typeof item === STR) {
-      cmd = {
-        prefix: ( this.items.length + 1 ) + '',
-        text: item,
-        callback: callback
-      }
-    }
-    if (typeof item === FUN) {
-      cmd = {
-        prefix: ( this.items.length + 1 ) + '',
-        text: item.name,
-        callback: item
-      }
-    }
-    if (cmd.keys && cmd.keys[0]) {
-      cmd.prefix = cmd.keys[0]
-    }
+    if (typeof item === STR) { cmd = { prefix: ( this.items.length + 1 ) + '', text: item, callback: callback } }
+    if (typeof item === FUN) { cmd = { prefix: ( this.items.length + 1 ) + '', text: item.name, callback: item } }
+    if (cmd.keys && cmd.keys[0]) { cmd.prefix = cmd.keys[0] }
     const t = helpers.generateTags(this.style.prefix || { fg: 'lightblack' })
     title = ( cmd.prefix != null ? t.open + cmd.prefix + t.close + ':' : '' ) + cmd.text
-
     len = ( ( cmd.prefix != null ? cmd.prefix + ':' : '' ) + cmd.text ).length
     const options = {
       screen: this.screen,
@@ -162,10 +147,7 @@ export class ListBar extends Box {
       style: helpers.merge({}, this.style.item),
       noOverflow: true
     }
-    if (!this.screen.autoPadding) {
-      options.top += this.intT
-      options.left += this.intL
-    }
+    if (!this.screen.autoPadding) { options.top += this.intT, options.left += this.intL }
     EFFECT_COLLECTION.forEach(name => {
       options.style[name] = () => {
         let attr = self.items[self.selected] === el ? self.style.selected[name] : self.style.item[name]
