@@ -1,3 +1,4 @@
+import { BlueGrey, Indigo, LightBlue }                       from '@palett/cards'
 import { ATTACH, PRESS, RESIZE, SUBMIT, UNCAUGHT_EXCEPTION } from '@pres/enum-events'
 import { Pres }                                              from '@pres/terminal-interface'
 import { MarketWatch }                                       from './monitor'
@@ -46,7 +47,7 @@ const label = Pres.box({
 const textbox = Pres.textbox({
   sup: form,
   top: 0,
-  left: 10,
+  left: 'center',
   height: 3,
   width: '100%-20',
   name: 'symbol',
@@ -59,7 +60,7 @@ const textbox = Pres.textbox({
 const submit = Pres.button({
   sup: form,
   top: 0,
-  left: '100%-10',
+  right: 0,
   height: 3,
   width: 10,
   name: 'submit',
@@ -73,59 +74,62 @@ const submit = Pres.button({
   // hideBorder: true,
 })
 
-// const label = grid.set(0, 0, 1, 2, Pres.box, {
-//   t: 0,
-//   h: 3,
-//   content: 'SYMBOL',
-//   border: { type: 'bg' },
-//   align: 'right',
-//   valign: 'middle',
-// })
-// const textbox = grid.set(0, 2, 1, 8, Pres.textbox, {
-//   t: 0,
-//   h: 3,
-//   name: 'symbol',
-//   inputOnFocus: true,
-//   content: 'symbol',
-//   border: { type: 'line' },
-//   focus: { fg: 'blue' }
-// })
-// // Submit/Cancel buttons
-// const submit = grid.set(0, 10, 1, 2, Pres.button, {
-//   t: 0,
-//   h: 3,
-//   name: 'submit',
-//   content: 'Submit',
-//   // shrink: true,
-//   // padding: { top: 1, right: 2, bottom: 1, left: 2 },
-//   align: 'center',
-//   valign: 'middle',
-//   style: { bold: true, fg: 'white', bg: 'green', focus: { inverse: true }, hover: { bg: 'red' } },
-//   border: { type: 'bg' },
-//   // hideBorder: true,
-// })
 
-// form.append(textbox)
-// form.append(submit)
+const box = Pres.box({
+  sup: screen,
+  bottom: 0,
+  left: '50%',
+  height: 1,
+  width: '50%',
+  align: 'center',
+  valign: 'middle',
+  content: '...',
+  // border: 'line'
+})
+const listBar = Pres.listBar({
+  sup: screen,
+  bottom: 0,
+  left: 0,
+  height: 1,
+  width: '50%',
+  mouse: true,
+  keys: true,
+  autoCommandKeys: true,
+  // border: 'line',
+  vi: true,
+  style: {
+    // bg: Pink.lighten_4,
+    item: { bg: BlueGrey.darken_4, hover: { bg: LightBlue.base } }, // focus: { bg: 'blue' }
+    selected: { bg: Indigo.accent_4 }
+  },
+  commands: {
+    home: { keys: [ 'a' ], callback() { box.setContent('Pressed home.'), screen.render() } },
+    favorite: { keys: [ 'b' ], callback() { box.setContent('Pressed favorite.'), screen.render() } },
+    search: { keys: [ 'c' ], callback() { box.setContent('Pressed search.'), screen.render() } },
+    refresh: { keys: [ 'd' ], callback() { box.setContent('Pressed refresh.'), screen.render() } },
+    about: { keys: [ 'e' ], callback() { box.setContent('Pressed about.'), screen.render() } },
+  }
+})
 
 // lineChartCollection.A1.focus()
 textbox.focus()
-screen.render()
 submit.on(PRESS, () => {
   console.log('pressed')
   form.submit()
 })
 form.on(SUBMIT, data => { console.log(data) })
 
+screen.render()
+
 screen.on(RESIZE, () => {
   label.emit(ATTACH)
   textbox.emit(ATTACH)
   screen.emit(ATTACH)
   form.emit(ATTACH)
+  listBar.emit(ATTACH)
+  box.emit(ATTACH)
   for (let key in lineChartCollection)
     lineChartCollection[key].emit(ATTACH)
-  // listBar.emit(ATTACH)
-  // box.emit(ATTACH)
 })
 
 
