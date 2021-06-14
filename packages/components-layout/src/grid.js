@@ -44,8 +44,9 @@ export class Grid {
     p.left = options.l ?? ( roundD2(l * this.unit.w) + '%' + ( this.margin.l ? '+' + this.margin.l : '' ) )// ( l * this.unit.w + this.margin ) + '%'
     p.height = options.h ?? ( roundD2(this.unit.h * h - SPACING) + '%' ) // + '-' + this.margin.t
     p.width = options.w ?? ( roundD2(this.unit.w * w - SPACING) + '%' )
-    console.log('[coord]', `(${ p.top },${ p.left })`, '[size]', `(${ p.height },${ p.width })`)
+    // console.log('[coord]', `(${ p.top },${ p.left })`, '[size]', `(${ p.height },${ p.width })`)
     p.border = options.hideBorder ?? this.hideBorder ? null : p.border ?? this.unit.border
+    p.inGrid = true
     const instance = component(p)
     if (!options.sup) this.screen.append(instance)
     return instance

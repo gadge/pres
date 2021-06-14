@@ -1,10 +1,10 @@
 import { Indigo, LightBlue, Pink, Red } from '@palett/cards'
 import { TI as blessed }                from '../src/terminal-interface'
 
-const auto = true
+const auto = false
 
 const screen = blessed.screen({
-  dump: __dirname + '/logs/listbar.log',
+  dump: __dirname + '/logs/listBar.log',
   autoPadding: auto,
   warnings: true
 })
@@ -54,9 +54,6 @@ const bar = blessed.listBar({
 })
 
 screen.append(bar)
-
 bar.focus()
-
-screen.key('q', () => screen.destroy())
-
+screen.key([ 'q', 'esc' ], () => screen.destroy())
 screen.render()
