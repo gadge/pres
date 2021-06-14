@@ -1,5 +1,5 @@
-import { ATTACH } from '@pres/enum-events'
 import { Canvas } from '@pres/components-layout'
+import { ATTACH } from '@pres/enum-events'
 
 export class LCD extends Canvas {
   constructor(options = {}) {
@@ -18,15 +18,16 @@ export class LCD extends Canvas {
     super(options)
     const self = this
     this.segment16 = null
-    this.on(ATTACH, function () {
+    this.on(ATTACH, () => {
       const display = self.options.display || 1234
-      if (!this.segment16) this.segment16 = new SixteenSegment(this.options.elements, this.context, this._w, this._h, 0, 0, this.options)
+      if (!this.segment16) this.segment16 = new SixteenSegment(this.options.elements, this.context, this.canvW, this.canvH, 0, 0, this.options)
       this.setDisplay(display)
     })
     this.type = 'lcd'
   }
   static build(options) { return new LCD(options) }
-  calcSize() { this._w = this.width * 2 - 8, this._h = ( this.height * 4 ) - 12 }
+  get canvH() { return ( this.height << 2 ) - 12 }
+  get canvW() { return ( this.width << 1 ) - 8}
   increaseWidth() { if (this.segment16) { this.segment16.SegmentWidth += 0.01 } }
   decreaseWidth() { if (this.segment16) { this.segment16.SegmentWidth -= 0.01 } }
   increaseInterval() { if (this.segment16) { this.segment16.SegmentInterval += 0.01 } }
@@ -50,7 +51,7 @@ export class LCD extends Canvas {
   setDisplay(display) {
     if (!this.context)
       throw 'error: canvas context does not exist. setData() for line charts must be called after the chart has been added to the screen via screen.append()'
-    this.context.clearRect(0, 0, this._w, this._h)
+    this.context.clearRect(0, 0, this.canvW, this.canvH)
     this.segment16.DisplayText(display)
   }
 }
@@ -226,13 +227,13 @@ class SixteenSegment {
           sqrt3 = Math.sqrt(3)
     // Base position of points w/out bevel and interval
     const w0                      = w / 2 - sw / 2, h0 = 0,
-          w1                      = w / 2, h1 = sw / 2,
+          w1                      = w / 2, h1          = sw / 2,
           w2 = w / 2 + sw / 2, h2 = sw,
-          w3                      = w - sw, h3         = h / 2 - sw / 2,
+          w3                      = w - sw, h3 = h / 2 - sw / 2,
           w4                      = w - sw / 2, h4 = h / 2,
           w5                      = w, h5              = h / 2 + sw / 2
     // Order of segments stored in Points[][]
-    const A1                                                        = 0, A2 = 1, B = 2, C = 3, D1                          = 4, D2 = 5, E = 6, F = 7,
+    const A1                                                        = 0, A2                                                = 1, B = 2, C = 3, D1                          = 4, D2 = 5, E = 6, F = 7,
           G1 = 8, G2 = 9, H = 10, I = 11, J = 12, K = 13, L = 14, M = 15
     // Create the points array for all segments
     const points = []
