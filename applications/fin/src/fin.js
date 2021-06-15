@@ -5,7 +5,7 @@ import { MarketWatch }                                       from './monitor'
 
 const screen = Pres.screen({
   smartCSR: true,
-  padding: { t: 3, b: 0, l: 0, r: 0 },
+  padding: { t: 3, b: 3, l: 0, r: 0 },
   title: 'Leagyun Financial Dashboard'
 })
 
@@ -56,7 +56,6 @@ const textbox = Pres.textbox({
   border: { type: 'line' },
   focus: { fg: 'blue' }
 })
-// Submit/Cancel buttons
 const submit = Pres.button({
   sup: form,
   top: 0,
@@ -78,24 +77,25 @@ const submit = Pres.button({
 const box = Pres.box({
   sup: screen,
   bottom: 0,
-  left: '50%',
+  left: 0,//'50%',
   height: 1,
-  width: '50%',
+  width: '100%',
   align: 'center',
   valign: 'middle',
   content: '...',
   // border: 'line'
 })
+
 const listBar = Pres.listBar({
   sup: screen,
-  bottom: 0,
+  bottom: 1,
   left: 0,
-  height: 1,
-  width: '50%',
+  height: 3,
+  width: '100%',
   mouse: true,
   keys: true,
   autoCommandKeys: true,
-  // border: 'line',
+  border: 'line',
   vi: true,
   style: {
     // bg: Pink.lighten_4,
@@ -146,7 +146,7 @@ export async function init() {
   const B3 = new MarketWatch(lineChartCollection.B3, 'euronext')
   const C3 = new MarketWatch(lineChartCollection.C3, 'seoul')
   screen.emit('adjourn')
-  await Promise.all([
+  await Promise.allSettled([
     A1.run(),
     B1.run(),
     C1.run(),

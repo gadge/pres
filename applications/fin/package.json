@@ -31,8 +31,8 @@
     "@valjoux/date-shift": "^0.2.11",
     "@valjoux/linger": "^0.2.11",
     "@valjoux/timestamp": "^0.2.11",
-    "@vect/entries-unwind": "^0.4.2",
-    "systeminformation": "^5.7.6"
+    "@vect/entries-unwind": "^0.4.3",
+    "systeminformation": "^5.7.7"
   },
   "repository": {
     "type": "git",
