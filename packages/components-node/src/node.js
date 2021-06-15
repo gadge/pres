@@ -14,6 +14,8 @@ import { ScreenCollection }                                  from './screenColle
 
 export class Node extends EventEmitter {
   type = 'node'
+  sup = null
+  sub = []
   /**
    * Node
    */
@@ -29,33 +31,35 @@ export class Node extends EventEmitter {
     this.name = options.name
     this.sku = options.sku
     this.configScreen(options)
-    const sup = options.sup ?? options.parent,
-          sub = options.sub ?? options.children
-    this.sup = sup ?? null
-    this.sub = []
     this.$ = this._ = this.data = {}
     this.uid = NodeCollection.uid++
     this.index = this.index ?? -1
     if (this.type !== 'screen') this.detached = true
-    if (this.sup) this.sup.append(this)
-    sub?.forEach(this.append.bind(this))
+    let sup, sub
+    if (( sup = options.sup ?? options.parent )) {
+      this.sup = sup
+      this.sup.append(this)
+    }
+    if (( sub = options.sub ?? options.children )) {
+      sub.forEach(node => this.append(node))
+    }
     if (ScreenCollection.journal) console.log('>> [new node]', this.codename, '∈',
       this.sup?.codename ?? this.screen?.codename ?? AEU)
   }
   configScreen(options) {
-    this.screen = this.screen || options.screen
-    if (!this.screen) {
+    let screen = this.screen || options.screen
+    if (!screen) {
+      const self = this
+      let sup
       // console.log(`>>> this.type = ${this.type}`)
-      if (this.type === 'screen') { this.screen = this }
-      else if (ScreenCollection.total === 1) { this.screen = ScreenCollection.global }
-      else if (options.sup ?? options.parent) {
-        this.screen = options.sup ?? options.parent
-        while (this.screen?.type !== 'screen') this.screen = this.screen.sup
+      if (this.type === 'screen') { screen = this }
+      else if (ScreenCollection.total === 1) { screen = ScreenCollection.global }
+      else if (( sup = options.sup ?? options.parent )) {
+        screen = sup
+        while (screen?.type !== 'screen') screen = screen.sup
       }
-      else if (ScreenCollection.total) {
-        // This _should_ work in most cases as long as the element is appended
-        // synchronously after the screen's creation. Throw error if not.
-        this.screen = ScreenCollection.instances |> last
+      else if (ScreenCollection.total) { // This _should_ work in most cases as long as the element is appended synchronously after the screen's creation. Throw error if not.
+        screen = last(ScreenCollection.instances)
         process.nextTick(() => {
           if (!self.sup) throw new Error(
             'Element (' + self.type + ') was not appended synchronously after the screen\'s creation. ' +
@@ -66,6 +70,7 @@ export class Node extends EventEmitter {
       }
       else { throw new Error('No active screen.') }
     }
+    return this.screen = screen
   }
   get codename() {
     const des = `${ this.sku ?? this.type ?? '' }.${ this.uid ?? 'NA' }`
@@ -77,26 +82,26 @@ export class Node extends EventEmitter {
   get children() { return this.sub }
   set children(value) { this.sub = value }
 
-  get(name, value) { return this.data.hasOwnProperty(name) ? this.data[name] : value }
-  set(name, value) { return this.data[name] = value }
+  get(key, defaultValue) { return key in this.data ? this.data[key] : defaultValue }
+  set(key, value) { return this.data[key] = value }
 
-  insert(sub, pos) {
+  insert(element, pos) {
     const self = this
-    if (sub.screen && sub.screen !== this.screen) throw new Error('Cannot switch a node\'s screen.')
-    sub.detach()
-    sub.sup = this
-    sub.screen = this.screen
-    pos <= 0 ? this.sub.unshift(sub) : pos >= this.sub.length ? this.sub.push(sub) : this.sub.splice(pos, 0, sub)
-    sub.emit(REPARENT, this)
-    this.emit(ADOPT, sub)
-    function subEmitter(el) {
-      const detachDiff = el.detached !== self.detached
-      el.detached = self.detached
-      if (detachDiff) el.emit(ATTACH)
-      el.sub.forEach(subEmitter)
+    if (element?.screen !== this.screen) throw new Error('Cannot switch a node\'s screen.')
+    element.detach()
+    element.sup = this
+    element.screen = this.screen
+    pos <= 0 ? this.sub.unshift(element) : pos < this.sub.length ? this.sub.splice(pos, 0, element) : this.sub.push(element)
+    element.emit(REPARENT, this)
+    this.emit(ADOPT, element)
+    function attachEmitter(element) {
+      const detachDiff = element.detached !== self.detached
+      element.detached = self.detached
+      if (detachDiff) element.emit(ATTACH)
+      element.sub.forEach(attachEmitter)
     }
-    subEmitter(sub)
-    if (!this.screen.focused) this.screen.focused = sub
+    attachEmitter(element)
+    if (!this.screen.focused) this.screen.focused = element
   }
   prepend(element) { this.insert(element, 0) }
   append(element) { this.insert(element, this.sub.length) }
@@ -109,86 +114,92 @@ export class Node extends EventEmitter {
     if (~i) this.insert(element, i + 1)
   }
   remove(element) {
-    if (element.sup !== this) return
-    let i = this.sub.indexOf(element)
-    if (!~i) return
+    if (element.sup !== this) return void 0
+    let index = this.sub.indexOf(element)
+    if (!~index) return void 0
+
     element.clearPos()
     element.sup = null
-    this.sub.splice(i, 1)
-    i = this.screen.clickable.indexOf(element)
-    if (~i) this.screen.clickable.splice(i, 1)
-    i = this.screen.keyable.indexOf(element)
-    if (~i) this.screen.keyable.splice(i, 1)
+    this.sub.splice(index, 1)
+
+    let indexClick = this.screen.clickable.indexOf(element)
+    if (~indexClick) this.screen.clickable.splice(indexClick, 1)
+
+    let indexKeyed = this.screen.keyable.indexOf(element)
+    if (~indexKeyed) this.screen.keyable.splice(indexKeyed, 1)
+
     element.emit(REPARENT, null)
-    this.emit(REMOVE, element);
-    ( function emit(el) {
-      const n = el.detached !== true
+    this.emit(REMOVE, element)
+    function detachEmitter(el) {
+      const attached = el.detached !== true
       el.detached = true
-      if (n) el.emit(DETACH)
-      el.sub.forEach(emit)
-    } )(element)
+      if (attached) el.emit(DETACH)
+      el.sub.forEach(detachEmitter)
+    }
+    detachEmitter(element)
     if (this.screen.focused === element) this.screen.rewindFocus()
   }
-  detach() { if (this.sup) this.sup.remove(this) }
+  detach() { return this.sup?.remove(this) }
   free() { }
   destroy() {
     this.detach()
-    this.forDescendants(function (el) {
-      el.free()
-      el.destroyed = true
-      el.emit(DESTROY)
+    this.forDescendants(function (node) {
+      node.free()
+      node.destroyed = true
+      node.emit(DESTROY)
     }, this)
   }
   forDescendants(iter, s) {
     if (s) iter(this)
-    this.sub.forEach(function emit(el) {
-      iter(el)
-      el.sub.forEach(emit)
+    this.sub.forEach(function emit(node) {
+      iter(node)
+      node.sub.forEach(emit)
     })
   }
   forAncestors(iter, s) {
-    let el = this
+    let node = this
     if (s) iter(this)
-    while (( el = el.sup )) { iter(el) }
+    while (( node = node.sup )) { iter(node) }
   }
   collectDescendants(s) {
     const out = []
-    this.forDescendants(el => out.push(el), s)
+    this.forDescendants(node => out.push(node), s)
     return out
   }
   collectAncestors(s) {
     const out = []
-    this.forAncestors(el => out.push(el), s)
+    this.forAncestors(node => out.push(node), s)
     return out
   }
   emitDescendants(...args) {
     let iter
     if (typeof last(args) === FUN) iter = args.pop()
-    return this.forDescendants(el => {
-      if (iter) iter(el)
-      el.emit.apply(el, args)
+    return this.forDescendants(node => {
+      if (iter) iter(node)
+      node.emit.apply(node, args)
     }, true)
   }
   emitAncestors(...args) {
     let iter
     if (typeof last(args) === FUN) iter = args.pop()
-    return this.forAncestors(el => {
-      if (iter) iter(el)
-      el.emit.apply(el, args)
+    return this.forAncestors(node => {
+      if (iter) iter(node)
+      node.emit.apply(node, args)
     }, true)
   }
   hasDescendant(target) {
-    function find(el) {
-      const sub = el.sub
-      for (const child of sub)
-        if (child === target || find(child)) return true
+    function find(sup) {
+      const nodes = sup?.sub
+      if (!nodes) return false
+      for (const node of nodes)
+        if (node === target || find(node)) return true
       return false
     }
     return find(this)
   }
   hasAncestor(target) {
-    let el = this
-    while (( el = el.sup )) if (el === target) return true
+    let node = this
+    while (( node = node?.sup )) if (node === target) return true
     return false
   }
 }
