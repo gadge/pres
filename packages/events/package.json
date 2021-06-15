@@ -17,6 +17,7 @@
   "dependencies": {
     "@pres/enum-events": "^0.3.14",
     "@pres/enum-key-names": "^0.3.14",
+    "@pres/util-helpers": "^0.3.14",
     "@typen/enum-data-types": "^0.1.16"
   },
   "repository": {

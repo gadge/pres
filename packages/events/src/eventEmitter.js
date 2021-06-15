@@ -5,48 +5,48 @@
  */
 
 import { ERROR, EVENT, NEW_LISTENER, REMOVE_LISTENER, } from '@pres/enum-events'
+import { slice }                                        from '@pres/util-helpers'
 import { SP }                                           from '@texting/enum-chars'
 import { FUN }                                          from '@typen/enum-data-types'
-
-const slice = Array.prototype.slice
 
 export class EventEmitter {
   #events = {}
   #max = Infinity
-  addListener = this.on
-  removeListener = this.off
+
   constructor() { }
   static build() { return new EventEmitter() }
   setMaxListeners(n) { this.#max = n }
   get events() { return this.#events }
+  addListener = this.on
   on(type, listener) {
-    if (!this.#events[type]) { this.#events[type] = listener }
-    else if (typeof this.#events[type] === FUN) { this.#events[type] = [ this.#events[type], listener ] }
+    let curr = this.#events[type]
+    if (!curr) { this.#events[type] = listener }
+    else if (typeof curr === FUN) { this.#events[type] = [ curr, listener ] }
     else { this.#events[type].push(listener) }
     this.#emit(NEW_LISTENER, [ type, listener ])
   }
+  removeListener = this.off
   off(type, listener) {
-    const handler = this.#events[type]
-    if (!handler) return void 0
-    if (typeof handler === FUN || handler.length === 1) {
+    const curr = this.#events[type]
+    if (!curr) return void 0
+    if (typeof curr === FUN || curr.length === 1) {
       delete this.#events[type]
       this.#emit(REMOVE_LISTENER, [ type, listener ])
       return void 0
     }
-    for (let i = 0, hi = handler.length; i < hi; i++) {
-      if (handler[i] === listener || handler[i].listener === listener) {
-        handler.splice(i, 1)
-        this.#emit(REMOVE_LISTENER, [ type, listener ])
-        return void 0
+    for (let i = 0, hi = curr.length; i < hi; i++) {
+      if (curr[i] === listener || curr[i].listener === listener) {
+        curr.splice(i, 1)
+        return void this.#emit(REMOVE_LISTENER, [ type, listener ])
       }
     }
   }
-  removeAllListeners(type) { type ? (delete this.#events[type]) : (this.#events = {}) }
+  removeAllListeners(type) { type ? ( delete this.#events[type] ) : ( this.#events = {} ) }
   once(type, listener) {
     const self = this
-    function on() { return self.removeListener(type, on), listener.apply(self, arguments) }
-    on.listener = listener
-    return this.on(type, on)
+    function onceHandler() { return self.off(type, onceHandler), listener.apply(self, arguments) }
+    onceHandler.listener = listener
+    return this.on(type, onceHandler)
   }
   listeners(type) { return typeof this.#events[type] === FUN ? [ this.#events[type] ] : this.#events[type] ?? [] }
   _emit = this.#emit
@@ -55,12 +55,13 @@ export class EventEmitter {
     let result
     if (!handler) return type === ERROR ? throw new args[0] : void 0
     if (typeof handler === FUN) return handler.apply(this, args)
-    for (let i = 0; i < handler.length; i++) if (handler[i].apply(this, args) === false) result = false
+    for (const item of handler)
+      if (item.apply(this, args) === false) result = false
     return result !== false
   }
   emit(type, ...args) {
     let node = this
-    this.#emit(EVENT, slice.call(arguments))
+    this.#emit(EVENT, slice(arguments))
     if (this.type === 'screen') return this.#emit(type, args)
     if (this.#emit(type, args) === false) return false
     type = 'element' + SP + type
@@ -68,7 +69,7 @@ export class EventEmitter {
     do {
       if (!node.events[type]) continue
       if (node._emit(type, args) === false) return false
-    } while ((node = node.sup))
+    } while (( node = node.sup ))
     return true
   }
 }
