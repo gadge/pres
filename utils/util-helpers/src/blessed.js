@@ -20,7 +20,7 @@ import fs           from 'fs'
 //   }
 // }
 
-export const merge = (a, b) => (Object.keys(b).forEach(key => a[key] = b[key]), a)
+export const merge = (a, b) => ( Object.keys(b).forEach(key => a[key] = b[key]), a )
 
 export const slice = Function.prototype.call.bind(Array.prototype.slice)
 
@@ -29,25 +29,25 @@ export const asort = obj => obj.sort((a, b) => {
   b = b.name.toLowerCase()
   if (a[0] === '.' && b[0] === '.') { a = a[1], b = b[1] }
   else { a = a[0], b = b[0] }
-  return a > b ? 1 : (a < b ? -1 : 0)
+  return a > b ? 1 : ( a < b ? -1 : 0 )
 })
 
 export const hsort = obj => obj.sort((a, b) => b.index - a.index)
 
-export const findFile = (start, target) => (function read(dir) {
+export const findFile = (start, target) => ( function read(dir) {
   let files, file, stat, out
   if (dir === '/dev' || dir === '/sys' || dir === '/proc' || dir === '/net') return null
   try { files = fs.readdirSync(dir) } catch (e) { files = [] }
   for (let i = 0; i < files.length; i++) {
     file = files[i]
-    if (file === target) return (dir === '/' ? '' : dir) + '/' + file
-    try { stat = fs.lstatSync((dir === '/' ? '' : dir) + '/' + file) } catch (e) { stat = null }
+    if (file === target) return ( dir === '/' ? '' : dir ) + '/' + file
+    try { stat = fs.lstatSync(( dir === '/' ? '' : dir ) + '/' + file) } catch (e) { stat = null }
     if (stat && stat.isDirectory() && !stat.isSymbolicLink()) {
-      if ((out = read((dir === '/' ? '' : dir) + '/' + file))) return out
+      if (( out = read(( dir === '/' ? '' : dir ) + '/' + file) )) return out
     }
   }
   return null
-})(start)
+} )(start)
 
 export const escape = text => text.replace(/[{}]/g, ch => ch === '{' ? '{open}' : '{close}') // Escape text for tag-enabled elements.
 
