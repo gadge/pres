@@ -3,19 +3,20 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-
-import { Box }                             from '@pres/components-core'
+import { Box }                                     from '@pres/components-core'
 import {
   ACTION, ADD_ITEM, CANCEL, CLICK, FOCUS, KEYPRESS, REMOVE_ITEM, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS,
-}                                          from '@pres/enum-events'
-import { ENTER, ESCAPE, LEFT, RIGHT, TAB } from '@pres/enum-key-names'
-import * as helpers                        from '@pres/util-helpers'
-import { FUN, NUM, OBJ, STR }              from '@typen/enum-data-types'
-import { EFFECT_COLLECTION }               from '../assets'
+}                                                  from '@pres/enum-events'
+import { ENTER, ESCAPE, LEFT, RETURN, RIGHT, TAB } from '@pres/enum-key-names'
+import * as helpers                                from '@pres/util-helpers'
+import { FUN, NUM, OBJ, STR }                      from '@typen/enum-data-types'
+import { nullish }                                 from '@typen/nullish'
+import { last }                                    from '@vect/vector'
+import { mapper }                                  from '@vect/vector-mapper'
+import { EFFECT_COLLECTION }                       from '../assets'
 
 export class ListBar extends Box {
-  add = this.appendItem
-  addItem = this.appendItem
+
   /**
    * Listbar / HorizontalList
    */
@@ -23,7 +24,6 @@ export class ListBar extends Box {
     if (!options.sku) options.sku = 'list-bar'
     super(options)
     const self = this
-    // if (!(this instanceof Node)) return new Listbar(options)
     this.items = []
     this.ritems = []
     this.commands = []
@@ -36,32 +36,25 @@ export class ListBar extends Box {
     if (options.commands || options.items) this.setItems(options.commands || options.items)
     if (options.keys) {
       this.on(KEYPRESS, (ch, key) => {
-        if (key.name === LEFT ||
-          ( options.vi && key.name === 'h' ) ||
-          ( key.shift && key.name === TAB )) {
+        if (key.name === LEFT || ( options.vi && key.name === 'h' ) || ( key.shift && key.name === TAB )) {
           self.moveLeft()
           self.screen.render()
           // Stop propagation if we're in a form.
           if (key.name === TAB) return false
           return void 0
         }
-        if (key.name === RIGHT ||
-          ( options.vi && key.name === 'l' ) ||
-          key.name === TAB) {
+        if (key.name === RIGHT || ( options.vi && key.name === 'l' ) || key.name === TAB) {
           self.moveRight()
           self.screen.render()
           // Stop propagation if we're in a form.
           if (key.name === TAB) return false
           return void 0
         }
-        if (
-          key.name === ENTER ||
-          ( options.vi && key.name === 'k' && !key.shift )
-        ) {
+        if (key.name === ENTER || key.name === RETURN || ( options.vi && key.name === 'k' && !key.shift )) {
           self.emit(ACTION, self.items[self.selected], self.selected)
           self.emit(SELECT, self.items[self.selected], self.selected)
           const item = self.items[self.selected]
-          if (item._.cmd.callback) item._.cmd.callback()
+          if (item.data.callback) item.data.callback()
           self.screen.render()
           return void 0
         }
@@ -88,100 +81,89 @@ export class ListBar extends Box {
   get selected() { return this.leftBase + this.leftOffset }
   setItems(commands) {
     const self = this
-    if (!Array.isArray(commands)) {
-      commands = Object.keys(commands).reduce((obj, key, i) => {
-        let cmd = commands[key],
-            cb
-        if (typeof cmd === FUN) {
-          cb = cmd
-          cmd = { callback: cb }
-        }
-        if (cmd.text == null) cmd.text = key
-        if (cmd.prefix == null) cmd.prefix = ++i + ''
-        if (cmd.text == null && cmd.callback) cmd.text = cmd.callback.name
-        obj.push(cmd)
-        return obj
-      }, [])
-    }
-    this.items.forEach(el => el.detach())
+    if (!Array.isArray(commands)) commands = mapper(Object.entries(commands),
+      ([ key, conf ], i) => {
+        if (typeof conf === FUN) conf = { callback: conf }
+        if (nullish(conf.text)) conf.text = key
+        if (nullish(conf.prefix)) conf.prefix = ++i + ''
+        if (nullish(conf.text) && conf.callback) conf.text = conf.callback.name
+        return conf
+      })
+    for (const item of this.items) { item.detach() }
     this.items = []
     this.ritems = []
     this.commands = []
-    commands.forEach(cmd => self.add(cmd))
+    for (const cmd of commands) { self.add(cmd) }
     this.emit(SET_ITEMS)
   }
+  parseItemConfig(item, callback) {
+    const items = this.items
+    const conf =
+            typeof item === OBJ ? ( item.prefix = item.prefix ?? String(items.length + 1), item )
+              : typeof item === STR ? { prefix: String(items.length + 1), text: item, callback: callback }
+              : typeof item === FUN ? { prefix: String(items.length + 1), text: item.name, callback: item } : {}
+    if (conf.keys && conf.keys[0]) { conf.prefix = conf.keys[0] }
+    return conf
+  }
+  add = this.appendItem
+  addItem = this.appendItem
   appendItem(item, callback) {
-    const self = this,
-          prev = this.items[this.items.length - 1]
-    let drawn,
-        cmd,
-        title,
-        len
-    if (!this.sup) { drawn = 0 }
-    else {
-      drawn = prev ? prev.absL + prev.width : 0
-      if (!this.screen.autoPadding) { drawn += this.intL }
-    }
-    if (typeof item === OBJ) {
-      cmd = item
-      if (cmd.prefix == null) cmd.prefix = ( this.items.length + 1 ) + ''
-    }
-    if (typeof item === STR) { cmd = { prefix: ( this.items.length + 1 ) + '', text: item, callback: callback } }
-    if (typeof item === FUN) { cmd = { prefix: ( this.items.length + 1 ) + '', text: item.name, callback: item } }
-    if (cmd.keys && cmd.keys[0]) { cmd.prefix = cmd.keys[0] }
-    const t = helpers.generateTags(this.style.prefix || { fg: 'lightblack' })
-    title = ( cmd.prefix != null ? t.open + cmd.prefix + t.close + ':' : '' ) + cmd.text
-    len = ( ( cmd.prefix != null ? cmd.prefix + ':' : '' ) + cmd.text ).length
-    const options = {
-      screen: this.screen,
+    const self = this
+    const conf = this.parseItemConfig(item, callback)
+    const prev = last(this.items)
+    const drawn = this.sup ? ( prev ? prev.absL + prev.width : 0 ) + ( !this.screen.autoPadding ? this.intL : 0 ) : 0
+    const tags = helpers.generateTags(this.style.prefix ?? { fg: 'light-black' })
+    const pseudoTitle = ( nullish(conf.prefix) ? '' : `${ conf.prefix }:` ) + conf.text
+    const formatTitle = ( nullish(conf.prefix) ? '' : `${ tags.open }${ conf.prefix }${ tags.close }:` ) + conf.text
+    const opts = {
+      sup: this,
       top: 'center',
       left: drawn + 1,
       height: 1,//'50%',
-      content: title,
-      width: len + 2,
+      content: formatTitle,
+      width: pseudoTitle.length + 2,
       align: 'center',
       valign: 'middle',
       autoFocus: false,
       tags: true,
       mouse: true,
-      style: helpers.merge({}, this.style.item),
+      style: Object.assign({}, this.style.item),
       noOverflow: true
     }
-    if (!this.screen.autoPadding) { options.top += this.intT, options.left += this.intL }
-    EFFECT_COLLECTION.forEach(name => {
-      options.style[name] = () => {
-        let attr = self.items[self.selected] === el ? self.style.selected[name] : self.style.item[name]
-        if (typeof attr === FUN) attr = attr(el)
-        return attr
+    if (!this.screen.autoPadding) {
+      // console.log('list-bar config', 'not autoPadding', !this.screen.autoPadding, this.intT, this.intL)
+      if (typeof opts.top === NUM) opts.top += this.intT
+      if (typeof opts.left === NUM) opts.left += this.intL
+    }
+    const box = this.data[conf.text] = conf.element = new Box(opts)
+    for (const effect of EFFECT_COLLECTION) {
+      opts.style[effect] = () => {
+        const attr = box === self.items[self.selected] ? self.style.selected[effect] : self.style.item[effect]
+        return typeof attr === FUN ? attr(box) : attr
       }
-    })
-    const el = new Box(options)
-    this._[cmd.text] = el
-    cmd.element = el
-    el._.cmd = cmd
-    this.ritems.push(cmd.text)
-    this.items.push(el)
-    this.commands.push(cmd)
-    this.append(el)
-    if (cmd.callback) {
-      if (cmd.keys) {
-        this.screen.key(cmd.keys, () => {
-          self.emit(ACTION, el, self.selected)
-          self.emit(SELECT, el, self.selected)
-          if (el._.cmd.callback) el._.cmd.callback()
-          self.select(el)
-          self.screen.render()
-        })
-      }
+    }
+    Object.assign(box.data, conf)
+    this.ritems.push(conf.text)
+    this.items.push(box)
+    this.commands.push(conf)
+    // this.append(box)
+    if (conf.callback && conf.keys) {
+      this.screen.key(conf.keys, () => {
+        self.emit(ACTION, box, self.selected)
+        self.emit(SELECT, box, self.selected)
+        if (box.data.callback) box.data.callback()
+        self.select(box)
+        self.screen.render()
+      })
     }
     if (this.items.length === 1) { this.select(0) }
     // XXX May be affected by new element.options.mouse option.
     if (this.mouse) {
-      el.on(CLICK, () => {
-        self.emit(ACTION, el, self.selected)
-        self.emit(SELECT, el, self.selected)
-        if (el._.cmd.callback) { el._.cmd.callback() }
-        self.select(el)
+      box.on(CLICK, () => {
+        self.emit(ACTION, box, self.selected)
+        self.emit(SELECT, box, self.selected)
+        if (box.data.callback) { box.data.callback() }
+        self.select(box)
         self.screen.render()
       })
     }
@@ -190,15 +172,13 @@ export class ListBar extends Box {
   render() {
     const self = this
     let drawn = 0
-    if (!this.screen.autoPadding) {
-      drawn += this.intL
-    }
-    this.items.forEach((el, i) => {
-      if (i < self.leftBase) { el.hide() }
+    if (!this.screen.autoPadding) drawn += this.intL
+    this.items.forEach((item, i) => {
+      if (i < self.leftBase) { item.hide() }
       else {
-        el.relL = drawn + 1
-        drawn += el.width + 2
-        el.show()
+        item.relL = drawn + 1
+        drawn += item.width + 2
+        item.show()
       }
     })
     return this._render()
@@ -215,15 +195,13 @@ export class ListBar extends Box {
     const self  = this,
           width = ( prevPos.xHi - prevPos.xLo ) - this.intW
     let drawn   = 0,
-        visible = 0,
-        el
-    el = this.items[offset]
-    if (!el) return
-    this.items.forEach((el, i) => {
+        visible = 0
+    let item = this.items[offset]
+    if (!item) return
+    this.items.forEach((item, i) => {
       if (i < self.leftBase) return
-      const prevPos = el.calcCoords()
-      if (!prevPos) return
-      if (prevPos.xHi - prevPos.xLo <= 0) return
+      const prevPos = item.calcCoords()
+      if (!prevPos || prevPos.xHi <= prevPos.xLo) return
       drawn += ( prevPos.xHi - prevPos.xLo ) + 2
       if (drawn <= width) visible++
     })
@@ -248,18 +226,16 @@ export class ListBar extends Box {
       }
     }
     // XXX Move `action` and `select` events here.
-    this.emit(SELECT_ITEM, el, offset)
+    this.emit(SELECT_ITEM, item, offset)
   }
-  removeItem(child) {
-    const i = typeof child !== NUM
-      ? this.items.indexOf(child)
-      : child
-    if (~i && this.items[i]) {
-      child = this.items.splice(i, 1)[0]
-      this.ritems.splice(i, 1)
-      this.commands.splice(i, 1)
-      this.remove(child)
-      if (i === this.selected) { this.select(i - 1) }
+  removeItem(item) {
+    const index = typeof item === NUM ? item : this.items.indexOf(item)
+    if (~index && this.items[index]) {
+      item = this.items.splice(index, 1)[0]
+      this.ritems.splice(index, 1)
+      this.commands.splice(index, 1)
+      this.remove(item)
+      if (index === this.selected) { this.select(index - 1) }
     }
     this.emit(REMOVE_ITEM)
   }
@@ -269,7 +245,7 @@ export class ListBar extends Box {
   selectTab(index) {
     const item = this.items[index]
     if (item) {
-      if (item._.cmd.callback) { item._.cmd.callback() }
+      if (item.data.callback) { item.data.callback() }
       this.select(index)
       this.screen.render()
     }

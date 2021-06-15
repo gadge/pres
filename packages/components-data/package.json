@@ -27,10 +27,10 @@
     "@spare/table-padder": "^0.11.20",
     "@texting/charset-ansi": "^0.0.12",
     "@typen/enum-data-types": "^0.1.16",
-    "@vect/enum-matrix-directions": "^0.4.2",
-    "@vect/matrix-mapper": "^0.4.2",
-    "@vect/vector": "^0.4.2",
-    "@vect/vector-mapper": "^0.4.2"
+    "@vect/enum-matrix-directions": "^0.4.3",
+    "@vect/matrix-mapper": "^0.4.3",
+    "@vect/vector": "^0.4.3",
+    "@vect/vector-mapper": "^0.4.3"
   },
   "repository": {
     "type": "git",
