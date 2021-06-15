@@ -23,10 +23,10 @@
     "@pres/enum-events": "^0.3.14",
     "@pres/terminal-interface": "^0.3.14",
     "@valjoux/linger": "^0.2.11",
-    "@vect/vector-init": "^0.4.2",
-    "@vect/vector-mapper": "^0.4.2",
-    "@vect/vector-zipper": "^0.4.2",
-    "systeminformation": "^5.7.6"
+    "@vect/vector-init": "^0.4.3",
+    "@vect/vector-mapper": "^0.4.3",
+    "@vect/vector-zipper": "^0.4.3",
+    "systeminformation": "^5.7.7"
   },
   "repository": {
     "type": "git",
