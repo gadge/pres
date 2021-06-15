@@ -30,11 +30,11 @@
     "@pres/util-morisot": "^0.3.12",
     "@pres/util-sgr-attr": "^0.3.12",
     "@pres/util-unicode": "^0.3.12",
-    "@texting/enum-chars": "^0.0.10",
+    "@texting/enum-chars": "^0.0.12",
     "@typen/enum-data-types": "^0.1.16",
     "@typen/nullish": "^0.1.16",
-    "@vect/object-select": "^0.3.10",
-    "@vect/vector-index": "^0.3.10",
+    "@vect/object-select": "^0.4.2",
+    "@vect/vector-index": "^0.4.2",
     "term.js": "^0.0.7"
   },
   "repository": {

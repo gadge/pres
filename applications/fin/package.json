@@ -18,20 +18,20 @@
     "lint": "prettier --single-quote --trailing-comma es5 --write 'src/**/*.js'"
   },
   "dependencies": {
-    "@analys/table": "^0.5.1",
+    "@analys/table": "^0.5.2",
     "@aryth/bound-vector": "^0.3.21",
     "@aryth/math": "^0.3.21",
     "@aryth/rand": "^0.3.21",
     "@morpont/market-indexes-fmp": "^0.0.6",
-    "@palett/cards": "^0.8.14",
+    "@palett/cards": "^0.8.15",
     "@pres/enum-events": "^0.3.12",
     "@pres/terminal-interface": "^0.3.12",
-    "@texting/phrasing": "^0.0.10",
+    "@texting/phrasing": "^0.0.12",
     "@valjoux/convert": "^0.2.11",
     "@valjoux/date-shift": "^0.2.11",
     "@valjoux/linger": "^0.2.11",
     "@valjoux/timestamp": "^0.2.11",
-    "@vect/entries-unwind": "^0.3.10",
+    "@vect/entries-unwind": "^0.4.2",
     "systeminformation": "^5.7.6"
   },
   "repository": {

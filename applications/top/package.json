@@ -19,13 +19,13 @@
   },
   "dependencies": {
     "@aryth/math": "^0.3.21",
-    "@palett/cards": "^0.8.14",
+    "@palett/cards": "^0.8.15",
     "@pres/enum-events": "^0.3.12",
     "@pres/terminal-interface": "^0.3.12",
     "@valjoux/linger": "^0.2.11",
-    "@vect/vector-init": "^0.3.10",
-    "@vect/vector-mapper": "^0.3.10",
-    "@vect/vector-zipper": "^0.3.10",
+    "@vect/vector-init": "^0.4.2",
+    "@vect/vector-mapper": "^0.4.2",
+    "@vect/vector-zipper": "^0.4.2",
     "systeminformation": "^5.7.6"
   },
   "repository": {

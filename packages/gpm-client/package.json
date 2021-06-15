@@ -25,8 +25,8 @@
     "@pres/terminfo-parser": "^0.3.12",
     "@pres/util-blessed-colors": "^0.3.12",
     "@pres/util-helpers": "^0.3.12",
-    "@spare/logger": "^0.11.17",
-    "@texting/enum-chars": "^0.0.10",
+    "@spare/logger": "^0.11.20",
+    "@texting/enum-chars": "^0.0.12",
     "@typen/enum-data-types": "^0.1.16"
   },
   "repository": {

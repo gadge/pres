@@ -15,22 +15,22 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@palett/enum-colorant-modes": "^0.8.14",
-    "@palett/fluo-matrix": "^0.8.14",
-    "@palett/fluo-vector": "^0.8.14",
-    "@palett/presets": "^0.8.14",
+    "@palett/enum-colorant-modes": "^0.8.15",
+    "@palett/fluo-matrix": "^0.8.15",
+    "@palett/fluo-vector": "^0.8.15",
+    "@palett/presets": "^0.8.15",
     "@pres/components-core": "^0.3.12",
     "@pres/enum-events": "^0.3.12",
     "@pres/enum-key-names": "^0.3.12",
     "@pres/util-helpers": "^0.3.12",
     "@pres/util-sgr-attr": "^0.3.12",
-    "@spare/table-padder": "^0.11.17",
-    "@texting/charset-ansi": "^0.0.10",
+    "@spare/table-padder": "^0.11.20",
+    "@texting/charset-ansi": "^0.0.12",
     "@typen/enum-data-types": "^0.1.16",
-    "@vect/enum-matrix-directions": "^0.3.10",
-    "@vect/matrix-mapper": "^0.3.10",
-    "@vect/vector": "^0.3.10",
-    "@vect/vector-mapper": "^0.3.10"
+    "@vect/enum-matrix-directions": "^0.4.2",
+    "@vect/matrix-mapper": "^0.4.2",
+    "@vect/vector": "^0.4.2",
+    "@vect/vector-mapper": "^0.4.2"
   },
   "repository": {
     "type": "git",

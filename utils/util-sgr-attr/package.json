@@ -15,9 +15,9 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@palett/enum-ansi-codes": "^0.8.14",
-    "@palett/enum-font-effects": "^0.8.14",
-    "@palett/util-ansi": "^0.8.14",
+    "@palett/enum-ansi-codes": "^0.8.15",
+    "@palett/enum-font-effects": "^0.8.15",
+    "@palett/util-ansi": "^0.8.15",
     "@pres/util-byte-colors": "^0.3.12",
     "@pres/util-sgr-mode": "^0.3.12",
     "@typen/enum-data-types": "^0.1.16",
