@@ -1,4 +1,5 @@
 import { KEYPRESS, MOUSEDOWN, MOUSEUP, PARSED_CONTENT, SCROLL, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
+import { DOWN, UP }                                                                  from '@pres/enum-key-names'
 
 /**
  * @extends {Element}
@@ -97,45 +98,15 @@ export class Scroll {
     }
     if (options.keys && !options.ignoreKeys) {
       this.on(KEYPRESS, (ch, key) => {
-        if (key.name === 'up' || ( options.vi && key.name === 'k' )) {
-          self.scroll(-1)
-          self.screen.render()
-          return
-        }
-        if (key.name === 'down' || ( options.vi && key.name === 'j' )) {
-          self.scroll(1)
-          self.screen.render()
-          return
-        }
-        if (options.vi && key.name === 'u' && key.ctrl) {
-          self.scroll(-( self.height / 2 | 0 ) || -1)
-          self.screen.render()
-          return
-        }
-        if (options.vi && key.name === 'd' && key.ctrl) {
-          self.scroll(self.height / 2 | 0 || 1)
-          self.screen.render()
-          return
-        }
-        if (options.vi && key.name === 'b' && key.ctrl) {
-          self.scroll(-self.height || -1)
-          self.screen.render()
-          return
-        }
-        if (options.vi && key.name === 'f' && key.ctrl) {
-          self.scroll(self.height || 1)
-          self.screen.render()
-          return
-        }
-        if (options.vi && key.name === 'g' && !key.shift) {
-          self.scrollTo(0)
-          self.screen.render()
-          return
-        }
-        if (options.vi && key.name === 'g' && key.shift) {
-          self.scrollTo(self.getScrollHeight())
-          self.screen.render()
-        }
+        const { ctrl, name, shift } = key, { vi } = options
+        if (name === UP || ( vi && name === 'k' )) return void ( self.scroll(-1), self.screen.render() )
+        if (name === DOWN || ( vi && name === 'j' )) return void ( self.scroll(1), self.screen.render() )
+        if (vi && name === 'u' && ctrl) return void ( self.scroll(-( self.height / 2 | 0 ) || -1), self.screen.render() )
+        if (vi && name === 'd' && ctrl) return void ( self.scroll(self.height / 2 | 0 || 1), self.screen.render() )
+        if (vi && name === 'b' && ctrl) return void ( self.scroll(-self.height || -1), self.screen.render() )
+        if (vi && name === 'f' && ctrl) return void ( self.scroll(self.height || 1), self.screen.render() )
+        if (vi && name === 'g' && !shift) return void ( self.scrollTo(0), self.screen.render() )
+        if (vi && name === 'g' && shift) return void ( self.scrollTo(self.getScrollHeight()), self.screen.render() )
       })
     }
     this.on(PARSED_CONTENT, () => self._recalculateIndex())

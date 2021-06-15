@@ -33,8 +33,8 @@
     "@texting/enum-chars": "^0.0.12",
     "@typen/enum-data-types": "^0.1.16",
     "@typen/nullish": "^0.1.16",
-    "@vect/object-select": "^0.4.2",
-    "@vect/vector-index": "^0.4.2",
+    "@vect/object-select": "^0.4.3",
+    "@vect/vector-index": "^0.4.3",
     "term.js": "^0.0.7"
   },
   "repository": {
