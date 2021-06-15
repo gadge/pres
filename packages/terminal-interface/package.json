@@ -1,6 +1,6 @@
 {
   "name": "@pres/terminal-interface",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "description": "Terminal-interface for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -16,12 +16,12 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/components": "^0.3.13",
-    "@pres/program": "^0.3.13",
-    "@pres/terminfo-parser": "^0.3.13",
-    "@pres/util-blessed-colors": "^0.3.13",
-    "@pres/util-helpers": "^0.3.13",
-    "@pres/util-unicode": "^0.3.13",
+    "@pres/components": "^0.3.14",
+    "@pres/program": "^0.3.14",
+    "@pres/terminfo-parser": "^0.3.14",
+    "@pres/util-blessed-colors": "^0.3.14",
+    "@pres/util-helpers": "^0.3.14",
+    "@pres/util-unicode": "^0.3.14",
     "url": "^0.11.0"
   },
   "repository": {
@@ -44,5 +44,5 @@
     "url": "https://github.com/hoyeungw/pres/cluster"
   },
   "homepage": "https://github.com/hoyeungw/pres/cluster#readme",
-  "gitHead": "4e0a6a0d819185caa8d129e991bb986b6cb0b365"
+  "gitHead": "f9a54c9986c480231564eced27c8e116febc69da"
 }

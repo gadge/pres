@@ -1,6 +1,6 @@
 {
   "name": "@pres/gpm-client",
-  "version": "0.3.13",
+  "version": "0.3.14",
   "description": "Gpm client for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -17,14 +17,14 @@
   "dependencies": {
     "@geia/enum-signals": "^0.0.19",
     "@ject/noop": "^0.0.12",
-    "@pres/enum-control-chars": "^0.3.13",
-    "@pres/enum-csi-codes": "^0.3.13",
-    "@pres/enum-events": "^0.3.13",
-    "@pres/enum-key-names": "^0.3.13",
-    "@pres/events": "^0.3.13",
-    "@pres/terminfo-parser": "^0.3.13",
-    "@pres/util-blessed-colors": "^0.3.13",
-    "@pres/util-helpers": "^0.3.13",
+    "@pres/enum-control-chars": "^0.3.14",
+    "@pres/enum-csi-codes": "^0.3.14",
+    "@pres/enum-events": "^0.3.14",
+    "@pres/enum-key-names": "^0.3.14",
+    "@pres/events": "^0.3.14",
+    "@pres/terminfo-parser": "^0.3.14",
+    "@pres/util-blessed-colors": "^0.3.14",
+    "@pres/util-helpers": "^0.3.14",
     "@spare/logger": "^0.11.20",
     "@texting/enum-chars": "^0.0.12",
     "@typen/enum-data-types": "^0.1.16"
@@ -49,5 +49,5 @@
     "url": "https://github.com/hoyeungw/pres/cluster"
   },
   "homepage": "https://github.com/hoyeungw/pres/cluster#readme",
-  "gitHead": "4e0a6a0d819185caa8d129e991bb986b6cb0b365"
+  "gitHead": "f9a54c9986c480231564eced27c8e116febc69da"
 }
