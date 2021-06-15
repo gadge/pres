@@ -17,27 +17,20 @@ const box = blessed.scrollableBox({
   top: 'center',
   width: '80%',
   height: '80%',
-  style: {
-    bg: Cards.teal.accent_1
-  },
+  style: { bg: Cards.teal.accent_1 },
   border: 'line',
   content: 'foobar',
   keys: true,
   vi: true,
   alwaysScroll: true,
-  scrollbar: {
-    ch: ' ',
-    inverse: true
-  }
+  scrollbar: { ch: ' ', inverse: true }
 })
 
 const text = blessed.box({
   parent: box,
   content: 'hello1\nhello2\nhello3\nhello4',
   padding: 2,
-  style: {
-    bg: Cards.red.darken_2
-  },
+  style: { bg: Cards.red.darken_2 },
   left: 2,
   top: 30,
   width: '50%',
@@ -48,9 +41,7 @@ const text2 = blessed.box({
   parent: box,
   content: 'world',
   padding: 1,
-  style: {
-    bg: 'red'
-  },
+  style: { bg: 'red' },
   left: 2,
   top: 50,
   width: '50%',
@@ -67,24 +58,11 @@ const box2 = blessed.box({
   width: '80%',
   height: 9,
   border: 'line',
-  style: {
-    bg: 'magenta',
-    focus: {
-      bg: 'blue'
-    },
-    hover: {
-      bg: 'red'
-    }
-    // scrollbar: {
-    //   inverse: true
-    // }
-  },
+  style: { bg: 'magenta', focus: { bg: 'blue' }, hover: { bg: 'red' }, }, //  scrollbar: { inverse: true },
   keys: true,
   vi: true,
-  alwaysScroll: true
-  // scrollbar: {
-  //   ch: ' '
-  // }
+  alwaysScroll: true,
+  // scrollbar: { ch: ' ' }
 })
 
 const box3 = blessed.box({
@@ -101,24 +79,11 @@ const box3 = blessed.box({
   //width: '80%',
   //height: 5,
   border: 'line',
-  style: {
-    bg: 'yellow',
-    focus: {
-      bg: 'blue'
-    },
-    hover: {
-      bg: 'red'
-    }
-    // scrollbar: {
-    //   inverse: true
-    // }
-  },
+  style: { bg: 'yellow', focus: { bg: 'blue' }, hover: { bg: 'red' }, }, //  scrollbar: { inverse: true }
   keys: true,
   vi: true,
-  alwaysScroll: true
-  // scrollbar: {
-  //   ch: ' '
-  // }
+  alwaysScroll: true,
+  // scrollbar: { ch: ' ' }
 })
 
 screen.key('q', () => screen.destroy())

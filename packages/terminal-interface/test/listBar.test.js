@@ -15,6 +15,7 @@ const box = blessed.box({
   right: 0,
   width: 'shrink',
   height: 'shrink',
+  align: 'right',
   content: '...'
 })
 

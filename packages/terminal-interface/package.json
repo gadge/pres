@@ -22,6 +22,7 @@
     "@pres/util-blessed-colors": "^0.3.14",
     "@pres/util-helpers": "^0.3.14",
     "@pres/util-unicode": "^0.3.14",
+    "@vect/object-mapper": "^0.4.3",
     "url": "^0.11.0"
   },
   "repository": {
