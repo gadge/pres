@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-chart",
-  "version": "0.3.14",
+  "version": "0.3.15",
   "description": "chart components for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -16,11 +16,11 @@
   },
   "dependencies": {
     "@aryth/math": "^0.3.21",
-    "@pres/components-core": "^0.3.14",
-    "@pres/components-layout": "^0.3.14",
-    "@pres/enum-events": "^0.3.14",
-    "@pres/util-chart-ticks": "^0.3.14",
-    "@pres/util-helpers": "^0.3.14",
+    "@pres/components-core": "^0.3.15",
+    "@pres/components-layout": "^0.3.15",
+    "@pres/enum-events": "^0.3.15",
+    "@pres/util-chart-ticks": "^0.3.15",
+    "@pres/util-helpers": "^0.3.15",
     "@typen/nullish": "^0.1.16",
     "@vect/vector-indicator": "^0.4.3",
     "sparkline": "^0.2.0"
