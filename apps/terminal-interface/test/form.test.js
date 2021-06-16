@@ -174,12 +174,12 @@ form.on('submit', data => {
     summary += 'Favorite editors: ' + editors + '\n'
     summary += 'Likes TI: ' + data.like[0] + '\n'
     summary += 'Comments: ' + data.comments
-    fs.writeFile('form-data.txt', summary, function (err) {
+    fs.writeFile('form-data.txt', summary, err => {
       if (err) throw err
     })
   })
 })
-form.on('reset', () => msg.display('Form cleared!', function () {}))
+form.on('reset', () => msg.display('Form cleared!', () => {}))
 // Key bindings
 screen.key('q', function () { this.destroy() })
 // Render everything!

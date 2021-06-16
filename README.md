@@ -33,7 +33,7 @@ $ npm install @vins-mono/<tool-name>
 #### Tools
 |                                                            |                                    |            |                       |
 | ---------------------------------------------------------- | ---------------------------------- | ---------- |---------------------- |
-| [**art-project**](packages/art-project)                    | Art project intro                  | misc       |![v][art-project-dm]   |
+| [**art-project**](core/art-project)                    | Art project intro                  | misc       |![v][art-project-dm]   |
 |                                                            |                                    |            |                       |
 
 [//]: <> (Local routes)
