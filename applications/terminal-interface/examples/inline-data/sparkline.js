@@ -1,5 +1,5 @@
 var blessed = require('blessed'),
-    contrib = require('../../'),
+    contrib = require('../../dist/index.esm'),
     screen  = blessed.screen()
 var spark = contrib.sparkline(
   {

@@ -28,12 +28,7 @@ const firstName = TI.textbox({
   height: 3,
   inputOnFocus: true,
   content: 'first',
-  border: {
-    type: 'line'
-  },
-  focus: {
-    fg: 'blue'
-  }
+  border: { type: 'line' }, focus: { fg: 'blue' }
 })
 const label2 = TI.text({
   sup: screen,
@@ -49,12 +44,7 @@ const lastName = TI.textbox({
   height: 3,
   inputOnFocus: true,
   content: 'last',
-  border: {
-    type: 'line'
-  },
-  focus: {
-    fg: 'blue'
-  }
+  border: { type: 'line' }, focus: { fg: 'blue' }
 })
 // Check boxes
 const label3 = TI.text({
@@ -142,20 +132,8 @@ const submit = TI.button({
   top: 35,
   left: 5,
   shrink: true,
-  padding: {
-    top: 1,
-    right: 2,
-    bottom: 1,
-    left: 2
-  },
-  style: {
-    bold: true,
-    fg: 'white',
-    bg: 'green',
-    focus: {
-      inverse: true
-    }
-  }
+  padding: { top: 1, right: 2, bottom: 1, left: 2 },
+  style: { bold: true, fg: 'white', bg: 'green', focus: { inverse: true } }
 })
 const reset = TI.button({
   sup: form,
@@ -164,44 +142,22 @@ const reset = TI.button({
   top: 35,
   left: 15,
   shrink: true,
-  padding: {
-    top: 1,
-    right: 2,
-    bottom: 1,
-    left: 2
-  },
-  style: {
-    bold: true,
-    fg: 'white',
-    bg: 'red',
-    focus: {
-      inverse: true
-    }
-  }
+  padding: { top: 1, right: 2, bottom: 1, left: 2 },
+  style: { bold: true, fg: 'white', bg: 'red', focus: { inverse: true } }
 })
 // Info
 const msg = TI.message({
   sup: screen,
   top: 40,
   left: 5,
-  style: {
-    italic: true,
-    fg: 'green'
-  }
+  style: { italic: true, fg: 'green' }
 })
 const table = TI.table({
   sup: screen,
   content: '',
   top: 40,
   left: 'center',
-  style: {
-    fg: 'green',
-    header: {
-      bold: true,
-      fg: 'white',
-      bg: 'blue'
-    }
-  },
+  style: { fg: 'green', header: { bold: true, fg: 'white', bg: 'blue' } },
   hidden: true
 })
 // Event management

@@ -1,5 +1,5 @@
 var blessed = require('blessed'),
-    contrib = require('../../'),
+    contrib = require('../../dist/index.esm'),
     screen  = blessed.screen(),
     map     = contrib.map({
       label: 'World Map',

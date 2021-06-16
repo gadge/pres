@@ -1,5 +1,5 @@
 var blessed = require('blessed'),
-    contrib = require('../../'),
+    contrib = require('../../dist/index.esm'),
     screen  = blessed.screen(),
     grid    = contrib.grid({ rows: 12, cols: 12, screen: screen }),
     map     = grid.set(0, 0, 4, 4, contrib.map, { label: 'World Map' }),

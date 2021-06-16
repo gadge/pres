@@ -1,5 +1,5 @@
 // import { TI as blessed } from '../src/terminal-interface'
-import * as blessed from '../../../vendor/blessed-classic/index'
+import * as blessed from '../../../vendor/blessed-classic'
 
 console.log('listTable.test')
 
