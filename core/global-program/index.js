@@ -1,0 +1,1 @@
+export { GlobalProgram } from './src/GlobalProgram'

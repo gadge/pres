@@ -1,0 +1,41 @@
+{
+  "name": "@pres/global-program",
+  "version": "0.3.16",
+  "description": "Global program for pres",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "pub": "npm publish",
+    "test": "node -r @babel/register test/test.index.js"
+  },
+  "dependencies": {
+    "@pres/enum-events": "^0.3.16"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoyeungw/pres/program.git"
+  },
+  "keywords": [
+    "pres",
+    "process",
+    "signal-handler",
+    "program"
+  ],
+  "author": {
+    "name": "Hoyeung Wong",
+    "email": "hoyeungw@outlook.com",
+    "url": "https://github.com/hoyeungw"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hoyeungw/pres/cluster"
+  },
+  "homepage": "https://github.com/hoyeungw/pres/cluster#readme",
+  "gitHead": "f9a54c9986c480231564eced27c8e116febc69da"
+}
