@@ -1,0 +1,1 @@
+export { GlobalScreen } from './src/GlobalScreen'
