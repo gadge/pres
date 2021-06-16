@@ -27,9 +27,9 @@
 */
 
 // Regexes used for ansi escape code splitting
-export const KEYCODE_META_ANYWHERE = /(?:\x1b)([a-zA-Z0-9])/ // metaKeyCodeReAnywhere
+export const KEYCODE_META_ANYWHERE = /\x1b([a-zA-Z0-9])/ // metaKeyCodeReAnywhere
 export const KEYCODE_META = new RegExp('^' + KEYCODE_META_ANYWHERE.source + '$') // metaKeyCodeRe
-export const KEYCODE_FUN_ANYWHERE = new RegExp('(?:\x1b+)(O|N|\\[|\\[\\[)(?:' + [
+export const KEYCODE_FUN_ANYWHERE = new RegExp('\x1b+(O|N|\\[|\\[\\[)(?:' + [
   '(\\d+)(?:;(\\d+))?([~^$])',
   '(?:M([@ #!a`])(.)(.))', // mouse
   '(?:1;)?(\\d+)?([a-zA-Z])'
