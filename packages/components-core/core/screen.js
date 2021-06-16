@@ -82,11 +82,12 @@ export class Screen extends Node {
     }
     this.program.on(RESIZE, () => {
       self.alloc()
-      self.render();
-      ( function emit(el) {
-        el.emit(RESIZE)
-        el.sub.forEach(emit)
-      } )(self)
+      self.render()
+      function resizeEmitter(node) {
+        node.emit(RESIZE)
+        node.sub.forEach(resizeEmitter)
+      }
+      resizeEmitter(self)
     })
     this.program.on(FOCUS, () => self.emit(FOCUS))
     this.program.on(BLUR, () => self.emit(BLUR))
@@ -831,13 +832,7 @@ export class Screen extends Node {
       height: 'shrink',
       width: 'shrink',
       border: 'line',
-      style: {
-        border: {
-          fg: 'default'
-        },
-        bg: 'default',
-        fg: 'default'
-      }
+      style: { border: { fg: 'default' }, bg: 'default', fg: 'default' }
     })
     this.on(MOUSEMOVE, function (data) {
       if (self._hoverText.detached) return
