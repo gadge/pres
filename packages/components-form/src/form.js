@@ -19,10 +19,10 @@ export class Form extends Box {
       this.screen._listenKeys(this)
       this.on(ELEMENT_KEYPRESS, function (el, ch, key) {
         if (
-          (key.name === TAB && !key.shift) ||
-          (el.type === 'textbox' && options.autoNext && key.name === ENTER) ||
-          (key.name === DOWN) ||
-          (options.vi && key.name === 'j')
+          ( key.name === TAB && !key.shift ) ||
+          ( el.type === 'textbox' && options.autoNext && key.name === ENTER ) ||
+          ( key.name === DOWN ) ||
+          ( options.vi && key.name === 'j' )
         ) {
           if (el.type === 'textbox' || el.type === 'textarea') {
             if (key.name === 'j') return
@@ -33,9 +33,9 @@ export class Form extends Box {
           return
         }
         if (
-          (key.name === TAB && key.shift) ||
-          (key.name === UP) ||
-          (options.vi && key.name === 'k')
+          ( key.name === TAB && key.shift ) ||
+          ( key.name === UP ) ||
+          ( options.vi && key.name === 'k' )
         ) {
           if (el.type === 'textbox' || el.type === 'textarea') {
             if (key.name === 'k') return
@@ -57,9 +57,9 @@ export class Form extends Box {
     // and next().
     if (!this._sub) {
       const out = []
-      this.sub.forEach(function fn(el) {
+      this.sub.forEach(function refreshSub(el) {
         if (el.keyable) out.push(el)
-        el.sub.forEach(fn)
+        el.sub.forEach(refreshSub)
       })
       this._sub = out
     }
@@ -120,21 +120,21 @@ export class Form extends Box {
   }
   submit() {
     const out = {}
-    this.sub.forEach(function fn(el) {
+    this.sub.forEach(function submitSub(el) {
       if (el.value != null) {
         const name = el.name || el.type
         if (Array.isArray(out[name])) { out[name].push(el.value) }
         else if (out[name]) { out[name] = [ out[name], el.value ] }
         else { out[name] = el.value }
       }
-      el.sub.forEach(fn)
+      el.sub.forEach(submitSub)
     })
     this.emit(SUBMIT, out)
     return this.submission = out
   }
   cancel() { this.emit(CANCEL) }
   reset() {
-    this.sub.forEach(function fn(el) {
+    this.sub.forEach(function resetSub(el) {
       switch (el.type) {
         case 'screen':
           break
@@ -199,7 +199,7 @@ export class Form extends Box {
           //el.clearImage();
           return
       }
-      el.sub.forEach(fn)
+      el.sub.forEach(resetSub)
     })
     this.emit(RESET)
   }
