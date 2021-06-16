@@ -1,0 +1,38 @@
+{
+  "name": "@pres/global-node",
+  "version": "0.3.16",
+  "description": "Global node for pres",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "pub": "npm publish",
+    "test": "node -r @babel/register test/test.index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoyeungw/pres/components-node.git"
+  },
+  "keywords": [
+    "pres",
+    "process",
+    "signal-handler",
+    "components-node"
+  ],
+  "author": {
+    "name": "Hoyeung Wong",
+    "email": "hoyeungw@outlook.com",
+    "url": "https://github.com/hoyeungw"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hoyeungw/pres/cluster"
+  },
+  "homepage": "https://github.com/hoyeungw/pres/cluster#readme",
+  "gitHead": "f9a54c9986c480231564eced27c8e116febc69da"
+}
