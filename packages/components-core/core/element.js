@@ -21,12 +21,18 @@ import { nullish }                                  from '@typen/nullish'
 import { selectObject }                             from '@vect/object-select'
 import { last }                                     from '@vect/vector-index'
 import assert                                       from 'assert'
+import { REGEX_INIT_SGR, REGEX_SGR_G }              from '../assets'
 import { Cadre }                                    from '../utils/Cadre'
 import { Detic }                                    from '../utils/Detic'
 import { scaler }                                   from '../utils/scaler'
 import { Box }                                      from './box'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
+
+const EVENT_LIST_COLLECTION = [
+  [ 'hoverEffects', 'mouseover', 'mouseout', '_htemp' ],
+  [ 'focusEffects', 'focus', 'blur', '_ftemp' ]
+]
 
 export class Element extends Node {
   #parsedContent
@@ -118,34 +124,29 @@ export class Element extends Node {
       if (options.effects.hover) options.hoverEffects = options.effects.hover
       if (options.effects.focus) options.focusEffects = options.effects.focus
     }
-    const EVENT_LIST_COLLECTION = [
-      [ 'hoverEffects', 'mouseover', 'mouseout', '_htemp' ],
-      [ 'focusEffects', 'focus', 'blur', '_ftemp' ]
-    ]
-    EVENT_LIST_COLLECTION.forEach(props => {
-      const [ pname, over, out, temp ] = props
-      self.screen.setEffects(self, self, over, out, self.options[pname], temp)
-    })
+    for (const [ key, over, out, temp ] of EVENT_LIST_COLLECTION) {
+      self.screen.setEffects(self, self, over, out, self.options[key], temp)
+    }
     if (this.options.draggable) { this.draggable = true }
     if (options.focused) this.focus()
   }
   get focused() { return this.screen.focused === this}
   get visible() {
-    let el = this
+    let node = this
     do {
-      if (el.detached) return false
-      if (el.hidden) return false
+      if (node.detached) return false
+      if (node.hidden) return false
       // if (!el.prevPos) return false;
       // if (el.pos.width === 0 || el.pos.height === 0) return false;
-    } while (( el = el.sup ))
+    } while (( node = node.sup ))
     return true
   }
   get _detached() {
-    let el = this
+    let node = this
     do {
-      if (el.type === 'screen') return false
-      if (!el.sup) return true
-    } while (( el = el.sup ))
+      if (node.type === 'screen') return false
+      if (!node.sup) return true
+    } while (( node = node.sup ))
     return false
   }
   get draggable() { return this._draggable === true }
@@ -292,7 +293,7 @@ export class Element extends Node {
 
   calcT(get) {
     const supPos = get ? this.sup.calcPos() : this.sup
-    /** @type {string|number} */ let top = this.pos.top || 0
+    let top = this.pos.top || 0
     if (typeof top === STR) {
       if (top === CENTER) { top = '50%' }
       top = this.inGrid ? this.scaler.scaleT(top, supPos.height) : scaler(top, supPos.height)
@@ -341,7 +342,7 @@ export class Element extends Node {
     let width = this.pos.width,
         left
     if (typeof width === STR) {
-      if (width === 'half') {width = '50%'}
+      if (width === 'half') { width = '50%' }
       width = this.inGrid ? this.scaler.scaleW(width, supPos.width) : scaler(width, supPos.width)
       return width
     }
@@ -448,10 +449,7 @@ export class Element extends Node {
       this.prevPos = prevPos
       //this.shrink = true;
     }
-    if (
-      ( this.pos.width == null ) &&
-      ( this.pos.left == null || this.pos.right == null )
-    ) {
+    if (( this.pos.width == null ) && ( this.pos.left == null || this.pos.right == null )) {
       if (this.pos.left == null && this.pos.right != null) {
         xLo = xHi - ( mxl - mxi )
         xLo -= !this.screen.autoPadding ? this.padding.hori : this.intL
@@ -476,11 +474,7 @@ export class Element extends Node {
         }
       }
     }
-    if (
-      ( this.pos.height == null ) &&
-      ( this.pos.top == null || this.pos.bottom == null ) &&
-      ( !this.scrollable || this._isList )
-    ) {
+    if (( this.pos.height == null ) && ( this.pos.top == null || this.pos.bottom == null ) && ( !this.scrollable || this._isList )) {
       // NOTE: Lists get special treatment if they are shrunken - assume they
       // want all list items showing. This is one case we can calculate the
       // height based on items/boxes.
@@ -874,7 +868,7 @@ export class Element extends Node {
     out.real = out
 
     out.mwidth = out.reduce((current, line) => {
-      line = line.replace(/\x1b\[[\d;]*m/g, '')
+      line = line.replace(REGEX_SGR_G, '')
       return line.length > current ? line.length : current
     }, 0)
     return out
@@ -979,7 +973,7 @@ export class Element extends Node {
       attrList[j] = baseAttr
       for (let i = 0, matches, sgra; i < line.length; i++) {
         if (line[i] === ESC) {
-          if (( matches = /^\x1b\[[\d;]*m/.exec(line.slice(i)) ) && ( [ sgra ] = matches )) {
+          if (( matches = REGEX_INIT_SGR.exec(line.slice(i)) ) && ( [ sgra ] = matches )) {
             baseAttr = sgraToAttr(sgra, baseAttr, normAttr)
             i += sgra.length - 1
           }
@@ -1081,7 +1075,7 @@ export class Element extends Node {
         // Handle escape codes.
         let matches, sgra
         while (ch === ESC) {
-          if (( matches = /^\x1b\[[\d;]*m/.exec(content.slice(ci - 1)) ) && ( [ sgra ] = matches )) {
+          if (( matches = REGEX_INIT_SGR.exec(content.slice(ci - 1)) ) && ( [ sgra ] = matches )) {
             ci += sgra.length - 1
             currAttr = sgraToAttr(sgra, currAttr, normAttr)
             // if (this.codename === 'box.25') console.log(
@@ -1428,16 +1422,16 @@ export class Element extends Node {
   getContent() { return this.contLines?.fake.join(LF) ?? '' }
   setText(content, noClear) {
     content = content || ''
-    content = content.replace(/\x1b\[[\d;]*m/g, '')
+    content = content.replace(REGEX_SGR_G, '')
     return this.setContent(content, noClear, true)
   }
-  getText() { return this.getContent().replace(/\x1b\[[\d;]*m/g, '') }
+  getText() { return this.getContent().replace(REGEX_SGR_G, '') }
 
   _align(line, width, align) {
     if (!align) return line
     //if (!align && !~line.indexOf('{|}')) return line;
-    const cline = line.replace(/\x1b\[[\d;]*m/g, ''),
-          len   = cline.length
+    const contLine = line.replace(REGEX_SGR_G, ''),
+          len      = contLine.length
     let s = width - len
     if (this.shrink) { s = 0 }
     if (len === 0) return line
@@ -1446,8 +1440,8 @@ export class Element extends Node {
     else if (align === RIGHT && ( s = Array(s + 1).join(' ') )) return s + line
     else if (this.parseTags && ~line.indexOf('{|}')) {
       const parts = line.split('{|}')
-      const cparts = cline.split('{|}')
-      s = Math.max(width - cparts[0].length - cparts[1].length, 0)
+      const contParts = contLine.split('{|}')
+      s = Math.max(width - contParts[0].length - contParts[1].length, 0)
       s = Array(s + 1).join(' ')
       return parts[0] + s + parts[1]
     }
