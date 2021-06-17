@@ -51,7 +51,7 @@ export class Textarea extends Input {
   static build(options) { return new Textarea(options) }
   _updateCursor(get) {
     if (this.screen.focused !== this) return
-    const prevPos = get ? this.prevPos : this.calcCoords()
+    const prevPos = get ? this.prevPos : this.calcCoord()
     if (!prevPos) return
     let last = this._clines[this._clines.length - 1]
     const program = this.screen.program

@@ -17,6 +17,7 @@ import { last }                                                                f
 import assert                                                                  from 'assert'
 import { COORD_INFOS, REGEX_INIT_SGR, REGEX_SGR_G, SGR_ATTRS, UI_EVENT_TODOS } from '../assets'
 import { Cadre }                                                               from '../utils/Cadre'
+import { Coord }                                                               from '../utils/Coord'
 import { Detic }                                                               from '../utils/Detic'
 import { scaler }                                                              from '../utils/scaler'
 import { Box }                                                                 from './box'
@@ -387,31 +388,22 @@ export class Element extends Node {
     const w = pos.xHi - pos.xLo
     return new Detic(t, b, l, r, h, w)
   }
-  calcCoords(get, noScroll) {
-    if (this.hidden) return void 0
-    // if (this.sup._rendering) { get = true }
-    let xLo   = this.calcL(get),
-        xHi   = xLo + this.calcW(get),
-        yLo   = this.calcT(get),
-        yHi   = yLo + this.calcH(get),
-        base  = this.subBase || 0,
-        node  = this,
-        fixed = this.fixed,
-        coords,
-        v,
-        negL,
-        negR,
+  calcCoord(get, noScroll) {
+    if (this.hidden) return void 0// if (this.sup._rendering) { get = true }
+    let t     = this.calcT(get),
+        b     = t + this.calcH(get),
+        l     = this.calcL(get),
+        r     = l + this.calcW(get),
         negT,
         negB,
-        supPos,
-        b
-    // Attempt to shrink the element base on the
-    // size of the content and child elements.
-    if (this.shrink) {
-      coords = this.calcShrink(xLo, xHi, yLo, yHi, get);
-      ( { xLo, xHi, yLo, yHi } = coords )
-    }
+        negL,
+        negR,
+        base  = this.subBase || 0,
+        fixed = this.fixed
+    // Attempt to shrink the element base on the size of the content and child elements.
+    if (this.shrink) { ( { xLo: l, xHi: r, yLo: t, yHi: b } = this.calcShrink(l, r, t, b, get) ) }
     // Find a scrollable ancestor if we have one.
+    let node = this
     while (( node = node.sup )) {
       if (node.scrollable) {
         if (fixed) {
@@ -421,108 +413,73 @@ export class Element extends Node {
         break
       }
     }
-    // Check to make sure we're visible and
-    // inside of the visible scroll area.
-    // NOTE: Lists have a property where only
-    // the list items are obfuscated.
-    // Old way of doing things, this would not render right if a shrunken element
-    // with lots of boxes in it was within a scrollable element.
+    // Check to make sure we're visible and inside of the visible scroll area.
+    // NOTE: Lists have a property where only the list items are obfuscated.
+    // Old way of doing things, this would not render right if a shrunken element with lots of boxes in it was within a scrollable element.
     // See: $ node test/widget-shrink-fail.js
-    // var thisparent = this.sup;
     const sup = node
     if (node && !noScroll) {
-      supPos = sup.prevPos
-      // The shrink option can cause a stack overflow
-      // by calling calcCoords on the child again.
-      // if (!get && !thisparent.shrink) {
-      //   supPos = thisparent.calcCoords();
-      // }
-      if (!supPos) return
-      // TODO: Figure out how to fix base (and cbase to only
-      // take into account the *sup's* padding.
-
-      yLo -= supPos.base
-      yHi -= supPos.base
-
-      b = sup.border ? 1 : 0
+      const supPos = sup.prevPos
+      // The shrink option can cause a stack overflow by calling calcCoord on the child again.
+      // if (!get && !sup.shrink) { supPos = sup.calcCoord() }
+      if (!supPos) return void 0
+      // TODO: Figure out how to fix base (and cbase to only take into account the *sup's* padding.
+      t -= supPos.base
+      b -= supPos.base
+      let border = sup.border ? 1 : 0
       // XXX
       // Fixes non-`fixed` labels to work with scrolling (they're ON the border):
-      // if (this.pos.left < 0
-      //     || this.pos.right < 0
-      //     || this.pos.top < 0
-      //     || this.pos.bottom < 0) {
-      if (this._isLabel) { b = 0 }
-      if (yLo < supPos.yLo + b) {
-        if (yHi - 1 < supPos.yLo + b) {
-          // Is above.
-          return
-        }
+      // if (this.pos.left < 0 || this.pos.right < 0 || this.pos.top < 0 || this.pos.bottom < 0) {
+      if (this._isLabel) { border = 0 }
+      if (t < supPos.yLo + border) {
+        if (b < supPos.yLo + border + 1) { return void 0 } // Is above.
         else {
-          // Is partially covered above.
           negT = true
-          v = supPos.yLo - yLo
+          let v = supPos.yLo - t
           if (this.border) v--
           if (sup.border) v++
           base += v
-          yLo += v
-        }
+          t += v
+        } // Is partially covered above.
       }
-      else if (yHi > supPos.yHi - b) {
-        if (yLo > supPos.yHi - 1 - b) {
-          // Is below.
-          return
-        }
+      else if (b > supPos.yHi - border) {
+        if (t > supPos.yHi - 1 - border) { return void 0 }  // Is below.
         else {
-          // Is partially covered below.
           negB = true
-          v = yHi - supPos.yHi
+          let v = b - supPos.yHi
           if (this.border) v--
           if (sup.border) v++
-          yHi -= v
-        }
+          b -= v
+        } // Is partially covered below.
       }
       // Shouldn't be necessary.
-      // assert.ok(yLo < yHi);
-      if (yLo >= yHi) return
-      // Could allow overlapping stuff in scrolling elements
-      // if we cleared the pending buffer before every draw.
-      if (xLo < node.prevPos.xLo) {
-        xLo = node.prevPos.xLo
+      // assert.ok(t < b);
+      if (t >= b) return void 0
+      // Could allow overlapping stuff in scrolling elements if we cleared the pending buffer before every draw.
+      if (l < node.prevPos.xLo) {
+        l = node.prevPos.xLo
         negL = true
-        if (this.border) xLo--
-        if (sup.border) xLo++
+        if (this.border) l--
+        if (sup.border) l++
       }
-      if (xHi > node.prevPos.xHi) {
-        xHi = node.prevPos.xHi
+      if (node.prevPos.xHi < r) {
+        r = node.prevPos.xHi
         negR = true
-        if (this.border) xHi++
-        if (sup.border) xHi--
+        if (this.border) r++
+        if (sup.border) r--
       }
-      //if (xLo > xHi) return;
-      if (xLo >= xHi) return void 0
+      if (l >= r) return void 0 //if (l > r) return;
     }
     if (this.noOverflow && this.sup.prevPos) {
-      if (xLo < this.sup.prevPos.xLo + this.sup.intL) { xLo = this.sup.prevPos.xLo + this.sup.intL }
-      if (xHi > this.sup.prevPos.xHi - this.sup.intR) { xHi = this.sup.prevPos.xHi - this.sup.intR }
-      if (yLo < this.sup.prevPos.yLo + this.sup.intT) { yLo = this.sup.prevPos.yLo + this.sup.intT }
-      if (yHi > this.sup.prevPos.yHi - this.sup.intB) { yHi = this.sup.prevPos.yHi - this.sup.intB }
+      const { xLo: xLoSup, xHi: xHiSup, yLo: yLoSup, yHi: yHiSup } = this.sup.prevPos
+      const { intT, intB, intL, intR } = this.sup
+      if (t < yLoSup + intT) { t = yLoSup + intT }
+      if (b > yHiSup - intB) { b = yHiSup - intB }
+      if (l < xLoSup + intL) { l = xLoSup + intL }
+      if (r > xHiSup - intR) { r = xHiSup - intR }
     }
-    // if (this.sup.prevPos) {
-    //   this.sup.prevPos._scrollBottom = Math.max(
-    //     this.sup.prevPos._scrollBottom, yHi);
-    // }
-    return {
-      xLo,
-      xHi,
-      yLo,
-      yHi,
-      base,
-      negT,
-      negB,
-      negL,
-      negR,
-      renders: this.screen.renders
-    }
+    // if (this.sup.prevPos) { this.sup.prevPos._scrollBottom = Math.max(this.sup.prevPos._scrollBottom, b) }
+    return new Coord(t, b, l, r, negT, negB, negL, negR, base, this.screen.renders)
   }
   calcShrinkBox(xLo, xHi, yLo, yHi, get) {
     if (!this.sub.length) return { xLo, xHi: xLo + 1, yLo, yHi: yLo + 1 }
@@ -540,7 +497,7 @@ export class Element extends Node {
     }
     for (i = 0; i < this.sub.length; i++) {
       el = this.sub[i]
-      ret = el.calcCoords(get)
+      ret = el.calcCoord(get)
       // Or just (seemed to work, but probably not good):
       // ret = el.prevPos || this.prevPos;
       if (!ret) continue
@@ -664,7 +621,7 @@ export class Element extends Node {
 
   clearPos(get, override) {
     if (this.detached) return
-    const coord = this.calcCoords(get)
+    const coord = this.calcCoord(get)
     if (!coord) return
     const { xLo, xHi, yLo, yHi } = coord
     this.screen.clearRegion(xLo, xHi, yLo, yHi, override)
@@ -975,7 +932,7 @@ export class Element extends Node {
   render() {
     this._emit(PRERENDER)
     this.parseContent()
-    const coords = this.calcCoords(true)
+    const coords = this.calcCoord(true)
     if (!coords) return void ( delete this.prevPos )
     if (coords.xHi - coords.xLo <= 0) return void ( coords.xHi = Math.max(coords.xHi, coords.xLo) )
     if (coords.yHi - coords.yLo <= 0) return void ( coords.yHi = Math.max(coords.yHi, coords.yLo) )
@@ -1612,11 +1569,11 @@ export class Element extends Node {
     this.setContent(this.contLines.fake.join(LF), true)
     diff = this.contLines.length - start
     if (diff > 0) {
-      const pos = this.calcCoords()
+      const pos = this.calcCoord()
       if (!pos) return
       const ht   = pos.yHi - pos.yLo - this.intH,
             base = this.subBase || 0,
-            vis  = real >= base && real - base < ht // visible
+            vis  = base <= real && real < base + ht // visible
       if (pos && vis && this.screen.cleanSides(this)) {
         this.screen.insertLine(diff,
           pos.yLo + this.intT + real - base,
@@ -1640,7 +1597,7 @@ export class Element extends Node {
     // XXX clearPos() without diff statement?
     let height = 0
     if (diff > 0) {
-      const pos = this.calcCoords()
+      const pos = this.calcCoord()
       if (!pos) return
 
       height = pos.yHi - pos.yLo - this.intH

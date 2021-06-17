@@ -105,12 +105,12 @@ export class Node extends EventEmitter {
   }
   prepend(element) { this.insert(element, 0) }
   append(element) { this.insert(element, this.sub.length) }
-  insertBefore(element, other) {
-    const i = this.sub.indexOf(other)
+  insertBefore(element, another) {
+    const i = this.sub.indexOf(another)
     if (~i) this.insert(element, i)
   }
-  insertAfter(element, other) {
-    const i = this.sub.indexOf(other)
+  insertAfter(element, another) {
+    const i = this.sub.indexOf(another)
     if (~i) this.insert(element, i + 1)
   }
   remove(element) {

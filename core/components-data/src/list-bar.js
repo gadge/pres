@@ -190,7 +190,7 @@ export class ListBar extends Box {
       this.emit(SELECT_ITEM, this.items[offset], offset)
       return
     }
-    const prevPos = this.calcCoords()
+    const prevPos = this.calcCoord()
     if (!prevPos) return
     const self  = this,
           width = ( prevPos.xHi - prevPos.xLo ) - this.intW
@@ -200,7 +200,7 @@ export class ListBar extends Box {
     if (!item) return
     this.items.forEach((item, i) => {
       if (i < self.leftBase) return
-      const prevPos = item.calcCoords()
+      const prevPos = item.calcCoord()
       if (!prevPos || prevPos.xHi <= prevPos.xLo) return
       drawn += ( prevPos.xHi - prevPos.xLo ) + 2
       if (drawn <= width) visible++
