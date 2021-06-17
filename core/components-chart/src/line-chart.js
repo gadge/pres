@@ -1,12 +1,11 @@
 import { Box }           from '@pres/components-core'
 import { Canvas }        from '@pres/components-layout'
-import { ATTACH }        from '@pres/enum-events/index'
+import { ATTACH }        from '@pres/enum-events'
 import { toByte }        from '@pres/util-byte-colors'
 import { Ticks }         from '@pres/util-chart-ticks'
 import { nullish }       from '@typen/nullish'
 import { maxBy }         from '@vect/vector-indicator'
 import { Labels, Padds } from '../utils'
-
 
 export class LineChart extends Canvas {
   constructor(options = {}) {

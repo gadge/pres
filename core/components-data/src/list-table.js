@@ -8,6 +8,8 @@ import { Box }                     from '@pres/components-core'
 import { ATTACH, RESIZE, SCROLL, } from '@pres/enum-events'
 import { LEFT, RIGHT }             from '@pres/enum-key-names'
 import { styleToAttr }             from '@pres/util-sgr-attr'
+import { nullish }                 from '@typen/nullish'
+import { mapper }                  from '@vect/vector-mapper'
 import { List }                    from './list'
 import { Table }                   from './table'
 

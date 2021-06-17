@@ -22,7 +22,6 @@ import {
   LEFT, MIDDLE, RIGHT, UNKNOWN
 }                            from '@pres/enum-key-names'
 import { gpmClient }         from '@pres/gpm-client'
-import * as colors           from '@pres/util-blessed-colors'
 import { degrade, toByte }   from '@pres/util-byte-colors'
 import { slice }             from '@pres/util-helpers'
 import {
@@ -36,7 +35,7 @@ import { last }              from '@vect/vector-index'
 import { StringDecoder }     from 'string_decoder'
 import { ALL }               from '../assets/constants'
 import { IO }                from './io'
-import { ProgramCollection } from './programCollection'
+import { GlobalProgram } from '@pres/global-program'
 
 /**
  * Program
@@ -48,7 +47,7 @@ export class Program extends IO {
   type = 'program'
   constructor(options = {}) {
     super(options)
-    ProgramCollection.initialize(this)
+    GlobalProgram.initialize(this)
     this.configGrid()
     this.listen()
     console.log(`>> [new program]`)
@@ -72,18 +71,18 @@ export class Program extends IO {
   set title(title) { return this.setTitle(title), this._title }
 
   destroy() {
-    const index = ProgramCollection.instances.indexOf(this)
+    const index = GlobalProgram.instances.indexOf(this)
     if (~index) {
-      ProgramCollection.instances.splice(index, 1)
-      ProgramCollection.total--
+      GlobalProgram.instances.splice(index, 1)
+      GlobalProgram.total--
       this.flush()
       this._exiting = true
-      ProgramCollection.global = ProgramCollection.instances[0]
-      if (ProgramCollection.total === 0) {
-        ProgramCollection.global = null
-        process.removeListener(EXIT, ProgramCollection._exitHandler.bind(ProgramCollection))
-        delete ProgramCollection._exitHandler.bind(ProgramCollection)
-        delete ProgramCollection._bound
+      GlobalProgram.global = GlobalProgram.instances[0]
+      if (GlobalProgram.total === 0) {
+        GlobalProgram.global = null
+        process.removeListener(EXIT, GlobalProgram._exitHandler.bind(GlobalProgram))
+        delete GlobalProgram._exitHandler.bind(GlobalProgram)
+        delete GlobalProgram._bound
       }
       this.input._presInput--
       this.output._presOutput--

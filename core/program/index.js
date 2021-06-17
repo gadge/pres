@@ -1,2 +1,1 @@
-export { Program }           from './src/program'
-export { ProgramCollection } from './src/programCollection'
+export { Program } from './src/program'

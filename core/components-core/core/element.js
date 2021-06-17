@@ -1042,7 +1042,10 @@ export class Element extends Node {
         this.screen.fillRegion(normAttr, bch, xLo, xHi, yLo, yHi)
       }
     }
-    if (this.padding.any) { xLo += this.padding.l, xHi -= this.padding.r, yLo += this.padding.t, yHi -= this.padding.b }
+    if (this.padding.any) {
+      const { t, b, l, r } = this.padding
+      xLo += l, xHi -= r, yLo += t, yHi -= b
+    }
     // Determine where to place the text if it's vertically aligned.
     if (this.valign === MIDDLE || this.valign === BOTTOM) {
       visible = yHi - yLo
@@ -1111,10 +1114,7 @@ export class Element extends Node {
           for (; x < xHi; x++) {
             if (!( cell = line[x] )) break
             if (this.style.transparent) {
-              cell.inject(
-                colors.blend(currAttr, cell.at),
-                content[ci] ? ch : null
-              )
+              cell.inject(colors.blend(currAttr, cell.at), content[ci] ? ch : null)
               line.dirty = true
             }
             else if (cell.at !== currAttr || cell.ch !== ch) {
@@ -1148,14 +1148,11 @@ export class Element extends Node {
         if (this._noFill) continue
         const nextCell = line[x]
         if (this.style.transparent) {
-          nextCell.inject(
-            colors.blend(currAttr, nextCell.at),
-            content[ci] ? ch : null
-          )
+          nextCell.inject(colors.blend(currAttr, nextCell.at), content[ci] ? ch : null)
           line.dirty = true
         }
         else {
-          if (currAttr !== cell.at || ch !== cell.ch) {
+          if (cell.at !== currAttr || cell.ch !== ch) {
             nextCell.inject(currAttr, ch)
             line.dirty = true
           }

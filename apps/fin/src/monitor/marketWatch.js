@@ -1,7 +1,6 @@
-import { Table }    from '@analys/table'
-import { bound }    from '@aryth/bound-vector'
-import { intExpon } from '@aryth/math'
-
+import { Table }            from '@analys/table'
+import { bound }            from '@aryth/bound-vector'
+import { intExpon }         from '@aryth/math'
 import { flopGenerator }    from '@aryth/rand'
 import { MarketIndexes }    from '@morpont/market-indexes-fmp'
 import { Grey }             from '@palett/cards'
@@ -19,6 +18,7 @@ const BEFORE = shiftDay(TODAY.slice(), -60)
 let colorGenerator = flopGenerator(COLOR_COLLECTION, Grey.base)
 
 MarketIndexes.login(APIKEY)
+
 export class MarketWatch extends AsyncLooper {
   constructor(lineChart, indicator) {
     super(MarketIndexes.prices.bind(null, { indicator, start: BEFORE }))
@@ -29,7 +29,7 @@ export class MarketWatch extends AsyncLooper {
 
   async run() {
     const filename = camelToSnake(this.indicator, '_').toUpperCase()
-    const filepath = process.cwd() + '/applications/fin/resources/' + filename + '.js'
+    const filepath = process.cwd() + '/apps/fin/resources/' + filename + '.js'
     const table = await import(filepath).then(fileTrunk => fileTrunk[filename])
     this.updateData(Table.from(table))
     // await MarketIndexes
@@ -43,6 +43,7 @@ export class MarketWatch extends AsyncLooper {
    */
   updateData(table) {
     const entries = table.select([ 'date', 'adj.c' ]).rows
+    console.log(entries)
     const [ x, y ] = entries.slice(0, 90) |> unwind
     const { min, max } = roundBound(bound(y))
     const series = {

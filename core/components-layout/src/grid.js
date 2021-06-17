@@ -5,6 +5,7 @@ import { NUM, OBJ, STR }    from '@typen/enum-data-types'
 import { nullish }          from '@typen/nullish'
 
 
+
 export const parseMargin = margin => {
   const t = typeof margin
   if (nullish(margin)) return { t: 0, b: 0, l: 0, r: 0 }

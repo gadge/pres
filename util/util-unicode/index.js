@@ -5,7 +5,7 @@
  * Borrowed from vangie/east-asian-width, komagata/eastasianwidth,
  * and mathiasbynens/String.prototype.codePointAt. Licenses below.
  */
-import { ScreenCollection } from '@pres/components-node'
+import { GlobalScreen } from '@pres/global-screen'
 
 const stringFromCharCode = String.fromCharCode
 const floor = Math.floor
@@ -20,7 +20,7 @@ export function charWidth(str, i) {
   // nul
   if (point === 0) return 0
   // tab
-  if (point === 0x09) { return ScreenCollection.global?.tabc.length ?? 8 }
+  if (point === 0x09) { return GlobalScreen.global?.tabc.length ?? 8 }
   // 8-bit control characters (2-width according to unicode??)
   if (point < 32 || (point >= 0x7f && point < 0xa0)) return 0
   // search table of non-spacing characters

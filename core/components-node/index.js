@@ -1,8 +1,4 @@
-import { Node }             from './src/node'
-import { ScreenCollection } from './src/screenCollection'
+import { Node } from './src/node'
 
-const node = options => new Node(options)
-export {
-  Node, node,
-  ScreenCollection,
-}
+export { Node } from './src/node'
+export const node = options => new Node(options)

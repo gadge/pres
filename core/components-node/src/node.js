@@ -6,11 +6,11 @@
 
 import { ADOPT, ATTACH, DESTROY, DETACH, REMOVE, REPARENT, } from '@pres/enum-events'
 import { EventEmitter }                                      from '@pres/events'
+import { GlobalNode }                                        from '@pres/global-node'
+import { GlobalScreen }                                      from '@pres/global-screen'
 import { AEU }                                               from '@texting/enum-chars'
 import { FUN }                                               from '@typen/enum-data-types'
 import { last }                                              from '@vect/vector-index'
-import { NodeCollection }                                    from './nodeCollection'
-import { ScreenCollection }                                  from './screenCollection'
 
 export class Node extends EventEmitter {
   type = 'node'
@@ -32,7 +32,7 @@ export class Node extends EventEmitter {
     this.sku = options.sku
     this.configScreen(options)
     this.$ = this._ = this.data = {}
-    this.uid = NodeCollection.uid++
+    this.uid = GlobalNode.uid++
     this.index = this.index ?? -1
     if (this.type !== 'screen') this.detached = true
     let sup, sub
@@ -43,7 +43,7 @@ export class Node extends EventEmitter {
     if (( sub = options.sub ?? options.children )) {
       sub.forEach(node => this.append(node))
     }
-    if (ScreenCollection.journal) console.log('>> [new node]', this.codename, '∈',
+    if (GlobalScreen.journal) console.log('>> [new node]', this.codename, '∈',
       this.sup?.codename ?? this.screen?.codename ?? AEU)
   }
   configScreen(options) {
@@ -53,13 +53,13 @@ export class Node extends EventEmitter {
       let sup
       // console.log(`>>> this.type = ${this.type}`)
       if (this.type === 'screen') { screen = this }
-      else if (ScreenCollection.total === 1) { screen = ScreenCollection.global }
+      else if (GlobalScreen.total === 1) { screen = GlobalScreen.global }
       else if (( sup = options.sup ?? options.parent )) {
         screen = sup
         while (screen?.type !== 'screen') screen = screen.sup
       }
-      else if (ScreenCollection.total) { // This _should_ work in most cases as long as the element is appended synchronously after the screen's creation. Throw error if not.
-        screen = last(ScreenCollection.instances)
+      else if (GlobalScreen.total) { // This _should_ work in most cases as long as the element is appended synchronously after the screen's creation. Throw error if not.
+        screen = last(GlobalScreen.instances)
         process.nextTick(() => {
           if (!self.sup) throw new Error(
             'Element (' + self.type + ') was not appended synchronously after the screen\'s creation. ' +

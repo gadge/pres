@@ -1,8 +1,7 @@
-import { TerminalInterface as blessed } from '@pres/terminal-interface'
-import * as contrib                     from '../dist/index.esm'
+import { TI } from '@pres/terminal-interface'
 
-const screen = blessed.screen()
-const spark = contrib.sparkline(
+const screen = TI.screen()
+const spark = TI.sparkline(
   {
     label: 'Sparkline',
     tags: true,

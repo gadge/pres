@@ -32,7 +32,7 @@ export class GlobalScreen {
       const onSignal = GlobalScreen[name] ?? ( GlobalScreen[name] = signalHandler.bind({ signal }) )
       process.on(signal, onSignal)
     }
-    console.log('>> [ScreenCollection.initialize]', GlobalScreen.total, `[ ${ Object.keys(GlobalScreen.handlers) } ]`)
+    console.log('>> [GlobalScreen.initialize]', GlobalScreen.total, `[ ${ Object.keys(GlobalScreen.handlers) } ]`)
   }
   static _uncaughtExceptionHandler(err = new Error('Uncaught Exception.')) {
     if (process.listeners(UNCAUGHT_EXCEPTION).length > 1) return

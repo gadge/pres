@@ -2,6 +2,7 @@ import { BEL, DCS, ESC, ST }                                         from '@pres
 import { DATA, KEY, KEYPRESS, MOUSE, NEW_LISTENER, RESIZE, WARNING } from '@pres/enum-events'
 import { ENTER, RETURN, UNDEFINED }                                  from '@pres/enum-key-names'
 import { keypressEventsEmitter }                                     from '@pres/events'
+import { GlobalProgram }                                             from '@pres/global-program'
 import { Tput }                                                      from '@pres/terminfo-parser'
 import { whichTerminal }                                             from '@pres/terminfo-parser/src/whichTerminal'
 import { slice }                                                     from '@pres/util-helpers'
@@ -12,7 +13,6 @@ import { EventEmitter }                                              from 'event
 import fs                                                            from 'fs'
 import { StringDecoder }                                             from 'string_decoder'
 import util                                                          from 'util'
-import { ProgramCollection }                                         from './programCollection'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
@@ -57,17 +57,17 @@ export class IO extends EventEmitter {
     this.isRxvt = /rxvt/i.test(process.env.COLORTERM)
     this.isXterm = false
     this.tmux = !!process.env.TMUX // IO
-    this.tmuxVersion = (function () {
+    this.tmuxVersion = ( function () {
       if (!self.tmux) return 2
       try {
         const version = cp.execFileSync('tmux', [ '-V' ], { encoding: 'utf8' })
         return +/^tmux ([\d.]+)/i.exec(version.trim().split('\n')[0])[1]
       } catch (e) { return 2 }
-    })() // IO
+    } )() // IO
     this._buf = VO // IO
     this._flush = this.flush.bind(this) // IO
     if (options.tput !== false) this.setupTput() // IO
-    console.log(`>> [program.configIO] [terminal] ${this.#terminal} [tmux] ${this.tmux}`)
+    console.log(`>> [program.configIO] [terminal] ${ this.#terminal } [tmux] ${ this.tmux }`)
   }
 
   get terminal() { return this.#terminal }
@@ -94,10 +94,10 @@ export class IO extends EventEmitter {
           ch = ch.charCodeAt(0).toString(16)
           if (ch.length > 2) {
             if (ch.length < 4) ch = '0' + ch
-            return `\\u${ch}`
+            return `\\u${ ch }`
           }
           if (ch.length < 2) ch = '0' + ch
-          return `\\x${ch}`
+          return `\\x${ ch }`
         })
     }
     function caret(data) {
@@ -115,7 +115,7 @@ export class IO extends EventEmitter {
           if (ch >= 1 && ch <= 26) { ch = String.fromCharCode(ch + 64) }
           else { return String.fromCharCode(ch) }
         }
-        return `^${ch}`
+        return `^${ ch }`
       })
     }
     this.input.on(DATA, data => self.#log('IN', stringify(decoder.write(data))))
@@ -150,7 +150,7 @@ export class IO extends EventEmitter {
     }
     Object.keys(tput).forEach(key => {
       if (self[key] == null) self[key] = tput[key]
-      if (typeof tput[key] !== FUN) return void (self.put[key] = tput[key])
+      if (typeof tput[key] !== FUN) return void ( self.put[key] = tput[key] )
       self.put[key] = tput.padding
         ? function () { return tput._print(tput[key].apply(tput, arguments), write) }
         : function () { return self.wr(tput[key].apply(tput, arguments)) }
@@ -193,9 +193,9 @@ export class IO extends EventEmitter {
     })
     this.on(NEW_LISTENER, function handler(type) { if (type === MOUSE) { self.removeListener(NEW_LISTENER, handler), self.bindMouse() } })
     // Listen for resize on output
-    if (!this.output._presOutput) { (this.output._presOutput = 1), this.#listenOutput() }
+    if (!this.output._presOutput) { ( this.output._presOutput = 1 ), this.#listenOutput() }
     else { this.output._presOutput++ }
-    console.log(`>> [program.listen] [ ${this.eventNames()} ]`)
+    console.log(`>> [program.listen] [ ${ this.eventNames() } ]`)
   }
   #listenInput() {
     const self = this
@@ -204,14 +204,14 @@ export class IO extends EventEmitter {
     this.input.on(KEYPRESS, this.input._keypressHandler = (ch, key) => {
       key = key || { ch: ch }
       // A mouse sequence. The `keys` module doesn't understand these.
-      if (key.name === UNDEFINED && (key.code === '[M' || key.code === '[I' || key.code === '[O')) return void 0
+      if (key.name === UNDEFINED && ( key.code === '[M' || key.code === '[I' || key.code === '[O' )) return void 0
       // Not sure what this is, but we should probably ignore it.
       if (key.name === UNDEFINED) return void 0
       if (key.name === ENTER && key.sequence === '\n') key.name = 'linefeed'
       if (key.name === RETURN && key.sequence === '\r') self.input.emit(KEYPRESS, ch, merge({}, key, { name: ENTER }))
-      const name = `${key.ctrl ? 'C-' : VO}${key.meta ? 'M-' : VO}${key.shift && key.name ? 'S-' : VO}${key.name || ch}`
+      const name = `${ key.ctrl ? 'C-' : VO }${ key.meta ? 'M-' : VO }${ key.shift && key.name ? 'S-' : VO }${ key.name || ch }`
       key.full = name
-      ProgramCollection.instances.forEach(program => {
+      GlobalProgram.instances.forEach(program => {
         if (program.input !== self.input) return void 0
         program.emit(KEYPRESS, ch, key)
         program.emit(KEY + SP + name, ch, key)
@@ -219,19 +219,19 @@ export class IO extends EventEmitter {
     })
     this.input.on(DATA,
       this.input._dataHandler =
-        data => ProgramCollection.instances.forEach(
+        data => GlobalProgram.instances.forEach(
           program => program.input !== self.input ? void 0 : void program.emit(DATA, data)
         )
     )
     keypressEventsEmitter(this.input)
-    console.log(`>> [program.#listenInput] [ ${this.input.eventNames()} ]`)
+    console.log(`>> [program.#listenInput] [ ${ this.input.eventNames() } ]`)
   }
   #listenOutput() {
     const self = this
     if (!this.output.isTTY) nextTick(() => self.emit(WARNING, 'Output is not a TTY'))
     // Output
     function resize() {
-      ProgramCollection.instances.forEach(p => {
+      GlobalProgram.instances.forEach(p => {
         const { output } = p
         if (output !== self.output) return void 0
         p.cols = output.columns
@@ -240,16 +240,16 @@ export class IO extends EventEmitter {
       })
     }
     this.output.on(RESIZE, this.output._resizeHandler = () => {
-      ProgramCollection.instances.forEach(p => {
+      GlobalProgram.instances.forEach(p => {
         if (p.output !== self.output) return
         const { options: { resizeTimeout }, _resizeTimer } = p
         if (!resizeTimeout) return resize()
-        if (_resizeTimer) clearTimeout(_resizeTimer), (delete p._resizeTimer)
+        if (_resizeTimer) clearTimeout(_resizeTimer), ( delete p._resizeTimer )
         const time = typeof resizeTimeout === NUM ? resizeTimeout : 300
         p._resizeTimer = setTimeout(resize, time)
       })
     })
-    console.log(`>> [program.#listenOutput] [ ${this.output.eventNames()} ]`)
+    console.log(`>> [program.#listenOutput] [ ${ this.output.eventNames() } ]`)
   }
 
   out(name, ...args) {
@@ -291,8 +291,8 @@ export class IO extends EventEmitter {
     return this.wr(data)
   }
   bf(text) {
-    if (this._exiting) return void (this.flush(), this.ow(text))
-    if (this._buf) return void (this._buf += text)
+    if (this._exiting) return void ( this.flush(), this.ow(text) )
+    if (this._buf) return void ( this._buf += text )
     this._buf = text
     nextTick(this._flush)
     return true

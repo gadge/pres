@@ -1,15 +1,10 @@
-import * as components from '@pres/components'
-import {
-  ANSIImage, BarChart, BigText, Box, Button, Canvas, Carousel, Checkbox, DataTable, DonutChart, FileManager, Form,
-  Gauge, GaugeList, Grid, Image, Input, Layout, LCD, Line, LineChart, List, ListBar, ListTable, Loading, Log, LogList,
-  Map, Markdown, Message, Node, OverlayImage, Picture, ProgressBar, Prompt, Question, RadioButton, RadioSet, Screen,
-  ScrollableBox, ScrollableText, Sparkline, StackedBarChart, Table, Terminal, Text, Textarea, Textbox, Tree, Video
-}                      from '@pres/components'
-import { Program }     from '@pres/program'
-import { Tput }        from '@pres/terminfo-parser'
-import * as colors     from '@pres/util-blessed-colors'
-import * as helpers    from '@pres/util-helpers'
-import * as unicode    from '@pres/util-unicode'
+import { assign }   from '@ject/mixin'
+import { Pres }     from '@pres/components'
+import { Program }  from '@pres/program'
+import { Tput }     from '@pres/terminfo-parser'
+import * as colors  from '@pres/util-blessed-colors'
+import * as helpers from '@pres/util-helpers'
+import * as unicode from '@pres/util-unicode'
 
 /**
  // chart
@@ -83,68 +78,8 @@ export class TI {
   static Tput = Tput
 }
 
-Object.assign(TI, components)
+assign(TI, Pres)
 
-// // chart
-// static barChart = barChart
-// static donutChart = donutChart
-// static gauge = gauge
-// static gaugeList = gaugeList
-// static lineChart = lineChart
-// static sparkline = sparkline
-// static stackedBarChart = stackedBarChart
-// // core
-// static box = box
-// static element = element
-// static node = node
-// static screen = screen
-// static layout = layout
-// static line = line
-// static log = log
-// static scrollableBox = scrollableBox
-// static scrollableText = scrollableText
-// static terminal = terminal
-// // data
-// static  dataTable = dataTable
-// static  list = list
-// static  listBar = listBar
-// static  listTable = listTable
-// static  table = table
-// static  tree = tree
-// // form
-// static  button = button
-// static  checkbox = checkbox
-// static  fileManager = fileManager
-// static  form = form
-// static  input = input
-// static  prompt = prompt
-// static  question = question
-// static  radioButton = radioButton
-// static  radioSet = radioSet
-// static  textbox = textbox
-// static  textarea = textarea
-// // geo
-// static map = map
-// // inform
-// static lcd = lcd
-// static loading = loading
-// static message = message
-// static progressBar = progressBar
-// // layout
-// static canvas = canvas
-// static carousel = carousel
-// static grid = grid
-// // text
-// static logList = logList
-// static markdown = markdown
-// static text = text
-// // visual
-// static ansiImage = ansiImage
-// static bigText = bigText
-// static image = image
-// static overlayImage = overlayImage
-// static picture = picture
-// static png = png
-// static video = video
+
 
 

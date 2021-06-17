@@ -4,7 +4,7 @@
  * https://github.com/chjj/blessed
  */
 
-import { Node, ScreenCollection }                                      from '@pres/components-node'
+import { Node }                                                        from '@pres/components-node'
 import { ANGLE_TABLE, ANGLES, ANGLES_D, ANGLES_L, ANGLES_R, ANGLES_U } from '@pres/enum-angle-table'
 import { CSI, LF }                                                     from '@pres/enum-control-chars'
 import { SGR }                                                         from '@pres/enum-csi-codes'
@@ -13,6 +13,7 @@ import {
   KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, NEW_LISTENER, PRERENDER, RENDER,
   RESIZE, WARNING, WHEELDOWN, WHEELUP,
 }                                                                      from '@pres/enum-events'
+import { GlobalScreen }                                                from '@pres/global-screen'
 import { Program }                                                     from '@pres/program'
 import * as colors                                                     from '@pres/util-blessed-colors'
 import { degrade }                                                     from '@pres/util-byte-colors'
@@ -34,7 +35,7 @@ export class Screen extends Node {
   constructor(options = {}) {
     options.sku = options.sku ?? 'screen'
     super(options, true)
-    ScreenCollection.initialize(this)
+    GlobalScreen.initialize(this)
     this.setupProgram(options)
     Node.prototype.setup.call(this, options)
     // super(options) // Node.call(this, options)
@@ -115,7 +116,7 @@ export class Screen extends Node {
     this.setMaxListeners(Infinity)
     this.enter()
     this.postEnter()
-    this.on('adjourn', () => ScreenCollection.journal = false)
+    this.on('adjourn', () => GlobalScreen.journal = false)
   }
   setupPos() {
     const t = this.t = this.top = this.absT = this.relT = this.intT = 0
@@ -295,7 +296,7 @@ export class Screen extends Node {
     // console.log('>> [screen.render]', this.currLines)
     // console.log('>> [screen.render]', h, w)
     const self = this
-    if (this.destroyed) return
+    if (this.destroyed) return void 0
     this.emit(PRERENDER)
     this._borderStops = {}
     // TODO: Possibly get rid of .dirty altogether.
@@ -308,7 +309,7 @@ export class Screen extends Node {
     this._ci = 0
     this.sub.forEach(el => { ( el.index = self._ci++ ), el.render() })
     this._ci = -1
-    if (this.screen.dockBorders) { this._dockBorders() }
+    if (this.screen.dockBorders) { this.#dockBorders() }
     this.draw(0, this.currLines.length - 1)
     // XXX Workaround to deal with cursor pos before the screen has rendered and
     // prevPos is not reliable (stale).
@@ -543,7 +544,7 @@ export class Screen extends Node {
     }
     return pos._cleanSides = true
   }
-  _dockBorders() {
+  #dockBorders() {
     const lines = this.currLines
     let stops = this._borderStops,
         y,
@@ -570,7 +571,7 @@ export class Screen extends Node {
         cell = line[x]
         ch = cell.ch
         if (ANGLES[ch]) {
-          cell.ch = this._getAngle(lines, x, y)
+          cell.ch = this.#getAngle(lines, x, y)
           line.dirty = true
         }
       }
@@ -690,18 +691,18 @@ export class Screen extends Node {
   destroy = this._destroy
   _destroy() {
     this.leave()
-    const index = ScreenCollection.instances.indexOf(this)
+    const index = GlobalScreen.instances.indexOf(this)
     if (~index) {
-      ScreenCollection.instances.splice(index, 1)
-      ScreenCollection.total--
-      ScreenCollection.global = ScreenCollection.instances[0]
-      if (ScreenCollection.total === 0) {
-        ScreenCollection.global = null
-        for (const [ signal, handler ] of Object.entries(ScreenCollection.handlers)) {
-          process.off(signal, ScreenCollection[handler])
-          delete ScreenCollection[handler]
+      GlobalScreen.instances.splice(index, 1)
+      GlobalScreen.total--
+      GlobalScreen.global = GlobalScreen.instances[0]
+      if (GlobalScreen.total === 0) {
+        GlobalScreen.global = null
+        for (const [ signal, handler ] of Object.entries(GlobalScreen.handlers)) {
+          process.off(signal, GlobalScreen[handler])
+          delete GlobalScreen[handler]
         }
-        delete ScreenCollection._bound
+        delete GlobalScreen._bound
       }
       this.destroyed = true
       this.emit(DESTROY)
@@ -940,7 +941,7 @@ export class Screen extends Node {
   deleteBottom(top, bottom) { return this.clearRegion(0, this.width, bottom, bottom) }
   // Same as: return this.insertBottom(top, bottom);
   deleteTop(top, bottom) { return this.deleteLine(1, top, top, bottom) }
-  _getAngle(lines, x, y) {
+  #getAngle(lines, x, y) {
     let angle = 0
     const attr = lines[y][x][0],
           ch   = lines[y][x].ch

@@ -15,7 +15,7 @@ export class GlobalProgram {
     if (GlobalProgram._bound) return
     GlobalProgram._bound = true
     GlobalProgram.unshiftEvent(process, EXIT, GlobalProgram._exitHandler)
-    console.log('>> [ProgramCollection.initialize]', GlobalProgram.total, `[ ${ process.eventNames() } ]`)
+    console.log('>> [GlobalProgram.initialize]', GlobalProgram.total, `[ ${ process.eventNames() } ]`)
   }
   // We could do this easier by just manipulating the _events object, or for
   // older versions of node, manipulating the array returned by listeners(), but
