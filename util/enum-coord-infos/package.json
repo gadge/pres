@@ -1,7 +1,7 @@
 {
-  "name": "@pres/components-geo",
+  "name": "@pres/enum-coord-infos",
   "version": "0.3.21",
-  "description": "Core components for pres",
+  "description": "Coord infos (positions and directions) for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "files": [
@@ -14,20 +14,15 @@
     "pub": "npm publish",
     "test": "node -r @babel/register test/test.index.js"
   },
-  "dependencies": {
-    "@pres/components-layout": "^0.3.21",
-    "@pres/enum-events": "^0.3.21",
-    "map-canvas": "^0.1.5"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hoyeungw/pres/components-geo.git"
+    "url": "git+https://github.com/hoyeungw/pres/alias.git"
   },
   "keywords": [
     "pres",
     "process",
     "signal-handler",
-    "components-geo"
+    "alias"
   ],
   "author": {
     "name": "Hoyeung Wong",
@@ -36,8 +31,8 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/hoyeungw/pres/cluster"
+    "url": "https://github.com/hoyeungw/pres"
   },
-  "homepage": "https://github.com/hoyeungw/pres/cluster#readme",
+  "homepage": "https://github.com/hoyeungw/pres#readme",
   "gitHead": "f9a54c9986c480231564eced27c8e116febc69da"
 }

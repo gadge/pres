@@ -1,6 +1,6 @@
 {
   "name": "@pres/enum-sgr-attrs",
-  "version": "0.3.20",
+  "version": "0.3.21",
   "description": "Sgr attribute names for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",

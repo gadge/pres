@@ -1,6 +1,6 @@
 {
   "name": "@pres/top",
-  "version": "0.3.20",
+  "version": "0.3.21",
   "description": "pres graphic top",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -19,13 +19,13 @@
   },
   "dependencies": {
     "@aryth/math": "^0.3.21",
-    "@palett/cards": "^0.8.15",
-    "@pres/enum-events": "^0.3.20",
-    "@pres/terminal-interface": "^0.3.20",
+    "@palett/cards": "^0.8.16",
+    "@pres/enum-events": "^0.3.21",
+    "@pres/terminal-interface": "^0.3.21",
     "@valjoux/linger": "^0.2.11",
-    "@vect/vector-init": "^0.4.3",
-    "@vect/vector-mapper": "^0.4.3",
-    "@vect/vector-zipper": "^0.4.3",
+    "@vect/vector-init": "^0.4.4",
+    "@vect/vector-mapper": "^0.4.4",
+    "@vect/vector-zipper": "^0.4.4",
     "systeminformation": "^5.7.7"
   },
   "repository": {
