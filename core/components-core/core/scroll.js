@@ -1,5 +1,8 @@
 import { KEYPRESS, MOUSEDOWN, MOUSEUP, PARSED_CONTENT, SCROLL, WHEELDOWN, WHEELUP, } from '@pres/enum-events'
 import { DOWN, UP }                                                                  from '@pres/enum-key-names'
+import { select }                                                                    from '@vect/object-select'
+import { SGR_ATTRS }                                                                 from '../assets'
+
 
 /**
  * @extends {Element}
@@ -21,28 +24,12 @@ export class Scroll {
     this.scrollbar = options.scrollbar
     if (this.scrollbar) {
       this.scrollbar.ch = this.scrollbar.ch || ' '
-      this.style.scrollbar = this.style.scrollbar ?? this.scrollbar.style ?? {
-        fg: this.scrollbar.fg,
-        bg: this.scrollbar.bg,
-        bold: this.scrollbar.bold,
-        underline: this.scrollbar.underline,
-        inverse: this.scrollbar.inverse,
-        invisible: this.scrollbar.invisible,
-      }
+      this.style.scrollbar = this.style.scrollbar ?? this.scrollbar.style ?? select.call(SGR_ATTRS, this.scrollbar)
       if (this.track || this.scrollbar.track) {
         this.track = this.scrollbar.track || this.track
         this.style.track = this.style.scrollbar.track || this.style.track
         this.track.ch = this.track.ch || ' '
-        this.style.track = this.style.track || this.track.style
-        if (!this.style.track) {
-          this.style.track = {}
-          this.style.track.fg = this.track.fg
-          this.style.track.bg = this.track.bg
-          this.style.track.bold = this.track.bold
-          this.style.track.underline = this.track.underline
-          this.style.track.inverse = this.track.inverse
-          this.style.track.invisible = this.track.invisible
-        }
+        this.style.track = this.style.track ?? this.track.style ?? select.call(SGR_ATTRS, this.track)
         this.track.style = this.style.track
       }
       // Allow controlling of the scrollbar via the mouse:
@@ -60,15 +47,15 @@ export class Scroll {
             // Do not allow dragging on the scrollbar:
             delete self.screen._dragging
             delete self._drag
-            const perc = ( y - self.intT ) / ( self.height - self.intH )
-            self.setScrollPerc(perc * 100 | 0)
+            const ratio = ( y - self.intT ) / ( self.height - self.intH )
+            self.setScrollPerc(ratio * 100 | 0)
             self.screen.render()
             let smd, smu
             self._scrollingBar = true
             self.onScreenEvent(MOUSEDOWN, smd = data => {
               const y = data.y - self.absT
-              const perc = y / self.height
-              self.setScrollPerc(perc * 100 | 0)
+              const ratio = y / self.height
+              self.setScrollPerc(ratio * 100 | 0)
               self.screen.render()
             })
             // If mouseup occurs out of the window, no mouseup event fires, and

@@ -1,25 +1,25 @@
-import { Node }                                     from '@pres/components-node'
-import { ESC, LF, TAB }                             from '@pres/enum-control-chars'
+import { Node }                                                                from '@pres/components-node'
+import { ESC, LF, TAB }                                                        from '@pres/enum-control-chars'
+import { BOTTOM, CENTER, HALF, LEFT, MIDDLE, RIGHT, TOP }                      from '@pres/enum-coord-infos'
 import {
   ATTACH, CLICK, DETACH, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL,
   MOVE, NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
-}                                                   from '@pres/enum-events'
-import { BOTTOM, CENTER, LEFT, MIDDLE, RIGHT, TOP } from '@pres/enum-key-names'
-import * as colors                                  from '@pres/util-blessed-colors'
-import * as helpers                                 from '@pres/util-helpers'
-import { sgraToAttr, styleToAttr }                  from '@pres/util-sgr-attr'
-import * as unicode                                 from '@pres/util-unicode'
-import { SP }                                       from '@texting/enum-chars'
-import { FUN, STR }                                 from '@typen/enum-data-types'
-import { nullish }                                  from '@typen/nullish'
-import { selectObject }                             from '@vect/object-select'
-import { last }                                     from '@vect/vector-index'
-import assert                                       from 'assert'
-import { REGEX_INIT_SGR, REGEX_SGR_G }              from '../assets'
-import { Cadre }                                    from '../utils/Cadre'
-import { Detic }                                    from '../utils/Detic'
-import { scaler }                                   from '../utils/scaler'
-import { Box }                                      from './box'
+}                                                                              from '@pres/enum-events'
+import * as colors                                                             from '@pres/util-blessed-colors'
+import { dropUnicode, nextTick, stripTags }                                    from '@pres/util-helpers'
+import { sgraToAttr, styleToAttr }                                             from '@pres/util-sgr-attr'
+import * as unicode                                                            from '@pres/util-unicode'
+import { SP }                                                                  from '@texting/enum-chars'
+import { FUN, STR }                                                            from '@typen/enum-data-types'
+import { nullish }                                                             from '@typen/nullish'
+import { select }                                                              from '@vect/object-select'
+import { last }                                                                from '@vect/vector-index'
+import assert                                                                  from 'assert'
+import { COORD_INFOS, REGEX_INIT_SGR, REGEX_SGR_G, SGR_ATTRS, UI_EVENT_TODOS } from '../assets'
+import { Cadre }                                                               from '../utils/Cadre'
+import { Detic }                                                               from '../utils/Detic'
+import { scaler }                                                              from '../utils/scaler'
+import { Box }                                                                 from './box'
 
 /**
  * element.js - base element for blessed
@@ -27,12 +27,6 @@ import { Box }                                      from './box'
  * https://github.com/chjj/blessed
  */
 
-const nextTick = global.setImmediate || process.nextTick.bind(process)
-
-const EVENT_LIST_COLLECTION = [
-  [ 'hoverEffects', 'mouseover', 'mouseout', '_htemp' ],
-  [ 'focusEffects', 'focus', 'blur', '_ftemp' ]
-]
 
 export class Element extends Node {
   #parsedContent
@@ -54,8 +48,7 @@ export class Element extends Node {
     this.noOverflow = options.noOverflow
     this.dockBorders = options.dockBorders
     this.shadow = options.shadow
-    this.style = options.style ??
-      selectObject(options, [ 'fg', 'bg', 'bold', 'underline', 'blink', 'inverse', 'invisible', 'transparent' ])
+    this.style = options.style ?? select.call(SGR_ATTRS, options)
     this.hidden = options.hidden || false
     this.fixed = options.fixed || false
     this.align = options.align || LEFT
@@ -65,10 +58,7 @@ export class Element extends Node {
     this.inGrid = options.inGrid
     this.fixed = options.fixed
     this.ch = options.ch || ' '
-    const pos = this.pos = Detic.build(
-      options.pos ??
-      ( options.pos = selectObject(options, [ 'left', 'right', 'top', 'bottom', 'width', 'height' ]) )
-    )
+    const pos = this.pos = Detic.build(options.pos ?? ( options.pos = select.call(COORD_INFOS, options) ))
     if (pos.width === 'shrink' || pos.height === 'shrink') {
       if (pos.width === 'shrink') pos.width = null // delete pos.width
       if (pos.height === 'shrink') pos.height = null // delete pos.height
@@ -124,7 +114,7 @@ export class Element extends Node {
       if (options.effects.hover) options.hoverEffects = options.effects.hover
       if (options.effects.focus) options.focusEffects = options.effects.focus
     }
-    for (const [ key, over, out, temp ] of EVENT_LIST_COLLECTION) {
+    for (const [ key, over, out, temp ] of UI_EVENT_TODOS) {
       self.screen.setEffects(self, self, over, out, self.options[key], temp)
     }
     if (this.options.draggable) { this.draggable = true }
@@ -331,7 +321,7 @@ export class Element extends Node {
     let width = this.pos.width,
         left
     if (typeof width === STR) {
-      if (width === 'half') { width = '50%' }
+      if (width === HALF) { width = '50%' }
       width = this.inGrid ? this.scaler.scaleW(width, supPos.width) : scaler(width, supPos.width)
       return width
     }
@@ -360,7 +350,7 @@ export class Element extends Node {
     let height = this.pos.height,
         top
     if (typeof height === STR) {
-      if (height === 'half') { height = '50%' }
+      if (height === HALF) { height = '50%' }
       height = this.inGrid ? this.scaler.scaleH(height, supPos.height) : scaler(height, supPos.height)
       return height
     }
@@ -1719,7 +1709,7 @@ export class Element extends Node {
   getLines() { return this.contLines.fake.slice() }
   getScreenLines() { return this.contLines.slice() }
   strWidth(text) {
-    text = this.parseTags ? helpers.stripTags(text) : text
-    return this.screen.fullUnicode ? unicode.strWidth(text) : helpers.dropUnicode(text).length
+    text = this.parseTags ? stripTags(text) : text
+    return this.screen.fullUnicode ? unicode.strWidth(text) : dropUnicode(text).length
   }
 }
