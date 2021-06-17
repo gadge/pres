@@ -1,9 +1,3 @@
-/**
- * element.js - base element for blessed
- * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
- * https://github.com/chjj/blessed
- */
-
 import { Node }                                     from '@pres/components-node'
 import { ESC, LF, TAB }                             from '@pres/enum-control-chars'
 import {
@@ -26,6 +20,12 @@ import { Cadre }                                    from '../utils/Cadre'
 import { Detic }                                    from '../utils/Detic'
 import { scaler }                                   from '../utils/scaler'
 import { Box }                                      from './box'
+
+/**
+ * element.js - base element for blessed
+ * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
+ * https://github.com/chjj/blessed
+ */
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
