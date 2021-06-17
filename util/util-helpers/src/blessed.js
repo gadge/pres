@@ -80,6 +80,7 @@ export const dropUnicode = text =>
     .replace(unicode.chars.combining, '')
     .replace(unicode.chars.surrogate, '?')
 
+export const nextTick = global.setImmediate || process.nextTick.bind(process)
 // const parseTags = function (text, screen) {
 //   return helpers.Element.prototype._parseTags.call(
 //     { parseTags: true, screen: screen || helpers.Screen.global }, text)

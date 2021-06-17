@@ -8,7 +8,8 @@ export {
   generateTags,
   stripTags,
   cleanTags,
-  dropUnicode
+  dropUnicode,
+  nextTick,
 } from './src/blessed'
 
 export {
