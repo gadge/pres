@@ -20,8 +20,8 @@ export class ScrollableBox extends Box {
     // // if (!(this instanceof Node)) return new ScrollableBox(options)
     // if (options.scrollable === false) return this
     // this.scrollable = true
-    // this.childOffset = 0
-    // this.childBase = 0
+    // this.subOffset = 0
+    // this.subBase = 0
     // this.baseLimit = options.baseLimit || Infinity
     // this.alwaysScroll = options.alwaysScroll
     // const scrollbar = this.scrollbar = options.scrollbar
@@ -175,23 +175,23 @@ export class ScrollableBox extends Box {
   // }
   // setScroll(offset, always) {
   //   // XXX
-  //   // At first, this appeared to account for the first new calculation of childBase:
+  //   // At first, this appeared to account for the first new calculation of subBase:
   //   this.scroll(0)
-  //   return this.scroll(offset - (this.childBase + this.childOffset), always)
+  //   return this.scroll(offset - (this.subBase + this.subOffset), always)
   // }
   // scrollTo(offset, always) {
   //   // XXX
-  //   // At first, this appeared to account for the first new calculation of childBase:
+  //   // At first, this appeared to account for the first new calculation of subBase:
   //   this.scroll(0)
-  //   return this.scroll(offset - (this.childBase + this.childOffset), always)
+  //   return this.scroll(offset - (this.subBase + this.subOffset), always)
   // }
-  // getScroll() { return this.childBase + this.childOffset }
+  // getScroll() { return this.subBase + this.subOffset }
   // scroll(offset, always) {
   //   if (!this.scrollable) return
   //   if (this.detached) return
   //   // Handle scrolling.
   //   const visible = this.height - this.intH,
-  //         base    = this.childBase
+  //         base    = this.subBase
   //   let d,
   //       p,
   //       t,
@@ -200,33 +200,33 @@ export class ScrollableBox extends Box {
   //       emax
   //   if (this.alwaysScroll || always) {
   //     // Semi-workaround
-  //     this.childOffset = offset > 0
+  //     this.subOffset = offset > 0
   //       ? visible - 1 + offset
   //       : offset
   //   }
   //   else {
-  //     this.childOffset += offset
+  //     this.subOffset += offset
   //   }
-  //   if (this.childOffset > visible - 1) {
-  //     d = this.childOffset - (visible - 1)
-  //     this.childOffset -= d
-  //     this.childBase += d
+  //   if (this.subOffset > visible - 1) {
+  //     d = this.subOffset - (visible - 1)
+  //     this.subOffset -= d
+  //     this.subBase += d
   //   }
-  //   else if (this.childOffset < 0) {
-  //     d = this.childOffset
-  //     this.childOffset += -d
-  //     this.childBase += d
+  //   else if (this.subOffset < 0) {
+  //     d = this.subOffset
+  //     this.subOffset += -d
+  //     this.subBase += d
   //   }
-  //   if (this.childBase < 0) {
-  //     this.childBase = 0
+  //   if (this.subBase < 0) {
+  //     this.subBase = 0
   //   }
-  //   else if (this.childBase > this.baseLimit) {
-  //     this.childBase = this.baseLimit
+  //   else if (this.subBase > this.baseLimit) {
+  //     this.subBase = this.baseLimit
   //   }
   //   // Find max "bottom" value for
   //   // content and descendant elements.
   //   // Scroll the content if necessary.
-  //   if (this.childBase === base) { return this.emit(SCROLL) }
+  //   if (this.subBase === base) { return this.emit(SCROLL) }
   //   // When scrolling text, we want to be able to handle SGR codes as well as line
   //   // feeds. This allows us to take preformatted text output from other programs
   //   // and put it in a scrollable text box.
@@ -237,9 +237,9 @@ export class ScrollableBox extends Box {
   //   if (max < 0) max = 0
   //   emax = this._scrollBottom() - (this.height - this.intH)
   //   if (emax < 0) emax = 0
-  //   this.childBase = Math.min(this.childBase, Math.max(emax, max))
-  //   if (this.childBase < 0) { this.childBase = 0 }
-  //   else if (this.childBase > this.baseLimit) { this.childBase = this.baseLimit }
+  //   this.subBase = Math.min(this.subBase, Math.max(emax, max))
+  //   if (this.subBase < 0) { this.subBase = 0 }
+  //   else if (this.subBase > this.baseLimit) { this.subBase = this.baseLimit }
   //   // Optimize scrolling with CSR + IL/DL.
   //   p = this.lpos
   //   // Only really need calcCoords() if we want
@@ -247,10 +247,10 @@ export class ScrollableBox extends Box {
   //   // or if we **really** want shrinkable
   //   // scrolling elements.
   //   // p = this.calcCoords();
-  //   if (p && this.childBase !== base && this.screen.cleanSides(this)) {
+  //   if (p && this.subBase !== base && this.screen.cleanSides(this)) {
   //     t = p.yLo + this.intT
   //     b = p.yHi - this.intB - 1
-  //     d = this.childBase - base
+  //     d = this.subBase - base
   //     // scrolled down
   //     if (d > 0 && d < visible) {
   //       this.screen.deleteLine(d, t, t, b)
@@ -273,14 +273,14 @@ export class ScrollableBox extends Box {
   //   if (max < 0) max = 0
   //   emax = this._scrollBottom() - (this.height - this.intH)
   //   if (emax < 0) emax = 0
-  //   this.childBase = Math.min(this.childBase, Math.max(emax, max))
-  //   if (this.childBase < 0) { this.childBase = 0 }
-  //   else if (this.childBase > this.baseLimit) { this.childBase = this.baseLimit }
+  //   this.subBase = Math.min(this.subBase, Math.max(emax, max))
+  //   if (this.subBase < 0) { this.subBase = 0 }
+  //   else if (this.subBase > this.baseLimit) { this.subBase = this.baseLimit }
   // }
   // resetScroll() {
   //   if (!this.scrollable) return
-  //   this.childOffset = 0
-  //   this.childBase = 0
+  //   this.subOffset = 0
+  //   this.subBase = 0
   //   return this.emit(SCROLL)
   // }
   // getScrollHeight() { return Math.max(this._clines.length, this._scrollBottom()) }
@@ -291,8 +291,8 @@ export class ScrollableBox extends Box {
   //         i      = this.getScrollHeight()
   //   let p
   //   if (height < i) {
-  //     if (this.alwaysScroll) { p = this.childBase / (i - height) }
-  //     else { p = (this.childBase + this.childOffset) / (i - 1) }
+  //     if (this.alwaysScroll) { p = this.subBase / (i - height) }
+  //     else { p = (this.subBase + this.subOffset) / (i - 1) }
   //     return p * 100
   //   }
   //   return s ? -1 : 0

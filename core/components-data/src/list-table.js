@@ -53,9 +53,9 @@ export class ListTable extends List {
     })
     this.on(SCROLL, () => {
       self._header.setFront()
-      self._header.relT = self.childBase
+      self._header.relT = self.subBase
       if (!self.screen.autoPadding) {
-        self._header.relT = self.childBase + ( self.border ? 1 : 0 )
+        self._header.relT = self.subBase + ( self.border ? 1 : 0 )
       }
     })
     this.pad = options.pad != null
@@ -142,7 +142,7 @@ export class ListTable extends List {
   _select(i) { return List.prototype.select.call(this, i) }
   select(i) {
     if (i === 0) i = 1
-    if (i <= this.childBase) this.setScroll(this.childBase - 1)
+    if (i <= this.subBase) this.setScroll(this.subBase - 1)
     return this._select(i)
   }
   render() {

@@ -124,7 +124,7 @@ export class List extends Box {
           return
         }
         if (options.vi && key.name === 'h' && key.shift) {
-          self.move(self.childBase - self.selected)
+          self.move(self.subBase - self.selected)
           self.screen.render()
           return
         }
@@ -134,13 +134,13 @@ export class List extends Box {
           const visible = Math.min(
             self.height - self.intH,
             self.items.length) / 2 | 0
-          self.move(self.childBase + visible - self.selected)
+          self.move(self.subBase + visible - self.selected)
           self.screen.render()
           return
         }
         if (options.vi && key.name === 'l' && key.shift) {
           // XXX This goes one too far on lists with an odd number of items.
-          self.down(self.childBase
+          self.down(self.subBase
             + Math.min(self.height - self.intH, self.items.length)
             - self.selected)
           self.screen.render()
@@ -174,13 +174,13 @@ export class List extends Box {
       const visible = self.height - self.intH
       // if (self.selected < visible - 1) {
       if (visible >= self.selected + 1) {
-        self.childBase = 0
-        self.childOffset = self.selected
+        self.subBase = 0
+        self.subOffset = self.selected
       }
       else {
-        // Is this supposed to be: self.childBase = visible - self.selected + 1; ?
-        self.childBase = self.selected - visible + 1
-        self.childOffset = visible - 1
+        // Is this supposed to be: self.subBase = visible - self.selected + 1; ?
+        self.subBase = self.selected - visible + 1
+        self.subOffset = visible - 1
       }
     })
     this.on(ADOPT, el => { if (!~self.items.indexOf(el)) el.fixed = true })

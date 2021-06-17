@@ -66,7 +66,7 @@ export class Textarea extends Input {
       last = this._clines[this._clines.length - 2] || ''
     }
     line = Math.min(
-      this._clines.length - 1 - (this.childBase || 0),
+      this._clines.length - 1 - (this.subBase || 0),
       (prevPos.yHi - prevPos.yLo) - this.intH - 1)
     // When calling clearValue() on a full textarea with a border, the first
     // argument in the above Math.min call ends up being -2. Make sure we stay
@@ -166,7 +166,7 @@ export class Textarea extends Input {
   _typeScroll() {
     // XXX Workaround
     const height = this.height - this.intH
-    if (this._clines.length - this.childBase > height) { this.scroll(this._clines.length) }
+    if (this._clines.length - this.subBase > height) { this.scroll(this._clines.length) }
   }
   getValue() { return this.value }
   setValue(value) {

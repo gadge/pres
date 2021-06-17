@@ -14,24 +14,21 @@ export class Scroll {
     const self = this
     // if (options.scrollable === false) return this
     this.scrollable = true
-    this.childOffset = 0
-    this.childBase = 0
+    this.subOffset = 0
+    this.subBase = 0
     this.baseLimit = options.baseLimit || Infinity
     this.alwaysScroll = options.alwaysScroll
     this.scrollbar = options.scrollbar
     if (this.scrollbar) {
       this.scrollbar.ch = this.scrollbar.ch || ' '
-      this.style.scrollbar = this.style.scrollbar || this.scrollbar.style
-      if (!this.style.scrollbar) {
-        this.style.scrollbar = {}
-        this.style.scrollbar.fg = this.scrollbar.fg
-        this.style.scrollbar.bg = this.scrollbar.bg
-        this.style.scrollbar.bold = this.scrollbar.bold
-        this.style.scrollbar.underline = this.scrollbar.underline
-        this.style.scrollbar.inverse = this.scrollbar.inverse
-        this.style.scrollbar.invisible = this.scrollbar.invisible
+      this.style.scrollbar = this.style.scrollbar ?? this.scrollbar.style ?? {
+        fg: this.scrollbar.fg,
+        bg: this.scrollbar.bg,
+        bold: this.scrollbar.bold,
+        underline: this.scrollbar.underline,
+        inverse: this.scrollbar.inverse,
+        invisible: this.scrollbar.invisible,
       }
-      //this.scrollbar.style = this.style.scrollbar;
       if (this.track || this.scrollbar.track) {
         this.track = this.scrollbar.track || this.track
         this.style.track = this.style.scrollbar.track || this.style.track
@@ -144,19 +141,19 @@ export class Scroll {
   setScroll(offset, always) { return this.scrollTo(offset, always) }
   scrollTo(offset, always) {
     // XXX
-    // At first, this appeared to account for the first new calculation of childBase:
+    // At first, this appeared to account for the first new calculation of subBase:
     this.scroll(0)
-    return this.scroll(offset - ( this.childBase + this.childOffset ), always)
+    return this.scroll(offset - ( this.subBase + this.subOffset ), always)
   }
   getScroll() {
-    return this.childBase + this.childOffset
+    return this.subBase + this.subOffset
   }
   scroll(offset, always) {
     if (!this.scrollable) return
     if (this.detached) return
     // Handle scrolling.
     const visible = this.height - this.intH,
-          base    = this.childBase
+          base    = this.subBase
     let d,
         p,
         t,
@@ -164,26 +161,26 @@ export class Scroll {
         max,
         emax
     if (this.alwaysScroll || always) { // Semi-workaround
-      this.childOffset = offset > 0 ? visible - 1 + offset : offset
+      this.subOffset = offset > 0 ? visible - 1 + offset : offset
     }
     else {
-      this.childOffset += offset
+      this.subOffset += offset
     }
-    if (this.childOffset > visible - 1) {
-      d = this.childOffset - ( visible - 1 )
-      this.childOffset -= d
-      this.childBase += d
+    if (this.subOffset > visible - 1) {
+      d = this.subOffset - ( visible - 1 )
+      this.subOffset -= d
+      this.subBase += d
     }
-    else if (this.childOffset < 0) {
-      d = this.childOffset
-      this.childOffset += -d
-      this.childBase += d
+    else if (this.subOffset < 0) {
+      d = this.subOffset
+      this.subOffset += -d
+      this.subBase += d
     }
-    this.childBase = this.childBase < 0 ? 0 : this.childBase > this.baseLimit ? this.baseLimit : this.childBase
+    this.subBase = this.subBase < 0 ? 0 : this.subBase > this.baseLimit ? this.baseLimit : this.subBase
     // Find max "bottom" value for
     // content and descendant elements.
     // Scroll the content if necessary.
-    if (this.childBase === base) return this.emit(SCROLL)
+    if (this.subBase === base) return this.emit(SCROLL)
     // When scrolling text, we want to be able to handle SGR codes as well as line
     // feeds. This allows us to take preformatted text output from other programs
     // and put it in a scrollable text box.
@@ -195,8 +192,8 @@ export class Scroll {
     if (max < 0) max = 0
     emax = this._scrollBottom() - ( this.height - this.intH )
     if (emax < 0) emax = 0
-    this.childBase = Math.min(this.childBase, Math.max(emax, max))
-    this.childBase = this.childBase < 0 ? 0 : this.childBase > this.baseLimit ? this.baseLimit : this.childBase
+    this.subBase = Math.min(this.subBase, Math.max(emax, max))
+    this.subBase = this.subBase < 0 ? 0 : this.subBase > this.baseLimit ? this.baseLimit : this.subBase
     // Optimize scrolling with CSR + IL/DL.
     p = this.prevPos
     // Only really need calcCoords() if we want
@@ -204,10 +201,10 @@ export class Scroll {
     // or if we **really** want shrinkable
     // scrolling elements.
     // p = this.calcCoords();
-    if (p && this.childBase !== base && this.screen.cleanSides(this)) {
+    if (p && this.subBase !== base && this.screen.cleanSides(this)) {
       t = p.yLo + this.intT
       b = p.yHi - this.intB - 1
-      d = this.childBase - base
+      d = this.subBase - base
       if (d > 0 && d < visible) {
         this.screen.deleteLine(d, t, t, b)  // scrolled down
       }
@@ -227,13 +224,13 @@ export class Scroll {
     if (max < 0) max = 0
     emax = this._scrollBottom() - ( this.height - this.intH )
     if (emax < 0) emax = 0
-    this.childBase = Math.min(this.childBase, Math.max(emax, max))
-    this.childBase = this.childBase < 0 ? 0 : this.childBase > this.baseLimit ? this.baseLimit : this.childBase
+    this.subBase = Math.min(this.subBase, Math.max(emax, max))
+    this.subBase = this.subBase < 0 ? 0 : this.subBase > this.baseLimit ? this.baseLimit : this.subBase
   }
   resetScroll() {
     if (!this.scrollable) return
-    this.childOffset = 0
-    this.childBase = 0
+    this.subOffset = 0
+    this.subBase = 0
     return this.emit(SCROLL)
   }
   getScrollHeight() {
@@ -247,10 +244,10 @@ export class Scroll {
     let p
     if (height < i) {
       if (this.alwaysScroll) {
-        p = this.childBase / ( i - height )
+        p = this.subBase / ( i - height )
       }
       else {
-        p = ( this.childBase + this.childOffset ) / ( i - 1 )
+        p = ( this.subBase + this.subOffset ) / ( i - 1 )
       }
       return p * 100
     }

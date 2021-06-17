@@ -398,15 +398,13 @@ export class Element extends Node {
     return new Detic(t, b, l, r, h, w)
   }
   calcCoords(get, noScroll) {
-    if (this.hidden) return
-    // if (this.sup._rendering) {
-    //   get = true;
-    // }
+    if (this.hidden) return void 0
+    // if (this.sup._rendering) { get = true }
     let xLo   = this.calcL(get),
         xHi   = xLo + this.calcW(get),
         yLo   = this.calcT(get),
         yHi   = yLo + this.calcH(get),
-        base  = this.childBase || 0,
+        base  = this.subBase || 0,
         node  = this,
         fixed = this.fixed,
         coords,
@@ -1167,7 +1165,7 @@ export class Element extends Node {
     if (this.scrollbar && ( yHi - yLo ) < i) {
       let x = xHi - 1
       if (this.scrollbar.ignoreBorder && this.border) x++
-      let y = this.alwaysScroll ? this.childBase / ( i - ( yHi - yLo ) ) : ( this.childBase + this.childOffset ) / ( i - 1 )
+      let y = this.alwaysScroll ? this.subBase / ( i - ( yHi - yLo ) ) : ( this.subBase + this.subOffset ) / ( i - 1 )
       y = yLo + ( ( yHi - yLo ) * y | 0 )
       if (y >= yHi) y = yHi - 1
       let line = lines[y],
@@ -1553,8 +1551,8 @@ export class Element extends Node {
       this._label.relT = 0
     }
     const reposition = () => {
-      self._label.relT = ( self.childBase || 0 ) - self.intT
-      if (!self.screen.autoPadding) { self._label.relT = ( self.childBase || 0 ) }
+      self._label.relT = ( self.subBase || 0 ) - self.intT
+      if (!self.screen.autoPadding) { self._label.relT = ( self.subBase || 0 ) }
       self.screen.render()
     }
     this.on(SCROLL, this._labelScroll = () => reposition())
@@ -1627,7 +1625,7 @@ export class Element extends Node {
       const pos = this.calcCoords()
       if (!pos) return
       const ht   = pos.yHi - pos.yLo - this.intH,
-            base = this.childBase || 0,
+            base = this.subBase || 0,
             vis  = real >= base && real - base < ht // visible
       if (pos && vis && this.screen.cleanSides(this)) {
         this.screen.insertLine(diff,
@@ -1656,7 +1654,7 @@ export class Element extends Node {
       if (!pos) return
 
       height = pos.yHi - pos.yLo - this.intH
-      const base    = this.childBase || 0,
+      const base    = this.subBase || 0,
             visible = real >= base && real - base < height
       if (pos && visible && this.screen.cleanSides(this)) {
         this.screen.deleteLine(diff,
@@ -1668,21 +1666,21 @@ export class Element extends Node {
     if (this.contLines.length < height) this.clearPos()
   }
   insertTop(line) {
-    const fake = this.contLines.rtof[this.childBase || 0]
+    const fake = this.contLines.rtof[this.subBase || 0]
     return this.insertLine(fake, line)
   }
   insertBottom(line) {
-    const h    = ( this.childBase || 0 ) + this.height - this.intH,
+    const h    = ( this.subBase || 0 ) + this.height - this.intH,
           i    = Math.min(h, this.contLines.length),
           fake = this.contLines.rtof[i - 1] + 1
     return this.insertLine(fake, line)
   }
   deleteTop(n) {
-    const fake = this.contLines.rtof[this.childBase || 0]
+    const fake = this.contLines.rtof[this.subBase || 0]
     return this.deleteLine(fake, n)
   }
   deleteBottom(n = 1) {
-    const h    = ( this.childBase || 0 ) + this.height - 1 - this.intH,
+    const h    = ( this.subBase || 0 ) + this.height - 1 - this.intH,
           i    = Math.min(h, this.contLines.length - 1),
           fake = this.contLines.rtof[i]
     return this.deleteLine(fake - ( n - 1 ), n)
@@ -1694,7 +1692,7 @@ export class Element extends Node {
     return this.setContent(this.contLines.fake.join(LF), true)
   }
   setBaseLine(i, line) {
-    const fake = this.contLines.rtof[this.childBase || 0]
+    const fake = this.contLines.rtof[this.subBase || 0]
     return this.setLine(fake + i, line)
   }
   getLine(i) {
@@ -1703,7 +1701,7 @@ export class Element extends Node {
     return this.contLines.fake[i]
   }
   getBaseLine(i) {
-    const fake = this.contLines.rtof[this.childBase || 0]
+    const fake = this.contLines.rtof[this.subBase || 0]
     return this.getLine(fake + i)
   }
   clearLine(i) {
@@ -1711,7 +1709,7 @@ export class Element extends Node {
     return this.setLine(i, '')
   }
   clearBaseLine(i) {
-    const fake = this.contLines.rtof[this.childBase || 0]
+    const fake = this.contLines.rtof[this.subBase || 0]
     return this.clearLine(fake + i)
   }
   unshiftLine(line) { return this.insertLine(0, line) }

@@ -1044,11 +1044,11 @@ export class Screen extends Node {
       // visible height of the scrolling element itself, not the element within
       // it.
       const visible = self.screen.height - el.absT - el.intT - el.absB - el.intB
-      if (self.relT < el.childBase) {
+      if (self.relT < el.subBase) {
         el.scrollTo(self.relT)
         self.screen.render()
       }
-      else if (self.relT + self.height - self.intB > el.childBase + visible) {
+      else if (self.relT + self.height - self.intB > el.subBase + visible) {
         // Explanation for el.intT here: takes into account scrollable elements
         // with borders otherwise the element gets covered by the bottom border:
         el.scrollTo(self.relT - ( el.height - self.height ) + el.intT, true)
