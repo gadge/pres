@@ -5,6 +5,8 @@
  */
 import { Input }                             from '@pres/components-form'
 import { CLICK, COMPLETE, KEYPRESS, RESET, } from '@pres/enum-events'
+import { styleToAttr }                       from '@pres/util-blessed-colors'
+import { STR }                               from '@typen/enum-data-types'
 
 /**
  * ProgressBar
@@ -16,7 +18,7 @@ export class ProgressBar extends Input {
     const self = this
     // if (!(this instanceof Node)) return new ProgressBar(options)
     this.filled = options.filled || 0
-    if (typeof this.filled === 'string') this.filled = +this.filled.slice(0, -1)
+    if (typeof this.filled === STR) this.filled = +this.filled.slice(0, -1)
     this.value = this.filled
     this.pch = options.pch || ' '
     // XXX Workaround that predates the usage of `el.ch`.
@@ -91,7 +93,7 @@ export class ProgressBar extends Input {
     else if (this.orientation === 'vertical') {
       yLo = yLo + ( ( yHi - yLo ) - ( ( ( yHi - yLo ) * ( this.filled / 100 ) ) | 0 ) )
     }
-    dattr = this.sattr(this.style.bar)
+    dattr = styleToAttr(this.style.bar)
     this.screen.fillRegion(dattr, this.pch, xLo, xHi, yLo, yHi)
     if (this.content) {
       const line = this.screen.lines[yLo]

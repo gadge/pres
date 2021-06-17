@@ -19,7 +19,9 @@
     "@pres/components-form": "^0.3.19",
     "@pres/components-layout": "^0.3.19",
     "@pres/components-text": "^0.3.19",
-    "@pres/enum-events": "^0.3.19"
+    "@pres/enum-events": "^0.3.19",
+    "@pres/util-blessed-colors": "^0.3.19",
+    "@typen/enum-data-types": "^0.1.16"
   },
   "repository": {
     "type": "git",
