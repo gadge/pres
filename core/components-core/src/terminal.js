@@ -6,15 +6,12 @@
 
 import {
   BLUR, DATA, DESTROY, EXIT, FOCUS, KEYPRESS, MOUSE, MOUSEDOWN, PASSTHROUGH, RENDER, RESIZE, SCROLL, TITLE,
-}              from '@pres/enum-events'
-import { Box } from '../core/box'
+}                   from '@pres/enum-events'
+import { nextTick } from '@pres/util-helpers'
+import { Box }      from '../core/box'
 // import pty     from 'pty.js'
 // import term    from 'term.js'
 
-/**
- * Modules
- */
-const nextTick = global.setImmediate || process.nextTick.bind(process)
 export class Terminal extends Box {
   setScroll = this.scrollTo
   /**
@@ -146,20 +143,11 @@ export class Terminal extends Box {
     })
     this.on(FOCUS, () => { self.term.focus() })
     this.on(BLUR, () => { self.term.blur() })
-    this.term.on(TITLE, title => {
-      self.title = title
-      self.emit(TITLE, title)
-    })
-    this.term.on(PASSTHROUGH, data => {
-      self.screen.program.flush()
-      self.screen.program.write(data)
-    })
+    this.term.on(TITLE, title => { self.title = title, self.emit(TITLE, title) })
+    this.term.on(PASSTHROUGH, data => { self.screen.program.flush(), self.screen.program.write(data) })
     this.on(RESIZE, () => nextTick(() => self.term.resize(self.width - self.intW, self.height - self.intH)))
     this.once(RENDER, () => self.term.resize(self.width - self.intW, self.height - self.intH))
-    this.on(DESTROY, () => {
-      self.kill()
-      self.screen.program.input.removeListener(DATA, self._onData)
-    })
+    this.on(DESTROY, () => { self.kill(), self.screen.program.input.removeListener(DATA, self._onData) })
     if (this.handler) { return }
     this.pty = require('pty.js').fork(this.shell, this.args, {
       name: this.termName,
@@ -168,24 +156,12 @@ export class Terminal extends Box {
       cwd: process.env.HOME,
       env: this.options.env || process.env
     })
-    this.on(RESIZE, function () {
-      nextTick(function () {
-        try {
-          self.pty.resize(self.width - self.intW, self.height - self.intH)
-        } catch (e) { }
-      })
-    })
-    this.handler = function (data) {
-      self.pty.write(data)
-      self.screen.render()
-    }
-    this.pty.on(DATA, function (data) {
-      self.write(data)
-      self.screen.render()
-    })
-    this.pty.on(EXIT, function (code) {
-      self.emit(EXIT, code || null)
-    })
+    this.on(RESIZE, () => nextTick(() => {
+      try { self.pty.resize(self.width - self.intW, self.height - self.intH) } catch (e) { }
+    }))
+    this.handler = data => { self.pty.write(data), self.screen.render() }
+    this.pty.on(DATA, data => { self.write(data), self.screen.render() })
+    this.pty.on(EXIT, code => { self.emit(EXIT, code || null) })
     this.onScreenEvent(KEYPRESS, () => self.screen.render())
     this.screen._listenKeys(this)
   }

@@ -5,12 +5,12 @@
  */
 
 import { LOG as _LOG, SET_CONTENT, } from '@pres/enum-events'
+import { nextTick }                  from '@pres/util-helpers'
 import { OBJ }                       from '@typen/enum-data-types'
 import util                          from 'util'
 import { ScrollableBox }             from './scrollable-box'
 import { ScrollableText }            from './scrollable-text'
 
-const nextTick = global.setImmediate || process.nextTick.bind(process)
 export class Log extends ScrollableText {
   type = 'log'
 
