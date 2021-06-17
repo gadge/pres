@@ -163,7 +163,7 @@ export class ScrollableBox extends Box {
   //     // without the scrollable calculation):
   //     // See: $ node test/widget-shrink-fail-2.js
   //     if (!el.detached) {
-  //       const lpos = el.calcCoords(false, true)
+  //       const lpos = el.calcCoord(false, true)
   //       if (lpos) { return Math.max(current, el.relT + (lpos.yHi - lpos.yLo)) }
   //     }
   //     return Math.max(current, el.relT + el.height)
@@ -242,11 +242,11 @@ export class ScrollableBox extends Box {
   //   else if (this.subBase > this.baseLimit) { this.subBase = this.baseLimit }
   //   // Optimize scrolling with CSR + IL/DL.
   //   p = this.lpos
-  //   // Only really need calcCoords() if we want
+  //   // Only really need calcCoord() if we want
   //   // to allow nestable scrolling elements...
   //   // or if we **really** want shrinkable
   //   // scrolling elements.
-  //   // p = this.calcCoords();
+  //   // p = this.calcCoord();
   //   if (p && this.subBase !== base && this.screen.cleanSides(this)) {
   //     t = p.yLo + this.intT
   //     b = p.yHi - this.intB - 1
@@ -285,7 +285,7 @@ export class ScrollableBox extends Box {
   // }
   // getScrollHeight() { return Math.max(this._clines.length, this._scrollBottom()) }
   // getScrollPerc(s) {
-  //   const pos = this.lpos || this.calcCoords()
+  //   const pos = this.lpos || this.calcCoord()
   //   if (!pos) return s ? -1 : 0
   //   const height = (pos.yHi - pos.yLo) - this.intH,
   //         i      = this.getScrollHeight()

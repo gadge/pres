@@ -115,7 +115,7 @@ export class Scroll {
       // without the scrollable calculation):
       // See: $ node test/widget-shrink-fail-2.js
       if (!el.detached) {
-        const prevPos = el.calcCoords(false, true)
+        const prevPos = el.calcCoord(false, true)
         if (prevPos) return Math.max(current, el.relT + ( prevPos.yHi - prevPos.yLo ))
       }
       return Math.max(current, el.relT + el.height)
@@ -183,11 +183,11 @@ export class Scroll {
     this.subBase = this.subBase < 0 ? 0 : this.subBase > this.baseLimit ? this.baseLimit : this.subBase
     // Optimize scrolling with CSR + IL/DL.
     p = this.prevPos
-    // Only really need calcCoords() if we want
+    // Only really need calcCoord() if we want
     // to allow nestable scrolling elements...
     // or if we **really** want shrinkable
     // scrolling elements.
-    // p = this.calcCoords();
+    // p = this.calcCoord();
     if (p && this.subBase !== base && this.screen.cleanSides(this)) {
       t = p.yLo + this.intT
       b = p.yHi - this.intB - 1
@@ -224,7 +224,7 @@ export class Scroll {
     return Math.max(this._clines.length, this._scrollBottom())
   }
   getScrollPerc(s) {
-    const pos = this.prevPos || this.calcCoords()
+    const pos = this.prevPos || this.calcCoord()
     if (!pos) return s ? -1 : 0
     const height = ( pos.yHi - pos.yLo ) - this.intH,
           i      = this.getScrollHeight()

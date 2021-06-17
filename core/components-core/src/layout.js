@@ -35,7 +35,7 @@ export class Layout extends Element {
     if (last) return last.prevPos
   }
   _renderCoords() {
-    const coords = this.calcCoords(true)
+    const coords = this.calcCoord(true)
     const sub = this.sub
     this.sub = []
     this._render()
