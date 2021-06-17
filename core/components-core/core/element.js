@@ -1,26 +1,26 @@
-import { Node }                                                                from '@pres/components-node'
-import { ESC, LF, TAB }                                                        from '@pres/enum-control-chars'
-import { BOTTOM, CENTER, HALF, LEFT, MIDDLE, RIGHT, TOP }                      from '@pres/enum-coord-infos'
+import { Node }                                                                  from '@pres/components-node'
+import { ESC, LF, TAB }                                                          from '@pres/enum-control-chars'
+import { BOTTOM, CENTER, HALF, HEIGHT, LEFT, MIDDLE, RIGHT, SHRINK, TOP, WIDTH } from '@pres/enum-coord-infos'
 import {
   ATTACH, CLICK, DETACH, HIDE, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL,
   MOVE, NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
-}                                                                              from '@pres/enum-events'
-import * as colors                                                             from '@pres/util-blessed-colors'
-import { dropUnicode, nextTick, stripTags }                                    from '@pres/util-helpers'
-import { sgraToAttr, styleToAttr }                                             from '@pres/util-sgr-attr'
-import * as unicode                                                            from '@pres/util-unicode'
-import { SP }                                                                  from '@texting/enum-chars'
-import { FUN, STR }                                                            from '@typen/enum-data-types'
-import { nullish }                                                             from '@typen/nullish'
-import { select }                                                              from '@vect/object-select'
-import { last }                                                                from '@vect/vector-index'
-import assert                                                                  from 'assert'
-import { COORD_INFOS, REGEX_INIT_SGR, REGEX_SGR_G, SGR_ATTRS, UI_EVENT_TODOS } from '../assets'
-import { Cadre }                                                               from '../utils/Cadre'
-import { Coord }                                                               from '../utils/Coord'
-import { Detic }                                                               from '../utils/Detic'
-import { scaler }                                                              from '../utils/scaler'
-import { Box }                                                                 from './box'
+}                                                                                from '@pres/enum-events'
+import * as colors                                                               from '@pres/util-blessed-colors'
+import { dropUnicode, nextTick, stripTags }                                      from '@pres/util-helpers'
+import { sgraToAttr, styleToAttr }                                               from '@pres/util-sgr-attr'
+import * as unicode                                                              from '@pres/util-unicode'
+import { SP }                                                                    from '@texting/enum-chars'
+import { FUN, STR }                                                              from '@typen/enum-data-types'
+import { nullish }                                                               from '@typen/nullish'
+import { select }                                                                from '@vect/object-select'
+import { last }                                                                  from '@vect/vector-index'
+import assert                                                                    from 'assert'
+import { COORD_INFOS, REGEX_INIT_SGR, REGEX_SGR_G, SGR_ATTRS, UI_EVENT_TODOS }   from '../assets'
+import { Cadre }                                                                 from '../utils/Cadre'
+import { Coord }                                                                 from '../utils/Coord'
+import { Detic }                                                                 from '../utils/Detic'
+import { scaler }                                                                from '../utils/scaler'
+import { Box }                                                                   from './box'
 
 /**
  * element.js - base element for blessed
@@ -60,9 +60,10 @@ export class Element extends Node {
     this.fixed = options.fixed
     this.ch = options.ch || ' '
     const pos = this.pos = Detic.build(options.pos ?? ( options.pos = select.call(COORD_INFOS, options) ))
-    if (pos.width === 'shrink' || pos.height === 'shrink') {
-      if (pos.width === 'shrink') pos.width = null // delete pos.width
-      if (pos.height === 'shrink') pos.height = null // delete pos.height
+    const widthShrink = pos.width === SHRINK, heightShrink = pos.height === SHRINK
+    if (widthShrink || heightShrink) {
+      if (widthShrink) pos.delete(WIDTH) //pos.width = null // delete pos.width
+      if (heightShrink) pos.delete(HEIGHT) // pos.height = null // delete pos.height
       options.shrink = true
     }
     // this.pos = pos
@@ -80,10 +81,10 @@ export class Element extends Node {
         this.style.border.bg = this.border.bg
       }
       //this.border.style = this.style.border;
-      if (this.border.left == null) this.border.left = true
-      if (this.border.top == null) this.border.top = true
-      if (this.border.right == null) this.border.right = true
-      if (this.border.bottom == null) this.border.bottom = true
+      if (nullish(this.border.left)) this.border.left = true
+      if (nullish(this.border.top)) this.border.top = true
+      if (nullish(this.border.right)) this.border.right = true
+      if (nullish(this.border.bottom)) this.border.bottom = true
     }
     // if (options.mouse || options.clickable) {
     if (options.clickable) { this.screen._listenMouse(this) }
@@ -105,8 +106,8 @@ export class Element extends Node {
     this.on(RESIZE, () => self.parseContent())
     this.on(ATTACH, () => self.parseContent())
     this.on(DETACH, () => delete self.prevPos)
-    if (options.hoverBg != null) {
-      options.hoverEffects = options.hoverEffects || {}
+    if (!nullish(options.hoverBg)) {
+      if (nullish(options.hoverEffects)) options.hoverEffects = {}
       options.hoverEffects.bg = options.hoverBg
     }
     if (this.style.hover) { options.hoverEffects = this.style.hover }
@@ -380,12 +381,12 @@ export class Element extends Node {
     const pos = this.prevPos
     assert.ok(pos)
     if (!nullish(pos.absL)) return pos
-    const t = pos.yLo
-    const b = this.screen.rows - pos.yHi
-    const l = pos.xLo
-    const r = this.screen.cols - pos.xHi
-    const h = pos.yHi - pos.yLo
-    const w = pos.xHi - pos.xLo
+    const t = pos.t
+    const b = this.screen.rows - pos.b
+    const l = pos.l
+    const r = this.screen.cols - pos.r
+    const h = pos.b - pos.t
+    const w = pos.r - pos.l
     return new Detic(t, b, l, r, h, w)
   }
   calcCoord(get, noScroll) {
@@ -479,7 +480,7 @@ export class Element extends Node {
       if (r > xHiSup - intR) { r = xHiSup - intR }
     }
     // if (this.sup.prevPos) { this.sup.prevPos._scrollBottom = Math.max(this.sup.prevPos._scrollBottom, b) }
-    return new Coord(t, b, l, r, negT, negB, negL, negR, base, this.screen.renders)
+    return Coord.build(t, b, l, r, negT, negB, negL, negR, base, this.screen.renders)
   }
   calcShrinkBox(xLo, xHi, yLo, yHi, get) {
     if (!this.sub.length) return { xLo, xHi: xLo + 1, yLo, yHi: yLo + 1 }
@@ -492,7 +493,7 @@ export class Element extends Node {
     let prevPos
     if (get) {
       prevPos = this.prevPos
-      this.prevPos = { xLo, xHi, yLo, yHi }
+      this.prevPos = new Coord(yLo, yHi, xLo, xHi) // { xLo, xHi, yLo, yHi }
       //this.shrink = false;
     }
     for (i = 0; i < this.sub.length; i++) {
@@ -581,9 +582,7 @@ export class Element extends Node {
   calcShrinkContent(xLo, xHi, yLo, yHi) {
     const h = this.contLines.length,
           w = this.contLines.mwidth || 1
-    if (
-      ( this.pos.width == null ) && ( this.pos.left == null || this.pos.right == null )
-    ) {
+    if (( this.pos.width == null ) && ( this.pos.left == null || this.pos.right == null )) {
       if (this.pos.left == null && this.pos.right != null) { xLo = xHi - w - this.intW }
       else { xHi = xLo + w + this.intW }
     }
@@ -594,7 +593,7 @@ export class Element extends Node {
       if (this.pos.top == null && this.pos.bottom != null) { yLo = yHi - h - this.intH }
       else { yHi = yLo + h + this.intH }
     }
-    return { xLo, xHi, yLo, yHi }
+    return new Coord(yLo, yHi, xLo, xHi) // { yLo, yHi, xLo, xHi }
   }
   calcShrink(xLo, xHi, yLo, yHi, get) {
     const shrinkBox     = this.calcShrinkBox(xLo, xHi, yLo, yHi, get),
@@ -616,7 +615,7 @@ export class Element extends Node {
       yLo += yll
       yHi += yll
     }
-    return { xLo, xHi, yLo, yHi }
+    return new Coord(yLo, yHi, xLo, xHi) // { yLo, yHi, xLo, xHi }
   }
 
   clearPos(get, override) {
@@ -932,13 +931,13 @@ export class Element extends Node {
   render() {
     this._emit(PRERENDER)
     this.parseContent()
-    const coords = this.calcCoord(true)
-    if (!coords) return void ( delete this.prevPos )
-    if (coords.xHi - coords.xLo <= 0) return void ( coords.xHi = Math.max(coords.xHi, coords.xLo) )
-    if (coords.yHi - coords.yLo <= 0) return void ( coords.yHi = Math.max(coords.yHi, coords.yLo) )
+    const coord = this.calcCoord(true)
+    if (!coord) return void ( delete this.prevPos )
+    if (coord.dHori <= 0) return void ( coord.xHi = Math.max(coord.xHi, coord.xLo) )
+    if (coord.dVert <= 0) return void ( coord.yHi = Math.max(coord.yHi, coord.yLo) )
     const lines = this.screen.lines
     // console.log(`>> [{${ this.codename }}.render]`, lines[0][0],lines[0][0].modeSign)
-    let { xLo, xHi, yLo, yHi } = coords,
+    let { xLo, xHi, yLo, yHi } = coord,
         currAttr,
         ch
     const content = this.#parsedContent
@@ -946,25 +945,25 @@ export class Element extends Node {
     // if (this.codename === 'box.24') console.log('box.24', 'content', `[ ${ content } ]`)
     // if (this.codename === 'box.24') console.log('box.24', 'this.contLines', `[ ${ this.contLines } ]`)
     // if (this.codename === 'box.24') console.log('box.24', 'this.#parsedContent', `[ ${ this.#parsedContent } ]`)
-    let ci = this.contLines.ci[coords.base],
+    let ci = this.contLines.ci[coord.base],
         borderAttr,
         normAttr,
         visible,
         i
 
     const bch = this.ch
-    if (coords.base >= this.contLines.ci.length) ci = this.#parsedContent.length
-    this.prevPos = coords
+    if (coord.base >= this.contLines.ci.length) ci = this.#parsedContent.length
+    this.prevPos = coord
     if (this.border?.type === 'line') {
-      this.screen._borderStops[coords.yLo] = true
-      this.screen._borderStops[coords.yHi - 1] = true
+      this.screen._borderStops[coord.yLo] = true
+      this.screen._borderStops[coord.yHi - 1] = true
     }
     normAttr = styleToAttr(this.style)
     // console.log('>> [element.render] interim', dattr)
     currAttr = normAttr
     // If we're in a scrollable text box, check to
     // see which attributes this line starts with.
-    if (ci > 0) currAttr = this.contLines.attr[Math.min(coords.base, this.contLines.length - 1)]
+    if (ci > 0) currAttr = this.contLines.attr[Math.min(coord.base, this.contLines.length - 1)]
     if (this.border) xLo++, xHi--, yLo++, yHi--
     // If we have padding/valign, that means the
     // content-drawing loop will skip a few cells/lines.
@@ -1108,7 +1107,7 @@ export class Element extends Node {
       // i = this.getScrollHeight();
       i = Math.max(this.contLines.length, this._scrollBottom())
     }
-    if (coords.negT || coords.negB) i = -Infinity
+    if (coord.negT || coord.negB) i = -Infinity
     if (this.scrollbar && ( yHi - yLo ) < i) {
       let x = xHi - 1
       if (this.scrollbar.ignoreBorder && this.border) x++
@@ -1137,12 +1136,12 @@ export class Element extends Node {
     if (this.border) {
       borderAttr = styleToAttr(this.style.border)
       let y = yLo
-      if (coords.negT) y = -1
+      if (coord.negT) y = -1
       let line = lines[y]
       for (let x = xLo, cell; x < xHi; x++) {
         if (!line) break
-        if (coords.negL && x === xLo) continue
-        if (coords.negR && x === xHi - 1) continue
+        if (coord.negL && x === xLo) continue
+        if (coord.negR && x === xHi - 1) continue
         if (!( cell = line[x] )) continue
         if (this.border.type === 'line') {
           if (x === xLo) {
@@ -1187,7 +1186,7 @@ export class Element extends Node {
           if (this.border.left) {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
-            if (!coords.negL)
+            if (!coord.negL)
               if (cell.at !== borderAttr || cell.ch !== ch) {
                 cell.inject(borderAttr, ch)
                 line.dirty = true
@@ -1205,7 +1204,7 @@ export class Element extends Node {
           if (this.border.right) {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
-            if (!coords.negR)
+            if (!coord.negR)
               if (cell.at !== borderAttr || cell.ch !== ch) {
                 cell.inject(borderAttr, ch)
                 line.dirty = true
@@ -1221,11 +1220,11 @@ export class Element extends Node {
         }
       }
       y = yHi - 1
-      if (coords.negB) y = -1
+      if (coord.negB) y = -1
       for (let x = xLo, cell; x < xHi; x++) {
         if (!( line = lines[y] )) break
-        if (coords.negL && x === xLo) continue
-        if (coords.negR && x === xHi - 1) continue
+        if (coord.negL && x === xLo) continue
+        if (coord.negR && x === xHi - 1) continue
         if (!( cell = line[x] )) continue
         if (this.border.type === 'line') {
           if (x === xLo) {
@@ -1293,8 +1292,8 @@ export class Element extends Node {
       el.render()
       // if (el.screen._rendering) { el._rendering = false; }
     })
-    this._emit(RENDER, [ coords ])
-    return coords
+    this._emit(RENDER, [ coord ])
+    return coord
   }
   screenshot(xLo, xHi, yLo, yHi) {
     xLo = this.prevPos.xLo + this.intL + ( xLo || 0 )
