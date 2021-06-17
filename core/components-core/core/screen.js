@@ -546,9 +546,7 @@ export class Screen extends Node {
   }
   #dockBorders() {
     const lines = this.currLines
-    let stops = this._borderStops,
-        y,
-        ch
+    let stops = this._borderStops
     // var keys, stop;
     //
     // keys = Object.keys(this._borderStops)
@@ -564,13 +562,12 @@ export class Screen extends Node {
       .keys(stops)
       .map(k => +k)
       .sort((a, b) => a - b)
-    for (let i = 0, line, cell; i < stops.length; i++) {
+    for (let i = 0, y, line, cell; i < stops.length; i++) {
       y = stops[i]
       if (!( line = lines[y] )) continue
       for (let x = 0; x < this.width; x++) {
         cell = line[x]
-        ch = cell.ch
-        if (ANGLES[ch]) {
+        if (ANGLES[cell.ch]) {
           cell.ch = this.#getAngle(lines, x, y)
           line.dirty = true
         }
