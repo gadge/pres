@@ -307,7 +307,7 @@ export class Screen extends Node {
     // be some overhead though.
     // this.screen.clearRegion(0, this.cols, 0, this.rows);
     this._ci = 0
-    this.sub.forEach(el => { ( el.index = self._ci++ ), el.render() })
+    this.sub.forEach(node => { ( node.index = self._ci++ ), node.render() })
     this._ci = -1
     if (this.screen.dockBorders) { this.#dockBorders() }
     this.draw(0, this.currLines.length - 1)
@@ -729,35 +729,30 @@ export class Screen extends Node {
         self.clickable = helpers.hsort(self.clickable)
         self._needsClickableSort = false
       }
-      let i = 0,
-          el,
-          set,
-          pos
-      for (; i < self.clickable.length; i++) {
-        el = self.clickable[i]
-        if (el.detached || !el.visible) continue
+      let set
+      for (let i = 0, node, pos; i < self.clickable.length && ( node = self.clickable[i] ); i++) {
+        if (node.detached || !node.visible) continue
         // if (self.grabMouse && self.focused !== el
         //     && !el.hasAncestor(self.focused)) continue;
-        pos = el.prevPos
+        pos = node.prevPos
         if (!pos) continue
-        if (data.x >= pos.xLo && data.x < pos.xHi &&
-          data.y >= pos.yLo && data.y < pos.yHi) {
-          el.emit(MOUSE, data)
-          if (data.action === MOUSEDOWN) { self.mouseDown = el }
+        if (data.x >= pos.xLo && data.x < pos.xHi && data.y >= pos.yLo && data.y < pos.yHi) {
+          node.emit(MOUSE, data)
+          if (data.action === MOUSEDOWN) { self.mouseDown = node }
           else if (data.action === MOUSEUP) {
-            ( self.mouseDown || el ).emit(CLICK, data)
+            ( self.mouseDown || node ).emit(CLICK, data)
             self.mouseDown = null
           }
           else if (data.action === MOUSEMOVE) {
-            if (self.hover && el.index > self.hover.index) { set = false }
-            if (self.hover !== el && !set) {
+            if (self.hover && node.index > self.hover.index) { set = false }
+            if (self.hover !== node && !set) {
               if (self.hover) { self.hover.emit(MOUSEOUT, data) }
-              el.emit(MOUSEOVER, data)
-              self.hover = el
+              node.emit(MOUSEOVER, data)
+              self.hover = node
             }
             set = true
           }
-          el.emit(data.action, data)
+          node.emit(data.action, data)
           break
         }
       }
