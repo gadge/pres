@@ -497,8 +497,8 @@ export class Screen extends Node {
     return out
   }
   // boxes with clean sides?
-  cleanSides(el) {
-    const pos = el.prevPos
+  cleanSides(node) {
+    const pos = node.prevPos
     if (!pos) { return false }
     if (pos._cleanSides != null) { return pos._cleanSides }
     if (pos.xLo <= 0 && pos.xHi >= this.width) { return pos._cleanSides = true }
@@ -506,7 +506,7 @@ export class Screen extends Node {
       // Maybe just do this instead of parsing.
       if (pos.yLo < 0) return pos._cleanSides = false
       if (pos.yHi > this.height) return pos._cleanSides = false
-      return this.width - ( pos.xHi - pos.xLo ) < 40 ? ( pos._cleanSides = true ) : ( pos._cleanSides = false )
+      return this.width - pos.dHori < 40 ? ( pos._cleanSides = true ) : ( pos._cleanSides = false )
     }
     if (!this.options.smartCSR) { return false }
     // The scrollbar can't update properly, and there's also a
@@ -519,8 +519,8 @@ export class Screen extends Node {
     // if ((pos.yHi - el.intB) - (pos.yLo + el.intT) <= 1) {
     //   return pos._cleanSides = false;
     // }
-    const yLo = pos.yLo + el.intT,
-          yHi = pos.yHi - el.intB
+    const yLo = pos.yLo + node.intT,
+          yHi = pos.yHi - node.intB
     if (pos.yLo < 0) return pos._cleanSides = false
     if (pos.yHi > this.height) return pos._cleanSides = false
     if (pos.xLo - 1 < 0) return pos._cleanSides = true
@@ -736,7 +736,7 @@ export class Screen extends Node {
         //     && !el.hasAncestor(self.focused)) continue;
         pos = node.prevPos
         if (!pos) continue
-        if (data.x >= pos.xLo && data.x < pos.xHi && data.y >= pos.yLo && data.y < pos.yHi) {
+        if (pos.xLo <= data.x && data.x < pos.xHi && pos.yLo <= data.y && data.y < pos.yHi) {
           node.emit(MOUSE, data)
           if (data.action === MOUSEDOWN) { self.mouseDown = node }
           else if (data.action === MOUSEUP) {
