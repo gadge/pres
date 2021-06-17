@@ -14,7 +14,6 @@ const list = [
   'pagedown',
   'tab',
   'undefined',
-
 ]
 
 for (let key of [ ...new Set(list) ]) {
