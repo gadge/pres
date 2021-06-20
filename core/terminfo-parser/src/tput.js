@@ -545,7 +545,7 @@ export class Tput {
       if (read(/^\n /, true)) continue
       // '^A' -> ^A
       if (read(/^\^(.)/i, true)) {
-        if (!( ch >= ' ' && ch <= '~' )) {
+        if (!( ' ' <= ch && ch <= '~' )) {
           this.#debug('%s: bad caret char.', tkey)
           // NOTE: ncurses appears to simply
           // continue in this situation, but
@@ -1294,7 +1294,7 @@ export class Tput {
       brokenACS: this.detectBrokenACS(info),
       PCRomSet: this.detectPCRomSet(info),
       magicCookie: this.detectMagicCookie(info),
-      padding: this.detecpaddingSum(info),
+      padding: this.detectPadds(info),
       setbuf: this.detectSetbuf(info),
       acsc: data.acsc,
       acscr: data.acscr
@@ -1337,7 +1337,7 @@ export class Tput {
     )
   }
   detectMagicCookie() { return process.env.NCURSES_NO_MAGIC_COOKIE == null }
-  detecpaddingSum() { return process.env.NCURSES_NO_PADDING == null }
+  detectPadds() { return process.env.NCURSES_NO_PADDING == null }
   detectSetbuf() { return process.env.NCURSES_NO_SETBUF == null }
   parseACS(info) {
     const data = {}
