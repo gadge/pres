@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-layout",
-  "version": "0.3.23",
+  "version": "0.3.24",
   "description": "layout components for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -16,10 +16,10 @@
   },
   "dependencies": {
     "@aryth/math": "^0.3.22",
-    "@pres/components-core": "^0.3.23",
-    "@pres/enum-events": "^0.3.23",
-    "@pres/util-drawille-canvas": "^0.3.23",
-    "@pres/util-helpers": "^0.3.23",
+    "@pres/components-core": "^0.3.24",
+    "@pres/enum-events": "^0.3.24",
+    "@pres/util-drawille-canvas": "^0.3.24",
+    "@pres/util-helpers": "^0.3.24",
     "@typen/enum-data-types": "^0.1.16",
     "@typen/nullish": "^0.1.16",
     "drawille-canvas-blessed-contrib": "^0.1.3"

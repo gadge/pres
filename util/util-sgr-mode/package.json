@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-sgr-mode",
-  "version": "0.3.23",
+  "version": "0.3.24",
   "description": "Parse from/to sgr effects",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
