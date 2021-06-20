@@ -92,14 +92,15 @@ export class LineChart extends Canvas {
     seriesCollection = this.seriesCollection = Array.isArray(seriesCollection) ? seriesCollection : [ seriesCollection ]
     const { padds, ticks, labels, context } = this
     labels.loadLabels(seriesCollection)
-    this.ticks.setTicks(seriesCollection)
-    this.padds.adjuspaddingSum(this.ticks.tickWidth)
+    this.ticks.setup(seriesCollection)
+    // console.log('this.ticks.tickWidth', this.ticks.tickWidth)
+    this.padds.adjustPadds(this.ticks.tickWidth)
     this.drawLegend(seriesCollection)
     context.fillStyle = this.options.style.text
     context.clearRect(0, 0, this.canvW, this.canvH)
     // Draw tick labels (y-axis values)
     for (let i = ticks.min; i < ticks.max; i += ticks.step)
-      context.fillText(ticks.formatTick(i), padds.relativeX, this.coordY(i))
+      context.fillText(ticks.formatValue(i), padds.relativeX, this.coordY(i))
     // Draw y-value series collection
     for (const series of seriesCollection) this.drawLine(series.y, series.style)
     // Draw x and y axes
