@@ -19,7 +19,7 @@
 | yLabelIncrement | tickIncre |
 | maxPadding | paddingMax |
 | getMaxYPadding | tickWidth |
-| formatYLabel | formatTick |
+| formatYLabel | formatValue |
 | this.canvas.width  | this._w |
 | this.canvas.height | this._h |
 | charsAvailable | charsLimit |
