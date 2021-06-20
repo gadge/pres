@@ -1,6 +1,6 @@
 {
   "name": "@pres/enum-csi-codes",
-  "version": "0.3.25",
+  "version": "0.3.26",
   "description": "Enum for csi codes",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -34,5 +34,5 @@
     "url": "https://github.com/hoyeungw/pres"
   },
   "homepage": "https://github.com/hoyeungw/pres#readme",
-  "gitHead": "a3b7e4e59eb4b05217a057e5cb808c3c3482a423"
+  "gitHead": "996e3d36ed914f2212f4cf78a733673e0ad3a627"
 }

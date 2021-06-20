@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-text",
-  "version": "0.3.25",
+  "version": "0.3.26",
   "description": "Core components for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,9 +15,9 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/components-core": "^0.3.25",
-    "@pres/components-data": "^0.3.25",
-    "@pres/enum-events": "^0.3.25",
+    "@pres/components-core": "^0.3.26",
+    "@pres/components-data": "^0.3.26",
+    "@pres/enum-events": "^0.3.26",
     "chalk": "^4.1.1",
     "marked": "^2.1.1",
     "marked-terminal": "^4.1.1"
@@ -42,5 +42,5 @@
     "url": "https://github.com/hoyeungw/pres/cluster"
   },
   "homepage": "https://github.com/hoyeungw/pres/cluster#readme",
-  "gitHead": "a3b7e4e59eb4b05217a057e5cb808c3c3482a423"
+  "gitHead": "996e3d36ed914f2212f4cf78a733673e0ad3a627"
 }

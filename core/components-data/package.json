@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-data",
-  "version": "0.3.25",
+  "version": "0.3.26",
   "description": "Core components for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -20,11 +20,11 @@
     "@palett/fluo-matrix": "^0.8.16",
     "@palett/fluo-vector": "^0.8.16",
     "@palett/presets": "^0.8.16",
-    "@pres/components-core": "^0.3.25",
-    "@pres/enum-events": "^0.3.25",
-    "@pres/enum-key-names": "^0.3.25",
-    "@pres/util-helpers": "^0.3.25",
-    "@pres/util-sgr-attr": "^0.3.25",
+    "@pres/components-core": "^0.3.26",
+    "@pres/enum-events": "^0.3.26",
+    "@pres/enum-key-names": "^0.3.26",
+    "@pres/util-helpers": "^0.3.26",
+    "@pres/util-sgr-attr": "^0.3.26",
     "@spare/table-padder": "^0.11.20",
     "@texting/charset-ansi": "^0.0.12",
     "@texting/enum-chars": "^0.0.12",
@@ -54,5 +54,5 @@
     "url": "https://github.com/hoyeungw/pres/cluster"
   },
   "homepage": "https://github.com/hoyeungw/pres/cluster#readme",
-  "gitHead": "a3b7e4e59eb4b05217a057e5cb808c3c3482a423"
+  "gitHead": "996e3d36ed914f2212f4cf78a733673e0ad3a627"
 }
