@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-drawille-canvas",
-  "version": "0.3.24",
+  "version": "0.3.25",
   "description": "HTML5 Canvas API for drawille",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@palett/enum-ansi-codes": "^0.8.16",
-    "@pres/util-byte-colors": "^0.3.24",
+    "@pres/util-byte-colors": "^0.3.25",
     "bresenham": "^0.0.4",
     "gl-matrix": "^3.3.0"
   },
@@ -43,5 +43,5 @@
     "url": "https://github.com/hoyeungw/pres"
   },
   "homepage": "https://github.com/hoyeungw/pres#readme",
-  "gitHead": "f9a54c9986c480231564eced27c8e116febc69da"
+  "gitHead": "a3b7e4e59eb4b05217a057e5cb808c3c3482a423"
 }

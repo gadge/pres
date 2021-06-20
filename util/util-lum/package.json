@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-lum",
-  "version": "0.3.24",
+  "version": "0.3.25",
   "description": "lum color scheme for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -20,10 +20,10 @@
     "@palett/fluo": "^0.8.16",
     "@palett/presets": "^0.8.16",
     "@palett/projector-factory": "^0.8.16",
-    "@pres/enum-control-chars": "^0.3.24",
-    "@pres/enum-csi-codes": "^0.3.24",
-    "@pres/util-blessed-colors": "^0.3.24",
-    "@pres/util-sgr-mode": "^0.3.24",
+    "@pres/enum-control-chars": "^0.3.25",
+    "@pres/enum-csi-codes": "^0.3.25",
+    "@pres/util-blessed-colors": "^0.3.25",
+    "@pres/util-sgr-mode": "^0.3.25",
     "@texting/enum-chars": "^0.0.12",
     "@typen/enum-data-types": "^0.1.16",
     "@typen/nullish": "^0.1.16"
@@ -48,5 +48,5 @@
     "url": "https://github.com/hoyeungw/pres"
   },
   "homepage": "https://github.com/hoyeungw/pres#readme",
-  "gitHead": "f9a54c9986c480231564eced27c8e116febc69da"
+  "gitHead": "a3b7e4e59eb4b05217a057e5cb808c3c3482a423"
 }

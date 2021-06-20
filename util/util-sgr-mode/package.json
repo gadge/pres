@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-sgr-mode",
-  "version": "0.3.24",
+  "version": "0.3.25",
   "description": "Parse from/to sgr effects",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -39,5 +39,5 @@
     "url": "https://github.com/hoyeungw/pres"
   },
   "homepage": "https://github.com/hoyeungw/pres#readme",
-  "gitHead": "f9a54c9986c480231564eced27c8e116febc69da"
+  "gitHead": "a3b7e4e59eb4b05217a057e5cb808c3c3482a423"
 }

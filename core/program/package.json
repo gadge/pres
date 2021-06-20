@@ -1,6 +1,6 @@
 {
   "name": "@pres/program",
-  "version": "0.3.24",
+  "version": "0.3.25",
   "description": "Curses like basic functionality for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -17,17 +17,17 @@
   "dependencies": {
     "@geia/enum-signals": "^0.0.19",
     "@ject/noop": "^0.0.12",
-    "@pres/enum-control-chars": "^0.3.24",
-    "@pres/enum-csi-codes": "^0.3.24",
-    "@pres/enum-events": "^0.3.24",
-    "@pres/enum-key-names": "^0.3.24",
-    "@pres/events": "^0.3.24",
-    "@pres/global-program": "^0.3.24",
-    "@pres/gpm-client": "^0.3.24",
-    "@pres/terminfo-parser": "^0.3.24",
-    "@pres/util-blessed-colors": "^0.3.24",
-    "@pres/util-byte-colors": "^0.3.24",
-    "@pres/util-helpers": "^0.3.24",
+    "@pres/enum-control-chars": "^0.3.25",
+    "@pres/enum-csi-codes": "^0.3.25",
+    "@pres/enum-events": "^0.3.25",
+    "@pres/enum-key-names": "^0.3.25",
+    "@pres/events": "^0.3.25",
+    "@pres/global-program": "^0.3.25",
+    "@pres/gpm-client": "^0.3.25",
+    "@pres/terminfo-parser": "^0.3.25",
+    "@pres/util-blessed-colors": "^0.3.25",
+    "@pres/util-byte-colors": "^0.3.25",
+    "@pres/util-helpers": "^0.3.25",
     "@spare/logger": "^0.11.20",
     "@texting/enum-chars": "^0.0.12",
     "@typen/enum-data-types": "^0.1.16"
@@ -52,5 +52,5 @@
     "url": "https://github.com/hoyeungw/pres/cluster"
   },
   "homepage": "https://github.com/hoyeungw/pres/cluster#readme",
-  "gitHead": "f9a54c9986c480231564eced27c8e116febc69da"
+  "gitHead": "a3b7e4e59eb4b05217a057e5cb808c3c3482a423"
 }
