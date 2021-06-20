@@ -23,9 +23,10 @@ export class Checkbox extends Input {
     this.on(FOCUS, function () {
       const prevPos = self.prevPos
       if (!prevPos) return
-      self.screen.program.lsaveCursor('checkbox')
-      self.screen.program.cup(prevPos.yLo, prevPos.xLo + 1)
-      self.screen.program.showCursor()
+      const program = self.screen.program
+      program.lsaveCursor('checkbox')
+      program.cup(prevPos.yLo, prevPos.xLo + 1)
+      program.showCursor()
     })
     this.on(BLUR, () => self.screen.program.lrestoreCursor('checkbox', true))
     this.type = 'checkbox'
@@ -35,7 +36,7 @@ export class Checkbox extends Input {
   render() {
     // console.log('>>> checkbox rendered')
     this.clearPos(true)
-    this.setContent('[' + (this.checked ? 'x' : ' ') + '] ' + this.text, true)
+    this.setContent('[' + ( this.checked ? 'x' : ' ' ) + '] ' + this.text, true)
     return this._render()
   }
   check() {
@@ -48,11 +49,7 @@ export class Checkbox extends Input {
     this.checked = this.value = false
     this.emit(UNCHECK)
   }
-  toggle() {
-    return this.checked
-      ? this.uncheck()
-      : this.check()
-  }
+  toggle() { return this.checked ? this.uncheck() : this.check() }
 }
 
 
