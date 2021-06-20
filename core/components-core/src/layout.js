@@ -15,15 +15,15 @@ export class Layout extends Element {
     super(options)
     // if (!(this instanceof Node)) return new Layout(options)
     if (
-      (options.width == null && (options.left == null && options.right == null)) ||
-      (options.height == null && (options.top == null && options.bottom == null))
+      ( options.width == null && ( options.left == null && options.right == null ) ) ||
+      ( options.height == null && ( options.top == null && options.bottom == null ) )
     ) throw new Error('`Layout` must have a width and height!')
     options.layout = options.layout || 'inline'
     if (options.renderer) this.renderer = options.renderer
     this.type = 'layout'
   }
   static build(options) { return new Layout(options) }
-  isRendered(el) { return !el.prevPos ? false : (el.prevPos.xHi - el.prevPos.xLo) > 0 && (el.prevPos.yHi - el.prevPos.yLo) > 0 }
+  isRendered(el) { return !el.prevPos ? false : ( el.prevPos.xHi - el.prevPos.xLo ) > 0 && ( el.prevPos.yHi - el.prevPos.yLo ) > 0 }
   getLast(i) {
     while (this.sub[--i]) {
       const el = this.sub[i]
@@ -47,8 +47,8 @@ export class Layout extends Element {
     // The coordinates of the layout element
     const width  = coords.xHi - coords.xLo,
           height = coords.yHi - coords.yLo,
-          xLo     = coords.xLo,
-          yLo     = coords.yLo
+          xLo    = coords.xLo,
+          yLo    = coords.yLo
     // The current row offset in cells (which row are we on?)
     let rowOffset = 0
     // The index of the first child in the row
@@ -81,7 +81,7 @@ export class Layout extends Element {
           // Compensate with width:
           // el.pos.width = el.width + (highWidth - el.width);
           // Compensate with position:
-          el.pos.left += highWidth - (last.prevPos.xHi - last.prevPos.xLo)
+          el.pos.left += highWidth - ( last.prevPos.xHi - last.prevPos.xLo )
         }
         // If our child does not overlap the right side of the Layout, set it's
         // `top`/`y` to the current `rowOffset` (the coordinate for the current
@@ -111,7 +111,7 @@ export class Layout extends Element {
         for (let j = lastRowIndex; j < rowIndex; j++) {
           const l = self.sub[j]
           if (!self.isRendered(l)) continue
-          const abs = Math.abs(el.pos.left - (l.prevPos.xLo - xLo))
+          const abs = Math.abs(el.pos.left - ( l.prevPos.xLo - xLo ))
           // if (abs < abovea && (l.prevPos.xHi - l.prevPos.xLo) <= el.width) {
           if (abs < abovea) {
             above = l
@@ -135,17 +135,17 @@ export class Layout extends Element {
       delete this.prevPos
       return
     }
-    if (coords.xHi - coords.xLo <= 0) return void (coords.xHi = Math.max(coords.xHi, coords.xLo))
-    if (coords.yHi - coords.yLo <= 0) return void (coords.yHi = Math.max(coords.yHi, coords.yLo))
+    if (coords.xHi - coords.xLo <= 0) return void ( coords.xHi = Math.max(coords.xHi, coords.xLo) )
+    if (coords.yHi - coords.yLo <= 0) return void ( coords.yHi = Math.max(coords.yHi, coords.yLo) )
     this.prevPos = coords
     if (this.border) coords.xLo++, coords.xHi--, coords.yLo++, coords.yHi--
-    if (this.paddingSum) {
+    if (this.padding.any) {
       coords.xLo += this.padding.left, coords.xHi -= this.padding.right
       coords.yLo += this.padding.top, coords.yHi -= this.padding.bottom
     }
     const iterator = this.renderer(coords)
     if (this.border) coords.xLo--, coords.xHi++, coords.yLo--, coords.yHi++
-    if (this.paddingSum) {
+    if (this.padding.any) {
       coords.xLo -= this.padding.left, coords.xHi += this.padding.right
       coords.yLo -= this.padding.top, coords.yHi += this.padding.bottom
     }
