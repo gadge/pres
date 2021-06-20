@@ -1,8 +1,8 @@
-import { Cyan }        from '@palett/cards'
-import * as components from '@pres/components'
+import { Cyan } from '@palett/cards'
+import { Pres } from '@pres/components'
 
-const screen = components.screen(),
-      line   = components.lineChart(
+const screen = Pres.screen(),
+      line   = Pres.lineChart(
         {
           width: 80,
           height: 30,

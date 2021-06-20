@@ -1,7 +1,7 @@
-import * as components from '@pres/components'
+import { Pres } from '@pres/components'
 
-const screen = components.screen(),
-      line   = components.lineChart(
+const screen = Pres.screen(),
+      line   = Pres.lineChart(
         {
           width: 80,
           height: 30,
