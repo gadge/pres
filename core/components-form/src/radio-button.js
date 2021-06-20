@@ -7,28 +7,25 @@
 import { CHECK, }   from '@pres/enum-events'
 import { Checkbox } from './checkbox'
 
+/**
+ * RadioButton
+ */
 
 export class RadioButton extends Checkbox {
   toggle = this.check
-  /**
-   * RadioButton
-   */
   constructor(options = {}) {
     super(options)
     const self = this
     // if (!(this instanceof Node)) return new RadioButton(options)
-    this.on(CHECK, function () {
-      let el = self
-      while ((el = el.sup)) {
-        if (el.type === 'radio-set' ||
-          el.type === 'form') break
+    this.on(CHECK, () => {
+      let node = self, type
+      while (( node = node.sup ) && ( { type } = node )) {
+        if (type === 'radio-set' || type === 'form') break
       }
-      el = el || self.sup
-      el.forDescendants(function (el) {
-        if (el.type !== 'radio-button' || el === self) {
-          return
-        }
-        el.uncheck()
+      node = node ?? self.sup
+      node.forDescendants(node => {
+        if (node.type !== 'radio-button' || node === self) return void 0
+        node.uncheck()
       })
     })
     this.type = 'radio-button'
@@ -36,7 +33,7 @@ export class RadioButton extends Checkbox {
   static build(options) { return new RadioButton(options) }
   render() {
     this.clearPos(true)
-    this.setContent('(' + (this.checked ? '*' : ' ') + ') ' + this.text, true)
+    this.setContent('(' + ( this.checked ? '*' : ' ' ) + ') ' + this.text, true)
     return this._render()
   }
 }
