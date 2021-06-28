@@ -1,9 +1,9 @@
-import { COLOR_COLLECTION } from '@pres/fin/assets/COLOR_COLLECTION'
-import { Escape }           from '@valjoux/linger'
-import { last }             from '@vect/vector'
-import { init, iso }        from '@vect/vector-init'
-import si                   from 'systeminformation'
-import { queue, utils }     from '../util'
+import { COLOR_COLLECTION }  from '@pres/fin/assets/COLOR_COLLECTION'
+import { Escape }            from '@valjoux/linger'
+import { last }              from '@vect/vector'
+import { init, iso }         from '@vect/vector-init'
+import si                    from 'systeminformation'
+import { humanScale, queue } from '../util'
 
 export class Mem extends Escape {
   seriesCollection = []
@@ -32,8 +32,8 @@ export class Mem extends Escape {
     const memRatio = ( 100 * ( 1 - available / total ) ).toFixed()
     let swapRatio = ( 100 * ( 1 - swapfree / swaptotal ) ).toFixed()
     swapRatio = isNaN(swapRatio) ? 0 : swapRatio
-    this.seriesCollection[0].subtitle = utils.humanFileSize(total - available) + ' of ' + utils.humanFileSize(total)
-    this.seriesCollection[1].subtitle = utils.humanFileSize(swaptotal - swapfree) + ' of ' + utils.humanFileSize(swaptotal)
+    this.seriesCollection[0].subtitle = humanScale(total - available) + ' of ' + humanScale(total)
+    this.seriesCollection[1].subtitle = humanScale(swaptotal - swapfree) + ' of ' + humanScale(swaptotal)
     queue(this.seriesCollection[0].y, memRatio)
     queue(this.seriesCollection[1].y, swapRatio)
     return this.seriesCollection

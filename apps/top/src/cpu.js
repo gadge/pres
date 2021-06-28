@@ -7,7 +7,6 @@ import si                   from 'systeminformation'
 import { COLOR_NO }         from '../assets/COLOR_COLLECTION'
 import { queue }            from '../util'
 
-
 export class Cpu extends Escape {
   on = true
   seriesCollection = []

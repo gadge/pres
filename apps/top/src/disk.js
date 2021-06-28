@@ -1,7 +1,7 @@
 import { COLOR_COLLECTION } from '@pres/fin/assets/COLOR_COLLECTION'
 import { Escape }           from '@valjoux/linger'
 import si                   from 'systeminformation'
-import { utils }            from '../util'
+import { humanScale }       from '../util'
 
 export class Disk extends Escape {
   seriesCollection = []
@@ -16,7 +16,7 @@ export class Disk extends Escape {
     const [ disk ] = data
     const [ series ] = this.seriesCollection
     series.percent = disk.use / 100
-    series.label = utils.humanFileSize(disk.used, true) + ' of ' + utils.humanFileSize(disk.size, true)
+    series.label = humanScale(disk.used, true) + ' of ' + humanScale(disk.size, true)
     series.color = COLOR_COLLECTION[5]
     return this.seriesCollection
   }

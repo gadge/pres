@@ -8,7 +8,9 @@
     "dist",
     "bin"
   ],
-  "bin": "./bin/top",
+  "bin": {
+    "prestop": "./bin/top"
+  },
   "publishConfig": {
     "access": "public"
   },

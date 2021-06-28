@@ -1,8 +1,8 @@
 import { LF }           from '@texting/enum-chars'
 import { Escape }       from '@valjoux/linger'
 import { iso }          from '@vect/vector-init'
-import si               from 'systeminformation'
-import { queue, utils } from '../util'
+import si                     from 'systeminformation'
+import { humanScale, queue, } from '../util'
 
 export class Net extends Escape {
   seriesCollection = []
@@ -20,11 +20,11 @@ export class Net extends Escape {
     queue(this.seriesCollection[0], rx_sec)
     queue(this.seriesCollection[1], tx_sec)
     this.seriesCollection[0].title =
-      'Receiving:      ' + utils.humanFileSize(rx_sec) + '/s ' + LF +
-      'Total received: ' + utils.humanFileSize(stat['rx_bytes'])
+      'Receiving:      ' + humanScale(rx_sec) + '/s ' + LF +
+      'Total received: ' + humanScale(stat['rx_bytes'])
     this.seriesCollection[1].title =
-      'Transferring:      ' + utils.humanFileSize(tx_sec) + '/s ' + LF +
-      'Total transferred: ' + utils.humanFileSize(stat['tx_bytes'])
+      'Transferring:      ' + humanScale(tx_sec) + '/s ' + LF +
+      'Total transferred: ' + humanScale(stat['tx_bytes'])
     return this.seriesCollection
   }
   async setInterval(ms, pipe) {
