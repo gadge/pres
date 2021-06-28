@@ -1,17 +1,6 @@
 import { roundD2, roundD4 } from '@aryth/math'
 import { Cadre }            from '@pres/components-core/utils/Cadre'
 import { assignDeep }       from '@pres/util-helpers'
-import { NUM, OBJ, STR }    from '@typen/enum-data-types'
-import { nullish }          from '@typen/nullish'
-
-export const parseMargin = margin => {
-  const t = typeof margin
-  if (nullish(margin)) return { t: 0, b: 0, l: 0, r: 0 }
-  if (t === NUM) return { t: margin, b: margin, l: margin, r: margin }
-  if (t === STR) return parseInt(margin)
-  if (t === OBJ) return { t: margin.t ?? 0, b: margin.b ?? 0, l: margin.l ?? 0, r: margin.r ?? 0 }
-  return { t: 0, b: 0, l: 0, r: 0 }
-}
 
 const SPACING = 0
 
@@ -31,6 +20,8 @@ export class Grid {
     this.hideBorder = options.hideBorder
   }
   static build(options) { return new Grid(options) }
+
+  add = this.set
   set(t, l, h, w, component, options) {
     if (component instanceof Grid) {
       throw 'Error: A Grid is not allowed to be nested inside another grid.\r\n' +
@@ -50,5 +41,4 @@ export class Grid {
     if (!options.sup) this.screen.append(instance)
     return instance
   }
-
 }
