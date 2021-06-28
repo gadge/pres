@@ -22,7 +22,7 @@
     "@palett/cards": "^0.8.16",
     "@pres/enum-events": "^0.3.26",
     "@pres/terminal-interface": "^0.3.26",
-    "@valjoux/linger": "^0.2.14",
+    "@valjoux/linger": "^0.3.7",
     "@vect/vector-init": "^0.4.4",
     "@vect/vector-mapper": "^0.4.4",
     "@vect/vector-zipper": "^0.4.4",

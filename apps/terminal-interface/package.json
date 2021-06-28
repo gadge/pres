@@ -16,7 +16,7 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@ject/mixin": "^0.0.12",
+    "@ject/mixin": "^0.0.16",
     "@pres/components": "^0.3.26",
     "@pres/program": "^0.3.26",
     "@pres/terminfo-parser": "^0.3.26",
