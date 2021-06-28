@@ -10,17 +10,18 @@ const screen = Pres.screen({
 })
 
 const grid = Pres.grid({ rows: 12, cols: 12, screen: screen }) // margin: { t: 4, b: 4, l: 4, r: 4 },
-
+const { top, bottom, left, right, width, height } = grid
+console.log('grid', { top, bottom, left, right, width, height })
 const lineChartCollection = {
-  A1: grid.set(0, 0, 4, 4, Pres.lineChart, { label: 'S&P 500', showLegend: true }),
-  B1: grid.set(0, 4, 4, 4, Pres.lineChart, { label: 'Dow Jones', showLegend: true }),
-  C1: grid.set(0, 8, 4, 4, Pres.lineChart, { label: 'Nasdaq', showLegend: true }),
-  A2: grid.set(4, 0, 4, 4, Pres.lineChart, { label: 'Shanghai', showLegend: true }),
-  B2: grid.set(4, 4, 4, 4, Pres.lineChart, { label: 'FTSE', showLegend: true }),
-  C2: grid.set(4, 8, 4, 4, Pres.lineChart, { label: 'Hang Seng', showLegend: true }),
-  A3: grid.set(8, 0, 4, 4, Pres.lineChart, { label: 'Nikkei', showLegend: true }),
-  B3: grid.set(8, 4, 4, 4, Pres.lineChart, { label: 'Euronext', showLegend: true }),
-  C3: grid.set(8, 8, 4, 4, Pres.lineChart, { label: 'Seoul', showLegend: true }),
+  A1: grid.add(0, 0, 4, 4, Pres.lineChart, { label: 'S&P 500', showLegend: true }),
+  B1: grid.add(0, 4, 4, 4, Pres.lineChart, { label: 'Dow Jones', showLegend: true }),
+  C1: grid.add(0, 8, 4, 4, Pres.lineChart, { label: 'Nasdaq', showLegend: true }),
+  A2: grid.add(4, 0, 4, 4, Pres.lineChart, { label: 'Shanghai', showLegend: true }),
+  B2: grid.add(4, 4, 4, 4, Pres.lineChart, { label: 'FTSE', showLegend: true }),
+  C2: grid.add(4, 8, 4, 4, Pres.lineChart, { label: 'Hang Seng', showLegend: true }),
+  A3: grid.add(8, 0, 4, 4, Pres.lineChart, { label: 'Nikkei', showLegend: true }),
+  B3: grid.add(8, 4, 4, 4, Pres.lineChart, { label: 'Euronext', showLegend: true }),
+  C3: grid.add(8, 8, 4, 4, Pres.lineChart, { label: 'Seoul', showLegend: true }),
 }
 
 const form = Pres.form({
