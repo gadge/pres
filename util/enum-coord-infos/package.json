@@ -1,6 +1,6 @@
 {
   "name": "@pres/enum-coord-infos",
-  "version": "0.3.26",
+  "version": "0.3.27",
   "description": "Coord infos (positions and directions) for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
