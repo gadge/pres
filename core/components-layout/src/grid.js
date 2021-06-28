@@ -4,8 +4,6 @@ import { assignDeep }       from '@pres/util-helpers'
 import { NUM, OBJ, STR }    from '@typen/enum-data-types'
 import { nullish }          from '@typen/nullish'
 
-
-
 export const parseMargin = margin => {
   const t = typeof margin
   if (nullish(margin)) return { t: 0, b: 0, l: 0, r: 0 }
@@ -41,8 +39,8 @@ export class Grid {
     //var options = JSON.parse(JSON.stringify(opts));
     let p = {}
     p = assignDeep(p, options)
-    p.top = options.t ?? ( roundD2(t * this.unit.h) + '%' + ( this.margin.t ? '+' + this.margin.t : '' ) ) // ( t * this.unit.h + this.margin ) + '%'
-    p.left = options.l ?? ( roundD2(l * this.unit.w) + '%' + ( this.margin.l ? '+' + this.margin.l : '' ) )// ( l * this.unit.w + this.margin ) + '%'
+    p.top = options.t ?? ( roundD2(t * this.unit.h) + '%' + ( this.margin.t ? '+' + this.margin.t : '' ) )  // ( t * this.unit.h + this.margin ) + '%'
+    p.left = options.l ?? ( roundD2(l * this.unit.w) + '%' + ( this.margin.l ? '+' + this.margin.l : '' ) ) // ( l * this.unit.w + this.margin ) + '%'
     p.height = options.h ?? ( roundD2(this.unit.h * h - SPACING) + '%' ) // + '-' + this.margin.t
     p.width = options.w ?? ( roundD2(this.unit.w * w - SPACING) + '%' )
     // console.log('[coord]', `(${ p.top },${ p.left })`, '[size]', `(${ p.height },${ p.width })`)

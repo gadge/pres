@@ -9,7 +9,6 @@ import { PRESS }   from '@pres/enum-events'
 import { Button }  from './button'
 import { Textbox } from './textbox'
 
-
 export class Prompt extends Box {
   input = this.readInput
   setInput = this.readInput
