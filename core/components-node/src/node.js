@@ -33,6 +33,7 @@ export class Node extends EventEmitter {
     this.configScreen(options)
     this.$ = this._ = this.data = {}
     this.uid = GlobalNode.uid++
+    this.gid = ( this.sku ?? this.type ) + '.' + GlobalNode.typedId(this.sku ?? this.type)
     this.index = this.index ?? -1
     if (this.type !== 'screen') this.detached = true
     let sup, sub
@@ -72,10 +73,7 @@ export class Node extends EventEmitter {
     }
     return this.screen = screen
   }
-  get codename() {
-    const des = `${ this.sku ?? this.type ?? '' }.${ this.uid ?? 'NA' }`
-    return this.name ? `${ this.name }(${ des })` : des
-  }
+  get codename() { return this.name ? `${ this.name }( ${ this.gid } )` : this.gid }
 
   get parent() { return this.sup }
   set parent(value) { this.sup = value }
