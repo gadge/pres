@@ -56,6 +56,7 @@ import * as unicode from '@pres/util-unicode'
  * @property {function(Object?):Canvas} canvas
  * @property {function(Object?):Carousel} carousel
  * @property {function(Object?):Grid} grid
+ * @property {function(Object?):Page} page
  // text
  * @property {function(Object?):LogList} logList
  * @property {function(Object?):Markdown} markdown
