@@ -18,7 +18,7 @@
     "@pres/enum-events": "^0.3.26",
     "@pres/enum-key-names": "^0.3.26",
     "@pres/util-helpers": "^0.3.26",
-    "@typen/enum-data-types": "^0.1.16",
+    "@typen/enum-data-types": "^0.1.17",
     "@vect/vector-merge": "^0.4.4"
   },
   "repository": {

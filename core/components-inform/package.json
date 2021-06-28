@@ -21,7 +21,7 @@
     "@pres/components-text": "^0.3.26",
     "@pres/enum-events": "^0.3.26",
     "@pres/util-blessed-colors": "^0.3.26",
-    "@typen/enum-data-types": "^0.1.16"
+    "@typen/enum-data-types": "^0.1.17"
   },
   "repository": {
     "type": "git",

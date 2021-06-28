@@ -17,7 +17,7 @@
   "dependencies": {
     "@palett/enum-font-effects": "^0.8.16",
     "@palett/util-ansi": "^0.8.16",
-    "@typen/enum-data-types": "^0.1.16"
+    "@typen/enum-data-types": "^0.1.17"
   },
   "repository": {
     "type": "git",

@@ -18,8 +18,8 @@
     "@aryth/bound-matrix": "^0.3.22",
     "@aryth/math": "^0.3.22",
     "@aryth/nice-scale": "^0.3.22",
-    "@typen/enum-object-types": "^0.1.16",
-    "@typen/nullish": "^0.1.16"
+    "@typen/enum-object-types": "^0.1.17",
+    "@typen/nullish": "^0.1.17"
   },
   "repository": {
     "type": "git",

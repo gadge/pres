@@ -16,7 +16,7 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@ject/mixin": "^0.0.12",
+    "@ject/mixin": "^0.0.16",
     "@pres/components-core": "^0.3.26",
     "@pres/enum-events": "^0.3.26",
     "@pres/util-blessed-colors": "^0.3.26",

@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@geia/enum-signals": "^0.0.19",
-    "@ject/noop": "^0.0.12",
+    "@ject/noop": "^0.0.16",
     "@pres/enum-control-chars": "^0.3.26",
     "@pres/enum-csi-codes": "^0.3.26",
     "@pres/enum-events": "^0.3.26",
@@ -27,7 +27,7 @@
     "@pres/util-helpers": "^0.3.26",
     "@spare/logger": "^0.11.20",
     "@texting/enum-chars": "^0.0.12",
-    "@typen/enum-data-types": "^0.1.16"
+    "@typen/enum-data-types": "^0.1.17"
   },
   "repository": {
     "type": "git",

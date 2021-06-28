@@ -19,7 +19,7 @@
     "@pres/util-sgr-attr": "^0.3.26",
     "@pres/util-sgr-mode": "^0.3.26",
     "@texting/enum-chars": "^0.0.12",
-    "@typen/enum-data-types": "^0.1.16"
+    "@typen/enum-data-types": "^0.1.17"
   },
   "repository": {
     "type": "git",

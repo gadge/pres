@@ -28,7 +28,7 @@
     "@spare/table-padder": "^0.11.20",
     "@texting/charset-ansi": "^0.0.12",
     "@texting/enum-chars": "^0.0.12",
-    "@typen/enum-data-types": "^0.1.16",
+    "@typen/enum-data-types": "^0.1.17",
     "@vect/enum-matrix-directions": "^0.4.4",
     "@vect/matrix-mapper": "^0.4.4",
     "@vect/vector": "^0.4.4",

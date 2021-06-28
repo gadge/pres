@@ -20,8 +20,8 @@
     "@palett/util-ansi": "^0.8.16",
     "@pres/util-byte-colors": "^0.3.26",
     "@pres/util-sgr-mode": "^0.3.26",
-    "@typen/enum-data-types": "^0.1.16",
-    "@typen/nullish": "^0.1.16"
+    "@typen/enum-data-types": "^0.1.17",
+    "@typen/nullish": "^0.1.17"
   },
   "repository": {
     "type": "git",

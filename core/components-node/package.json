@@ -20,7 +20,7 @@
     "@pres/global-node": "^0.3.26",
     "@pres/global-screen": "^0.3.26",
     "@texting/enum-chars": "^0.0.12",
-    "@typen/enum-data-types": "^0.1.16",
+    "@typen/enum-data-types": "^0.1.17",
     "@vect/vector-index": "^0.4.4"
   },
   "repository": {
