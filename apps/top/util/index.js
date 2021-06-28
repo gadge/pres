@@ -16,4 +16,6 @@ utils.humanFileSize = function (bytes, isDecimal) {
 
 utils.colors = [ 'magenta', 'cyan', 'blue', 'yellow', 'green', 'red' ]
 
+export let queue = (arr, item) => ( arr.push(item), arr.shift() )
+
 
