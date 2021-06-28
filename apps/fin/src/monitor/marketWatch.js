@@ -7,7 +7,7 @@ import { Grey }             from '@palett/cards'
 import { camelToSnake }     from '@texting/phrasing'
 import { dateToYmd }        from '@valjoux/convert'
 import { shiftDay }         from '@valjoux/date-shift'
-import { AsyncLooper }      from '@valjoux/linger'
+import { Escape }      from '@valjoux/linger'
 import { unwind }           from '@vect/entries-unwind'
 import APIKEY               from '../../../../local/fmp.apikey.json'
 import { COLOR_COLLECTION } from '../../assets/COLOR_COLLECTION'
@@ -19,7 +19,7 @@ let colorGenerator = flopGenerator(COLOR_COLLECTION, Grey.base)
 
 MarketIndexes.login(APIKEY)
 
-export class MarketWatch extends AsyncLooper {
+export class MarketWatch extends Escape {
   constructor(lineChart, indicator) {
     super(MarketIndexes.prices.bind(null, { indicator, start: BEFORE }))
     this.chart = lineChart
@@ -43,7 +43,7 @@ export class MarketWatch extends AsyncLooper {
    */
   updateData(table) {
     const entries = table.select([ 'date', 'adj.c' ]).rows
-    console.log(entries)
+    // console.log(entries)
     const [ x, y ] = entries.slice(0, 90) |> unwind
     const { min, max } = roundBound(bound(y))
     const series = {
