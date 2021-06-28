@@ -271,7 +271,6 @@ export class Element extends Node {
    * Position Getters
    */
 
-
   calcT(get) {
     const supPos = get ? this.sup.calcPos() : this.sup
     let top = this.pos.top || 0
