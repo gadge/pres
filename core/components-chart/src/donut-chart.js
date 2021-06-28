@@ -39,8 +39,8 @@ export class DonutChart extends Canvas {
     c.strokeStyle = this.options.stroke
     c.fillStyle = this.options.fill
     c.clearRect(0, 0, this.canvW, this.canvH)
-    const cheight = this.canvH
-    const cwidth = this.canvW
+    const canvH = this.canvH
+    const canvW = this.canvW
     function makeRound(percent, radius, width, cx, cy, color) {
       let s = 0
       const points = 370
@@ -68,8 +68,8 @@ export class DonutChart extends Canvas {
     const radius = this.options.radius
     const width = this.options.arcWidth
     const remainColor = this.options.remainColor
-    const middle = cheight / 2
-    const spacing = ( cwidth - ( donuts * radius * 2 ) ) / ( donuts + 1 )
+    const middle = canvH / 2
+    const spacing = ( canvW - ( donuts * radius * 2 ) ) / ( donuts + 1 )
     function drawDonut(label, percent, radius, width, cxx, middle, color) {
       makeRound(100, radius, width, cxx, middle, remainColor)
       makeRound(percent, radius, width, cxx, middle, color)

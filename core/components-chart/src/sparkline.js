@@ -1,6 +1,9 @@
-import { Box }    from '@pres/components-core'
-import { ATTACH } from '@pres/enum-events'
-import sparkline  from 'sparkline'
+import { Box }     from '@pres/components-core'
+import { ATTACH }  from '@pres/enum-events'
+import { RN }      from '@texting/enum-chars'
+import { iterate } from '@vect/vector-mapper'
+import { zipper }  from '@vect/vector-zipper'
+import sparkline   from 'sparkline'
 
 export class Sparkline extends Box {
   constructor(options = {}) {
@@ -18,13 +21,22 @@ export class Sparkline extends Box {
     this.type = 'sparkline'
   }
   static build(options) { return new Sparkline(options) }
+  /** @deprecated */
   setData(titles, datasets) {
-    let res = '\r\n'
-    for (let i = 0; i < titles.length; i++) {
-      res += '{bold}{' + this.options.style.titleFg + '-fg}' + titles[i] + ':{/' + this.options.style.titleFg + '-fg}{/bold}\r\n'
-      res += sparkline(datasets[i].slice(0, this.width - 2)) + '\r\n\r\n'
-    }
-    this.setContent(res)
+    this.update(zipper(datasets, titles, (vec, title) => ( vec.title = title, vec )))
+  }
+  update(titledVectors) {
+    const fg = this.options.style.titleFg
+    let content = RN
+    iterate(titledVectors, titledVector => {
+      content += '{bold}{' + fg + '-fg}' + titledVector.title + ':{/' + fg + '-fg}{/bold}' + RN
+      content += sparkline(titledVector.slice(0, this.width - 2)) + RN + RN
+    })
+    // for (let i = 0; i < titledVectors.length; i++) {
+    //   res += '{bold}{' + fg + '-fg}' + titledVectors[i].title + ':{/' + fg + '-fg}{/bold}\r\n'
+    //   res += sparkline(titledVectors[i].slice(0, this.width - 2)) + '\r\n\r\n'
+    // }
+    this.setContent(content)
   }
   getOptionsPrototype() {
     return {

@@ -25,6 +25,8 @@
     "@typen/enum-data-types": "^0.1.17",
     "@typen/nullish": "^0.1.17",
     "@vect/vector-indicator": "^0.4.4",
+    "@vect/vector-mapper": "^0.4.4",
+    "@vect/vector-zipper": "^0.4.4",
     "sparkline": "^0.2.0"
   },
   "repository": {

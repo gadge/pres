@@ -25,7 +25,7 @@
     "@pres/enum-key-names": "^0.3.26",
     "@pres/util-helpers": "^0.3.26",
     "@pres/util-sgr-attr": "^0.3.26",
-    "@spare/table-padder": "^0.11.20",
+    "@spare/table-padder": "^0.11.22",
     "@texting/charset-ansi": "^0.0.12",
     "@texting/enum-chars": "^0.0.12",
     "@typen/enum-data-types": "^0.1.17",

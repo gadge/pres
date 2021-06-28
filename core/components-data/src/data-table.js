@@ -61,7 +61,8 @@ export class DataTable extends Box {
     this.rows.height = this.height - 4
     Box.prototype.render.call(this)
   }
-  setData(table) {
+  setData(table) { this.update(table) }
+  update(table) {
     const self = this
     let head = mapperVector(table.head ?? table.headers, String),
         rows = mapperMatrix(table.rows ?? table.data, String)

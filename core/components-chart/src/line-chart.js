@@ -87,7 +87,8 @@ export class LineChart extends Canvas {
     context.lineTo(this.canvW, this.originY)
     context.stroke()
   }
-  setData(seriesCollection) {
+  setData(seriesCollection) { return this.update(seriesCollection) }
+  update(seriesCollection) {
     if (!this.context) throw 'error: canvas context does not exist. setData() for line charts must be called after the chart has been added to the screen via screen.append()'
     seriesCollection = this.seriesCollection = Array.isArray(seriesCollection) ? seriesCollection : [ seriesCollection ]
     const { padds, ticks, labels, context } = this
