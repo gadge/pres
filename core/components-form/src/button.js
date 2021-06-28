@@ -5,20 +5,20 @@
  */
 
 import { CLICK, KEYPRESS, PRESS, } from '@pres/enum-events'
-import { ENTER, SPACE, }           from '@pres/enum-key-names'
+import { ENTER, RETURN, SPACE, }   from '@pres/enum-key-names'
 import { Input }                   from './input'
 
 export class Button extends Input {
-  /**
-   * Button
-   */
   constructor(options = {}) {
     if (!options.sku) options.sku = 'button'
     if (options.autoFocus == null) options.autoFocus = false
     super(options)
     const self = this
     // if (!(this instanceof Node)) return new Button(options)
-    this.on(KEYPRESS, (ch, key) => { if (key.name === ENTER || key.name === SPACE) return self.press() })
+    this.on(KEYPRESS, (ch, key) => {
+      const name = key.name
+      if (name === ENTER || name === SPACE || name === RETURN) return self.press()
+    })
     if (this.options.mouse) { this.on(CLICK, () => self.press()) }
     this.type = 'button'
   }
