@@ -1,9 +1,9 @@
+import { roundBound }      from '@aryth/bound'
 import { bound }           from '@aryth/bound-matrix'
 import { abbr as abbrNum } from '@aryth/math'
 import { niceScale }       from '@aryth/nice-scale'
 import { OBJECT }          from '@typen/enum-object-types'
 import { nullish }         from '@typen/nullish'
-import { roundBound }      from './roundBound'
 
 const boundMatrix = bound.bind({ dif: false })
 
