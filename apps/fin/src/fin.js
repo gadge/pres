@@ -9,21 +9,25 @@ const screen = Pres.screen({
   title: 'Leagyun Financial Dashboard'
 })
 
-const grid = Pres.grid({ rows: 12, cols: 12, screen: screen }) // margin: { t: 4, b: 4, l: 4, r: 4 },
-const { top, bottom, left, right, width, height } = grid
-console.log('grid', { top, bottom, left, right, width, height })
+const page1 = Pres.page({ rows: 12, cols: 12, sup: screen }) // margin: { t: 4, b: 4, l: 4, r: 4 },
 const lineChartCollection = {
-  A1: grid.add(0, 0, 4, 4, Pres.lineChart, { label: 'S&P 500', showLegend: true }),
-  B1: grid.add(0, 4, 4, 4, Pres.lineChart, { label: 'Dow Jones', showLegend: true }),
-  C1: grid.add(0, 8, 4, 4, Pres.lineChart, { label: 'Nasdaq', showLegend: true }),
-  A2: grid.add(4, 0, 4, 4, Pres.lineChart, { label: 'Shanghai', showLegend: true }),
-  B2: grid.add(4, 4, 4, 4, Pres.lineChart, { label: 'FTSE', showLegend: true }),
-  C2: grid.add(4, 8, 4, 4, Pres.lineChart, { label: 'Hang Seng', showLegend: true }),
-  A3: grid.add(8, 0, 4, 4, Pres.lineChart, { label: 'Nikkei', showLegend: true }),
-  B3: grid.add(8, 4, 4, 4, Pres.lineChart, { label: 'Euronext', showLegend: true }),
-  C3: grid.add(8, 8, 4, 4, Pres.lineChart, { label: 'Seoul', showLegend: true }),
+  A1: page1.add(0, 0, 4, 4, Pres.lineChart, { label: 'S&P 500', showLegend: true }),
+  B1: page1.add(0, 4, 4, 4, Pres.lineChart, { label: 'Dow Jones', showLegend: true }),
+  C1: page1.add(0, 8, 4, 4, Pres.lineChart, { label: 'Nasdaq', showLegend: true }),
+  A2: page1.add(4, 0, 4, 4, Pres.lineChart, { label: 'Shanghai', showLegend: true }),
+  B2: page1.add(4, 4, 4, 4, Pres.lineChart, { label: 'FTSE', showLegend: true }),
+  C2: page1.add(4, 8, 4, 4, Pres.lineChart, { label: 'Hang Seng', showLegend: true }),
+  A3: page1.add(8, 0, 4, 4, Pres.lineChart, { label: 'Nikkei', showLegend: true }),
+  B3: page1.add(8, 4, 4, 4, Pres.lineChart, { label: 'Euronext', showLegend: true }),
+  C3: page1.add(8, 8, 4, 4, Pres.lineChart, { label: 'Seoul', showLegend: true }),
 }
-
+// const page2 = Pres.page({ rows: 12, cols: 12, sup: screen }) // margin: { t: 4, b: 4, l: 4, r: 4 },
+// const lineChartCollection2 = {
+//   A1: page2.add(0, 0, 6, 6, Pres.lineChart, { label: 'S&P 500', showLegend: true }),
+//   B1: page2.add(0, 6, 6, 6, Pres.lineChart, { label: 'Dow Jones', showLegend: true }),
+//   C1: page2.add(6, 0, 6, 6, Pres.lineChart, { label: 'Nasdaq', showLegend: true }),
+//   A2: page2.add(6, 6, 6, 6, Pres.lineChart, { label: 'Shanghai', showLegend: true }),
+// }
 const form = Pres.form({
   sup: screen,
   top: 0,
@@ -136,7 +140,8 @@ screen.on(RESIZE, () => {
 
 screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
 
-export async function init() {
+
+const renderPage1 = async () => {
   const A1 = new MarketWatch(lineChartCollection.A1, 'sp500')
   const B1 = new MarketWatch(lineChartCollection.B1, 'dowJones')
   const C1 = new MarketWatch(lineChartCollection.C1, 'nasdaq')
@@ -158,6 +163,10 @@ export async function init() {
     B3.run(),
     C3.run(),
   ])
+}
+
+export async function init() {
+  await renderPage1()
 }
 
 process.on(UNCAUGHT_EXCEPTION, err => {

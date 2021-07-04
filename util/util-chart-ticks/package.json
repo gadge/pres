@@ -1,7 +1,7 @@
 {
   "name": "@pres/util-chart-ticks",
   "version": "0.3.28",
-  "description": "Tick class for pres charting",
+  "description": "Ticks class for pres charting",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "files": [
@@ -15,6 +15,7 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
+    "@aryth/bound": "^0.3.23",
     "@aryth/bound-matrix": "^0.3.23",
     "@aryth/math": "^0.3.23",
     "@aryth/nice-scale": "^0.3.23",

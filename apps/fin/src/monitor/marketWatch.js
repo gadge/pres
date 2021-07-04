@@ -1,13 +1,13 @@
 import { Table }            from '@analys/table'
+import { roundBound }       from '@aryth/bound'
 import { bound }            from '@aryth/bound-vector'
-import { intExpon }         from '@aryth/math'
 import { flopGenerator }    from '@aryth/rand'
 import { MarketIndexes }    from '@morpont/market-indexes-fmp'
 import { Grey }             from '@palett/cards'
 import { camelToSnake }     from '@texting/phrasing'
 import { dateToYmd }        from '@valjoux/convert'
 import { shiftDay }         from '@valjoux/date-shift'
-import { Escape }      from '@valjoux/linger'
+import { Escape }           from '@valjoux/linger'
 import { unwind }           from '@vect/entries-unwind'
 import APIKEY               from '../../../../local/fmp.apikey.json'
 import { COLOR_COLLECTION } from '../../assets/COLOR_COLLECTION'
@@ -59,13 +59,3 @@ export class MarketWatch extends Escape {
     this.chart.screen.render()
   }
 }
-
-export function roundBound({ min, max }) {
-  const magMin = 10 ** ( intExpon(min) - 1 )
-  const magMax = 10 ** ( intExpon(max) - 1 )
-  return {
-    min: Math.floor(min / magMin) * magMin,
-    max: Math.ceil(max / magMax) * magMax,
-  }
-}
-

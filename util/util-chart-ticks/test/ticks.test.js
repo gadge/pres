@@ -12,8 +12,8 @@ const candidates = {
 
 for (const [ key, seriesCollection ] of Object.entries(candidates)) {
   const ticks = Ticks.build({ abbr: true, extend: 1 })
-  ticks.setTicks(seriesCollection)
+  ticks.setup(seriesCollection)
   const ticks2 = Ticks.build({ abbr: true })
-  ticks2.setTicks(seriesCollection)
+  ticks2.setup(seriesCollection)
   xr(key).ticks(decoFlat(ticks.toObject())).noExtend(decoFlat(ticks2.toObject())) |> logger
 }
