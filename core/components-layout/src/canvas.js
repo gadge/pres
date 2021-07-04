@@ -5,9 +5,7 @@ import { Context as InnerCanvas } from '@pres/util-drawille-canvas'
 export class Canvas extends Box {
   constructor(options = {}, canvasType) {
     if (!options.sku) options.sku = 'canvas'
-    // if (!(this instanceof Node)) return new Canvas(options)
-    // this.options = options
-    super(options) // Mixin.assign(this, new Box(options)) // Box.call(this, options)
+    super(options)
     this.on(ATTACH, () => {
       this.context = new InnerCanvas(this.canvW, this.canvH, canvasType)
       if (this.options.data) this.setData(this.options.data)

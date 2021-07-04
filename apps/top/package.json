@@ -20,7 +20,7 @@
     "lint": "prettier --single-quote --trailing-comma es5 --write 'src/**/*.js'"
   },
   "dependencies": {
-    "@aryth/math": "^0.3.22",
+    "@aryth/math": "^0.3.23",
     "@palett/cards": "^0.8.16",
     "@pres/enum-events": "^0.3.28",
     "@pres/terminal-interface": "^0.3.28",

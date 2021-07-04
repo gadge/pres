@@ -19,9 +19,10 @@
   },
   "dependencies": {
     "@analys/table": "^0.5.2",
-    "@aryth/bound-vector": "^0.3.22",
-    "@aryth/math": "^0.3.22",
-    "@aryth/rand": "^0.3.22",
+    "@aryth/bound": "^0.3.23",
+    "@aryth/bound-vector": "^0.3.23",
+    "@aryth/math": "^0.3.23",
+    "@aryth/rand": "^0.3.23",
     "@morpont/market-indexes-fmp": "^0.0.7",
     "@palett/cards": "^0.8.16",
     "@pres/enum-events": "^0.3.28",

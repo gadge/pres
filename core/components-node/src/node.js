@@ -83,59 +83,59 @@ export class Node extends EventEmitter {
   get(key, defaultValue) { return key in this.data ? this.data[key] : defaultValue }
   set(key, value) { return this.data[key] = value }
 
-  insert(element, pos) {
+  insert(node, index) {
     const self = this
-    if (element?.screen !== this.screen) throw new Error('Cannot switch a node\'s screen.')
-    element.detach()
-    element.sup = this
-    element.screen = this.screen
-    pos <= 0 ? this.sub.unshift(element) : pos < this.sub.length ? this.sub.splice(pos, 0, element) : this.sub.push(element)
-    element.emit(REPARENT, this)
-    this.emit(ADOPT, element)
-    function attachEmitter(element) {
-      const detachDiff = element.detached !== self.detached
-      element.detached = self.detached
-      if (detachDiff) element.emit(ATTACH)
-      element.sub.forEach(attachEmitter)
+    if (node?.screen !== this.screen) throw new Error('Cannot switch a node\'s screen.')
+    node.detach()
+    node.sup = this
+    node.screen = this.screen
+    index <= 0 ? this.sub.unshift(node) : index < this.sub.length ? this.sub.splice(index, 0, node) : this.sub.push(node)
+    node.emit(REPARENT, this)
+    this.emit(ADOPT, node)
+    function attachEmitter(el) {
+      const detachDiff = el.detached !== self.detached
+      el.detached = self.detached
+      if (detachDiff) el.emit(ATTACH)
+      el.sub.forEach(attachEmitter)
     }
-    attachEmitter(element)
-    if (!this.screen.focused) this.screen.focused = element
+    attachEmitter(node)
+    if (!this.screen.focused) this.screen.focused = node
   }
-  prepend(element) { this.insert(element, 0) }
-  append(element) { this.insert(element, this.sub.length) }
-  insertBefore(element, another) {
+  prepend(node) { this.insert(node, 0) }
+  append(node) { this.insert(node, this.sub.length) }
+  insertBefore(node, another) {
     const i = this.sub.indexOf(another)
-    if (~i) this.insert(element, i)
+    if (~i) this.insert(node, i)
   }
-  insertAfter(element, another) {
+  insertAfter(node, another) {
     const i = this.sub.indexOf(another)
-    if (~i) this.insert(element, i + 1)
+    if (~i) this.insert(node, i + 1)
   }
-  remove(element) {
-    if (element.sup !== this) return void 0
-    let index = this.sub.indexOf(element)
+  remove(node) {
+    if (node.sup !== this) return void 0
+    let index = this.sub.indexOf(node)
     if (!~index) return void 0
 
-    element.clearPos()
-    element.sup = null
+    node.clearPos()
+    node.sup = null
     this.sub.splice(index, 1)
 
-    let indexClick = this.screen.clickable.indexOf(element)
+    let indexClick = this.screen.clickable.indexOf(node)
     if (~indexClick) this.screen.clickable.splice(indexClick, 1)
 
-    let indexKeyed = this.screen.keyable.indexOf(element)
+    let indexKeyed = this.screen.keyable.indexOf(node)
     if (~indexKeyed) this.screen.keyable.splice(indexKeyed, 1)
 
-    element.emit(REPARENT, null)
-    this.emit(REMOVE, element)
+    node.emit(REPARENT, null)
+    this.emit(REMOVE, node)
     function detachEmitter(el) {
       const attached = el.detached !== true
       el.detached = true
       if (attached) el.emit(DETACH)
       el.sub.forEach(detachEmitter)
     }
-    detachEmitter(element)
-    if (this.screen.focused === element) this.screen.rewindFocus()
+    detachEmitter(node)
+    if (this.screen.focused === node) this.screen.rewindFocus()
   }
   detach() { return this.sup?.remove(this) }
   free() { }

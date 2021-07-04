@@ -3,6 +3,7 @@ import { Box }              from '@pres/components-core'
 import { assignDeep }       from '@pres/util-helpers'
 
 export class Page extends Box {
+  elements = []
   constructor(options) {
     options.sku = 'page'
     options.height = '100%'
@@ -34,7 +35,18 @@ export class Page extends Box {
     // console.log('[coord]', `(${ p.top },${ p.left })`, '[size]', `(${ p.height },${ p.width })`)
     p.border = options.hideBorder ?? this.hideBorder ? null : p.border ?? this.unit.border
     p.inGrid = true
-    p.sup = this
-    return component(p)
+    // p.sup = this
+    this.elements.push({ fn: component, arg: p })
+    // const element = component(p)
+    // this.append(element)
+    // return element
+  }
+  draw() {
+    this.clear()
+    for (let { fn, arg } of this.elements) this.append(fn(arg))
+  }
+  clear() {
+    let i = this.sub.length
+    while (i--) this.sub[i].detach()
   }
 }
