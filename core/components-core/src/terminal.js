@@ -4,13 +4,11 @@
  * https://github.com/chjj/blessed
  */
 
-import {
-  BLUR, DATA, DESTROY, EXIT, FOCUS, KEYPRESS, MOUSE, MOUSEDOWN, PASSTHROUGH, RENDER, RESIZE, SCROLL, TITLE,
-}                   from '@pres/enum-events'
-import { nextTick } from '@pres/util-helpers'
-import { Box }      from '../core/box'
-// import pty     from 'pty.js'
-// import term    from 'term.js'
+import { BLUR, DATA, DESTROY, FOCUS, KEYPRESS, MOUSE, MOUSEDOWN, PASSTHROUGH, RENDER, RESIZE, SCROLL, TITLE, } from '@pres/enum-events'
+import { nextTick }                                                                                            from '@pres/util-helpers'
+import term                                                                                                    from 'term.js'
+import { Box }                                                                                                 from '../core/box'
+
 
 export class Terminal extends Box {
   setScroll = this.scrollTo
@@ -70,7 +68,7 @@ export class Terminal extends Box {
     }
     element.parentNode = element
     element.offsetParent = element
-    this.term = require('term.js')({
+    this.term = term({
       termName: this.termName,
       cols: this.width - this.intW,
       rows: this.height - this.intH,
@@ -149,19 +147,19 @@ export class Terminal extends Box {
     this.once(RENDER, () => self.term.resize(self.width - self.intW, self.height - self.intH))
     this.on(DESTROY, () => { self.kill(), self.screen.program.input.removeListener(DATA, self._onData) })
     if (this.handler) { return }
-    this.pty = require('pty.js').fork(this.shell, this.args, {
-      name: this.termName,
-      cols: this.width - this.intW,
-      rows: this.height - this.intH,
-      cwd: process.env.HOME,
-      env: this.options.env || process.env
-    })
+    // this.pty = fork(this.shell, this.args, {
+    //   name: this.termName,
+    //   cols: this.width - this.intW,
+    //   rows: this.height - this.intH,
+    //   cwd: process.env.HOME,
+    //   env: this.options.env || process.env
+    // })
     this.on(RESIZE, () => nextTick(() => {
       try { self.pty.resize(self.width - self.intW, self.height - self.intH) } catch (e) { }
     }))
     this.handler = data => { self.pty.write(data), self.screen.render() }
-    this.pty.on(DATA, data => { self.write(data), self.screen.render() })
-    this.pty.on(EXIT, code => { self.emit(EXIT, code || null) })
+    // this.pty.on(DATA, data => { self.write(data), self.screen.render() })
+    // this.pty.on(EXIT, code => { self.emit(EXIT, code || null) })
     this.onScreenEvent(KEYPRESS, () => self.screen.render())
     this.screen._listenKeys(this)
   }

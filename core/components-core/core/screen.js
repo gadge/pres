@@ -481,7 +481,7 @@ export class Screen extends Node {
       if (!this.program.cursorHidden) { pre += this.tput.civis(), post += this.tput.cnorm() }
       // this.program.flush();
       // this.program.write(pre + main + post);
-      this.program._write(pre + main + post)
+      this.program.writeOff(pre + main + post)
     }
     // this.emit('draw');
   }
@@ -602,7 +602,7 @@ export class Screen extends Node {
     this.program.hideCursor()
     this.program.cup(0, 0)
     // We need this for tmux now:
-    if (this.tput.strings.ena_acs) { this.program._write(this.tput.enacs())}
+    if (this.tput.strings.ena_acs) { this.program.writeOff(this.tput.enacs())}
     this.alloc()
   }
   leave() {
