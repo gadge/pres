@@ -1,7 +1,7 @@
 import { TerminalInterface as blessed } from '@pres/terminal-interface'
 import * as contrib                     from '../../../vendor/blessed-contrib'
 
-const screen = blessed.screen()
+const screen = Screen.build()
 const spark = contrib.sparkline(
   {
     label: 'Sparkline',

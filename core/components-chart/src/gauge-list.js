@@ -1,5 +1,6 @@
-import { Canvas } from '@pres/components-layout'
-import { ATTACH } from '@pres/enum-events'
+import { Canvas }   from '@pres/components-layout'
+import { ATTACH }   from '@pres/enum-events'
+import { AnsiTerm } from '../utils/AnsiTerm'
 
 export class GaugeList extends Canvas {
   constructor(options = {}) {
@@ -11,7 +12,7 @@ export class GaugeList extends Canvas {
     options.gaugeSpacing = options.gaugeSpacing || 0
     options.gaugeHeight = options.gaugeHeight || 1
     if (!options.sku) options.sku = 'gauge'
-    super(options, require('ansi-term'))
+    super(options, AnsiTerm)
     const self = this
     this.on(ATTACH, function () {
       const gauges = this.gauges = self.options.gauges
@@ -19,9 +20,9 @@ export class GaugeList extends Canvas {
     })
     this.type = 'gauge'
   }
-  static build(options) { return new GaugeList(options) }
   get canvH() { return this.height }
   get canvW() { return this.width - 2 }
+  static build(options) { return new GaugeList(options) }
   setData() { }
   setGauges(gauges) {
     if (!this.context) {

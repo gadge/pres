@@ -8,7 +8,7 @@ export class BarChart extends Canvas {
   constructor(options = {}) {
     if (!options.sku) options.sku = 'bar-chart'
     // if (!(this instanceof Node)) return new BarChart(options)
-    super(options, require('ansi-term'))
+    super(options, ansi_term)
     const self = this
     this.bars = this.options.bars = Bars.build(options.bars ?? options)
     this.options.xOffset = this.options.xOffset ?? 5
@@ -18,12 +18,12 @@ export class BarChart extends Canvas {
     // console.log('>>> BarChart this.options')
     // console.log(this.options)
   }
-  static build(options) { return new BarChart(options) }
   get canvH() { return this.height }
   get canvW() { return this.width - 2 }
   get labelY() { return this.canvH - 3 }
   get valueY() { return this.canvH - 4 }
   get barY() { return this.canvH - 5 }
+  static build(options) { return new BarChart(options) }
   setData(series) {
     if (!this.context) throw 'error: canvas context does not exist. setData() for bar charts must be called after the chart has been added to the screen via screen.append()'
     this.clear()

@@ -19,7 +19,6 @@ export class DonutChart extends Canvas {
     this.on(ATTACH, () => { self.setData(self.options.data) })
     this.type = 'donut'
   }
-  static build(options) { return new DonutChart(options) }
   get canvH() {
     let canvH = ( this.height << 2 ) - 12
     if (canvH % 4 !== 1) canvH += ( canvH % 4 )
@@ -30,6 +29,7 @@ export class DonutChart extends Canvas {
     if (canvW % 2 === 1) canvW--
     return canvW
   }
+  static build(options) { return new DonutChart(options) }
   setData(data) { this.update(data) }
   update(data) {
     if (!this.context) throw 'error: canvas context does not exist. setData() for line charts must be called after the chart has been added to the screen via screen.append()'

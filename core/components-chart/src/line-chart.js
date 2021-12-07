@@ -28,17 +28,17 @@ export class LineChart extends Canvas {
     this.on(ATTACH, () => { if (this.seriesCollection) { this.setData(this.seriesCollection) } })
     this.type = 'line-chart'
   }
-  static build(options) { return new LineChart(options) }
   get originY() { return this.canvH - this.padds.y }
   get originX() { return this.canvW - this.padds.x }
+  get canvH() { return ( this.height << 2 ) - 8}
+  get canvW() { return ( this.width << 1 ) - 12 }
+  static build(options) { return new LineChart(options) }
   coordX(val) { return ( this.originX / this.labels.length ) * val + ( this.padds.x * 1.0 ) + 2 }
   coordY(val) {
     let res = this.originY - ( this.originY / this.ticks.dif ) * ( val - this.ticks.min )
     res -= 2 //to separate the baseline and the data line to separate chars so canvas will show separate colors
     return res
   }
-  get canvH() { return ( this.height << 2 ) - 8}
-  get canvW() { return ( this.width << 1 ) - 12 }
   labelWidth(labels) { return maxBy(labels, x => x?.length) ?? 0 }
   drawLegend(seriesCollection) {
     if (!this.options.showLegend) return

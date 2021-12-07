@@ -1,6 +1,7 @@
-import { Canvas } from '@pres/components-layout'
-import { ATTACH } from '@pres/enum-events'
-import { NUM }    from '@typen/enum-data-types'
+import { Canvas }   from '@pres/components-layout'
+import { ATTACH }   from '@pres/enum-events'
+import { NUM }      from '@typen/enum-data-types'
+import { AnsiTerm } from '../utils/AnsiTerm'
 
 export class Gauge extends Canvas {
   constructor(options = {}) {
@@ -10,7 +11,7 @@ export class Gauge extends Canvas {
     options.data = options.data || []
     options.showLabel = options.showLabel !== false
     if (!options.sku) options.sku = 'gauge'
-    super(options, require('ansi-term'))
+    super(options, AnsiTerm)
     const self = this
     this.on(ATTACH, function () {
       if (self.options.stack) {
@@ -24,9 +25,9 @@ export class Gauge extends Canvas {
     })
     this.type = 'gauge'
   }
-  static build(options) { return new Gauge(options) }
   get canvH() { return this.height }
   get canvW() { return this.width - 2 }
+  static build(options) { return new Gauge(options) }
   setData(data) {
     return data?.length ? this.setStack(data)
       : typeof data === NUM ? this.setPercent(data)

@@ -1,12 +1,13 @@
-import { Box }    from '@pres/components-core'
-import { Canvas } from '@pres/components-layout'
-import { ATTACH } from '@pres/enum-events'
-import * as utils from '@pres/util-helpers'
+import { Box }      from '@pres/components-core'
+import { Canvas }   from '@pres/components-layout'
+import { ATTACH }   from '@pres/enum-events'
+import * as utils   from '@pres/util-helpers'
+import { AnsiTerm } from '../utils/AnsiTerm'
 
 export class StackedBarChart extends Canvas {
   constructor(options = {}) {
     if (!options.sku) options.sku = 'bar-chart'
-    super(options, require('ansi-term'))
+    super(options, AnsiTerm)
     const self = this
     this.options.barWidth = this.options.barWidth || 6
     this.options.barSpacing = this.options.barSpacing || 9
@@ -18,9 +19,9 @@ export class StackedBarChart extends Canvas {
     this.on(ATTACH, () => { if (self.options.data) self.setData(self.options.data) })
     this.type = 'bar-chart'
   }
-  static build(options) { return new StackedBarChart(options) }
   get canvH() { return this.height }
   get canvW() { return this.width - 2 }
+  static build(options) { return new StackedBarChart(options) }
   getSummedBars(bars) {
     const res = []
     bars.forEach(function (stackedValues) {

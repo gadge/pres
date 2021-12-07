@@ -1,9 +1,10 @@
-import { Cards }            from '@palett/cards'
-import { toner }            from '@palett/toner-hex'
-import { blessed, contrib } from '@pres/terminal-interface'
-import { hexToRGB }         from '@pres/util-blessed-colors'
+import { Cards }      from '@palett/cards'
+import { toner }      from '@palett/toner-hex'
+import { Screen }     from '@pres/components-core'
+import { hexToRGB }   from '@pres/util-blessed-colors'
+import { DonutChart } from '../index'
 
-const screen = blessed.screen()
+const screen = Screen.build()
 /**
  * DonutChart Options
  self.options.stroke = options.stroke || "magenta"
@@ -12,7 +13,7 @@ const screen = blessed.screen()
  self.options.spacing = options.spacing || 2;
  self.options.yPadding = options.yPadding || 2;
  */
-const donut = contrib.donutChart({
+const donut = DonutChart.build({
   label: 'Test',
   radius: 9,
   arcWidth: 3,
@@ -33,19 +34,19 @@ function updateDonuts() {
   if (count >= 1000) count = 0
   donut.update([
     {
-      percent: parseFloat((pct + 0.00) % 1).toFixed(2),
+      percent: parseFloat(( pct + 0.00 ) % 1).toFixed(2),
       label: 'rcp',
       color: toner(Cards.green.accent_1, 0, 0, count / 10) |> hexToRGB
     }, {
-      percent: parseFloat((pct + 0.25) % 1).toFixed(2),
+      percent: parseFloat(( pct + 0.25 ) % 1).toFixed(2),
       label: 'rcp',
       color: toner(Cards.grey.accent_1, 0, 0, count / 10) |> hexToRGB
     }, {
-      percent: parseFloat((pct + 0.50) % 1).toFixed(2),
+      percent: parseFloat(( pct + 0.50 ) % 1).toFixed(2),
       label: 'rcp',
       color: toner(Cards.red.accent_1, 0, 0, count / 10) |> hexToRGB
     }, {
-      percent: parseFloat((pct + 0.75) % 1).toFixed(2),
+      percent: parseFloat(( pct + 0.75 ) % 1).toFixed(2),
       label: 'web1',
       color: toner(Cards.deepPurple.accent_1, 0, 0, count / 10) |> hexToRGB
     }
