@@ -1,9 +1,9 @@
 import { PRESS, RESET, SUBMIT } from '@pres/enum-events'
-import { blessed }              from '../index'
+import { Button, Form, Screen } from '../index'
 
-const screen = blessed.screen()
+const screen = Screen.build()
 
-const form = blessed.form({
+const form = Form.build({
   sup: screen,
   keys: true,
   left: 0,
@@ -14,7 +14,7 @@ const form = blessed.form({
   content: 'Submit or cancel?'
 })
 
-const submit = blessed.button({
+const submit = Button.build({
   sup: form,
   mouse: true,
   keys: true,
@@ -34,7 +34,7 @@ const submit = blessed.button({
   }
 })
 
-const cancel = blessed.button({
+const cancel = Button.build({
   sup: form,
   mouse: true,
   keys: true,

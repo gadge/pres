@@ -2,9 +2,9 @@ import { blessed }  from '@pres/terminal-interface'
 import fs           from 'fs'
 import * as contrib from '../index'
 
-const screen = blessed.screen()
+const screen = Screen.build()
 //create layout and widgets
-const grid = contrib.grid({ rows: 1, cols: 2, screen: screen })
+const grid = Grid.build({ rows: 1, cols: 2, screen: screen })
 const tree = grid.set(0, 0, 1, 1, contrib.tree, {
   style: { text: "red" },
   template: { lines: true },

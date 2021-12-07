@@ -1,12 +1,10 @@
-import { TI as blessed } from '../index'
-
-const screen = blessed.screen({
-  dump: __dirname + '/logs/term-blessed.log',
+const screen = Screen.build({
+  dump: __dirname + '/logs/term-Log.build',
   smartCSR: true,
   warnings: true
 })
 
-const terminal = blessed.terminal({
+const terminal = Terminal.build({
   sup: screen,
   // cursor: 'line',
   cursorBlink: true,
@@ -32,7 +30,7 @@ terminal.focus()
 
 const term = terminal.term
 
-const screen2 = blessed.screen({
+const screen2 = Screen.build({
   dump: __dirname + '/logs/term-blessed-2.log',
   smartCSR: true,
   warnings: true,
@@ -40,7 +38,7 @@ const screen2 = blessed.screen({
   output: term
 })
 
-const box1 = blessed.box({
+const box1 = Box.build({
   sup: screen2,
   top: 'center',
   left: 'center',

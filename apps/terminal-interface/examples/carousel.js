@@ -1,9 +1,9 @@
 import { blessed } from '@pres/terminal-interface'
 
-const screen = blessed.screen()
+const screen = Screen.build()
 function page1(screen) {
-  const grid = blessed.grid({ rows: 4, cols: 4, screen: screen })
-  const line = grid.set(1, 0, 2, 2, blessed.lineChart, {
+  const grid = Grid.build({ rows: 4, cols: 4, screen: screen })
+  const line = grid.set(1, 0, 2, 2, LineChart.build, {
     style:
       {
         line: "yellow",
@@ -14,8 +14,8 @@ function page1(screen) {
     xPadding: 5,
     label: 'Stocks'
   })
-  const map = grid.set(1, 2, 2, 2, blessed.map, { label: 'Servers Location' })
-  const box = blessed.box({
+  const map = grid.set(1, 2, 2, 2, Map.build, { label: 'Servers Location' })
+  const box = Box.build({
     content: 'click right-left arrows or wait 3 seconds for the next layout in the carousel', top: '80%', left: '10%'
   })
   screen.append(box)
@@ -26,7 +26,7 @@ function page1(screen) {
   line.setData([ lineData ])
 }
 function page2(screen) {
-  const line = blessed.lineChart(
+  const line = LineChart.build(
     {
       width: 80,
       height: 30,
@@ -45,7 +45,7 @@ function page2(screen) {
   } ]
   screen.append(line)
   line.setData(data)
-  const box = blessed.box({
+  const box = Box.build({
     content: 'click right-left arrows or wait 3 seconds for the next layout in the carousel',
     top: '80%',
     left: '10%'
@@ -53,7 +53,7 @@ function page2(screen) {
   screen.append(box)
 }
 screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
-const carousel = blessed.carousel([ page1, page2 ], {
+const carousel = Carousel.build([ page1, page2 ], {
   screen: screen,
   // interval: 3000,
   controlKeys: true

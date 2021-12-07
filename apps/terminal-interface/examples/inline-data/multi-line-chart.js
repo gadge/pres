@@ -1,6 +1,6 @@
 var blessed = require('blessed'),
     contrib = require('../../index'),
-    screen  = blessed.screen(),
+    screen  = Screen.build(),
     line    = contrib.lineChart(
       {
         width: 80,

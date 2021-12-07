@@ -1,6 +1,6 @@
 var blessed  = require('blessed'),
     contrib  = require('../../dist/index.esm'),
-    screen   = blessed.screen(),
+    screen   = Screen.build(),
     chalk    = require('chalk'),
     markdown = contrib.markdown({
       markdown: '# Hello \n blessed-contrib renders markdown using `marked-terminal` ',

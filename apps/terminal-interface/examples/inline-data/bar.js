@@ -1,6 +1,6 @@
 var blessed = require('blessed'),
     contrib = require('../../dist/index.esm'),
-    screen  = blessed.screen(),
+    screen  = Screen.build(),
     bar     = contrib.bar(
       {
         label: 'Server Utilization (%)',

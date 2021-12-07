@@ -1,11 +1,11 @@
 import { blessed }  from '@pres/terminal-interface'
 import * as contrib from '../index'
 
-const screen = blessed.screen()
+const screen = Screen.build()
 //create layout and widgets
 // Create a random color
 const randomColor = () => [ Math.random() * 255, Math.random() * 255, Math.random() * 255 ]
-const grid = contrib.grid({ rows: 12, cols: 12, screen: screen })
+const grid = Grid.build({ rows: 12, cols: 12, screen: screen })
 /**
  * DonutChart Options
  self.options.radius = options.radius || 14; // how wide is it? over 5 is best
@@ -92,7 +92,7 @@ const transactionsLine = grid.set(0, 0, 6, 6, contrib.lineChart, {
   showLegend: true,
   legend: { width: 10 }
 })
-const map = grid.set(6, 0, 6, 6, contrib.map, { label: 'Servers Location' })
+const map = grid.set(6, 0, 6, 6, Map.build, { label: 'Servers Location' })
 const log = grid.set(8, 6, 4, 2, contrib.log, {
   fg: randomColor(),
   selectedFg: randomColor(),

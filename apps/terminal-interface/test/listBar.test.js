@@ -1,15 +1,14 @@
 import { Indigo, LightBlue, Pink, Red } from '@palett/cards'
-import { TI as blessed }                from '../src/terminal-interface'
 
 const auto = false
 
-const screen = blessed.screen({
+const screen = Screen.build({
   dump: __dirname + '/logs/listBar.log',
   autoPadding: auto,
   warnings: true
 })
 
-const box = blessed.box({
+const box = Box.build({
   sup: screen,
   top: 0,
   right: 0,
@@ -19,7 +18,7 @@ const box = blessed.box({
   content: '...'
 })
 
-const bar = blessed.listBar({
+const bar = ListBar.build({
   sup: screen,
   bottom: 0,
   left: 3,

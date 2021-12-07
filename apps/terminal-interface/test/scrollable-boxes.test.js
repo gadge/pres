@@ -1,14 +1,13 @@
-import { Cards }   from '@palett/cards'
-import { blessed } from '../index'
+import { Cards } from '@palett/cards'
 
-const screen = blessed.screen({
+const screen = Screen.build({
   debug: true,
   dump: __dirname + '/logs/scrollable-boxes.log',
   smartCSR: true,
   warnings: true
 })
 
-const box = blessed.scrollableBox({
+const box = ScrollableBox.build({
   parent: screen,
   //padding: 2,
   mouse: true,
@@ -26,7 +25,7 @@ const box = blessed.scrollableBox({
   scrollbar: { ch: ' ', inverse: true }
 })
 
-const text = blessed.box({
+const text = Box.build({
   parent: box,
   content: 'hello1\nhello2\nhello3\nhello4',
   padding: 2,
@@ -37,7 +36,7 @@ const text = blessed.box({
   height: 6
 })
 
-const text2 = blessed.box({
+const text2 = Box.build({
   parent: box,
   content: 'world',
   padding: 1,
@@ -48,7 +47,7 @@ const text2 = blessed.box({
   height: 3
 })
 
-const box2 = blessed.box({
+const box2 = Box.build({
   parent: box,
   scrollable: true,
   content: 'foo-one\nfoo-two\nfoo-three',
@@ -65,7 +64,7 @@ const box2 = blessed.box({
   // scrollbar: { ch: ' ' }
 })
 
-const box3 = blessed.box({
+const box3 = Box.build({
   parent: box2,
   scrollable: true,
   //content: 'foo1\nfoo2\nfoo3\nfoo4\nfoo5\nfoo6\nfoo7\nf008',

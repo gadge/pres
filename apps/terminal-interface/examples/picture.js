@@ -1,7 +1,7 @@
 import { blessed }  from '@pres/terminal-interface'
 import * as contrib from '../index'
 
-const screen = blessed.screen()
+const screen = Screen.build()
 const pic = contrib.picture(
   {
     file: __dirname + '/media/flower.png',

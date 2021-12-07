@@ -1,7 +1,7 @@
 import { blessed }  from '@pres/terminal-interface'
 import * as contrib from '../index'
 
-const screen = blessed.screen()
+const screen = Screen.build()
 /**
  * DonutChart Options
  self.options.stroke = options.stroke || "magenta"

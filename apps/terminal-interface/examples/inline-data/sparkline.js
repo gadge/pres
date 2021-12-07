@@ -1,6 +1,6 @@
 var blessed = require('blessed'),
     contrib = require('../../dist/index.esm'),
-    screen  = blessed.screen()
+    screen  = Screen.build()
 var spark = contrib.sparkline(
   {
     label: 'Sparkline',

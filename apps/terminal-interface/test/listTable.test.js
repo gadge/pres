@@ -1,9 +1,8 @@
 // import { TI as blessed } from '../src/terminal-interface'
-import * as blessed from '../../../vendor/blessed-classic'
 
 console.log('listTable.test')
 
-const screen = blessed.screen({
+const screen = Screen.build({
   dump: __dirname + '/logs/listTable.log',
   autoPadding: false,
   fullUnicode: true,
@@ -14,7 +13,7 @@ const DU = '杜'
 const JUAN = '鹃'
 
 /*
-var box = blessed.box({
+var box = Box.build({
   sup: screen,
   top: 'center',
   left: 'center',
@@ -31,7 +30,7 @@ var box = blessed.box({
 });
 */
 
-const table = blessed.listTable({
+const table = ListTable.build({
   //sup: screen,
   top: 'center',
   left: 'center',

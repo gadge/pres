@@ -1,6 +1,6 @@
 var blessed = require('blessed'),
     contrib = require('../../dist/index.esm'),
-    screen  = blessed.screen(),
+    screen  = Screen.build(),
     donut   = contrib.donut(
       {
         data: [ { color: 'red', percent: '50', label: 'a' }, {

@@ -1,14 +1,11 @@
-import { TI as blessed } from '../index'
-
-
-const screen = blessed.screen({
+const screen = Screen.build({
   dump: __dirname + '/logs/logger.log',
   smartCSR: true,
   autoPadding: false,
   warnings: true
 })
 
-const logger = blessed.log({
+const logger = Log.build({
   sup: screen,
   top: 'center',
   left: 'center',

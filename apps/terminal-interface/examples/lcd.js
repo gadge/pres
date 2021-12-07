@@ -1,7 +1,7 @@
 import { blessed }  from '@pres/terminal-interface'
 import * as contrib from '../index'
 
-const screen = blessed.screen()
+const screen = Screen.build()
 /*
 //these options need to be modified epending on the resulting positioning/size
   options.segmentWidth = options.segmentWidth || 0.06; // how wide are the segments in % so 50% = 0.5

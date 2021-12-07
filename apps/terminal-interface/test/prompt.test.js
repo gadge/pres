@@ -1,6 +1,4 @@
-import { blessed } from '@pres/terminal-interface'
-
-const screen = blessed.screen({
+const screen = Screen.build({
   tput: true,
   smartCSR: true,
   dump: __dirname + '/logs/prompt.log',
@@ -8,7 +6,7 @@ const screen = blessed.screen({
   warnings: true
 })
 
-const prompt = blessed.prompt({
+const prompt = Prompt.build({
   parent: screen,
   border: 'line',
   height: 'shrink',
@@ -21,7 +19,7 @@ const prompt = blessed.prompt({
   vi: true
 })
 
-const question = blessed.question({
+const question = Question.build({
   parent: screen,
   border: 'line',
   height: 'shrink',
@@ -34,7 +32,7 @@ const question = blessed.question({
   vi: true
 })
 
-const msg = blessed.message({
+const msg = Message.build({
   parent: screen,
   border: 'line',
   height: 'shrink',
@@ -48,7 +46,7 @@ const msg = blessed.message({
   vi: true
 })
 
-const loader = blessed.loading({
+const loader = Loading.build({
   parent: screen,
   border: 'line',
   height: 'shrink',

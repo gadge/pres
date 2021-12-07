@@ -1,7 +1,6 @@
-import { Blue, Lime, Red, Teal } from '@palett/cards'
-import { TI as blessed }         from '../index'
+import { Teal } from '@palett/cards'
 
-const screen = blessed.screen({
+const screen = Screen.build({
   dump: __dirname + '/logs/table.log',
   autoPadding: false,
   fullUnicode: true,
@@ -11,7 +10,7 @@ const screen = blessed.screen({
 const DU = '杜'
 const JUAN = '鹃'
 
-const table = blessed.table({
+const table = Table.build({
   //sup: screen,
   top: 'center',
   left: 'center',
