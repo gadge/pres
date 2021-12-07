@@ -219,7 +219,7 @@ export class Program extends EventEmitter {
   term(is) { return this.terminal.indexOf(is) === 0 }
   listen() {
     const self = this
-    // console.log(`>> [this.input._presInput = ${this.input._presInput}]`)
+    // console.log(`>> [this.input.listenCount = ${this.input.listenCount}]`)
     // Potentially reset window title on exit:
     // if (!this.isRxvt) {
     //   if (!this.isVTE) this.setTitleModeFeature(3);
@@ -229,12 +229,12 @@ export class Program extends EventEmitter {
     //   });
     // }
     // Listen for keys/mouse on input
-    if (!this.input._presInput) {
-      this.input._presInput = 1
+    if (!this.input.listenCount) {
+      this.input.listenCount = 1
       this.#listenInput()
     }
     else {
-      this.input._presInput++
+      this.input.listenCount++
     }
     this.on(NEW_LISTENER, this._newHandler = function fn(type) {
       if (type === KEYPRESS || type === MOUSE) {
@@ -247,8 +247,8 @@ export class Program extends EventEmitter {
     })
     this.on(NEW_LISTENER, function fn(type) { if (type === MOUSE) { self.removeListener(NEW_LISTENER, fn), self.bindMouse() } })
     // Listen for resize on output
-    if (!this.output._presOutput) { (this.output._presOutput = 1), this.#listenOutput() }
-    else { this.output._presOutput++ }
+    if (!this.output.listenCount) { (this.output.listenCount = 1), this.#listenOutput() }
+    else { this.output.listenCount++ }
   }
   #listenInput() {
     const self = this
@@ -317,9 +317,9 @@ export class Program extends EventEmitter {
         delete ProgramCollection._exitHandler.bind(ProgramCollection)
         delete ProgramCollection._bound
       }
-      this.input._presInput--
-      this.output._presOutput--
-      if (this.input._presInput === 0) {
+      this.input.listenCount--
+      this.output.listenCount--
+      if (this.input.listenCount === 0) {
         this.input.removeListener(KEYPRESS, this.input._keypressHandler)
         this.input.removeListener(DATA, this.input._dataHandler)
         delete this.input._keypressHandler
@@ -329,7 +329,7 @@ export class Program extends EventEmitter {
           if (!this.input.destroyed) { this.input.pause() }
         }
       }
-      if (this.output._presOutput === 0) {
+      if (this.output.listenCount === 0) {
         this.output.removeListener(RESIZE, this.output._resizeHandler)
         delete this.output._resizeHandler
       }

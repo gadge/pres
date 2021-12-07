@@ -165,7 +165,7 @@ export class IO extends EventEmitter {
   term(is) { return this.terminal.indexOf(is) === 0 }
   listen() {
     const self = this
-    // console.log(`>> [this.input._presInput = ${this.input._presInput}]`)
+    // console.log(`>> [this.input.listenCount = ${this.input.listenCount}]`)
     // Potentially reset window title on exit:
     // if (!this.isRxvt) {
     //   if (!this.isVTE) this.setTitleModeFeature(3);
@@ -175,12 +175,12 @@ export class IO extends EventEmitter {
     //   });
     // }
     // Listen for keys/mouse on input
-    if (!this.input._presInput) {
-      this.input._presInput = 1
+    if (!this.input.listenCount) {
+      this.input.listenCount = 1
       this.#listenInput()
     }
     else {
-      this.input._presInput++
+      this.input.listenCount++
     }
     this.on(NEW_LISTENER, this._newHandler = function fn(type) {
       if (type === KEYPRESS || type === MOUSE) {
@@ -193,8 +193,8 @@ export class IO extends EventEmitter {
     })
     this.on(NEW_LISTENER, function handler(type) { if (type === MOUSE) { self.removeListener(NEW_LISTENER, handler), self.bindMouse() } })
     // Listen for resize on output
-    if (!this.output._presOutput) { ( this.output._presOutput = 1 ), this.#listenOutput() }
-    else { this.output._presOutput++ }
+    if (!this.output.listenCount) { ( this.output.listenCount = 1 ), this.#listenOutput() }
+    else { this.output.listenCount++ }
     console.log(`>> [program.listen] [ ${this.eventNames()} ]`)
   }
   #listenInput() {

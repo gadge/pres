@@ -39,6 +39,7 @@ export class Program extends IO {
   #boundMouse = false
   #entitled = ''
   #savedCursors = {}
+  #currMouse = null
 
   type = 'program'
   constructor(options = {}) {
@@ -80,9 +81,9 @@ export class Program extends IO {
         delete GlobalProgram.exitHandler.bind(GlobalProgram)
         delete GlobalProgram._bound
       }
-      this.input._presInput--
-      this.output._presOutput--
-      if (this.input._presInput === 0) {
+      this.input.listenCount--
+      this.output.listenCount--
+      if (this.input.listenCount === 0) {
         this.input.removeListener(KEYPRESS, this.input._keypressHandler)
         this.input.removeListener(DATA, this.input._dataHandler)
         delete this.input._keypressHandler
@@ -92,7 +93,7 @@ export class Program extends IO {
           if (!this.input.destroyed) { this.input.pause() }
         }
       }
-      if (this.output._presOutput === 0) {
+      if (this.output.listenCount === 0) {
         this.output.removeListener(RESIZE, this.output._resizeHandler)
         delete this.output._resizeHandler
       }
@@ -1588,9 +1589,9 @@ export class Program extends IO {
   //     CSI ? Ps; Pm$ p
   //   where Ps is the mode number as in DECSET, Pm is the mode value
   disableMouse() {
-    if (!this._currentMouse) return
+    if (!this.#currMouse) return
     const o = {}
-    Object.keys(this._currentMouse).forEach(key => o[key] = false)
+    Object.keys(this.#currMouse).forEach(key => o[key] = false)
     return this.setMouse(o, false)
   }
   // Set Mouse
@@ -1598,15 +1599,15 @@ export class Program extends IO {
     if (opt.normalMouse != null) { ( opt.vt200Mouse = opt.normalMouse ), ( opt.allMotion = opt.normalMouse ) }
     if (opt.hiliteTracking != null) { opt.vt200Hilite = opt.hiliteTracking }
     if (enable === true) {
-      if (this._currentMouse) {
+      if (this.#currMouse) {
         this.setMouse(opt)
-        Object.keys(opt).forEach(function (key) { this._currentMouse[key] = opt[key] }, this)
+        Object.keys(opt).forEach(function (key) { this.#currMouse[key] = opt[key] }, this)
         return
       }
-      this._currentMouse = opt
+      this.#currMouse = opt
       this.mouseEnabled = true
     }
-    else if (enable === false) { ( delete this._currentMouse ), ( this.mouseEnabled = false ) }
+    else if (enable === false) { ( delete this.#currMouse ), ( this.mouseEnabled = false ) }
     //     Ps = 9  -> Send Mouse X & Y on button press.  See the section Mouse Tracking.
     //     Ps = 9  -> Don't send Mouse X & Y on button press.
     // x10 mouse
