@@ -690,17 +690,18 @@ export class Screen extends Node {
     this.leave()
     const index = GlobalScreen.instances.indexOf(this)
     if (~index) {
-      GlobalScreen.instances.splice(index, 1)
-      GlobalScreen.total--
-      GlobalScreen.global = GlobalScreen.instances[0]
-      if (GlobalScreen.total === 0) {
-        GlobalScreen.global = null
-        for (const [ signal, handler ] of Object.entries(GlobalScreen.handlers)) {
-          process.off(signal, GlobalScreen[handler])
-          delete GlobalScreen[handler]
-        }
-        delete GlobalScreen._bound
-      }
+      GlobalScreen.removeInstanceAt(index)
+      // GlobalScreen.instances.splice(index, 1)
+      // GlobalScreen.total--
+      // GlobalScreen.global = GlobalScreen.instances[0]
+      // if (GlobalScreen.total === 0) {
+      //   GlobalScreen.global = null
+      //   for (const [ signal, handler ] of Object.entries(GlobalScreen.handlers)) {
+      //     process.off(signal, GlobalScreen[handler])
+      //     delete GlobalScreen[handler]
+      //   }
+      //   delete GlobalScreen._bound
+      // }
       this.destroyed = true
       this.emit(DESTROY)
       this._destroy()

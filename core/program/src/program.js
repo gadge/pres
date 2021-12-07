@@ -15,8 +15,8 @@ import {
   XTUNMODKEYS, XTWINOPS
 }                                       from '@pres/enum-csi-codes'
 import {
-  BLUR, BTNDOWN, BTNUP, DATA, DESTROY, DRAG, ERROR, EXIT, FOCUS, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEUP, MOUSEWHEEL, MOVE,
-  NEW_LISTENER, RESIZE, RESPONSE, WHEELDOWN, WHEELUP,
+  BLUR, BTNDOWN, BTNUP, DATA, DESTROY, DRAG, ERROR, FOCUS, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEUP, MOUSEWHEEL, MOVE, NEW_LISTENER,
+  RESIZE, RESPONSE, WHEELDOWN, WHEELUP,
 }                                       from '@pres/enum-events'
 import { LEFT, MIDDLE, RIGHT, UNKNOWN } from '@pres/enum-key-names'
 import { GlobalProgram }                from '@pres/global-program'
@@ -70,17 +70,18 @@ export class Program extends IO {
   destroy() {
     const index = GlobalProgram.instances.indexOf(this)
     if (~index) {
-      GlobalProgram.instances.splice(index, 1)
-      GlobalProgram.total--
       this.flush()
       this._exiting = true
-      GlobalProgram.global = GlobalProgram.instances[0]
-      if (GlobalProgram.total === 0) {
-        GlobalProgram.global = null
-        process.removeListener(EXIT, GlobalProgram.exitHandler.bind(GlobalProgram))
-        delete GlobalProgram.exitHandler.bind(GlobalProgram)
-        delete GlobalProgram._bound
-      }
+      GlobalProgram.removeInstanceAt(index)
+      // GlobalProgram.instances.splice(index, 1)
+      // GlobalProgram.total--
+      // GlobalProgram.global = GlobalProgram.instances[0]
+      // if (GlobalProgram.total === 0) {
+      //   GlobalProgram.global = null
+      //   process.removeListener(EXIT, GlobalProgram.exitHandler.bind(GlobalProgram))
+      //   delete GlobalProgram.exitHandler.bind(GlobalProgram)
+      //   delete GlobalProgram._bound
+      // }
       this.input.listenCount--
       this.output.listenCount--
       if (this.input.listenCount === 0) {
@@ -1607,7 +1608,7 @@ export class Program extends IO {
       this.#currMouse = opt
       this.mouseEnabled = true
     }
-    else if (enable === false) { ( delete this.#currMouse ), ( this.mouseEnabled = false ) }
+    else if (enable === false) { ( this.#currMouse = null ), ( this.mouseEnabled = false ) }
     //     Ps = 9  -> Send Mouse X & Y on button press.  See the section Mouse Tracking.
     //     Ps = 9  -> Don't send Mouse X & Y on button press.
     // x10 mouse

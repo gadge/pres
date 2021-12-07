@@ -14,7 +14,7 @@ export class GlobalScreen {
   static global = null
   static total = 0
   static instances = []
-  static _bound = false
+  static #bound = false
   static journal = true
   static handlers = {}
 
@@ -25,14 +25,14 @@ export class GlobalScreen {
       screen.index = GlobalScreen.total
       GlobalScreen.total++
     }
-    if (GlobalScreen._bound) return
-    GlobalScreen._bound = true
+    if (GlobalScreen.#bound) return
+    GlobalScreen.#bound = true
     for (const signal of SIGNAL_COLLECTION) {
       const name = GlobalScreen.handlers[signal] = '_' + signal.toLowerCase() + 'Handler'
       const onSignal = GlobalScreen[name] ?? ( GlobalScreen[name] = signalHandler.bind({ signal }) )
       process.on(signal, onSignal)
     }
-    console.log('>> [GlobalScreen.initialize]', GlobalScreen.total, `[ ${ Object.keys(GlobalScreen.handlers) } ]`)
+    console.log('>> [GlobalScreen.initialize]', GlobalScreen.total, `[ ${Object.keys(GlobalScreen.handlers)} ]`)
   }
   static _uncaughtExceptionHandler(err = new Error('Uncaught Exception.')) {
     if (process.listeners(UNCAUGHT_EXCEPTION).length > 1) return
@@ -43,6 +43,20 @@ export class GlobalScreen {
   static exitHandler(err) {
     console.error(err)
     GlobalScreen.instances.slice()?.forEach(screen => screen?.destroy())
+  }
+  static removeInstanceAt(index) {
+    GlobalScreen.instances.splice(index, 1)
+    GlobalScreen.total--
+    GlobalScreen.global = GlobalScreen.instances[0]
+    if (GlobalScreen.total === 0) {
+      GlobalScreen.global = null
+      for (const [ signal, handler ] of Object.entries(GlobalScreen.handlers)) {
+        process.off(signal, GlobalScreen[handler])
+        delete GlobalScreen[handler]
+      }
+      GlobalScreen.#bound = false
+    }
+    return GlobalScreen
   }
 }
 
