@@ -128,7 +128,7 @@ export class Program extends IO {
     key.forEach(function (key) { return this.removeListener(KEY + SP + key, listener) }, this)
   }
 
-  // XTerm mouse events
+// XTerm mouse events
 // http://invisible-island.net/xterm/ctlseqs/ctlseqs.html#Mouse%20Tracking
 // To better understand these
 // the xterm code is very helpful:

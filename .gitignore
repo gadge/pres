@@ -1,4 +1,5 @@
 local
+.clinic
 .idea
 temp
 dist
@@ -11,3 +12,4 @@ node_modules
 !.yarn/sdks
 !.yarn/versions
 yarn.lock
+*.log
