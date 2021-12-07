@@ -34,7 +34,7 @@ export class GlobalProgram {
       // Potentially reset window title on exit:
       // if (program._originalTitle) program.setTitle(program._originalTitle)
       program.flush()         // Ensure the buffer is flushed (it should always be at this point, but who knows).
-      program._exiting = true // Ensure _exiting is set (could technically use process._exiting).
+      program.exiting = true // Ensure exiting is set (could technically use process.exiting).
     })
   }
 

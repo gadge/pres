@@ -262,7 +262,7 @@ export class IO extends EventEmitter {
     return this.ret ? text : this.useBuffer ? this.writeBuffer(text) : this.writeOutput(text)
   }
   writeBuffer(text) { // bf
-    if (this._exiting) return void ( this.flush(), this.writeOutput(text) )
+    if (this.exiting) return void ( this.flush(), this.writeOutput(text) )
     if (this._buf) return void ( this._buf += text )
     this._buf = text
     nextTick(this._flush)

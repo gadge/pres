@@ -72,7 +72,7 @@ export class Program extends IO {
     const index = GlobalProgram.instances.indexOf(this)
     if (~index) {
       this.flush()
-      this._exiting = true
+      this.exiting = true
       GlobalProgram.removeInstanceAt(index)
       // GlobalProgram.instances.splice(index, 1)
       // GlobalProgram.total--

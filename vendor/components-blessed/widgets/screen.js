@@ -1860,7 +1860,7 @@ Screen.prototype.cursorShape = function (shape, blink) {
       this.program.showCursor_old = this.program.showCursor
       this.program.showCursor = function () {
         self.cursor._hidden = false
-        if (self.program._exiting) showCursor.call(self.program)
+        if (self.program.exiting) showCursor.call(self.program)
         if (self.renders) self.render()
       }
     }

@@ -122,9 +122,9 @@ export class Program extends EventEmitter {
         // Ensure the buffer is flushed (it should
         // always be at this point, but who knows).
         program.flush()
-        // Ensure _exiting is set (could technically
-        // use process._exiting).
-        program._exiting = true
+        // Ensure exiting is set (could technically
+        // use process.exiting).
+        program.exiting = true
       })
     })
   }
@@ -417,7 +417,7 @@ export class Program extends EventEmitter {
       Program.instances.splice(index, 1)
       Program.total--
       this.flush()
-      this._exiting = true
+      this.exiting = true
 
       Program.global = Program.instances[0]
 
@@ -1560,7 +1560,7 @@ export class Program extends EventEmitter {
     return this.output.write(text)
   }
   _buffer(text) {
-    if (this._exiting) {
+    if (this.exiting) {
       this.flush()
       this._owrite(text)
       return

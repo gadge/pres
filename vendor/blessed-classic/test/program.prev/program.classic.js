@@ -134,9 +134,9 @@ Program.bind = function (program) {
       // Ensure the buffer is flushed (it should
       // always be at this point, but who knows).
       program.flush()
-      // Ensure _exiting is set (could technically
-      // use process._exiting).
-      program._exiting = true
+      // Ensure exiting is set (could technically
+      // use process.exiting).
+      program.exiting = true
     })
   })
 }
@@ -450,7 +450,7 @@ Program.prototype.destroy = function () {
     Program.instances.splice(index, 1)
     Program.total--
     this.flush()
-    this._exiting = true
+    this.exiting = true
 
     Program.global = Program.instances[0]
 
@@ -1599,7 +1599,7 @@ Program.prototype._owrite =
   }
 
 Program.prototype._buffer = function (text) {
-  if (this._exiting) {
+  if (this.exiting) {
     this.flush()
     this._owrite(text)
     return
