@@ -27,7 +27,7 @@ export default [
         sourceMap: true,
         exclude: 'node_modules/**',
         babelHelpers: 'bundled',
-        presets: [ [ '@babel/preset-env', { targets: { node: '14' }, loose: true } ] ],
+        presets: [ [ '@babel/preset-env', { targets: { node: '16' } } ] ],
         plugins: [
           [ '@babel/plugin-proposal-throw-expressions' ],
           // [ '@babel/plugin-proposal-optional-chaining' ],

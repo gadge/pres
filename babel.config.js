@@ -1,7 +1,7 @@
 module.exports = function (api) {
   api.cache(true)
   const presets = [
-    [ '@babel/preset-env', { targets: { node: '14' }, loose: true } ]
+    [ '@babel/preset-env', { targets: { node: '16' } } ]
   ]
   const plugins = [
     [ '@babel/plugin-proposal-throw-expressions' ],
