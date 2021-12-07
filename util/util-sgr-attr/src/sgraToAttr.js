@@ -3,10 +3,8 @@ import { rgbToByte }                             from '@pres/util-byte-colors'
 import { assignMode, assignModeFrom }            from '@pres/util-sgr-mode'
 
 // attrCode
-
 // ch === 100 ? ( fore = normAttr >> 9 & 0x1ff, back = normAttr & 0x1ff )
 
-// attrCode
 export function sgraToAttr(sgra, baseAttr, normAttr) {
   const ve = sgra.slice(2, -1).split(';')
   let mode = baseAttr >> 18 & 0x1ff, fore = baseAttr >> 9 & 0x1ff, back = baseAttr & 0x1ff

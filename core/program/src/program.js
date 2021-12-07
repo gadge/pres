@@ -38,6 +38,7 @@ export class Program extends IO {
   #boundResponse = false
   #boundMouse = false
   #entitled = ''
+  #savedCursors = {}
 
   type = 'program'
   constructor(options = {}) {
@@ -1007,20 +1008,19 @@ export class Program extends IO {
   lsaveCursor = this.scL
   scL(key) {
     key = key || 'local'
-    this._saved = this._saved || {}
-    this._saved[key] = this._saved[key] || {}
-    this._saved[key].x = this.x
-    this._saved[key].y = this.y
-    this._saved[key].hidden = this.cursorHidden
+    this.#savedCursors[key] = this.#savedCursors[key] || {}
+    this.#savedCursors[key].x = this.x
+    this.#savedCursors[key].y = this.y
+    this.#savedCursors[key].hidden = this.cursorHidden
   }
   // Restore Cursor Locally
   lrestoreCursor = this.rcL
   rcL(key, hide) {
     let pos
     key = key || 'local'
-    if (!this._saved || !this._saved[key]) return
-    pos = this._saved[key]
-    //delete this._saved[key];
+    if (!this.#savedCursors[key]) return
+    pos = this.#savedCursors[key]
+    //delete this.#savedCursors[key];
     this.cup(pos.y, pos.x)
     if (hide && pos.hidden !== this.cursorHidden) pos.hidden ? this.hideCursor() : this.showCursor()
   }
