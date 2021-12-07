@@ -12,7 +12,7 @@ export class Canvas extends Box {
     })
     this.type = 'canvas'
   }
-  static build(options) { return new Canvas(options) }
+  static build(options, canvasType) { return new Canvas(options, canvasType) }
   get drawille() { return this.context.drawille }
   get canvH() { return this.height << 2 }
   get canvW() { return ( this.width << 1 ) - 12 }

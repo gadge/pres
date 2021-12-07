@@ -15,7 +15,7 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@geia/enum-signals": "^0.0.19",
+    "@geia/enum-signals": "^0.1.0",
     "@ject/noop": "^0.0.16",
     "@pres/enum-control-chars": "^0.3.28",
     "@pres/enum-csi-codes": "^0.3.28",
@@ -25,8 +25,8 @@
     "@pres/terminfo-parser": "^0.3.28",
     "@pres/util-blessed-colors": "^0.3.28",
     "@pres/util-helpers": "^0.3.28",
-    "@spare/logger": "^0.11.22",
-    "@texting/enum-chars": "^0.0.12",
+    "@spare/logger": "^0.12.5",
+    "@texting/enum-chars": "^0.0.13",
     "@typen/enum-data-types": "^0.1.17"
   },
   "repository": {

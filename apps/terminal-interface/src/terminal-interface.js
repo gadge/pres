@@ -1,10 +1,10 @@
-import { assign }   from '@ject/mixin'
-import { Pres }     from '@pres/components'
-import { Program }  from '@pres/program'
-import { Tput }     from '@pres/terminfo-parser'
-import * as colors  from '@pres/util-blessed-colors'
-import * as helpers from '@pres/util-helpers'
-import * as unicode from '@pres/util-unicode'
+import { assign }      from '@ject/mixin'
+import * as components from '@pres/components'
+import { Program }     from '@pres/program'
+import { Tput }        from '@pres/terminfo-parser'
+import * as colors     from '@pres/util-blessed-colors'
+import * as helpers    from '@pres/util-helpers'
+import * as unicode    from '@pres/util-unicode'
 
 /**
  // chart
@@ -79,7 +79,7 @@ export class TI {
   static Tput = Tput
 }
 
-assign(TI, Pres)
+assign(TI, components)
 
 
 

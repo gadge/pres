@@ -1,15 +1,15 @@
-import { BlueGrey, Indigo, LightBlue }        from '@palett/cards'
-import { ATTACH, RESIZE, UNCAUGHT_EXCEPTION } from '@pres/enum-events'
-import { Pres }                               from '@pres/terminal-interface'
-import si                                     from 'systeminformation'
-import { Cpu }                                from './src/cpu'
-import { Disk }                               from './src/disk'
-import { Mem }                                from './src/mem'
-import { Net }                                from './src/net'
-import { Proc }                               from './src/proc'
+import { BlueGrey, Indigo, LightBlue }                                             from '@palett/cards'
+import { Box, DataTable, DonutChart, Grid, LineChart, ListBar, Screen, Sparkline } from '@pres/components'
+import { ATTACH, RESIZE, UNCAUGHT_EXCEPTION }                                      from '@pres/enum-events'
+import si                                                                          from 'systeminformation'
+import { Cpu }                                                                     from './src/cpu'
+import { Disk }                                                                    from './src/disk'
+import { Mem }                                                                     from './src/mem'
+import { Net }                                                                     from './src/net'
+import { Proc }                                                                    from './src/proc'
 
-const screen = Pres.screen({ padding: 1, })
-const grid = Pres.grid({ rows: 12, cols: 12, screen: screen, })
+const screen = Screen.build({ padding: 1, })
+const grid = Grid.build({ rows: 12, cols: 12, screen: screen, })
 /**
  *
  * @type {{
@@ -22,40 +22,40 @@ const grid = Pres.grid({ rows: 12, cols: 12, screen: screen, })
  * }}
  */
 const charts = {
-  cpuLine: grid.set(0, 0, 5, 12, Pres.lineChart, {
+  cpuLine: grid.set(0, 0, 5, 12, LineChart.build, {
     name: 'lineChart',
     showNthLabel: 5,
     maxY: 100,
     label: 'CPU History',
     showLegend: true,
   }),
-  memLine: grid.set(5, 0, 2, 6, Pres.lineChart, {
+  memLine: grid.set(5, 0, 2, 6, LineChart.build, {
     showNthLabel: 5,
     maxY: 100,
     label: 'Memory and Swap History',
     showLegend: true,
     legend: { width: 10, },
   }),
-  networkSparkline: grid.set(7, 0, 2, 6, Pres.sparkline, {
+  networkSparkline: grid.set(7, 0, 2, 6, Sparkline.build, {
     label: 'Network History',
     tags: true,
     style: { fg: 'blue' },
   }),
-  diskDonut: grid.set(9, 0, 2, 4, Pres.donutChart, {
+  diskDonut: grid.set(9, 0, 2, 4, DonutChart.build, {
     radius: 8,
     arcWidth: 3,
     yPadding: 2,
     remainColor: 'black',
     label: 'Disk usage',
   }),
-  memDonut: grid.set(9, 4, 2, 4, Pres.donutChart, {
+  memDonut: grid.set(9, 4, 2, 4, DonutChart.build, {
     radius: 8,
     arcWidth: 3,
     yPadding: 2,
     remainColor: 'black',
     label: 'Memory',
   }),
-  swapDonut: grid.set(9, 8, 2, 4, Pres.donutChart, {
+  swapDonut: grid.set(9, 8, 2, 4, DonutChart.build, {
     radius: 8,
     arcWidth: 3,
     yPadding: 2,
@@ -64,7 +64,7 @@ const charts = {
   })
 }
 const tables = {
-  process: grid.set(5, 6, 4, 6, Pres.dataTable, {
+  process: grid.set(5, 6, 4, 6, DataTable.build, {
     keys: true,
     label: 'Processes',
     columnSpacing: 1,
@@ -72,12 +72,12 @@ const tables = {
   })
 }
 
-const box = grid.set(11, 8, 1, 4, Pres.box, {
+const box = grid.set(11, 8, 1, 4, Box.build, {
   align: 'center',
   valign: 'middle',
   content: '...'
 })
-const listBar = grid.set(11, 0, 1, 8, Pres.listBar, {
+const listBar = grid.set(11, 0, 1, 8, ListBar.build, {
   top: 'center',
   left: 'center',
   mouse: true,

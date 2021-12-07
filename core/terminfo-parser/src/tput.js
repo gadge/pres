@@ -11,11 +11,9 @@
 //   https://en.wikipedia.org/wiki/Terminfo
 
 // Todo:
-// - xterm's XT (set-title capability?) value should
-//   be true (at least tmux thinks it should).
+// - xterm's XT (set-title capability?) value should be true (at least tmux thinks it should).
 //   It's not parsed as true. Investigate.
-// - Possibly switch to other method of finding the
-//   extended data string table: i += h.symOffsetCount * 2;
+// - Possibly switch to other method of finding the extended data string table: i += h.symOffsetCount * 2;
 
 import { merge, slice }           from '@pres/util-helpers'
 import { BOO, FUN, NUM, STR }     from '@typen/enum-data-types'
@@ -57,12 +55,13 @@ export class Tput {
     this.configTput(options)
     if (options.terminal || options.term) this.setup()
     console.log('>> [new tput]',
-      `[boo] (${ Object.keys(this.boo).length })`,
-      `[num] (${ Object.keys(this.num).length })`,
-      `[str] (${ Object.keys(this.str).length })`,
-      `[all] (${ Object.keys(this.all).length })`,
-      `[colors] (${ this.colors })`)
+      `[boo] (${Object.keys(this.boo).length})`,
+      `[num] (${Object.keys(this.num).length})`,
+      `[str] (${Object.keys(this.str).length})`,
+      `[all] (${Object.keys(this.all).length})`,
+      `[colors] (${this.colors})`)
   }
+  static build(options) {return new Tput(options)}
   configTput(options) {
     this.options = options
     this.terminal = whichTerminal(options)
@@ -74,7 +73,7 @@ export class Tput {
     this.terminfoPrefix = options.terminfoPrefix
     this.terminfoFile = options.terminfoFile
     this.termcapFile = options.termcapFile
-    console.log(`>> [tput.config] [terminal] (${ this.terminal }) [termcap] (${ !!this.termcap })`)
+    console.log(`>> [tput.config] [terminal] (${this.terminal}) [termcap] (${!!this.termcap})`)
   }
   setup() {
     this.error = null
@@ -1135,7 +1134,7 @@ export class Tput {
               break
             case 'a':
               if (( s[i] === '=' || s[i] === '+' || s[i] === '-' ||
-                s[i] === '*' || s[i] === '/' ) &&
+                  s[i] === '*' || s[i] === '/' ) &&
                 ( s[i + 1] === 'p' || s[i + 1] === 'c' ) &&
                 s[i + 2] !== '\0' && s[i + 2]) {
                 let l

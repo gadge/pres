@@ -14,7 +14,7 @@ export class GlobalProgram {
     }
     if (GlobalProgram._bound) return
     GlobalProgram._bound = true
-    GlobalProgram.unshiftEvent(process, EXIT, GlobalProgram._exitHandler)
+    GlobalProgram.unshiftEvent(process, EXIT, GlobalProgram.exitHandler)
     console.log('>> [GlobalProgram.initialize]', GlobalProgram.total, `[ ${ process.eventNames() } ]`)
   }
   // We could do this easier by just manipulating the _events object, or for
@@ -27,7 +27,7 @@ export class GlobalProgram {
     listeners.forEach(listener => target.on(event, listener))
   }
 
-  static _exitHandler(err) {
+  static exitHandler(err) {
     // console.error(err)
     GlobalProgram.instances.forEach(program => {
       // Potentially reset window title on exit:

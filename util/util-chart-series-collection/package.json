@@ -15,9 +15,9 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@vect/matrix": "^0.4.4",
-    "@vect/vector-mapper": "^0.4.4",
-    "@pres/util-chart-series": "^0.3.28"
+    "@pres/util-chart-series": "^0.3.28",
+    "@vect/matrix": "^0.4.9",
+    "@vect/vector-mapper": "^0.4.9"
   },
   "repository": {
     "type": "git",

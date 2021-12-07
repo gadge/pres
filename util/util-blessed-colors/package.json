@@ -19,7 +19,7 @@
     "@pres/enum-csi-codes": "^0.3.28",
     "@typen/enum-data-types": "^0.1.17",
     "@typen/nullish": "^0.1.17",
-    "@vect/vector": "^0.4.4"
+    "@vect/vector": "^0.4.9"
   },
   "repository": {
     "type": "git",

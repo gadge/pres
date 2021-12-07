@@ -19,9 +19,9 @@
     "@pres/events": "^0.3.28",
     "@pres/global-node": "^0.3.28",
     "@pres/global-screen": "^0.3.28",
-    "@texting/enum-chars": "^0.0.12",
+    "@texting/enum-chars": "^0.0.13",
     "@typen/enum-data-types": "^0.1.17",
-    "@vect/vector-index": "^0.4.4"
+    "@vect/vector-index": "^0.4.9"
   },
   "repository": {
     "type": "git",

@@ -18,9 +18,9 @@
     "@pres/components-core": "^0.3.28",
     "@pres/components-data": "^0.3.28",
     "@pres/enum-events": "^0.3.28",
-    "chalk": "^4.1.1",
-    "marked": "^2.1.3",
-    "marked-terminal": "^4.1.1"
+    "chalk": "^5.0.0",
+    "marked": "^4.0.6",
+    "marked-terminal": "^4.2.0"
   },
   "repository": {
     "type": "git",

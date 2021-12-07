@@ -6,7 +6,7 @@ screen = blessed.screen({
   autoPadding: false,
   warnings: true
 });
-var logger = blessed.log({
+var logger = Log.build({
   sup: screen,
   top: 'center',
   left: 'center',

@@ -1,7 +1,7 @@
-import { slice } from '@pres/util-helpers'
-import { xr }    from '@spare/logger'
+import { slice }      from '@pres/util-helpers'
+import { logger, xr } from '@spare/logger'
 
-const { logger } = require('@spare/logger')
+
 const candidates = {
   undefined: undefined,
   empty: [],

@@ -15,11 +15,11 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@aryth/math": "^0.3.23",
-    "@palett/convert": "^0.8.16",
+    "@aryth/math": "^0.3.26",
+    "@palett/convert": "^0.8.18",
     "@typen/enum-data-types": "^0.1.17",
     "@typen/nullish": "^0.1.17",
-    "@vect/vector": "^0.4.4"
+    "@vect/vector": "^0.4.9"
   },
   "repository": {
     "type": "git",

@@ -40,7 +40,7 @@ export class GlobalScreen {
     console.error(err) // console.error(err.stack ? err.stack + '' : err + '')
     nextTick(() => process.exit(1))
   }
-  static _exitHandler(err) {
+  static exitHandler(err) {
     console.error(err)
     GlobalScreen.instances.slice()?.forEach(screen => screen?.destroy())
   }

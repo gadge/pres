@@ -1,7 +1,7 @@
 var blessed = require('../../lib/blessed')
 
 var screen = blessed.screen({
-  dump: __dirname + '/logs/term-blessed.log',
+  dump: __dirname + '/logs/term-Log.build',
   smartCSR: true,
   warnings: true
 })

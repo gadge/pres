@@ -5,7 +5,7 @@ export class Carousel {
     this.options = options
     this.screen = this.options.screen
   }
-  static build(options) { return new Carousel(options) }
+  static build(pages,options) { return new Carousel(pages,options) }
   move() {
     let i = this.screen.sub.length
     while (i--) this.screen.sub[i].detach()

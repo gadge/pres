@@ -1,30 +1,30 @@
-import { BlueGrey, Indigo, LightBlue }                       from '@palett/cards'
-import { ATTACH, PRESS, RESIZE, SUBMIT, UNCAUGHT_EXCEPTION } from '@pres/enum-events'
-import { Pres }                                              from '@pres/terminal-interface'
-import { MarketWatch }                                       from './monitor'
+import { BlueGrey, Indigo, LightBlue }                                  from '@palett/cards'
+import { Box, Button, Form, Grid, LineChart, ListBar, Screen, Textbox } from '@pres/components'
+import { ATTACH, PRESS, RESIZE, SUBMIT, UNCAUGHT_EXCEPTION }            from '@pres/enum-events'
+import { MarketWatch }                                                  from './monitor'
 
-const screen = Pres.screen({
+const screen = Screen.build({
   smartCSR: true,
   padding: { t: 3, b: 3, l: 0, r: 0 },
   title: 'Leagyun Financial Dashboard'
 })
 
-const grid = Pres.grid({ rows: 12, cols: 12, screen: screen }) // margin: { t: 4, b: 4, l: 4, r: 4 },
+const grid = Grid.build({ rows: 12, cols: 12, screen: screen }) // margin: { t: 4, b: 4, l: 4, r: 4 },
 const { top, bottom, left, right, width, height } = grid
 console.log('grid', { top, bottom, left, right, width, height })
 const lineChartCollection = {
-  A1: grid.add(0, 0, 4, 4, Pres.lineChart, { label: 'S&P 500', showLegend: true }),
-  B1: grid.add(0, 4, 4, 4, Pres.lineChart, { label: 'Dow Jones', showLegend: true }),
-  C1: grid.add(0, 8, 4, 4, Pres.lineChart, { label: 'Nasdaq', showLegend: true }),
-  A2: grid.add(4, 0, 4, 4, Pres.lineChart, { label: 'Shanghai', showLegend: true }),
-  B2: grid.add(4, 4, 4, 4, Pres.lineChart, { label: 'FTSE', showLegend: true }),
-  C2: grid.add(4, 8, 4, 4, Pres.lineChart, { label: 'Hang Seng', showLegend: true }),
-  A3: grid.add(8, 0, 4, 4, Pres.lineChart, { label: 'Nikkei', showLegend: true }),
-  B3: grid.add(8, 4, 4, 4, Pres.lineChart, { label: 'Euronext', showLegend: true }),
-  C3: grid.add(8, 8, 4, 4, Pres.lineChart, { label: 'Seoul', showLegend: true }),
+  A1: grid.add(0, 0, 4, 4, LineChart.build, { label: 'S&P 500', showLegend: true }),
+  B1: grid.add(0, 4, 4, 4, LineChart.build, { label: 'Dow Jones', showLegend: true }),
+  C1: grid.add(0, 8, 4, 4, LineChart.build, { label: 'Nasdaq', showLegend: true }),
+  A2: grid.add(4, 0, 4, 4, LineChart.build, { label: 'Shanghai', showLegend: true }),
+  B2: grid.add(4, 4, 4, 4, LineChart.build, { label: 'FTSE', showLegend: true }),
+  C2: grid.add(4, 8, 4, 4, LineChart.build, { label: 'Hang Seng', showLegend: true }),
+  A3: grid.add(8, 0, 4, 4, LineChart.build, { label: 'Nikkei', showLegend: true }),
+  B3: grid.add(8, 4, 4, 4, LineChart.build, { label: 'Euronext', showLegend: true }),
+  C3: grid.add(8, 8, 4, 4, LineChart.build, { label: 'Seoul', showLegend: true }),
 }
 
-const form = Pres.form({
+const form = Form.build({
   sup: screen,
   top: 0,
   left: 0,
@@ -34,7 +34,7 @@ const form = Pres.form({
   keys: true,
   vi: true
 })
-const label = Pres.box({
+const label = Box.build({
   sup: screen,
   top: 0,
   left: 0,
@@ -45,7 +45,7 @@ const label = Pres.box({
   align: 'right',
   valign: 'middle',
 })
-const textbox = Pres.textbox({
+const textbox = Textbox.build({
   sup: form,
   top: 0,
   left: 'center',
@@ -57,7 +57,7 @@ const textbox = Pres.textbox({
   border: { type: 'line' },
   focus: { fg: 'blue' }
 })
-const submit = Pres.button({
+const submit = Button.build({
   sup: form,
   top: 0,
   right: 0,
@@ -75,7 +75,7 @@ const submit = Pres.button({
 })
 
 
-const box = Pres.box({
+const box = Box.build({
   sup: screen,
   bottom: 0,
   left: 0,//'50%',
@@ -87,7 +87,7 @@ const box = Pres.box({
   // border: 'line'
 })
 
-const listBar = Pres.listBar({
+const listBar = ListBar.build({
   sup: screen,
   bottom: 1,
   left: 0,

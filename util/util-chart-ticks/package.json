@@ -15,9 +15,9 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@aryth/bound-matrix": "^0.3.23",
-    "@aryth/math": "^0.3.23",
-    "@aryth/nice-scale": "^0.3.23",
+    "@aryth/bound-matrix": "^0.3.26",
+    "@aryth/math": "^0.3.26",
+    "@aryth/nice-scale": "^0.3.26",
     "@typen/enum-object-types": "^0.1.17",
     "@typen/nullish": "^0.1.17"
   },

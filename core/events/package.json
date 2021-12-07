@@ -19,7 +19,7 @@
     "@pres/enum-key-names": "^0.3.28",
     "@pres/util-helpers": "^0.3.28",
     "@typen/enum-data-types": "^0.1.17",
-    "@vect/vector-merge": "^0.4.4"
+    "@vect/vector-merge": "^0.4.9"
   },
   "repository": {
     "type": "git",

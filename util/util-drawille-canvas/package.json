@@ -15,10 +15,10 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@palett/enum-ansi-codes": "^0.8.16",
+    "@palett/enum-ansi-codes": "^0.8.18",
     "@pres/util-byte-colors": "^0.3.28",
     "bresenham": "^0.0.4",
-    "gl-matrix": "^3.3.0"
+    "gl-matrix": "^3.4.3"
   },
   "devDependencies": {
     "ansi-term": "^0.0.2",

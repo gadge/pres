@@ -163,7 +163,7 @@ export class OverlayImage extends Box {
               return callback(err)
             }
             if (self._lastSize &&
-              ratio.tw === self._lastSize.tw &&
+              ratio.writeTmux === self._lastSize.writeTmux &&
               ratio.th === self._lastSize.th &&
               size.width === self._lastSize.width &&
               size.height === self._lastSize.height &&
@@ -174,14 +174,14 @@ export class OverlayImage extends Box {
               return callback(null, success)
             }
             self._lastSize = {
-              tw: ratio.tw,
+              writeTmux: ratio.writeTmux,
               th: ratio.th,
               width: size.width,
               height: size.height,
               absL: self.absL,
               absT: self.absT
             }
-            self.pos.width = size.width / ratio.tw | 0
+            self.pos.width = size.width / ratio.writeTmux | 0
             self.pos.height = size.height / ratio.th | 0
             self._noImage = true
             self.screen.render()
@@ -233,9 +233,9 @@ export class OverlayImage extends Box {
           ? callback(err)
           : callback(null, success)
       })
-      const width  = self.width * ratio.tw | 0,
+      const width  = self.width * ratio.writeTmux | 0,
             height = self.height * ratio.th | 0,
-            absL  = self.absL * ratio.tw | 0,
+            absL  = self.absL * ratio.writeTmux | 0,
             absT   = self.absT * ratio.th | 0
       const input = '0;1;'
         + absL + ';'
@@ -418,7 +418,7 @@ export class OverlayImage extends Box {
     return this.termSize(function (err, dimensions) {
       if (err) return callback(err)
       self._ratio = {
-        tw: dimensions.width / self.screen.width,
+        writeTmux: dimensions.width / self.screen.width,
         th: dimensions.height / self.screen.height
       }
       self._needsRatio = false
@@ -438,9 +438,9 @@ export class OverlayImage extends Box {
     this.clearImageSync()
     this.file = _file
     this._lastSize = _lastSize
-    const width  = this.width * ratio.tw | 0,
+    const width  = this.width * ratio.writeTmux | 0,
           height = this.height * ratio.th | 0,
-          absL  = this.absL * ratio.tw | 0,
+          absL  = this.absL * ratio.writeTmux | 0,
           absT   = this.absT * ratio.th | 0
     const input = '0;1;'
       + absL + ';'
@@ -575,7 +575,7 @@ export class OverlayImage extends Box {
     this._needsRatio = false
     const dimensions = this.termSizeSync()
     this._ratio = {
-      tw: dimensions.width / this.screen.width,
+      writeTmux: dimensions.width / this.screen.width,
       th: dimensions.height / this.screen.height
     }
     return this._ratio
