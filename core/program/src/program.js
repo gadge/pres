@@ -40,6 +40,7 @@ export class Program extends IO {
   #entitled = ''
   #savedCursors = {}
   #currMouse = null
+  #lastButton = null
 
   type = 'program'
   constructor(options = {}) {
@@ -251,14 +252,14 @@ export class Program extends IO {
         // NOTE: x10 and urxvt have no way
         // of telling which button mouseup used.
         key.action = MOUSEUP
-        key.button = this._lastButton || UNKNOWN
-        delete this._lastButton
+        key.button = this.#lastButton || UNKNOWN
+        this.#lastButton = null
       }
       else {
         key.action = MOUSEDOWN
         button = b & 3
         key.button = button === 0 ? LEFT : button === 1 ? MIDDLE : button === 2 ? RIGHT : UNKNOWN
-        this._lastButton = key.button
+        this.#lastButton = key.button
       }
       // Probably a movement.
       // The *newer* VTE gets mouse movements comepletely wrong.
@@ -308,8 +309,8 @@ export class Program extends IO {
         // NOTE: x10 and urxvt have no way
         // of telling which button mouseup used.
         key.action = MOUSEUP
-        key.button = this._lastButton || UNKNOWN
-        delete this._lastButton
+        key.button = this.#lastButton || UNKNOWN
+        this.#lastButton = null
       }
       else {
         key.action = MOUSEDOWN
@@ -317,7 +318,7 @@ export class Program extends IO {
         key.button = button === 0 ? LEFT : button === 1 ? MIDDLE : button === 2 ? RIGHT : UNKNOWN
         // NOTE: 0/32 = mousemove, 32/64 = mousemove with left down
         // if ((b >> 1) === 32)
-        this._lastButton = key.button
+        this.#lastButton = key.button
       }
       // Probably a movement.
       // The *newer* VTE gets mouse movements comepletely wrong.
