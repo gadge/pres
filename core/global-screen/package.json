@@ -1,6 +1,6 @@
 {
   "name": "@pres/global-screen",
-  "version": "0.3.30",
+  "version": "0.3.31",
   "description": "Global screen for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,7 +15,7 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/enum-events": "^0.3.30"
+    "@pres/enum-events": "^0.3.31"
   },
   "repository": {
     "type": "git",
