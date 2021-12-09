@@ -74,15 +74,6 @@ export class Program extends IO {
       this.flush()
       this.exiting = true
       GlobalProgram.removeInstanceAt(index)
-      // GlobalProgram.instances.splice(index, 1)
-      // GlobalProgram.total--
-      // GlobalProgram.global = GlobalProgram.instances[0]
-      // if (GlobalProgram.total === 0) {
-      //   GlobalProgram.global = null
-      //   process.removeListener(EXIT, GlobalProgram.exitHandler.bind(GlobalProgram))
-      //   delete GlobalProgram.exitHandler.bind(GlobalProgram)
-      //   delete GlobalProgram._bound
-      // }
       this.input.listenCount--
       this.output.listenCount--
       if (this.input.listenCount === 0) {
@@ -953,7 +944,7 @@ export class Program extends IO {
   nel = this.feed
   newline = this.feed
   feed() {
-    if (this.tput && this.tput.bools.eat_newline_glitch && this.x >= this.cols) return
+    if (this.tput && this.tput.booleans.eat_newline_glitch && this.x >= this.cols) return
     this.x = 0
     this.y++
     this.auto()
@@ -1011,7 +1002,7 @@ export class Program extends IO {
   lsaveCursor = this.scL
   scL(key) {
     key = key || 'local'
-    this.#savedCursors[key] = this.#savedCursors[key] || {}
+    if (!this.#savedCursors[key]) this.#savedCursors[key] = {}
     this.#savedCursors[key].x = this.x
     this.#savedCursors[key].y = this.y
     this.#savedCursors[key].hidden = this.cursorHidden
@@ -1159,7 +1150,7 @@ export class Program extends IO {
     this.auto()
     return !this.tput
       ? this.writeOff(CSI + ( n || VO ) + CUU)
-      : !this.tput.strings.parm_up_cursor
+      : !this.tput.literals.parm_up_cursor
         ? this.writeOff(this.repeat(this.tput.cuu1(), n))
         : this.put.cuu(n)
   }
@@ -1170,7 +1161,7 @@ export class Program extends IO {
     this.auto()
     return !this.tput
       ? this.writeOff(CSI + ( n || VO ) + CUD)
-      : !this.tput.strings.parm_down_cursor
+      : !this.tput.literals.parm_down_cursor
         ? this.writeOff(this.repeat(this.tput.cud1(), n))
         : this.put.cud(n)
   }
@@ -1182,7 +1173,7 @@ export class Program extends IO {
     this.auto()
     return !this.tput
       ? this.writeOff(CSI + ( n || VO ) + CUF)
-      : !this.tput.strings.parm_right_cursor
+      : !this.tput.literals.parm_right_cursor
         ? this.writeOff(this.repeat(this.tput.cuf1(), n))
         : this.put.cuf(n)
   }
@@ -1194,7 +1185,7 @@ export class Program extends IO {
     this.auto()
     return !this.tput
       ? this.writeOff(CSI + ( n || VO ) + CUB)
-      : !this.tput.strings.parm_left_cursor
+      : !this.tput.literals.parm_left_cursor
         ? this.writeOff(this.repeat(this.tput.cub1(), n))
         : this.put.cub(n)
   }
@@ -1367,7 +1358,7 @@ export class Program extends IO {
   getCursor(callback) { return this.deviceStatus(6, callback, false, true) }
   saveReportedCursor(callback) {
     const self = this
-    return this.tput.strings.user7 === CSI + '6n' || this.term('screen')
+    return this.tput.literals.user7 === CSI + '6n' || this.term('screen')
       ? this.getCursor((err, data) => {
         if (data) { ( self._rx = data.status.x ), ( self._ry = data.status.y ) }
         return callback ? callback(err) : void 0
@@ -1583,7 +1574,7 @@ export class Program extends IO {
     if (
       this.term('xterm') ||
       this.term('screen') ||
-      ( this.tput && this.tput.strings.key_mouse )
+      ( this.tput && this.tput.literals.key_mouse )
     ) return this.setMouse({ vt200Mouse: true, utfMouse: true, cellMotion: true, allMotion: true }, true)
   }
   // CSI ? Ps$ p
