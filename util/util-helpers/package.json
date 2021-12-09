@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-helpers",
-  "version": "0.3.31",
+  "version": "0.3.32",
   "description": "Helpers for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,9 +15,9 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/util-blessed-colors": "^0.3.31",
-    "@pres/util-byte-colors": "^0.3.31",
-    "@pres/util-unicode": "^0.3.31",
+    "@pres/util-blessed-colors": "^0.3.32",
+    "@pres/util-byte-colors": "^0.3.32",
+    "@pres/util-unicode": "^0.3.32",
     "@spare/verse": "^0.12.5",
     "@texting/enum-chars": "^0.0.13",
     "@typen/enum-data-types": "^0.1.17",
@@ -44,5 +44,5 @@
     "url": "https://github.com/hoyeungw/pres"
   },
   "homepage": "https://github.com/hoyeungw/pres#readme",
-  "gitHead": "996e3d36ed914f2212f4cf78a733673e0ad3a627"
+  "gitHead": "cdcf49902da447f1403195f515b53ee6b47f8d19"
 }

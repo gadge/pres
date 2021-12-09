@@ -1,6 +1,6 @@
 {
   "name": "@pres/fin",
-  "version": "0.3.31",
+  "version": "0.3.32",
   "description": "pres graphic financial dashboard",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -25,9 +25,9 @@
     "@aryth/rand": "^0.3.26",
     "@morpont/market-indexes-fmp": "^0.0.7",
     "@palett/cards": "^0.8.18",
-    "@pres/components": "^0.3.31",
-    "@pres/enum-events": "^0.3.31",
-    "@pres/terminal-interface": "^0.3.31",
+    "@pres/components": "^0.3.32",
+    "@pres/enum-events": "^0.3.32",
+    "@pres/terminal-interface": "^0.3.32",
     "@texting/phrasing": "^0.0.13",
     "@valjoux/convert": "^0.3.8",
     "@valjoux/date-shift": "^0.3.8",
@@ -62,5 +62,5 @@
   "engines": {
     "node": ">=14.0.0"
   },
-  "gitHead": "996e3d36ed914f2212f4cf78a733673e0ad3a627"
+  "gitHead": "cdcf49902da447f1403195f515b53ee6b47f8d19"
 }
