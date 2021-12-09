@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-drawille-canvas",
-  "version": "0.3.29",
+  "version": "0.3.30",
   "description": "HTML5 Canvas API for drawille",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@palett/enum-ansi-codes": "^0.8.18",
-    "@pres/util-byte-colors": "^0.3.29",
+    "@pres/util-byte-colors": "^0.3.30",
     "bresenham": "^0.0.4",
     "gl-matrix": "^3.4.3"
   },

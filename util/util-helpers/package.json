@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-helpers",
-  "version": "0.3.29",
+  "version": "0.3.30",
   "description": "Helpers for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,9 +15,9 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/util-blessed-colors": "^0.3.29",
-    "@pres/util-byte-colors": "^0.3.29",
-    "@pres/util-unicode": "^0.3.29",
+    "@pres/util-blessed-colors": "^0.3.30",
+    "@pres/util-byte-colors": "^0.3.30",
+    "@pres/util-unicode": "^0.3.30",
     "@spare/verse": "^0.12.5",
     "@texting/enum-chars": "^0.0.13",
     "@typen/enum-data-types": "^0.1.17",

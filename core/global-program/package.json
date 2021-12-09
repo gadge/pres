@@ -1,6 +1,6 @@
 {
   "name": "@pres/global-program",
-  "version": "0.3.29",
+  "version": "0.3.30",
   "description": "Global program for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,7 +15,7 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/enum-events": "^0.3.29"
+    "@pres/enum-events": "^0.3.30"
   },
   "repository": {
     "type": "git",
