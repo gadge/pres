@@ -1,13 +1,8 @@
 import fs   from 'fs'
-import path from 'path'
+import path    from 'path'
 import {slice} from '@pres/util-helpers'
-/**
- * Helpers
- */
-export function noop() { return '' }
-noop.unsupported = true
-// export function merge(a, b) { return Object.keys(b).forEach(key => a[key] = b[key]), a }
-export function write(data) { return process.stdout.write(data) }
+
+
 export function tryRead(file) {
   if (Array.isArray(file)) {
     for (let i = 0; i < file.length; i++) {

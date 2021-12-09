@@ -1,9 +1,9 @@
-import { noop, write } from './helpers'
+import { noop } from './noop'
 
-export function termPrint(code, print, done) {
-  const xon = !this.boo.needs_xon_xoff || this.boo.xon_xoff
-  print = print || write
-  done = done || noop
+export function defaultWrite(data) { return process.stdout.write(data) }
+
+export function termPrint(code, print = defaultWrite, done = noop) {
+  const xon = !this.booleans.needs_xon_xoff || this.booleans.xon_xoff
   if (!this.padding) { return print(code), done() }
   const parts = code.split(/(?=\$<[\d.]+[*\/]{0,2}>)/)
   let i = 0
@@ -25,7 +25,7 @@ export function termPrint(code, print, done) {
     // Normally, padding is advisory if the device has the xon capability;
     // it is used for cost computation but does not trigger delays.
     if (~suffix.indexOf('*')) { } // amount = amount
-    return setTimeout(() => (print(part), next()), amount)
+    return setTimeout(() => ( print(part), next() ), amount)
   }
   next()
 }
