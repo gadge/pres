@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-chart-series-collection",
-  "version": "0.3.28",
+  "version": "0.3.29",
   "description": "SeriesCollection class for pres charting",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,7 +15,7 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/util-chart-series": "^0.3.28",
+    "@pres/util-chart-series": "^0.3.29",
     "@vect/matrix": "^0.4.9",
     "@vect/vector-mapper": "^0.4.9"
   },
