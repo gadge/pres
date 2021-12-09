@@ -1,3 +1,3 @@
-export { sprintf, tryRead } from './src/helpers'
-export { Tput, }            from './src/tput'
-export { TputDes }          from './src/tputDes'
+export { sprintf, tryRead } from './util/helpers'
+export { TerminfoParser, }  from './src/TerminfoParser'
+export { TerminfoLib }     from './src/TerminfoLib'

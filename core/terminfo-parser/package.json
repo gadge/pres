@@ -21,6 +21,9 @@
     "@typen/enum-data-types": "^0.1.17",
     "@typen/nullish": "^0.1.17"
   },
+  "devDependencies": {
+    "@spare/logger": "^0.12.5"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/hoyeungw/pres/terminfo-parser.git"
