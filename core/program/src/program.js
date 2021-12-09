@@ -1901,8 +1901,8 @@ export class Program extends IO {
     this.output.write = function () {}
     if (this.input.setRawMode) this.input.setRawMode(false)
     this.input.pause()
-    return this._resume = function () {
-      delete self._resume
+    return this.internalResumer = function () {
+      delete self.internalResumer
       if (self.input.setRawMode) self.input.setRawMode(true)
       self.input.resume()
       self.output.write = write
@@ -1914,7 +1914,7 @@ export class Program extends IO {
     }
   }
 
-  resume() { if (this._resume) return this._resume() }
+  resume() { if (this.internalResumer) return this.internalResumer() }
 }
 
 /**
