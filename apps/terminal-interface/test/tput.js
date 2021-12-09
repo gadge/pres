@@ -1,5 +1,5 @@
 /**
- * Tput for node.js
+ * TerminfoParser for node.js
  * Copyright (c) 2013, Christopher Jeffrey (MIT License)
  * https://github.com/chjj/blessed
  */
@@ -15,13 +15,13 @@
 // $ tic -a -1 -o usr usr/xterm.terminfo && mv usr/x/xterm-256color usr/ && rm -rf usr/v usr/x
 
 // Check tput output:
-// $ node test/tput.js xterm | tee out
-// $ node test/tput.js xterm --ifile usr/xterm | tee out
-// $ node test/tput.js xterm-256color --ifile usr/xterm-256color | tee out
-// $ node test/tput.js vt102 --termcap | tee out
-// $ node test/tput.js xterm --termcap --cfile usr/xterm.termcap | tee out
-// $ node test/tput.js xterm --iprefix ~/.terminfo | tee out
-// $ node test/tput.js xterm-256color --ifile ~/.terminfo/x/xterm-256color | tee out
+// $ node test/TerminfoParser.js xterm | tee out
+// $ node test/TerminfoParser.js xterm --ifile usr/xterm | tee out
+// $ node test/TerminfoParser.js xterm-256color --ifile usr/xterm-256color | tee out
+// $ node test/TerminfoParser.js vt102 --termcap | tee out
+// $ node test/TerminfoParser.js xterm --termcap --cfile usr/xterm.termcap | tee out
+// $ node test/TerminfoParser.js xterm --iprefix ~/.terminfo | tee out
+// $ node test/TerminfoParser.js xterm-256color --ifile ~/.terminfo/x/xterm-256color | tee out
 // $ cdiff test/terminfo out
 
 import { Tput } from '@pres/terminfo-parser'
@@ -140,8 +140,8 @@ if (argv[0] === 'rand') {
 
 // console.log('Max colors: %d.', tput.colors);
 
-// console.log(tput.strings.acs_chars.split('').map(function(ch) { return ch.charCodeAt(0); }));
-// console.log(JSON.stringify(tput.strings.acs_chars));
+// console.log(tput.literals.acs_chars.split('').map(function(ch) { return ch.charCodeAt(0); }));
+// console.log(JSON.stringify(tput.literals.acs_chars));
 
 // process.stdout.write(blessed.tput.sprintf('%-10s\n', 'hello'));
 

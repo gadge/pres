@@ -49,7 +49,7 @@ export class Screen extends Node {
     this.tabc = Array(( options.tabSize || 4 ) + 1).join(' ')
     this.dockBorders = options.dockBorders
     this.ignoreLocked = options.ignoreLocked || []
-    this._unicode = this.tput.unicode || this.tput.numbers.U8 === 1
+    this._unicode = this.tput.unicode || this.tput.numerics.U8 === 1
     this.fullUnicode = this.options.fullUnicode && this._unicode
     this.dattr = ( 0 << 18 ) | ( 0x1ff << 9 ) | 0x1ff
     this.renders = 0
@@ -353,7 +353,7 @@ export class Screen extends Node {
         if (
           options.useBCE &&
           ch === ' ' &&
-          ( tput.bools.back_color_erase || ( at & 0x1ff ) === ( this.dattr & 0x1ff ) ) &&
+          ( tput.booleans.back_color_erase || ( at & 0x1ff ) === ( this.dattr & 0x1ff ) ) &&
           ( ( at >> 18 ) & 8 ) === ( ( this.dattr >> 18 ) & 8 )
         ) {
           clr = true
@@ -383,7 +383,7 @@ export class Screen extends Node {
           continue
         }
         else if (lx !== -1) {
-          if (this.tput.strings.parm_right_cursor) { out += y === ly ? this.tput.cuf(x - lx) : this.tput.cup(y, x) }
+          if (this.tput.literals.parm_right_cursor) { out += y === ly ? this.tput.cuf(x - lx) : this.tput.cup(y, x) }
           else { out += this.tput.cup(y, x) }
           lx = -1, ly = -1
         }
@@ -435,7 +435,7 @@ export class Screen extends Node {
         // supports UTF8, but I imagine it's unlikely.
         // Maybe remove !this.tput.unicode check, however,
         // this seems to be the way ncurses does it.
-        if (this.tput.strings.enter_alt_charset_mode &&
+        if (this.tput.literals.enter_alt_charset_mode &&
           !this.tput.brokenACS && ( this.tput.acscr[ch] || acs )) {
           // Fun fact: even if this.tput.brokenACS wasn't checked here,
           // the linux console would still work fine because the acs
@@ -463,7 +463,7 @@ export class Screen extends Node {
           // NOTE: It could be the case that the $LANG
           // is all that matters in some cases:
           // if (!this.tput.unicode && ch > '~') {
-          if (!this.tput.unicode && this.tput.numbers.U8 !== 1 && ch > '~') ch = this.tput.utoa[ch] || '?'
+          if (!this.tput.unicode && this.tput.numerics.U8 !== 1 && ch > '~') ch = this.tput.utoa[ch] || '?'
         }
         out += ch
         currAttr = at
@@ -602,7 +602,7 @@ export class Screen extends Node {
     this.program.hideCursor()
     this.program.cup(0, 0)
     // We need this for tmux now:
-    if (this.tput.strings.ena_acs) { this.program.writeOff(this.tput.enacs())}
+    if (this.tput.literals.ena_acs) { this.program.writeOff(this.tput.enacs())}
     this.alloc()
   }
   leave() {
@@ -863,7 +863,7 @@ export class Screen extends Node {
 // Scroll up (down cursor-wise).
   insertLine(n, y, top, bottom) {
     // if (y === top) return this.insertLineNC(n, y, top, bottom);
-    if (!this.tput.strings.change_scroll_region || !this.tput.strings.delete_line || !this.tput.strings.insert_line) return
+    if (!this.tput.literals.change_scroll_region || !this.tput.literals.delete_line || !this.tput.literals.insert_line) return
     this._buf += this.tput.csr(top, bottom)
     this._buf += this.tput.cup(y, 0)
     this._buf += this.tput.il(n)
@@ -878,7 +878,7 @@ export class Screen extends Node {
   }
   deleteLine(n, y, top, bottom) {
     // if (y === top) return this.deleteLineNC(n, y, top, bottom);
-    if (!this.tput.strings.change_scroll_region || !this.tput.strings.delete_line || !this.tput.strings.insert_line) return
+    if (!this.tput.literals.change_scroll_region || !this.tput.literals.delete_line || !this.tput.literals.insert_line) return
     this._buf += this.tput.csr(top, bottom)
     this._buf += this.tput.cup(y, 0)
     this._buf += this.tput.dl(n)
@@ -893,7 +893,7 @@ export class Screen extends Node {
   }
 // This will only work for top line deletion as opposed to arbitrary lines.
   insertLineNC(n, y, top, bottom) {
-    if (!this.tput.strings.change_scroll_region || !this.tput.strings.delete_line) return
+    if (!this.tput.literals.change_scroll_region || !this.tput.literals.delete_line) return
     this._buf += this.tput.csr(top, bottom)
     this._buf += this.tput.cup(top, 0)
     this._buf += this.tput.dl(n)
@@ -908,7 +908,7 @@ export class Screen extends Node {
   }
 // This will only work for bottom line deletion as opposed to arbitrary lines.
   deleteLineNC(n, y, top, bottom) {
-    if (!this.tput.strings.change_scroll_region || !this.tput.strings.delete_line) return
+    if (!this.tput.literals.change_scroll_region || !this.tput.literals.delete_line) return
     this._buf += this.tput.csr(top, bottom)
     this._buf += this.tput.cup(bottom, 0)
     this._buf += Array(n + 1).join(LF)

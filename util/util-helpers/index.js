@@ -18,3 +18,7 @@ export {
   abbrNumber,
   getColorCode
 } from './src/contrib'
+
+export {
+  LogService
+} from './src/loggers'

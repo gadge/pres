@@ -2,7 +2,6 @@ local
 .clinic
 .idea
 temp
-dist
 node_modules
 .yarn/*
 #!.yarn/cache

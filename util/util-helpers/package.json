@@ -18,6 +18,7 @@
     "@pres/util-blessed-colors": "^0.3.28",
     "@pres/util-byte-colors": "^0.3.28",
     "@pres/util-unicode": "^0.3.28",
+    "@spare/verse": "^0.12.5",
     "@texting/enum-chars": "^0.0.13",
     "@typen/enum-data-types": "^0.1.17",
     "@typen/nullish": "^0.1.17",
