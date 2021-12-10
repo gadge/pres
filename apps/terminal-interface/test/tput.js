@@ -24,16 +24,17 @@
 // $ node test/TerminfoParser.js xterm-256color --ifile ~/.terminfo/x/xterm-256color | tee out
 // $ cdiff test/terminfo out
 
-import { Tput } from '@pres/terminfo-parser'
+import { TerminfoParser }  from '@pres/terminfo-parser'
 
 // Simple argument parser
 // Copyright (c) 2012, Christopher Jeffrey (MIT License)
+import { createInterface } from 'readline'
 
 function parseArg() {
   let argv = process.argv.slice(2)
   const options = []
 
-  function getarg() {
+  function getArg() {
     let arg = argv.shift()
 
     if (arg.indexOf('--') === 0) {
@@ -65,7 +66,7 @@ function parseArg() {
   }
 
   while (argv.length) {
-    let arg = getarg()
+    let arg = getArg()
     if (arg.indexOf('-') === 0) {
       arg = arg.replace(/^--?/, '')
       if (argv[0] && argv[0].indexOf('-') !== 0) {
@@ -83,11 +84,11 @@ function parseArg() {
   return options
 }
 
-var argv = parseArg()
+const argv = parseArg()
 
-const tput = Tput.build({
+const tput = TerminfoParser.build({
   terminal: argv[0] !== 'all' && argv[0] !== 'rand'
-    ? argv[0] || __dirname + '/../usr/xterm'
+    ? argv[0] || process.cwd() + '/core/terminfo-parser/usr/xterm'
     : null,
   extended: true,
   debug: true,
@@ -98,17 +99,18 @@ const tput = Tput.build({
 })
 
 if (argv[0] === 'all') {
-  const rl = require('readline').createInterface({
+  const rl = createInterface({
     input: process.stdin,
     output: process.stdout
   })
 
-  const text = '\x1b[31mWARNING:\x1b[m '
-    + 'This will compile every single terminfo file on your disk.\n'
-    + 'It will probably use a lot of CPU.\n'
-    + 'Do you wish to proceed? (Y/n) '
+  const text =
+          '\x1b[31mWARNING:\x1b[m '
+          + 'This will compile every single terminfo file on your disk.\n'
+          + 'It will probably use a lot of CPU.\n'
+          + 'Do you wish to proceed? (Y/n) '
 
-  rl.question(text, function (result) {
+  rl.question(text, result => {
     result = result.trim().toLowerCase()
     if (result !== 'y') return process.exit(0)
     console.log('\x1b[32m(You bet your ass I wish to proceed.)\x1b[m')
@@ -122,10 +124,10 @@ if (argv[0] === 'all') {
     )
   })
 
-  return
+  // return
 }
 
-if (argv[0] === 'rand') {
+else if (argv[0] === 'rand') {
   const terms = tput.getAll()
   let term
 
@@ -135,7 +137,7 @@ if (argv[0] === 'rand') {
   tput.compileTerminfo(term)
   console.log('Compiled ' + term + '.')
 
-  return
+  // return
 }
 
 // console.log('Max colors: %d.', tput.colors);

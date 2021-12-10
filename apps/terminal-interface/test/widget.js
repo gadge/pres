@@ -17,7 +17,7 @@ const screen = Screen.build({
 
 screen.debugLog.parseTags = true
 let logs = ''
-require('./tail')(__dirname + '/logs/widget.log').on('line', function (line) {
+require('./alpha/tail')(__dirname + '/logs/widget.log').on('line', function (line) {
   // if (!screen.debugLog.hidden) return;
   logs += line + '\n'
 })

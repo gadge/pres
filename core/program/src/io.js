@@ -1,6 +1,6 @@
-import { BEL, DCS, ESC, ST }                                         from '@pres/enum-control-chars'
+import { BEL, DCS, ESC, LF, RN, ST }                                 from '@pres/enum-control-chars'
 import { DATA, KEY, KEYPRESS, MOUSE, NEW_LISTENER, RESIZE, WARNING } from '@pres/enum-events'
-import { ENTER, RETURN, UNDEFINED }                                  from '@pres/enum-key-names'
+import { ENTER, LINEFEED, RETURN, UNDEFINED }                        from '@pres/enum-key-names'
 import { keypressEventsEmitter }                                     from '@pres/events'
 import { GlobalProgram }                                             from '@pres/global-program'
 import { TerminfoParser }                                            from '@pres/terminfo-parser'
@@ -171,25 +171,25 @@ export class IO extends EventEmitter {
     setTimeout(() => {}, 3000)
     // Input
     this.input.on(KEYPRESS, this.input._keypressHandler = (ch, key) => {
-      key = key || { ch: ch }
+      key = key || { ch }
       // A mouse sequence. The `keys` module doesn't understand these.
       if (key.name === UNDEFINED && ( key.code === '[M' || key.code === '[I' || key.code === '[O' )) return void 0
       // Not sure what this is, but we should probably ignore it.
       if (key.name === UNDEFINED) return void 0
-      if (key.name === ENTER && key.sequence === '\n') key.name = 'linefeed'
-      if (key.name === RETURN && key.sequence === '\r') self.input.emit(KEYPRESS, ch, merge({}, key, { name: ENTER }))
+      if (key.name === ENTER && key.sequence === LF) key.name = LINEFEED
+      if (key.name === RETURN && key.sequence === RN) self.input.emit(KEYPRESS, ch, merge({}, key, { name: ENTER }))
       const name = `${key.ctrl ? 'C-' : VO}${key.meta ? 'M-' : VO}${key.shift && key.name ? 'S-' : VO}${key.name || ch}`
       key.full = name
-      GlobalProgram.instances.forEach(program => {
-        if (program.input !== self.input) return void 0
-        program.emit(KEYPRESS, ch, key)
-        program.emit(KEY + SP + name, ch, key)
+      GlobalProgram.instances.forEach(p => {
+        if (p.input !== self.input) return void 0
+        p.emit(KEYPRESS, ch, key)
+        p.emit(KEY + SP + name, ch, key)
       })
     })
     this.input.on(DATA,
       this.input._dataHandler =
         data => GlobalProgram.instances.forEach(
-          program => program.input !== self.input ? void 0 : void program.emit(DATA, data)
+          p => p.input !== self.input ? void 0 : void p.emit(DATA, data)
         )
     )
     keypressEventsEmitter(this.input)

@@ -5,7 +5,7 @@ export class Carousel {
     this.options = options
     this.screen = this.options.screen
   }
-  static build(pages,options) { return new Carousel(pages,options) }
+  static build(pages, options) { return new Carousel(pages, options) }
   move() {
     let i = this.screen.sub.length
     while (i--) this.screen.sub[i].detach()
@@ -14,7 +14,7 @@ export class Carousel {
   }
   next() {
     this.currPage++
-    if ((this.currPage === this.pages.length)) {
+    if (( this.currPage === this.pages.length )) {
       if (this.options.rotate) { this.currPage = 0 }
       else { return void ( this.currPage-- ) }
     }

@@ -1,5 +1,4 @@
 import { BooleanCapabilities, NumberCapabilities, StringCapabilities }       from '@pres/enum-terminfo-alias'
-import { LogService }                                                        from '@pres/util-helpers'
 import { ACSC, CAPS_BOO, CAPS_NUM, CAPS_STR, CPATHS, IPATHS, TERMCAP, UTOA } from '../assets'
 import { termPrint }                                                         from '../util/termPrint'
 

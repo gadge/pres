@@ -142,7 +142,7 @@ export class Program extends IO {
     this.#boundMouse = true
     const decoder = new StringDecoder('utf8'),
           self    = this
-    this.on(DATA, function (data) {
+    this.on(DATA, data => {
       const text = decoder.write(data)
       if (!text) return
       self.#bindMouse(text, data)
