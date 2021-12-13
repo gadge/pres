@@ -1,6 +1,6 @@
 {
   "name": "@pres/terminal-interface",
-  "version": "0.3.32",
+  "version": "0.3.33",
   "description": "Terminal-interface for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -17,12 +17,12 @@
   },
   "dependencies": {
     "@ject/mixin": "^0.0.16",
-    "@pres/components": "^0.3.32",
-    "@pres/program": "^0.3.32",
-    "@pres/terminfo-parser": "^0.3.32",
-    "@pres/util-blessed-colors": "^0.3.32",
-    "@pres/util-helpers": "^0.3.32",
-    "@pres/util-unicode": "^0.3.32",
+    "@pres/components": "^0.3.33",
+    "@pres/program": "^0.3.33",
+    "@pres/terminfo-parser": "^0.3.33",
+    "@pres/util-blessed-colors": "^0.3.33",
+    "@pres/util-helpers": "^0.3.33",
+    "@pres/util-unicode": "^0.3.33",
     "url": "^0.11.0"
   },
   "repository": {

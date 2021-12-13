@@ -1,6 +1,6 @@
 {
   "name": "@pres/events",
-  "version": "0.3.32",
+  "version": "0.3.33",
   "description": "EventEmitter for pres",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -15,9 +15,9 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/enum-events": "^0.3.32",
-    "@pres/enum-key-names": "^0.3.32",
-    "@pres/util-helpers": "^0.3.32",
+    "@pres/enum-events": "^0.3.33",
+    "@pres/enum-key-names": "^0.3.33",
+    "@pres/util-helpers": "^0.3.33",
     "@typen/enum-data-types": "^0.1.17",
     "@vect/vector-merge": "^0.4.9"
   },

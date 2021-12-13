@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-chart-series",
-  "version": "0.3.32",
+  "version": "0.3.33",
   "description": "Series class for pres charting",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",

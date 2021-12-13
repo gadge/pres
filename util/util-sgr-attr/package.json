@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-sgr-attr",
-  "version": "0.3.32",
+  "version": "0.3.33",
   "description": "Parse from/to sgr effects and colors",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
@@ -18,8 +18,8 @@
     "@palett/enum-ansi-codes": "^0.8.18",
     "@palett/enum-font-effects": "^0.8.18",
     "@palett/util-ansi": "^0.8.18",
-    "@pres/util-byte-colors": "^0.3.32",
-    "@pres/util-sgr-mode": "^0.3.32",
+    "@pres/util-byte-colors": "^0.3.33",
+    "@pres/util-sgr-mode": "^0.3.33",
     "@typen/enum-data-types": "^0.1.17",
     "@typen/nullish": "^0.1.17"
   },
