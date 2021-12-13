@@ -1,13 +1,13 @@
-import { flop, rand, ziggurat } from '@aryth/rand'
-import { ATTACH, RESIZE }       from '@pres/enum-events'
-import { last } from '@vect/vector-index'
-import { TI }   from '../src/terminal-interface'
+import { flop, rand, ziggurat }                                                                          from '@aryth/rand'
+import { BarChart, DataTable, DonutChart, Gauge, Grid, LCD, LineChart, LogList, Map, Screen, Sparkline } from '@pres/components'
+import { ATTACH, RESIZE }                                                                                from '@pres/enum-events'
+import { last }                                                                                          from '@vect/vector-index'
 
 const normDist = ziggurat(0, 5, 0)
 
-const screen = TI.screen()
+const screen = Screen.build()
 //create layout and widgets
-const grid = TI.grid({ rows: 12, cols: 12, dashboardMargin: 3, screen: screen })
+const grid = Grid.build({ rows: 12, cols: 12, dashboardMargin: 3, screen: screen })
 
 /**
  * DonutChart Options
@@ -15,14 +15,14 @@ const grid = TI.grid({ rows: 12, cols: 12, dashboardMargin: 3, screen: screen })
  self.options.arcWidth = options.arcWidth || 4; //width of the donutChart
  self.options.yPadding = options.yPadding || 2; //padding from the top
  */
-const donut = grid.set(8, 8, 4, 2, TI.donutChart, {
+const donut = grid.set(8, 8, 4, 2, DonutChart.build, {
   label: 'Percent DonutChart',
   radius: 16,
   arcWidth: 4,
   yPadding: 2,
   data: [ { label: 'Storage', percent: 87 } ]
 })
-// var latencyLine = grid.set(8, 8, 4, 2, TI.lineChart,
+// var latencyLine = grid.set(8, 8, 4, 2, LineChart.build,
 //   { style: 
 //     { line: 'yellow'
 //     , text: 'green'
@@ -30,21 +30,21 @@ const donut = grid.set(8, 8, 4, 2, TI.donutChart, {
 //   , xLabelPadding: 3
 //   , xPadding: 5
 //   , label: 'Network Latency (sec)'})
-const gauge = grid.set(8, 10, 2, 2, TI.gauge, { label: 'Storage', percent: [ 80, 20 ] })
-const gauge_two = grid.set(2, 9, 2, 3, TI.gauge, { label: 'Deployment Progress', percent: 80 })
-const sparkline = grid.set(10, 10, 2, 2, TI.sparkline, {
+const gauge = grid.set(8, 10, 2, 2, Gauge.build, { label: 'Storage', percent: [ 80, 20 ] })
+const gauge_two = grid.set(2, 9, 2, 3, Gauge.build, { label: 'Deployment Progress', percent: 80 })
+const sparkline = grid.set(10, 10, 2, 2, Sparkline.build, {
   label: 'Throughput (bits/sec)',
   tags: true,
   style: { fg: 'blue', titleFg: 'white' }
 })
-const bar = grid.set(4, 6, 4, 3, TI.barChart, {
+const bar = grid.set(4, 6, 4, 3, BarChart.build, {
   label: 'Server Utilization (%)',
   barWidth: 4,
   barSpacing: 6,
   xOffset: 2,
   maxHeight: 9
 })
-const dataTable = grid.set(4, 9, 4, 3, TI.dataTable, {
+const dataTable = grid.set(4, 9, 4, 3, DataTable.build, {
   keys: true,
   fg: 'green',
   label: 'Active Processes',
@@ -63,11 +63,11 @@ const dataTable = grid.set(4, 9, 4, 3, TI.dataTable, {
   options.elements = options.elements || 3; // how many elements in the display. or how many characters can be displayed.
   options.display = options.display || 321; // what should be displayed before anything is set
   options.elementSpacing = options.spacing || 4; // spacing between each element
-  options.elemenpaddingSum = options.padding || 2; // how far away from the edges to put the elements
+  options.elementPaddingSum = options.padding || 2; // how far away from the edges to put the elements
 //coloring
   options.color = options.color || 'white';
 */
-const lcdLineOne = grid.set(0, 9, 2, 3, TI.lcd, {
+const lcdLineOne = grid.set(0, 9, 2, 3, LCD.build, {
   label: 'LCD Test',
   segmentWidth: 0.06,
   segmentInterval: 0.11,
@@ -75,9 +75,9 @@ const lcdLineOne = grid.set(0, 9, 2, 3, TI.lcd, {
   elements: 5,
   display: 3210,
   elementSpacing: 4,
-  elemenpaddingSum: 2
+  elementPaddingSum: 2
 })
-const errorsLine = grid.set(0, 6, 4, 3, TI.lineChart, {
+const errorsLine = grid.set(0, 6, 4, 3, LineChart.build, {
   style: {
     line: 'red',
     text: 'white',
@@ -87,15 +87,15 @@ const errorsLine = grid.set(0, 6, 4, 3, TI.lineChart, {
   maxY: 60,
   showLegend: true
 })
-const transactionsLine = grid.set(0, 0, 6, 6, TI.lineChart, {
+const transactionsLine = grid.set(0, 0, 6, 6, LineChart.build, {
   showNthLabel: 5,
   maxY: 100,
   label: 'Total Transactions',
   showLegend: true,
   legend: { width: 10 }
 })
-const map = grid.set(6, 0, 6, 6, TI.map, { label: 'Servers Location' })
-const logList = grid.set(8, 6, 4, 2, TI.logList, {
+const map = grid.set(6, 0, 6, 6, Map.build, { label: 'Servers Location' })
+const logList = grid.set(8, 6, 4, 2, LogList.build, {
   fg: 'green',
   selectedFg: 'green',
   label: 'Server Log'
@@ -209,7 +209,7 @@ setInterval(() => {
   lcdLineOne.setDisplay(value + text[value % 12])
   lcdLineOne.setOptions({
     color: colors[value % 5],
-    elemenpaddingSum: 4
+    elementPaddingSum: 4
   })
   screen.render()
 }, 1500)
@@ -258,4 +258,4 @@ screen.on(RESIZE, () => {
   logList.emit(ATTACH)
 })
 screen.render()
-screen.emit('adjourn')
+// screen.emit('adjourn')

@@ -1,5 +1,4 @@
-import { blessed }  from '@pres/terminal-interface'
-import * as contrib from '../index'
+import { Box, Grid, Map, Screen } from '@pres/components'
 
 const screen = Screen.build(),
       grid   = Grid.build({ rows: 12, cols: 12, screen: screen }),

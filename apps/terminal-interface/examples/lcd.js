@@ -1,5 +1,4 @@
-import { blessed }  from '@pres/terminal-interface'
-import * as contrib from '../index'
+import { LCD, Screen } from '@pres/components'
 
 const screen = Screen.build()
 /*
@@ -11,49 +10,31 @@ const screen = Screen.build()
   options.elements = options.elements || 3; // how many elements in the display. or how many characters can be displayed.
   options.display = options.display || 321; // what should be displayed before anything is set
   options.elementSpacing = options.spacing || 4; // spacing between each element
-  options.elemenpaddingSum = options.padding || 2; // how far away from the edges to put the elements
+  options.elementPaddingSum = options.padding || 2; // how far away from the edges to put the elements
 //coloring
   options.color = options.color || "white";
 */
-const lcd = contrib.lcd({
+const lcd = LCD.build({
   label: 'Test',
   elements: 4
 })
 screen.append(lcd)
-setInterval(function () {
+setInterval(() => {
   const colors = [ 'green', 'magenta', 'cyan', 'red', 'blue' ]
   const text = [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L' ]
   const value = Math.round(Math.random() * 1000)
   lcd.setDisplay(value + text[value % 12])
   lcd.setOptions({
     color: colors[value % 5],
-    elemenpaddingSum: 5
+    elementPaddingSum: 5
   })
   screen.render()
 }, 1000)
-screen.key([ 'g' ], function (ch, key) {
-  lcd.increaseWidth()
-  screen.render()
-})
-screen.key([ 'h' ], function (ch, key) {
-  lcd.decreaseWidth()
-  screen.render()
-})
-screen.key([ 't' ], function (ch, key) {
-  lcd.increaseInterval()
-  screen.render()
-})
-screen.key([ 'y' ], function (ch, key) {
-  lcd.decreaseInterval()
-  screen.render()
-})
-screen.key([ 'b' ], function (ch, key) {
-  lcd.increaseStroke()
-  screen.render()
-})
-screen.key([ 'n' ], function (ch, key) {
-  lcd.decreaseStroke()
-  screen.render()
-})
+screen.key([ 'g' ], (ch, key) => { lcd.increaseWidth(), screen.render() })
+screen.key([ 'h' ], (ch, key) => { lcd.decreaseWidth(), screen.render() })
+screen.key([ 't' ], (ch, key) => { lcd.increaseInterval(), screen.render() })
+screen.key([ 'y' ], (ch, key) => { lcd.decreaseInterval(), screen.render() })
+screen.key([ 'b' ], (ch, key) => { lcd.increaseStroke(), screen.render() })
+screen.key([ 'n' ], (ch, key) => { lcd.decreaseStroke(), screen.render() })
 screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
 screen.render()

@@ -1,4 +1,4 @@
-import { blessed } from '@pres/terminal-interface'
+import { Box, Carousel, Grid, LineChart, Map, Screen } from '@pres/components'
 
 const screen = Screen.build()
 function page1(screen) {
