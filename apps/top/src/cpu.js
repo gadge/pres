@@ -1,11 +1,10 @@
-import { COLOR_COLLECTION } from '@pres/fin/assets/COLOR_COLLECTION'
-import { Escape }           from '@valjoux/linger'
-import { init, iso }        from '@vect/vector-init'
-import { mapper }           from '@vect/vector-mapper'
-import { mutazip }          from '@vect/vector-zipper'
-import si                   from 'systeminformation'
-import { COLOR_NO }         from '../assets/COLOR_COLLECTION'
-import { queue }            from '../util'
+import { Escape }                     from '@valjoux/linger'
+import { init, iso }                  from '@vect/vector-init'
+import { mapper }                     from '@vect/vector-mapper'
+import { mutazip }                    from '@vect/vector-zipper'
+import si                             from 'systeminformation'
+import { COLOR_COLLECTION, COLOR_NO } from '../assets/COLOR_COLLECTION.js'
+import { queue }                      from '../util/index.js'
 
 export class Cpu extends Escape {
   on = true
@@ -36,8 +35,8 @@ export class Cpu extends Escape {
   }
 
   async setInterval(ms, pipe) {
-    await si.currentLoad().then(data => data.cpus|> this.initSeriesCollection |> pipe)
-    await super.setInterval(ms, data => data.cpus|> this.updateSeriesCollection |> pipe)
+    await si.currentLoad().then(data => pipe(this.initSeriesCollection(data.cpus)))
+    await super.setInterval(ms, data => pipe(this.updateSeriesCollection(data.cpus)))
   }
 }
 

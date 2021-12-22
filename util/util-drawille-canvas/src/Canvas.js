@@ -1,6 +1,6 @@
 import { CSI, SGR }                               from '@palett/enum-ansi-codes'
 import { byteToBackSgra, byteToForeSgra, toByte } from '@pres/util-byte-colors'
-import { MASK_MAP }                               from '../assets/MASK_MAP'
+import { MASK_MAP }                               from '../assets/MASK_MAP.js'
 
 export class Canvas {
   constructor(width, height) {
@@ -20,7 +20,7 @@ export class Canvas {
     if (x < 0 || this.width <= x || y < 0 || this.height <= y) return
     const coord = this.getCoord(x, y), mask = MASK_MAP[y % 4][x % 2]
     this.content[coord] |= mask
-    this.colors[coord] = CSI + ( this.color|> toByte|> byteToForeSgra ) + SGR
+    this.colors[coord] = CSI + ( byteToForeSgra(toByte(this.color)) ) + SGR
     this.chars[coord] = null
   }
   unset(x, y) {
@@ -47,8 +47,8 @@ export class Canvas {
   writeText(str, x, y) {
     const pos = this.getCoord(x, y)
     for (let i = 0; i < str.length; i++) this.chars[pos + i] = str[i]
-    const bg = this.fontBg|> toByte|> byteToBackSgra
-    const fg = this.fontFg|> toByte|> byteToForeSgra
+    const bg = byteToBackSgra(toByte(this.fontBg))
+    const fg = byteToForeSgra(toByte(this.fontFg))
     this.chars[pos] = ( CSI + fg + bg + SGR ) + this.chars[pos]
     this.chars[pos + str.length - 1] += CSI + '39;49' + SGR
   }
@@ -59,7 +59,7 @@ export class Canvas {
       if (j === this.width >> 1) { result.push(de), j = 0 }
       this.chars[i] ? result.push(this.chars[i])
         : !this.content[i] ? result.push(' ')
-        : result.push(this.colors[i] + String.fromCharCode(0x2800 + this.content[i]) + CSI + '39' + SGR)
+          : result.push(this.colors[i] + String.fromCharCode(0x2800 + this.content[i]) + CSI + '39' + SGR)
       //result.push(String.fromCharCode(0x2800 + this.content[i]))
     }
     result.push(de)

@@ -7,6 +7,6 @@ import { WEB_SAFE_MATRIX_HEX, WEB_SAFE_MATRIX_INDEX } from '../assets'
 const matrix = zipper(
   WEB_SAFE_MATRIX_INDEX,
   WEB_SAFE_MATRIX_HEX,
-  (index, hex, x, y) => `[${ index }](${ x },${ y })${ rgbToStr(hex|>hexToRgb) }`
+  (index, hex, x, y) => `[${index}](${x},${y})${rgbToStr(hex|>hexToRgb)}`
 )
 matrix |> decoMatrix |> logger

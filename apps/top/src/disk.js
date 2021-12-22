@@ -1,7 +1,7 @@
-import { COLOR_COLLECTION } from '@pres/fin/assets/COLOR_COLLECTION'
+import { COLOR_COLLECTION } from '../assets/COLOR_COLLECTION.js'
 import { Escape }           from '@valjoux/linger'
 import si                   from 'systeminformation'
-import { humanScale }       from '../util'
+import { humanScale }       from '../util/index.js'
 
 export class Disk extends Escape {
   seriesCollection = []
@@ -22,7 +22,7 @@ export class Disk extends Escape {
   }
   async setInterval(ms, pipe) {
     this.initSeriesCollection()
-    await super.setInterval(ms, data => data|> this.updateSeriesCollection |> pipe)
+    await super.setInterval(ms, data => pipe(this.updateSeriesCollection(data)))
   }
 }
 

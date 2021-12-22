@@ -1,5 +1,5 @@
-import { Context } from '../src/Context'
 import ansi_term   from 'ansi-term'
+import { Context } from '../src/Context.js'
 
 const size = { height: 40, width: 80 }
 const c = new Context(size.width, size.height, ansi_term)

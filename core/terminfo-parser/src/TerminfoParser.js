@@ -15,22 +15,23 @@
 //   It's not parsed as true. Investigate.
 // - Possibly switch to other method of finding the extended data string table: i += h.symOffsetCount * 2;
 
-import { merge, slice }       from '@pres/util-helpers'
-import { LogService }         from '@pres/util-helpers/src/loggers'
-import { BOO, FUN, NUM, STR } from '@typen/enum-data-types'
-import { nullish }            from '@typen/nullish'
-import assert                 from 'assert'
-import cp                     from 'child_process'
-import fs                     from 'fs'
-import path                   from 'path'
-import { UTOA }               from '../assets'
-import { capToInfo }          from '../util/capToInfo'
-import { sprintf, tryRead }   from '../util/helpers'
-import { noop }               from '../util/noop'
-import { termPrint }          from '../util/termPrint'
-import { whichTerminal }      from '../util/whichTerminal'
-import { TerminfoLib }        from './TerminfoLib'
+import { LogService, merge, slice } from '@pres/util-helpers'
+import { BOO, FUN, NUM, STR }       from '@typen/enum-data-types'
+import { nullish }                  from '@typen/nullish'
+import assert                       from 'assert'
+import cp                           from 'child_process'
+import fs                           from 'fs'
+import path, { dirname }            from 'path'
+import { fileURLToPath }            from 'url'
+import { UTOA }                     from '../assets'
+import { capToInfo }                from '../util/capToInfo'
+import { sprintf, tryRead }         from '../util/helpers'
+import { noop }                     from '../util/noop'
+import { termPrint }                from '../util/termPrint'
+import { whichTerminal }            from '../util/whichTerminal'
+import { TerminfoLib }              from './TerminfoLib'
 
+const __dirname = dirname(fileURLToPath(import.meta.url))
 const SCOPES = [ 'booleans', 'numerics', 'literals' ]
 const HEADERS = [ 'name', 'names', 'desc', 'file', 'termcap' ]
 const USR = __dirname + '/../usr/'

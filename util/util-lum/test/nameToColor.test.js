@@ -53,7 +53,7 @@ const FabInv = DyeFab.prep(INVERSE)
 const FabUnd = DyeFab.prep(UNDERLINE)
 for (const [ name, value ] of Object.entries(candidates)) {
   let color = nameToColor(name)
-  let dye   = Dye.int.call(FabInv, color)
+  let dye = Dye.int.call(FabInv, color)
   xr()
     [dye(name.padStart(14))](String(LIGHT.exec(name)).padStart(8))
     .match(LIGHT.test(name))

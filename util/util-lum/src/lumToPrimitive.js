@@ -22,6 +22,6 @@ export const lumToPrimitive = function (hint) {
   const mode = this.modeSign
   if (hint === NUM) { return parseInt(n.sty(m) + n(f) + n(b), 16) }
   if (hint === STR) { return proj.render(m, mode) + Fluo.int(t(f), t) + Fluo.int(t(b), b) }
-  if (hint === DEF) { return `[${ proj.render(m, mode) },${ Fluo.int(t(f), t) },${ Fluo.int(t(b), b) }]` }
+  if (hint === DEF) { return `[${proj.render(m, mode)},${Fluo.int(t(f), t)},${Fluo.int(t(b), b)}]` }
   return lumToSgr(this) + ( this.ch ?? '+' ) + CSI + SGR // throw new Error()
 }

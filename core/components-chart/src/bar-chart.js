@@ -1,14 +1,15 @@
-import { round }  from '@aryth/math'
-import { Canvas } from '@pres/components-layout'
-import { ATTACH } from '@pres/enum-events'
-import { maxBy }  from '@vect/vector-indicator'
-import { Bars }   from '../utils'
+import { round }    from '@aryth/math'
+import { Canvas }   from '@pres/components-layout'
+import { ATTACH }   from '@pres/enum-events'
+import { maxBy }    from '@vect/vector-indicator'
+import { Bars }     from '../utils'
+import { AnsiTerm } from '../utils/AnsiTerm'
 
 export class BarChart extends Canvas {
   constructor(options = {}) {
     if (!options.sku) options.sku = 'bar-chart'
     // if (!(this instanceof Node)) return new BarChart(options)
-    super(options, ansi_term)
+    super(options, AnsiTerm)
     const self = this
     this.bars = this.options.bars = Bars.build(options.bars ?? options)
     this.options.xOffset = this.options.xOffset ?? 5

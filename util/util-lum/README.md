@@ -10,17 +10,29 @@
 [![github commit total][badge-github-commit-count]][url-github]
 
 [//]: <> (Shields)
+
 [badge-npm-version]: https://flat.badgen.net/npm/v/@pres/util-lum
+
 [badge-npm-download-monthly]: https://flat.badgen.net/npm/dm/@pres/util-lum
+
 [badge-npm-download-total]:https://flat.badgen.net/npm/dt/@pres/util-lum
+
 [badge-npm-dependents]: https://flat.badgen.net/npm/dependents/@pres/util-lum
+
 [badge-npm-license]: https://flat.badgen.net/npm/license/@pres/util-lum
+
 [badge-pp-install-size]: https://flat.badgen.net/packagephobia/install/@pres/util-lum
+
 [badge-github-last-commit]: https://flat.badgen.net/github/last-commit/hoyeungw/pres
+
 [badge-github-commit-count]: https://flat.badgen.net/github/commits/hoyeungw/pres
+
 [//]: <> (Link)
+
 [url-npm]: https://npmjs.org/package/@pres/util-lum
+
 [url-pp]: https://packagephobia.now.sh/result?p=@pres/util-lum
+
 [url-github]: https://github.com/hoyeungw/pres
 
 ##### Fork cluster with configs

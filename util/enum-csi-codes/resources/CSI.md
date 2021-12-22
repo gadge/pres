@@ -24,7 +24,7 @@
 
 | Code         | Abbr       | Name                          | Effect                                                                                                                                                                                                                |
 | ------------ | ---------- | ----------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| CSI s        | SCP, SCOSC | Save Current Cursor Position  | Saves the cursor position/state in SCO console mode.[[24]]  In vertical split screen mode, instead used to set (as  `CSI  n  ;  n  s`) or reset left and right margins.[[25]]                                         |
+| CSI s        | SCP, SCOSC | Save Current Cursor Position  | Saves the cursor position/state in SCO console mode.[[24]]  In vertical split screen mode, instead used to set (as  `CSI  n ; n  s`) or reset left and right margins.[[25]]                                         |
 | CSI u        | RCP, SCORC | Restore Saved Cursor Position | Restores the cursor position/state in SCO console mode.[[26]]                                                                                                                                                         |
 | CSI ? 25 h   | DECTCEM    |                               | Shows the cursor, from the  [VT220] .                                                                                                                                                                                 |
 | CSI ? 25 l   | DECTCEM    |                               | Hides the cursor.                                                                                                                                                                                                     |
@@ -35,9 +35,8 @@
 
 ## C1 (8-Bit) Control Characters
 
-The xterm program recognizes both 8-bit and 7-bit control characters.
-It generates 7-bit controls (by default) or 8-bit if S8C1T is enabled.
-The following pairs of 7-bit and 8-bit control characters are equivalent:
+The xterm program recognizes both 8-bit and 7-bit control characters. It generates 7-bit controls (by default) or 8-bit if S8C1T is enabled. The
+following pairs of 7-bit and 8-bit control characters are equivalent:
 
 | code  | name  | desc                                                                                     |
 | ----- | ----- | ---------------------------------------------------------------------------------------- |
@@ -51,7 +50,7 @@ The following pairs of 7-bit and 8-bit control characters are equivalent:
 | ESC V | SPA   | Start of Guarded Area (SPA is 0x96).                                                     |
 | ESC W | EPA   | End of Guarded Area (EPA is 0x97).                                                       |
 | ESC X | SOS   | Start of String (SOS is 0x98).                                                           |
-| ESC Z | DECID | Return Terminal ID (DECID is 0x9a).  Obsolete form of CSI c (DA).                        |
+| ESC Z | DECID | Return Terminal ID (DECID is 0x9a). Obsolete form of CSI c (DA).                        |
 | ESC [ | CSI   | Control Sequence Introducer (CSI is 0x9b).                                               |
 | ESC \ | ST    | String Terminator (ST is 0x9c).                                                          |
 | ESC ] | OSC   | Operating System Command (OSC is 0x9d).                                                  |
@@ -60,7 +59,7 @@ The following pairs of 7-bit and 8-bit control characters are equivalent:
 
 ## Controls beginning with ESC
 
-This excludes controls where ESC  is part of a 7-bit equivalent to 8-bit C1 controls, ordered by the final character(s).
+This excludes controls where ESC is part of a 7-bit equivalent to 8-bit C1 controls, ordered by the final character(s).
 
 | code     | name             | desc                                                                                                           |
 | -------- | ---------------- | -------------------------------------------------------------------------------------------------------------- |
@@ -74,7 +73,7 @@ This excludes controls where ESC  is part of a 7-bit equivalent to 8-bit C1 cont
 | ESC # 5  | DECSWL           | DEC single-width line (DECSWL).                                                                                |
 | ESC # 6  | DECDWL           | DEC double-width line (DECDWL).                                                                                |
 | ESC # 8  | DECALN           | DEC Screen Alignment Test (DECALN).                                                                            |
-| ESC % @  | ISO 2022         | Select default character set.  That is ISO 8859-1 (ISO 2022).                                                  |
+| ESC % @  | ISO 2022         | Select default character set. That is ISO 8859-1 (ISO 2022).                                                  |
 | ESC % G  | ISO 2022         | Select UTF-8 character set (ISO 2022).                                                                         |
 | ESC ( C  | ISO 2022, VT100  | Designate G0 Character Set (ISO 2022, VT100). [Appendix.1]                                                     |
 | ESC ) C  | ISO 2022, VT100  | Designate G1 Character Set (ISO 2022, VT100). The same character sets apply as for ESC ( C.                    |
@@ -82,16 +81,16 @@ This excludes controls where ESC  is part of a 7-bit equivalent to 8-bit C1 cont
 | ESC + C  | ISO 2022, VT220  | Designate G3 Character Set (ISO 2022, VT220). The same character sets apply as for ESC ( C.                    |
 | ESC - C  | VT300            | Designate G1 Character Set (VT300). The same character sets apply as for ESC ( C.                              |
 | ESC . C  | VT300            | Designate G2 Character Set (VT300). The same character sets apply as for ESC ( C.                              |
-| ESC / C  | VT300            | Designate G3 Character Set (VT300). These work for 96-character sets only. C = A  -> ISO Latin-1 Supplemental. |
+| ESC / C  | VT300            | Designate G3 Character Set (VT300). These work for 96-character sets only. C = A -> ISO Latin-1 Supplemental. |
 | ESC 6    | DECBI            | Back Index (DECBI), VT420 and up.                                                                              |
 | ESC 7    | DECSC            | Save Cursor (DECSC).                                                                                           |
 | ESC 8    | DECRC            | Restore Cursor (DECRC).                                                                                        |
 | ESC 9    | DECFI            | Forward Index (DECFI), VT420 and up.                                                                           |
 | ESC =    | DECKPAM          | Application Keypad (DECKPAM).                                                                                  |
 | ESC >    | DECKPNM          | Normal Keypad (DECKPNM).                                                                                       |
-| ESC F    |                  | Cursor to lower left corner of screen.  This is enabled by the hpLowerleftBugCompat resource.                  |
+| ESC F    |                  | Cursor to lower left corner of screen. This is enabled by the hpLowerleftBugCompat resource.                  |
 | ESC c    | RIS              | Full Reset (RIS).                                                                                              |
-| ESC l    | per HP terminals | Memory Lock (per HP terminals).  Locks memory above the cursor.                                                |
+| ESC l    | per HP terminals | Memory Lock (per HP terminals). Locks memory above the cursor.                                                |
 | ESC m    | per HP terminals | Memory Unlock (per HP terminals).                                                                              |
 | ESC n    | LS2              | Invoke the G2 Character Set as GL (LS2).                                                                       |
 | ESC o    | LS3              | Invoke the G3 Character Set as GL (LS3).                                                                       |
@@ -100,31 +99,13 @@ This excludes controls where ESC  is part of a 7-bit equivalent to 8-bit C1 cont
 | ESC ~    | LS1R             | Invoke the G1 Character Set as GR (LS1R).                                                                      |
 
 [Appendix.1]
-Final character C for designating 94-character sets.  In this
-list, 0 , A  and B  apply to VT100 and up, the remainder to
-VT220 and up.  The VT220 character sets, together with the
-Portuguese character set are activated by the National
-Replacement Character controls.  The A  is a special case,
-since it is also activated by the VT300-control for British
-Latin-1 separately from the National Replacement Character
-controls.
-C = 0  -> DEC Special Character and Line Drawing Set.
-C = <  -> DEC Supplementary (VT200).
-C = % 5  -> DEC Supplementary Graphics (VT300).
-C = >  -> DEC Technical (VT300).
-C = A  -> United Kingdom (UK).
-C = B  -> United States (USASCII).
-C = 4  -> Dutch.
-C = C  or 5  -> Finnish.
-C = R  or f  -> French.
-C = Q  or 9  -> French Canadian (VT200, VT300).
-C = K  -> German.
-C = Y  -> Italian.
-C = ` , E  or 6  -> Norwegian/Danish.
-C = % 6  -> Portuguese (VT300).
-C = Z  -> Spanish.
-C = H  or 7  -> Swedish.
-C = =  -> Swiss.
+Final character C for designating 94-character sets. In this list, 0 , A and B apply to VT100 and up, the remainder to VT220 and up. The VT220
+character sets, together with the Portuguese character set are activated by the National Replacement Character controls. The A is a special
+case, since it is also activated by the VT300-control for British Latin-1 separately from the National Replacement Character controls. C = 0 ->
+DEC Special Character and Line Drawing Set. C = <  -> DEC Supplementary (VT200). C = % 5 -> DEC Supplementary Graphics (VT300). C = >  -> DEC
+Technical (VT300). C = A -> United Kingdom (UK). C = B -> United States (USASCII). C = 4 -> Dutch. C = C or 5 -> Finnish. C = R or f -> French.
+C = Q or 9 -> French Canadian (VT200, VT300). C = K -> German. C = Y -> Italian. C = ` , E or 6 -> Norwegian/Danish. C = % 6 -> Portuguese (
+VT300). C = Z -> Spanish. C = H or 7 -> Swedish. C = = -> Swiss.
 
 ## CSI from Google
 
@@ -146,55 +127,84 @@ C = =  -> Swiss.
 | ?K  | DECSEL      | Selective Erase in Line                | Same as EL above                                                                                                                      |
 | L   | IL          | Insert Lines                           | Insert `arg1` lines                                                                                                                   |
 | M   | DL          | Delete Lines                           | Delete `arg1` lines                                                                                                                   |
-| N   | EF          | Erase in Field                         | *Ignored (TBD)*                                                                                                                       |
-| O   | EA          | Erase in Area                          | *Ignored (TBD)*                                                                                                                       |
+| N   | EF          | Erase in Field                         | *Ignored (
+TBD)*                                                                                                                       |
+| O   | EA          | Erase in Area                          | *Ignored (
+TBD)*                                                                                                                       |
 | P   | DCH         | Delete Characters                      | Delete `arg1` characters before cursor                                                                                                |
-| Q   | SEE         | Select Editing Extent                  | *Ignored (TBD)*                                                                                                                       |
-| R   | CPR         | Active Position Report                 | *Ignored (TBD)*                                                                                                                       |
+| Q   | SEE         | Select Editing Extent                  | *Ignored (
+TBD)*                                                                                                                       |
+| R   | CPR         | Active Position Report                 | *Ignored (
+TBD)*                                                                                                                       |
 | S   | SU          | Scroll Up                              | Scroll up `arg1` lines                                                                                                                |
 | T   | SD          | Scroll Down                            | Scroll down `arg1` lines                                                                                                              |
-| >T  |             |                                        | Won't support                                                                                                                         |
-| U   | NP          | Next Page                              | *Ignored (TBD)*                                                                                                                       |
-| V   | PP          | Previous Page                          | *Ignored (TBD)*                                                                                                                       |
-| W   | CTC         | Cursor Tabulation Control              | *Ignored (TBD)*                                                                                                                       |
+| > T  |             |                                        | Won't support                                                                                                                         |
+| U   | NP          | Next Page                              | *Ignored (
+TBD)*                                                                                                                       |
+| V   | PP          | Previous Page                          | *Ignored (
+TBD)*                                                                                                                       |
+| W   | CTC         | Cursor Tabulation Control              | *Ignored (
+TBD)*                                                                                                                       |
 | X   | ECH         | Erase Characters                       | Delete `arg1` characters after cursor                                                                                                 |
-| Y   | CVT         | Cursor Line Tabulation                 | *Ignored (TBD)*                                                                                                                       |
+| Y   | CVT         | Cursor Line Tabulation                 | *Ignored (
+TBD)*                                                                                                                       |
 | Z   | CBT         | Cursor Backward Tabulation             | Move cursor back `arg1` tabs                                                                                                          |
-| [   | SRS         | Start Reversed String                  | *Ignored (TBD)*                                                                                                                       |
-| \   | PTX         | Parallel Texts                         | *Ignored (TBD)*                                                                                                                       |
-| ]   | SDS         | Start Directed String                  | *Ignored (TBD)*                                                                                                                       |
-| ^   | SIMD        | Select Implicit Movement Direction     | *Ignored (TBD)*                                                                                                                       |
-| _   |             |                                        | *Ignored (TBD)*                                                                                                                       |
+| [   | SRS         | Start Reversed String                  | *Ignored (
+TBD)*                                                                                                                       |
+| \   | PTX         | Parallel Texts                         | *Ignored (
+TBD)*                                                                                                                       |
+| ]   | SDS         | Start Directed String                  | *Ignored (
+TBD)*                                                                                                                       |
+| ^   | SIMD        | Select Implicit Movement Direction     | *Ignored (
+TBD)*                                                                                                                       |
+| _   |             |                                        | *Ignored (
+TBD)*                                                                                                                       |
 | `   | HPA         | Character Position Absolute            | Same as CHA above                                                                                                                     |
 | a   | HPR         | Character Position Relative            | Move cursor forward `arg1` columns                                                                                                    |
-| b   | REP         | Repeat                                 | *Ignored (TBD)*                                                                                                                       |
+| b   | REP         | Repeat                                 | *Ignored (
+TBD)*                                                                                                                       |
 | c   | DA/DA1      | Send Primary Device Attributes         | Currently reports “VT100 with Advanced Video Option”                                                                                  |
-| >c  | DA2         | Send Secondary Device Attributes       | Currently reports “VT100”                                                                                                             |
+| > c  | DA2         | Send Secondary Device Attributes       | Currently reports “VT100”                                                                                                             |
 | d   | VPA         | Line Position Absolute                 | Move cursor to `arg1` row                                                                                                             |
-| e   | VPR         | Line Position Forward                  | *Ignored (TBD)*                                                                                                                       |
+| e   | VPR         | Line Position Forward                  | *Ignored (
+TBD)*                                                                                                                       |
 | f   | HVP         | Horizontal and Vertical Position       | Same as CUP above                                                                                                                     |
 | g   | TBC         | Tab Clear                              | `!arg1` or `arg1 == 0`: Clear tab stop at cursor<br>`arg1 == 3`: Clear all tab stops                                                  |
-| h   | SM          | Set Mode                               | Supported [**(1)**]                                                                                                                   |
-| ?h  | DECSET      | DEC Set Mode                           | Supported [**(2)**]                                                                                                                   |
+| h   | SM          | Set Mode                               | Supported [**(
+1)**]                                                                                                                   |
+| ?h  | DECSET      | DEC Set Mode                           | Supported [**(
+2)**]                                                                                                                   |
 | i   | MC          | Media Copy                             | Won't support                                                                                                                         |
 | ?i  | DECMC       | DEC Media Copy                         | Won't support                                                                                                                         |
-| j   | HPB         | Character Position Backward            | *Ignored (TBD)*                                                                                                                       |
-| k   | VPB         | Line Position Backward                 | *Ignored (TBD)*                                                                                                                       |
-| l   | RM          | Reset Mode                             | Supported [**(1)**]                                                                                                                   |
-| ?l  | DECRST      | DEC Mode Reset                         | Supported [**(2)**]                                                                                                                   |
-| m   | SGR         | Select Graphic Rendition               | Supported [**(3)**]                                                                                                                   |
-| >m  |             | xterm specific keyboard modes          | Won't support                                                                                                                         |
+| j   | HPB         | Character Position Backward            | *Ignored (
+TBD)*                                                                                                                       |
+| k   | VPB         | Line Position Backward                 | *Ignored (
+TBD)*                                                                                                                       |
+| l   | RM          | Reset Mode                             | Supported [**(
+1)**]                                                                                                                   |
+| ?l  | DECRST      | DEC Mode Reset                         | Supported [**(
+2)**]                                                                                                                   |
+| m   | SGR         | Select Graphic Rendition               | Supported [**(
+3)**]                                                                                                                   |
+| > m  |             | xterm specific keyboard modes          | Won't support                                                                                                                         |
 | n   | DSR         | Device Status Reports                  | Supported                                                                                                                             |
 | ?n  | DECDSR      | DEC Device Status Reports              | Supported                                                                                                                             |
-| >n  |             | xterm specific modifiers               | Won't support                                                                                                                         |
-| o   | DAQ         | Define Area Qualification              | *Ignored (TBD)*                                                                                                                       |
-| p   |             |                                        | *Ignored (TBD)*                                                                                                                       |
-| >p  |             | xterm specific cursor display control  | *Ignored (TBD)*                                                                                                                       |
+| > n  |             | xterm specific modifiers               | Won't support                                                                                                                         |
+| o   | DAQ         | Define Area Qualification              | *Ignored (
+TBD)*                                                                                                                       |
+| p   |             |                                        | *Ignored (
+TBD)*                                                                                                                       |
+| > p  |             | xterm specific cursor display control  | *Ignored (
+TBD)*                                                                                                                       |
 | !p  | DECSTR      | Soft Terminal Reset                    | Supported                                                                                                                             |
-| $p  | DECRQM      | Request Mode - Host To Terminal        | *Ignored (TBD)*                                                                                                                       |
-| ?$p | DECRQM      | Request Mode - Host To Terminal        | *Ignored (TBD)*                                                                                                                       |
-| "p  | DECSCL      | Select Conformance Level               | *Ignored (TBD)*                                                                                                                       |
-| q   | DECLL       | Load LEDs                              | *Ignored (TBD)*                                                                                                                       |
+| $p  | DECRQM      | Request Mode - Host To Terminal        | *Ignored (
+TBD)*                                                                                                                       |
+| ?$p | DECRQM      | Request Mode - Host To Terminal        | *Ignored (
+TBD)*                                                                                                                       |
+| "p  | DECSCL      | Select Conformance Level               | *Ignored (
+TBD)*                                                                                                                       |
+| q   | DECLL       | Load LEDs                              | *Ignored (
+TBD)*                                                                                                                       |
 | ␠q  | DECSCUSR    | Set Cursor Style                       | Supported                                                                                                                             |
 | "q  | DECSCA      | Select Character Protection Attribute  | Won't support                                                                                                                         |
 | r   | DECSTBM     | Set Top and Bottom Margins             | Supported                                                                                                                             |
@@ -204,22 +214,29 @@ C = =  -> Swiss.
 | ?s  |             |                                        | Won't support                                                                                                                         |
 | t   |             |                                        | Won't support                                                                                                                         |
 | $t  | DECRARA     | Reverse Attributes in Rectangular Area | Won't support                                                                                                                         |
-| >t  |             |                                        | Won't support                                                                                                                         |
+| > t  |             |                                        | Won't support                                                                                                                         |
 | ␠t  | DECSWBV     | Set Warning Bell Volume                | Won't support                                                                                                                         |
 | u   |             | Restore cursor (ANSI.SYS)              | Supported                                                                                                                             |
 | ␠u  | DECSMBV     | Set Margin Bell Volume                 | Won't support                                                                                                                         |
-| v   |             |                                        | *Ignored (TBD)*                                                                                                                       |
+| v   |             |                                        | *Ignored (
+TBD)*                                                                                                                       |
 | $v  | DECCRA      | Copy Rectangular Area                  | Won't support                                                                                                                         |
-| w   |             |                                        | *Ignored (TBD)*                                                                                                                       |
+| w   |             |                                        | *Ignored (
+TBD)*                                                                                                                       |
 | 'w  | DECEFR      | Enable Filter Rectangle                | Won't support                                                                                                                         |
-| x   | DECREQTPARM | Request Terminal Parameters            | *Ignored (TBD)*                                                                                                                       |
+| x   | DECREQTPARM | Request Terminal Parameters            | *Ignored (
+TBD)*                                                                                                                       |
 | *x  | DECSACE     | Select Attribute Change Extent         | Won't support                                                                                                                         |
 | $x  | DECFRA      | Fill Rectangular Area                  | Won't support                                                                                                                         |
-| y   |             |                                        | *Ignored (TBD)*                                                                                                                       |
-| z   |             |                                        | *Ignored (TBD)*                                                                                                                       |
-| 'z  | DECELR      | Enable Locator Reporting               | *Ignored (TBD)*                                                                                                                       |
+| y   |             |                                        | *Ignored (
+TBD)*                                                                                                                       |
+| z   |             |                                        | *Ignored (
+TBD)*                                                                                                                       |
+| 'z  | DECELR      | Enable Locator Reporting               | *Ignored (
+TBD)*                                                                                                                       |
 | $z  | DECERA      | Erase Rectangular Area                 | Won't support                                                                                                                         |
-| '{  | DECSLE      | Select Locator Events                  | *Ignored (TBD)*                                                                                                                       |
+| '{  | DECSLE      | Select Locator Events                  | *Ignored (
+TBD)*                                                                                                                       |
 | '\| |             |                                        | *Ignored (TBD)*                                                                                                                       |
 | '}  | DECIC       | Insert Column                          | Won't support                                                                                                                         |
 | '~  | DECDC       | Delete Column                          | Won't support                                                                                                                         |

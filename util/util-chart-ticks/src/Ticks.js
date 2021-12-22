@@ -18,12 +18,10 @@ export class Ticks {
     this.abbr = options.abbr ?? false
     this.extend = options.extend ?? null
   }
-  static build(options) { return new Ticks(options) }
-
   get incre() { return this.step }
   get dif() { return this.max - this.min }
   get tickWidth() { return this.formatValue(this.max).length * 2 }
-
+  static build(options) { return new Ticks(options) }
   formatValue(v) { return this.abbr ? abbrNum(v) : String(v) }
   setPrev({ min, max }) { return this.prev.min = min, this.prev.max = max, this }
   setup(seriesCollection) {

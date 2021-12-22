@@ -3,8 +3,6 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-import { deco, DecoEntries, decoVector } from '@spare/logger'
-import { zipper }                        from '@vect/vector'
 
 const { logger } = require('@spare/logger')
 exports.match = function (r1, g1, b1) {

@@ -33,7 +33,7 @@ export class Proc extends Escape {
     return head
   }
   async setInterval(ms, pipe) {
-    await super.setInterval(ms, data => data|> this.dataToTable |> pipe) // setInterval(updater, 3000)
+    await super.setInterval(ms, data => pipe(this.dataToTable(data))) // setInterval(updater, 3000)
   }
   dataToTable(data) {
     const key = this.selectedLabel

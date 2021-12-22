@@ -30,12 +30,13 @@ helpers.asort = function (obj) {
     if (a[0] === '.' && b[0] === '.') {
       a = a[1]
       b = b[1]
-    } else {
+    }
+    else {
       a = a[0]
       b = b[0]
     }
 
-    return a > b ? 1 : (a < b ? -1 : 0)
+    return a > b ? 1 : ( a < b ? -1 : 0 )
   })
 }
 
@@ -46,7 +47,7 @@ helpers.hsort = function (obj) {
 }
 
 helpers.findFile = function (start, target) {
-  return (function read(dir) {
+  return ( function read(dir) {
     let files, file, stat, out
 
     if (dir === '/dev' || dir === '/sys'
@@ -64,23 +65,23 @@ helpers.findFile = function (start, target) {
       file = files[i]
 
       if (file === target) {
-        return (dir === '/' ? '' : dir) + '/' + file
+        return ( dir === '/' ? '' : dir ) + '/' + file
       }
 
       try {
-        stat = fs.lstatSync((dir === '/' ? '' : dir) + '/' + file)
+        stat = fs.lstatSync(( dir === '/' ? '' : dir ) + '/' + file)
       } catch (e) {
         stat = null
       }
 
       if (stat && stat.isDirectory() && !stat.isSymbolicLink()) {
-        out = read((dir === '/' ? '' : dir) + '/' + file)
+        out = read(( dir === '/' ? '' : dir ) + '/' + file)
         if (out) return out
       }
     }
 
     return null
-  })(start)
+  } )(start)
 }
 
 // Escape text for tag-enabled elements.
@@ -106,7 +107,8 @@ helpers.generateTags = function (style, text) {
       val = val.replace(/^bright(?!-)/, 'bright-')
       open = '{' + val + '-' + key + '}' + open
       close += '{/' + val + '-' + key + '}'
-    } else {
+    }
+    else {
       if (val === true) {
         open = '{' + key + '}' + open
         close += '{/' + key + '}'
@@ -151,10 +153,12 @@ helpers.__defineGetter__('Screen', function () {
   if (!helpers._screen) {
     helpers._screen = require('../widgets/screen')
   }
-  return helpers._screen})
+  return helpers._screen
+})
 
 helpers.__defineGetter__('Element', function () {
   if (!helpers._element) {
     helpers._element = require('../widgets/element')
   }
-  return helpers._element})
+  return helpers._element
+})

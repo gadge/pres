@@ -1,5 +1,5 @@
-import { concatSgr }                               from '@palett/util-ansi'
 import { CSI, SGR }                                from '@palett/enum-ansi-codes'
+import { concatSgr }                               from '@palett/util-ansi'
 import { byteToBackSgra, byteToForeSgra, degrade } from '@pres/util-byte-colors'
 import { modeToSgra }                              from '@pres/util-sgr-mode'
 

@@ -1,6 +1,6 @@
-import { Fluo }                                   from '@palett/fluo'
-import { logger }                                 from '@spare/logger'
-import { SP }                                     from '@texting/enum-chars'
+import { Fluo }                                         from '@palett/fluo'
+import { logger }                                       from '@spare/logger'
+import { SP }                                           from '@texting/enum-chars'
 import { zipper }                                       from '@vect/vector'
 import { WEB_SAFE_COLOR_HEXES, WEB_SAFE_COLOR_INDEXES } from './webSafeColor.tables'
 
@@ -22,7 +22,7 @@ zipper(WEB_SAFE_COLOR_INDEXES, WEB_SAFE_COLOR_HEXES, (indexRow, hexRow, i) => {
   //   row += Fluo.hex(`[${index}](${hex})(${coordToWeb(i, j)})`, hex) + SP // ${hex |> hexToHsl |> hslToStr}
   // })
   zipper(indexRow, hexRow, (index, hex, j) => {
-    row += Fluo.hex(`[${ index }](${ hex })(${ 16 + i },${ 36 * j })(${ indexToHex(index) })`, hex) + SP // ${hex |> hexToHsl |> hslToStr}
+    row += Fluo.hex(`[${index}](${hex})(${16 + i},${36 * j})(${indexToHex(index)})`, hex) + SP // ${hex |> hexToHsl |> hslToStr}
   })
   row |> logger
 })

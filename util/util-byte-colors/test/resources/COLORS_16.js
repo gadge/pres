@@ -1,4 +1,4 @@
-import { rgbToHex, rgbToInt } from '@palett/convert'
+import { rgbToHex } from '@palett/convert'
 
 export const COLORS_16 = [
   [ 0, 0, 0 ], // noir

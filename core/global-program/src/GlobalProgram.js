@@ -44,8 +44,8 @@ export class GlobalProgram {
     GlobalProgram.global = GlobalProgram.instances[0]
     if (GlobalProgram.total === 0) {
       GlobalProgram.global = null
-      process.removeListener(EXIT, GlobalProgram.exitHandler.bind(GlobalProgram))
-      delete GlobalProgram.exitHandler.bind(GlobalProgram)
+      process.removeListener(EXIT, GlobalProgram.exitHandler)
+      delete GlobalProgram.exitHandler
       GlobalProgram.#bound = false
     }
     return GlobalProgram

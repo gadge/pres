@@ -14,7 +14,7 @@ zipper(WEB_SAFE_MATRIX_INDEX, WEB_SAFE_MATRIX_HEX, (indexRow, hexRow, i) => {
   // })
   zipper(indexRow, hexRow, (index, hex, j) => {
     const webHex = byteToWeb(index)
-    const phrase = `[${ index }](${ hex })(${ 16 + i },${ 36 * j })(${ webHex }){${ hexToByte(webHex) }}`
+    const phrase = `[${index}](${hex})(${16 + i},${36 * j})(${webHex}){${hexToByte(webHex)}}`
     row += Fluo.hex(phrase, hex) + rgbToStr(hex|>hexToRgb) + SP // ${hex |> hexToHsl |> hslToStr}
   })
   row |> logger

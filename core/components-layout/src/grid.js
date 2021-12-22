@@ -1,5 +1,5 @@
 import { roundD2, roundD4 } from '@aryth/math'
-import { Cadre }            from '@pres/components-core/utils/Cadre'
+import { Cadre }            from '@pres/components-core'
 import { assignDeep }       from '@pres/util-helpers'
 
 const SPACING = 0

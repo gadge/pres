@@ -10,18 +10,29 @@
 [![github commit total][badge-github-commit-count]][url-github]
 
 [//]: <> (Shields)
+
 [badge-npm-version]: https://flat.badgen.net/npm/v/@pres/util-blessed-colors
+
 [badge-npm-download-monthly]: https://flat.badgen.net/npm/dm/@pres/util-blessed-colors
+
 [badge-npm-download-total]:https://flat.badgen.net/npm/dt/@pres/util-blessed-colors
+
 [badge-npm-dependents]: https://flat.badgen.net/npm/dependents/@pres/util-blessed-colors
+
 [badge-npm-license]: https://flat.badgen.net/npm/license/@pres/util-blessed-colors
+
 [badge-pp-install-size]: https://flat.badgen.net/packagephobia/install/@pres/util-blessed-colors
+
 [badge-github-last-commit]: https://flat.badgen.net/github/last-commit/hoyeungw/pres
+
 [badge-github-commit-count]: https://flat.badgen.net/github/commits/hoyeungw/pres
 
 [//]: <> (Link)
+
 [url-npm]: https://npmjs.org/package/@pres/util-blessed-colors
+
 [url-pp]: https://packagephobia.now.sh/result?p=@pres/util-blessed-colors
+
 [url-github]: https://github.com/hoyeungw/pres
 
 ##### Fork cluster with configs

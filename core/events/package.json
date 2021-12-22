@@ -2,8 +2,12 @@
   "name": "@pres/events",
   "version": "0.3.33",
   "description": "EventEmitter for pres",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
   "files": [
     "dist"
   ],
@@ -19,7 +23,7 @@
     "@pres/enum-key-names": "^0.3.33",
     "@pres/util-helpers": "^0.3.33",
     "@typen/enum-data-types": "^0.1.17",
-    "@vect/vector-merge": "^0.4.9"
+    "@vect/vector-merge": "^0.4.10"
   },
   "repository": {
     "type": "git",

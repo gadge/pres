@@ -2,8 +2,12 @@
   "name": "@pres/components-blessed",
   "version": "0.0.12",
   "description": "blessed components for pres",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
+"type": "module",
+  "main": "dist/index.cjs",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
   "files": [
     "dist",
     "widgets"

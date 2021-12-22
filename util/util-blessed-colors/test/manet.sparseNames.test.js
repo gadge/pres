@@ -1,9 +1,9 @@
+import { Fluo }                   from '@palett/fluo'
 import { decoMatrix, logger, xr } from '@spare/logger'
 import { iso }                    from '@vect/matrix'
 import { SPARSE_NAMES }           from '../assets'
-import { indexToCoord }           from './web-colors/webSafeColor.test'
 import { WEB_SAFE_COLOR_HEXES }   from './web-colors/webSafeColor.tables'
-import { Fluo }                   from '@palett/fluo'
+import { indexToCoord }           from './web-colors/webSafeColor.test'
 
 const matrix = iso(36, 7, null)
 WEB_SAFE_COLOR_HEXES |> decoMatrix |> logger

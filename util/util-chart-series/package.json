@@ -2,8 +2,12 @@
   "name": "@pres/util-chart-series",
   "version": "0.3.33",
   "description": "Series class for pres charting",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
   "files": [
     "dist"
   ],
@@ -15,7 +19,7 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@vect/entries-unwind": "^0.4.9"
+    "@vect/entries-unwind": "^0.4.10"
   },
   "repository": {
     "type": "git",

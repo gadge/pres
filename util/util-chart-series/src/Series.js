@@ -7,10 +7,6 @@ export class Series {
     this.xs = x ?? []
     this.ys = y ?? []
   }
-  static fromEntries(entries, title) {
-    const [ xs, ys ] = entries |> unwind
-    return new Series(xs, ys, title)
-  }
   get x() { return this.xs }
   set x(vec) { return this.xs = vec }
   get y() { return this.ys }
@@ -19,4 +15,8 @@ export class Series {
   set xValues(vec) { return this.xs = vec }
   get values() { return this.ys }
   set values(vec) { return this.ys = vec }
+  static fromEntries(entries, title) {
+    const [ xs, ys ] = entries |> unwind
+    return new Series(xs, ys, title)
+  }
 }

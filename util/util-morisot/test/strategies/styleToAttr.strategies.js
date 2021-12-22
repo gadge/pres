@@ -4,12 +4,12 @@ import { concatSgr, hexToBackSgra, hexToForeSgra }     from '@palett/util-ansi'
 import { CSI }                                         from '@pres/enum-control-chars'
 import { SGR }                                         from '@pres/enum-csi-codes'
 import { sattr }                                       from '@pres/util-colors'
+import { styleToAttr }                                 from '@pres/util-sgr-attr/src/styleToAttr'
 import { modeToSgra, styleToMode }                     from '@pres/util-sgr-mode'
 import { decoCrostab, says }                           from '@spare/logger'
 import { NUM }                                         from '@typen/enum-data-types'
 import { strategies }                                  from '@valjoux/strategies'
-import { Mor }         from '../../src/Mor'
-import { styleToAttr } from '@pres/util-sgr-attr/src/styleToAttr'
+import { Mor }                                         from '../../src/Mor'
 
 const { lapse, result } = strategies({
   repeat: 1, // 1E+6,

@@ -112,7 +112,6 @@ export class Terminal extends Box {
         self.term.utfMouse ||
         self.term.sgrMouse ||
         self.term.urxvtMouse) {
-
       }
       else {
         return

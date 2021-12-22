@@ -1,7 +1,7 @@
 import { makeEmbedded }            from '@foba/util'
 import { decoCrostab, says }       from '@spare/logger'
 import { strategies }              from '@valjoux/strategies'
-import { coordToWeb, byteToCoord } from '../../src/convert/byteToWeb'
+import { byteToCoord, coordToWeb } from '../../src/convert/byteToWeb'
 
 const { lapse, result } = strategies({
   repeat: 1E+6,

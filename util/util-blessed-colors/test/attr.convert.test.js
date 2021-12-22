@@ -7,7 +7,7 @@ import * as colors    from '../dist/index.esm'
 class Morisot {
   static sattr(style, fg, bg) {
     let { bold, underline, blink, inverse, invisible } = style
-    if (fg == null && bg == null) { (fg = style.fg), (bg = style.bg) }
+    if (fg == null && bg == null) { ( fg = style.fg ), ( bg = style.bg ) }
     if (typeof bold === FUN) bold = bold(this)
     if (typeof underline === FUN) underline = underline(this)
     if (typeof blink === FUN) blink = blink(this)
@@ -17,20 +17,20 @@ class Morisot {
     if (typeof bg === FUN) bg = bg(this)
     // console.log('>> [element.sattr]', this.codename, fg ?? AEU, 'to', colors.convert(fg), bg ?? AEU, 'to', colors.convert(bg))
     return (
-      ((invisible ? 16 : 0) << 18) |
-      ((inverse ? 8 : 0) << 18) |
-      ((blink ? 4 : 0) << 18) |
-      ((underline ? 2 : 0) << 18) |
-      ((bold ? 1 : 0) << 18) |
-      (colors.convert(fg) << 9) |
-      (colors.convert(bg))
+      ( ( invisible ? 16 : 0 ) << 18 ) |
+      ( ( inverse ? 8 : 0 ) << 18 ) |
+      ( ( blink ? 4 : 0 ) << 18 ) |
+      ( ( underline ? 2 : 0 ) << 18 ) |
+      ( ( bold ? 1 : 0 ) << 18 ) |
+      ( colors.convert(fg) << 9 ) |
+      ( colors.convert(bg) )
     ) // return (this.uid << 24) | ((this.dockBorders ? 32 : 0) << 18)
   }
   // Convert an SGR string to our own attribute format.
   static attrCode(code, cur, def) {
-    let effect = (cur >> 18) & 0x1ff,
-        fore   = (cur >> 9) & 0x1ff,
-        back   = (cur) & 0x1ff
+    let effect = ( cur >> 18 ) & 0x1ff,
+        fore   = ( cur >> 9 ) & 0x1ff,
+        back   = ( cur ) & 0x1ff
     code = code.slice(2, -1).split(';')
     if (!code[0]) code[0] = '0'
     for (let i = 0, c; i < code.length; i++) {
@@ -38,47 +38,47 @@ class Morisot {
       switch (c) {
         case 0: // normal
           back = def & 0x1ff
-          fore = (def >> 9) & 0x1ff
-          effect = (def >> 18) & 0x1ff
+          fore = ( def >> 9 ) & 0x1ff
+          effect = ( def >> 18 ) & 0x1ff
           break
         case 1: // bold
           effect |= 1
           break
         case 22:
-          effect = (def >> 18) & 0x1ff
+          effect = ( def >> 18 ) & 0x1ff
           break
         case 4: // underline
           effect |= 2
           break
         case 24:
-          effect = (def >> 18) & 0x1ff
+          effect = ( def >> 18 ) & 0x1ff
           break
         case 5: // blink
           effect |= 4
           break
         case 25:
-          effect = (def >> 18) & 0x1ff
+          effect = ( def >> 18 ) & 0x1ff
           break
         case 7: // inverse
           effect |= 8
           break
         case 27:
-          effect = (def >> 18) & 0x1ff
+          effect = ( def >> 18 ) & 0x1ff
           break
         case 8: // invisible
           effect |= 16
           break
         case 28:
-          effect = (def >> 18) & 0x1ff
+          effect = ( def >> 18 ) & 0x1ff
           break
         case 39: // default fg
-          fore = (def >> 9) & 0x1ff
+          fore = ( def >> 9 ) & 0x1ff
           break
         case 49: // default bg
           back = def & 0x1ff
           break
         case 100: // default fg/bg
-          fore = (def >> 9) & 0x1ff
+          fore = ( def >> 9 ) & 0x1ff
           back = def & 0x1ff
           break
         default: // color
@@ -102,7 +102,7 @@ class Morisot {
           else if (c === 38 && +code[i + 1] === 2) {
             i += 2
             fore = colors.match(+code[i], +code[i + 1], +code[i + 2])
-            if (fore === -1) fore = (def >> 9) & 0x1ff
+            if (fore === -1) fore = ( def >> 9 ) & 0x1ff
             i += 2
             break
           }
@@ -124,21 +124,21 @@ class Morisot {
             fore += 8
           }
           else if (c === 39) {
-            fore = (def >> 9) & 0x1ff
+            fore = ( def >> 9 ) & 0x1ff
           }
           else if (c === 100) {
-            fore = (def >> 9) & 0x1ff
+            fore = ( def >> 9 ) & 0x1ff
             back = def & 0x1ff
           }
           break
       }
     }
-    return (effect << 18) | (fore << 9) | back
+    return ( effect << 18 ) | ( fore << 9 ) | back
   }
   // Convert our own attribute format to an SGR string.
   static codeAttr(code) {
-    const flags = (code >> 18) & 0x1ff
-    let fg  = (code >> 9) & 0x1ff,
+    const flags = ( code >> 18 ) & 0x1ff
+    let fg  = ( code >> 9 ) & 0x1ff,
         bg  = code & 0x1ff,
         out = ''
     if (flags & 1) { out += '1;' } // bold

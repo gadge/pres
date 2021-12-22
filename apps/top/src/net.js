@@ -1,8 +1,8 @@
-import { LF }           from '@texting/enum-chars'
-import { Escape }       from '@valjoux/linger'
-import { iso }          from '@vect/vector-init'
+import { LF }                 from '@texting/enum-chars'
+import { Escape }             from '@valjoux/linger'
+import { iso }                from '@vect/vector-init'
 import si                     from 'systeminformation'
-import { humanScale, queue, } from '../util'
+import { humanScale, queue, } from '../util/index.js'
 
 export class Net extends Escape {
   seriesCollection = []
@@ -31,7 +31,7 @@ export class Net extends Escape {
     this.initSeriesCollection()
     const interfaces = await si.networkInterfaceDefault()
     this.conf = { fn: async () => await si.networkStats(interfaces) }
-    await super.setInterval(ms, data => data |> this.updateSeriesCollection |> pipe)
+    await super.setInterval(ms, data => pipe(this.updateSeriesCollection(data)))
   }
 }
 

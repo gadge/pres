@@ -3,7 +3,7 @@ import {
   Teal, Yellow
 } from '@palett/cards'
 
-const COLOR_COLLECTION = [
+export const COLOR_COLLECTION = [
   Red.base,
   Pink.base,
   Purple.base,

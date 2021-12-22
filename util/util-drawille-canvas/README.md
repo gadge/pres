@@ -14,14 +14,15 @@ In node `v0.10` it's a bit slow, with node `v0.11` it runs very smoothly.
 
 ## Usage
 
-See [example](test/example.js), check out in the console (`node example`) or in the [browser](http://madbence.github.io/node-drawille-canvas/) (`example.html`).
+See [example](test/example.js), check out in the console (`node example`) or in
+the [browser](http://madbence.github.io/node-drawille-canvas/) (`example.html`).
 
 ## API
 
 ### new Canvas(width, height)
 
-Creates a new `Canvas` with the given dimensions.
-For method details, see [`CanvasRenderingContext2D` on MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D)
+Creates a new `Canvas` with the given dimensions. For method details,
+see [`CanvasRenderingContext2D` on MDN](https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D)
 
 ### c.fillRect(x, y, w, h)
 

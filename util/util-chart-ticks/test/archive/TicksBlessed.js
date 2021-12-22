@@ -11,12 +11,10 @@ export class TicksBlessed {
     this.abbr = options.abbr
     this.pilot = nullish(this.max)
   }
-  static build(options) { return new TicksBlessed(options) }
-
   get incre() { return this.step }
   get dif() { return this.max - this.min }
   get tickWidth() { return this.formatTick(this.max).length * 2 }
-
+  static build(options) { return new TicksBlessed(options) }
   formatTick(value) {
     const { dif, count, intOnly, abbr } = this
     const fixed = ( ( dif / count ) < 1 && value && !intOnly ) ? 2 : 0

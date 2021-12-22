@@ -2,8 +2,12 @@
   "name": "@pres/fin",
   "version": "0.3.33",
   "description": "pres graphic financial dashboard",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
   "files": [
     "dist",
     "bin"
@@ -33,7 +37,7 @@
     "@valjoux/date-shift": "^0.3.8",
     "@valjoux/linger": "^0.3.8",
     "@valjoux/timestamp": "^0.3.8",
-    "@vect/entries-unwind": "^0.4.9",
+    "@vect/entries-unwind": "^0.4.10",
     "systeminformation": "^5.9.17"
   },
   "repository": {

@@ -1,9 +1,9 @@
-import { COLOR_COLLECTION }  from '@pres/fin/assets/COLOR_COLLECTION'
+import { COLOR_COLLECTION }  from '../assets/COLOR_COLLECTION.js'
 import { Escape }            from '@valjoux/linger'
 import { last }              from '@vect/vector'
 import { init, iso }         from '@vect/vector-init'
 import si                    from 'systeminformation'
-import { humanScale, queue } from '../util'
+import { humanScale, queue } from '../util/index.js'
 
 export class Mem extends Escape {
   seriesCollection = []
@@ -56,8 +56,8 @@ export class Mem extends Escape {
   }
   async setInterval(ms, pipe) {
     this.initSeriesCollection()
-    await si.mem().then(data => data |> this.updateSeriesCollection |> pipe)
-    await super.setInterval(ms, data => data|> this.updateSeriesCollection |> pipe)
+    await si.mem().then(data => pipe(this.updateSeriesCollection(data)))
+    await super.setInterval(ms, data => pipe(this.updateSeriesCollection(data)))
   }
 }
 

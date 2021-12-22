@@ -2,11 +2,11 @@ import { BlueGrey, Indigo, LightBlue }                                          
 import { Box, DataTable, DonutChart, Grid, LineChart, ListBar, Screen, Sparkline } from '@pres/components'
 import { ATTACH, RESIZE, UNCAUGHT_EXCEPTION }                                      from '@pres/enum-events'
 import si                                                                          from 'systeminformation'
-import { Cpu }                                                                     from './src/cpu'
-import { Disk }                                                                    from './src/disk'
-import { Mem }                                                                     from './src/mem'
-import { Net }                                                                     from './src/net'
-import { Proc }                                                                    from './src/proc'
+import { Cpu }                                                                     from './src/cpu.js'
+import { Disk }                                                                    from './src/disk.js'
+import { Mem }                                                                     from './src/mem.js'
+import { Net }                                                                     from './src/net.js'
+import { Proc }                                                                    from './src/proc.js'
 
 const screen = Screen.build({ padding: 1, })
 const grid = Grid.build({ rows: 12, cols: 12, screen: screen, })
@@ -125,7 +125,7 @@ export async function init() {
     proc.readKey = ch
     proc.resetIndex = true
     await si.processes().then(data => {
-      data |> proc.dataToTable |> tables.process.update
+      tables.process.update(proc.dataToTable(data))
       proc.tryReset(tables.process)
       screen.render()
     })

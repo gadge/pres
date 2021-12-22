@@ -14,16 +14,31 @@ export class Lum {
     this.b = b
     if (c) this.ch = c
   }
-  static build(m, f, b, c) { return new Lum(m, f, b, c) }
-  static from(lum, c) { return new Lum(lum.m, lum.f, lum.b, c ?? lum.ch) }
-  [Symbol.toPrimitive](h) { return lumToPrimitive.call(this, h) }
-  toString() { return lumToPrimitive.call(this) }
   get mode() { return this.m }
   set mode(value) { return this.m = value }
   get fore() { return this.f }
   set fore(value) { return this.f = value }
   get back() { return this.b }
   set back(value) { return this.b = value }
+  get modeSign() {
+    const { m } = this
+    let tx = ''
+    tx += m & 1 ? 'B' : '-' // bold
+    tx += m & 2 ? 'U' : '-' // underline
+    tx += m & 4 ? 'B' : '-' // blink
+    tx += m & 8 ? 'I' : '-' // inverse
+    tx += m & 16 ? 'H' : '-' // hide
+    return tx
+  }
+  get bold() { return this.m & 1 }
+  get underline() { return this.m & 2 }
+  get blink() { return this.m & 4 }
+  get inverse() { return this.m & 8 }
+  get hide() { return this.m & 16 }
+  static build(m, f, b, c) { return new Lum(m, f, b, c) }
+  static from(lum, c) { return new Lum(lum.m, lum.f, lum.b, c ?? lum.ch) }
+  [Symbol.toPrimitive](h) { return lumToPrimitive.call(this, h) }
+  toString() { return lumToPrimitive.call(this) }
   inject(m, f, b, c) {
     this.m = m
     this.f = f
@@ -114,19 +129,4 @@ export class Lum {
     }
     return this.inject(m, f, b)
   }
-  get modeSign() {
-    const { m } = this
-    let tx = ''
-    tx += m & 1 ? 'B' : '-' // bold
-    tx += m & 2 ? 'U' : '-' // underline
-    tx += m & 4 ? 'B' : '-' // blink
-    tx += m & 8 ? 'I' : '-' // inverse
-    tx += m & 16 ? 'H' : '-' // hide
-    return tx
-  }
-  get bold() { return this.m & 1 }
-  get underline() { return this.m & 2 }
-  get blink() { return this.m & 4 }
-  get inverse() { return this.m & 8 }
-  get hide() { return this.m & 16 }
 }

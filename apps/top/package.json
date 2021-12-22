@@ -2,8 +2,12 @@
   "name": "@pres/top",
   "version": "0.3.33",
   "description": "pres graphic top",
-  "main": "dist/index.cjs.js",
-  "module": "dist/index.esm.js",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
   "files": [
     "dist",
     "bin"
@@ -26,9 +30,9 @@
     "@pres/enum-events": "^0.3.33",
     "@pres/terminal-interface": "^0.3.33",
     "@valjoux/linger": "^0.3.8",
-    "@vect/vector-init": "^0.4.9",
-    "@vect/vector-mapper": "^0.4.9",
-    "@vect/vector-zipper": "^0.4.9",
+    "@vect/vector-init": "^0.4.10",
+    "@vect/vector-mapper": "^0.4.10",
+    "@vect/vector-zipper": "^0.4.10",
     "systeminformation": "^5.9.17"
   },
   "repository": {

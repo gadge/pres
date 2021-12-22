@@ -1,9 +1,9 @@
 import { DeepPurple, Green, Grey, Orange, Purple, Teal } from '@palett/cards'
-import { BLINK, BOLD, INVERSE, UNDERLINE, HIDE }         from '@palett/enum-font-effects'
+import { BLINK, BOLD, HIDE, INVERSE, UNDERLINE }         from '@palett/enum-font-effects'
 import { convColor }                                     from '@pres/util-cezanne'
+import * as colors                                       from '@pres/util-colors'
 import { decoCrostab, says }                             from '@spare/logger'
 import { strategies }                                    from '@valjoux/strategies'
-import * as colors                                       from '@pres/util-colors'
 import { Lum }                                           from '../../src/lum'
 
 const hexStr = (n, l = 6) => n.toString(16).padStart(l, '0')

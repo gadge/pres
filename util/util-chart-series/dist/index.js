@@ -1,0 +1,43 @@
+import { unwind } from '@vect/entries-unwind'
+
+class Series {
+  constructor(x, y, title, style) {
+    this.title = title
+    this.style = style
+    this.xs = x ?? []
+    this.ys = y ?? []
+  }
+  get x() {
+    return this.xs
+  }
+  set x(vec) {
+    return this.xs = vec
+  }
+  get y() {
+    return this.ys
+  }
+  set y(vec) {
+    return this.ys = vec
+  }
+  get xValues() {
+    return this.xs
+  }
+  set xValues(vec) {
+    return this.xs = vec
+  }
+  get values() {
+    return this.ys
+  }
+  set values(vec) {
+    return this.ys = vec
+  }
+  static fromEntries(entries, title) {
+    var _entries
+
+    const [ xs, ys ] = ( _entries = entries, unwind(_entries) )
+    return new Series(xs, ys, title)
+  }
+
+}
+
+export { Series }

@@ -12,7 +12,7 @@ export class Labels {
   static build(options) { return new Labels(options) }
   loadLabels(seriesCollection) { this.list = seriesCollection[0].x }
   labelStep(charsLimit) {
-    const labelCount = charsLimit / (this.labelWidth + 2)
+    const labelCount = charsLimit / ( this.labelWidth + 2 )
     const pointsPerLabel = Math.ceil(this.length / labelCount)
     return this.step < pointsPerLabel ? pointsPerLabel : this.step
   }

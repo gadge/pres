@@ -1,8 +1,9 @@
-import { Cards } from '@palett/cards'
+import { Cards }                      from '@palett/cards'
+import { Box, Screen, ScrollableBox } from '@pres/components'
 
 const screen = Screen.build({
   debug: true,
-  dump: __dirname + '/logs/scrollable-boxes.log',
+  dump: process.cwd() + '/logs/scrollable-boxes.log',
   smartCSR: true,
   warnings: true
 })

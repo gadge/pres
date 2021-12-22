@@ -2,11 +2,11 @@ import { makeEmbedded }      from '@foba/util'
 import { CSI }               from '@pres/enum-control-chars'
 import { SGR }               from '@pres/enum-csi-codes'
 import * as colors           from '@pres/util-colors'
+import { sgraToAttr }        from '@pres/util-sgr-attr/src/sgraToAttr'
 import { decoCrostab, says } from '@spare/logger'
 import { strategies }        from '@valjoux/strategies'
 import Screen                from '../../../../vendor/blessed-classic/lib/widgets/screen'
-import { Mor }        from '../../src/Mor'
-import { sgraToAttr } from '@pres/util-sgr-attr/src/sgraToAttr'
+import { Mor }               from '../../src/Mor'
 
 const normAttr = +Mor.init(0, 0, 0)
 const { lapse, result } = strategies({

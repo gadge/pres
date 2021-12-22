@@ -1,6 +1,6 @@
 import bresenham       from 'bresenham'
 import { mat2d, vec2 } from 'gl-matrix'
-import { Canvas }      from './Canvas'
+import { Canvas }      from './Canvas.js'
 
 export class Context {
   #canvas
@@ -32,7 +32,7 @@ export class Context {
   closePath() { } // this._currentPath.push({ point: this._currentPath[0].point, stroke: false })
   fill() { }
   stroke() {
-    if (this.lineWidth == 0) return
+    if (this.lineWidth === 0) return
     const set = this.#canvas.set.bind(this.#canvas)
     for (let i = 1, curr = this.#currPath[0], next; i < this.#currPath.length; i++) {
       next = this.#currPath[i]
