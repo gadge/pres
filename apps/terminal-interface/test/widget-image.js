@@ -1,7 +1,7 @@
 import { Image, Screen } from '@pres/components'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/image.log',
+  dump: process.cwd() + '/logs/image.log',
   smartCSR: true,
   warnings: true
 })

@@ -1,12 +1,11 @@
 #!/usr/bin/env node
 
-import util from 'util'
-
 import { Program } from '@pres/program'
+import util        from 'util'
 
 
 const program = Program.build({
-  dump: __dirname + '/logs/mouse.log'
+  dump: process.cwd() + '/logs/mouse.log'
 })
 
 // program.setMouse({

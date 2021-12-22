@@ -1,7 +1,7 @@
 import { Button, Line, List, ProgressBar, Screen, ScrollableText, Text, Textbox } from '@pres/components'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/widget.log',
+  dump: process.cwd() + '/logs/widget.log',
   title: 'widget test',
   resizeTimeout: 300,
   dockBorders: true,

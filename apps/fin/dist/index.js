@@ -12,15 +12,12 @@ import { shiftDay } from '@valjoux/date-shift';
 import { Escape } from '@valjoux/linger';
 import { unwind } from '@vect/entries-unwind';
 
-var APIKEY = "fe647ef26d2700f2e11b53a996860481";
-
 const COLOR_COLLECTION = [Red.base, Pink.base, Purple.base, DeepPurple.base, Indigo.base, Blue.base, LightBlue.base, Cyan.base, Teal.base, Green.base, LightGreen.base, Lime.base, Yellow.base, Amber.base, Orange.base, DeepOrange.base];
 
-var _Date;
-const TODAY = (_Date = new Date(), dateToYmd(_Date));
+const TODAY = dateToYmd(new Date());
 const BEFORE = shiftDay(TODAY.slice(), -60);
-let colorGenerator = flopGenerator(COLOR_COLLECTION, Grey.base);
-MarketIndexes.login(APIKEY);
+let colorGenerator = flopGenerator(COLOR_COLLECTION, Grey.base); // MarketIndexes.login(APIKEY)
+
 class MarketWatch extends Escape {
   constructor(lineChart, indicator) {
     super(MarketIndexes.prices.bind(null, {
@@ -47,11 +44,9 @@ class MarketWatch extends Escape {
 
 
   updateData(table) {
-    var _entries$slice;
-
     const entries = table.select(['date', 'adj.c']).rows; // console.log(entries)
 
-    const [x, y] = (_entries$slice = entries.slice(0, 90), unwind(_entries$slice));
+    const [x, y] = unwind(entries.slice(0, 90));
     const {
       min,
       max

@@ -1,1 +1,1 @@
-export { GlobalScreen } from './src/GlobalScreen'
+export { GlobalScreen } from './src/GlobalScreen.js'

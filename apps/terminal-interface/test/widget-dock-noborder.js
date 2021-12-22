@@ -1,7 +1,7 @@
 import { Box, ListTable, Screen } from '@pres/components'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/dock.log',
+  dump: process.cwd() + '/logs/dock.log',
   smartCSR: true,
   dockBorders: true,
   warnings: true

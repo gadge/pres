@@ -1,7 +1,7 @@
 import { Box, Screen } from '@pres/components'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/padding.log',
+  dump: process.cwd() + '/logs/padding.log',
   warnings: true
 })
 

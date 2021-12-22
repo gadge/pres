@@ -1,5 +1,5 @@
 const screen = Screen.build({
-  dump: __dirname + '/logs/logger.log',
+  dump: process.cwd() + '/logs/logger.log',
   smartCSR: true,
   autoPadding: false,
   warnings: true

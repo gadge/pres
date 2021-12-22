@@ -3,7 +3,7 @@
   "version": "0.3.33",
   "description": "pres graphic financial dashboard",
   "type": "module",
-    "exports": {
+  "exports": {
     "import": "./dist/index.js",
     "require": "./dist/index.cjs"
   },

@@ -12,7 +12,7 @@ import { EventEmitter }                                              from 'event
 import fs                                                            from 'fs'
 import { StringDecoder }                                             from 'string_decoder'
 import util                                                          from 'util'
-import { stringify }                                                 from '../util/io.helper'
+import { stringify }                                                 from '../util/io.helper.js'
 
 const nextTick = global.setImmediate || process.nextTick.bind(process)
 
@@ -24,6 +24,8 @@ export class IO extends EventEmitter {
     super(options)
     this.configIO(options)
   }
+  get terminal() { return this.#terminal }
+  set terminal(terminal) { return this.setTerminal(terminal), this.terminal }
   configIO(options) {
     const self = this
     // EventEmitter.call(this)
@@ -69,10 +71,6 @@ export class IO extends EventEmitter {
     if (options.tput !== false) this.setupTput() // IO
     console.log(`>> [program.configIO] [terminal] ${this.#terminal} [tmux] ${this.tmux}`)
   }
-
-  get terminal() { return this.#terminal }
-  set terminal(terminal) { return this.setTerminal(terminal), this.terminal }
-
   log() { return this.#log('LOG', util.format.apply(util, arguments)) }
   debug() {
     return !this.options.debug

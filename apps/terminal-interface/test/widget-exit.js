@@ -1,7 +1,7 @@
 import { Prompt, Screen } from '@pres/components'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/exit.log',
+  dump: process.cwd() + '/logs/exit.log',
   smartCSR: true,
   autoPadding: true,
   warnings: true,

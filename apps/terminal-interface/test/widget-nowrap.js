@@ -6,7 +6,7 @@ let screen
 // xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx {red-bg}xxxx xxxx xxxx{/red-bg}
 
 screen = Screen.build({
-  dump: __dirname + '/logs/nowrap.log',
+  dump: process.cwd() + '/logs/nowrap.log',
   warnings: true
 })
 

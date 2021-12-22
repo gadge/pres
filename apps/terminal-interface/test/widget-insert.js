@@ -1,7 +1,7 @@
 import { Box, Screen } from '@pres/components'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/insert.log',
+  dump: process.cwd() + '/logs/insert.log',
   warnings: true
 })
 

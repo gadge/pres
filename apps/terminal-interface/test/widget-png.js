@@ -22,7 +22,7 @@ process.argv = process.argv.map(function (arg, i) {
 const screen = Screen.build({
   tput: true,
   smartCSR: true,
-  dump: __dirname + '/logs/png.log',
+  dump: process.cwd() + '/logs/png.log',
   warnings: true
 })
 

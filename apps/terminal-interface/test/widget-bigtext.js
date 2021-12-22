@@ -1,7 +1,7 @@
 import { BigText, Screen } from '@pres/components'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/bigtext.log',
+  dump: process.cwd() + '/logs/bigtext.log',
   smartCSR: true,
   warnings: true
 })

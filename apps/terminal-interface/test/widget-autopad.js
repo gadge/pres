@@ -1,7 +1,7 @@
 import { Box, Screen } from '@pres/components'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/autopad.log',
+  dump: process.cwd() + '/logs/autopad.log',
   smartCSR: true,
   autoPadding: true,
   warnings: true

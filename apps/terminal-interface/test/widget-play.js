@@ -1,7 +1,7 @@
 import { Screen } from '@pres/components'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/play.log',
+  dump: process.cwd() + '/logs/play.log',
   smartCSR: true,
   warnings: true
 })

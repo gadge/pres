@@ -1,2 +1,2 @@
 export { keypressEventsEmitter } from './src/keypressEventsEmitter'
-export { EventEmitter }          from './src/eventEmitter'
+export { EventEmitter }          from './src/EventEmitter.js'

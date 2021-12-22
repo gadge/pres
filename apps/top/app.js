@@ -113,7 +113,10 @@ screen.on(RESIZE, () => {
   box.emit(ATTACH)
 })
 
-screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
+screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => {
+  screen.destroy()
+  process.exit(0)
+})
 
 export async function init() {
   const cpu = new Cpu() //no Windows support

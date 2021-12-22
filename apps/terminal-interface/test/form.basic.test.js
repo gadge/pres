@@ -1,12 +1,12 @@
 import { TI } from '../src/terminal-interface'
 
-const screen = TI.screen({
-  dump: __dirname + '/logs/form.log',
+const screen = Screen.build({
+  dump: process.cwd() + '/logs/form.log',
   warnings: true
 })
 
 
-const form = TI.form({
+const form = Form.build({
   sup: screen,
   mouse: true,
   keys: true,
@@ -62,7 +62,7 @@ const set = TI.radioSet({
   }
 })
 
-const radio1 = TI.radioButton({
+const radio1 = RadioButton.build({
   sup: set,
   mouse: true,
   keys: true,
@@ -77,7 +77,7 @@ const radio1 = TI.radioButton({
   content: 'radio1'
 })
 
-const radio2 = TI.radioButton({
+const radio2 = RadioButton.build({
   sup: set,
   mouse: true,
   keys: true,
@@ -92,7 +92,7 @@ const radio2 = TI.radioButton({
   content: 'radio2'
 })
 
-const text = TI.textbox({
+const text = Textbox.build({
   sup: form,
   mouse: true,
   keys: true,
@@ -110,7 +110,7 @@ text.on('focus', function () {
   text.readInput()
 })
 
-const check = TI.checkbox({
+const check = Checkbox.build({
   sup: form,
   mouse: true,
   keys: true,
@@ -125,7 +125,7 @@ const check = TI.checkbox({
   content: 'check'
 })
 
-const check2 = TI.checkbox({
+const check2 = Checkbox.build({
   sup: form,
   mouse: true,
   keys: true,
@@ -140,7 +140,7 @@ const check2 = TI.checkbox({
   content: 'foooooooo2'
 })
 
-const submit = TI.button({
+const submit = Button.build({
   sup: form,
   mouse: true,
   keys: true,

@@ -1,7 +1,7 @@
 import { Screen, Table } from '@pres/components'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/table.log',
+  dump: process.cwd() + '/logs/table.log',
   autoPadding: false,
   fullUnicode: true,
   warnings: true

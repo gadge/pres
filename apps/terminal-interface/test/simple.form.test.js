@@ -1,5 +1,5 @@
 import { PRESS, RESET, SUBMIT } from '@pres/enum-events'
-import { Button, Form, Screen } from '../index'
+import { Button, Form, Screen } from '../index.js'
 
 const screen = Screen.build()
 
@@ -55,5 +55,8 @@ submit.on(PRESS, () => form.submit())
 cancel.on(PRESS, () => form.reset())
 form.on(SUBMIT, function (data) { form.setContent('Submitted.'), screen.render() })
 form.on(RESET, function (data) { form.setContent('Canceled.'), screen.render() })
-screen.key([ 'escape', 'q', 'C-c' ], () => process.exit(0))
+screen.key([ 'escape', 'q', 'C-c' ], () => {
+  screen.destroy()
+  process.exit(0)
+})
 screen.render()

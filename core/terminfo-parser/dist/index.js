@@ -1,12 +1,12 @@
-import fs from 'fs';
-import path, { dirname } from 'path';
-import { LogService, merge, slice } from '@pres/util-helpers';
-import { STR, FUN, BOO, NUM } from '@typen/enum-data-types';
-import { nullish } from '@typen/nullish';
-import assert from 'assert';
-import cp from 'child_process';
-import { fileURLToPath } from 'url';
-import { BooleanCapabilities, NumberCapabilities, StringCapabilities } from '@pres/enum-terminfo-alias';
+import { BooleanCapabilities, NumberCapabilities, StringCapabilities } from '@pres/enum-terminfo-alias'
+import { Logger, merge, slice }                                        from '@pres/util-helpers'
+import { BOO, FUN, NUM, STR }                                          from '@typen/enum-data-types'
+import { nullish }                                                     from '@typen/nullish'
+import assert                                                          from 'assert'
+import cp                                                              from 'child_process'
+import fs                                                              from 'fs'
+import path, { dirname }                                               from 'path'
+import { fileURLToPath }                                               from 'url'
 
 function tryRead(file) {
   if (Array.isArray(file)) {
@@ -846,14 +846,14 @@ class TerminfoLib {
       alias[key].forEach(k => keyMap[k] = key);
     }
 
-    console.log('>> [TerminfoLib.initialize]', 'alias', Object.keys(TerminfoLib.alias).length, 'keyMap', Object.keys(TerminfoLib.keyMap).length); // LogService.localInfo('terminfo-lib-booleans', TerminfoLib.booleans)
-    // LogService.localInfo('terminfo-lib-numerics', TerminfoLib.numerics)
-    // LogService.localInfo('terminfo-lib-literals', TerminfoLib.literals)
-    // LogService.localInfo('terminfo-lib-termcap', TerminfoLib.termcap)
-    // LogService.localInfo('terminfo-lib-alias', TerminfoLib.alias)
-    // LogService.localInfo('terminfo-lib-keyMap', TerminfoLib.keyMap)
-    // LogService.localInfo('terminfo-lib-acsc', TerminfoLib.acsc)
-    // LogService.localInfo('terminfo-lib-utoa', TerminfoLib.utoa)
+    console.log('>> [TerminfoLib.initialize]', 'alias', Object.keys(TerminfoLib.alias).length, 'keyMap', Object.keys(TerminfoLib.keyMap).length); // Logger.localInfo('terminfo-lib-booleans', TerminfoLib.booleans)
+    // Logger.localInfo('terminfo-lib-numerics', TerminfoLib.numerics)
+    // Logger.localInfo('terminfo-lib-literals', TerminfoLib.literals)
+    // Logger.localInfo('terminfo-lib-termcap', TerminfoLib.termcap)
+    // Logger.localInfo('terminfo-lib-alias', TerminfoLib.alias)
+    // Logger.localInfo('terminfo-lib-keyMap', TerminfoLib.keyMap)
+    // Logger.localInfo('terminfo-lib-acsc', TerminfoLib.acsc)
+    // Logger.localInfo('terminfo-lib-utoa', TerminfoLib.utoa)
   } // to easily output text with setTimeouts.
 
 
@@ -1191,7 +1191,7 @@ class TerminfoParser {
       assert(j < data.length);
       info.literals[key] = data.toString('ascii', s, j);
     });
-    LogService.localInfo("terminfo-parser-info", info); // Extended Header
+    Logger.localInfo("terminfo-parser-info", info); // Extended Header
 
     if (this.extended !== false) {
       i--;

@@ -1,3 +1,3 @@
-import { init } from '../app'
+import { init } from '../app.js'
 
 init().then()

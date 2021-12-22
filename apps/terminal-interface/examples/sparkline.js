@@ -1,6 +1,6 @@
 import { TI } from '@pres/terminal-interface'
 
-const screen = TI.screen()
+const screen = Screen.build()
 const spark = TI.sparkline(
   {
     label: 'Sparkline',

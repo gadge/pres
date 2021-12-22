@@ -1,7 +1,7 @@
 import { Box, Screen, Terminal } from '@pres/components'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/termblessed.log',
+  dump: process.cwd() + '/logs/termblessed.log',
   smartCSR: true,
   warnings: true
 })
@@ -33,7 +33,7 @@ terminal.focus()
 const term = terminal.term
 
 const screen2 = Screen.build({
-  dump: __dirname + '/logs/termblessed2.log',
+  dump: process.cwd() + '/logs/termblessed2.log',
   smartCSR: true,
   warnings: true,
   input: term,

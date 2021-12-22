@@ -1,7 +1,7 @@
 import { Box, Screen, ScrollableText } from '@pres/components'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/csr.log',
+  dump: process.cwd() + '/logs/csr.log',
   smartCSR: true,
   warnings: true
 })

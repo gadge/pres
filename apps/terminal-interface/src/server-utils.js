@@ -1,5 +1,5 @@
 import url    from 'url'
-import { TI } from './terminal-interface'
+import { TI } from './terminal-interface.js'
 
 function OutputBuffer(options) {
   this.isTTY = true
@@ -44,7 +44,7 @@ function createScreen(req, res) {
   if (query.terminal) program.terminal = query.terminal
   if (query.isOSX) program.isOSXTerm = query.isOSX
   if (query.isiTerm2) program.isiTerm2 = query.isiTerm2
-  return TI.screen({ program: program })
+  return Screen.build({ program: program })
 }
 export {
   createScreen,

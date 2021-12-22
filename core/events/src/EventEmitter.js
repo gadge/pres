@@ -53,7 +53,12 @@ export class EventEmitter {
   #emit(type, args) {
     const handler = this.#events[type]
     let result
-    if (!handler) return type === ERROR ? throw new args[0] : void 0
+    if (!handler) if (type === ERROR) {
+      throw new args[0]
+    }
+    else {
+      return void 0
+    }
     if (typeof handler === FUN) return handler.apply(this, args)
     for (const item of handler)
       if (item.apply(this, args) === false) result = false

@@ -5,7 +5,7 @@ import { last }                                                                 
 
 const normDist = ziggurat(0, 5, 0)
 
-const screen = Screen.build()
+const screen = Screen.build({})
 //create layout and widgets
 const grid = Grid.build({ rows: 12, cols: 12, dashboardMargin: 3, screen: screen })
 
@@ -233,7 +233,7 @@ setInterval(() => { updateDonut(), screen.render() }, 500)
  */
 function setLineData(seriesCollection, line) {
   for (let series of seriesCollection) {
-    let v = series.y|> last
+    let v = last(series.y)
     series.y.shift()
     v = Math.max(v + normDist.next().value, 10)
     series.y.push(v)
@@ -241,7 +241,10 @@ function setLineData(seriesCollection, line) {
   line.setData(seriesCollection)
 }
 
-screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
+screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => {
+  screen.destroy()
+  process.exit(0)
+})
 // fixes https://github.com/yaronn/TerminalInterface-contrib/issues/10
 
 screen.on(RESIZE, () => {

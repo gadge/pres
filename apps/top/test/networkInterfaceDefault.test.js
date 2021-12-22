@@ -3,9 +3,9 @@ import si                     from 'systeminformation'
 
 const test = async () => {
   const networkInterface = await si.networkInterfaceDefault()
-  networkInterface |> deco |> logger
+  logger(deco(networkInterface))
   const stats = await si.networkStats(networkInterface)
-  stats |> Deco({ vert: 2 }) |> logger
+  logger(Deco({ vert: 2 })(stats))
 }
 
 test()

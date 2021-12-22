@@ -1,10 +1,10 @@
 {
   "name": "root",
   "private": true,
+  "type": "module",
   "workspaces": [
     "apps/*",
-    "core/*",
-    "util/*"
+    "core/*"
   ],
   "scripts": {
     "bootstrap": "lerna bootstrap",
@@ -25,7 +25,6 @@
     "@aryth/rand": "^0.3.26",
     "@babel/core": "^7.16.5",
     "@babel/plugin-proposal-pipeline-operator": "^7.16.5",
-    "@babel/plugin-proposal-throw-expressions": "^7.16.5",
     "@babel/preset-env": "^7.16.5",
     "@babel/register": "^7.16.5",
     "@foba/util": "^0.5.0",

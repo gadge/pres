@@ -5,7 +5,7 @@ const fs = require('fs')
 const screen = Screen.build({
   tput: true,
   smartCSR: true,
-  dump: __dirname + '/logs/video.log',
+  dump: process.cwd() + '/logs/video.log',
   warnings: true
 })
 

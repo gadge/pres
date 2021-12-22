@@ -2,7 +2,7 @@ import { Box, Screen, ScrollableText } from '@pres/components'
 import fs                              from 'fs'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/record.log',
+  dump: process.cwd() + '/logs/record.log',
   smartCSR: true,
   warnings: true
 })

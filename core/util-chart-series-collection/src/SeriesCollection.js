@@ -16,7 +16,7 @@ export class SeriesCollection extends Array {
   }
   static fromTable(table, xColumn, ...yColumns) {
     const xs = table.column(xColumn)
-    const ysCollection = table.select(yColumns) |> transpose
+    const ysCollection = transpose(table.select(yColumns))
     const seriesList = mapper(ysCollection, (ys, i) => new Series(xs, ys, yColumns[i]))
     return SeriesCollection.fromSeriesList(seriesList)
   }

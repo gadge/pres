@@ -7,17 +7,17 @@ import { Grey }             from '@palett/cards'
 import { camelToSnake }     from '@texting/phrasing'
 import { dateToYmd }        from '@valjoux/convert'
 import { shiftDay }         from '@valjoux/date-shift'
-import { Escape }      from '@valjoux/linger'
+import { Escape }           from '@valjoux/linger'
 import { unwind }           from '@vect/entries-unwind'
-import APIKEY               from '../../../../meta/local/fmp.apikey.json'
+// import APIKEY               from '../../../../resources/'
 import { COLOR_COLLECTION } from '../../assets/COLOR_COLLECTION'
 
 
-const TODAY = new Date() |> dateToYmd
+const TODAY = dateToYmd(new Date())
 const BEFORE = shiftDay(TODAY.slice(), -60)
 let colorGenerator = flopGenerator(COLOR_COLLECTION, Grey.base)
 
-MarketIndexes.login(APIKEY)
+// MarketIndexes.login(APIKEY)
 
 export class MarketWatch extends Escape {
   constructor(lineChart, indicator) {
@@ -44,7 +44,7 @@ export class MarketWatch extends Escape {
   updateData(table) {
     const entries = table.select([ 'date', 'adj.c' ]).rows
     // console.log(entries)
-    const [ x, y ] = entries.slice(0, 90) |> unwind
+    const [ x, y ] = unwind(entries.slice(0, 90))
     const { min, max } = roundBound(bound(y))
     const series = {
       title: this.indicator,

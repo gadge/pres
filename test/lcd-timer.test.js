@@ -14,27 +14,30 @@ const screen = Screen.build()
 //coloring
   options.color = options.color || "white";
 */
-const lcd = LCD.build({
+const lcdTimerTest = LCD.build({
   label: 'Test',
   elements: 4
 })
-screen.append(lcd)
+screen.append(lcdTimerTest)
 setInterval(() => {
   const colors = [ 'green', 'magenta', 'cyan', 'red', 'blue' ]
   const text = [ 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L' ]
   const value = Math.round(Math.random() * 1000)
-  lcd.setDisplay(value + text[value % 12])
-  lcd.setOptions({
+  lcdTimerTest.setDisplay(value + text[value % 12])
+  lcdTimerTest.setOptions({
     color: colors[value % 5],
     elementPaddingSum: 5
   })
   screen.render()
 }, 1000)
-screen.key([ 'g' ], (ch, key) => { lcd.increaseWidth(), screen.render() })
-screen.key([ 'h' ], (ch, key) => { lcd.decreaseWidth(), screen.render() })
-screen.key([ 't' ], (ch, key) => { lcd.increaseInterval(), screen.render() })
-screen.key([ 'y' ], (ch, key) => { lcd.decreaseInterval(), screen.render() })
-screen.key([ 'b' ], (ch, key) => { lcd.increaseStroke(), screen.render() })
-screen.key([ 'n' ], (ch, key) => { lcd.decreaseStroke(), screen.render() })
-screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => process.exit(0))
+screen.key([ 'g' ], (ch, key) => { lcdTimerTest.increaseWidth(), screen.render() })
+screen.key([ 'h' ], (ch, key) => { lcdTimerTest.decreaseWidth(), screen.render() })
+screen.key([ 't' ], (ch, key) => { lcdTimerTest.increaseInterval(), screen.render() })
+screen.key([ 'y' ], (ch, key) => { lcdTimerTest.decreaseInterval(), screen.render() })
+screen.key([ 'b' ], (ch, key) => { lcdTimerTest.increaseStroke(), screen.render() })
+screen.key([ 'n' ], (ch, key) => { lcdTimerTest.decreaseStroke(), screen.render() })
+screen.key([ 'escape', 'q', 'C-c' ], (ch, key) => {
+  screen.destroy()
+  process.exit(0)
+})
 screen.render()

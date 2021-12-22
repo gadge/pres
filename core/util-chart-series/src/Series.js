@@ -16,7 +16,7 @@ export class Series {
   get values() { return this.ys }
   set values(vec) { return this.ys = vec }
   static fromEntries(entries, title) {
-    const [ xs, ys ] = entries |> unwind
+    const [ xs, ys ] = unwind(entries)
     return new Series(xs, ys, title)
   }
 }

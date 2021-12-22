@@ -1,7 +1,7 @@
 import { ListTable, Screen } from '@pres/components'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/listtable.log',
+  dump: process.cwd() + '/logs/listtable.log',
   autoPadding: false,
   fullUnicode: true,
   warnings: true

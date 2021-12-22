@@ -3,7 +3,7 @@ import { Indigo, LightBlue, Pink, Red } from '@palett/cards'
 const auto = false
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/listBar.log',
+  dump: process.cwd() + '/logs/listBar.log',
   autoPadding: auto,
   warnings: true
 })

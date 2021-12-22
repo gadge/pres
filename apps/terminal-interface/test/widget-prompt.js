@@ -3,7 +3,7 @@ import { Loading, Message, Prompt, Question, Screen } from '@pres/components'
 const screen = Screen.build({
   tput: true,
   smartCSR: true,
-  dump: __dirname + '/logs/prompt.log',
+  dump: process.cwd() + '/logs/prompt.log',
   autoPadding: true,
   warnings: true
 })

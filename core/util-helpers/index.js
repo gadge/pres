@@ -20,5 +20,5 @@ export {
 } from './src/contrib.js'
 
 export {
-  LogService
-} from './src/loggers.js'
+  Logger
+} from './src/Logger.js'

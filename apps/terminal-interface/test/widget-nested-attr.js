@@ -1,7 +1,7 @@
 import { Box, Screen } from '@pres/components'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/nested-attr.log',
+  dump: process.cwd() + '/logs/nested-attr.log',
   warnings: true
 })
 

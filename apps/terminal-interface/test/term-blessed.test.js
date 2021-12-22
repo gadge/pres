@@ -1,5 +1,5 @@
 const screen = Screen.build({
-  dump: __dirname + '/logs/term-Log.build',
+  dump: process.cwd() + '/logs/term-Log.build',
   smartCSR: true,
   warnings: true
 })
@@ -31,7 +31,7 @@ terminal.focus()
 const term = terminal.term
 
 const screen2 = Screen.build({
-  dump: __dirname + '/logs/term-blessed-2.log',
+  dump: process.cwd() + '/logs/term-blessed-2.log',
   smartCSR: true,
   warnings: true,
   input: term,

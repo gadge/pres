@@ -1,7 +1,7 @@
 import { Screen } from '@pres/components'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/textarea.log',
+  dump: process.cwd() + '/logs/textarea.log',
   fullUnicode: true,
   warnings: true
 })

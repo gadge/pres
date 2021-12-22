@@ -1,12 +1,12 @@
-import fs     from 'fs'
-import { TI } from '../src/terminal-interface'
+import { Button, Checkbox, Form, Message, RadioButton, Screen, Table, Text, Textarea, Textbox } from '@pres/components'
+import fs                                                                                       from 'fs'
 // Screen
-const screen = TI.screen({
+const screen = Screen.build({
   smartCSR: true,
   title: 'TI form'
 })
 // Form
-const form = TI.form({
+const form = Form.build({
   sup: screen,
   width: '90%',
   left: 'center',
@@ -14,13 +14,13 @@ const form = TI.form({
   vi: true
 })
 // Text boxes
-const label1 = TI.text({
+const label1 = Text.build({
   sup: screen,
   top: 3,
   left: 5,
   content: 'FIRST NAME:'
 })
-const firstName = TI.textbox({
+const firstName = Textbox.build({
   sup: form,
   name: 'firstname',
   top: 4,
@@ -30,13 +30,13 @@ const firstName = TI.textbox({
   content: 'first',
   border: { type: 'line' }, focus: { fg: 'blue' }
 })
-const label2 = TI.text({
+const label2 = Text.build({
   sup: screen,
   content: 'LAST NAME:',
   top: 8,
   left: 5
 })
-const lastName = TI.textbox({
+const lastName = Textbox.build({
   sup: form,
   name: 'lastname',
   top: 9,
@@ -47,34 +47,34 @@ const lastName = TI.textbox({
   border: { type: 'line' }, focus: { fg: 'blue' }
 })
 // Check boxes
-const label3 = TI.text({
+const label3 = Text.build({
   sup: screen,
   content: 'What are your favorite editors?',
   top: 14,
   left: 5
 })
-const vim = TI.checkbox({
+const vim = Checkbox.build({
   sup: form,
   name: 'editors',
   content: 'Vim',
   top: 16,
   left: 5
 })
-const emacs = TI.checkbox({
+const emacs = Checkbox.build({
   sup: form,
   name: 'editors',
   content: 'Emacs',
   top: 16,
   left: 20
 })
-const atom = TI.checkbox({
+const atom = Checkbox.build({
   sup: form,
   name: 'editors',
   content: 'Atom',
   top: 16,
   left: 35
 })
-const brackets = TI.checkbox({
+const brackets = Checkbox.build({
   sup: form,
   name: 'editors',
   content: 'Brackets',
@@ -82,7 +82,7 @@ const brackets = TI.checkbox({
   left: 50
 })
 // Radio buttons
-const label4 = TI.text({
+const label4 = Text.build({
   sup: screen,
   content: 'Do you like TI?',
   top: 19,
@@ -94,26 +94,26 @@ const radioset = TI.radioSet({
   height: 5,
   top: 21
 })
-const yes = TI.radioButton({
+const yes = RadioButton.build({
   sup: radioset,
   name: 'like',
   content: 'Yes',
   left: 5
 })
-const no = TI.radioButton({
+const no = RadioButton.build({
   sup: radioset,
   name: 'like',
   content: 'No',
   left: 15
 })
 // Text area
-const label5 = TI.text({
+const label5 = Text.build({
   sup: screen,
   content: 'Your comments...',
   top: 24,
   left: 5
 })
-const textarea = TI.textarea({
+const textarea = Textarea.build({
   sup: form,
   name: 'comments',
   top: 26,
@@ -125,7 +125,7 @@ const textarea = TI.textarea({
   }
 })
 // Submit/Cancel buttons
-const submit = TI.button({
+const submit = Button.build({
   sup: form,
   name: 'submit',
   content: 'Submit',
@@ -135,7 +135,7 @@ const submit = TI.button({
   padding: { top: 1, right: 2, bottom: 1, left: 2 },
   style: { bold: true, fg: 'white', bg: 'green', focus: { inverse: true } }
 })
-const reset = TI.button({
+const reset = Button.build({
   sup: form,
   name: 'reset',
   content: 'Reset',
@@ -146,13 +146,13 @@ const reset = TI.button({
   style: { bold: true, fg: 'white', bg: 'red', focus: { inverse: true } }
 })
 // Info
-const msg = TI.message({
+const msg = Message.build({
   sup: screen,
   top: 40,
   left: 5,
   style: { italic: true, fg: 'green' }
 })
-const table = TI.table({
+const table = Table.build({
   sup: screen,
   content: '',
   top: 40,
@@ -181,6 +181,8 @@ form.on('submit', data => {
 })
 form.on('reset', () => msg.display('Form cleared!', () => {}))
 // Key bindings
-screen.key('q', function () { this.destroy() })
+screen.key('q', () => {
+  screen.destroy()
+})
 // Render everything!
 screen.render()

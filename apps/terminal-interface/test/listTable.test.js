@@ -3,7 +3,7 @@
 console.log('listTable.test')
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/listTable.log',
+  dump: process.cwd() + '/logs/listTable.log',
   autoPadding: false,
   fullUnicode: true,
   warnings: true

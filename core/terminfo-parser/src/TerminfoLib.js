@@ -42,14 +42,14 @@ export class TerminfoLib {
       alias[key].forEach(k => keyMap[k] = key)
     }
     console.log('>> [TerminfoLib.initialize]', 'alias', Object.keys(TerminfoLib.alias).length, 'keyMap', Object.keys(TerminfoLib.keyMap).length)
-    // LogService.localInfo('terminfo-lib-booleans', TerminfoLib.booleans)
-    // LogService.localInfo('terminfo-lib-numerics', TerminfoLib.numerics)
-    // LogService.localInfo('terminfo-lib-literals', TerminfoLib.literals)
-    // LogService.localInfo('terminfo-lib-termcap', TerminfoLib.termcap)
-    // LogService.localInfo('terminfo-lib-alias', TerminfoLib.alias)
-    // LogService.localInfo('terminfo-lib-keyMap', TerminfoLib.keyMap)
-    // LogService.localInfo('terminfo-lib-acsc', TerminfoLib.acsc)
-    // LogService.localInfo('terminfo-lib-utoa', TerminfoLib.utoa)
+    // Logger.localInfo('terminfo-lib-booleans', TerminfoLib.booleans)
+    // Logger.localInfo('terminfo-lib-numerics', TerminfoLib.numerics)
+    // Logger.localInfo('terminfo-lib-literals', TerminfoLib.literals)
+    // Logger.localInfo('terminfo-lib-termcap', TerminfoLib.termcap)
+    // Logger.localInfo('terminfo-lib-alias', TerminfoLib.alias)
+    // Logger.localInfo('terminfo-lib-keyMap', TerminfoLib.keyMap)
+    // Logger.localInfo('terminfo-lib-acsc', TerminfoLib.acsc)
+    // Logger.localInfo('terminfo-lib-utoa', TerminfoLib.utoa)
   }
 
   // to easily output text with setTimeouts.

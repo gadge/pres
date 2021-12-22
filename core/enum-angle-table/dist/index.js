@@ -24,7 +24,7 @@ const ANGLES = {
   // '│'
   '\u2500': true // '─'
 
-}
+};
 const ANGLES_L = {
   '\u250c': true,
   // '┌'
@@ -40,7 +40,7 @@ const ANGLES_L = {
   // '┬'
   '\u2500': true // '─'
 
-}
+};
 const ANGLES_U = {
   '\u2510': true,
   // '┐'
@@ -56,7 +56,7 @@ const ANGLES_U = {
   // '┬'
   '\u2502': true // '│'
 
-}
+};
 const ANGLES_R = {
   '\u2518': true,
   // '┘'
@@ -72,7 +72,7 @@ const ANGLES_R = {
   // '┬'
   '\u2500': true // '─'
 
-}
+};
 const ANGLES_D = {
   '\u2518': true,
   // '┘'
@@ -88,7 +88,7 @@ const ANGLES_D = {
   // '┴'
   '\u2502': true // '│'
 
-} // var cdangles = {
+}; // var cdangles = {
 //   '\u250c': true  // '┌'
 // };
 
@@ -128,10 +128,10 @@ const ANGLE_TABLE = {
   // '┴'
   '1111': '\u253c' // '┼'
 
-}
+};
 Object.keys(ANGLE_TABLE).forEach(key => {
-  ANGLE_TABLE[parseInt(key, 2)] = ANGLE_TABLE[key]
-  delete ANGLE_TABLE[key]
-})
+  ANGLE_TABLE[parseInt(key, 2)] = ANGLE_TABLE[key];
+  delete ANGLE_TABLE[key];
+});
 
-export { ANGLES, ANGLES_D, ANGLES_L, ANGLES_R, ANGLES_U, ANGLE_TABLE }
+export { ANGLES, ANGLES_D, ANGLES_L, ANGLES_R, ANGLES_U, ANGLE_TABLE };

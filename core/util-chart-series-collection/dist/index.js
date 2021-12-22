@@ -4,33 +4,31 @@ import { mapper }    from '@vect/vector-mapper'
 
 class SeriesCollection extends Array {
   constructor(length) {
-    super(length)
+    super(length);
   }
 
   static fromSeriesList(seriesList) {
-    const length = seriesList.length
-    const seriesCollection = new SeriesCollection(length)
+    const length = seriesList.length;
+    const seriesCollection = new SeriesCollection(length);
 
     if (length === 1) {
-      seriesCollection[0] = seriesList[0]
+      seriesCollection[0] = seriesList[0];
     }
 
     if (length >= 2) {
-      for (let i = 0; i < length; i++) seriesCollection[i] = seriesList[i]
+      for (let i = 0; i < length; i++) seriesCollection[i] = seriesList[i];
     }
 
-    return seriesCollection
+    return seriesCollection;
   }
 
   static fromTable(table, xColumn, ...yColumns) {
-    var _table$select
-
-    const xs = table.column(xColumn)
-    const ysCollection = ( _table$select = table.select(yColumns), transpose(_table$select) )
-    const seriesList = mapper(ysCollection, (ys, i) => new Series(xs, ys, yColumns[i]))
-    return SeriesCollection.fromSeriesList(seriesList)
+    const xs = table.column(xColumn);
+    const ysCollection = transpose(table.select(yColumns));
+    const seriesList = mapper(ysCollection, (ys, i) => new Series(xs, ys, yColumns[i]));
+    return SeriesCollection.fromSeriesList(seriesList);
   }
 
 }
 
-export { SeriesCollection }
+export { SeriesCollection };

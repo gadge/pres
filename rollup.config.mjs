@@ -1,5 +1,4 @@
 import { babel }           from '@rollup/plugin-babel'
-import commonjs            from '@rollup/plugin-commonjs'
 import json                from '@rollup/plugin-json'
 import { nodeResolve }     from '@rollup/plugin-node-resolve'
 import { decoObject, ros } from '@spare/logger'
@@ -17,11 +16,10 @@ export default {
   external: [ 'timers/promises', ...Object.keys(dependencies || {}) ],
   output: [
     { file: exports['import'], format: 'esm' },  // ES module (for bundlers) build.
-    { file: exports['require'], format: 'cjs' }  // CommonJS (for Node) build.
+    // { file: exports['require'], format: 'cjs' }  // CommonJS (for Node) build.
   ],
   plugins: [
     nodeResolve({ preferBuiltins: true }),
-    commonjs({ include: /node_modules/ }),
     babel({
       babelrc: false,
       comments: true,
@@ -32,7 +30,6 @@ export default {
         [ '@babel/preset-env', { targets: { node: '16' } } ]
       ],
       plugins: [
-        [ '@babel/plugin-proposal-throw-expressions' ],
         [ '@babel/plugin-proposal-pipeline-operator', { proposal: 'minimal' } ],
       ]
     }),

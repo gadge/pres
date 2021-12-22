@@ -1,12 +1,22 @@
-import { assign } from '@ject/mixin';
-import * as components from '@pres/components';
-export { ANSIImage, BarChart, BigText, Box, Button, Canvas, Carousel, Checkbox, DataTable, DonutChart, FileManager, Form, Gauge, GaugeList, Grid, Image, Input, LCD, Layout, Line, LineChart, List, ListBar, ListTable, Loading, Log, LogList, Map, Message, OverlayImage, Picture, ProgressBar, Prompt, Question, RadioButton, RadioSet, Screen, ScrollableBox, ScrollableText, Sparkline, StackedBarChart, Table, Terminal, Text, Textarea, Textbox, Tree, Video } from '@pres/components';
-import { Program } from '@pres/program';
-import { Tput } from '@pres/terminfo-parser';
-import * as colors from '@pres/util-blessed-colors';
-import * as helpers from '@pres/util-helpers';
-import * as unicode from '@pres/util-unicode';
-import url from 'url';
+import { assign } from '@ject/mixin'
+import * as components
+                  from '@pres/components'
+import {
+  Program
+}                 from '@pres/program'
+import {
+  TerminfoParser
+}                 from '@pres/terminfo-parser'
+import * as colors
+                  from '@pres/util-blessed-colors'
+import * as helpers
+                  from '@pres/util-helpers'
+import * as unicode
+                  from '@pres/util-unicode'
+import url
+                  from 'url'
+
+export { ANSIImage, BarChart, BigText, Box, Button, Canvas, Carousel, Checkbox, DataTable, DonutChart, FileManager, Form, Gauge, GaugeList, Grid, Image, Input, LCD, Layout, Line, LineChart, List, ListBar, ListTable, Loading, Log, LogList, Map, Message, OverlayImage, Picture, ProgressBar, Prompt, Question, RadioButton, RadioSet, Screen, ScrollableBox, ScrollableText, Sparkline, StackedBarChart, Table, Terminal, Text, Textarea, Textbox, Tree, Video }from '@pres/components';
 
 /**
  // chart
@@ -79,7 +89,7 @@ class TI {
   static helpers = helpers;
   static unicode = unicode;
   static colors = colors;
-  static Tput = Tput;
+  static TerminfoParser = TerminfoParser;
 }
 assign(TI, components);
 
@@ -151,7 +161,7 @@ function createScreen(req, res) {
   if (query.terminal) program.terminal = query.terminal;
   if (query.isOSX) program.isOSXTerm = query.isOSX;
   if (query.isiTerm2) program.isiTerm2 = query.isiTerm2;
-  return TI.screen({
+  return Screen.build({
     program: program
   });
 }

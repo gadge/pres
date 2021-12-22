@@ -3,7 +3,7 @@ import { Box, Screen } from '@pres/components'
 const screen = Screen.build({
   tput: true,
   smartCSR: true,
-  dump: __dirname + '/logs/obscure-sides.log',
+  dump: process.cwd() + '/logs/obscure-sides.log',
   autoPadding: true,
   warnings: true
 })

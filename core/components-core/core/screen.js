@@ -9,15 +9,15 @@ import { ANGLE_TABLE, ANGLES, ANGLES_D, ANGLES_L, ANGLES_R, ANGLES_U } from '@pr
 import { CSI, LF }                                                     from '@pres/enum-control-chars'
 import { SGR }                                                         from '@pres/enum-csi-codes'
 import {
-  BLUR, CLICK, DESTROY, ELEMENT_CLICK, ELEMENT_MOUSEOUT, ELEMENT_MOUSEOVER, ELEMENT_MOUSEUP, ERROR, EXIT, FOCUS,
-  KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, NEW_LISTENER, PRERENDER, RENDER,
-  RESIZE, WARNING, WHEELDOWN, WHEELUP,
+  BLUR, CLICK, DESTROY, ELEMENT_CLICK, ELEMENT_MOUSEOUT, ELEMENT_MOUSEOVER, ELEMENT_MOUSEUP, ERROR, EXIT, FOCUS, KEYPRESS, MOUSE, MOUSEDOWN,
+  MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, NEW_LISTENER, PRERENDER, RENDER, RESIZE, WARNING, WHEELDOWN, WHEELUP,
 }                                                                      from '@pres/enum-events'
 import { GlobalScreen }                                                from '@pres/global-screen'
 import { Program }                                                     from '@pres/program'
 import * as colors                                                     from '@pres/util-blessed-colors'
 import { degrade }                                                     from '@pres/util-byte-colors'
 import * as helpers                                                    from '@pres/util-helpers'
+import { Logger }                                                      from '@pres/util-helpers'
 import { Mor }                                                         from '@pres/util-morisot'
 import { attrToSgra, sgraToAttr, styleToAttr }                         from '@pres/util-sgr-attr'
 import * as unicode                                                    from '@pres/util-unicode'
@@ -158,6 +158,7 @@ export class Screen extends Node {
       }
     }
     this.tput = this.program.tput
+    Logger.log('screen', 'setup-program', 'this.program.type', this.program.type)
   }
   get title() { return this.program.title }
   set title(title) { return this.program.title = title }
@@ -689,6 +690,7 @@ export class Screen extends Node {
   _destroy() {
     this.leave()
     const index = GlobalScreen.instances.indexOf(this)
+    Logger.log('screen', 'destroy', index)
     if (~index) {
       GlobalScreen.removeInstanceAt(index)
       // GlobalScreen.instances.splice(index, 1)

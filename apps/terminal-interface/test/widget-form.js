@@ -3,7 +3,7 @@ import { Box, Button, Checkbox, Form, Line, RadioButton, RadioSet, Screen, Scrol
 let screen
 
 screen = Screen.build({
-  dump: __dirname + '/logs/form.log',
+  dump: process.cwd() + '/logs/form.log',
   warnings: true
 })
 

@@ -1,21 +1,43 @@
-import { SIGCONT, SIGTSTP } from '@geia/enum-signals';
-import { ESC, LF, RN, BEL, DCS, ST, CSI, OSC, VT, FF, BS, TAB, SO, SI, IND, RI, NEL, RIS, HTS, DECSC, DECRC, DECKPNM } from '@pres/enum-control-chars';
-import { DECSCUSR, CUU, CUD, CUF, CUB, CUP, ED, EL, SGR, DSR, ICH, CNL, CPL, CHA, IL, DL, DCH, ECH, HPA, HPR, DA, VPA, VPR, HVP, SM, RM, DECSTBM, SCOSC, SCORC, CHT, SU, SD, XTHIMOUSE, XTRMTITLE, CBT, REP, TBC, MC, XTMODKEYS, XTUNMODKEYS, XTSMPOINTER, DECRQM, DECSCL, DECLL, DECSCA, XTRESTORE, DECCARA, XTSAVE, XTWINOPS, DECRARA, XTSMTITLE, DECSWBV, DECSMBV, DECCRA, DECEFR, DECREQTPARM, DECSACE, DECFRA, DECELR, DECERA, DECSLE, DECSERA, DECIC, DECDC } from '@pres/enum-csi-codes';
-import { DATA, WARNING, NEW_LISTENER, KEYPRESS, MOUSE, KEY, RESIZE, DESTROY, WHEELDOWN, WHEELUP, MOUSEUP, MOUSEDOWN, MOUSEMOVE, FOCUS, BLUR, BTNDOWN, BTNUP, MOVE, DRAG, MOUSEWHEEL, RESPONSE, ERROR } from '@pres/enum-events';
-import { UNDEFINED, ENTER, LINEFEED, RETURN, MIDDLE, UNKNOWN, LEFT, RIGHT } from '@pres/enum-key-names';
-import { GlobalProgram } from '@pres/global-program';
-import { gpmClient } from '@pres/gpm-client';
-import { toByte, degrade } from '@pres/util-byte-colors';
-import { slice } from '@pres/util-helpers';
-import { VO, SP, SC } from '@texting/enum-chars';
-import { FUN, NUM, STR } from '@typen/enum-data-types';
-import { StringDecoder } from 'string_decoder';
-import { keypressEventsEmitter } from '@pres/events';
-import { whichTerminal, TerminfoParser } from '@pres/terminfo-parser';
-import cp from 'child_process';
-import { EventEmitter } from 'events';
-import fs from 'fs';
-import util from 'util';
+import { SIGCONT, SIGTSTP }      from '@geia/enum-signals'
+import {
+  BEL, BS, CSI, DCS, DECKPNM, DECRC, DECSC, ESC, FF, HTS, IND, LF, NEL, OSC, RI, RIS, RN, SI, SO, ST, TAB, VT
+}                                from '@pres/enum-control-chars'
+import {
+  CBT, CHA, CHT, CNL, CPL, CUB, CUD, CUF, CUP, CUU, DA, DCH, DECCARA, DECCRA, DECDC, DECEFR, DECELR, DECERA, DECFRA, DECIC, DECLL, DECRARA,
+  DECREQTPARM, DECRQM, DECSACE, DECSCA, DECSCL, DECSCUSR, DECSERA, DECSLE, DECSMBV, DECSTBM, DECSWBV, DL, DSR, ECH, ED, EL, HPA, HPR, HVP, ICH,
+  IL, MC, REP, RM, SCORC, SCOSC, SD, SGR, SM, SU, TBC, VPA, VPR, XTHIMOUSE, XTMODKEYS, XTRESTORE, XTRMTITLE, XTSAVE, XTSMPOINTER, XTSMTITLE,
+  XTUNMODKEYS, XTWINOPS
+}                                from '@pres/enum-csi-codes'
+import {
+  BLUR, BTNDOWN, BTNUP, DATA, DESTROY, DRAG, ERROR, FOCUS, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEUP, MOUSEWHEEL, MOVE, NEW_LISTENER,
+  RESIZE, RESPONSE, WARNING, WHEELDOWN, WHEELUP
+}                                from '@pres/enum-events'
+import {
+  ENTER, LEFT, LINEFEED, MIDDLE, RETURN, RIGHT, UNDEFINED, UNKNOWN
+}                                from '@pres/enum-key-names'
+import { keypressEventsEmitter } from '@pres/events'
+import {
+  GlobalProgram
+}                                from '@pres/global-program'
+import { gpmClient }             from '@pres/gpm-client'
+import {
+  TerminfoParser, whichTerminal
+}                                from '@pres/terminfo-parser'
+import {
+  degrade, toByte
+}                                from '@pres/util-byte-colors'
+import { Logger, slice }         from '@pres/util-helpers'
+import {
+  SC, SP, VO
+}                                from '@texting/enum-chars'
+import {
+  FUN, NUM, STR
+}                                from '@typen/enum-data-types'
+import cp                        from 'child_process'
+import { EventEmitter }          from 'events'
+import fs                        from 'fs'
+import { StringDecoder }         from 'string_decoder'
+import util                      from 'util'
 
 const nullish = x => x === null || x === void 0;
 
@@ -75,6 +97,14 @@ class IO extends EventEmitter {
   constructor(options) {
     super(options);
     this.configIO(options);
+  }
+
+  get terminal() {
+    return this.#terminal;
+  }
+
+  set terminal(terminal) {
+    return this.setTerminal(terminal), this.terminal;
   }
 
   configIO(options) {
@@ -144,14 +174,6 @@ class IO extends EventEmitter {
     if (options.tput !== false) this.setupTput(); // IO
 
     console.log(`>> [program.configIO] [terminal] ${this.#terminal} [tmux] ${this.tmux}`);
-  }
-
-  get terminal() {
-    return this.#terminal;
-  }
-
-  set terminal(terminal) {
-    return this.setTerminal(terminal), this.terminal;
   }
 
   log() {
@@ -431,7 +453,207 @@ class Program extends IO {
   #savedCursors = {};
   #currMouse = null;
   #lastButton = null;
-  type = 'program';
+  type = 'program'; // writeBuffer = this.writeBuffer //bf
+
+  echo = this.print;
+  unkey = this.removeKey;
+  recoords = this.auto;
+  cursorReset = this.resetCursor;
+  bel = this.bell;
+  ff = this.form;
+  kbs = this.backspace;
+  ht = this.tab; // write = this.writeOutput
+  // _write = this.writeOff // NOTE: dependencies cleared
+  // writeOutput = this.writeOutput // ow
+  // writeTmux = this.writeTmux // tw
+
+  cr = this.return;
+  nel = this.feed;
+  newline = this.feed; // XTerm mouse events
+  // http://invisible-island.net/xterm/ctlseqs/ctlseqs.html#Mouse%20Tracking
+  // To better understand these
+  // the xterm code is very helpful:
+  // Relevant files:
+  //   button.c, charproc.c, misc.c
+  // Relevant functions in xterm/button.c:
+  //   BtnCode, EmitButtonCode, EditorButton, SendMousePosition
+  // send a mouse event:
+  // regular/utf8: ^[[M Cb Cx Cy
+  // urxvt: ^[[ Cb ; Cx ; Cy M
+  // sgr: ^[[ Cb ; Cx ; Cy M/m
+  // vt300: ^[[ 24(1/3/5)~ [ Cx , Cy ] \r
+  // locator: CSI P e ; P b ; P r ; P c ; P p & w
+  // motion example of a left click:
+  // ^[[M 3<^[[M@4<^[[M@5<^[[M@6<^[[M@7<^[[M#7<
+  // mouseup, mousedown, mousewheel
+  // left click: ^[[M 3<^[[M#3<
+
+  /**
+   * Esc
+   */
+
+  ind = this.index;
+  ri = this.reverseIndex;
+  reverse = this.reverseIndex;
+  saveCursor = this.sc;
+  restoreCursor = this.rc; // Save Cursor Locally
+
+  lsaveCursor = this.scL; // Restore Cursor Locally
+
+  lrestoreCursor = this.rcL;
+  enter_alt_charset_mode = this.smacs;
+  as = this.smacs;
+  exit_alt_charset_mode = this.rmacs;
+  ae = this.rmacs;
+  /**
+   * CSI
+   */
+
+  cursorUp = this.cuu; // Cursor Up Ps Times (default = 1) (CUU).
+
+  up = this.cuu;
+  cursorDown = this.cud; // Cursor Down Ps Times (default = 1) (CUD).
+
+  down = this.cud;
+  cursorForward = this.cuf; // Cursor Forward Ps Times (default = 1) (CUF).
+
+  right = this.cuf;
+  forward = this.cuf; // Specific to iTerm2, but I think it's really cool.
+  // Example:
+  //  if (!screen.copyToClipboard(text)) {
+  //    execClipboardProgram(text);
+
+  cursorBackward = this.cub; // Cursor Backward Ps Times (default = 1) (CUB).
+
+  left = this.cub;
+  back = this.cub; // Cursor Position [row;column] (default = [1,1]) (CUP).
+
+  cursorPos = this.cup;
+  pos = this.cup;
+  eraseInDisplay = this.ed;
+  eraseInLine = this.el;
+  charAttr = this.sgr;
+  attr = this.sgr;
+  parseAttr = this.#sgr;
+  setForeground = this.fg;
+  setBackground = this.bg;
+  deviceStatus = this.dsr;
+  /**
+   * Additions
+   */
+
+  insertChars = this.ich;
+  cursorNextLine = this.cnl;
+  cursorPrecedingLine = this.cpl;
+  cursorCharAbsolute = this.cha;
+  insertLines = this.il;
+  deleteLines = this.dl;
+  deleteChars = this.dch;
+  eraseChars = this.ech;
+  charPosAbsolute = this.hpa; // Character Position Absolute [column] (default = [row,1]) (HPA).
+
+  HPositionRelative = this.hpr; // Character Position Relative [columns] (default = [row,col+1]) (HPR).
+
+  sendDeviceAttributes = this.da;
+  linePosAbsolute = this.vpa;
+  VPositionRelative = this.vpr;
+  HVPosition = this.hvp;
+  setMode = this.sm;
+  setDecPrivMode = this.decset;
+  dectcem = this.showCursor;
+  cnorm = this.showCursor;
+  cvvis = this.showCursor;
+  alternate = this.alternateBuffer;
+  smcup = this.alternateBuffer;
+  resetMode = this.rm;
+  resetDecPrivMode = this.decrst;
+  dectcemh = this.hideCursor;
+  cursor_invisible = this.hideCursor;
+  vi = this.hideCursor;
+  civis = this.hideCursor;
+  rmcup = this.normalBuffer;
+  setScrollRegion = this.decstbm;
+  csr = this.decstbm;
+  scA = this.scosc;
+  saveCursorA = this.scosc;
+  rcA = this.scorc;
+  restoreCursorA = this.scorc;
+  cursorForwardTab = this.cht;
+  scrollUp = this.su;
+  scrollDown = this.sd;
+  initMouseTracking = this.xthimouse;
+  resetTitleModes = this.xtrmtitle;
+  cursorBackwardTab = this.cbt;
+  repeatPrecedingCharacter = this.rep;
+  tabClear = this.tbc;
+  mediaCopy = this.mc;
+  print_screen = this.ps;
+  mc0 = this.ps;
+  prtr_off = this.pf;
+  mc4 = this.pf;
+  prtr_on = this.po;
+  mc5 = this.po;
+  prtr_non = this.pO;
+  mc5p = this.pO;
+  setResources = this.xtmodkeys; // Set/reset key modifier options (XTMODKEYS), xterm.
+
+  disableModifiers = this.xtunmodkeys; // Disable key modifier options, xterm.
+
+  setPointerMode = this.xtsmpointer; // Set resource value pointerMode (XTSMPOINTER), xterm.
+  // XTerm mouse events
+  // http://invisible-island.net/xterm/ctlseqs/ctlseqs.html#Mouse%20Tracking
+  // To better understand these
+  // the xterm code is very helpful:
+  // Relevant files:
+  //   button.c, charproc.c, misc.c
+  // Relevant functions in xterm/button.c:
+  //   BtnCode, EmitButtonCode, EditorButton, SendMousePosition
+  // send a mouse event:
+  // regular/utf8: ^[[M Cb Cx Cy
+  // urxvt: ^[[ Cb ; Cx ; Cy M
+  // sgr: ^[[ Cb ; Cx ; Cy M/m
+  // vt300: ^[[ 24(1/3/5)~ [ Cx , Cy ] \r
+  // locator: CSI P e ; P b ; P r ; P c ; P p & w
+  // motion example of a left click:
+  // ^[[M 3<^[[M@4<^[[M@5<^[[M@6<^[[M@7<^[[M#7<
+  // mouseup, mousedown, mousewheel
+
+  decstr = this.softReset;
+  rs2 = this.softReset;
+  requestAnsiMode = this.decrqm;
+  requestPrivateMode = this.decrqmp;
+  setConformanceLevel = this.decscl;
+  loadLEDs = this.decll;
+  setCursorStyle = this.decscusr;
+  setCharProtectionAttr = this.decsca; // Select character protection attribute (DECSCA), VT220.
+
+  restorePrivateValues = this.xtrestore;
+  setAttrInRectangle = this.deccara; // Change Attributes in Rectangular Area (DECCARA), VT400 and up.
+
+  savePrivateValues = this.xtsave;
+  manipulateWindow = this.xtwinops;
+  reverseAttrInRectangle = this.decrara;
+  setTitleModeFeature = this.xtsmtitle;
+  setWarningBellVolume = this.decswbv;
+  setMarginBellVolume = this.decsmbv;
+  copyRectangle = this.deccra;
+  enableFilterRectangle = this.decefr;
+  requestParameters = this.decreqtparm; // TODO: pull request - changed x to *x
+
+  selectChangeExtent = this.decsace;
+  fillRectangle = this.decfra;
+  enableLocatorReporting = this.decelr;
+  eraseRectangle = this.decera;
+  setLocatorEvents = this.decsle;
+  selectiveEraseRectangle = this.decsera;
+  decrqlp = this.requestLocatorPosition;
+  req_mouse_pos = this.requestLocatorPosition;
+  reqmp = this.requestLocatorPosition; // TODO: pull request since modified from ' }' to '\'}'
+
+  insertColumns = this.decic; // Insert Ps Column(s) (default = 1) (DECIC), VT420 and up.
+  // TODO: pull request since modified from ' ~' to '\'~'
+
+  deleteColumns = this.decdc; // Delete Ps Column(s) (default = 1) (DECDC), VT420 and up.
 
   constructor(options = {}) {
     super(options);
@@ -439,6 +661,15 @@ class Program extends IO {
     this.configGrid();
     this.listen();
     console.log(`>> [new program]`);
+    Logger.log('program', 'new program', '...');
+  }
+
+  get title() {
+    return this.#entitled;
+  }
+
+  set title(title) {
+    return this.setTitle(title), this.#entitled;
   }
 
   static build(options) {
@@ -457,15 +688,8 @@ class Program extends IO {
     console.log(`>> [program.configGrid] (${this.rows},${this.cols}) [tput.colors] (${this.tput.colors})`);
   }
 
-  get title() {
-    return this.#entitled;
-  }
-
-  set title(title) {
-    return this.setTitle(title), this.#entitled;
-  }
-
   destroy() {
+    Logger.log('program', 'destroy', '');
     const index = GlobalProgram.instances.indexOf(this);
 
     if (~index) {
@@ -516,40 +740,14 @@ class Program extends IO {
     key.forEach(function (key) {
       return this.once(KEY + SP + key, listener);
     }, this);
-  } // write = this.writeOutput
-  // _write = this.writeOff // NOTE: dependencies cleared
-  // writeOutput = this.writeOutput // ow
-  // writeTmux = this.writeTmux // tw
-  // writeBuffer = this.writeBuffer //bf
-
-
-  echo = this.print;
-  unkey = this.removeKey;
+  }
 
   removeKey(key, listener) {
     if (typeof key === STR) key = key.split(/\s*,\s*/);
     key.forEach(function (key) {
       return this.removeListener(KEY + SP + key, listener);
     }, this);
-  } // XTerm mouse events
-  // http://invisible-island.net/xterm/ctlseqs/ctlseqs.html#Mouse%20Tracking
-  // To better understand these
-  // the xterm code is very helpful:
-  // Relevant files:
-  //   button.c, charproc.c, misc.c
-  // Relevant functions in xterm/button.c:
-  //   BtnCode, EmitButtonCode, EditorButton, SendMousePosition
-  // send a mouse event:
-  // regular/utf8: ^[[M Cb Cx Cy
-  // urxvt: ^[[ Cb ; Cx ; Cy M
-  // sgr: ^[[ Cb ; Cx ; Cy M/m
-  // vt300: ^[[ 24(1/3/5)~ [ Cx , Cy ] \r
-  // locator: CSI P e ; P b ; P r ; P c ; P p & w
-  // motion example of a left click:
-  // ^[[M 3<^[[M@4<^[[M@5<^[[M@6<^[[M@7<^[[M#7<
-  // mouseup, mousedown, mousewheel
-  // left click: ^[[M 3<^[[M#3<
-  // mousewheel up: ^[[M`3>
+  } // mousewheel up: ^[[M`3>
 
 
   bindMouse() {
@@ -1237,8 +1435,6 @@ class Program extends IO {
     return noBypass ? this.writeOff(text) : this.writeTmux(text);
   }
 
-  recoords = this.auto;
-
   auto() {
     this.x < 0 ? this.x = 0 : this.x >= this.cols ? this.x = this.cols - 1 : void 0;
     this.y < 0 ? this.y = 0 : this.y >= this.rows ? this.y = this.rows - 1 : void 0;
@@ -1297,11 +1493,7 @@ class Program extends IO {
   repeat(ch, i) {
     if (!i || i < 0) i = 0;
     return Array(i + 1).join(ch);
-  } // Specific to iTerm2, but I think it's really cool.
-  // Example:
-  //  if (!screen.copyToClipboard(text)) {
-  //    execClipboardProgram(text);
-  //  }
+  } //  }
 
 
   copyToClipboard(text) {
@@ -1356,8 +1548,6 @@ class Program extends IO {
     return this.term('xterm') || this.term('rxvt') || this.term('screen') ? (this.writeTmux(OSC + `12;${color}` + BEL), true) : false;
   }
 
-  cursorReset = this.resetCursor;
-
   resetCursor() {
     if (this.term('xterm') || this.term('rxvt') || this.term('screen')) {
       // XXX
@@ -1388,8 +1578,6 @@ class Program extends IO {
     return this.writeOff('\x80');
   }
 
-  bel = this.bell;
-
   bell() {
     return this.has('bel') ? this.put.bel() : this.writeOff(BEL);
   }
@@ -1400,21 +1588,15 @@ class Program extends IO {
     return this.writeOff(VT);
   }
 
-  ff = this.form;
-
   form() {
     return this.has('ff') ? this.put.ff() : this.writeOff(FF);
   }
-
-  kbs = this.backspace;
 
   backspace() {
     this.x--;
     this.auto();
     return this.has('kbs') ? this.put.kbs() : this.writeOff(BS);
   }
-
-  ht = this.tab;
 
   tab() {
     this.x += 8;
@@ -1430,16 +1612,11 @@ class Program extends IO {
     return this.writeOff(SI);
   }
 
-  cr = this.return;
-
   return() {
     this.x = 0;
     if (this.has('cr')) return this.put.cr();
     return this.writeOff(RN);
   }
-
-  nel = this.feed;
-  newline = this.feed;
 
   feed() {
     if (this.tput && this.tput.booleans.eat_newline_glitch && this.x >= this.cols) return;
@@ -1448,21 +1625,12 @@ class Program extends IO {
     this.auto();
     return this.has('nel') ? this.put.nel() : this.writeOff(LF);
   }
-  /**
-   * Esc
-   */
-
-
-  ind = this.index;
 
   index() {
     this.y++;
     this.auto();
     return this.tput ? this.put.ind() : this.writeOff(IND);
   }
-
-  ri = this.reverseIndex;
-  reverse = this.reverseIndex;
 
   reverseIndex() {
     this.y--;
@@ -1475,7 +1643,10 @@ class Program extends IO {
     this.x = 0;
     this.auto();
     return this.has('nel') ? this.put.nel() : this.writeOff(NEL);
-  }
+  } // CSI ? Ps$ p
+  //   Request DEC private mode (DECRQM).  For VT300 and up, reply is
+  //     CSI ? Ps; Pm$ p
+
 
   reset() {
     this.x = this.y = 0;
@@ -1486,8 +1657,6 @@ class Program extends IO {
     return this.tput ? this.put.hts() : this.writeOff(HTS);
   }
 
-  saveCursor = this.sc;
-
   sc(key) {
     if (key) return this.scL(key);
     this.savedX = this.x || 0;
@@ -1496,18 +1665,13 @@ class Program extends IO {
     return this.writeOff(DECSC);
   }
 
-  restoreCursor = this.rc;
-
   rc(key, hide) {
     if (key) return this.rcL(key, hide);
     this.x = this.savedX || 0;
     this.y = this.savedY || 0;
     if (this.tput) return this.put.rc();
     return this.writeOff(DECRC);
-  } // Save Cursor Locally
-
-
-  lsaveCursor = this.scL;
+  }
 
   scL(key) {
     key = key || 'local';
@@ -1515,10 +1679,7 @@ class Program extends IO {
     this.#savedCursors[key].x = this.x;
     this.#savedCursors[key].y = this.y;
     this.#savedCursors[key].hidden = this.cursorHidden;
-  } // Restore Cursor Locally
-
-
-  lrestoreCursor = this.rcL;
+  }
 
   rcL(key, hide) {
     let pos;
@@ -1628,15 +1789,9 @@ class Program extends IO {
     return this.writeOff(ESC + '(' + val);
   }
 
-  enter_alt_charset_mode = this.smacs;
-  as = this.smacs;
-
   smacs() {
     return this.charset('acs');
   }
-
-  exit_alt_charset_mode = this.rmacs;
-  ae = this.rmacs;
 
   rmacs() {
     return this.charset('ascii');
@@ -1703,14 +1858,6 @@ class Program extends IO {
   selData(a, b) {
     return this.has('Ms') ? this.put.Ms(a, b) : this.writeTmux(OSC + `52;${a};${b}` + BEL);
   }
-  /**
-   * CSI
-   */
-
-
-  cursorUp = this.cuu; // Cursor Up Ps Times (default = 1) (CUU).
-
-  up = this.cuu;
 
   cuu(n) {
     this.y -= n || 1;
@@ -1718,20 +1865,11 @@ class Program extends IO {
     return !this.tput ? this.writeOff(CSI + (n || VO) + CUU) : !this.tput.literals.parm_up_cursor ? this.writeOff(this.repeat(this.tput.cuu1(), n)) : this.put.cuu(n);
   }
 
-  cursorDown = this.cud; // Cursor Down Ps Times (default = 1) (CUD).
-
-  down = this.cud;
-
   cud(n) {
     this.y += n || 1;
     this.auto();
     return !this.tput ? this.writeOff(CSI + (n || VO) + CUD) : !this.tput.literals.parm_down_cursor ? this.writeOff(this.repeat(this.tput.cud1(), n)) : this.put.cud(n);
   }
-
-  cursorForward = this.cuf; // Cursor Forward Ps Times (default = 1) (CUF).
-
-  right = this.cuf;
-  forward = this.cuf;
 
   cuf(n) {
     this.x += n || 1;
@@ -1739,37 +1877,11 @@ class Program extends IO {
     return !this.tput ? this.writeOff(CSI + (n || VO) + CUF) : !this.tput.literals.parm_right_cursor ? this.writeOff(this.repeat(this.tput.cuf1(), n)) : this.put.cuf(n);
   }
 
-  cursorBackward = this.cub; // Cursor Backward Ps Times (default = 1) (CUB).
-
-  left = this.cub;
-  back = this.cub;
-
   cub(n) {
     this.x -= n || 1;
     this.auto();
     return !this.tput ? this.writeOff(CSI + (n || VO) + CUB) : !this.tput.literals.parm_left_cursor ? this.writeOff(this.repeat(this.tput.cub1(), n)) : this.put.cub(n);
-  } // XTerm mouse events
-  // http://invisible-island.net/xterm/ctlseqs/ctlseqs.html#Mouse%20Tracking
-  // To better understand these
-  // the xterm code is very helpful:
-  // Relevant files:
-  //   button.c, charproc.c, misc.c
-  // Relevant functions in xterm/button.c:
-  //   BtnCode, EmitButtonCode, EditorButton, SendMousePosition
-  // send a mouse event:
-  // regular/utf8: ^[[M Cb Cx Cy
-  // urxvt: ^[[ Cb ; Cx ; Cy M
-  // sgr: ^[[ Cb ; Cx ; Cy M/m
-  // vt300: ^[[ 24(1/3/5)~ [ Cx , Cy ] \r
-  // locator: CSI P e ; P b ; P r ; P c ; P p & w
-  // motion example of a left click:
-  // ^[[M 3<^[[M@4<^[[M@5<^[[M@6<^[[M@7<^[[M#7<
-  // mouseup, mousedown, mousewheel
-  // Cursor Position [row;column] (default = [1,1]) (CUP).
-
-
-  cursorPos = this.cup;
-  pos = this.cup;
+  }
 
   cup(r, c) {
     const {
@@ -1781,8 +1893,6 @@ class Program extends IO {
     return this.tput ? this.put.cup(r, c) : this.writeOff(CSI + `${r + 1};${c + 1}` + CUP);
   }
 
-  eraseInDisplay = this.ed;
-
   ed(p) {
     return this.tput ? this.put.ed(p === 'above' ? 1 : p === 'all' ? 2 : p === 'saved' ? 3 : p === 'below' ? 0 : 0) : this.writeOff(CSI + (p === 'above' ? 1 : p === 'all' ? 2 : p === 'saved' ? 3 : p === 'below' ? VO : VO) + ED);
   }
@@ -1793,14 +1903,9 @@ class Program extends IO {
     return this.tput ? this.put.clear() : this.writeOff(CSI + CUP + CSI + ED);
   }
 
-  eraseInLine = this.el;
-
   el(p) {
     return this.tput ? this.put.el(p === LEFT ? 1 : p === ALL ? 2 : p === RIGHT ? 0 : 0) : this.writeOff(CSI + (p === LEFT ? 1 : p === ALL ? 2 : p === RIGHT ? VO : VO) + EL);
   }
-
-  charAttr = this.sgr;
-  attr = this.sgr;
 
   sgr(arg, val) {
     return this.writeOff(this.#sgr(arg, val));
@@ -1809,8 +1914,6 @@ class Program extends IO {
   text(text, attr) {
     return this.#sgr(attr, true) + text + this.#sgr(attr, false);
   }
-
-  parseAttr = this.#sgr;
 
   #sgr(params, grain = true) {
     // console.log('>> [program.#sgr]', params, grain)
@@ -2062,19 +2165,13 @@ class Program extends IO {
     return /^[\d;]*$/.test(arg) ? CSI + arg + SGR : null;
   }
 
-  setForeground = this.fg;
-
   fg(color, val) {
     return this.sgr(color.split(/\s*[,;]\s*/).join(' fg, ') + ' fg', val);
   }
 
-  setBackground = this.bg;
-
   bg(color, val) {
     return this.sgr(color.split(/\s*[,;]\s*/).join(' bg, ') + ' bg', val);
   }
-
-  deviceStatus = this.dsr;
 
   dsr(arg, callback, dec, noBypass) {
     return dec ? this.response('device-status', CSI + '?' + (arg || '0') + DSR, callback, noBypass) : this.response('device-status', CSI + (arg || '0') + DSR, callback, noBypass);
@@ -2098,12 +2195,6 @@ class Program extends IO {
   restoreReportedCursor() {
     return nullish(this._rx) ? void 0 : this.cup(this._ry, this._rx);
   }
-  /**
-   * Additions
-   */
-
-
-  insertChars = this.ich;
 
   ich(arg) {
     this.x += arg || 1;
@@ -2112,23 +2203,17 @@ class Program extends IO {
     return this.writeOff(CSI + (arg || 1) + ICH);
   }
 
-  cursorNextLine = this.cnl;
-
   cnl(arg) {
     this.y += arg || 1;
     this.auto();
     return this.writeOff(CSI + (arg || VO) + CNL);
   }
 
-  cursorPrecedingLine = this.cpl;
-
   cpl(arg) {
     this.y -= arg || 1;
     this.auto();
     return this.writeOff(CSI + (arg || VO) + CPL);
   }
-
-  cursorCharAbsolute = this.cha;
 
   cha(arg) {
     arg = !this.zero ? (arg || 1) - 1 : arg || 0;
@@ -2139,31 +2224,21 @@ class Program extends IO {
     return this.writeOff(CSI + (arg + 1) + CHA);
   }
 
-  insertLines = this.il;
-
   il(arg) {
     return this.tput ? this.put.il(arg) : this.writeOff(CSI + (arg || VO) + IL);
   }
-
-  deleteLines = this.dl;
 
   dl(arg) {
     return this.tput ? this.put.dl(arg) : this.writeOff(CSI + (arg || VO) + DL);
   }
 
-  deleteChars = this.dch;
-
   dch(arg) {
     return this.tput ? this.put.dch(arg) : this.writeOff(CSI + (arg || VO) + DCH);
   }
 
-  eraseChars = this.ech;
-
   ech(arg) {
     return this.tput ? this.put.ech(arg) : this.writeOff(CSI + (arg || VO) + ECH);
   }
-
-  charPosAbsolute = this.hpa; // Character Position Absolute [column] (default = [row,1]) (HPA).
 
   hpa(arg) {
     this.x = arg || 0;
@@ -2177,8 +2252,6 @@ class Program extends IO {
     return this.writeOff(CSI + (arg || VO) + HPA);
   }
 
-  HPositionRelative = this.hpr; // Character Position Relative [columns] (default = [row,col+1]) (HPR).
-
   hpr(arg) {
     if (this.tput) return this.cuf(arg);
     this.x += arg || 1;
@@ -2188,13 +2261,9 @@ class Program extends IO {
     return this.writeOff(CSI + (arg || VO) + HPR);
   }
 
-  sendDeviceAttributes = this.da;
-
   da(arg, callback) {
     return this.response('device-attributes', CSI + (arg || VO) + DA, callback);
   }
-
-  linePosAbsolute = this.vpa;
 
   vpa(arg) {
     this.y = arg || 1;
@@ -2204,8 +2273,6 @@ class Program extends IO {
     return this.writeOff(CSI + (arg || VO) + VPA);
   }
 
-  VPositionRelative = this.vpr;
-
   vpr(arg) {
     if (this.tput) return this.cud(arg);
     this.y += arg || 1;
@@ -2214,8 +2281,6 @@ class Program extends IO {
 
     return this.writeOff(CSI + (arg || VO) + VPR);
   }
-
-  HVPosition = this.hvp;
 
   hvp(row, col) {
     if (!this.zero) {
@@ -2235,21 +2300,13 @@ class Program extends IO {
     return this.writeOff(CSI + `${row + 1};${col + 1}` + HVP);
   }
 
-  setMode = this.sm;
-
   sm(...args) {
     return this.writeOff(CSI + args.join(SC) + SM);
   }
 
-  setDecPrivMode = this.decset;
-
   decset(...args) {
     return this.sm('?' + args.join(SC));
   }
-
-  dectcem = this.showCursor;
-  cnorm = this.showCursor;
-  cvvis = this.showCursor;
 
   showCursor() {
     this.cursorHidden = false; // NOTE: In xterm terminfo:
@@ -2263,9 +2320,6 @@ class Program extends IO {
     return this.setMode('?25');
   }
 
-  alternate = this.alternateBuffer;
-  smcup = this.alternateBuffer;
-
   alternateBuffer() {
     this.isAlt = true;
     if (this.tput) return this.put.smcup();
@@ -2274,30 +2328,19 @@ class Program extends IO {
     return this.setMode('?1049');
   }
 
-  resetMode = this.rm;
-
   rm(...args) {
     return this.writeOff(CSI + args.join(SC) + RM);
   }
 
-  resetDecPrivMode = this.decrst;
-
   decrst(...args) {
     return this.rm('?' + args.join(SC));
   }
-
-  dectcemh = this.hideCursor;
-  cursor_invisible = this.hideCursor;
-  vi = this.hideCursor;
-  civis = this.hideCursor;
 
   hideCursor() {
     this.cursorHidden = true;
     if (this.tput) return this.put.civis();
     return this.resetMode('?25');
   }
-
-  rmcup = this.normalBuffer;
 
   normalBuffer() {
     this.isAlt = false;
@@ -2355,10 +2398,7 @@ class Program extends IO {
       cellMotion: true,
       allMotion: true
     }, true);
-  } // CSI ? Ps$ p
-  //   Request DEC private mode (DECRQM).  For VT300 and up, reply is
-  //     CSI ? Ps; Pm$ p
-  //   where Ps is the mode number as in DECSET, Pm is the mode value
+  } //   where Ps is the mode number as in DECSET, Pm is the mode value
 
 
   disableMouse() {
@@ -2477,9 +2517,6 @@ class Program extends IO {
     }
   }
 
-  setScrollRegion = this.decstbm;
-  csr = this.decstbm;
-
   decstbm(top, bottom) {
     if (!this.zero) {
       top = (top || 1) - 1;
@@ -2498,18 +2535,12 @@ class Program extends IO {
     return this.writeOff(CSI + `${top + 1};${bottom + 1}` + DECSTBM);
   }
 
-  scA = this.scosc;
-  saveCursorA = this.scosc;
-
   scosc() {
     this.savedX = this.x;
     this.savedY = this.y;
     if (this.tput) return this.put.sc();
     return this.writeOff(CSI + SCOSC);
   }
-
-  rcA = this.scorc;
-  restoreCursorA = this.scorc;
 
   scorc() {
     this.x = this.savedX || 0;
@@ -2518,16 +2549,12 @@ class Program extends IO {
     return this.writeOff(CSI + SCORC);
   }
 
-  cursorForwardTab = this.cht;
-
   cht(arg) {
     this.x += 8;
     this.auto();
     if (this.tput) return this.put.tab(arg);
     return this.writeOff(CSI + (arg || 1) + CHT);
   }
-
-  scrollUp = this.su;
 
   su(arg) {
     this.y -= arg || 1;
@@ -2536,8 +2563,6 @@ class Program extends IO {
     return this.writeOff(CSI + (arg || 1) + SU);
   }
 
-  scrollDown = this.sd;
-
   sd(arg) {
     this.y += arg || 1;
     this.auto();
@@ -2545,19 +2570,13 @@ class Program extends IO {
     return this.writeOff(CSI + (arg || 1) + SD);
   }
 
-  initMouseTracking = this.xthimouse;
-
   xthimouse(...args) {
     return this.writeOff(CSI + args.join(SC) + XTHIMOUSE);
   }
 
-  resetTitleModes = this.xtrmtitle;
-
   xtrmtitle(...args) {
     return this.writeOff(CSI + '>' + args.join(SC) + XTRMTITLE);
   }
-
-  cursorBackwardTab = this.cbt;
 
   cbt(arg) {
     this.x -= 8;
@@ -2566,8 +2585,6 @@ class Program extends IO {
     return this.writeOff(CSI + (arg || 1) + CBT);
   }
 
-  repeatPrecedingCharacter = this.rep;
-
   rep(arg) {
     this.x += arg || 1;
     this.auto();
@@ -2575,66 +2592,41 @@ class Program extends IO {
     return this.writeOff(CSI + (arg || 1) + REP);
   }
 
-  tabClear = this.tbc;
-
   tbc(arg) {
     return this.tput ? this.put.tbc(arg) : this.writeOff(CSI + (arg || 0) + TBC);
   }
-
-  mediaCopy = this.mc;
 
   mc(...args) {
     return this.writeOff(CSI + args.join(SC) + MC);
   }
 
-  print_screen = this.ps;
-  mc0 = this.ps;
-
   ps() {
     return this.tput ? this.put.mc0() : this.mc('0');
   }
-
-  prtr_off = this.pf;
-  mc4 = this.pf;
 
   pf() {
     return this.tput ? this.put.mc4() : this.mc('4');
   }
 
-  prtr_on = this.po;
-  mc5 = this.po;
-
   po() {
     return this.tput ? this.put.mc5() : this.mc('5');
   }
-
-  prtr_non = this.pO;
-  mc5p = this.pO;
 
   pO() {
     return this.tput ? this.put.mc5p() : this.mc('?5');
   }
 
-  setResources = this.xtmodkeys; // Set/reset key modifier options (XTMODKEYS), xterm.
-
   xtmodkeys(...args) {
     return this.writeOff(CSI + '>' + args.join(SC) + XTMODKEYS);
   }
-
-  disableModifiers = this.xtunmodkeys; // Disable key modifier options, xterm.
 
   xtunmodkeys(arg) {
     return this.writeOff(CSI + '>' + (arg || VO) + XTUNMODKEYS);
   }
 
-  setPointerMode = this.xtsmpointer; // Set resource value pointerMode (XTSMPOINTER), xterm.
-
   xtsmpointer(arg) {
     return this.writeOff(CSI + '>' + (arg || VO) + XTSMPOINTER);
   }
-
-  decstr = this.softReset;
-  rs2 = this.softReset;
 
   softReset() {
     //if (this.tput) return this.put.init_2string();
@@ -2645,31 +2637,21 @@ class Program extends IO {
     return this.writeOff(CSI + '!p' + CSI + '?3;4l' + CSI + '4l' + DECKPNM); // reset
   }
 
-  requestAnsiMode = this.decrqm;
-
   decrqm(arg) {
     return this.writeOff(CSI + (arg || VO) + DECRQM);
   }
-
-  requestPrivateMode = this.decrqmp;
 
   decrqmp(arg = '') {
     return this.writeOff(CSI + '?' + arg + DECRQM);
   }
 
-  setConformanceLevel = this.decscl;
-
   decscl(...args) {
     return this.writeOff(CSI + args.join(SC) + DECSCL);
   }
 
-  loadLEDs = this.decll;
-
   decll(arg = '') {
     return this.writeOff(CSI + arg + DECLL);
   }
-
-  setCursorStyle = this.decscusr;
 
   decscusr(p) {
     p = p === 'blinking block' ? 1 : p === 'block' || p === 'steady block' ? 2 : p === 'blinking underline' ? 3 : p === 'underline' || p === 'steady underline' ? 4 : p === 'blinking bar' ? 5 : p === 'bar' || p === 'steady bar' ? 6 : p;
@@ -2678,31 +2660,21 @@ class Program extends IO {
     return this.writeOff(CSI + (p || 1) + DECSCUSR);
   }
 
-  setCharProtectionAttr = this.decsca; // Select character protection attribute (DECSCA), VT220.
-
   decsca(arg) {
     return this.writeOff(CSI + (arg || 0) + DECSCA);
   }
-
-  restorePrivateValues = this.xtrestore;
 
   xtrestore(...args) {
     return this.writeOff(CSI + '?' + args.join(SC) + XTRESTORE);
   }
 
-  setAttrInRectangle = this.deccara; // Change Attributes in Rectangular Area (DECCARA), VT400 and up.
-
   deccara(...args) {
     return this.writeOff(CSI + args.join(SC) + DECCARA);
   }
 
-  savePrivateValues = this.xtsave;
-
   xtsave(...args) {
     return this.writeOff(CSI + '?' + args.join(SC) + XTSAVE);
   }
-
-  manipulateWindow = this.xtwinops;
 
   xtwinops(...args) {
     const callback = typeof last(args) === FUN ? args.pop() : function () {};
@@ -2713,88 +2685,57 @@ class Program extends IO {
     return this.manipulateWindow(18, callback);
   }
 
-  reverseAttrInRectangle = this.decrara;
-
   decrara(...args) {
     return this.writeOff(CSI + args.join(SC) + DECRARA);
   }
-
-  setTitleModeFeature = this.xtsmtitle;
 
   xtsmtitle(...args) {
     return this.writeTmux(CSI + '>' + args.join(SC) + XTSMTITLE);
   }
 
-  setWarningBellVolume = this.decswbv;
-
   decswbv(arg) {
     return this.writeOff(CSI + (arg || VO) + DECSWBV);
   }
-
-  setMarginBellVolume = this.decsmbv;
 
   decsmbv(arg) {
     return this.writeOff(CSI + (arg || VO) + DECSMBV);
   }
 
-  copyRectangle = this.deccra;
-
   deccra(...args) {
     return this.writeOff(CSI + args.join(SC) + DECCRA);
   }
-
-  enableFilterRectangle = this.decefr;
 
   decefr(...args) {
     return this.writeOff(CSI + args.join(SC) + DECEFR);
   }
 
-  requestParameters = this.decreqtparm;
-
   decreqtparm(arg = 0) {
     return this.writeOff(CSI + arg + DECREQTPARM);
-  } // TODO: pull request - changed x to *x
-
-
-  selectChangeExtent = this.decsace;
+  }
 
   decsace(arg = 0) {
     return this.writeOff(CSI + arg + DECSACE);
   }
 
-  fillRectangle = this.decfra;
-
   decfra(...args) {
     return this.writeOff(CSI + args.join(SC) + DECFRA);
   }
-
-  enableLocatorReporting = this.decelr;
 
   decelr(...args) {
     return this.writeOff(CSI + args.join(SC) + DECELR);
   }
 
-  eraseRectangle = this.decera;
-
   decera(...args) {
     return this.writeOff(CSI + args.join(SC) + DECERA);
   }
-
-  setLocatorEvents = this.decsle;
 
   decsle(...args) {
     return this.writeOff(CSI + args.join(SC) + DECSLE);
   }
 
-  selectiveEraseRectangle = this.decsera;
-
   decsera(...args) {
     return this.writeOff(CSI + args.join(SC) + DECSERA);
   }
-
-  decrqlp = this.requestLocatorPosition;
-  req_mouse_pos = this.requestLocatorPosition;
-  reqmp = this.requestLocatorPosition;
 
   requestLocatorPosition(arg = VO, callback) {
     // See also:
@@ -2807,17 +2748,11 @@ class Program extends IO {
     }
 
     return this.response('locator-position', CSI + arg + '\'|', callback);
-  } // TODO: pull request since modified from ' }' to '\'}'
-
-
-  insertColumns = this.decic; // Insert Ps Column(s) (default = 1) (DECIC), VT420 and up.
+  }
 
   decic(...args) {
     return this.writeOff(CSI + args.join(SC) + DECIC);
-  } // TODO: pull request since modified from ' ~' to '\'~'
-
-
-  deleteColumns = this.decdc; // Delete Ps Column(s) (default = 1) (DECDC), VT420 and up.
+  }
 
   decdc(...args) {
     return this.writeOff(CSI + args.join(SC) + DECDC);

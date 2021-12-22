@@ -19,7 +19,7 @@ function humanFileSize(bytes, isDecimal) {
 
 const test = async function () {
   const stats = await mem()
-  stats |> deco |> logger
+  logger(deco(stats))
   const a = 1 << 10
 }
 
@@ -39,8 +39,8 @@ const { lapse, result } = strategies({
   }
   // cla, dev, edg, rea, arc, epi
 })
-lapse |> decoCrostab |> says['lapse']
-result |> decoCrostab |> says['result']
+says['lapse'](decoCrostab(lapse))
+says['result'](decoCrostab(result))
 
 
 test()

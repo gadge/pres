@@ -1,31 +1,36 @@
-import { Node } from '@pres/components-node';
-export { Node } from '@pres/components-node';
-import * as mixin from '@ject/mixin';
-import { LF, ESC, TAB, CSI } from '@pres/enum-control-chars';
-import { LEFT, RIGHT, TOP, BOTTOM, WIDTH, HEIGHT, SHRINK, CENTER, HALF, MIDDLE } from '@pres/enum-coord-infos';
-import { NEW_LISTENER, CLICK, MOUSE, MOUSEDOWN, MOUSEUP, MOUSEMOVE, MOUSEOVER, MOUSEOUT, MOUSEWHEEL, WHEELDOWN, WHEELUP, KEYPRESS, KEY, RESIZE, ATTACH, DETACH, MOVE, PARSED_CONTENT, PRERENDER, RENDER, HIDE as HIDE$1, SHOW, SET_CONTENT, SCROLL, LOG, FOCUS, BLUR, WARNING, DESTROY, ELEMENT_CLICK, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, DATA, TITLE, PASSTHROUGH } from '@pres/enum-events';
-import * as colors from '@pres/util-blessed-colors';
-import * as helpers from '@pres/util-helpers';
-import { nextTick, stripTags, dropUnicode } from '@pres/util-helpers';
-import { styleToAttr, sgraToAttr, attrToSgra } from '@pres/util-sgr-attr';
-import * as unicode from '@pres/util-unicode';
-import { SP } from '@texting/enum-chars';
-import { NUM, OBJ, STR, FUN } from '@typen/enum-data-types';
-import { nullish } from '@typen/nullish';
-import { select } from '@vect/object-select';
-import { last } from '@vect/vector-index';
-import assert from 'assert';
-import { FORE, FG, BACK, BG, BOLD, ITALIC, UNDERLINE, BLINK, REVERSE, INVERSE, HIDE, INVISIBLE, TRANSPARENT } from '@pres/enum-sgr-attrs';
-import { UP, DOWN } from '@pres/enum-key-names';
-import { ANGLES, ANGLES_L, ANGLES_U, ANGLES_R, ANGLES_D, ANGLE_TABLE } from '@pres/enum-angle-table';
-import { SGR } from '@pres/enum-csi-codes';
-import { GlobalScreen } from '@pres/global-screen';
-import { Program } from '@pres/program';
-import { degrade } from '@pres/util-byte-colors';
-import { Mor } from '@pres/util-morisot';
-import cp, { spawn } from 'child_process';
-import util from 'util';
-import term from 'term.js';
+import * as mixin                                                                                             from '@ject/mixin'
+import { Node }                                                                                               from '@pres/components-node'
+import { ANGLE_TABLE, ANGLES, ANGLES_D, ANGLES_L, ANGLES_R, ANGLES_U }                                        from '@pres/enum-angle-table'
+import { CSI, ESC, LF, TAB }                                                                                  from '@pres/enum-control-chars'
+import { BOTTOM, CENTER, HALF, HEIGHT, LEFT, MIDDLE, RIGHT, SHRINK, TOP, WIDTH }                              from '@pres/enum-coord-infos'
+import { SGR }                                                                                                from '@pres/enum-csi-codes'
+import {
+  ATTACH, BLUR, CLICK, DATA, DESTROY, DETACH, ELEMENT_CLICK, ELEMENT_MOUSEOUT, ELEMENT_MOUSEOVER, ELEMENT_MOUSEUP, ERROR, EXIT, FOCUS,
+  HIDE as HIDE$1, KEY, KEYPRESS, LOG, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, MOVE, NEW_LISTENER, PARSED_CONTENT,
+  PASSTHROUGH, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, TITLE, WARNING, WHEELDOWN, WHEELUP
+}                                                                                                             from '@pres/enum-events'
+import { DOWN, UP }                                                                                           from '@pres/enum-key-names'
+import { BACK, BG, BLINK, BOLD, FG, FORE, HIDE, INVERSE, INVISIBLE, ITALIC, REVERSE, TRANSPARENT, UNDERLINE } from '@pres/enum-sgr-attrs'
+import { GlobalScreen }                                                                                       from '@pres/global-screen'
+import { Program }                                                                                            from '@pres/program'
+import * as colors                                                                                            from '@pres/util-blessed-colors'
+import { degrade }                                                                                            from '@pres/util-byte-colors'
+import * as helpers                                                                                           from '@pres/util-helpers'
+import { dropUnicode, Logger, nextTick, stripTags }                                                           from '@pres/util-helpers'
+import { Mor }                                                                                                from '@pres/util-morisot'
+import { attrToSgra, sgraToAttr, styleToAttr }                                                                from '@pres/util-sgr-attr'
+import * as unicode                                                                                           from '@pres/util-unicode'
+import { SP }                                                                                                 from '@texting/enum-chars'
+import { FUN, NUM, OBJ, STR }                                                                                 from '@typen/enum-data-types'
+import { nullish }                                                                                            from '@typen/nullish'
+import { select }                                                                                             from '@vect/object-select'
+import { last }                                                                                               from '@vect/vector-index'
+import assert                                                                                                 from 'assert'
+import cp, { spawn }                                                                                          from 'child_process'
+import term                                                                                                   from 'term.js'
+import util                                                                                                   from 'util'
+
+export { Node }                                                                                               from '@pres/components-node';
 
 const REGEX_SGR_G = /\x1b\[[\d;]*m/g;
 const REGEX_INIT_SGR = /^\x1b\[[\d;]*m/;
@@ -3302,6 +3307,7 @@ class Screen extends Node {
     }
 
     this.tput = this.program.tput;
+    Logger.log('screen', 'setup-program', 'this.program.type', this.program.type);
   }
 
   get title() {
@@ -4054,6 +4060,7 @@ class Screen extends Node {
   _destroy() {
     this.leave();
     const index = GlobalScreen.instances.indexOf(this);
+    Logger.log('screen', 'destroy', index);
 
     if (~index) {
       GlobalScreen.removeInstanceAt(index); // GlobalScreen.instances.splice(index, 1)

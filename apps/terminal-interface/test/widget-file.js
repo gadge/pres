@@ -3,7 +3,7 @@ import { Box, FileManager, Screen } from '@pres/components'
 const screen = Screen.build({
   tput: true,
   smartCSR: true,
-  dump: __dirname + '/logs/file.log',
+  dump: process.cwd() + '/logs/file.log',
   warnings: true
 })
 

@@ -1,7 +1,7 @@
 import { List, Screen } from '@pres/components'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/noalt.log',
+  dump: process.cwd() + '/logs/noalt.log',
   title: 'widget-noalt test',
   noAlt: true,
   warnings: true

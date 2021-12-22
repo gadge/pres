@@ -1,7 +1,7 @@
 import { Box, Screen } from '@pres/components'
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/valign.log',
+  dump: process.cwd() + '/logs/valign.log',
   smartCSR: true,
   autoPadding: false,
   warnings: true

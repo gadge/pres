@@ -4,7 +4,7 @@ import { Box, ListBar, Screen } from '@pres/components'
 const auto = true
 
 const screen = Screen.build({
-  dump: __dirname + '/logs/listbar.log',
+  dump: process.cwd() + '/logs/listbar.log',
   autoPadding: auto,
   warnings: true
 })

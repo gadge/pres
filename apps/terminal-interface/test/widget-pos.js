@@ -2,7 +2,7 @@ import { Box, Screen } from '@pres/components'
 
 const assert = require('assert')
 const screen = Screen.build({
-  dump: __dirname + '/logs/pos.log'
+  dump: process.cwd() + '/logs/pos.log'
 })
 
 // My terminal size at the time of writing these tests:

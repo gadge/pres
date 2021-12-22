@@ -1,4 +1,4 @@
-import { TI } from './src/terminal-interface'
+import { TI } from './src/terminal-interface.js'
 
 export {
   ANSIImage, BarChart, BigText, Box, Button, Canvas, Carousel, Checkbox, DataTable, DonutChart, FileManager, Form,
@@ -20,6 +20,6 @@ export {
   OutputBuffer,
   createScreen,
   serverError,
-} from './src/server-utils'
+} from './src/server-utils.js'
 
 

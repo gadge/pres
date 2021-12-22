@@ -5,8 +5,7 @@
  */
 import { DATA, KEYPRESS, NEW_LISTENER }               from '@pres/enum-events'
 import {
-  BACKSPACE, CLEAR, DELETE, DOWN, END, ENTER, ESCAPE, HOME, INSERT, LEFT, PAGEDOWN, PAGEUP, RETURN, RIGHT, SPACE, TAB,
-  UNDEFINED, UP
+  BACKSPACE, CLEAR, DELETE, DOWN, END, ENTER, ESCAPE, HOME, INSERT, LEFT, PAGEDOWN, PAGEUP, RETURN, RIGHT, SPACE, TAB, UNDEFINED, UP
 }                                                     from '@pres/enum-key-names'
 import { acquire }                                    from '@vect/vector-merge'
 import { EventEmitter }                               from 'events'
@@ -359,7 +358,7 @@ export function keypressEventsEmitter(stream) {
     }
   }
   function onNewListener(event) {
-    if (event === KEYPRESS) {stream.on(DATA, onData), stream.removeListener(NEW_LISTENER, onNewListener)}
+    if (event === KEYPRESS) { stream.on(DATA, onData), stream.removeListener(NEW_LISTENER, onNewListener) }
   }
   listenerCount(stream, KEYPRESS) > 0 ? stream.on(DATA, onData) : stream.on(NEW_LISTENER, onNewListener)
 }
