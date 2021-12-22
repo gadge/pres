@@ -15,7 +15,7 @@ export default {
   input: 'index.js',
   external: [ 'timers/promises', ...Object.keys(dependencies || {}) ],
   output: [
-    { file: exports['import'], format: 'esm' },  // ES module (for bundlers) build.
+    { file: exports, format: 'esm' },  // ES module (for bundlers) build.
     // { file: exports['require'], format: 'cjs' }  // CommonJS (for Node) build.
   ],
   plugins: [

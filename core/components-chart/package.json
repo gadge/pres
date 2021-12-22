@@ -3,9 +3,7 @@
   "version": "0.4.0",
   "description": "chart components for pres",
   "type": "module",
-  "exports": {
-    "import": "./dist/index.js"
-  },
+  "exports": "./dist/index.esm.js",
   "files": [
     "dist"
   ],
