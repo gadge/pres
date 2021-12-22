@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-geo",
-  "version": "0.3.33",
+  "version": "0.4.0",
   "description": "Core components for pres",
   "type": "module",
   "exports": {
@@ -17,8 +17,8 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/components-layout": "^0.3.33",
-    "@pres/enum-events": "^0.3.33",
+    "@pres/components-layout": "^0.4.0",
+    "@pres/enum-events": "^0.4.0",
     "map-canvas": "^0.1.5"
   },
   "repository": {

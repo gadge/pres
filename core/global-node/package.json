@@ -1,6 +1,6 @@
 {
   "name": "@pres/global-node",
-  "version": "0.3.33",
+  "version": "0.4.0",
   "description": "Global node for pres",
   "type": "module",
   "exports": {

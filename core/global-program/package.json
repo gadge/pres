@@ -1,6 +1,6 @@
 {
   "name": "@pres/global-program",
-  "version": "0.3.33",
+  "version": "0.4.0",
   "description": "Global program for pres",
   "type": "module",
   "exports": {
@@ -17,8 +17,8 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/enum-events": "^0.3.33",
-    "@pres/util-helpers": "^0.3.33"
+    "@pres/enum-events": "^0.4.0",
+    "@pres/util-helpers": "^0.4.0"
   },
   "repository": {
     "type": "git",

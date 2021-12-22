@@ -1,6 +1,6 @@
 {
   "name": "@pres/terminfo-parser",
-  "version": "0.3.33",
+  "version": "0.4.0",
   "description": "Terminfo parser for pres",
   "type": "module",
   "exports": {
@@ -18,8 +18,8 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/enum-terminfo-alias": "^0.3.33",
-    "@pres/util-helpers": "^0.3.33",
+    "@pres/enum-terminfo-alias": "^0.4.0",
+    "@pres/util-helpers": "^0.4.0",
     "@typen/enum-data-types": "^0.1.17",
     "@typen/nullish": "^0.1.17"
   },

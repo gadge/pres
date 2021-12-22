@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-helpers",
-  "version": "0.3.33",
+  "version": "0.4.0",
   "description": "Helpers for pres",
   "type": "module",
   "exports": {
@@ -17,9 +17,9 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/util-blessed-colors": "^0.3.33",
-    "@pres/util-byte-colors": "^0.3.33",
-    "@pres/util-unicode": "^0.3.33",
+    "@pres/util-blessed-colors": "^0.4.0",
+    "@pres/util-byte-colors": "^0.4.0",
+    "@pres/util-unicode": "^0.4.0",
     "@spare/logger": "^0.13.2",
     "@spare/verse": "^0.13.2",
     "@texting/enum-chars": "^0.0.13",

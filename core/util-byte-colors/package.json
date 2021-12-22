@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-byte-colors",
-  "version": "0.3.33",
+  "version": "0.4.0",
   "description": "256 color space for pres",
   "type": "module",
   "exports": {

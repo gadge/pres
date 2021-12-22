@@ -1,6 +1,6 @@
 {
   "name": "@pres/util-sgr-attr",
-  "version": "0.3.33",
+  "version": "0.4.0",
   "description": "Parse from/to sgr effects and colors",
   "type": "module",
   "exports": {
@@ -20,8 +20,8 @@
     "@palett/enum-ansi-codes": "^0.8.18",
     "@palett/enum-font-effects": "^0.8.18",
     "@palett/util-ansi": "^0.8.18",
-    "@pres/util-byte-colors": "^0.3.33",
-    "@pres/util-sgr-mode": "^0.3.33",
+    "@pres/util-byte-colors": "^0.4.0",
+    "@pres/util-sgr-mode": "^0.4.0",
     "@typen/enum-data-types": "^0.1.17",
     "@typen/nullish": "^0.1.17"
   },

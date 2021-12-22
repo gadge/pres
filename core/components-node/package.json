@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-node",
-  "version": "0.3.33",
+  "version": "0.4.0",
   "description": "Node component for pres",
   "type": "module",
   "exports": {
@@ -17,10 +17,10 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/enum-events": "^0.3.33",
-    "@pres/events": "^0.3.33",
-    "@pres/global-node": "^0.3.33",
-    "@pres/global-screen": "^0.3.33",
+    "@pres/enum-events": "^0.4.0",
+    "@pres/events": "^0.4.0",
+    "@pres/global-node": "^0.4.0",
+    "@pres/global-screen": "^0.4.0",
     "@texting/enum-chars": "^0.0.13",
     "@typen/enum-data-types": "^0.1.17",
     "@vect/vector-index": "^0.4.10"

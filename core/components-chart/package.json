@@ -1,6 +1,6 @@
 {
   "name": "@pres/components-chart",
-  "version": "0.3.33",
+  "version": "0.4.0",
   "description": "chart components for pres",
   "type": "module",
   "exports": {
@@ -18,12 +18,12 @@
   },
   "dependencies": {
     "@aryth/math": "^0.3.26",
-    "@pres/components-core": "^0.3.33",
-    "@pres/components-layout": "^0.3.33",
-    "@pres/enum-events": "^0.3.33",
-    "@pres/util-byte-colors": "^0.3.33",
-    "@pres/util-chart-ticks": "^0.3.33",
-    "@pres/util-helpers": "^0.3.33",
+    "@pres/components-core": "^0.4.0",
+    "@pres/components-layout": "^0.4.0",
+    "@pres/enum-events": "^0.4.0",
+    "@pres/util-byte-colors": "^0.4.0",
+    "@pres/util-chart-ticks": "^0.4.0",
+    "@pres/util-helpers": "^0.4.0",
     "@typen/enum-data-types": "^0.1.17",
     "@typen/nullish": "^0.1.17",
     "@vect/vector-indicator": "^0.4.10",

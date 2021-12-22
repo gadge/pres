@@ -1,6 +1,6 @@
 {
   "name": "@pres/fin",
-  "version": "0.3.33",
+  "version": "0.4.0",
   "description": "pres graphic financial dashboard",
   "type": "module",
   "exports": {
@@ -28,9 +28,9 @@
     "@aryth/rand": "^0.3.26",
     "@morpont/market-indexes-fmp": "^0.0.7",
     "@palett/cards": "^0.8.18",
-    "@pres/components": "^0.3.33",
-    "@pres/enum-events": "^0.3.33",
-    "@pres/terminal-interface": "^0.3.33",
+    "@pres/components": "^0.4.0",
+    "@pres/enum-events": "^0.4.0",
+    "@pres/terminal-interface": "^0.4.0",
     "@texting/phrasing": "^0.0.13",
     "@valjoux/convert": "^0.3.8",
     "@valjoux/date-shift": "^0.3.8",

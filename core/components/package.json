@@ -1,6 +1,6 @@
 {
   "name": "@pres/components",
-  "version": "0.3.33",
+  "version": "0.4.0",
   "description": "Core components for pres",
   "type": "module",
   "exports": {
@@ -17,16 +17,16 @@
     "test": "node -r @babel/register test/test.index.js"
   },
   "dependencies": {
-    "@pres/components-chart": "^0.3.33",
-    "@pres/components-core": "^0.3.33",
-    "@pres/components-data": "^0.3.33",
-    "@pres/components-form": "^0.3.33",
-    "@pres/components-geo": "^0.3.33",
-    "@pres/components-inform": "^0.3.33",
-    "@pres/components-layout": "^0.3.33",
-    "@pres/components-text": "^0.3.33",
-    "@pres/components-visual": "^0.3.33",
-    "@pres/enum-events": "^0.3.33"
+    "@pres/components-chart": "^0.4.0",
+    "@pres/components-core": "^0.4.0",
+    "@pres/components-data": "^0.4.0",
+    "@pres/components-form": "^0.4.0",
+    "@pres/components-geo": "^0.4.0",
+    "@pres/components-inform": "^0.4.0",
+    "@pres/components-layout": "^0.4.0",
+    "@pres/components-text": "^0.4.0",
+    "@pres/components-visual": "^0.4.0",
+    "@pres/enum-events": "^0.4.0"
   },
   "repository": {
     "type": "git",

@@ -1,6 +1,6 @@
 {
   "name": "@pres/enum-events",
-  "version": "0.3.33",
+  "version": "0.4.0",
   "description": "Events for pres",
   "type": "module",
   "exports": {
