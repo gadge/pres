@@ -1,0 +1,7 @@
+export { BLA, BLU, CYA, GRE, MAG, RED, WHI, YEL }                                         from './COLOR_CODES_BIT3.js'
+export { BLA_LITE, BLU_LITE, CYA_LITE, GRE_LITE, MAG_LITE, RED_LITE, WHI_LITE, YEL_LITE } from './COLOR_CODES_BIT4.js'
+export { COLOR_NAMES_BIT3 }                                                               from './COLOR_NAMES_BIT3.js'
+export { COLOR_NAMES_BIT4 }                                                               from './COLOR_NAMES_BIT4.js'
+export { WEB_SAFE_MATRIX_HEX }                                                            from './WEB_SAFE_MATRIX_HEX.js'
+export { WEB_SAFE_MATRIX_INDEX }                                                          from './WEB_SAFE_MATRIX_INDEX.js'
+export { COLOR_HEXES_BIT4 }                                                               from './COLOR_HEXES_BIT4.js'

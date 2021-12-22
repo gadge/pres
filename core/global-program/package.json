@@ -3,8 +3,7 @@
   "version": "0.3.33",
   "description": "Global program for pres",
   "type": "module",
-  "main": "dist/index.cjs",
-  "exports": {
+    "exports": {
     "import": "./dist/index.js",
     "require": "./dist/index.cjs"
   },

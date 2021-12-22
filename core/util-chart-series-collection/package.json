@@ -1,0 +1,46 @@
+{
+  "name": "@pres/util-chart-series-collection",
+  "version": "0.3.33",
+  "description": "SeriesCollection class for pres charting",
+  "type": "module",
+    "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "pub": "npm publish",
+    "test": "node -r @babel/register test/test.index.js"
+  },
+  "dependencies": {
+    "@pres/util-chart-series": "^0.3.33",
+    "@vect/matrix": "^0.4.10",
+    "@vect/vector-mapper": "^0.4.10"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoyeungw/pres.git"
+  },
+  "keywords": [
+    "pres",
+    "process",
+    "signal-handler",
+    "colors"
+  ],
+  "author": {
+    "name": "Hoyeung Wong",
+    "email": "hoyeungw@outlook.com",
+    "url": "https://github.com/hoyeungw"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hoyeungw/pres"
+  },
+  "homepage": "https://github.com/hoyeungw/pres#readme",
+  "gitHead": "0cc85f5f72ca235d4dfb5d25b9f7c7af32c113eb"
+}

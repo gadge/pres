@@ -9,7 +9,7 @@ import { dateToYmd }        from '@valjoux/convert'
 import { shiftDay }         from '@valjoux/date-shift'
 import { Escape }      from '@valjoux/linger'
 import { unwind }           from '@vect/entries-unwind'
-import APIKEY               from '../../../../local/fmp.apikey.json'
+import APIKEY               from '../../../../meta/local/fmp.apikey.json'
 import { COLOR_COLLECTION } from '../../assets/COLOR_COLLECTION'
 
 

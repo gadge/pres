@@ -1,1 +1,0 @@
-export { Ticks } from './src/Ticks'

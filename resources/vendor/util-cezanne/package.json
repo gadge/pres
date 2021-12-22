@@ -1,0 +1,54 @@
+{
+  "name": "@pres/util-cezanne",
+  "version": "0.2.19",
+  "description": "Cezanne color scheme for pres",
+"type": "module",
+    "exports": {
+    "import": "./dist/index.js",
+    "require": "./dist/index.cjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "pub": "npm publish",
+    "test": "node -r @babel/register test/test.index.js"
+  },
+  "dependencies": {
+    "@palett/cards": "^0.8.14",
+    "@palett/convert": "^0.8.14",
+    "@palett/fluo": "^0.8.14",
+    "@palett/presets": "^0.8.14",
+    "@palett/projector-factory": "^0.8.14",
+    "@pres/enum-control-chars": "^0.2.19",
+    "@pres/enum-csi-codes": "^0.2.19",
+    "@pres/util-colors": "^0.2.19",
+    "@texting/enum-chars": "^0.0.10",
+    "@typen/enum-data-types": "^0.1.16",
+    "@typen/nullish": "^0.1.16"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hoyeungw/pres/colors.git"
+  },
+  "keywords": [
+    "pres",
+    "process",
+    "signal-handler",
+    "colors"
+  ],
+  "author": {
+    "name": "Hoyeung Wong",
+    "email": "hoyeungw@outlook.com",
+    "url": "https://github.com/hoyeungw"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hoyeungw/pres/cluster"
+  },
+  "homepage": "https://github.com/hoyeungw/pres/cluster#readme",
+  "gitHead": "4e0a6a0d819185caa8d129e991bb986b6cb0b365"
+}

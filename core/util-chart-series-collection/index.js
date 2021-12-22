@@ -1,0 +1,1 @@
+export { SeriesCollection } from './src/SeriesCollection.js'

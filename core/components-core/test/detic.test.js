@@ -1,4 +1,4 @@
-import { Detic } from '../utils/Detic'
+import { Detic } from '../utils/Detic.js'
 
 const detic = Detic.build({
   t: 0,
