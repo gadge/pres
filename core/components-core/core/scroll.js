@@ -47,15 +47,15 @@ export class Scroll {
             // Do not allow dragging on the scrollbar:
             delete self.screen._dragging
             delete self._drag
-            const ratio = ( y - self.intT ) / ( self.height - self.intH )
-            self.setScrollPerc(ratio * 100 | 0)
+            const ratio = (y - self.intT) / (self.height - self.intH)
+            self.scrollPercent = (ratio * 100 | 0)
             self.screen.render()
             let smd, smu
             self._scrollingBar = true
             self.onScreenEvent(MOUSEDOWN, smd = data => {
               const y = data.y - self.absT
               const ratio = y / self.height
-              self.setScrollPerc(ratio * 100 | 0)
+              self.scrollPercent = (ratio * 100 | 0)
               self.screen.render()
             })
             // If mouseup occurs out of the window, no mouseup event fires, and
@@ -76,30 +76,30 @@ export class Scroll {
         self.screen.render()
       })
       this.on(WHEELUP, () => {
-        self.scroll(-( self.height / 2 | 0 ) || -1)
+        self.scroll(-(self.height / 2 | 0) || -1)
         self.screen.render()
       })
     }
     if (options.keys && !options.ignoreKeys) {
       this.on(KEYPRESS, (ch, key) => {
         const { ctrl, name, shift } = key, { vi } = options
-        if (name === UP || ( vi && name === 'k' )) return void ( self.scroll(-1), self.screen.render() )
-        if (name === DOWN || ( vi && name === 'j' )) return void ( self.scroll(1), self.screen.render() )
-        if (vi && name === 'u' && ctrl) return void ( self.scroll(-( self.height / 2 | 0 ) || -1), self.screen.render() )
-        if (vi && name === 'd' && ctrl) return void ( self.scroll(self.height / 2 | 0 || 1), self.screen.render() )
-        if (vi && name === 'b' && ctrl) return void ( self.scroll(-self.height || -1), self.screen.render() )
-        if (vi && name === 'f' && ctrl) return void ( self.scroll(self.height || 1), self.screen.render() )
-        if (vi && name === 'g' && !shift) return void ( self.scrollTo(0), self.screen.render() )
-        if (vi && name === 'g' && shift) return void ( self.scrollTo(self.getScrollHeight()), self.screen.render() )
+        if (name === UP || (vi && name === 'k')) return void (self.scroll(-1), self.screen.render())
+        if (name === DOWN || (vi && name === 'j')) return void (self.scroll(1), self.screen.render())
+        if (vi && name === 'u' && ctrl) return void (self.scroll(-(self.height / 2 | 0) || -1), self.screen.render())
+        if (vi && name === 'd' && ctrl) return void (self.scroll(self.height / 2 | 0 || 1), self.screen.render())
+        if (vi && name === 'b' && ctrl) return void (self.scroll(-self.height || -1), self.screen.render())
+        if (vi && name === 'f' && ctrl) return void (self.scroll(self.height || 1), self.screen.render())
+        if (vi && name === 'g' && !shift) return void (self.scrollTo(0), self.screen.render())
+        if (vi && name === 'g' && shift) return void (self.scrollTo(self.scrollHeight), self.screen.render())
       })
     }
-    this.on(PARSED_CONTENT, () => self._recalculateIndex())
-    self._recalculateIndex()
+    this.on(PARSED_CONTENT, () => self.recalcIndex())
+    self.recalcIndex()
   }
   get reallyScrollable() {
     // XXX Potentially use this in place of scrollable checks elsewhere.
     if (this.shrink) return this.scrollable
-    return this.getScrollHeight() > this.height
+    return this.scrollHeight > this.height
   }
   _scrollBottom() {
     if (!this.scrollable) return 0
@@ -116,11 +116,11 @@ export class Scroll {
       // See: $ node test/widget-shrink-fail-2.js
       if (!el.detached) {
         const prevPos = el.calcCoord(false, true)
-        if (prevPos) return Math.max(current, el.relT + ( prevPos.yHi - prevPos.yLo ))
+        if (prevPos) return Math.max(current, el.relT + (prevPos.yHi - prevPos.yLo))
       }
       return Math.max(current, el.relT + el.height)
     }, 0)
-    // XXX Use this? Makes .getScrollHeight() useless!
+    // XXX Use this? Makes .scrollHeight useless!
     // if (bottom < this._clines.length) bottom = this._clines.length;
     if (this.prevPos) this.prevPos._scrollBottom = bottom
     return bottom
@@ -130,7 +130,7 @@ export class Scroll {
     // XXX
     // At first, this appeared to account for the first new calculation of subBase:
     this.scroll(0)
-    return this.scroll(offset - ( this.subBase + this.subOffset ), always)
+    return this.scroll(offset - (this.subBase + this.subOffset), always)
   }
   getScroll() {
     return this.subBase + this.subOffset
@@ -154,7 +154,7 @@ export class Scroll {
       this.subOffset += offset
     }
     if (this.subOffset > visible - 1) {
-      d = this.subOffset - ( visible - 1 )
+      d = this.subOffset - (visible - 1)
       this.subOffset -= d
       this.subBase += d
     }
@@ -173,11 +173,11 @@ export class Scroll {
     // and put it in a scrollable text box.
     this.parseContent()
     // XXX
-    // max = this.getScrollHeight() - (this.height - this.intH);
+    // max = this.scrollHeight - (this.height - this.intH);
 
-    max = this._clines.length - ( this.height - this.intH )
+    max = this._clines.length - (this.height - this.intH)
     if (max < 0) max = 0
-    emax = this._scrollBottom() - ( this.height - this.intH )
+    emax = this._scrollBottom() - (this.height - this.intH)
     if (emax < 0) emax = 0
     this.subBase = Math.min(this.subBase, Math.max(emax, max))
     this.subBase = this.subBase < 0 ? 0 : this.subBase > this.baseLimit ? this.baseLimit : this.subBase
@@ -202,14 +202,14 @@ export class Scroll {
     }
     return this.emit(SCROLL)
   }
-  _recalculateIndex() {
+  recalcIndex() {
     let max, emax
     if (this.detached || !this.scrollable) return 0
     // XXX
-    // max = this.getScrollHeight() - (this.height - this.intH);
-    max = this._clines.length - ( this.height - this.intH )
+    // max = this.scrollHeight - (this.height - this.intH);
+    max = this._clines.length - (this.height - this.intH)
     if (max < 0) max = 0
-    emax = this._scrollBottom() - ( this.height - this.intH )
+    emax = this._scrollBottom() - (this.height - this.intH)
     if (emax < 0) emax = 0
     this.subBase = Math.min(this.subBase, Math.max(emax, max))
     this.subBase = this.subBase < 0 ? 0 : this.subBase > this.baseLimit ? this.baseLimit : this.subBase
@@ -220,30 +220,28 @@ export class Scroll {
     this.subBase = 0
     return this.emit(SCROLL)
   }
-  getScrollHeight() {
+  get scrollHeight() {
     return Math.max(this._clines.length, this._scrollBottom())
   }
-  getScrollPerc(s) {
+  get scrollPercent() {
     const pos = this.prevPos || this.calcCoord()
+    const s = false // s is first arg of serScrollPerc in previous version
     if (!pos) return s ? -1 : 0
-    const height = ( pos.yHi - pos.yLo ) - this.intH,
-          i      = this.getScrollHeight()
+    const height = (pos.yHi - pos.yLo) - this.intH,
+          i      = this.scrollHeight
     let p
     if (height < i) {
-      if (this.alwaysScroll) {
-        p = this.subBase / ( i - height )
-      }
-      else {
-        p = ( this.subBase + this.subOffset ) / ( i - 1 )
-      }
+      p = this.alwaysScroll
+        ? this.subBase / (i - height)
+        : (this.subBase + this.subOffset) / (i - 1)
       return p * 100
     }
     return s ? -1 : 0
   }
-  setScrollPerc(i) {
+  set scrollPercent(i) {
     // XXX
-    // var m = this.getScrollHeight();
+    // var m = this.scrollHeight;
     const m = Math.max(this._clines.length, this._scrollBottom())
-    return this.scrollTo(( i / 100 ) * m | 0)
+    return this.scrollTo((i / 100) * m | 0)
   }
 }
