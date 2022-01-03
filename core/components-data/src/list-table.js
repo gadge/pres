@@ -147,7 +147,7 @@ export class ListTable extends List {
   }
   render() {
     const self = this
-    const coords = this._render()
+    const coords = this.renderElement()
     if (!coords) return
     this._calculateMaxes()
     if (!this._maxes) return coords

@@ -181,7 +181,7 @@ export class ListBar extends Box {
         item.show()
       }
     })
-    return this._render()
+    return this.renderElement()
   }
   select(offset) {
     if (typeof offset !== NUM) offset = this.items.indexOf(offset)

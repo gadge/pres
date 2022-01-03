@@ -128,7 +128,7 @@ export class Table extends Box {
   render() {
     // console.log(`>>> calling table.render`)
     const self = this
-    const coords = this._render()
+    const coords = this.renderElement()
     if (!coords) return
     this._calculateMaxes()
     if (!this._maxes) return coords
