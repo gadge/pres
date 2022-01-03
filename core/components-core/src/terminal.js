@@ -6,10 +6,11 @@
 
 import {
   BLUR, DATA, DESTROY, FOCUS, KEYPRESS, MOUSE, MOUSEDOWN, PASSTHROUGH, RENDER, RESIZE, SCROLL, TITLE,
-}                   from '@pres/enum-events'
-import { nextTick } from '@pres/util-helpers'
-import term         from 'term.js'
-import { Box }      from '../core/box'
+}                      from '@pres/enum-events'
+import { nextTick }    from '@pres/util-helpers'
+import { styleToAttr } from '@pres/util-sgr-attr'
+import term            from 'term.js'
+import { Box }         from '../core/box'
 
 
 export class Terminal extends Box {
@@ -168,7 +169,7 @@ export class Terminal extends Box {
   render() {
     const ret = this.renderElement()
     if (!ret) return
-    this.dattr = this.sattr(this.style)
+    this.dattr = styleToAttr(this.style)
     const xLo = ret.xLo + this.intL,
           xHi = ret.xHi - this.intR,
           yLo = ret.yLo + this.intT,

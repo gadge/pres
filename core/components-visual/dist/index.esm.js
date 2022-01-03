@@ -6,6 +6,7 @@ import assert from 'assert';
 import fs from 'fs';
 import path from 'path';
 import zlib from 'zlib';
+import { styleToAttr } from '@pres/util-sgr-attr';
 import * as Mixin from '@ject/mixin';
 import * as helpers from '@pres/util-helpers';
 import streams from 'memory-streams';
@@ -1963,7 +1964,7 @@ class BigText extends Box {
           top = coords.yLo + this.intT,
           right = coords.xHi - this.intR,
           bottom = coords.yHi - this.intB;
-    const normAttr = this.sattr(this.style),
+    const normAttr = styleToAttr(this.style),
           back = normAttr & 0x1ff,
           fore = normAttr >> 9 & 0x1ff,
           mode = normAttr >> 18 & 0x1ff,

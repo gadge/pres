@@ -1115,11 +1115,8 @@ class Element extends Node {
       yHi
     } = coord;
     this.screen.clearRegion(xLo, xHi, yLo, yHi, override);
-  }
-
-  sattr(style, fg, bg) {
-    return styleToAttr(style, fg, bg);
-  } // Convert `{red-fg}foo{/red-fg}` to `\x1b[31mfoo\x1b[39m`.
+  } // sattr(style, fg, bg) { return styleToAttr(style, fg, bg) }
+  // Convert `{red-fg}foo{/red-fg}` to `\x1b[31mfoo\x1b[39m`.
   // get contLines() { return this.contLines }
 
 
@@ -5302,7 +5299,7 @@ class Terminal extends Box {
   render() {
     const ret = this.renderElement();
     if (!ret) return;
-    this.dattr = this.sattr(this.style);
+    this.dattr = styleToAttr(this.style);
     const xLo = ret.xLo + this.intL,
           xHi = ret.xHi - this.intR,
           yLo = ret.yLo + this.intT,

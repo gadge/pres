@@ -3,8 +3,9 @@
  * Copyright (c) 2013-2015, Christopher Jeffrey and contributors (MIT License).
  * https://github.com/chjj/blessed
  */
-import { Box } from '@pres/components-core'
-import fs      from 'fs'
+import { Box }         from '@pres/components-core'
+import { styleToAttr } from '@pres/util-sgr-attr'
+import fs              from 'fs'
 
 export class BigText extends Box {
   /**
@@ -88,7 +89,7 @@ export class BigText extends Box {
           top    = coords.yLo + this.intT,
           right  = coords.xHi - this.intR,
           bottom = coords.yHi - this.intB
-    const normAttr = this.sattr(this.style),
+    const normAttr = styleToAttr(this.style),
           back     = normAttr & 0x1ff,
           fore     = ( normAttr >> 9 ) & 0x1ff,
           mode     = ( normAttr >> 18 ) & 0x1ff,

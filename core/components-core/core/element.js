@@ -625,7 +625,8 @@ export class Element extends Node {
     this.screen.clearRegion(xLo, xHi, yLo, yHi, override)
   }
 
-  sattr(style, fg, bg) { return styleToAttr(style, fg, bg) }
+  // sattr(style, fg, bg) { return styleToAttr(style, fg, bg) }
+
   // Convert `{red-fg}foo{/red-fg}` to `\x1b[31mfoo\x1b[39m`.
   // get contLines() { return this.contLines }
   parseContent(noTags) {
