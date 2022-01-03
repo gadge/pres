@@ -26,7 +26,7 @@ export class Log extends ScrollableText {
     this.scrollOnInput = options.scrollOnInput
     this.on(SET_CONTENT, () => {
       if (!self._userScrolled || self.scrollOnInput) nextTick(() => {
-        self.setScrollPerc(100)
+        self.scrollPercent = (100)
         self._userScrolled = false
         self.screen.render()
       })
@@ -49,7 +49,7 @@ export class Log extends ScrollableText {
     if (offset === 0) return this._scroll(offset, always)
     this._userScrolled = true
     const ret = this._scroll(offset, always)
-    if (this.getScrollPerc() === 100) this._userScrolled = false
+    if (this.scrollPercent === 100) this._userScrolled = false
     return ret
   }
 }

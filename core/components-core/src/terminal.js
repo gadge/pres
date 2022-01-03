@@ -4,10 +4,12 @@
  * https://github.com/chjj/blessed
  */
 
-import { BLUR, DATA, DESTROY, FOCUS, KEYPRESS, MOUSE, MOUSEDOWN, PASSTHROUGH, RENDER, RESIZE, SCROLL, TITLE, } from '@pres/enum-events'
-import { nextTick }                                                                                            from '@pres/util-helpers'
-import term                                                                                                    from 'term.js'
-import { Box }                                                                                                 from '../core/box'
+import {
+  BLUR, DATA, DESTROY, FOCUS, KEYPRESS, MOUSE, MOUSEDOWN, PASSTHROUGH, RENDER, RESIZE, SCROLL, TITLE,
+}                   from '@pres/enum-events'
+import { nextTick } from '@pres/util-helpers'
+import term         from 'term.js'
+import { Box }      from '../core/box'
 
 
 export class Terminal extends Box {
@@ -122,12 +124,12 @@ export class Terminal extends Box {
       let s
       if (self.term.urxvtMouse) {
         if (self.screen.program.sgrMouse) { b += 32 }
-        s = '\x1b[' + b + ';' + ( x + 32 ) + ';' + ( y + 32 ) + 'M'
+        s = '\x1b[' + b + ';' + (x + 32) + ';' + (y + 32) + 'M'
       }
       else if (self.term.sgrMouse) {
         if (!self.screen.program.sgrMouse) { b -= 32 }
         s = '\x1b[<' + b + ';' + x + ';' + y
-          + ( data.action === MOUSEDOWN ? 'M' : 'm' )
+          + (data.action === MOUSEDOWN ? 'M' : 'm')
       }
       else {
         if (self.screen.program.sgrMouse) { b += 32 }
@@ -164,7 +166,7 @@ export class Terminal extends Box {
   }
   write(data) { return this.term.write(data) }
   render() {
-    const ret = this._render()
+    const ret = this.renderElement()
     if (!ret) return
     this.dattr = this.sattr(this.style)
     const xLo = ret.xLo + this.intL,
@@ -172,28 +174,28 @@ export class Terminal extends Box {
           yLo = ret.yLo + this.intT,
           yHi = ret.yHi - this.intB
     let cursor
-    const scrollBack = this.term.lines.length - ( yHi - yLo )
+    const scrollBack = this.term.lines.length - (yHi - yLo)
     for (
       let y = Math.max(yLo, 0), currLine, backLine;
       y < yHi;
       y++
     ) {
       if (
-        !( currLine = this.screen.lines[y] ) ||
-        !( backLine = this.term.lines[scrollBack + y - yLo] )
+        !(currLine = this.screen.lines[y]) ||
+        !(backLine = this.term.lines[scrollBack + y - yLo])
       ) { break }
       if (
         y === yLo + this.term.y &&
         this.term.cursorState &&
         this.screen.focused === this &&
-        ( this.term.ydisp === this.term.ybase || this.term.selectMode ) &&
+        (this.term.ydisp === this.term.ybase || this.term.selectMode) &&
         !this.term.cursorHidden
       ) { cursor = xLo + this.term.x }
       else { cursor = -1 }
       for (let x = Math.max(xLo, 0), currCell, backCell; x < xHi; x++) {
         if (
-          !( currCell = currLine[x] ) ||
-          !( backCell = backLine[x - xLo] )
+          !(currCell = currLine[x]) ||
+          !(backCell = backLine[x - xLo])
         ) { break }
         currCell[0] = backCell[0]
         if (x === cursor) {
@@ -201,17 +203,17 @@ export class Terminal extends Box {
             currCell.inject(this.dattr, '\u2502')
             continue
           }
-          else if (this.cursor === 'underline') { currCell.at = this.dattr | ( 2 << 18 ) }
-          else if (this.cursor === 'block' || !this.cursor) { currCell.at = this.dattr | ( 8 << 18 ) }
+          else if (this.cursor === 'underline') { currCell.at = this.dattr | (2 << 18) }
+          else if (this.cursor === 'block' || !this.cursor) { currCell.at = this.dattr | (8 << 18) }
         }
         currCell.ch = backCell.ch
         // default foreground = 257
-        if (( ( currCell.at >> 9 ) & 0x1ff ) === 257) {
-          currCell.at &= ~( 0x1ff << 9 )
-          currCell.at |= ( ( this.dattr >> 9 ) & 0x1ff ) << 9
+        if (((currCell.at >> 9) & 0x1ff) === 257) {
+          currCell.at &= ~(0x1ff << 9)
+          currCell.at |= ((this.dattr >> 9) & 0x1ff) << 9
         }
         // default background = 256
-        if (( currCell.at & 0x1ff ) === 256) {
+        if ((currCell.at & 0x1ff) === 256) {
           currCell.at &= ~0x1ff
           currCell.at |= this.dattr & 0x1ff
         }
@@ -229,7 +231,7 @@ export class Terminal extends Box {
       }
       else { s = s.toString('utf-8') }
     }
-    return ( buf[0] === 0x1b && buf[1] === 0x5b && buf[2] === 0x4d ) ||
+    return (buf[0] === 0x1b && buf[1] === 0x5b && buf[2] === 0x4d) ||
       /^\x1b\[M([\x00\u0020-\uffff]{3})/.test(s) ||
       /^\x1b\[(\d+;\d+;\d+)M/.test(s) ||
       /^\x1b\[<(\d+;\d+;\d+)([mM])/.test(s) ||
@@ -251,15 +253,15 @@ export class Terminal extends Box {
     this.term.ybase = 0
     return this.emit(SCROLL)
   }
-  getScrollHeight() { return this.term.rows - 1 }
-  getScrollPerc() { return ( this.term.ydisp / this.term.ybase ) * 100 }
-  setScrollPerc(i) { return this.setScroll(( i / 100 ) * this.term.ybase | 0) }
+  get scrollHeight() { return this.term.rows - 1 }
+  get scrollPercent() { return (this.term.ydisp / this.term.ybase) * 100 }
+  set scrollPercent(i) { return this.setScroll((i / 100) * this.term.ybase | 0) }
   screenshot(xLo, xHi, yLo, yHi) {
-    xLo = 0 + ( xLo || 0 )
-    if (xHi != null) { xHi = 0 + ( xHi || 0 ) }
+    xLo = 0 + (xLo || 0)
+    if (xHi != null) { xHi = 0 + (xHi || 0) }
     else { xHi = this.term.lines[0].length }
-    yLo = 0 + ( yLo || 0 )
-    if (yHi != null) { yHi = 0 + ( yHi || 0 ) }
+    yLo = 0 + (yLo || 0)
+    if (yHi != null) { yHi = 0 + (yHi || 0) }
     else { yHi = this.term.lines.length }
     return this.screen.screenshot(xLo, xHi, yLo, yHi, this.term)
   }

@@ -65,14 +65,14 @@ export class ScrollableBox extends Box {
     //         delete self.screen._dragging
     //         delete self._drag
     //         const perc = (y - self.intT) / (self.height - self.intH)
-    //         self.setScrollPerc(perc * 100 | 0)
+    //         self.scrollPercent = (perc * 100 | 0)
     //         self.screen.render()
     //         let smd, smu
     //         self._scrollingBar = true
     //         self.onScreenEvent(MOUSEDOWN, smd = function (data) {
     //           const y = data.y - self.absT
     //           const perc = y / self.height
-    //           self.setScrollPerc(perc * 100 | 0)
+    //           self.scrollPercent = (perc * 100 | 0)
     //           self.screen.render()
     //         })
     //         // If mouseup occurs out of the window, no mouseup event fires, and
@@ -135,19 +135,19 @@ export class ScrollableBox extends Box {
     //       return
     //     }
     //     if (options.vi && key.name === 'g' && key.shift) {
-    //       self.scrollTo(self.getScrollHeight())
+    //       self.scrollTo(self.scrollHeight)
     //       self.screen.render()
     //     }
     //   })
     // }
-    // this.on(PARSED_CONTENT, () => self._recalculateIndex())
-    // self._recalculateIndex()
+    // this.on(PARSED_CONTENT, () => self.recalcIndex())
+    // self.recalcIndex()
   }
   static build(options) { return new ScrollableBox(options) }
   // // XXX Potentially use this in place of scrollable checks elsewhere.
   // get reallyScrollable() {
   //   if (this.shrink) return this.scrollable
-  //   return this.getScrollHeight() > this.height
+  //   return this.scrollHeight > this.height
   // }
   // _scrollBottom() {
   //   if (!this.scrollable) return 0
@@ -168,7 +168,7 @@ export class ScrollableBox extends Box {
   //     }
   //     return Math.max(current, el.relT + el.height)
   //   }, 0)
-  //   // XXX Use this? Makes .getScrollHeight() useless!
+  //   // XXX Use this? Makes .scrollHeight useless!
   //   // if (bottom < this._clines.length) bottom = this._clines.length;
   //   if (this.lpos) this.lpos._scrollBottom = bottom
   //   return bottom
@@ -232,7 +232,7 @@ export class ScrollableBox extends Box {
   //   // and put it in a scrollable text box.
   //   this.parseContent()
   //   // XXX
-  //   // max = this.getScrollHeight() - (this.height - this.intH);
+  //   // max = this.scrollHeight - (this.height - this.intH);
   //   max = this._clines.length - (this.height - this.intH)
   //   if (max < 0) max = 0
   //   emax = this._scrollBottom() - (this.height - this.intH)
@@ -263,11 +263,11 @@ export class ScrollableBox extends Box {
   //   }
   //   return this.emit(SCROLL)
   // }
-  // _recalculateIndex() {
+  // recalcIndex() {
   //   let max, emax
   //   if (this.detached || !this.scrollable) { return 0 }
   //   // XXX
-  //   // max = this.getScrollHeight() - (this.height - this.intH);
+  //   // max = this.scrollHeight - (this.height - this.intH);
   //
   //   max = this._clines.length - (this.height - this.intH)
   //   if (max < 0) max = 0
@@ -283,12 +283,12 @@ export class ScrollableBox extends Box {
   //   this.subBase = 0
   //   return this.emit(SCROLL)
   // }
-  // getScrollHeight() { return Math.max(this._clines.length, this._scrollBottom()) }
-  // getScrollPerc(s) {
+  // scrollHeight { return Math.max(this._clines.length, this._scrollBottom()) }
+  // scrollPercent(s) {
   //   const pos = this.lpos || this.calcCoord()
   //   if (!pos) return s ? -1 : 0
   //   const height = (pos.yHi - pos.yLo) - this.intH,
-  //         i      = this.getScrollHeight()
+  //         i      = this.scrollHeight
   //   let p
   //   if (height < i) {
   //     if (this.alwaysScroll) { p = this.subBase / (i - height) }
@@ -297,9 +297,9 @@ export class ScrollableBox extends Box {
   //   }
   //   return s ? -1 : 0
   // }
-  // setScrollPerc(i) {
+  // scrollPercent = (i) {
   //   // XXX
-  //   // var m = this.getScrollHeight();
+  //   // var m = this.scrollHeight;
   //   const m = Math.max(this._clines.length, this._scrollBottom())
   //   return this.scrollTo((i / 100) * m | 0)
   // }
