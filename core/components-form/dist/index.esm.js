@@ -618,7 +618,7 @@ class Textarea extends Input {
     if (this.screen.focused !== this) return;
     const prevPos = get ? this.prevPos : this.calcCoord();
     if (!prevPos) return;
-    let last = this._clines[this._clines.length - 1];
+    let last = this.contLines[this.contLines.length - 1];
     const program = this.screen.program;
     let line, cx, cy; // Stop a situation where the textarea begins scrolling
     // and the last cline appears to always be empty from the
@@ -626,10 +626,10 @@ class Textarea extends Input {
     // Maybe not necessary anymore?
 
     if (last === '' && this.value[this.value.length - 1] !== '\n') {
-      last = this._clines[this._clines.length - 2] || '';
+      last = this.contLines[this.contLines.length - 2] || '';
     }
 
-    line = Math.min(this._clines.length - 1 - (this.subBase || 0), prevPos.yHi - prevPos.yLo - this.intH - 1); // When calling clearValue() on a full textarea with a border, the first
+    line = Math.min(this.contLines.length - 1 - (this.subBase || 0), prevPos.yHi - prevPos.yLo - this.intH - 1); // When calling clearValue() on a full textarea with a border, the first
     // argument in the above Math.min call ends up being -2. Make sure we stay
     // positive.
 
@@ -760,8 +760,8 @@ class Textarea extends Input {
     // XXX Workaround
     const height = this.height - this.intH;
 
-    if (this._clines.length - this.subBase > height) {
-      this.scroll(this._clines.length);
+    if (this.contLines.length - this.subBase > height) {
+      this.scroll(this.contLines.length);
     }
   }
 

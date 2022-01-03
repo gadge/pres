@@ -121,7 +121,7 @@ export class Scroll {
       return Math.max(current, el.relT + el.height)
     }, 0)
     // XXX Use this? Makes .scrollHeight useless!
-    // if (bottom < this._clines.length) bottom = this._clines.length;
+    // if (bottom < this.contLines.length) bottom = this.contLines.length;
     if (this.prevPos) this.prevPos._scrollBottom = bottom
     return bottom
   }
@@ -175,7 +175,7 @@ export class Scroll {
     // XXX
     // max = this.scrollHeight - (this.height - this.intH);
 
-    max = this._clines.length - (this.height - this.intH)
+    max = this.contLines.length - (this.height - this.intH)
     if (max < 0) max = 0
     emax = this._scrollBottom() - (this.height - this.intH)
     if (emax < 0) emax = 0
@@ -207,7 +207,7 @@ export class Scroll {
     if (this.detached || !this.scrollable) return 0
     // XXX
     // max = this.scrollHeight - (this.height - this.intH);
-    max = this._clines.length - (this.height - this.intH)
+    max = this.contLines.length - (this.height - this.intH)
     if (max < 0) max = 0
     emax = this._scrollBottom() - (this.height - this.intH)
     if (emax < 0) emax = 0
@@ -221,7 +221,7 @@ export class Scroll {
     return this.emit(SCROLL)
   }
   get scrollHeight() {
-    return Math.max(this._clines.length, this._scrollBottom())
+    return Math.max(this.contLines.length, this._scrollBottom())
   }
   get scrollPercent() {
     const pos = this.prevPos || this.calcCoord()
@@ -241,7 +241,7 @@ export class Scroll {
   set scrollPercent(i) {
     // XXX
     // var m = this.scrollHeight;
-    const m = Math.max(this._clines.length, this._scrollBottom())
+    const m = Math.max(this.contLines.length, this._scrollBottom())
     return this.scrollTo((i / 100) * m | 0)
   }
 }

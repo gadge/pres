@@ -9,8 +9,9 @@ import { ANGLE_TABLE, ANGLES, ANGLES_D, ANGLES_L, ANGLES_R, ANGLES_U } from '@pr
 import { CSI, LF }                                                     from '@pres/enum-control-chars'
 import { SGR }                                                         from '@pres/enum-csi-codes'
 import {
-  BLUR, CLICK, DESTROY, ELEMENT_CLICK, ELEMENT_MOUSEOUT, ELEMENT_MOUSEOVER, ELEMENT_MOUSEUP, ERROR, EXIT, FOCUS, KEYPRESS, MOUSE, MOUSEDOWN,
-  MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, NEW_LISTENER, PRERENDER, RENDER, RESIZE, WARNING, WHEELDOWN, WHEELUP,
+  BLUR, CLICK, DESTROY, ELEMENT_CLICK, ELEMENT_MOUSEOUT, ELEMENT_MOUSEOVER, ELEMENT_MOUSEUP, ERROR, EXIT, FOCUS,
+  KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, NEW_LISTENER, PRERENDER, RENDER,
+  RESIZE, WARNING, WHEELDOWN, WHEELUP,
 }                                                                      from '@pres/enum-events'
 import { GlobalScreen }                                                from '@pres/global-screen'
 import { Program }                                                     from '@pres/program'
@@ -32,6 +33,7 @@ import { Box }                                                         from './b
 
 export class Screen extends Node {
   type = 'screen'
+  #buffer = ''
   constructor(options = {}) {
     options.sku = options.sku ?? 'screen'
     super(options, true)
@@ -46,12 +48,12 @@ export class Screen extends Node {
     const self = this
     // this.type = this.type ?? 'screen'
     this.autoPadding = options.autoPadding !== false
-    this.tabc = Array(( options.tabSize || 4 ) + 1).join(' ')
+    this.tabc = Array((options.tabSize || 4) + 1).join(' ')
     this.dockBorders = options.dockBorders
     this.ignoreLocked = options.ignoreLocked || []
     this._unicode = this.tput.unicode || this.tput.numerics.U8 === 1
     this.fullUnicode = this.options.fullUnicode && this._unicode
-    this.dattr = ( 0 << 18 ) | ( 0x1ff << 9 ) | 0x1ff
+    this.dattr = (0 << 18) | (0x1ff << 9) | 0x1ff
     this.renders = 0
     this.setupPos()
     this.padding = Cadre.build(options.padding) // { left: 0, top: 0, right: 0, bottom: 0 }
@@ -63,15 +65,15 @@ export class Screen extends Node {
     this.grabKeys = false
     this.lockKeys = false
     this.focused
-    this._buf = ''
+    this.#buffer = ''
     this._ci = -1
     if (options.title) this.title = options.title
-    const cursor = options.cursor ?? ( options.cursor = {
+    const cursor = options.cursor ?? (options.cursor = {
       artificial: options.artificialCursor,
       shape: options.cursorShape,
       blink: options.cursorBlink,
       color: options.cursorColor
-    } )
+    })
     this.cursor = {
       artificial: cursor.artificial || false,
       shape: cursor.shape || 'block',
@@ -84,11 +86,11 @@ export class Screen extends Node {
     this.program.on(RESIZE, () => {
       self.alloc()
       self.render()
-      function resizeEmitter(node) {
+      function resizeHandler(node) {
         node.emit(RESIZE)
-        node.sub.forEach(resizeEmitter)
+        node.sub.forEach(resizeHandler)
       }
-      resizeEmitter(self)
+      resizeHandler(self)
     })
     this.program.on(FOCUS, () => self.emit(FOCUS))
     this.program.on(BLUR, () => self.emit(BLUR))
@@ -131,31 +133,27 @@ export class Screen extends Node {
   }
   setupProgram(options) {
     if (options.rsety && options.listen) options = { program: options }
-    this.program = options.program
-    if (!this.program) {
-      this.program = Program.build({
-        input: options.input,
-        output: options.output,
-        log: options.log,
-        debug: options.debug,
-        dump: options.dump,
-        terminal: options.terminal || options.term,
-        resizeTimeout: options.resizeTimeout,
-        forceUnicode: options.forceUnicode,
-        tput: true,
-        buffer: true,
-        zero: true
-      })
-    }
-    else {
-      this.program.setupTput()
-      this.program.useBuffer = true
-      this.program.zero = true
-      this.program.options.resizeTimeout = options.resizeTimeout
-      if (options.forceUnicode != null) {
-        this.program.tput.features.unicode = options.forceUnicode
-        this.program.tput.unicode = options.forceUnicode
-      }
+    this.program = options.program ?? Program.build({
+      input: options.input,
+      output: options.output,
+      log: options.log,
+      debug: options.debug,
+      dump: options.dump,
+      terminal: options.terminal || options.term,
+      resizeTimeout: options.resizeTimeout,
+      forceUnicode: options.forceUnicode,
+      tput: true,
+      buffer: true,
+      zero: true
+    })
+
+    this.program.setupTput()
+    this.program.useBuffer = true
+    this.program.zero = true
+    this.program.options.resizeTimeout = options.resizeTimeout
+    if (options.forceUnicode != null) {
+      this.program.tput.features.unicode = options.forceUnicode
+      this.program.tput.unicode = options.forceUnicode
     }
     this.tput = this.program.tput
     Logger.log('screen', 'setup-program', 'this.program.type', this.program.type)
@@ -198,9 +196,9 @@ export class Screen extends Node {
     if (xLo < 0) xLo = 0
     if (yLo < 0) yLo = 0
     for (let line, temp = Mor.build(at, ch); yLo < yHi; yLo++) {
-      if (!( line = lines[yLo] )) break
+      if (!(line = lines[yLo])) break
       for (let i = xLo, cell; i < xHi; i++) {
-        if (!( cell = line[i] )) break
+        if (!(cell = line[i])) break
         if (override || !cell.eq(temp)) {
           cell.assign(temp), line.dirty = true
         }
@@ -214,38 +212,38 @@ export class Screen extends Node {
         cursorAttr,
         ch
     if (shape === 'line') {
-      at &= ~( 0x1ff << 9 )
+      at &= ~(0x1ff << 9)
       at |= 7 << 9
       ch = '\u2502'
     }
     else if (shape === 'underline') {
-      at &= ~( 0x1ff << 9 )
+      at &= ~(0x1ff << 9)
       at |= 7 << 9
       at |= 2 << 18
     }
     else if (shape === 'block') {
-      at &= ~( 0x1ff << 9 )
+      at &= ~(0x1ff << 9)
       at |= 7 << 9
       at |= 8 << 18
     }
     else if (typeof shape === OBJ && shape) {
       cursorAttr = styleToAttr(cursor, shape)
       if (shape.bold || shape.underline || shape.blink || shape.inverse || shape.invisible) {
-        at &= ~( 0x1ff << 18 )
-        at |= ( ( cursorAttr >> 18 ) & 0x1ff ) << 18
+        at &= ~(0x1ff << 18)
+        at |= ((cursorAttr >> 18) & 0x1ff) << 18
       }
       if (shape.fg) {
-        at &= ~( 0x1ff << 9 )
-        at |= ( ( cursorAttr >> 9 ) & 0x1ff ) << 9 // paste cursorAttr's
+        at &= ~(0x1ff << 9)
+        at |= ((cursorAttr >> 9) & 0x1ff) << 9 // paste cursorAttr's
       }
       if (shape.bg) {
-        at &= ~( 0x1ff << 0 )
+        at &= ~(0x1ff << 0)
         at |= cursorAttr & 0x1ff
       }
       if (shape.ch) { ch = shape.ch }
     }
     if (cursor.color != null) {
-      at &= ~( 0x1ff << 9 )
+      at &= ~(0x1ff << 9)
       at |= cursor.color << 9
     }
     return Mor.build(at, ch)
@@ -262,29 +260,29 @@ export class Screen extends Node {
     let main = ''
     const normAttr = this.dattr
     for (let y = yLo, line; y < yHi; y++) {
-      if (!( line = term?.lines[y] ?? this.currLines[y] )) break
+      if (!(line = term?.lines[y] ?? this.currLines[y])) break
       let out      = '',
           currAttr = this.dattr
       for (let x = xLo, cell; x < xHi; x++) {
-        if (!( cell = line[x] )) break
+        if (!(cell = line[x])) break
         let at = cell.at, ch = cell.ch
         if (at !== currAttr) {
           if (currAttr !== normAttr) { out += CSI + SGR }
           if (at !== normAttr) {
             let nextAttr = at
             if (term) {
-              if (( ( nextAttr >> 9 ) & 0x1ff ) === 257) nextAttr |= 0x1ff << 9
-              if (( ( nextAttr ) & 0x1ff ) === 256) nextAttr |= 0x1ff
+              if (((nextAttr >> 9) & 0x1ff) === 257) nextAttr |= 0x1ff << 9
+              if (((nextAttr) & 0x1ff) === 256) nextAttr |= 0x1ff
             }
             out += attrToSgra(nextAttr, this.tput.colors)
           }
         }
-        if (this.fullUnicode && unicode.charWidth(cell.ch) === 2) { x === xHi - 1 ? ( ch = ' ' ) : x++ }
+        if (this.fullUnicode && unicode.charWidth(cell.ch) === 2) { x === xHi - 1 ? (ch = ' ') : x++ }
         out += ch
         currAttr = at
       }
       if (currAttr !== normAttr) { out += CSI + SGR }
-      if (out) { main += ( y > 0 ? LF : '' ) + out }
+      if (out) { main += (y > 0 ? LF : '') + out }
     }
     main = main.replace(/(?:\s*\x1b\[40m\s*\x1b\[m\s*)*$/, '') + LF
     if (term) { this.dattr = tempAttr }
@@ -308,7 +306,7 @@ export class Screen extends Node {
     // be some overhead though.
     // this.screen.clearRegion(0, this.cols, 0, this.rows);
     this._ci = 0
-    this.sub.forEach(node => { ( node.index = self._ci++ ), node.render() })
+    this.sub.forEach(node => { (node.index = self._ci++), node.render() })
     this._ci = -1
     if (this.screen.dockBorders) { this.#dockBorders() }
     this.draw(0, this.currLines.length - 1)
@@ -325,17 +323,17 @@ export class Screen extends Node {
     let lx = -1,
         ly = -1
     let acs
-    if (this._buf) { main += this._buf, this._buf = '' }
+    if (this.#buffer) { main += this.#buffer, this.#buffer = '' }
     const { cursor, program, tput, options } = this
     for (let y = start; y <= end; y++) {
       let currLine = this.currLines[y],
           prevLine = this.prevLines[y]
-      if (!currLine.dirty && !( cursor.artificial && y === program.y )) continue
+      if (!currLine.dirty && !(cursor.artificial && y === program.y)) continue
       currLine.dirty = false
       let out = ''
       let currAttr = this.dattr
 
-      for (let x = 0, currCell, prevCell; ( x < currLine.length ) && ( currCell = currLine[x] ); x++) {
+      for (let x = 0, currCell, prevCell; (x < currLine.length) && (currCell = currLine[x]); x++) {
         /** @type {Mor} */
         let nextCell = currCell.copy()
         let at = nextCell.at // let at = currCell.at
@@ -354,23 +352,23 @@ export class Screen extends Node {
         if (
           options.useBCE &&
           ch === ' ' &&
-          ( tput.booleans.back_color_erase || ( at & 0x1ff ) === ( this.dattr & 0x1ff ) ) &&
-          ( ( at >> 18 ) & 8 ) === ( ( this.dattr >> 18 ) & 8 )
+          (tput.booleans.back_color_erase || (at & 0x1ff) === (this.dattr & 0x1ff)) &&
+          ((at >> 18) & 8) === ((this.dattr >> 18) & 8)
         ) {
           clr = true
           neq = false
-          for (let i = x, currCell, prevCell; ( i < currLine.length ) && ( currCell = currLine[i] ); i++) {
+          for (let i = x, currCell, prevCell; (i < currLine.length) && (currCell = currLine[i]); i++) {
             if (currCell.at !== at || currCell.ch !== ' ') {
               clr = false
               break
             }
-            if (( prevCell = prevLine[i] ) && !( currCell.eq(prevCell) )) { neq = true }
+            if ((prevCell = prevLine[i]) && !(currCell.eq(prevCell))) { neq = true }
           }
           if (clr && neq) {
             lx = -1, ly = -1
             if (at !== currAttr) { out += attrToSgra(at, this.tput.colors), currAttr = at }
             out += this.tput.cup(y, x), out += this.tput.el()
-            for (let i = x, prevCell; ( i < currLine.length ) && ( prevCell = prevLine[i] ); i++) {
+            for (let i = x, prevCell; (i < currLine.length) && (prevCell = prevLine[i]); i++) {
               prevCell.inject(at, ' ')
             }
             break
@@ -437,7 +435,7 @@ export class Screen extends Node {
         // Maybe remove !this.tput.unicode check, however,
         // this seems to be the way ncurses does it.
         if (this.tput.literals.enter_alt_charset_mode &&
-          !this.tput.brokenACS && ( this.tput.acscr[ch] || acs )) {
+          !this.tput.brokenACS && (this.tput.acscr[ch] || acs)) {
           // Fun fact: even if this.tput.brokenACS wasn't checked here,
           // the linux console would still work fine because the acs
           // table would fail the check of: this.tput.acscr[ch]
@@ -507,7 +505,7 @@ export class Screen extends Node {
       // Maybe just do this instead of parsing.
       if (pos.yLo < 0) return pos._cleanSides = false
       if (pos.yHi > this.height) return pos._cleanSides = false
-      return this.width - pos.dHori < 40 ? ( pos._cleanSides = true ) : ( pos._cleanSides = false )
+      return this.width - pos.dHori < 40 ? (pos._cleanSides = true) : (pos._cleanSides = false)
     }
     if (!this.options.smartCSR) { return false }
     // The scrollbar can't update properly, and there's also a
@@ -527,19 +525,19 @@ export class Screen extends Node {
     if (pos.xLo - 1 < 0) return pos._cleanSides = true
     if (pos.xHi > this.width) return pos._cleanSides = true
     for (let x = pos.xLo - 1, line, cell; x >= 0; x--) {
-      if (!( line = this.prevLines[yLo] )) break
+      if (!(line = this.prevLines[yLo])) break
       const initCell = line[x]
       for (let y = yLo; y < yHi; y++) {
-        if (!( line = this.prevLines[y] ) || !( cell = line[x] )) break
+        if (!(line = this.prevLines[y]) || !(cell = line[x])) break
         cell = line[x]
         if (!cell.eq(initCell)) return pos._cleanSides = false
       }
     }
     for (let x = pos.xHi, line, cell; x < this.width; x++) {
-      if (!( line = this.prevLines[yLo] )) break
+      if (!(line = this.prevLines[yLo])) break
       const initCell = line[x]
       for (let y = yLo; y < yHi; y++) {
-        if (!( line = this.prevLines[y] ) || !( cell = line[x] )) break
+        if (!(line = this.prevLines[y]) || !(cell = line[x])) break
         if (!cell.eq(initCell)) return pos._cleanSides = false
       }
     }
@@ -565,7 +563,7 @@ export class Screen extends Node {
       .sort((a, b) => a - b)
     for (let i = 0, y, line, cell; i < stops.length; i++) {
       y = stops[i]
-      if (!( line = lines[y] )) continue
+      if (!(line = lines[y])) continue
       for (let x = 0; x < this.width; x++) {
         cell = line[x]
         if (ANGLES[cell.ch]) {
@@ -579,8 +577,8 @@ export class Screen extends Node {
   setTerminal(terminal) {
     const entered = !!this.program.isAlt
     if (entered) {
-      this._buf = ''
-      this.program._buf = ''
+      this.#buffer = ''
+      this.program.ioBuffer = ''
       this.leave()
     }
     this.program.setTerminal(terminal)
@@ -733,7 +731,7 @@ export class Screen extends Node {
         self._needsClickableSort = false
       }
       let set
-      for (let i = 0, node, pos; i < self.clickable.length && ( node = self.clickable[i] ); i++) {
+      for (let i = 0, node, pos; i < self.clickable.length && (node = self.clickable[i]); i++) {
         if (node.detached || !node.visible) continue
         // if (self.grabMouse && self.focused !== el
         //     && !el.hasAncestor(self.focused)) continue;
@@ -743,7 +741,7 @@ export class Screen extends Node {
           node.emit(MOUSE, data)
           if (data.action === MOUSEDOWN) { self.mouseDown = node }
           else if (data.action === MOUSEUP) {
-            ( self.mouseDown || node ).emit(CLICK, data)
+            (self.mouseDown || node).emit(CLICK, data)
             self.mouseDown = null
           }
           else if (data.action === MOUSEMOVE) {
@@ -760,7 +758,7 @@ export class Screen extends Node {
         }
       }
       // Just mouseover?
-      if (( data.action === MOUSEMOVE || data.action === MOUSEDOWN || data.action === MOUSEUP ) && self.hover && !set) {
+      if ((data.action === MOUSEMOVE || data.action === MOUSEDOWN || data.action === MOUSEUP) && self.hover && !set) {
         self.hover.emit(MOUSEOUT, data)
         self.hover = null
       }
@@ -866,10 +864,10 @@ export class Screen extends Node {
   insertLine(n, y, top, bottom) {
     // if (y === top) return this.insertLineNC(n, y, top, bottom);
     if (!this.tput.literals.change_scroll_region || !this.tput.literals.delete_line || !this.tput.literals.insert_line) return
-    this._buf += this.tput.csr(top, bottom)
-    this._buf += this.tput.cup(y, 0)
-    this._buf += this.tput.il(n)
-    this._buf += this.tput.csr(0, this.height - 1)
+    this.#buffer += this.tput.csr(top, bottom)
+    this.#buffer += this.tput.cup(y, 0)
+    this.#buffer += this.tput.il(n)
+    this.#buffer += this.tput.csr(0, this.height - 1)
     const j = bottom + 1
     while (n--) {
       this.currLines.splice(y, 0, this.blankLine())
@@ -881,10 +879,10 @@ export class Screen extends Node {
   deleteLine(n, y, top, bottom) {
     // if (y === top) return this.deleteLineNC(n, y, top, bottom);
     if (!this.tput.literals.change_scroll_region || !this.tput.literals.delete_line || !this.tput.literals.insert_line) return
-    this._buf += this.tput.csr(top, bottom)
-    this._buf += this.tput.cup(y, 0)
-    this._buf += this.tput.dl(n)
-    this._buf += this.tput.csr(0, this.height - 1)
+    this.#buffer += this.tput.csr(top, bottom)
+    this.#buffer += this.tput.cup(y, 0)
+    this.#buffer += this.tput.dl(n)
+    this.#buffer += this.tput.csr(0, this.height - 1)
     const j = bottom + 1
     while (n--) {
       this.currLines.splice(j, 0, this.blankLine())
@@ -896,10 +894,10 @@ export class Screen extends Node {
 // This will only work for top line deletion as opposed to arbitrary lines.
   insertLineNC(n, y, top, bottom) {
     if (!this.tput.literals.change_scroll_region || !this.tput.literals.delete_line) return
-    this._buf += this.tput.csr(top, bottom)
-    this._buf += this.tput.cup(top, 0)
-    this._buf += this.tput.dl(n)
-    this._buf += this.tput.csr(0, this.height - 1)
+    this.#buffer += this.tput.csr(top, bottom)
+    this.#buffer += this.tput.cup(top, 0)
+    this.#buffer += this.tput.dl(n)
+    this.#buffer += this.tput.csr(0, this.height - 1)
     const j = bottom + 1
     while (n--) {
       this.currLines.splice(j, 0, this.blankLine())
@@ -911,10 +909,10 @@ export class Screen extends Node {
 // This will only work for bottom line deletion as opposed to arbitrary lines.
   deleteLineNC(n, y, top, bottom) {
     if (!this.tput.literals.change_scroll_region || !this.tput.literals.delete_line) return
-    this._buf += this.tput.csr(top, bottom)
-    this._buf += this.tput.cup(bottom, 0)
-    this._buf += Array(n + 1).join(LF)
-    this._buf += this.tput.csr(0, this.height - 1)
+    this.#buffer += this.tput.csr(top, bottom)
+    this.#buffer += this.tput.cup(bottom, 0)
+    this.#buffer += Array(n + 1).join(LF)
+    this.#buffer += this.tput.csr(0, this.height - 1)
     const j = bottom + 1
     while (n--) {
       this.currLines.splice(j, 0, this.blankLine())
@@ -1039,7 +1037,7 @@ export class Screen extends Node {
   _focus(self, old) {
     // Find a scrollable ancestor if we have one.
     let el = self
-    while (( el = el.sup )) if (el.scrollable) break
+    while ((el = el.sup)) if (el.scrollable) break
     // If we're in a scrollable element,
     // automatically scroll to the focused element.
     if (el && !el.detached) {
@@ -1054,7 +1052,7 @@ export class Screen extends Node {
       else if (self.relT + self.height - self.intB > el.subBase + visible) {
         // Explanation for el.intT here: takes into account scrollable elements
         // with borders otherwise the element gets covered by the bottom border:
-        el.scrollTo(self.relT - ( el.height - self.height ) + el.intT, true)
+        el.scrollTo(self.relT - (el.height - self.height) + el.intT, true)
         self.screen.render()
       }
     }
@@ -1116,7 +1114,7 @@ export class Screen extends Node {
   }
   readEditor(options, callback) {
     if (typeof options === STR) { options = { editor: options } }
-    if (!callback) { ( callback = options ), ( options = null ) }
+    if (!callback) { (callback = options), (options = null) }
     if (!callback) { callback = function () {} }
     options = options || {}
     const self   = this,

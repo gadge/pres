@@ -19,6 +19,7 @@ const nextTick = global.setImmediate || process.nextTick.bind(process)
 export class IO extends EventEmitter {
   #logger = null
   #terminal = null
+  #buffer = null
 
   constructor(options) {
     super(options)
@@ -59,14 +60,14 @@ export class IO extends EventEmitter {
     this.isRxvt = /rxvt/i.test(process.env.COLORTERM)
     this.isXterm = false
     this.tmux = !!process.env.TMUX // IO
-    this.tmuxVersion = ( function () {
+    this.tmuxVersion = (function () {
       if (!self.tmux) return 2
       try {
         const version = cp.execFileSync('tmux', [ '-V' ], { encoding: 'utf8' })
         return +/^tmux ([\d.]+)/i.exec(version.trim().split('\n')[0])[1]
       } catch (e) { return 2 }
-    } )() // IO
-    this._buf = VO // IO
+    })() // IO
+    this.#buffer = VO // IO
     this._flush = this.flush.bind(this) // IO
     if (options.tput !== false) this.setupTput() // IO
     console.log(`>> [program.configIO] [terminal] ${this.#terminal} [tmux] ${this.tmux}`)
@@ -77,6 +78,8 @@ export class IO extends EventEmitter {
       ? void 0
       : this.#log('DEBUG', util.format.apply(util, arguments))
   }
+  get ioBuffer() { return this.#buffer }
+  set ioBuffer(value) { this.#buffer = value }
   #log(pre, msg) { return this.#logger?.write(pre + ': ' + msg + '\n-\n') }
   setupDump() {
     const
@@ -116,7 +119,7 @@ export class IO extends EventEmitter {
     }
     Object.keys(tput).forEach(key => {
       if (self[key] == null) self[key] = tput[key]
-      if (typeof tput[key] !== FUN) return void ( self.put[key] = tput[key] )
+      if (typeof tput[key] !== FUN) return void (self.put[key] = tput[key])
       self.put[key] = tput.padding
         ? function () { return tput._print(tput[key].apply(tput, arguments), write) }
         : function () { return self.writeOff(tput[key].apply(tput, arguments)) }
@@ -159,7 +162,7 @@ export class IO extends EventEmitter {
     })
     this.on(NEW_LISTENER, function handler(type) { if (type === MOUSE) { self.removeListener(NEW_LISTENER, handler), self.bindMouse() } })
     // Listen for resize on output
-    if (!this.output.listenCount) { ( this.output.listenCount = 1 ), this.#listenOutput() }
+    if (!this.output.listenCount) { (this.output.listenCount = 1), this.#listenOutput() }
     else { this.output.listenCount++ }
     console.log(`>> [program.listen] [ ${this.eventNames()} ]`)
   }
@@ -170,7 +173,7 @@ export class IO extends EventEmitter {
     this.input.on(KEYPRESS, this.input._keypressHandler = (ch, key) => {
       key = key || { ch }
       // A mouse sequence. The `keys` module doesn't understand these.
-      if (key.name === UNDEFINED && ( key.code === '[M' || key.code === '[I' || key.code === '[O' )) return void 0
+      if (key.name === UNDEFINED && (key.code === '[M' || key.code === '[I' || key.code === '[O')) return void 0
       // Not sure what this is, but we should probably ignore it.
       if (key.name === UNDEFINED) return void 0
       if (key.name === ENTER && key.sequence === LF) key.name = LINEFEED
@@ -210,7 +213,7 @@ export class IO extends EventEmitter {
         if (p.output !== self.output) return
         const { options: { resizeTimeout }, _resizeTimer } = p
         if (!resizeTimeout) return resize()
-        if (_resizeTimer) clearTimeout(_resizeTimer), ( delete p._resizeTimer )
+        if (_resizeTimer) clearTimeout(_resizeTimer), (delete p._resizeTimer)
         const time = typeof resizeTimeout === NUM ? resizeTimeout : 300
         p._resizeTimer = setTimeout(resize, time)
       })
@@ -228,9 +231,9 @@ export class IO extends EventEmitter {
     return this.ret ? text : this.useBuffer ? this.writeBuffer(text) : this.writeOutput(text)
   }
   writeBuffer(text) { // bf
-    if (this.exiting) return void ( this.flush(), this.writeOutput(text) )
-    if (this._buf) return void ( this._buf += text )
-    this._buf = text
+    if (this.exiting) return void (this.flush(), this.writeOutput(text))
+    if (this.#buffer) return void (this.#buffer += text)
+    this.#buffer = text
     nextTick(this._flush)
     return true
   }
@@ -264,9 +267,9 @@ export class IO extends EventEmitter {
 
   print(text, attr) { return attr ? this.writeOff(this.text(text, attr)) : this.writeOff(text) }
   flush() {
-    if (!this._buf) return
-    this.writeOutput(this._buf)
-    this._buf = VO
+    if (!this.#buffer) return
+    this.writeOutput(this.#buffer)
+    this.#buffer = VO
   }
 }
 

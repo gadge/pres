@@ -627,7 +627,7 @@ export class Element extends Node {
 
   sattr(style, fg, bg) { return styleToAttr(style, fg, bg) }
   // Convert `{red-fg}foo{/red-fg}` to `\x1b[31mfoo\x1b[39m`.
-  get _clines() { return this.contLines }
+  // get contLines() { return this.contLines }
   parseContent(noTags) {
     if (this.detached) return false
     const width = this.width - this.intW

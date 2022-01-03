@@ -360,5 +360,7 @@ export function keypressEventsEmitter(stream) {
   function onNewListener(event) {
     if (event === KEYPRESS) { stream.on(DATA, onData), stream.removeListener(NEW_LISTENER, onNewListener) }
   }
-  listenerCount(stream, KEYPRESS) > 0 ? stream.on(DATA, onData) : stream.on(NEW_LISTENER, onNewListener)
+  listenerCount(stream, KEYPRESS) > 0
+    ? stream.on(DATA, onData)
+    : stream.on(NEW_LISTENER, onNewListener)
 }
