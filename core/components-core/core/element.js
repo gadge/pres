@@ -11,7 +11,7 @@ import { sgraToAttr, styleToAttr }                                              
 import * as unicode                                                              from '@pres/util-unicode'
 import { SP }                                                                    from '@texting/enum-chars'
 import { FUN, STR }                                                              from '@typen/enum-data-types'
-import { nullish }                                                               from '@typen/nullish'
+import { nullish, valid }                                                        from '@typen/nullish'
 import { select }                                                                from '@vect/object-select'
 import { last }                                                                  from '@vect/vector-index'
 import assert                                                                    from 'assert'
@@ -59,7 +59,7 @@ export class Element extends Node {
     this.inGrid = options.inGrid
     this.fixed = options.fixed
     this.ch = options.ch || ' '
-    const pos = this.pos = Detic.build(options.pos ?? ( options.pos = select.call(COORD_INFOS, options) ))
+    const pos = this.pos = Detic.build(options.pos ?? (options.pos = select.call(COORD_INFOS, options)))
     const widthShrink = pos.width === SHRINK, heightShrink = pos.height === SHRINK
     if (widthShrink || heightShrink) {
       if (widthShrink) pos.delete(WIDTH) //pos.width = null // delete pos.width
@@ -122,7 +122,7 @@ export class Element extends Node {
     if (this.options.draggable) { this.draggable = true }
     if (options.focused) this.focus()
   }
-  get focused() { return this.screen.focused === this}
+  get focused() { return this.screen.focused === this }
   get visible() {
     let node = this
     do {
@@ -130,7 +130,7 @@ export class Element extends Node {
       if (node.hidden) return false
       // if (!el.prevPos) return false;
       // if (el.pos.width === 0 || el.pos.height === 0) return false;
-    } while (( node = node.sup ))
+    } while ((node = node.sup))
     return true
   }
   get _detached() {
@@ -138,7 +138,7 @@ export class Element extends Node {
     do {
       if (node.type === 'screen') return false
       if (!node.sup) return true
-    } while (( node = node.sup ))
+    } while ((node = node.sup))
     return false
   }
   get draggable() { return this._draggable === true }
@@ -195,18 +195,18 @@ export class Element extends Node {
   get relL() { return this.absL - this.sup.absL }
   get relR() { return this.absR - this.sup.absR }
 
-  get intT() { return ( this.border ? 1 : 0 ) + this.padding.t }
-  get intB() { return ( this.border ? 1 : 0 ) + this.padding.b }
-  get intL() { return ( this.border ? 1 : 0 ) + this.padding.l }
-  get intR() { return ( this.border ? 1 : 0 ) + this.padding.r }
+  get intT() { return (this.border ? 1 : 0) + this.padding.t }
+  get intB() { return (this.border ? 1 : 0) + this.padding.b }
+  get intL() { return (this.border ? 1 : 0) + this.padding.l }
+  get intR() { return (this.border ? 1 : 0) + this.padding.r }
 
-  get intH() { return ( this.border ? 2 : 0 ) + this.padding.vert }
-  get intW() { return ( this.border ? 2 : 0 ) + this.padding.hori }
+  get intH() { return (this.border ? 2 : 0) + this.padding.vert }
+  get intW() { return (this.border ? 2 : 0) + this.padding.hori }
 
   set absT(val) {
     if (typeof val === STR)
       if (val === CENTER) {
-        val = ( this.screen.height / 2 | 0 ) - ( this.height / 2 | 0 )
+        val = (this.screen.height / 2 | 0) - (this.height / 2 | 0)
       }
       else {
         val = this.inGrid ? this.scaler.scaleT(val, this.screen.height) : scaler(val, this.screen.height)
@@ -225,7 +225,7 @@ export class Element extends Node {
   set absL(val) {
     if (typeof val === STR)
       if (val === CENTER) {
-        val = ( this.screen.width / 2 | 0 ) - ( this.width / 2 | 0 )
+        val = (this.screen.width / 2 | 0) - (this.width / 2 | 0)
       }
       else {
         val = this.inGrid ? this.scaler.scaleL(val, this.screen.width) : scaler(val, this.screen.width)
@@ -279,19 +279,19 @@ export class Element extends Node {
       top = this.inGrid ? this.scaler.scaleT(top, supPos.height) : scaler(top, supPos.height)
       if (this.pos.top === CENTER) top -= this.calcH(get) / 2 | 0
     }
-    if (this.pos.top == null && this.pos.bottom != null) {
+    if (nullish(this.pos.top) && valid(this.pos.bottom)) {
       return this.screen.rows - this.calcH(get) - this.calcB(get)
     }
-    if (this.screen.autoPadding && ( this.pos.top != null || this.pos.bottom == null ) && this.pos.top !== CENTER) {
+    if (this.screen.autoPadding && (valid(this.pos.top) || nullish(this.pos.bottom)) && this.pos.top !== CENTER) {
       top += this.sup.intT
     }
-    return ( supPos.t || 0 ) + top
+    return (supPos.t || 0) + top
   }
   calcB(get) {
     const supPos = get ? this.sup.calcPos() : this.sup
-    const bottom = ( this.pos.bottom == null && this.pos.top != null )
-      ? this.screen.rows - ( this.calcT(get) + this.calcH(get) )
-      : ( supPos.b || 0 ) + ( this.pos.bottom || 0 )
+    const bottom = (nullish(this.pos.bottom) && valid(this.pos.top))
+      ? this.screen.rows - (this.calcT(get) + this.calcH(get))
+      : (supPos.b || 0) + (this.pos.bottom || 0)
     return this.screen.autoPadding ? bottom + this.sup.intB : bottom
   }
   calcL(get) {
@@ -302,19 +302,19 @@ export class Element extends Node {
       left = this.inGrid ? this.scaler.scaleL(left, supPos.width) : scaler(left, supPos.width)
       if (this.pos.left === CENTER) { left -= this.calcW(get) / 2 | 0 }
     }
-    if (this.pos.left == null && this.pos.right != null) {
+    if (nullish(this.pos.left) && valid(this.pos.right)) {
       return this.screen.cols - this.calcW(get) - this.calcR(get)
     }
-    if (this.screen.autoPadding && ( this.pos.left != null || this.pos.right == null ) && this.pos.left !== CENTER) {
+    if (this.screen.autoPadding && (valid(this.pos.left) || nullish(this.pos.right)) && this.pos.left !== CENTER) {
       left += this.sup.intL
     }
-    return ( supPos.l || 0 ) + left
+    return (supPos.l || 0) + left
   }
   calcR(get) {
     const supPos = get ? this.sup.calcPos() : this.sup
-    const right = ( this.pos.right == null && this.pos.left != null )
-      ? this.screen.cols - ( this.calcL(get) + this.calcW(get) )
-      : ( supPos.r || 0 ) + ( this.pos.right || 0 )
+    const right = (this.pos.right == null && this.pos.left != null)
+      ? this.screen.cols - (this.calcL(get) + this.calcW(get))
+      : (supPos.r || 0) + (this.pos.right || 0)
     return this.screen.autoPadding ? right + this.sup.intR : right
   }
   calcW(get) {
@@ -338,9 +338,9 @@ export class Element extends Node {
         if (left === CENTER) { left = '50%' }
         left = this.inGrid ? this.scaler.scaleL(left, supPos.width) : scaler(left, supPos.width)
       }
-      width = supPos.width - ( this.pos.right || 0 ) - left
+      width = supPos.width - (this.pos.right || 0) - left
       if (this.screen.autoPadding) {
-        if (( this.pos.left != null || this.pos.right == null ) && this.pos.left !== CENTER) width -= this.sup.intL
+        if ((this.pos.left != null || this.pos.right == null) && this.pos.left !== CENTER) width -= this.sup.intL
         width -= this.sup.intR
       }
     }
@@ -367,9 +367,9 @@ export class Element extends Node {
         if (top === CENTER) { top = '50%' }
         top = this.inGrid ? this.scaler.scaleT(top, supPos.height) : scaler(top, supPos.height)
       }
-      height = supPos.height - ( this.pos.bottom || 0 ) - top
+      height = supPos.height - (this.pos.bottom || 0) - top
       if (this.screen.autoPadding) {
-        if (( this.pos.top != null || this.pos.bottom == null ) && this.pos.top !== CENTER) height -= this.sup.intT
+        if ((this.pos.top != null || this.pos.bottom == null) && this.pos.top !== CENTER) height -= this.sup.intT
         height -= this.sup.intB
       }
     }
@@ -401,10 +401,10 @@ export class Element extends Node {
         base  = this.subBase || 0,
         fixed = this.fixed
     // Attempt to shrink the element base on the size of the content and child elements.
-    if (this.shrink) { ( { xLo: l, xHi: r, yLo: t, yHi: b } = this.calcShrink(l, r, t, b, get) ) }
+    if (this.shrink) { ({ xLo: l, xHi: r, yLo: t, yHi: b } = this.calcShrink(l, r, t, b, get)) }
     // Find a scrollable ancestor if we have one.
     let node = this
-    while (( node = node.sup )) {
+    while ((node = node.sup)) {
       if (node.scrollable) {
         if (fixed) {
           fixed = false
@@ -508,7 +508,7 @@ export class Element extends Node {
       // element.
       // if (get) {
       if (el.pos.left == null && el.pos.right != null) {
-        ret.xHi = xLo + ( ret.xHi - ret.xLo )
+        ret.xHi = xLo + (ret.xHi - ret.xLo)
         ret.xLo = xLo
         if (this.screen.autoPadding) {
           // Maybe just do this no matter what.
@@ -517,7 +517,7 @@ export class Element extends Node {
         }
       }
       if (el.pos.top == null && el.pos.bottom != null) {
-        ret.yHi = yLo + ( ret.yHi - ret.yLo )
+        ret.yHi = yLo + (ret.yHi - ret.yLo)
         ret.yLo = yLo
         if (this.screen.autoPadding) {
           // Maybe just do this no matter what.
@@ -534,9 +534,9 @@ export class Element extends Node {
       this.prevPos = prevPos
       //this.shrink = true;
     }
-    if (( this.pos.width == null ) && ( this.pos.left == null || this.pos.right == null )) {
+    if ((this.pos.width == null) && (this.pos.left == null || this.pos.right == null)) {
       if (this.pos.left == null && this.pos.right != null) {
-        xLo = xHi - ( mxl - mxi )
+        xLo = xHi - (mxl - mxi)
         xLo -= !this.screen.autoPadding ? this.padding.hori : this.intL
       }
       else {
@@ -559,7 +559,7 @@ export class Element extends Node {
         }
       }
     }
-    if (( this.pos.height == null ) && ( this.pos.top == null || this.pos.bottom == null ) && ( !this.scrollable || this._isList )) {
+    if ((this.pos.height == null) && (this.pos.top == null || this.pos.bottom == null) && (!this.scrollable || this._isList)) {
       // NOTE: Lists get special treatment if they are shrunken - assume they
       // want all list items showing. This is one case we can calculate the
       // height based on items/boxes.
@@ -568,7 +568,7 @@ export class Element extends Node {
         myl = this.items.length + this.intB
       }
       if (this.pos.top == null && this.pos.bottom != null) {
-        yLo = yHi - ( myl - myi )
+        yLo = yHi - (myl - myi)
         yLo -= !this.screen.autoPadding ? this.padding.vert : this.intT
       }
       else {
@@ -581,13 +581,13 @@ export class Element extends Node {
   calcShrinkContent(xLo, xHi, yLo, yHi) {
     const h = this.contLines.length,
           w = this.contLines.mwidth || 1
-    if (( this.pos.width == null ) && ( this.pos.left == null || this.pos.right == null )) {
+    if ((this.pos.width == null) && (this.pos.left == null || this.pos.right == null)) {
       if (this.pos.left == null && this.pos.right != null) { xLo = xHi - w - this.intW }
       else { xHi = xLo + w + this.intW }
     }
     if (
-      ( this.pos.height == null ) && ( this.pos.top == null || this.pos.bottom == null ) &&
-      ( !this.scrollable || this._isList )
+      (this.pos.height == null) && (this.pos.top == null || this.pos.bottom == null) &&
+      (!this.scrollable || this._isList)
     ) {
       if (this.pos.top == null && this.pos.bottom != null) { yLo = yHi - h - this.intH }
       else { yHi = yLo + h + this.intH }
@@ -605,12 +605,12 @@ export class Element extends Node {
     else { yLo = shrinkContent.yLo, yHi = shrinkContent.yHi }
     // Recenter shrunken elements.
     if (xHi < xll && this.pos.left === CENTER) {
-      xll = ( xll - xHi ) / 2 | 0
+      xll = (xll - xHi) / 2 | 0
       xLo += xll
       xHi += xll
     }
     if (yHi < yll && this.pos.top === CENTER) {
-      yll = ( yll - yHi ) / 2 | 0
+      yll = (yll - yHi) / 2 | 0
       yLo += yll
       yHi += yll
     }
@@ -718,11 +718,11 @@ export class Element extends Node {
         ftor.push([])
         // Handle alignment tags.
         if (tags) {
-          if (( matches = /^{(left|center|right)}/.exec(line) ) && ( [ phrase, word ] = matches )) {
+          if ((matches = /^{(left|center|right)}/.exec(line)) && ([ phrase, word ] = matches)) {
             line = line.slice(phrase.length)
             align = state = word !== LEFT ? word : null
           }
-          if (( matches = /{\/(left|center|right)}$/.exec(line) ) && ( [ phrase ] = matches )) {
+          if ((matches = /{\/(left|center|right)}$/.exec(line)) && ([ phrase ] = matches)) {
             line = line.slice(0, -phrase.length) //state = null;
             state = this.align
           }
@@ -775,13 +775,13 @@ export class Element extends Node {
                     j--
                     if (line[j] === ' ' ||
                       line[j] === '\x03' ||
-                      ( unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03' ) || unicode.isCombining(line, j)) {
+                      (unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03') || unicode.isCombining(line, j)) {
                       break
                     }
                   }
                   if (line[j] === ' ' ||
                     line[j] === '\x03' ||
-                    ( unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03' ) || unicode.isCombining(line, j)) {
+                    (unicode.isSurrogate(line, j - 1) && line[j + 1] !== '\x03') || unicode.isCombining(line, j)) {
                     i = j + 1
                   }
                 }
@@ -832,12 +832,12 @@ export class Element extends Node {
         attr,
         esc
     while (true) {
-      if (!esc && ( cap = /^{escape}/.exec(text) )) {
+      if (!esc && (cap = /^{escape}/.exec(text))) {
         text = text.slice(cap[0].length)
         esc = true
         continue
       }
-      if (esc && ( cap = /^([\s\S]+?){\/escape}/.exec(text) )) {
+      if (esc && (cap = /^([\s\S]+?){\/escape}/.exec(text))) {
         text = text.slice(cap[0].length)
         out += cap[1]
         esc = false
@@ -848,7 +848,7 @@ export class Element extends Node {
         out += text
         break
       }
-      if (( cap = /^{(\/?)([\w\-,;!#]*)}/.exec(text) )) {
+      if ((cap = /^{(\/?)([\w\-,;!#]*)}/.exec(text))) {
         text = text.slice(cap[0].length)
         slash = cap[1] === '/'
         param = cap[2].replace(/-/g, ' ')
@@ -897,7 +897,7 @@ export class Element extends Node {
         }
         continue
       }
-      if (( cap = /^[\s\S]+?(?={\/?[\w\-,;!#]*})/.exec(text) )) {
+      if ((cap = /^[\s\S]+?(?={\/?[\w\-,;!#]*})/.exec(text))) {
         text = text.slice(cap[0].length)
         out += cap[0]
         continue
@@ -917,7 +917,7 @@ export class Element extends Node {
       attrList[j] = baseAttr
       for (let i = 0, matches, sgra; i < line.length; i++) {
         if (line[i] === ESC) {
-          if (( matches = REGEX_INIT_SGR.exec(line.slice(i)) ) && ( [ sgra ] = matches )) {
+          if ((matches = REGEX_INIT_SGR.exec(line.slice(i))) && ([ sgra ] = matches)) {
             baseAttr = sgraToAttr(sgra, baseAttr, normAttr)
             i += sgra.length - 1
           }
@@ -926,14 +926,14 @@ export class Element extends Node {
     }
     return attrList
   }
-  _render = Element.prototype.render
+  renderElement = Element.prototype.render
   render() {
-    this._emit(PRERENDER)
+    this.nodeEmit(PRERENDER)
     this.parseContent()
     const coord = this.calcCoord(true)
-    if (!coord) return void ( delete this.prevPos )
-    if (coord.dHori <= 0) return void ( coord.xHi = Math.max(coord.xHi, coord.xLo) )
-    if (coord.dVert <= 0) return void ( coord.yHi = Math.max(coord.yHi, coord.yLo) )
+    if (!coord) return void (delete this.prevPos)
+    if (coord.dHori <= 0) return void (coord.xHi = Math.max(coord.xHi, coord.xLo))
+    if (coord.dVert <= 0) return void (coord.yHi = Math.max(coord.yHi, coord.yLo))
     const lines = this.screen.lines
     // console.log(`>> [{${ this.codename }}.render]`, lines[0][0],lines[0][0].modeSign)
     let { xLo, xHi, yLo, yHi } = coord,
@@ -968,12 +968,12 @@ export class Element extends Node {
     // content-drawing loop will skip a few cells/lines.
     // To deal with this, we can just fill the whole thing
     // ahead of time. This could be optimized.
-    if (this.padding.any || ( this.valign && this.valign !== TOP )) {
+    if (this.padding.any || (this.valign && this.valign !== TOP)) {
       if (this.style.transparent) {
-        for (let y = Math.max(yLo, 0), line, cell; ( y < yHi ); y++) {
-          if (!( line = lines[y] )) break
+        for (let y = Math.max(yLo, 0), line, cell; (y < yHi); y++) {
+          if (!(line = lines[y])) break
           for (let x = Math.max(xLo, 0); x < xHi; x++) {
-            if (!( cell = line[x] )) break
+            if (!(cell = line[x])) break
             cell.at = colors.blend(currAttr, cell.at)
             line.dirty = true // lines[y][x][1] = bch;
           }
@@ -998,17 +998,17 @@ export class Element extends Node {
         else if (this.valign === BOTTOM) {
           visible -= this.contLines.length
         }
-        ci -= visible * ( xHi - xLo )
+        ci -= visible * (xHi - xLo)
       }
     }
     // Draw the content and background.
     for (let y = yLo, line; y < yHi; y++) {
-      if (!( line = lines[y] )) {
+      if (!(line = lines[y])) {
         if (y >= this.screen.height || yHi < this.intB) { break }
         else { continue }
       }
       for (let x = xLo, cell; x < xHi; x++) {
-        if (!( cell = line[x] )) {
+        if (!(cell = line[x])) {
           if (x >= this.screen.width || xHi < this.intR) { break }
           else { continue }
         }
@@ -1019,7 +1019,7 @@ export class Element extends Node {
         // Handle escape codes.
         let matches, sgra
         while (ch === ESC) {
-          if (( matches = REGEX_INIT_SGR.exec(content.slice(ci - 1)) ) && ( [ sgra ] = matches )) {
+          if ((matches = REGEX_INIT_SGR.exec(content.slice(ci - 1))) && ([ sgra ] = matches)) {
             ci += sgra.length - 1
             currAttr = sgraToAttr(sgra, currAttr, normAttr)
             // if (this.codename === 'box.25') console.log(
@@ -1030,7 +1030,7 @@ export class Element extends Node {
 
             // Ignore foreground changes for selected items.
             if (this.sup._isList && this.sup.interactive && this.sup.items[this.sup.selected] === this && this.sup.options.invertSelected !== false) {
-              currAttr = ( currAttr & ~( 0x1ff << 9 ) ) | ( normAttr & ( 0x1ff << 9 ) )
+              currAttr = (currAttr & ~(0x1ff << 9)) | (normAttr & (0x1ff << 9))
             }
             ch = content[ci] || bch
             ci++
@@ -1053,7 +1053,7 @@ export class Element extends Node {
           // outer loop, and continue to it instead.
           ch = bch
           for (; x < xHi; x++) {
-            if (!( cell = line[x] )) break
+            if (!(cell = line[x])) break
             if (this.style.transparent) {
               cell.inject(colors.blend(currAttr, cell.at), content[ci] ? ch : null)
               line.dirty = true
@@ -1103,15 +1103,15 @@ export class Element extends Node {
     // Draw the scrollbar.
     // Could possibly draw this after all child elements.
     if (this.scrollbar) {
-      // i = this.getScrollHeight();
+      // i = this.scrollHeight;
       i = Math.max(this.contLines.length, this._scrollBottom())
     }
     if (coord.negT || coord.negB) i = -Infinity
-    if (this.scrollbar && ( yHi - yLo ) < i) {
+    if (this.scrollbar && (yHi - yLo) < i) {
       let x = xHi - 1
       if (this.scrollbar.ignoreBorder && this.border) x++
-      let y = this.alwaysScroll ? this.subBase / ( i - ( yHi - yLo ) ) : ( this.subBase + this.subOffset ) / ( i - 1 )
-      y = yLo + ( ( yHi - yLo ) * y | 0 )
+      let y = this.alwaysScroll ? this.subBase / (i - (yHi - yLo)) : (this.subBase + this.subOffset) / (i - 1)
+      y = yLo + ((yHi - yLo) * y | 0)
       if (y >= yHi) y = yHi - 1
       let line = lines[y],
           cell = line && line[x]
@@ -1141,7 +1141,7 @@ export class Element extends Node {
         if (!line) break
         if (coord.negL && x === xLo) continue
         if (coord.negR && x === xHi - 1) continue
-        if (!( cell = line[x] )) continue
+        if (!(cell = line[x])) continue
         if (this.border.type === 'line') {
           if (x === xLo) {
             ch = '\u250c' // '┌'
@@ -1180,8 +1180,8 @@ export class Element extends Node {
         }
       }
       for (let y = yLo + 1, line, cell; y < yHi - 1; y++) {
-        if (!( line = lines[y] )) continue
-        if (( cell = line[xLo] )) {
+        if (!(line = lines[y])) continue
+        if ((cell = line[xLo])) {
           if (this.border.left) {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
@@ -1199,7 +1199,7 @@ export class Element extends Node {
             }
           }
         }
-        if (( cell = line[xHi - 1] )) {
+        if ((cell = line[xHi - 1])) {
           if (this.border.right) {
             if (this.border.type === 'line') { ch = '\u2502' } // '│'
             else if (this.border.type === 'bg') { ch = this.border.ch }
@@ -1221,10 +1221,10 @@ export class Element extends Node {
       y = yHi - 1
       if (coord.negB) y = -1
       for (let x = xLo, cell; x < xHi; x++) {
-        if (!( line = lines[y] )) break
+        if (!(line = lines[y])) break
         if (coord.negL && x === xLo) continue
         if (coord.negR && x === xHi - 1) continue
-        if (!( cell = line[x] )) continue
+        if (!(cell = line[x])) continue
         if (this.border.type === 'line') {
           if (x === xLo) {
             ch = '\u2514' // '└'
@@ -1266,9 +1266,9 @@ export class Element extends Node {
     if (this.shadow) {
       // right
       for (let y = Math.max(yLo + 1, 0), line; y < yHi + 1; y++) {
-        if (!( line = lines[y] )) break
+        if (!(line = lines[y])) break
         for (let x = xHi, cell; x < xHi + 2; x++) {
-          if (!( cell = line[x] )) break
+          if (!(cell = line[x])) break
           // lines[y][x][0] = colors.blend(this.dattr, lines[y][x][0]);
           cell.at = colors.blend(cell.at)
           line.dirty = true
@@ -1276,9 +1276,9 @@ export class Element extends Node {
       }
       // bottom
       for (let y = yHi, line; y < yHi + 1; y++) {
-        if (!( line = lines[y] )) break
+        if (!(line = lines[y])) break
         for (let x = Math.max(xLo + 1, 0), cell; x < xHi; x++) {
-          if (!( cell = line[x] )) break
+          if (!(cell = line[x])) break
           // lines[y][x][0] = colors.blend(this.dattr, lines[y][x][0]);
           cell.at = colors.blend(cell.at)
           line.dirty = true
@@ -1291,24 +1291,24 @@ export class Element extends Node {
       el.render()
       // if (el.screen._rendering) { el._rendering = false; }
     })
-    this._emit(RENDER, [ coord ])
+    this.nodeEmit(RENDER, [ coord ])
     return coord
   }
   screenshot(xLo, xHi, yLo, yHi) {
-    xLo = this.prevPos.xLo + this.intL + ( xLo || 0 )
-    xHi = xHi != null ? this.prevPos.xLo + this.intL + ( xHi || 0 ) : this.prevPos.xHi - this.intR
-    yLo = this.prevPos.yLo + this.intT + ( yLo || 0 )
-    yHi = yHi != null ? this.prevPos.yLo + this.intT + ( yHi || 0 ) : this.prevPos.yHi - this.intB
+    xLo = this.prevPos.xLo + this.intL + (xLo || 0)
+    xHi = xHi != null ? this.prevPos.xLo + this.intL + (xHi || 0) : this.prevPos.xHi - this.intR
+    yLo = this.prevPos.yLo + this.intT + (yLo || 0)
+    yHi = yHi != null ? this.prevPos.yLo + this.intT + (yHi || 0) : this.prevPos.yHi - this.intB
     return this.screen.screenshot(xLo, xHi, yLo, yHi)
   }
 
   onScreenEvent(type, handler) {
-    const listeners = this._slisteners ?? ( this._slisteners = [] )
+    const listeners = this._slisteners ?? (this._slisteners = [])
     listeners.push({ type, handler })
     this.screen.on(type, handler)
   }
   onceScreenEvent(type, handler) {
-    const listeners = this._slisteners ?? ( this._slisteners = [] )
+    const listeners = this._slisteners ?? (this._slisteners = [])
     const entry = { type, handler }
     listeners.push(entry)
     this.screen.once(type, function () {
@@ -1318,7 +1318,7 @@ export class Element extends Node {
     })
   }
   removeScreenEvent(type, handler) {
-    const listeners = this._slisteners ?? ( this._slisteners = [] )
+    const listeners = this._slisteners ?? (this._slisteners = [])
     for (let i = 0; i < listeners.length; i++) {
       const listener = listeners[i]
       if (listener.type === type && listener.handler === handler) {
@@ -1330,7 +1330,7 @@ export class Element extends Node {
     this.screen.removeListener(type, handler)
   }
   free() {
-    const listeners = this._slisteners ?? ( this._slisteners = [] )
+    const listeners = this._slisteners ?? (this._slisteners = [])
     for (let i = 0; i < listeners.length; i++) {
       const listener = listeners[i]
       this.screen.removeListener(listener.type, listener.handler)
@@ -1374,8 +1374,8 @@ export class Element extends Node {
     if (this.shrink) { s = 0 }
     if (len === 0) return line
     if (s < 0) return line
-    if (align === CENTER && ( s = Array(( ( s / 2 ) | 0 ) + 1).join(' ') )) return s + line + s
-    else if (align === RIGHT && ( s = Array(s + 1).join(' ') )) return s + line
+    if (align === CENTER && (s = Array(((s / 2) | 0) + 1).join(' '))) return s + line + s
+    else if (align === RIGHT && (s = Array(s + 1).join(' '))) return s + line
     else if (this.parseTags && ~line.indexOf('{|}')) {
       const parts = line.split('{|}')
       const contParts = contLine.split('{|}')
@@ -1423,11 +1423,11 @@ export class Element extends Node {
             x  = data.x - px - ox,
             y  = data.y - py - oy
       if (self.pos.right != null) {
-        if (self.pos.left != null) self.width = '100%-' + ( self.sup.width - self.width )
+        if (self.pos.left != null) self.width = '100%-' + (self.sup.width - self.width)
         self.pos.right = null
       }
       if (self.pos.bottom != null) {
-        if (self.pos.top != null) self.height = '100%-' + ( self.sup.height - self.height )
+        if (self.pos.top != null) self.height = '100%-' + (self.sup.height - self.height)
         self.pos.bottom = null
       }
       self.relL = x
@@ -1467,12 +1467,12 @@ export class Element extends Node {
     if (this._label) {
       this._label.setContent(options.text)
       if (options.side !== RIGHT) {
-        this._label.relL = 2 + ( this.border ? -1 : 0 )
+        this._label.relL = 2 + (this.border ? -1 : 0)
         this._label.pos.right = undefined
         if (!this.screen.autoPadding) this._label.relL = 2
       }
       else {
-        this._label.relR = 2 + ( this.border ? -1 : 0 )
+        this._label.relR = 2 + (this.border ? -1 : 0)
         this._label.pos.left = undefined
         if (!this.screen.autoPadding) this._label.relR = 2
       }
@@ -1496,8 +1496,8 @@ export class Element extends Node {
       this._label.relT = 0
     }
     const reposition = () => {
-      self._label.relT = ( self.subBase || 0 ) - self.intT
-      if (!self.screen.autoPadding) { self._label.relT = ( self.subBase || 0 ) }
+      self._label.relT = (self.subBase || 0) - self.intT
+      if (!self.screen.autoPadding) { self._label.relT = (self.subBase || 0) }
       self.screen.render()
     }
     this.on(SCROLL, this._labelScroll = () => reposition())
@@ -1615,7 +1615,7 @@ export class Element extends Node {
     return this.insertLine(fake, line)
   }
   insertBottom(line) {
-    const h    = ( this.subBase || 0 ) + this.height - this.intH,
+    const h    = (this.subBase || 0) + this.height - this.intH,
           i    = Math.min(h, this.contLines.length),
           fake = this.contLines.rtof[i - 1] + 1
     return this.insertLine(fake, line)
@@ -1625,10 +1625,10 @@ export class Element extends Node {
     return this.deleteLine(fake, n)
   }
   deleteBottom(n = 1) {
-    const h    = ( this.subBase || 0 ) + this.height - 1 - this.intH,
+    const h    = (this.subBase || 0) + this.height - 1 - this.intH,
           i    = Math.min(h, this.contLines.length - 1),
           fake = this.contLines.rtof[i]
-    return this.deleteLine(fake - ( n - 1 ), n)
+    return this.deleteLine(fake - (n - 1), n)
   }
   setLine(i, line) {
     i = Math.max(i, 0)
