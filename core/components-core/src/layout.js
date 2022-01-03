@@ -38,7 +38,7 @@ export class Layout extends Element {
     const coords = this.calcCoord(true)
     const sub = this.sub
     this.sub = []
-    this._render()
+    this.renderElement()
     this.sub = sub
     return coords
   }
@@ -129,7 +129,7 @@ export class Layout extends Element {
     }
   }
   render() {
-    this._emit(PRERENDER)
+    this.nodeEmit(PRERENDER)
     const coords = this._renderCoords()
     if (!coords) {
       delete this.prevPos
@@ -164,7 +164,7 @@ export class Layout extends Element {
       //   el._rendering = false;
       // }
     })
-    this._emit(RENDER, [ coords ])
+    this.nodeEmit(RENDER, [ coords ])
     return coords
   }
 }
