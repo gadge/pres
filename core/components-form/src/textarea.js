@@ -182,7 +182,7 @@ export class Textarea extends Input {
   clearValue() { return this.setValue('') }
   submit() { return !this.__listener ? void 0 : this.__listener('\x1b', { name: ESCAPE }) }
   cancel() { return !this.__listener ? void 0 : this.__listener('\x1b', { name: ESCAPE }) }
-  render() { return this.setValue(), this._render() }
+  render() { return this.setValue(), this.renderElement() }
   readEditor(callback) {
     // console.log('>>> readEditor in textarea')
     const self = this

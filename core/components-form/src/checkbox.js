@@ -37,7 +37,7 @@ export class Checkbox extends Input {
     // console.log('>>> checkbox rendered')
     this.clearPos(true)
     this.setContent('[' + ( this.checked ? 'x' : ' ' ) + '] ' + this.text, true)
-    return this._render()
+    return this.renderElement()
   }
   check() {
     if (this.checked) return
