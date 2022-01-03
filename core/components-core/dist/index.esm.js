@@ -1120,11 +1120,8 @@ class Element extends Node {
   sattr(style, fg, bg) {
     return styleToAttr(style, fg, bg);
   } // Convert `{red-fg}foo{/red-fg}` to `\x1b[31mfoo\x1b[39m`.
+  // get contLines() { return this.contLines }
 
-
-  get _clines() {
-    return this.contLines;
-  }
 
   parseContent(noTags) {
     if (this.detached) return false;
@@ -2575,7 +2572,7 @@ class Scroll {
 
       return Math.max(current, el.relT + el.height);
     }, 0); // XXX Use this? Makes .scrollHeight useless!
-    // if (bottom < this._clines.length) bottom = this._clines.length;
+    // if (bottom < this.contLines.length) bottom = this.contLines.length;
 
     if (this.prevPos) this.prevPos._scrollBottom = bottom;
     return bottom;
@@ -2632,7 +2629,7 @@ class Scroll {
     this.parseContent(); // XXX
     // max = this.scrollHeight - (this.height - this.intH);
 
-    max = this._clines.length - (this.height - this.intH);
+    max = this.contLines.length - (this.height - this.intH);
     if (max < 0) max = 0;
     emax = this._scrollBottom() - (this.height - this.intH);
     if (emax < 0) emax = 0;
@@ -2666,7 +2663,7 @@ class Scroll {
     if (this.detached || !this.scrollable) return 0; // XXX
     // max = this.scrollHeight - (this.height - this.intH);
 
-    max = this._clines.length - (this.height - this.intH);
+    max = this.contLines.length - (this.height - this.intH);
     if (max < 0) max = 0;
     emax = this._scrollBottom() - (this.height - this.intH);
     if (emax < 0) emax = 0;
@@ -2682,7 +2679,7 @@ class Scroll {
   }
 
   get scrollHeight() {
-    return Math.max(this._clines.length, this._scrollBottom());
+    return Math.max(this.contLines.length, this._scrollBottom());
   }
 
   get scrollPercent() {
@@ -2705,7 +2702,7 @@ class Scroll {
   set scrollPercent(i) {
     // XXX
     // var m = this.scrollHeight;
-    const m = Math.max(this._clines.length, this._scrollBottom());
+    const m = Math.max(this.contLines.length, this._scrollBottom());
     return this.scrollTo(i / 100 * m | 0);
   }
 
@@ -2910,7 +2907,7 @@ class ScrollableBox extends Box {
   //     return Math.max(current, el.relT + el.height)
   //   }, 0)
   //   // XXX Use this? Makes .scrollHeight useless!
-  //   // if (bottom < this._clines.length) bottom = this._clines.length;
+  //   // if (bottom < this.contLines.length) bottom = this.contLines.length;
   //   if (this.lpos) this.lpos._scrollBottom = bottom
   //   return bottom
   // }
@@ -2974,7 +2971,7 @@ class ScrollableBox extends Box {
   //   this.parseContent()
   //   // XXX
   //   // max = this.scrollHeight - (this.height - this.intH);
-  //   max = this._clines.length - (this.height - this.intH)
+  //   max = this.contLines.length - (this.height - this.intH)
   //   if (max < 0) max = 0
   //   emax = this._scrollBottom() - (this.height - this.intH)
   //   if (emax < 0) emax = 0
@@ -3010,7 +3007,7 @@ class ScrollableBox extends Box {
   //   // XXX
   //   // max = this.scrollHeight - (this.height - this.intH);
   //
-  //   max = this._clines.length - (this.height - this.intH)
+  //   max = this.contLines.length - (this.height - this.intH)
   //   if (max < 0) max = 0
   //   emax = this._scrollBottom() - (this.height - this.intH)
   //   if (emax < 0) emax = 0
@@ -3024,7 +3021,7 @@ class ScrollableBox extends Box {
   //   this.subBase = 0
   //   return this.emit(SCROLL)
   // }
-  // scrollHeight { return Math.max(this._clines.length, this._scrollBottom()) }
+  // scrollHeight { return Math.max(this.contLines.length, this._scrollBottom()) }
   // scrollPercent(s) {
   //   const pos = this.lpos || this.calcCoord()
   //   if (!pos) return s ? -1 : 0
@@ -3041,7 +3038,7 @@ class ScrollableBox extends Box {
   // scrollPercent = (i) {
   //   // XXX
   //   // var m = this.scrollHeight;
-  //   const m = Math.max(this._clines.length, this._scrollBottom())
+  //   const m = Math.max(this.contLines.length, this._scrollBottom())
   //   return this.scrollTo((i / 100) * m | 0)
   // }
 
@@ -3112,7 +3109,7 @@ class Log extends ScrollableText {
     const text = util.format.apply(util, args);
     this.emit(LOG, text);
     const ret = this.pushLine(text);
-    if (this._clines.fake.length > this.scrollback) this.shiftLine(0, this.scrollback / 3 | 0);
+    if (this.contLines.fake.length > this.scrollback) this.shiftLine(0, this.scrollback / 3 | 0);
     return ret;
   }
 
@@ -3164,6 +3161,7 @@ class GridScale {
  */
 class Screen extends Node {
   type = 'screen';
+  #buffer = '';
 
   constructor(options = {}) {
     options.sku = options.sku ?? 'screen';
@@ -3201,7 +3199,7 @@ class Screen extends Node {
     this.grabKeys = false;
     this.lockKeys = false;
     this.focused;
-    this._buf = '';
+    this.#buffer = '';
     this._ci = -1;
     if (options.title) this.title = options.title;
     const cursor = options.cursor ?? (options.cursor = {
@@ -3223,12 +3221,12 @@ class Screen extends Node {
       self.alloc();
       self.render();
 
-      function resizeEmitter(node) {
+      function resizeHandler(node) {
         node.emit(RESIZE);
-        node.sub.forEach(resizeEmitter);
+        node.sub.forEach(resizeHandler);
       }
 
-      resizeEmitter(self);
+      resizeHandler(self);
     });
     this.program.on(FOCUS, () => self.emit(FOCUS));
     this.program.on(BLUR, () => self.emit(BLUR));
@@ -3266,32 +3264,27 @@ class Screen extends Node {
     if (options.rsety && options.listen) options = {
       program: options
     };
-    this.program = options.program;
+    this.program = options.program ?? Program.build({
+      input: options.input,
+      output: options.output,
+      log: options.log,
+      debug: options.debug,
+      dump: options.dump,
+      terminal: options.terminal || options.term,
+      resizeTimeout: options.resizeTimeout,
+      forceUnicode: options.forceUnicode,
+      tput: true,
+      buffer: true,
+      zero: true
+    });
+    this.program.setupTput();
+    this.program.useBuffer = true;
+    this.program.zero = true;
+    this.program.options.resizeTimeout = options.resizeTimeout;
 
-    if (!this.program) {
-      this.program = Program.build({
-        input: options.input,
-        output: options.output,
-        log: options.log,
-        debug: options.debug,
-        dump: options.dump,
-        terminal: options.terminal || options.term,
-        resizeTimeout: options.resizeTimeout,
-        forceUnicode: options.forceUnicode,
-        tput: true,
-        buffer: true,
-        zero: true
-      });
-    } else {
-      this.program.setupTput();
-      this.program.useBuffer = true;
-      this.program.zero = true;
-      this.program.options.resizeTimeout = options.resizeTimeout;
-
-      if (options.forceUnicode != null) {
-        this.program.tput.features.unicode = options.forceUnicode;
-        this.program.tput.unicode = options.forceUnicode;
-      }
+    if (options.forceUnicode != null) {
+      this.program.tput.features.unicode = options.forceUnicode;
+      this.program.tput.unicode = options.forceUnicode;
     }
 
     this.tput = this.program.tput;
@@ -3578,8 +3571,8 @@ class Screen extends Node {
         ly = -1;
     let acs;
 
-    if (this._buf) {
-      main += this._buf, this._buf = '';
+    if (this.#buffer) {
+      main += this.#buffer, this.#buffer = '';
     }
 
     const {
@@ -3900,8 +3893,8 @@ class Screen extends Node {
     const entered = !!this.program.isAlt;
 
     if (entered) {
-      this._buf = '';
-      this.program._buf = '';
+      this.#buffer = '';
+      this.program.ioBuffer = '';
       this.leave();
     }
 
@@ -4292,10 +4285,10 @@ class Screen extends Node {
   insertLine(n, y, top, bottom) {
     // if (y === top) return this.insertLineNC(n, y, top, bottom);
     if (!this.tput.literals.change_scroll_region || !this.tput.literals.delete_line || !this.tput.literals.insert_line) return;
-    this._buf += this.tput.csr(top, bottom);
-    this._buf += this.tput.cup(y, 0);
-    this._buf += this.tput.il(n);
-    this._buf += this.tput.csr(0, this.height - 1);
+    this.#buffer += this.tput.csr(top, bottom);
+    this.#buffer += this.tput.cup(y, 0);
+    this.#buffer += this.tput.il(n);
+    this.#buffer += this.tput.csr(0, this.height - 1);
     const j = bottom + 1;
 
     while (n--) {
@@ -4309,10 +4302,10 @@ class Screen extends Node {
   deleteLine(n, y, top, bottom) {
     // if (y === top) return this.deleteLineNC(n, y, top, bottom);
     if (!this.tput.literals.change_scroll_region || !this.tput.literals.delete_line || !this.tput.literals.insert_line) return;
-    this._buf += this.tput.csr(top, bottom);
-    this._buf += this.tput.cup(y, 0);
-    this._buf += this.tput.dl(n);
-    this._buf += this.tput.csr(0, this.height - 1);
+    this.#buffer += this.tput.csr(top, bottom);
+    this.#buffer += this.tput.cup(y, 0);
+    this.#buffer += this.tput.dl(n);
+    this.#buffer += this.tput.csr(0, this.height - 1);
     const j = bottom + 1;
 
     while (n--) {
@@ -4326,10 +4319,10 @@ class Screen extends Node {
 
   insertLineNC(n, y, top, bottom) {
     if (!this.tput.literals.change_scroll_region || !this.tput.literals.delete_line) return;
-    this._buf += this.tput.csr(top, bottom);
-    this._buf += this.tput.cup(top, 0);
-    this._buf += this.tput.dl(n);
-    this._buf += this.tput.csr(0, this.height - 1);
+    this.#buffer += this.tput.csr(top, bottom);
+    this.#buffer += this.tput.cup(top, 0);
+    this.#buffer += this.tput.dl(n);
+    this.#buffer += this.tput.csr(0, this.height - 1);
     const j = bottom + 1;
 
     while (n--) {
@@ -4343,10 +4336,10 @@ class Screen extends Node {
 
   deleteLineNC(n, y, top, bottom) {
     if (!this.tput.literals.change_scroll_region || !this.tput.literals.delete_line) return;
-    this._buf += this.tput.csr(top, bottom);
-    this._buf += this.tput.cup(bottom, 0);
-    this._buf += Array(n + 1).join(LF);
-    this._buf += this.tput.csr(0, this.height - 1);
+    this.#buffer += this.tput.csr(top, bottom);
+    this.#buffer += this.tput.cup(bottom, 0);
+    this.#buffer += Array(n + 1).join(LF);
+    this.#buffer += this.tput.csr(0, this.height - 1);
     const j = bottom + 1;
 
     while (n--) {

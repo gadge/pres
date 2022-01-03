@@ -1,11 +1,10 @@
-import fs from 'fs'
-
-let screen
+import { Box, Screen } from '@pres/components-core'
+import fs              from 'fs'
 
 // {open}xxxx{close} xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx
 // xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx xxxx {red-bg}xxxx xxxx xxxx{/red-bg}
 
-screen = Screen.build({
+const screen = Screen.build({
   dump: process.cwd() + '/logs/nowrap.log',
   warnings: true
 })
@@ -22,8 +21,6 @@ const box = Box.build({
 
 box.focus()
 
-screen.key('q', function () {
-  return screen.destroy()
-})
+screen.key('q', () => screen.destroy())
 
 screen.render()

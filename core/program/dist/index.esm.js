@@ -71,6 +71,7 @@ const nextTick = global.setImmediate || process.nextTick.bind(process);
 class IO extends EventEmitter {
   #logger = null;
   #terminal = null;
+  #buffer = null;
 
   constructor(options) {
     super(options);
@@ -145,7 +146,7 @@ class IO extends EventEmitter {
     }(); // IO
 
 
-    this._buf = VO; // IO
+    this.#buffer = VO; // IO
 
     this._flush = this.flush.bind(this); // IO
 
@@ -160,6 +161,14 @@ class IO extends EventEmitter {
 
   debug() {
     return !this.options.debug ? void 0 : this.#log('DEBUG', util.format.apply(util, arguments));
+  }
+
+  get ioBuffer() {
+    return this.#buffer;
+  }
+
+  set ioBuffer(value) {
+    this.#buffer = value;
   }
 
   #log(pre, msg) {
@@ -355,8 +364,8 @@ class IO extends EventEmitter {
   writeBuffer(text) {
     // bf
     if (this.exiting) return void (this.flush(), this.writeOutput(text));
-    if (this._buf) return void (this._buf += text);
-    this._buf = text;
+    if (this.#buffer) return void (this.#buffer += text);
+    this.#buffer = text;
     nextTick(this._flush);
     return true;
   }
@@ -403,9 +412,9 @@ class IO extends EventEmitter {
   }
 
   flush() {
-    if (!this._buf) return;
-    this.writeOutput(this._buf);
-    this._buf = VO;
+    if (!this.#buffer) return;
+    this.writeOutput(this.#buffer);
+    this.#buffer = VO;
   }
 
 }

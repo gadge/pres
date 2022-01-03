@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 import { Program } from '@pres/program'
 import util        from 'util'
 

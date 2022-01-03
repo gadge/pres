@@ -1,6 +1,7 @@
 import { Box, Screen } from '@pres/components'
+import { KEYPRESS }    from '@pres/enum-events'
+import assert          from 'assert'
 
-const assert = require('assert')
 const screen = Screen.build({
   dump: process.cwd() + '/logs/pos.log'
 })
@@ -104,7 +105,7 @@ assert.equal(inner.rtop, 4)
 
 // TODO: Start storing position.left, etc. as absolute?
 
-screen.on('keypress', function (ch, key) {
+screen.on(KEYPRESS, (ch, key) => {
   if (key.name === 'escape' || key.name === 'q') {
     return screen.destroy()
   }

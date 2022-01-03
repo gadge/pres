@@ -1,7 +1,13 @@
-import { flop, rand, ziggurat }                                                                          from '@aryth/rand'
-import { BarChart, DataTable, DonutChart, Gauge, Grid, LCD, LineChart, LogList, Map, Screen, Sparkline } from '@pres/components'
-import { ATTACH, RESIZE }                                                                                from '@pres/enum-events'
-import { last }                                                                                          from '@vect/vector-index'
+import { flop, rand, ziggurat } from '@aryth/rand'
+import {
+  BarChart, DataTable, DonutChart, Gauge, Grid, LCD, LineChart, LogList, Map, Screen, Sparkline
+}                               from '@pres/components'
+import {
+  ATTACH, RESIZE
+}                               from '@pres/enum-events'
+import {
+  last
+}                               from '@vect/vector-index'
 
 const normDist = ziggurat(0, 5, 0)
 
@@ -221,7 +227,7 @@ function updateDonut() {
   if (pct >= 0.5) color = 'yellow'
   if (pct >= 0.75) color = 'red'
   donut.setData([
-    { percent: parseFloat(( pct + 0.00 ) % 1).toFixed(2), label: 'storage', 'color': color } ])
+    { percent: parseFloat((pct + 0.00) % 1).toFixed(2), label: 'storage', 'color': color } ])
   pct += 0.01
 }
 setInterval(() => { updateDonut(), screen.render() }, 500)
@@ -260,5 +266,6 @@ screen.on(RESIZE, () => {
   map.emit(ATTACH)
   logList.emit(ATTACH)
 })
+setTimeout(() => screen.emit('adjourn'), 1000)
 screen.render()
 // screen.emit('adjourn')
