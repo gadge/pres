@@ -72,14 +72,14 @@ export class Message extends Box {
           if (self.options.ignoreKeys && ~self.options.ignoreKeys.indexOf(key.name)) {
             return
           }
-          self.removeScreenEvent(KEYPRESS, fn)
+          self.offScreenEvent(KEYPRESS, fn)
           end()
         })
         // XXX May be affected by new element.options.mouse option.
         if (!self.options.mouse) return
         self.onScreenEvent(MOUSE, function fn(data) {
           if (data.action === MOUSEMOVE) return
-          self.removeScreenEvent(MOUSE, fn)
+          self.offScreenEvent(MOUSE, fn)
           end()
         })
       }, 10)

@@ -66,7 +66,7 @@ export class Screen extends Node {
     this.lockKeys = false
     this.focused
     this.#buffer = ''
-    this._ci = -1
+    this.renderIndex = -1
     if (options.title) this.title = options.title
     const cursor = options.cursor ?? (options.cursor = {
       artificial: options.artificialCursor,
@@ -305,9 +305,9 @@ export class Screen extends Node {
     // element used to be (e.g. when an element moves or is hidden). There could
     // be some overhead though.
     // this.screen.clearRegion(0, this.cols, 0, this.rows);
-    this._ci = 0
-    this.sub.forEach(node => { (node.index = self._ci++), node.render() })
-    this._ci = -1
+    this.renderIndex = 0
+    this.sub.forEach(node => { (node.index = self.renderIndex++), node.render() })
+    this.renderIndex = -1
     if (this.screen.dockBorders) { this.#dockBorders() }
     this.draw(0, this.currLines.length - 1)
     // XXX Workaround to deal with cursor pos before the screen has rendered and

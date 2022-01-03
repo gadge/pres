@@ -1,4 +1,5 @@
-import { Teal } from '@palett/cards'
+import { Teal }          from '@palett/cards'
+import { Screen, Table } from '@pres/components'
 
 const screen = Screen.build({
   dump: process.cwd() + '/logs/table.log',

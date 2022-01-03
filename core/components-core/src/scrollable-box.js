@@ -80,8 +80,8 @@ export class ScrollableBox extends Box {
     //         // occurs.
     //         self.onScreenEvent(MOUSEUP, smu = function () {
     //           self._scrollingBar = false
-    //           self.removeScreenEvent(MOUSEDOWN, smd)
-    //           self.removeScreenEvent(MOUSEUP, smu)
+    //           self.offScreenEvent(MOUSEDOWN, smd)
+    //           self.offScreenEvent(MOUSEUP, smu)
     //         })
     //       }
     //     })

@@ -150,7 +150,7 @@ export class Layout extends Element {
       coords.yLo -= this.padding.top, coords.yHi += this.padding.bottom
     }
     this.sub.forEach((el, i) => {
-      if (el.screen._ci !== -1) el.index = el.screen._ci++
+      if (el.screen.renderIndex !== -1) el.index = el.screen.renderIndex++
       const rendered = iterator(el, i)
       if (rendered === false) {
         delete el.prevPos

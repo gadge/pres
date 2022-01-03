@@ -6,7 +6,7 @@ import {
   MOVE, NEW_LISTENER, PARSED_CONTENT, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, WHEELDOWN, WHEELUP,
 }                                                                                from '@pres/enum-events'
 import * as colors                                                               from '@pres/util-blessed-colors'
-import { dropUnicode, nextTick, stripTags }                                      from '@pres/util-helpers'
+import { dropUnicode, Logger, nextTick, stripTags }                              from '@pres/util-helpers'
 import { sgraToAttr, styleToAttr }                                               from '@pres/util-sgr-attr'
 import * as unicode                                                              from '@pres/util-unicode'
 import { SP }                                                                    from '@texting/enum-chars'
@@ -28,6 +28,7 @@ import { Box }                                                                  
  * https://github.com/chjj/blessed
  */
 
+const { max, min } = Math
 
 export class Element extends Node {
   #parsedContent
@@ -478,7 +479,7 @@ export class Element extends Node {
       if (l < xLoSup + intL) { l = xLoSup + intL }
       if (r > xHiSup - intR) { r = xHiSup - intR }
     }
-    // if (this.sup.prevPos) { this.sup.prevPos._scrollBottom = Math.max(this.sup.prevPos._scrollBottom, b) }
+    // if (this.sup.prevPos) { this.sup.prevPos._scrollBottom = max(this.sup.prevPos._scrollBottom, b) }
     return Coord.build(t, b, l, r, negT, negB, negL, negR, base, this.screen.renders)
   }
   calcShrinkBox(xLo, xHi, yLo, yHi, get) {
@@ -670,6 +671,7 @@ export class Element extends Node {
         this.contLines.ci.push(total)
         return total + line.length + 1
       }, 0)
+      Logger.log('element', '#wrapContent > properties', Object.assign({}, this.contLines))
       this.#parsedContent = this.contLines.join(LF)
       this.emit(PARSED_CONTENT)
       return true
@@ -679,6 +681,7 @@ export class Element extends Node {
     return false
   }
   #wrapContent(content, width) {
+    Logger.log('element', '#wrapContent > input', content, width)
     const tags = this.parseTags
     let state = this.align
     const wrap = this.wrap
@@ -816,6 +819,7 @@ export class Element extends Node {
       line = line.replace(REGEX_SGR_G, '')
       return line.length > current ? line.length : current
     }, 0)
+    Logger.log('element', '#wrapContent > output', out)
     return out
   }
   #parseTags(text) {
@@ -933,8 +937,8 @@ export class Element extends Node {
     this.parseContent()
     const coord = this.calcCoord(true)
     if (!coord) return void (delete this.prevPos)
-    if (coord.dHori <= 0) return void (coord.xHi = Math.max(coord.xHi, coord.xLo))
-    if (coord.dVert <= 0) return void (coord.yHi = Math.max(coord.yHi, coord.yLo))
+    if (coord.dHori <= 0) return void (coord.xHi = max(coord.xHi, coord.xLo))
+    if (coord.dVert <= 0) return void (coord.yHi = max(coord.yHi, coord.yLo))
     const lines = this.screen.lines
     // console.log(`>> [{${ this.codename }}.render]`, lines[0][0],lines[0][0].modeSign)
     let { xLo, xHi, yLo, yHi } = coord,
@@ -963,7 +967,7 @@ export class Element extends Node {
     currAttr = normAttr
     // If we're in a scrollable text box, check to
     // see which attributes this line starts with.
-    if (ci > 0) currAttr = this.contLines.attr[Math.min(coord.base, this.contLines.length - 1)]
+    if (ci > 0) currAttr = this.contLines.attr[min(coord.base, this.contLines.length - 1)]
     if (this.border) xLo++, xHi--, yLo++, yHi--
     // If we have padding/valign, that means the
     // content-drawing loop will skip a few cells/lines.
@@ -971,9 +975,9 @@ export class Element extends Node {
     // ahead of time. This could be optimized.
     if (this.padding.any || (this.valign && this.valign !== TOP)) {
       if (this.style.transparent) {
-        for (let y = Math.max(yLo, 0), line, cell; (y < yHi); y++) {
+        for (let y = max(yLo, 0), line, cell; (y < yHi); y++) {
           if (!(line = lines[y])) break
-          for (let x = Math.max(xLo, 0); x < xHi; x++) {
+          for (let x = max(xLo, 0); x < xHi; x++) {
             if (!(cell = line[x])) break
             cell.at = colors.blend(currAttr, cell.at)
             line.dirty = true // lines[y][x][1] = bch;
@@ -1105,7 +1109,7 @@ export class Element extends Node {
     // Could possibly draw this after all child elements.
     if (this.scrollbar) {
       // i = this.scrollHeight;
-      i = Math.max(this.contLines.length, this._scrollBottom())
+      i = max(this.contLines.length, this._scrollBottom())
     }
     if (coord.negT || coord.negB) i = -Infinity
     if (this.scrollbar && (yHi - yLo) < i) {
@@ -1266,7 +1270,7 @@ export class Element extends Node {
     }
     if (this.shadow) {
       // right
-      for (let y = Math.max(yLo + 1, 0), line; y < yHi + 1; y++) {
+      for (let y = max(yLo + 1, 0), line; y < yHi + 1; y++) {
         if (!(line = lines[y])) break
         for (let x = xHi, cell; x < xHi + 2; x++) {
           if (!(cell = line[x])) break
@@ -1278,7 +1282,7 @@ export class Element extends Node {
       // bottom
       for (let y = yHi, line; y < yHi + 1; y++) {
         if (!(line = lines[y])) break
-        for (let x = Math.max(xLo + 1, 0), cell; x < xHi; x++) {
+        for (let x = max(xLo + 1, 0), cell; x < xHi; x++) {
           if (!(cell = line[x])) break
           // lines[y][x][0] = colors.blend(this.dattr, lines[y][x][0]);
           cell.at = colors.blend(cell.at)
@@ -1286,12 +1290,12 @@ export class Element extends Node {
         }
       }
     }
-    this.sub.forEach(el => {
-      if (el.screen._ci !== -1) el.index = el.screen._ci++
+    for (const node of this.sub) {
+      if (node.screen.renderIndex !== -1) node.index = node.screen.renderIndex++
       // if (el.screen._rendering) { el._rendering = true; }
-      el.render()
+      node.render()
       // if (el.screen._rendering) { el._rendering = false; }
-    })
+    }
     this.nodeEmit(RENDER, [ coord ])
     return coord
   }
@@ -1318,7 +1322,7 @@ export class Element extends Node {
       return handler.apply(this, arguments)
     })
   }
-  removeScreenEvent(type, handler) {
+  offScreenEvent(type, handler) {
     const listeners = this._slisteners ?? (this._slisteners = [])
     for (let i = 0; i < listeners.length; i++) {
       const listener = listeners[i]
@@ -1380,7 +1384,7 @@ export class Element extends Node {
     else if (this.parseTags && ~line.indexOf('{|}')) {
       const parts = line.split('{|}')
       const contParts = contLine.split('{|}')
-      s = Math.max(width - contParts[0].length - contParts[1].length, 0)
+      s = max(width - contParts[0].length - contParts[1].length, 0)
       s = Array(s + 1).join(' ')
       return parts[0] + s + parts[1]
     }
@@ -1442,7 +1446,7 @@ export class Element extends Node {
     delete this.screen._dragging
     delete this._drag
     this.removeListener(MOUSEDOWN, this._dragMD)
-    this.removeScreenEvent(MOUSE, this._dragM)
+    this.offScreenEvent(MOUSE, this._dragM)
     return this._draggable = false
   }
   key() { return this.screen.program.key.apply(this, arguments) }
@@ -1452,8 +1456,8 @@ export class Element extends Node {
   setIndex(index) {
     if (!this.sup) return
     if (index < 0) { index = this.sup.sub.length + index }
-    index = Math.max(index, 0)
-    index = Math.min(index, this.sup.sub.length - 1)
+    index = max(index, 0)
+    index = min(index, this.sup.sub.length - 1)
     const i = this.sup.sub.indexOf(this)
     if (!~i) return
     const item = this.sup.sub.splice(i, 1)[0]
@@ -1545,7 +1549,7 @@ export class Element extends Node {
   insertLine(i, line) {
     if (typeof line === STR) line = line.split(LF)
     if (i !== i || i == null) i = this.contLines.ftor.length
-    i = Math.max(i, 0)
+    i = max(i, 0)
     while (this.contLines.fake.length < i) {
       this.contLines.fake.push('')
       this.contLines.ftor.push([ this.contLines.push('') - 1 ])
@@ -1583,8 +1587,8 @@ export class Element extends Node {
   }
   deleteLine(i, n = 1) {
     if (i !== i || i == null) i = this.contLines.ftor.length - 1
-    i = Math.max(i, 0)
-    i = Math.min(i, this.contLines.ftor.length - 1)
+    i = max(i, 0)
+    i = min(i, this.contLines.ftor.length - 1)
     // NOTE: Could possibly compare the first and last ftor line numbers to see
     // if they're the same, or if they fit in the visible region entirely.
     const start = this.contLines.length
@@ -1617,7 +1621,7 @@ export class Element extends Node {
   }
   insertBottom(line) {
     const h    = (this.subBase || 0) + this.height - this.intH,
-          i    = Math.min(h, this.contLines.length),
+          i    = min(h, this.contLines.length),
           fake = this.contLines.rtof[i - 1] + 1
     return this.insertLine(fake, line)
   }
@@ -1627,12 +1631,12 @@ export class Element extends Node {
   }
   deleteBottom(n = 1) {
     const h    = (this.subBase || 0) + this.height - 1 - this.intH,
-          i    = Math.min(h, this.contLines.length - 1),
+          i    = min(h, this.contLines.length - 1),
           fake = this.contLines.rtof[i]
     return this.deleteLine(fake - (n - 1), n)
   }
   setLine(i, line) {
-    i = Math.max(i, 0)
+    i = max(i, 0)
     while (this.contLines.fake.length < i) { this.contLines.fake.push('') }
     this.contLines.fake[i] = line
     return this.setContent(this.contLines.fake.join(LF), true)
@@ -1642,8 +1646,8 @@ export class Element extends Node {
     return this.setLine(fake + i, line)
   }
   getLine(i) {
-    i = Math.max(i, 0)
-    i = Math.min(i, this.contLines.fake.length - 1)
+    i = max(i, 0)
+    i = min(i, this.contLines.fake.length - 1)
     return this.contLines.fake[i]
   }
   getBaseLine(i) {
@@ -1651,7 +1655,7 @@ export class Element extends Node {
     return this.getLine(fake + i)
   }
   clearLine(i) {
-    i = Math.min(i, this.contLines.fake.length - 1)
+    i = min(i, this.contLines.fake.length - 1)
     return this.setLine(i, '')
   }
   clearBaseLine(i) {

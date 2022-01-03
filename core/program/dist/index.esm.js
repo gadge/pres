@@ -72,6 +72,7 @@ class IO extends EventEmitter {
   #logger = null;
   #terminal = null;
   #buffer = null;
+  #flusher;
 
   constructor(options) {
     super(options);
@@ -148,7 +149,7 @@ class IO extends EventEmitter {
 
     this.#buffer = VO; // IO
 
-    this._flush = this.flush.bind(this); // IO
+    this.#flusher = this.flush.bind(this); // IO
 
     if (options.tput !== false) this.setupTput(); // IO
 
@@ -241,24 +242,14 @@ class IO extends EventEmitter {
   }
 
   listen() {
-    const self = this; // console.log(`>> [this.input.listenCount = ${this.input.listenCount}]`)
-    // Potentially reset window title on exit:
-    // if (!this.isRxvt) {
-    //   if (!this.isVTE) this.setTitleModeFeature(3);
-    //   this.manipulateWindow(21, function(err, data) {
-    //     if (err) return;
-    //     self._originalTitle = data.text;
-    //   });
-    // }
-    // Listen for keys/mouse on input
+    const self = this; // Listen for keys/mouse on input
 
     if (!this.input.listenCount) {
-      this.input.listenCount = 1;
+      this.input.listenCount = 0;
       this.#listenInput();
-    } else {
-      this.input.listenCount++;
     }
 
+    this.input.listenCount++;
     this.on(NEW_LISTENER, this._newHandler = function fn(type) {
       if (type === KEYPRESS || type === MOUSE) {
         self.removeListener(NEW_LISTENER, fn);
@@ -276,11 +267,11 @@ class IO extends EventEmitter {
     }); // Listen for resize on output
 
     if (!this.output.listenCount) {
-      this.output.listenCount = 1, this.#listenOutput();
-    } else {
-      this.output.listenCount++;
+      this.output.listenCount = 0;
+      this.#listenOutput();
     }
 
+    this.output.listenCount++;
     console.log(`>> [program.listen] [ ${this.eventNames()} ]`);
   }
 
@@ -366,7 +357,7 @@ class IO extends EventEmitter {
     if (this.exiting) return void (this.flush(), this.writeOutput(text));
     if (this.#buffer) return void (this.#buffer += text);
     this.#buffer = text;
-    nextTick(this._flush);
+    nextTick(this.#flusher);
     return true;
   }
 

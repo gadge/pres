@@ -82,7 +82,7 @@ export class Question extends Box {
     function done(err, data) {
       self.hide()
       self.screen.restoreFocus()
-      self.removeScreenEvent(KEYPRESS, press)
+      self.offScreenEvent(KEYPRESS, press)
       self._.okay.removeListener(PRESS, okay)
       self._.cancel.removeListener(PRESS, cancel)
       return callback(err, data)

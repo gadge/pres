@@ -8,7 +8,7 @@ const screen = Screen.build({
 })
 
 const logger = Log.build({
-  parent: screen,
+  sup: screen,
   top: 'center',
   left: 'center',
   width: '50%',
@@ -32,7 +32,7 @@ const logger = Log.build({
 
 logger.focus()
 
-setInterval(() => {
+setInterval(function () {
   logger.log('Hello {#0fe1ab-fg}world{/}: {bold}%s{/bold}.', Date.now().toString(36))
   if (Math.random() < 0.30) {
     logger.log({ foo: { bar: { baz: true } } })
@@ -40,6 +40,6 @@ setInterval(() => {
   screen.render()
 }, 1000).unref()
 
-screen.key('q', () => { screen.destroy() })
+screen.key('q', () => screen.destroy())
 
 screen.render()

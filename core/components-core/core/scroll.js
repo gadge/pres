@@ -63,8 +63,8 @@ export class Scroll {
             // occurs.
             self.onScreenEvent(MOUSEUP, smu = () => {
               self._scrollingBar = false
-              self.removeScreenEvent(MOUSEDOWN, smd)
-              self.removeScreenEvent(MOUSEUP, smu)
+              self.offScreenEvent(MOUSEDOWN, smd)
+              self.offScreenEvent(MOUSEUP, smu)
             })
           }
         })
