@@ -1,7 +1,7 @@
-import { CSI }           from '@pres/enum-control-chars'
-import { SGR }           from '@pres/enum-csi-codes'
-import { FUN, NUM, STR } from '@typen/enum-data-types'
-import { last }          from '@vect/vector'
+import { NUM, STR, FUN } from '@typen/enum-data-types';
+import { CSI } from '@pres/enum-control-chars';
+import { SGR } from '@pres/enum-csi-codes';
+import { last } from '@vect/vector';
 
 // colorNames in blessed
 const COLOR_NAMES = {

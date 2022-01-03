@@ -1,4 +1,4 @@
-import { maxBy } from '@vect/vector-indicator'
+import { maxBy } from '@vect/vector-indicator';
 
 class Labels {
   #list;

@@ -42,13 +42,13 @@ export class Node extends EventEmitter {
       this.sup.append(this)
     }
     if (( sub = options.sub ?? options.children )) {
-      sub.forEach(node => this.append(node))
+      for (const node of sub) { this.append(node) }
     }
     if (GlobalScreen.journal) console.log('>> [new node]', this.codename, '∈',
       this.sup?.codename ?? this.screen?.codename ?? AEU)
   }
   configScreen(options) {
-    let screen = this.screen || options.screen
+    let screen = this.screen ?? options.screen
     if (!screen) {
       const self = this
       let sup

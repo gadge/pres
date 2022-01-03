@@ -1,7 +1,7 @@
-import { CSI, SGR }                               from '@palett/enum-ansi-codes'
-import { byteToBackSgra, byteToForeSgra, toByte } from '@pres/util-byte-colors'
-import bresenham                                  from 'bresenham'
-import { mat2d, vec2 }                            from 'gl-matrix'
+import { CSI, SGR } from '@palett/enum-ansi-codes';
+import { byteToForeSgra, toByte, byteToBackSgra } from '@pres/util-byte-colors';
+import bresenham from 'bresenham';
+import { mat2d, vec2 } from 'gl-matrix';
 
 const MASK_MAP = [[0x1, 0x8], [0x2, 0x10], [0x4, 0x20], [0x40, 0x80]];
 

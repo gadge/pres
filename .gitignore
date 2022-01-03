@@ -1,6 +1,7 @@
 meta/local
 .clinic
 .idea
+dist
 temp
 node_modules
 .yarn/*

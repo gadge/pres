@@ -1,23 +1,20 @@
-import { MUTATE_PIGMENT }                                    from '@palett/enum-colorant-modes'
-import { COLUMNWISE }                                        from '@palett/fluo'
-import { fluoMatrix }                                        from '@palett/fluo-matrix'
-import { fluoVector }                                        from '@palett/fluo-vector'
-import { FRESH, METRO, SUBTLE }                              from '@palett/presets'
-import { Box }                                               from '@pres/components-core'
-import {
-  ACTION, ADD_ITEM, ADOPT, ATTACH, CANCEL, CLICK, CREATE_ITEM, ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, FOCUS, INSERT_ITEM, KEYPRESS, REMOVE,
-  REMOVE_ITEM, RESIZE, SCROLL, SELECT, SELECT_ITEM, SELECT_TAB, SET_ITEMS
-}                                                            from '@pres/enum-events'
-import { DOWN, ENTER, ESCAPE, LEFT, RETURN, RIGHT, TAB, UP } from '@pres/enum-key-names'
-import * as helpers                                          from '@pres/util-helpers'
-import { styleToAttr }                                       from '@pres/util-sgr-attr'
-import { tablePadder }                                       from '@spare/table-padder'
-import { clearAnsi }                                         from '@texting/charset-ansi'
-import { SP }                                                from '@texting/enum-chars'
-import { FUN, NUM, OBJ, STR, UND }                           from '@typen/enum-data-types'
-import { mapper as mapper$1 }                                from '@vect/matrix-mapper'
-import { last }                                              from '@vect/vector'
-import { mapper }                                            from '@vect/vector-mapper'
+import { MUTATE_PIGMENT } from '@palett/enum-colorant-modes';
+import { COLUMNWISE } from '@palett/fluo';
+import { fluoMatrix } from '@palett/fluo-matrix';
+import { fluoVector } from '@palett/fluo-vector';
+import { FRESH, METRO, SUBTLE } from '@palett/presets';
+import { Box } from '@pres/components-core';
+import { ELEMENT_WHEELDOWN, ELEMENT_WHEELUP, KEYPRESS, RESIZE, ADOPT, REMOVE, CLICK, ACTION, SELECT, CREATE_ITEM, ADD_ITEM, REMOVE_ITEM, INSERT_ITEM, SET_ITEMS, SELECT_ITEM, CANCEL, ATTACH, FOCUS, SELECT_TAB, SCROLL } from '@pres/enum-events';
+import { tablePadder } from '@spare/table-padder';
+import { clearAnsi } from '@texting/charset-ansi';
+import { SP } from '@texting/enum-chars';
+import { FUN, STR, NUM, OBJ, UND } from '@typen/enum-data-types';
+import { mapper as mapper$1 } from '@vect/matrix-mapper';
+import { mapper } from '@vect/vector-mapper';
+import { UP, DOWN, ENTER, ESCAPE, LEFT, TAB, RIGHT, RETURN } from '@pres/enum-key-names';
+import * as helpers from '@pres/util-helpers';
+import { last } from '@vect/vector';
+import { styleToAttr } from '@pres/util-sgr-attr';
 
 const EFFECT_COLLECTION = ['bg', 'fg', 'bold', 'underline', 'blink', 'inverse', 'invisible'];
 
@@ -926,7 +923,7 @@ class ListBar extends Box {
         item.show();
       }
     });
-    return this._render();
+    return this.renderElement();
   }
 
   select(offset) {
@@ -1159,9 +1156,7 @@ class Table extends Box {
   render() {
     // console.log(`>>> calling table.render`)
     const self = this;
-
-    const coords = this._render();
-
+    const coords = this.renderElement();
     if (!coords) return;
 
     this._calculateMaxes();
@@ -1505,9 +1500,7 @@ class ListTable extends List {
 
   render() {
     const self = this;
-
-    const coords = this._render();
-
+    const coords = this.renderElement();
     if (!coords) return;
 
     this._calculateMaxes();

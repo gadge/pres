@@ -1,4 +1,4 @@
-import { unwind } from '@vect/entries-unwind'
+import { unwind } from '@vect/entries-unwind';
 
 class Series {
   constructor(x, y, title, style) {

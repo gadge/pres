@@ -1,9 +1,9 @@
-import { toByte }   from '@pres/util-byte-colors'
-import * as unicode from '@pres/util-unicode'
-import { LF, SP }   from '@texting/enum-chars'
-import { OBJ }      from '@typen/enum-data-types'
-import { time }     from '@valjoux/timestamp'
-import fs           from 'fs'
+import * as unicode from '@pres/util-unicode';
+import fs from 'fs';
+import { toByte } from '@pres/util-byte-colors';
+import { SP, LF } from '@texting/enum-chars';
+import { OBJ } from '@typen/enum-data-types';
+import { time } from '@valjoux/timestamp';
 
 /**
  * helpers.js - helpers for blessed

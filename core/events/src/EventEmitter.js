@@ -49,7 +49,7 @@ export class EventEmitter {
     return this.on(type, onceHandler)
   }
   listeners(type) { return typeof this.#events[type] === FUN ? [ this.#events[type] ] : this.#events[type] ?? [] }
-  _emit = this.#emit
+  nodeEmit = this.#emit
   #emit(type, args) {
     const handler = this.#events[type]
     let result
@@ -73,7 +73,7 @@ export class EventEmitter {
     args.unshift(this) // const elementArgs = [ node ].concat(args)
     do {
       if (!node.events[type]) continue
-      if (node._emit(type, args) === false) return false
+      if (node.nodeEmit(type, args) === false) return false
     } while (( node = node.sup ))
     return true
   }

@@ -1,22 +1,12 @@
-import { assign } from '@ject/mixin'
-import * as components
-                  from '@pres/components'
-import {
-  Program
-}                 from '@pres/program'
-import {
-  TerminfoParser
-}                 from '@pres/terminfo-parser'
-import * as colors
-                  from '@pres/util-blessed-colors'
-import * as helpers
-                  from '@pres/util-helpers'
-import * as unicode
-                  from '@pres/util-unicode'
-import url
-                  from 'url'
-
-export { ANSIImage, BarChart, BigText, Box, Button, Canvas, Carousel, Checkbox, DataTable, DonutChart, FileManager, Form, Gauge, GaugeList, Grid, Image, Input, LCD, Layout, Line, LineChart, List, ListBar, ListTable, Loading, Log, LogList, Map, Message, OverlayImage, Picture, ProgressBar, Prompt, Question, RadioButton, RadioSet, Screen, ScrollableBox, ScrollableText, Sparkline, StackedBarChart, Table, Terminal, Text, Textarea, Textbox, Tree, Video }from '@pres/components';
+import { assign } from '@ject/mixin';
+import * as components from '@pres/components';
+export { ANSIImage, BarChart, BigText, Box, Button, Canvas, Carousel, Checkbox, DataTable, DonutChart, FileManager, Form, Gauge, GaugeList, Grid, Image, Input, LCD, Layout, Line, LineChart, List, ListBar, ListTable, Loading, Log, LogList, Map, Message, OverlayImage, Picture, ProgressBar, Prompt, Question, RadioButton, RadioSet, Screen, ScrollableBox, ScrollableText, Sparkline, StackedBarChart, Table, Terminal, Text, Textarea, Textbox, Tree, Video } from '@pres/components';
+import { Program } from '@pres/program';
+import { TerminfoParser } from '@pres/terminfo-parser';
+import * as colors from '@pres/util-blessed-colors';
+import * as helpers from '@pres/util-helpers';
+import * as unicode from '@pres/util-unicode';
+import url from 'url';
 
 /**
  // chart

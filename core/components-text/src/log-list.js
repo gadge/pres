@@ -18,4 +18,3 @@ export class LogList extends List {
     this.scrollTo(this.logLines.length)
   }
 }
-

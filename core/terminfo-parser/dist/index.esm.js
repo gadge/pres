@@ -1,12 +1,12 @@
-import { BooleanCapabilities, NumberCapabilities, StringCapabilities } from '@pres/enum-terminfo-alias'
-import { Logger, merge, slice }                                        from '@pres/util-helpers'
-import { BOO, FUN, NUM, STR }                                          from '@typen/enum-data-types'
-import { nullish }                                                     from '@typen/nullish'
-import assert                                                          from 'assert'
-import cp                                                              from 'child_process'
-import fs                                                              from 'fs'
-import path, { dirname }                                               from 'path'
-import { fileURLToPath }                                               from 'url'
+import fs from 'fs';
+import path, { dirname } from 'path';
+import { Logger, merge, slice } from '@pres/util-helpers';
+import { STR, FUN, BOO, NUM } from '@typen/enum-data-types';
+import { nullish } from '@typen/nullish';
+import assert from 'assert';
+import cp from 'child_process';
+import { fileURLToPath } from 'url';
+import { BooleanCapabilities, NumberCapabilities, StringCapabilities } from '@pres/enum-terminfo-alias';
 
 function tryRead(file) {
   if (Array.isArray(file)) {

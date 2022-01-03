@@ -1,10 +1,10 @@
-import { ADOPT, ATTACH, DESTROY, DETACH, REMOVE, REPARENT } from '@pres/enum-events'
-import { EventEmitter }                                     from '@pres/events'
-import { GlobalNode }                                       from '@pres/global-node'
-import { GlobalScreen }                                     from '@pres/global-screen'
-import { AEU }                                              from '@texting/enum-chars'
-import { FUN }                                              from '@typen/enum-data-types'
-import { last }                                             from '@vect/vector-index'
+import { REPARENT, ADOPT, REMOVE, DESTROY, ATTACH, DETACH } from '@pres/enum-events';
+import { EventEmitter } from '@pres/events';
+import { GlobalNode } from '@pres/global-node';
+import { GlobalScreen } from '@pres/global-screen';
+import { AEU } from '@texting/enum-chars';
+import { FUN } from '@typen/enum-data-types';
+import { last } from '@vect/vector-index';
 
 /**
  * node.js - base abstract node for blessed
@@ -50,14 +50,16 @@ class Node extends EventEmitter {
     }
 
     if (sub = options.sub ?? options.children) {
-      sub.forEach(node => this.append(node));
+      for (const node of sub) {
+        this.append(node);
+      }
     }
 
     if (GlobalScreen.journal) console.log('>> [new node]', this.codename, '∈', ((_this$sup = this.sup) === null || _this$sup === void 0 ? void 0 : _this$sup.codename) ?? ((_this$screen = this.screen) === null || _this$screen === void 0 ? void 0 : _this$screen.codename) ?? AEU);
   }
 
   configScreen(options) {
-    let screen = this.screen || options.screen;
+    let screen = this.screen ?? options.screen;
 
     if (!screen) {
       const self = this;

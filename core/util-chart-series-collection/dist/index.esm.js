@@ -1,6 +1,6 @@
-import { Series }    from '@pres/util-chart-series'
-import { transpose } from '@vect/matrix'
-import { mapper }    from '@vect/vector-mapper'
+import { Series } from '@pres/util-chart-series';
+import { transpose } from '@vect/matrix';
+import { mapper } from '@vect/vector-mapper';
 
 class SeriesCollection extends Array {
   constructor(length) {

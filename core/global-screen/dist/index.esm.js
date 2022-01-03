@@ -1,4 +1,4 @@
-import { EXIT, SIGINT, SIGQUIT, SIGTERM, UNCAUGHT_EXCEPTION } from '@pres/enum-events'
+import { UNCAUGHT_EXCEPTION, SIGTERM, SIGINT, SIGQUIT, EXIT } from '@pres/enum-events';
 
 /**
  * screen.js - screen node for blessed

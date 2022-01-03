@@ -117,7 +117,7 @@ export class ANSIImage extends Box {
     this.cellmap = null
   }
   render() {
-    const coords = this._render()
+    const coords = this.renderElement()
     if (!coords) return
     if (this.img && this.cellmap) {
       this.img.renderElement(this.cellmap, this)

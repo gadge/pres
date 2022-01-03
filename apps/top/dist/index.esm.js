@@ -1,14 +1,12 @@
-import { roundD1, roundD2 }                                                        from '@aryth/math'
-import {
-  Amber, Blue, BlueGrey, Cyan, DeepOrange, DeepPurple, Green, Indigo, LightBlue, LightGreen, Lime, Orange, Pink, Purple, Red, Teal, Yellow
-}                                                                                  from '@palett/cards'
-import { Box, DataTable, DonutChart, Grid, LineChart, ListBar, Screen, Sparkline } from '@pres/components'
-import { ATTACH, RESIZE, UNCAUGHT_EXCEPTION }                                      from '@pres/enum-events'
-import { Escape }                                                                  from '@valjoux/linger'
-import { init as init$1, iso }                                                     from '@vect/vector-init'
-import { mapper }                                                                  from '@vect/vector-mapper'
-import { mutazip }                                                                 from '@vect/vector-zipper'
-import si                                                                          from 'systeminformation'
+import { Red, Pink, Purple, DeepPurple, Indigo, Blue, LightBlue, Cyan, Teal, Green, LightGreen, Lime, Yellow, Amber, Orange, DeepOrange, BlueGrey } from '@palett/cards';
+import { Screen, Grid, LineChart, Sparkline, DonutChart, DataTable, Box, ListBar } from '@pres/components';
+import { RESIZE, ATTACH, UNCAUGHT_EXCEPTION } from '@pres/enum-events';
+import si from 'systeminformation';
+import { Escape } from '@valjoux/linger';
+import { init as init$1, iso } from '@vect/vector-init';
+import { mapper } from '@vect/vector-mapper';
+import { mutazip } from '@vect/vector-zipper';
+import { roundD2, roundD1 } from '@aryth/math';
 
 const COLOR_COLLECTION = [Red.base, Pink.base, Purple.base, DeepPurple.base, Indigo.base, Blue.base, LightBlue.base, Cyan.base, Teal.base, Green.base, LightGreen.base, Lime.base, Yellow.base, Amber.base, Orange.base, DeepOrange.base];
 const COLOR_NO = COLOR_COLLECTION.length;

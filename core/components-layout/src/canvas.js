@@ -21,7 +21,7 @@ export class Canvas extends Box {
     this.clearPos(true)
     const inner = this.drawille.frame()
     this.setContent(inner)
-    return this._render()
+    return this.renderElement()
   }
 }
 

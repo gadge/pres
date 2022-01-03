@@ -1,16 +1,16 @@
-import * as Mixin                                                                                   from '@ject/mixin'
-import { Box, Terminal }                                                                            from '@pres/components-core'
-import { ATTACH, CLICK, DATA, DESTROY, DETACH, ERROR, EXIT, HIDE, PRERENDER, RENDER, RESIZE, SHOW } from '@pres/enum-events'
-import * as colors                                                                                  from '@pres/util-blessed-colors'
-import * as helpers                                                                                 from '@pres/util-helpers'
-import assert                                                                                       from 'assert'
-import cp                                                                                           from 'child_process'
-import fs                                                                                           from 'fs'
-import streams                                                                                      from 'memory-streams'
-import MemoryStream                                                                                 from 'memorystream'
-import path                                                                                         from 'path'
-import pictureTube                                                                                  from 'picture-tuber'
-import zlib                                                                                         from 'zlib'
+import { Box, Terminal } from '@pres/components-core';
+import { PRERENDER, DESTROY, HIDE, SHOW, DETACH, ATTACH, RESIZE, RENDER, ERROR, EXIT, DATA, CLICK } from '@pres/enum-events';
+import * as colors from '@pres/util-blessed-colors';
+import cp from 'child_process';
+import assert from 'assert';
+import fs from 'fs';
+import path from 'path';
+import zlib from 'zlib';
+import * as Mixin from '@ject/mixin';
+import * as helpers from '@pres/util-helpers';
+import streams from 'memory-streams';
+import MemoryStream from 'memorystream';
+import pictureTube from 'picture-tuber';
 
 /**
  * tng.js - png reader
@@ -1846,8 +1846,7 @@ class ANSIImage extends Box {
   }
 
   render() {
-    const coords = this._render();
-
+    const coords = this.renderElement();
     if (!coords) return;
 
     if (this.img && this.cellmap) {
@@ -1957,8 +1956,7 @@ class BigText extends Box {
       this._shrinkHeight = true; // }
     }
 
-    const coords = this._render();
-
+    const coords = this.renderElement();
     if (!coords) return;
     const lines = this.screen.lines,
           left = coords.xLo + this.intL,
@@ -2720,7 +2718,7 @@ class Picture extends Box {
 
   render() {
     this.setContent(this.writer.toString());
-    return this._render();
+    return this.renderElement();
   }
 
   getOptionsPrototype() {

@@ -1,12 +1,10 @@
-import { DATA, ERROR, EVENT, KEYPRESS, NEW_LISTENER, REMOVE_LISTENER } from '@pres/enum-events'
-import {
-  BACKSPACE, CLEAR, DELETE, DOWN, END, ENTER, ESCAPE, HOME, INSERT, LEFT, PAGEDOWN, PAGEUP, RETURN, RIGHT, SPACE, TAB, UNDEFINED, UP
-}                                                                      from '@pres/enum-key-names'
-import { slice }                                                       from '@pres/util-helpers'
-import { FUN }                                                         from '@typen/enum-data-types'
-import { acquire }                                                     from '@vect/vector-merge'
-import { EventEmitter as EventEmitter$1 }                              from 'events'
-import { StringDecoder }                                               from 'string_decoder'
+import { DATA, NEW_LISTENER, KEYPRESS, REMOVE_LISTENER, ERROR, EVENT } from '@pres/enum-events';
+import { RETURN, ENTER, TAB, BACKSPACE, ESCAPE, SPACE, UNDEFINED, END, HOME, PAGEDOWN, PAGEUP, DELETE, INSERT, CLEAR, LEFT, RIGHT, DOWN, UP } from '@pres/enum-key-names';
+import { acquire } from '@vect/vector-merge';
+import { EventEmitter as EventEmitter$1 } from 'events';
+import { StringDecoder } from 'string_decoder';
+import { slice } from '@pres/util-helpers';
+import { FUN } from '@typen/enum-data-types';
 
 /*
   Some patterns seen in terminal key escape codes, derived from combos seen
@@ -573,7 +571,7 @@ class EventEmitter {
     return typeof this.#events[type] === FUN ? [this.#events[type]] : this.#events[type] ?? [];
   }
 
-  _emit = this.#emit;
+  nodeEmit = this.#emit;
 
   #emit(type, args) {
     const handler = this.#events[type];
@@ -600,7 +598,7 @@ class EventEmitter {
 
     do {
       if (!node.events[type]) continue;
-      if (node._emit(type, args) === false) return false;
+      if (node.nodeEmit(type, args) === false) return false;
     } while (node = node.sup);
 
     return true;

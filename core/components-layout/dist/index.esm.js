@@ -1,8 +1,8 @@
-import { roundD2, roundD4 } from '@aryth/math'
-import { Box, Cadre }       from '@pres/components-core'
-import { ATTACH }           from '@pres/enum-events'
-import { Context }          from '@pres/util-drawille-canvas'
-import { assignDeep }       from '@pres/util-helpers'
+import { Box, Cadre } from '@pres/components-core';
+import { ATTACH } from '@pres/enum-events';
+import { Context } from '@pres/util-drawille-canvas';
+import { roundD4, roundD2 } from '@aryth/math';
+import { assignDeep } from '@pres/util-helpers';
 
 class Canvas extends Box {
   constructor(options = {}, canvasType) {
@@ -39,7 +39,7 @@ class Canvas extends Box {
     this.clearPos(true);
     const inner = this.drawille.frame();
     this.setContent(inner);
-    return this._render();
+    return this.renderElement();
   }
 
 }

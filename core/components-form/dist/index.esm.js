@@ -1,14 +1,11 @@
-import { Box }                                                                 from '@pres/components-core'
-import { List }                                                                from '@pres/components-data'
-import {
-  ACTION, BLUR, CANCEL, CD, CHECK, CLICK, ELEMENT_KEYPRESS, ERROR, FILE, FOCUS, KEYPRESS, MOUSE, MOVE, PRESS, REFRESH, RESET, RESIZE, SELECT,
-  SUBMIT, UNCHECK
-}                                                                              from '@pres/enum-events'
-import { BACKSPACE, DOWN, ENTER, ESCAPE, LEFT, RETURN, RIGHT, SPACE, TAB, UP } from '@pres/enum-key-names'
-import * as helpers                                                            from '@pres/util-helpers'
-import * as unicode                                                            from '@pres/util-unicode'
-import fs                                                                      from 'fs'
-import path                                                                    from 'path'
+import { KEYPRESS, CLICK, PRESS, FOCUS, BLUR, CHECK, UNCHECK, SELECT, ERROR, CD, FILE, REFRESH, CANCEL, ELEMENT_KEYPRESS, SUBMIT, RESET, RESIZE, MOVE, ACTION, MOUSE } from '@pres/enum-events';
+import { ENTER, SPACE, RETURN, TAB, DOWN, BACKSPACE, ESCAPE, UP, RIGHT, LEFT } from '@pres/enum-key-names';
+import { Box } from '@pres/components-core';
+import { List } from '@pres/components-data';
+import * as helpers from '@pres/util-helpers';
+import fs from 'fs';
+import path from 'path';
+import * as unicode from '@pres/util-unicode';
 
 /**
  * input.js - abstract input element for blessed
@@ -107,7 +104,7 @@ class Checkbox extends Input {
     // console.log('>>> checkbox rendered')
     this.clearPos(true);
     this.setContent('[' + (this.checked ? 'x' : ' ') + '] ' + this.text, true);
-    return this._render();
+    return this.renderElement();
   }
 
   check() {
@@ -803,7 +800,7 @@ class Textarea extends Input {
   }
 
   render() {
-    return this.setValue(), this._render();
+    return this.setValue(), this.renderElement();
   }
 
   readEditor(callback) {
@@ -1141,7 +1138,7 @@ class RadioButton extends Checkbox {
   render() {
     this.clearPos(true);
     this.setContent('(' + (this.checked ? '*' : ' ') + ') ' + this.text, true);
-    return this._render();
+    return this.renderElement();
   }
 
 }

@@ -1,18 +1,16 @@
-import { Table }                                                        from '@analys/table'
-import { bound }                                                        from '@aryth/bound-vector'
-import { intExpon }                                                     from '@aryth/math'
-import { flopGenerator }                                                from '@aryth/rand'
-import { MarketIndexes }                                                from '@morpont/market-indexes-fmp'
-import {
-  Amber, Blue, BlueGrey, Cyan, DeepOrange, DeepPurple, Green, Grey, Indigo, LightBlue, LightGreen, Lime, Orange, Pink, Purple, Red, Teal, Yellow
-}                                                                       from '@palett/cards'
-import { Box, Button, Form, Grid, LineChart, ListBar, Screen, Textbox } from '@pres/components'
-import { ATTACH, PRESS, RESIZE, SUBMIT, UNCAUGHT_EXCEPTION }            from '@pres/enum-events'
-import { camelToSnake }                                                 from '@texting/phrasing'
-import { dateToYmd }                                                    from '@valjoux/convert'
-import { shiftDay }                                                     from '@valjoux/date-shift'
-import { Escape }                                                       from '@valjoux/linger'
-import { unwind }                                                       from '@vect/entries-unwind'
+import { Red, Pink, Purple, DeepPurple, Indigo, Blue, LightBlue, Cyan, Teal, Green, LightGreen, Lime, Yellow, Amber, Orange, DeepOrange, Grey, BlueGrey } from '@palett/cards';
+import { Screen, Grid, LineChart, Form, Box, Textbox, Button, ListBar } from '@pres/components';
+import { PRESS, SUBMIT, RESIZE, ATTACH, UNCAUGHT_EXCEPTION } from '@pres/enum-events';
+import { Table } from '@analys/table';
+import { bound } from '@aryth/bound-vector';
+import { intExpon } from '@aryth/math';
+import { flopGenerator } from '@aryth/rand';
+import { MarketIndexes } from '@morpont/market-indexes-fmp';
+import { camelToSnake } from '@texting/phrasing';
+import { dateToYmd } from '@valjoux/convert';
+import { shiftDay } from '@valjoux/date-shift';
+import { Escape } from '@valjoux/linger';
+import { unwind } from '@vect/entries-unwind';
 
 const COLOR_COLLECTION = [Red.base, Pink.base, Purple.base, DeepPurple.base, Indigo.base, Blue.base, LightBlue.base, Cyan.base, Teal.base, Green.base, LightGreen.base, Lime.base, Yellow.base, Amber.base, Orange.base, DeepOrange.base];
 

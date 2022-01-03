@@ -1,36 +1,31 @@
-import * as mixin                                                                                             from '@ject/mixin'
-import { Node }                                                                                               from '@pres/components-node'
-import { ANGLE_TABLE, ANGLES, ANGLES_D, ANGLES_L, ANGLES_R, ANGLES_U }                                        from '@pres/enum-angle-table'
-import { CSI, ESC, LF, TAB }                                                                                  from '@pres/enum-control-chars'
-import { BOTTOM, CENTER, HALF, HEIGHT, LEFT, MIDDLE, RIGHT, SHRINK, TOP, WIDTH }                              from '@pres/enum-coord-infos'
-import { SGR }                                                                                                from '@pres/enum-csi-codes'
-import {
-  ATTACH, BLUR, CLICK, DATA, DESTROY, DETACH, ELEMENT_CLICK, ELEMENT_MOUSEOUT, ELEMENT_MOUSEOVER, ELEMENT_MOUSEUP, ERROR, EXIT, FOCUS,
-  HIDE as HIDE$1, KEY, KEYPRESS, LOG, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEOUT, MOUSEOVER, MOUSEUP, MOUSEWHEEL, MOVE, NEW_LISTENER, PARSED_CONTENT,
-  PASSTHROUGH, PRERENDER, RENDER, RESIZE, SCROLL, SET_CONTENT, SHOW, TITLE, WARNING, WHEELDOWN, WHEELUP
-}                                                                                                             from '@pres/enum-events'
-import { DOWN, UP }                                                                                           from '@pres/enum-key-names'
-import { BACK, BG, BLINK, BOLD, FG, FORE, HIDE, INVERSE, INVISIBLE, ITALIC, REVERSE, TRANSPARENT, UNDERLINE } from '@pres/enum-sgr-attrs'
-import { GlobalScreen }                                                                                       from '@pres/global-screen'
-import { Program }                                                                                            from '@pres/program'
-import * as colors                                                                                            from '@pres/util-blessed-colors'
-import { degrade }                                                                                            from '@pres/util-byte-colors'
-import * as helpers                                                                                           from '@pres/util-helpers'
-import { dropUnicode, Logger, nextTick, stripTags }                                                           from '@pres/util-helpers'
-import { Mor }                                                                                                from '@pres/util-morisot'
-import { attrToSgra, sgraToAttr, styleToAttr }                                                                from '@pres/util-sgr-attr'
-import * as unicode                                                                                           from '@pres/util-unicode'
-import { SP }                                                                                                 from '@texting/enum-chars'
-import { FUN, NUM, OBJ, STR }                                                                                 from '@typen/enum-data-types'
-import { nullish }                                                                                            from '@typen/nullish'
-import { select }                                                                                             from '@vect/object-select'
-import { last }                                                                                               from '@vect/vector-index'
-import assert                                                                                                 from 'assert'
-import cp, { spawn }                                                                                          from 'child_process'
-import term                                                                                                   from 'term.js'
-import util                                                                                                   from 'util'
-
-export { Node }                                                                                               from '@pres/components-node';
+import { Node } from '@pres/components-node';
+export { Node } from '@pres/components-node';
+import * as mixin from '@ject/mixin';
+import { LF, ESC, TAB, CSI } from '@pres/enum-control-chars';
+import { LEFT, RIGHT, TOP, BOTTOM, WIDTH, HEIGHT, SHRINK, CENTER, HALF, MIDDLE } from '@pres/enum-coord-infos';
+import { NEW_LISTENER, CLICK, MOUSE, MOUSEDOWN, MOUSEUP, MOUSEMOVE, MOUSEOVER, MOUSEOUT, MOUSEWHEEL, WHEELDOWN, WHEELUP, KEYPRESS, KEY, RESIZE, ATTACH, DETACH, MOVE, PARSED_CONTENT, PRERENDER, RENDER, HIDE as HIDE$1, SHOW, SET_CONTENT, SCROLL, LOG, FOCUS, BLUR, WARNING, DESTROY, ELEMENT_CLICK, ELEMENT_MOUSEOVER, ELEMENT_MOUSEOUT, ELEMENT_MOUSEUP, ERROR, EXIT, DATA, TITLE, PASSTHROUGH } from '@pres/enum-events';
+import * as colors from '@pres/util-blessed-colors';
+import * as helpers from '@pres/util-helpers';
+import { nextTick, stripTags, dropUnicode, Logger } from '@pres/util-helpers';
+import { styleToAttr, sgraToAttr, attrToSgra } from '@pres/util-sgr-attr';
+import * as unicode from '@pres/util-unicode';
+import { SP } from '@texting/enum-chars';
+import { NUM, OBJ, STR, FUN } from '@typen/enum-data-types';
+import { nullish, valid } from '@typen/nullish';
+import { select } from '@vect/object-select';
+import { last } from '@vect/vector-index';
+import assert from 'assert';
+import { FORE, FG, BACK, BG, BOLD, ITALIC, UNDERLINE, BLINK, REVERSE, INVERSE, HIDE, INVISIBLE, TRANSPARENT } from '@pres/enum-sgr-attrs';
+import { UP, DOWN } from '@pres/enum-key-names';
+import { ANGLES, ANGLES_L, ANGLES_U, ANGLES_R, ANGLES_D, ANGLE_TABLE } from '@pres/enum-angle-table';
+import { SGR } from '@pres/enum-csi-codes';
+import { GlobalScreen } from '@pres/global-screen';
+import { Program } from '@pres/program';
+import { degrade } from '@pres/util-byte-colors';
+import { Mor } from '@pres/util-morisot';
+import cp, { spawn } from 'child_process';
+import util from 'util';
+import term from 'term.js';
 
 const REGEX_SGR_G = /\x1b\[[\d;]*m/g;
 const REGEX_INIT_SGR = /^\x1b\[[\d;]*m/;
@@ -641,11 +636,11 @@ class Element extends Node {
       if (this.pos.top === CENTER) top -= this.calcH(get) / 2 | 0;
     }
 
-    if (this.pos.top == null && this.pos.bottom != null) {
+    if (nullish(this.pos.top) && valid(this.pos.bottom)) {
       return this.screen.rows - this.calcH(get) - this.calcB(get);
     }
 
-    if (this.screen.autoPadding && (this.pos.top != null || this.pos.bottom == null) && this.pos.top !== CENTER) {
+    if (this.screen.autoPadding && (valid(this.pos.top) || nullish(this.pos.bottom)) && this.pos.top !== CENTER) {
       top += this.sup.intT;
     }
 
@@ -654,7 +649,7 @@ class Element extends Node {
 
   calcB(get) {
     const supPos = get ? this.sup.calcPos() : this.sup;
-    const bottom = this.pos.bottom == null && this.pos.top != null ? this.screen.rows - (this.calcT(get) + this.calcH(get)) : (supPos.b || 0) + (this.pos.bottom || 0);
+    const bottom = nullish(this.pos.bottom) && valid(this.pos.top) ? this.screen.rows - (this.calcT(get) + this.calcH(get)) : (supPos.b || 0) + (this.pos.bottom || 0);
     return this.screen.autoPadding ? bottom + this.sup.intB : bottom;
   }
 
@@ -674,11 +669,11 @@ class Element extends Node {
       }
     }
 
-    if (this.pos.left == null && this.pos.right != null) {
+    if (nullish(this.pos.left) && valid(this.pos.right)) {
       return this.screen.cols - this.calcW(get) - this.calcR(get);
     }
 
-    if (this.screen.autoPadding && (this.pos.left != null || this.pos.right == null) && this.pos.left !== CENTER) {
+    if (this.screen.autoPadding && (valid(this.pos.left) || nullish(this.pos.right)) && this.pos.left !== CENTER) {
       left += this.sup.intL;
     }
 
@@ -1448,13 +1443,12 @@ class Element extends Node {
     return attrList;
   }
 
-  _render = Element.prototype.render;
+  renderElement = Element.prototype.render;
 
   render() {
     var _this$border;
 
-    this._emit(PRERENDER);
-
+    this.nodeEmit(PRERENDER);
     this.parseContent();
     const coord = this.calcCoord(true);
     if (!coord) return void delete this.prevPos;
@@ -1666,7 +1660,7 @@ class Element extends Node {
 
 
     if (this.scrollbar) {
-      // i = this.getScrollHeight();
+      // i = this.scrollHeight;
       i = Math.max(this.contLines.length, this._scrollBottom());
     }
 
@@ -1923,9 +1917,7 @@ class Element extends Node {
 
       el.render(); // if (el.screen._rendering) { el._rendering = false; }
     });
-
-    this._emit(RENDER, [coord]);
-
+    this.nodeEmit(RENDER, [coord]);
     return coord;
   }
 
@@ -2498,14 +2490,14 @@ class Scroll {
             delete self.screen._dragging;
             delete self._drag;
             const ratio = (y - self.intT) / (self.height - self.intH);
-            self.setScrollPerc(ratio * 100 | 0);
+            self.scrollPercent = ratio * 100 | 0;
             self.screen.render();
             let smd, smu;
             self._scrollingBar = true;
             self.onScreenEvent(MOUSEDOWN, smd = data => {
               const y = data.y - self.absT;
               const ratio = y / self.height;
-              self.setScrollPerc(ratio * 100 | 0);
+              self.scrollPercent = ratio * 100 | 0;
               self.screen.render();
             }); // If mouseup occurs out of the window, no mouseup event fires, and
             // scrollbar will drag again on mousedown until another mouseup
@@ -2549,19 +2541,18 @@ class Scroll {
         if (vi && name === 'b' && ctrl) return void (self.scroll(-self.height || -1), self.screen.render());
         if (vi && name === 'f' && ctrl) return void (self.scroll(self.height || 1), self.screen.render());
         if (vi && name === 'g' && !shift) return void (self.scrollTo(0), self.screen.render());
-        if (vi && name === 'g' && shift) return void (self.scrollTo(self.getScrollHeight()), self.screen.render());
+        if (vi && name === 'g' && shift) return void (self.scrollTo(self.scrollHeight), self.screen.render());
       });
     }
 
-    this.on(PARSED_CONTENT, () => self._recalculateIndex());
-
-    self._recalculateIndex();
+    this.on(PARSED_CONTENT, () => self.recalcIndex());
+    self.recalcIndex();
   }
 
   get reallyScrollable() {
     // XXX Potentially use this in place of scrollable checks elsewhere.
     if (this.shrink) return this.scrollable;
-    return this.getScrollHeight() > this.height;
+    return this.scrollHeight > this.height;
   }
 
   _scrollBottom() {
@@ -2583,7 +2574,7 @@ class Scroll {
       }
 
       return Math.max(current, el.relT + el.height);
-    }, 0); // XXX Use this? Makes .getScrollHeight() useless!
+    }, 0); // XXX Use this? Makes .scrollHeight useless!
     // if (bottom < this._clines.length) bottom = this._clines.length;
 
     if (this.prevPos) this.prevPos._scrollBottom = bottom;
@@ -2639,7 +2630,7 @@ class Scroll {
     // and put it in a scrollable text box.
 
     this.parseContent(); // XXX
-    // max = this.getScrollHeight() - (this.height - this.intH);
+    // max = this.scrollHeight - (this.height - this.intH);
 
     max = this._clines.length - (this.height - this.intH);
     if (max < 0) max = 0;
@@ -2670,10 +2661,10 @@ class Scroll {
     return this.emit(SCROLL);
   }
 
-  _recalculateIndex() {
+  recalcIndex() {
     let max, emax;
     if (this.detached || !this.scrollable) return 0; // XXX
-    // max = this.getScrollHeight() - (this.height - this.intH);
+    // max = this.scrollHeight - (this.height - this.intH);
 
     max = this._clines.length - (this.height - this.intH);
     if (max < 0) max = 0;
@@ -2690,33 +2681,30 @@ class Scroll {
     return this.emit(SCROLL);
   }
 
-  getScrollHeight() {
+  get scrollHeight() {
     return Math.max(this._clines.length, this._scrollBottom());
   }
 
-  getScrollPerc(s) {
+  get scrollPercent() {
     const pos = this.prevPos || this.calcCoord();
+    const s = false; // s is first arg of serScrollPerc in previous version
+
     if (!pos) return s ? -1 : 0;
     const height = pos.yHi - pos.yLo - this.intH,
-          i = this.getScrollHeight();
+          i = this.scrollHeight;
     let p;
 
     if (height < i) {
-      if (this.alwaysScroll) {
-        p = this.subBase / (i - height);
-      } else {
-        p = (this.subBase + this.subOffset) / (i - 1);
-      }
-
+      p = this.alwaysScroll ? this.subBase / (i - height) : (this.subBase + this.subOffset) / (i - 1);
       return p * 100;
     }
 
     return s ? -1 : 0;
   }
 
-  setScrollPerc(i) {
+  set scrollPercent(i) {
     // XXX
-    // var m = this.getScrollHeight();
+    // var m = this.scrollHeight;
     const m = Math.max(this._clines.length, this._scrollBottom());
     return this.scrollTo(i / 100 * m | 0);
   }
@@ -2816,14 +2804,14 @@ class ScrollableBox extends Box {
     //         delete self.screen._dragging
     //         delete self._drag
     //         const perc = (y - self.intT) / (self.height - self.intH)
-    //         self.setScrollPerc(perc * 100 | 0)
+    //         self.scrollPercent = (perc * 100 | 0)
     //         self.screen.render()
     //         let smd, smu
     //         self._scrollingBar = true
     //         self.onScreenEvent(MOUSEDOWN, smd = function (data) {
     //           const y = data.y - self.absT
     //           const perc = y / self.height
-    //           self.setScrollPerc(perc * 100 | 0)
+    //           self.scrollPercent = (perc * 100 | 0)
     //           self.screen.render()
     //         })
     //         // If mouseup occurs out of the window, no mouseup event fires, and
@@ -2886,13 +2874,13 @@ class ScrollableBox extends Box {
     //       return
     //     }
     //     if (options.vi && key.name === 'g' && key.shift) {
-    //       self.scrollTo(self.getScrollHeight())
+    //       self.scrollTo(self.scrollHeight)
     //       self.screen.render()
     //     }
     //   })
     // }
-    // this.on(PARSED_CONTENT, () => self._recalculateIndex())
-    // self._recalculateIndex()
+    // this.on(PARSED_CONTENT, () => self.recalcIndex())
+    // self.recalcIndex()
   }
 
   static build(options) {
@@ -2900,7 +2888,7 @@ class ScrollableBox extends Box {
   } // // XXX Potentially use this in place of scrollable checks elsewhere.
   // get reallyScrollable() {
   //   if (this.shrink) return this.scrollable
-  //   return this.getScrollHeight() > this.height
+  //   return this.scrollHeight > this.height
   // }
   // _scrollBottom() {
   //   if (!this.scrollable) return 0
@@ -2921,7 +2909,7 @@ class ScrollableBox extends Box {
   //     }
   //     return Math.max(current, el.relT + el.height)
   //   }, 0)
-  //   // XXX Use this? Makes .getScrollHeight() useless!
+  //   // XXX Use this? Makes .scrollHeight useless!
   //   // if (bottom < this._clines.length) bottom = this._clines.length;
   //   if (this.lpos) this.lpos._scrollBottom = bottom
   //   return bottom
@@ -2985,7 +2973,7 @@ class ScrollableBox extends Box {
   //   // and put it in a scrollable text box.
   //   this.parseContent()
   //   // XXX
-  //   // max = this.getScrollHeight() - (this.height - this.intH);
+  //   // max = this.scrollHeight - (this.height - this.intH);
   //   max = this._clines.length - (this.height - this.intH)
   //   if (max < 0) max = 0
   //   emax = this._scrollBottom() - (this.height - this.intH)
@@ -3016,11 +3004,11 @@ class ScrollableBox extends Box {
   //   }
   //   return this.emit(SCROLL)
   // }
-  // _recalculateIndex() {
+  // recalcIndex() {
   //   let max, emax
   //   if (this.detached || !this.scrollable) { return 0 }
   //   // XXX
-  //   // max = this.getScrollHeight() - (this.height - this.intH);
+  //   // max = this.scrollHeight - (this.height - this.intH);
   //
   //   max = this._clines.length - (this.height - this.intH)
   //   if (max < 0) max = 0
@@ -3036,12 +3024,12 @@ class ScrollableBox extends Box {
   //   this.subBase = 0
   //   return this.emit(SCROLL)
   // }
-  // getScrollHeight() { return Math.max(this._clines.length, this._scrollBottom()) }
-  // getScrollPerc(s) {
+  // scrollHeight { return Math.max(this._clines.length, this._scrollBottom()) }
+  // scrollPercent(s) {
   //   const pos = this.lpos || this.calcCoord()
   //   if (!pos) return s ? -1 : 0
   //   const height = (pos.yHi - pos.yLo) - this.intH,
-  //         i      = this.getScrollHeight()
+  //         i      = this.scrollHeight
   //   let p
   //   if (height < i) {
   //     if (this.alwaysScroll) { p = this.subBase / (i - height) }
@@ -3050,9 +3038,9 @@ class ScrollableBox extends Box {
   //   }
   //   return s ? -1 : 0
   // }
-  // setScrollPerc(i) {
+  // scrollPercent = (i) {
   //   // XXX
-  //   // var m = this.getScrollHeight();
+  //   // var m = this.scrollHeight;
   //   const m = Math.max(this._clines.length, this._scrollBottom())
   //   return this.scrollTo((i / 100) * m | 0)
   // }
@@ -3103,7 +3091,7 @@ class Log extends ScrollableText {
     this.scrollOnInput = options.scrollOnInput;
     this.on(SET_CONTENT, () => {
       if (!self._userScrolled || self.scrollOnInput) nextTick(() => {
-        self.setScrollPerc(100);
+        self.scrollPercent = 100;
         self._userScrolled = false;
         self.screen.render();
       });
@@ -3136,7 +3124,7 @@ class Log extends ScrollableText {
 
     const ret = this._scroll(offset, always);
 
-    if (this.getScrollPerc() === 100) this._userScrolled = false;
+    if (this.scrollPercent === 100) this._userScrolled = false;
     return ret;
   }
 
@@ -4929,9 +4917,7 @@ class Layout extends Element {
     const coords = this.calcCoord(true);
     const sub = this.sub;
     this.sub = [];
-
-    this._render();
-
+    this.renderElement();
     this.sub = sub;
     return coords;
   }
@@ -5025,7 +5011,7 @@ class Layout extends Element {
   }
 
   render() {
-    this._emit(PRERENDER);
+    this.nodeEmit(PRERENDER);
 
     const coords = this._renderCoords();
 
@@ -5068,9 +5054,7 @@ class Layout extends Element {
       //   el._rendering = false;
       // }
     });
-
-    this._emit(RENDER, [coords]);
-
+    this.nodeEmit(RENDER, [coords]);
     return coords;
   }
 
@@ -5323,8 +5307,7 @@ class Terminal extends Box {
   }
 
   render() {
-    const ret = this._render();
-
+    const ret = this.renderElement();
     if (!ret) return;
     this.dattr = this.sattr(this.style);
     const xLo = ret.xLo + this.intL,
@@ -5418,15 +5401,15 @@ class Terminal extends Box {
     return this.emit(SCROLL);
   }
 
-  getScrollHeight() {
+  get scrollHeight() {
     return this.term.rows - 1;
   }
 
-  getScrollPerc() {
+  get scrollPercent() {
     return this.term.ydisp / this.term.ybase * 100;
   }
 
-  setScrollPerc(i) {
+  set scrollPercent(i) {
     return this.setScroll(i / 100 * this.term.ybase | 0);
   }
 

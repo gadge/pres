@@ -1,10 +1,10 @@
-import { Box }                                                        from '@pres/components-core'
-import { Input }                                                      from '@pres/components-form'
-import { Canvas }                                                     from '@pres/components-layout'
-import { Text }                                                       from '@pres/components-text'
-import { ATTACH, CLICK, COMPLETE, KEYPRESS, MOUSE, MOUSEMOVE, RESET } from '@pres/enum-events'
-import { styleToAttr }                                                from '@pres/util-blessed-colors'
-import { STR }                                                        from '@typen/enum-data-types'
+import { Canvas } from '@pres/components-layout';
+import { ATTACH, KEYPRESS, MOUSE, MOUSEMOVE, CLICK, COMPLETE, RESET } from '@pres/enum-events';
+import { Box } from '@pres/components-core';
+import { Text } from '@pres/components-text';
+import { Input } from '@pres/components-form';
+import { styleToAttr } from '@pres/util-blessed-colors';
+import { STR } from '@typen/enum-data-types';
 
 class LCD extends Canvas {
   constructor(options = {}) {
@@ -817,8 +817,7 @@ class ProgressBar extends Input {
   }
 
   render() {
-    const ret = this._render();
-
+    const ret = this.renderElement();
     if (!ret) return;
     let xLo = ret.xLo,
         xHi = ret.xHi,

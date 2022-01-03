@@ -78,7 +78,7 @@ export class ProgressBar extends Input {
   }
   static build(options) { return new ProgressBar(options) }
   render() {
-    const ret = this._render()
+    const ret = this.renderElement()
     if (!ret) return
     let
       xLo = ret.xLo,

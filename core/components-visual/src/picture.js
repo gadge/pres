@@ -32,7 +32,7 @@ export class Picture extends Box {
   }
   render() {
     this.setContent(this.writer.toString())
-    return this._render()
+    return this.renderElement()
   }
   getOptionsPrototype() {
     return {

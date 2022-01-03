@@ -1,8 +1,8 @@
-import { bound }          from '@aryth/bound-matrix'
-import { abbr, intExpon } from '@aryth/math'
-import { niceScale }      from '@aryth/nice-scale'
-import { OBJECT }         from '@typen/enum-object-types'
-import { nullish }        from '@typen/nullish'
+import { bound } from '@aryth/bound-matrix';
+import { intExpon, abbr } from '@aryth/math';
+import { niceScale } from '@aryth/nice-scale';
+import { OBJECT } from '@typen/enum-object-types';
+import { nullish } from '@typen/nullish';
 
 function roundBound({
   min,

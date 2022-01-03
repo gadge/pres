@@ -1,17 +1,17 @@
-import { round }   from '@aryth/math'
-import { Box }     from '@pres/components-core'
-import { Canvas }  from '@pres/components-layout'
-import { ATTACH }  from '@pres/enum-events'
-import { toByte }  from '@pres/util-byte-colors'
-import { Ticks }   from '@pres/util-chart-ticks'
-import * as utils  from '@pres/util-helpers'
-import { NUM }     from '@typen/enum-data-types'
-import { nullish } from '@typen/nullish'
-import { maxBy }   from '@vect/vector-indicator'
-import { iterate } from '@vect/vector-mapper'
-import { zipper }  from '@vect/vector-zipper'
-import sparkline   from 'sparkline'
-import x256        from 'x256'
+import { round } from '@aryth/math';
+import { Canvas } from '@pres/components-layout';
+import { ATTACH } from '@pres/enum-events';
+import { maxBy } from '@vect/vector-indicator';
+import * as utils from '@pres/util-helpers';
+import { nullish } from '@typen/nullish';
+import x256 from 'x256';
+import { NUM } from '@typen/enum-data-types';
+import { Box } from '@pres/components-core';
+import { toByte } from '@pres/util-byte-colors';
+import { Ticks } from '@pres/util-chart-ticks';
+import { iterate } from '@vect/vector-mapper';
+import { zipper } from '@vect/vector-zipper';
+import sparkline from 'sparkline';
 
 class Padds {
   constructor(options) {

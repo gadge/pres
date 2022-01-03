@@ -1,5 +1,5 @@
-import { EXIT }   from '@pres/enum-events'
-import { Logger } from '@pres/util-helpers'
+import { EXIT } from '@pres/enum-events';
+import { Logger } from '@pres/util-helpers';
 
 class GlobalProgram {
   static global = null;

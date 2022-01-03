@@ -81,7 +81,7 @@ export class BigText extends Box {
       this._shrinkHeight = true
       // }
     }
-    const coords = this._render()
+    const coords = this.renderElement()
     if (!coords) return
     const lines  = this.screen.lines,
           left   = coords.xLo + this.intL,

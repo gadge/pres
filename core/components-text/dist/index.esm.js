@@ -1,5 +1,5 @@
-import { Element } from '@pres/components-core'
-import { List }    from '@pres/components-data'
+import { List } from '@pres/components-data';
+import { Element } from '@pres/components-core';
 
 class LogList extends List {
   constructor(options) {

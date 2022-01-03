@@ -1,43 +1,21 @@
-import { SIGCONT, SIGTSTP }      from '@geia/enum-signals'
-import {
-  BEL, BS, CSI, DCS, DECKPNM, DECRC, DECSC, ESC, FF, HTS, IND, LF, NEL, OSC, RI, RIS, RN, SI, SO, ST, TAB, VT
-}                                from '@pres/enum-control-chars'
-import {
-  CBT, CHA, CHT, CNL, CPL, CUB, CUD, CUF, CUP, CUU, DA, DCH, DECCARA, DECCRA, DECDC, DECEFR, DECELR, DECERA, DECFRA, DECIC, DECLL, DECRARA,
-  DECREQTPARM, DECRQM, DECSACE, DECSCA, DECSCL, DECSCUSR, DECSERA, DECSLE, DECSMBV, DECSTBM, DECSWBV, DL, DSR, ECH, ED, EL, HPA, HPR, HVP, ICH,
-  IL, MC, REP, RM, SCORC, SCOSC, SD, SGR, SM, SU, TBC, VPA, VPR, XTHIMOUSE, XTMODKEYS, XTRESTORE, XTRMTITLE, XTSAVE, XTSMPOINTER, XTSMTITLE,
-  XTUNMODKEYS, XTWINOPS
-}                                from '@pres/enum-csi-codes'
-import {
-  BLUR, BTNDOWN, BTNUP, DATA, DESTROY, DRAG, ERROR, FOCUS, KEY, KEYPRESS, MOUSE, MOUSEDOWN, MOUSEMOVE, MOUSEUP, MOUSEWHEEL, MOVE, NEW_LISTENER,
-  RESIZE, RESPONSE, WARNING, WHEELDOWN, WHEELUP
-}                                from '@pres/enum-events'
-import {
-  ENTER, LEFT, LINEFEED, MIDDLE, RETURN, RIGHT, UNDEFINED, UNKNOWN
-}                                from '@pres/enum-key-names'
-import { keypressEventsEmitter } from '@pres/events'
-import {
-  GlobalProgram
-}                                from '@pres/global-program'
-import { gpmClient }             from '@pres/gpm-client'
-import {
-  TerminfoParser, whichTerminal
-}                                from '@pres/terminfo-parser'
-import {
-  degrade, toByte
-}                                from '@pres/util-byte-colors'
-import { Logger, slice }         from '@pres/util-helpers'
-import {
-  SC, SP, VO
-}                                from '@texting/enum-chars'
-import {
-  FUN, NUM, STR
-}                                from '@typen/enum-data-types'
-import cp                        from 'child_process'
-import { EventEmitter }          from 'events'
-import fs                        from 'fs'
-import { StringDecoder }         from 'string_decoder'
-import util                      from 'util'
+import { SIGCONT, SIGTSTP } from '@geia/enum-signals';
+import { ESC, LF, RN, BEL, DCS, ST, CSI, OSC, VT, FF, BS, TAB, SO, SI, IND, RI, NEL, RIS, HTS, DECSC, DECRC, DECKPNM } from '@pres/enum-control-chars';
+import { DECSCUSR, CUU, CUD, CUF, CUB, CUP, ED, EL, SGR, DSR, ICH, CNL, CPL, CHA, IL, DL, DCH, ECH, HPA, HPR, DA, VPA, VPR, HVP, SM, RM, DECSTBM, SCOSC, SCORC, CHT, SU, SD, XTHIMOUSE, XTRMTITLE, CBT, REP, TBC, MC, XTMODKEYS, XTUNMODKEYS, XTSMPOINTER, DECRQM, DECSCL, DECLL, DECSCA, XTRESTORE, DECCARA, XTSAVE, XTWINOPS, DECRARA, XTSMTITLE, DECSWBV, DECSMBV, DECCRA, DECEFR, DECREQTPARM, DECSACE, DECFRA, DECELR, DECERA, DECSLE, DECSERA, DECIC, DECDC } from '@pres/enum-csi-codes';
+import { DATA, WARNING, NEW_LISTENER, KEYPRESS, MOUSE, KEY, RESIZE, DESTROY, WHEELDOWN, WHEELUP, MOUSEUP, MOUSEDOWN, MOUSEMOVE, FOCUS, BLUR, BTNDOWN, BTNUP, MOVE, DRAG, MOUSEWHEEL, RESPONSE, ERROR } from '@pres/enum-events';
+import { UNDEFINED, ENTER, LINEFEED, RETURN, MIDDLE, UNKNOWN, LEFT, RIGHT } from '@pres/enum-key-names';
+import { GlobalProgram } from '@pres/global-program';
+import { gpmClient } from '@pres/gpm-client';
+import { toByte, degrade } from '@pres/util-byte-colors';
+import { slice, Logger } from '@pres/util-helpers';
+import { VO, SP, SC } from '@texting/enum-chars';
+import { FUN, NUM, STR } from '@typen/enum-data-types';
+import { StringDecoder } from 'string_decoder';
+import { keypressEventsEmitter } from '@pres/events';
+import { whichTerminal, TerminfoParser } from '@pres/terminfo-parser';
+import cp from 'child_process';
+import { EventEmitter } from 'events';
+import fs from 'fs';
+import util from 'util';
 
 const nullish = x => x === null || x === void 0;
 

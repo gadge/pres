@@ -1,8 +1,8 @@
-import { BTNDOWN, BTNUP, CLICK, CONNECT, DATA, DBLCLICK, DRAG, ERROR, MOUSE, MOUSEWHEEL, MOVE } from '@pres/enum-events'
-import { LEFT, MIDDLE, RIGHT }                                                                  from '@pres/enum-key-names'
-import { EventEmitter }                                                                         from 'events'
-import fs                                                                                       from 'fs'
-import net                                                                                      from 'net'
+import { CONNECT, DATA, BTNUP, CLICK, BTNDOWN, ERROR, MOUSE, DBLCLICK, DRAG, MOUSEWHEEL, MOVE } from '@pres/enum-events';
+import { LEFT, MIDDLE, RIGHT } from '@pres/enum-key-names';
+import { EventEmitter } from 'events';
+import fs from 'fs';
+import net from 'net';
 
 /**
  * gpmClient.js - support the gpm mouse protocol

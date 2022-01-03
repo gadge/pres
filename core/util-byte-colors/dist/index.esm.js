@@ -1,7 +1,7 @@
-import { round }                from '@aryth/math'
-import { hexToHsl, hexToShort } from '@palett/convert'
-import { NUM, STR }             from '@typen/enum-data-types'
-import { mapper }               from '@vect/vector'
+import { hexToShort, hexToHsl } from '@palett/convert';
+import { round } from '@aryth/math';
+import { mapper } from '@vect/vector';
+import { NUM, STR } from '@typen/enum-data-types';
 
 const BLA = 0; // BLACK
 

@@ -1,6 +1,6 @@
-import { Canvas } from '@pres/components-layout'
-import { ATTACH } from '@pres/enum-events'
-import InnerMap   from 'map-canvas'
+import { Canvas } from '@pres/components-layout';
+import { ATTACH } from '@pres/enum-events';
+import InnerMap from 'map-canvas';
 
 class Map extends Canvas {
   constructor(options = {}) {
