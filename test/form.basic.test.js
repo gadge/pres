@@ -1,4 +1,6 @@
-import { TI } from '../src/terminal-interface'
+import {
+  Box, Button, Checkbox, Form, Line, RadioButton, RadioSet, Screen, ScrollableText, Textbox
+} from '@pres/components'
 
 const screen = Screen.build({
   dump: process.cwd() + '/logs/form.log',
@@ -50,7 +52,7 @@ form.key('u', function () {
   screen.render()
 })
 
-const set = TI.radioSet({
+const set = RadioSet.build({
   sup: form,
   left: 1,
   top: 1,
@@ -163,7 +165,7 @@ const submit = Button.build({
 
 submit.on('press', () => form.submit())
 
-const box1 = TI.box({
+const box1 = Box.build({
   sup: form,
   left: 1,
   top: 10,
@@ -175,7 +177,7 @@ const box1 = TI.box({
   }
 })
 
-const box2 = TI.box({
+const box2 = Box.build({
   sup: box1,
   left: 1,
   top: 2,
@@ -187,7 +189,7 @@ const box2 = TI.box({
   }
 })
 
-const box3 = TI.box({
+const box3 = Box.build({
   sup: box2,
   left: 1,
   top: 2,
@@ -199,7 +201,7 @@ const box3 = TI.box({
   }
 })
 
-const box4 = TI.box({
+const box4 = Box.build({
   sup: box3,
   left: 1,
   top: 2,
@@ -211,7 +213,7 @@ const box4 = TI.box({
   }
 })
 
-var output = TI.scrollableText({
+var output = ScrollableText.build({
   sup: form,
   mouse: true,
   keys: true,
@@ -225,7 +227,7 @@ var output = TI.scrollableText({
   content: 'foobar'
 })
 
-const bottom = TI.line({
+const bottom = Line.build({
   sup: form,
   type: 'line',
   orientation: 'horizontal',
